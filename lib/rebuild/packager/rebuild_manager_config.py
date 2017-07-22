@@ -31,8 +31,7 @@ class rebuild_manager_config(OrderedDict):
   def __load(clazz, parser, build_target):
     config = {}
     common = {}
-    if parser.has_section(clazz.COMMON_SECTION):
-      
+#    if parser.has_section(clazz.COMMON_SECTION):
       
     for section in parser.sections():
       items = parser.items(section)
