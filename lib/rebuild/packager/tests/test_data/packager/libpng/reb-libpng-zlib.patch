@@ -1,0 +1,24 @@
+diff '--exclude=*~' -uNr libpng-1.6.18.orig/Makefile.am libpng-1.6.18/Makefile.am
+--- libpng-1.6.18.orig/Makefile.am	2015-03-21 12:43:05.000000000 -0700
++++ libpng-1.6.18/Makefile.am	2015-08-22 19:38:50.318073141 -0700
+@@ -229,7 +229,7 @@
+ # We must use -DPNG_NO_USE_READ_MACROS here even when the library may actually
+ # be built with PNG_USE_READ_MACROS; this prevents the read macros from
+ # interfering with the symbol file format.
+-SYMBOL_CFLAGS = -DPNGLIB_LIBNAME='PNG@PNGLIB_MAJOR@@PNGLIB_MINOR@_0'\
++SYMBOL_CFLAGS = $(PNG_COPTS) -DPNGLIB_LIBNAME='PNG@PNGLIB_MAJOR@@PNGLIB_MINOR@_0'\
+ 		-DPNGLIB_VERSION='@PNGLIB_VERSION@'\
+ 		-DSYMBOL_PREFIX='$(SYMBOL_PREFIX)'\
+ 		-DPNG_NO_USE_READ_MACROS -DPNG_BUILDING_SYMBOL_TABLE
+diff '--exclude=*~' -uNr libpng-1.6.18.orig/Makefile.in libpng-1.6.18/Makefile.in
+--- libpng-1.6.18.orig/Makefile.in	2015-07-22 20:36:53.000000000 -0700
++++ libpng-1.6.18/Makefile.in	2015-08-22 19:38:09.514073378 -0700
+@@ -745,7 +745,7 @@
+ # We must use -DPNG_NO_USE_READ_MACROS here even when the library may actually
+ # be built with PNG_USE_READ_MACROS; this prevents the read macros from
+ # interfering with the symbol file format.
+-SYMBOL_CFLAGS = -DPNGLIB_LIBNAME='PNG@PNGLIB_MAJOR@@PNGLIB_MINOR@_0' \
++SYMBOL_CFLAGS = $(PNG_COPTS) -DPNGLIB_LIBNAME='PNG@PNGLIB_MAJOR@@PNGLIB_MINOR@_0' \
+ 	-DPNGLIB_VERSION='@PNGLIB_VERSION@' \
+ 	-DSYMBOL_PREFIX='$(SYMBOL_PREFIX)' -DPNG_NO_USE_READ_MACROS \
+ 	-DPNG_BUILDING_SYMBOL_TABLE $(am__append_5)

@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: libapple2
+Version: @VERSION@
+Description: libapple2 is nice
+Requires:
+Libs: -L${libdir} -lapple2
+Libs.private:
+Cflags: -I${includedir}

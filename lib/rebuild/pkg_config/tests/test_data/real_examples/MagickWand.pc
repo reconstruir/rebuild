@@ -1,0 +1,14 @@
+prefix=/Users/ramiro/projects/site/Darwin/ImageMagick-6.9.2-0
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include/ImageMagick-6
+includearchdir=/Users/ramiro/projects/site/Darwin/ImageMagick-6.9.2-0/include/ImageMagick-6
+libname=MagickWand-6.Q16
+ 
+Name: MagickWand
+Description: MagickWand - C API for ImageMagick (ABI Q16)
+Version: 6.9.2
+Requires: MagickCore
+Libs: -L${libdir} -l${libname} 
+Libs.private: -L${libdir} -l${libname}    -ltiff -L/Users/ramiro/projects/site/Darwin/freetype-2.6/lib -lfreetype  -ljpeg   -L/Users/ramiro/projects/site/Darwin/libpng-1.6.18/lib -lpng16       -lwebp        -lbz2 -L/Users/ramiro/projects/site/Darwin/ilmbase-2.2.0/lib -L/Users/ramiro/projects/site/Darwin/openexr-2.2.0/lib -lIlmImf -lImath -lHalf -lIex -lIexMath -lIlmThread       -L/Users/ramiro/projects/site/Darwin/zlib-1.2.8/lib -lz   -lm      -lm
+Cflags: -I${includearchdir} -I${includedir} -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16

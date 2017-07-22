@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: libwater2
+Version: @VERSION@
+Description: libwater2 is nice
+Requires: libwater1
+Libs: -L${libdir} -lwater2
+Libs.private:
+Cflags: -I${includedir}

@@ -1,0 +1,49 @@
+#!/usr/bin/env python
+#-*- coding:utf-8 -*-
+#
+import unittest
+from rebuild.step_manager import Step, step_description
+
+class Teststep_description(unittest.TestCase):
+
+  class sample_step_save_args1(Step):
+    def __init__(self):
+      super(Teststep_description.sample_step_save_args1, self).__init__()
+    def execute(self, args):
+      return step_result(True, None)
+
+  class sample_step_save_args2(Step):
+    def __init__(self):
+      super(Teststep_description.sample_step_save_args2, self).__init__()
+    def execute(self, args):
+      return step_result(True, None)
+
+  class sample_step_save_args3(Step):
+    def __init__(self):
+      super(Teststep_description.sample_step_save_args3, self).__init__()
+    def execute(self, args):
+      return step_result(True, None)
+
+  class test_step4(Step):
+    def __init__(self):
+      super(Teststep_description.test_step4, self).__init__()
+    def execute(self, args):
+      return step_result(True, None)
+
+  def test_parse_descriptions(self):
+    items = [
+      self.sample_step_save_args1,
+      self.sample_step_save_args2, { 'num': 666, 's': 'foo' },
+      self.sample_step_save_args3,
+      self.test_step4, { 'num': 500, 's': 'hi' },
+    ]
+
+    descriptions = step_description.parse_descriptions(items)
+
+    self.assertEqual( step_description(self.sample_step_save_args1, {}), descriptions[0] )
+    self.assertEqual( step_description(self.sample_step_save_args2, { 'num': 666, 's': 'foo' }), descriptions[1] )
+    self.assertEqual( step_description(self.sample_step_save_args3, {}), descriptions[2] )
+    self.assertEqual( step_description(self.test_step4, { 'num': 500, 's': 'hi' }), descriptions[3] )
+
+if __name__ == '__main__':
+  unittest.main()

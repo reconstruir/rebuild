@@ -1,0 +1,11 @@
+prefix=/Users/ramiro/projects/site/Darwin/libarchive-3.1.2
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libarchive
+Description: library that can create and read several streaming archive formats
+Version: 3.1.2
+Cflags: -I${includedir}
+Libs: -L${libdir} -larchive
+Libs.private: -llzma -lbz2 -lz  -L/Users/ramiro/projects/site/Darwin/libxml2-2.9.2/lib -lxml2 -lz -lpthread -liconv -lm

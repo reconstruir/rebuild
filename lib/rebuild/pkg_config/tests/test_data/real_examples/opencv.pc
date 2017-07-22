@@ -1,0 +1,14 @@
+# Package Information for pkg-config
+
+prefix=/Users/ramiro/projects/site/Darwin/opencv-3.0.0
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir_old=${prefix}/include/opencv
+includedir_new=${prefix}/include
+
+Name: OpenCV
+Description: Open Source Computer Vision Library
+Version: 3.0.0
+Libs: -L${exec_prefix}/lib -lopencv_cudabgsegm -lopencv_cudaobjdetect -lopencv_cudastereo -lopencv_stitching -lopencv_cudafeatures2d -lopencv_superres -lopencv_videostab -lopencv_cudaoptflow -lopencv_cudalegacy -lopencv_cudawarping -lopencv_adas -lopencv_aruco -lopencv_bgsegm -lopencv_bioinspired -lopencv_ccalib -lopencv_datasets -lopencv_dpm -lopencv_face -lopencv_objdetect -lopencv_line_descriptor -lopencv_optflow -lopencv_reg -lopencv_rgbd -lopencv_saliency -lopencv_stereo -lopencv_surface_matching -lopencv_text -lopencv_tracking -lopencv_xfeatures2d -lopencv_calib3d -lopencv_features2d -lopencv_shape -lopencv_video -lopencv_ml -lopencv_flann -lopencv_xobjdetect -lopencv_xphoto -lopencv_highgui -lopencv_videoio -lopencv_photo -lopencv_imgcodecs -lopencv_cudaimgproc -lopencv_cudafilters -lopencv_imgproc -lopencv_cudaarithm -lopencv_core -lopencv_cudev -lopencv_hal
+Libs.private: -l-framework OpenCL -l-framework Cocoa -L/Users/ramiro/projects/site/Darwin/libwebp/lib -lwebp -L/Users/ramiro/projects/site/Darwin/libpng/lib -lpng -L/Users/ramiro/projects/site/Darwin/libtiff/lib -ltiff -L/Users/ramiro/projects/site/Darwin/libjasper/lib -ljasper -L/Users/ramiro/projects/site/Darwin/libjpeg/lib -ljpeg -L/Users/ramiro/projects/site/Darwin/ilmbase/lib -lImath -L/Users/ramiro/projects/site/Darwin/openexr/lib -lIlmImf -lIex -lHalf -lIlmThread -lavformat -lavcodec -liconv -lz -lswresample -lswscale -lavutil -lm -L/Users/ramiro/projects/site/Darwin/zlib/lib -L/usr/lib -lbz2 -l-framework VideoDecodeAcceleration -l-framework QTKit -l-framework QuartzCore -l-framework AppKit -lcudart -lnppc -lnppi -lnpps -lcufft
+Cflags: -I${includedir_old} -I${includedir_new}

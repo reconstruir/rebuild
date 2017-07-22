@@ -1,0 +1,14 @@
+prefix=/Users/ramiro/projects/site/Darwin/freetype-2.6
+exec_prefix=/Users/ramiro/projects/site/Darwin/freetype-2.6
+libdir=/Users/ramiro/projects/site/Darwin/freetype-2.6/lib
+includedir=/Users/ramiro/projects/site/Darwin/freetype-2.6/include/freetype2
+
+Name: FreeType 2
+URL: http://freetype.org
+Description: A free, high-quality, and portable font engine.
+Version: 18.0.12
+Requires:
+Requires.private: zlib, libpng
+Libs: -L${libdir} -lfreetype
+Libs.private: -lbz2
+Cflags: -I${includedir}

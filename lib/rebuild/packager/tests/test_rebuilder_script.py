@@ -1,0 +1,86 @@
+2#!/usr/bin/env python
+#-*- coding:utf-8 -*-
+#
+import os.path as path
+from bes.test import unit_test_helper
+from bes.fs import temp_file
+from bes.system import host
+from bes.common import Shell
+
+class test_rebuilder_script(unit_test_helper):
+
+  __unit_test_data_dir__ = 'test_data/rebuilder'
+
+  DEBUG = False
+  DEBUG = True
+
+  REBUILDER_SCRIPT = path.abspath(path.join(path.dirname(__file__), '../../../../bin/rebuilder.py'))
+  BUILD_TYPE = 'release'
+  
+  def test_fructose(self):
+    tmp_dir = self._make_temp_dir()
+    cmd = [
+      self.REBUILDER_SCRIPT,
+      '-v',
+      '--tmp-dir', tmp_dir,
+      '--build-type', self.BUILD_TYPE,
+      'fructose',
+    ]
+    rv = self._call_shell(cmd)
+    if rv.exit_code != 0:
+      print(rv.stdout)
+    self.assertEqual( 0, rv.exit_code )
+    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, self.BUILD_TYPE)
+    self.assertTrue( path.exists(path.join(artifacts_dir, 'fructose-3.4.5-6.tar.gz')) )
+    self.assertFalse( path.exists(path.join(artifacts_dir, 'fiber-1.0.0.tar.gz')) )
+    
+  def test_fructose_fiber(self):
+    tmp_dir = self._make_temp_dir()
+    cmd = [
+      self.REBUILDER_SCRIPT,
+      '-v',
+      '--tmp-dir', tmp_dir,
+      '--build-type', self.BUILD_TYPE,
+      'fructose',
+      'fiber',
+    ]
+    rv = self._call_shell(cmd)
+    if rv.exit_code != 0:
+      print(rv.stdout)
+    self.assertEqual( 0, rv.exit_code )
+    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, self.BUILD_TYPE)
+    self.assertTrue( path.exists(path.join(artifacts_dir, 'fructose-3.4.5-6.tar.gz')) )
+    self.assertTrue( path.exists(path.join(artifacts_dir, 'fiber-1.0.0.tar.gz')) )
+    
+  def xxxtest_orange(self):
+    tmp_dir = self._make_temp_dir()
+    cmd = [
+      self.REBUILDER_SCRIPT,
+      '-v',
+      '--tmp-dir', tmp_dir,
+      '--build-type', self.BUILD_TYPE,
+      'orange',
+    ]
+    rv = self._call_shell(cmd)
+    if rv.exit_code != 0:
+      print(rv.stdout)
+    self.assertEqual( 0, rv.exit_code )
+    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, self.BUILD_TYPE)
+    self.assertTrue( path.exists(path.join(artifacts_dir, 'fructose-3.4.5-6.tar.gz')) )
+    self.assertTrue( path.exists(path.join(artifacts_dir, 'fiber-1.0.0.tar.gz')) )
+    self.assertTrue( path.exists(path.join(artifacts_dir, 'fiber-orange-6.5.4-3.tar.gz')) )
+
+  def _make_temp_dir(self):
+    tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
+    if self.DEBUG:
+      print "tmp_dir: ", tmp_dir
+    return tmp_dir
+
+  def _call_shell(self, cmd):
+    print "FUCK: cmd=", cmd
+    print "FUCK: cwd=", self.data_dir()
+    return Shell.execute(cmd, non_blocking = True, raise_error = False,
+                         cwd = self.data_dir(), stderr_to_stdout = True)
+    
+if __name__ == '__main__':
+  unit_test_helper.main()
