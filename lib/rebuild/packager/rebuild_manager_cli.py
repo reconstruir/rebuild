@@ -6,7 +6,6 @@ import argparse, copy, os, os.path as path
 from collections import namedtuple
 
 from bes.archive import archiver
-from bes.common import string_util
 from bes.key_value import key_value_parser
 from bes.system import host
 from bes.fs import file_util, temp_file
@@ -345,19 +344,10 @@ rebuild_manager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir @ROOT_
     success = rebbe.update_from_config(bt, project_name = project_name, allow_downgrade = allow_downgrade)
 
     update_script = rebuild_manager_script(self.UPDATE_SCRIPT_TEMPLATE, 'update.sh')
-    #update_script_filename = path.join(root_dir, self.UPDATE_SCRIPT_FILENAME)
     variables = {
       '@ARTIFACTS_DIR@': artifact_manager.publish_dir,
       '@ROOT_DIR@': root_dir,
     }
-    #update_script_content = string_util.replace(self.UPDATE_SCRIPT_TEMPLATE, replacements)
-    #home_dir = path.expanduser('~/')
-    #update_script_content = update_script_content.replace(home_dir, '~/')
-    #need_script = True
-    #if path.isfile(update_script_filename) and file_util.read(update_script_filename) == update_script_content:
-    #  need_script = False
-    #if need_script:
-    #  file_util.save(update_script_filename, content = update_script_content, mode = 0755)
     update_script.save(root_dir, variables)
     return self.bool_to_exit_code(success)
 
