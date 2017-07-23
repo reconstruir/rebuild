@@ -14,6 +14,7 @@ from rebuild import build_blurb, build_target, build_type, System
 from rebuild.packager import rebuild_manager
 from rebuild.package_manager import artifact_manager, Package, package_tester
 from rebuild.tools_manager import tools_manager
+from rebuild_manager_script import rebuild_manager_script
 
 class rebuild_manager_cli(object):
 
@@ -332,32 +333,32 @@ class rebuild_manager_cli(object):
     for p in sorted(packages):
       print p
     return 0
-
-  ARTIFACTS_DIR_VAR = '@ARTIFACTS_DIR@'
-  ROOT_DIR_VAR = '@ROOT_DIR@'
   
   UPDATE_SCRIPT_TEMPLATE = '''#!/bin/bash
-rebuild_manager.py packages update --artifacts %s --root-dir %s ${1+"$@"}
-''' % (ARTIFACTS_DIR_VAR, ROOT_DIR_VAR)
+rebuild_manager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir @ROOT_DIR@ ${1+"$@"}
+'''
 
   UPDATE_SCRIPT_FILENAME = 'update.sh'
   
   def __command_packages_update(self, artifact_manager, root_dir, wipe, project_name, allow_downgrade, bt):
     rebbe = rebuild_manager(root_dir, artifact_manager = artifact_manager)
     success = rebbe.update_from_config(bt, project_name = project_name, allow_downgrade = allow_downgrade)
-    update_script_filename = path.join(root_dir, self.UPDATE_SCRIPT_FILENAME)
-    replacements = {
-      self.ARTIFACTS_DIR_VAR: artifact_manager.publish_dir,
-      self.ROOT_DIR_VAR: root_dir,
+
+    update_script = rebuild_manager_script(self.UPDATE_SCRIPT_TEMPLATE, 'update.sh')
+    #update_script_filename = path.join(root_dir, self.UPDATE_SCRIPT_FILENAME)
+    variables = {
+      '@ARTIFACTS_DIR@': artifact_manager.publish_dir,
+      '@ROOT_DIR@': root_dir,
     }
-    update_script_content = string_util.replace(self.UPDATE_SCRIPT_TEMPLATE, replacements)
-    home_dir = path.expanduser('~/')
-    update_script_content = update_script_content.replace(home_dir, '~/')
-    need_script = True
-    if path.isfile(update_script_filename) and file_util.read(update_script_filename) == update_script_content:
-      need_script = False
-    if need_script:
-      file_util.save(update_script_filename, content = update_script_content, mode = 0755)
+    #update_script_content = string_util.replace(self.UPDATE_SCRIPT_TEMPLATE, replacements)
+    #home_dir = path.expanduser('~/')
+    #update_script_content = update_script_content.replace(home_dir, '~/')
+    #need_script = True
+    #if path.isfile(update_script_filename) and file_util.read(update_script_filename) == update_script_content:
+    #  need_script = False
+    #if need_script:
+    #  file_util.save(update_script_filename, content = update_script_content, mode = 0755)
+    update_script.save(root_dir, variables)
     return self.bool_to_exit_code(success)
 
   def __update_project(self, rebbe, project_name, packages, wipe, bt):

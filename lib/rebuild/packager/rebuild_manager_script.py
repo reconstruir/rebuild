@@ -21,7 +21,10 @@ class rebuild_manager_script(object):
   def save(self, root_dir, variables):
     filename = path.join(root_dir, self.basename)
     variables = copy.deepcopy(variables)
-    variables[path.expanduser('~/')] = '~/'
+    home_dir = path.expanduser('~/')
+    for key, value in variables.items():
+      variables[key] = value.replace(home_dir, '~/')
+    variables[home_dir] = '~/'
     content = string_util.replace(self.template, variables)
     if self._content_changed(filename, content):
       file_util.save(filename, content = content, mode = self.mode)
