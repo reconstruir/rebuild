@@ -1,4 +1,4 @@
-rebuild-dev-root()
+rebuild-root()
 {
   echo "$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
   return 0
@@ -6,14 +6,13 @@ rebuild-dev-root()
 
 rebuild-go()
 {
-  cd $(rebuild-dev-root)
+  cd $(rebuild-root)
   return 0
 }
 
-rebuild-dev()
+rebuild-setup()
 {
-  bes-dev
-  bes-setup $(rebuild-dev-root)
-  rebuild-go
+  bes-setup
+  bes-setup-dir $(rebuild-root)
   return 0
 }

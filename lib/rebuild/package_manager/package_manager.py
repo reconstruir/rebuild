@@ -38,12 +38,21 @@ class package_manager(object):
   PACKAGE_FILES_DIR = 'files'
 
   SETUP_SCRIPT_TEMPLATE = '''
-prefix=@PREFIX@
-PATH=${prefix}/bin:${PATH} ; export PATH
-PYTHONPATH=${prefix}/lib/python:${PYTHONPATH} ; export PYTHONPATH
-PKG_CONFIG_PATH=${prefix}/lib/pkgconfig:${PKG_CONFIG_PATH} ; export PKG_CONFIG_PATH
-@LIBRARY_PATH@=${prefix}/lib:${@LIBRARY_PATH@} ; export @LIBRARY_PATH@
-MANPATH=${prefix}/man:MANPATH=${prefix}/share/man:${MANPATH} ; export MANPATH
+@NAME@-prefix()
+{
+  echo "@PREFIX@"
+  return 0
+}
+
+@NAME@-setup()
+{
+  local _prefix=$(@NAME@-prefix)
+  export PATH=${_prefix}/bin:${PATH}
+  export PYTHONPATH=${_prefix}/lib/python:${PYTHONPATH}
+  export PKG_CONFIG_PATH=${_prefix}/lib/pkgconfig:${PKG_CONFIG_PATH}
+  export @LIBRARY_PATH@=${_prefix}/lib:${@LIBRARY_PATH@}
+  export MANPATH=${_prefix}/man:MANPATH=${_prefix}/share/man:${MANPATH}
+}
 '''
 
   RUN_SCRIPT_TEMPLATE = '''#!/bin/bash
@@ -149,7 +158,7 @@ ${1+"$@"}
 
     self._db.add_package(package.info, package.files)
 
-    self.__ensure_scripts()
+    self.__ensure_scripts(package.info)
 
   def uninstall_package(self, package_name):
     package = self._db.find_package(package_name)
@@ -241,22 +250,23 @@ ${1+"$@"}
         return
     file_util.save(setup_script_path, content = new_content, mode = 0644)
 
-  def __ensure_scripts(self):
-    self.__ensure_script(self.SETUP_SCRIPT_FILENAME, self.SETUP_SCRIPT_TEMPLATE, 0644)
-    self.__ensure_script(self.RUN_SCRIPT_FILENAME, self.RUN_SCRIPT_TEMPLATE, 0755)
+  def __ensure_scripts(self, package_info):
+    self.__ensure_script(package_info, self.SETUP_SCRIPT_FILENAME, self.SETUP_SCRIPT_TEMPLATE, 0644)
+    self.__ensure_script(package_info, self.RUN_SCRIPT_FILENAME, self.RUN_SCRIPT_TEMPLATE, 0755)
     
-  def __ensure_script(self, filename, template, mode):
-    new_content = self.__make_script(template)
+  def __ensure_script(self, package_info, filename, template, mode):
+    new_content = self.__make_script(package_info, template)
     script_path = path.join(self.root_dir, filename)
     if path.isfile(script_path):
       if new_content == file_util.read(script_path):
         return
     file_util.save(script_path, content = new_content, mode = mode)
 
-  def __make_script(self, template):
+  def __make_script(self, package_info, template):
     replacements = {
       '@PREFIX@': self._installation_dir,
       '@LIBRARY_PATH@': SystemEnvironment.LD_LIBRARY_PATH_VAR_NAME,
+      '@NAME@': package_info.name,
     }
     return string_util.replace(template, replacements)
   
