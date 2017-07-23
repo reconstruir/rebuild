@@ -337,12 +337,9 @@ class rebuild_manager_cli(object):
 rebuild_manager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir @ROOT_DIR@ ${1+"$@"}
 '''
 
-  UPDATE_SCRIPT_FILENAME = 'update.sh'
-  
   def __command_packages_update(self, artifact_manager, root_dir, wipe, project_name, allow_downgrade, bt):
     rebbe = rebuild_manager(root_dir, artifact_manager = artifact_manager)
     success = rebbe.update_from_config(bt, project_name = project_name, allow_downgrade = allow_downgrade)
-
     update_script = rebuild_manager_script(self.UPDATE_SCRIPT_TEMPLATE, 'update.sh')
     variables = {
       '@ARTIFACTS_DIR@': artifact_manager.publish_dir,

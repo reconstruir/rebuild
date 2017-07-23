@@ -4,12 +4,13 @@
 import os.path as path
 from bes.fs import file_util
 from bes.common import dict_util, object_util
-from rebuild import build_blurb, build_target, dependency_resolver, package_descriptor
+from rebuild import build_blurb, build_target, dependency_resolver, package_descriptor, SystemEnvironment
 from rebuild.dependency import dependency_resolver
 from rebuild.package_manager import artifact_manager, Package, package_manager, package_list
 from rebuild.tools_manager import tools_manager
 from collections import namedtuple
 from rebuild_manager_config import rebuild_manager_config
+from rebuild_manager_script import rebuild_manager_script
 
 class rebuild_manager(object):
 
@@ -109,8 +110,45 @@ class rebuild_manager(object):
     removed_packages = list(set(installed_packages).difference(set(resolved_packages)))
     if removed_packages:
       self.uninstall_packages(project_name, removed_packages, build_target)
+    self._save_setup_scripts(project_name)
     return True
+  
+  SETUP_SCRIPT_TEMPLATE = '''
+@NAME@-prefix()
+{
+  echo "@PREFIX@"
+  return 0
+}
 
+@NAME@-setup()
+{
+  local _prefix=$(@NAME@-prefix)
+  export PATH=${_prefix}/bin:${PATH}
+  export PYTHONPATH=${_prefix}/lib/python:${PYTHONPATH}
+  export PKG_CONFIG_PATH=${_prefix}/lib/pkgconfig:${PKG_CONFIG_PATH}
+  export @LIBRARY_PATH@=${_prefix}/lib:${@LIBRARY_PATH@}
+  export MANPATH=${_prefix}/man:MANPATH=${_prefix}/share/man:${MANPATH}
+}
+'''
+
+  RUN_SCRIPT_TEMPLATE = '''#!/bin/bash
+source "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/setup.sh"
+@NAME@-setup
+exec ${1+"$@"}
+'''
+
+  def _save_setup_scripts(self, project_name):
+    setup_script = rebuild_manager_script(self.SETUP_SCRIPT_TEMPLATE, 'setup.sh')
+    run_script = rebuild_manager_script(self.RUN_SCRIPT_TEMPLATE, 'run.sh')
+    pm = self.__package_manager(project_name)
+    variables = {
+      '@PREFIX@': pm.installation_dir,
+      '@LIBRARY_PATH@': SystemEnvironment.LD_LIBRARY_PATH_VAR_NAME,
+      '@NAME@': project_name,
+    }
+    setup_script.save(pm.root_dir, variables)
+    run_script.save(pm.root_dir, variables)
+  
   def config(self, build_target):
     return self.__load_config(build_target)
 
