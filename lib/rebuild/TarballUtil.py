@@ -10,8 +10,11 @@ from bes.archive import archiver
 class TarballUtil(object):
 
   @classmethod
-  def find(clazz, root_dir, name, version):
-    filenames = file_find.find(root_dir, max_depth = 1, relative = False, file_type = file_find.FILE | file_find.LINK)
+  def find(clazz, dirs, name, version):
+    dirs = object_util.listify(dirs)
+    filenames = []
+    for d in dirs:
+      filenames += file_find.find(d, max_depth = 1, relative = False, file_type = file_find.FILE | file_find.LINK)
     return clazz.find_in_list(filenames, name, version)
 
   @classmethod
