@@ -1,0 +1,451 @@
+
+Use "reb" namespace for build
+
+Add pager support to build errors
+Add xcrun find support to use the right compilers on darwin
+Add c++ dialect support
+Add multi arch support
+
+Write a test android app
+Write a test ios app
+
+Dec 8
+
+Dec 16
+when specifying tools or dependencies, allow for just giving the name as a way for the system to use the latest and greatest one
+
+cleanup mess in blurb and add way to unit test
+
+add line wrapping to blurb
+
+dec 19
+- formalize the hackery of *-config scripts a bit similar to
+  pkg-config
+- deal with python packages clobbering each others easy-install.pth
+  and such
+- build some python packages as eggs at least for practice
+- rename context.package_manager to context.deps_package_manager or so
+- change all_bin_dir in ToolPackageManager to be unix_path or such
+
+dec 22
+- fix ArtifactManager to not download anything in its __init__.  only
+when needed.
+
+dec 24
+- move the top level artifactory manager inside rebbe.
+- introduce the concept of a DownloadManager
+
+jan 1
+- mv ~/software/build.py to ~/projects/bin
+- finish adding proper return codes for ScriptRunner.run_build_script
+- finish moving checksuming to BuildScript
+
+jan 2
+- add __load_package() persistent cache for ArtifactManager
+- Rebbe.update_packages() needs options for machine and arch and
+  build_type
+- write routines for comparison of versions and revisions by splitting
+by punctuation and then comparing the separate parts individually
+
+
+Command to test rebbe package installation:
+rebbe.py packages install -a tmp/artifacts /tmp/p poto python_libarchive libpng
+
+jan 3:
+  centralize the code to find builtin tools from PkgConfig.py
+  fix issue in software/lib/libtiff/build.py that requires --disable-cxx
+- event though the PkgConfig module has its own pkg-config binary, when a software package needs pkg-config it still needs to be added to the tools
+- improve TarArchive.extract_members() performance by using extractall
+with the members argument.  Same for ZipArchive
+
+jan 4
+- fix the way these bootstrap tools get added using package management
+- test that 'env' works for the step_make step
+- maybe rename configure_env and configure_flags to env and flags ???
+
+jan 6
+- patches should be indexed by system
+
+jan 8
+- fix emacs in console mode to not use desktop mode
+- deal with cut-n-paste nature of python build steps
+
+jan 12
+- FIXME: provide abstraction for env vars with different names on differnet unices
+- make sure no unit test code executes in regular run
+- add paralelization support.  make build order return deps in chunks that can be parallelized
+
+jan 14
+- fix disaled handing in BuildScriptManager.
+- print decent error when a dependency is disabled
+
+jan 15
+- fix issue when tarballs are specified like in python_pil it dont work.
+- add a DependencyManager
+- remove disabled packages from all_scripts instead of just skipping them
+
+jan 19
+- rebbe.py packages install -a ~/software/tmp/artifacts /tmp/v v python_virtualenv fails because of a missing dir
+- add more unit tests
+
+jan 25
+- consistent name for platform specific eggs.  macosx vs. darwin --plat-name= seems to be broken for bdist (not bdist_egg)
+rebbe.py packages install -a ~/software/tmp/artifacts ~/.tools re python_pythoscope scons cmake pkg_config uncrustify 
+- throw errors when a tool is used as a dep and also when a dep is used as a tool
+- when installing a package throws an error, the installation is left in an inconsistent state.  should cleanup the mess
+
+jan 27
+- make sure all patches are named consistently
+- context might be better named environment
+- make the tmp_dir for testing be in the same place as unpacked, deps, etc
+- move the LD_LIBRARY_PATH hackery in PackageManager.__make_script() to a decent location
+- in __run_cpp_test() abstract the compiler name hardcoded to gcc now
+- SystemEnvironment.CLEAN_ENV_VARS might have to be system specific
+- in BuildScript.source() automate the way to figure out the list of expected_sources
+- dela with the ugliness of BuildScript.all_scripts and BuildScript.checksum_dir
+
+feb 5
+- replace slow packager tests with smaller ones that do the same thing.
+- license in hdradio is apache
+- investigate why ~/.bes/fs/cached_read/files/var/folders/g1/lkq6h5vj4hn5q32f1drxx_xh0000gn/T/nosetests-* keeps growing
+
+feb 6
+- add unit tests for FileSearch.py
+- make sure all build recipes are as simple, complete and right order (missing cleanup very common)
+- get rid of the @FOO@ repalcements hacks and just use variables
+- automate license collection
+- make sure test_data dirs are in the right place
+- add repeat to unit tests
+- aclocal fucked.  need to fix the code that fixes prefixes in installed packages to do any shell scripts in bin/
+- rename step_check_hard_coded_paths to step_fix_hard_coded_paths
+- make sure all c++ libs have a test like libpng
+
+
+feb 6.5
+- write a command builder class that helps build complicated commands such as the easy install ones
+- get rid of StepManager 'name'
+- perhaps move previous_step_output to be an argument to execute()
+- move cpp and python tests out of step_test_artifact_lib to hooks or checks
+- change  all parse_step_args() to use 'env' instead of 'context' and maybe argument
+- rename step_setup_install_deps to step_setup_deps_install
+- move StepResult and StepDescription into Step
+
+feb 7 
+- rename 'env' from step_shell.py to 'shell_env' and across the board
+
+feb 8
+- debug and release flags are not really properly managed
+- get rid of all the .pc file links and use the renaming scheme
+- any --with-png type of configure flag should be --with-png=$REBUILD_REQUIREMENTS_DIR
+- rename libbzip2 back to bzip2
+- use ${REB} variable renaming for pc files instead of the custom replacement hack in Package.py
+- fix cython, scons build.py for pythonness
+- rename libpciaccess to pciaccess
+- rename libexpat to expat plus any build.py that sets pkg_config_name and is fishy
+- rename libopenjpeg to libopenjp2 ???
+
+feb 9
+- rename unpacked_dir to build_dir or something and then add unpacked_dir that is what 
+
+feb 10
+- unify step_cleanup_binary_filenames.py and step_cleanup_library_filenames.py since
+they are essentially the same thing
+- change the fact zlib is needed for unit tests
+- disctinction between Context and BuildScriptEnv is not obvious
+- cut n paste zlib contents between test_Package and test_PackageManager
+
+feb 11
+- maybe figger out if scons needs setuptools
+- add check that the source dir was not hacked
+- get jpeg2000 for opencv
+
+feb 13
+- add a post_setup_hook and use it for python_game, opencv setup and download hacks
+- when the patch for leptonica changed, it did not rebuild
+- fix the screwy patch for ffmpeg
+
+feb 17
+- when an argument to ~/software/build.py has a typo shit happens
+- let dashes work in package names and versions cmon
+- add error for missing download url
+
+alias go='bes_refactor.py unit -l 1 ~/projects/lib/bes'
+alias go_cleanup='bes_refactor.py unit_cleanup ~/projects/lib/bes'
+alias go_test='bes_test.py ~/projects/lib/bes'
+
+rebbe.py packages install -a ~/software/tmp/artifacts ~/.retools global python_pyserial
+rebbe.py packages update -a ~/software/tmp/artifacts ~/.retools/
+
+feb 18
+- checks for python eggs and libs should be added automatically only some python projects doing it
+- add unit test for common_base when the archive has a member that is a single dot
+- Rebbe.py:update_packages needs options for system and arch: see FIXME
+
+feb 21
+- PYTHONPATH ends up with too many packages.  some dont have python libs
+- make hooks be more generic
+
+feb 22
+- fix ~/.rettols/setup.sh to accept args and allow for wiping the installation first
+- write a check that makes sure no binary or shared libraries exist
+- cross process locking when building on separate terminals
+
+feb 23
+- ac_cv_prog_AWK=/usr/bin/awk  for all programs
+- need some kind of hash of tool binaries (like cmake) against its package when updating tools cause of changes that did not rev a revision or version
+
+feb 24
+- reorganize ~/.retools kind of dirs by system
+- cccache support
+- retire Patch.depth() crap
+- vorbis and such for libsdl1_mixer
+
+feb 28
+- step_test_artifact_lib.py: FIXME: static is hardcoded here (depends on global static mode)
+- major inconsistensy in the way replacements happen for synthetic pkg-config pc files.  step_pkg_config_make_pc.py and Package.py.  Need to centralize that chit
+
+feb 29
+- fix wget ssl cert bundle issue
+- Package.py is using a weird replacements strategy
+- add concept of test package for tests above
+- in ~/software/build.py rename users to dependents
+- figure out if freetype really needs bzip2
+
+mar 2
+- add some kind of warning when libxrender-dev is missing when compiling kivy.  some kind of check for system dev tools inclyding compilers and such
+
+mar 4
+- ar and ar flags for ffmpeg
+- make sure theres an GPL free option for ffmpeg
+- ffmpeg deps is fuxxered
+- fix the needs to specify ar and ar flags for tools in hacky ways
+- add build.py for gnu_findutils and gnu_patch
+
+mar 13
+- # FIXME: theres more gettext programs in its bin/ that might need to be added here (lib/gettext/build.py)
+- fixgure out why ncurses makes ARFLAGS be 'r unknown' and remove hack from bes_ar.py to deal with "unknown"
+
+mar 14
+- cleanup huge mess in BuildScript.py
+
+mar 19
+- changing build.py opts (-o flag) doesnt rebuild a project
+
+
+jun 15
+- find a better way to set the lipo_exe that having all Lipo.py and DarwinPackageUtil.py
+  functions accept it
+  
+jun 17
+- when doing "gc foo.c" need to touch foo.c if it does not exist
+
+dec 9
+fix the issue with tools path having arch crap
+
+jan 9
+when i changed the archs c++ projects didnt rebuild so we need to hash the flags and use that for the cache like scons does.
+
+jan 16
+- add way to filter enabled packages by platform
+- fix issue where cmake doesnt use the system libs
+- rename pc_files to be pkg_config_files
+- fix dependencies so when a build.py with multiple projects gets touched it doesnt affect the projects that didnt change.
+  so the hash should be not the filename but the python code that describes a project
+
+jan 17
+- change System.DARWIN to System.APPLE
+- make sure disabled packages dont affect dependency tree
+- add notion of unsupported per system along side disabled
+
+jan 19
+- add xz support for tar
+- fix flags names shell_env in step_python_egg
+- add better aliases for ${REBUILD_REQUIREMENTS_DIR}/include ${REBUILD_REQUIREMENTS_DIR}/lib
+- maybe add --datarootdir=${REBUILD_REQUIREMENTS_SHARE_DIR} to all autoconf invocations
+- add 'PERL5LIB': '${REBUILD_REQUIREMENTS_DIR}/lib/x86_64-linux-gnu/perl/5.22' to Step.py
+- change all category = 'lib', to category = env.LIB, and such in build.py files
+- argument.env class is Context should be some kind of BuildEnv thing
+- theres a lot of cut-n-paste in PackageTestser between python ahd shell tests
+- need to standardize CFLAGS and LDFLAGS and have a one shot way to set them
+- fix step_make_caca and step_make
+- check deps for recursion mistakes like when a lib depends on itself
+- bzip2 should be libbzip2
+
+
+jan 20
+static vs shared issue: PKG_CONFIG='pkg-config --static' in Step.py
+[ '--enable-static', '--disable-shared' ] flags all over makefiles
+
+jan 21
+- step_make_install has a autoconf prefix argument that doesnt belong
+
+jan 22
+- factor out variable substitition code ouf step
+
+the notion of a prefix is hardcoded for step_make and step_make_install
+
+deal with the out of the box situation on macs where "sudo xcodebuild -license" is needed before a package will build
+
+
+export_compilation_flags_requirements should not be a property of the package but of the build
+
+add the current package name to the beginning of build blurb spew
+
+fix need for this in build.py files .  add aliases
+        'CFLAGS': '-I${REBUILD_REQUIREMENTS_DIR}/include ${REBUILD_COMPILE_CFLAGS}',
+        'LDFLAGS': '-L${REBUILD_REQUIREMENTS_DIR}/lib',
+
+TarballUtil -> ArchiveUtil
+
+retire FileUtil.is_exe() and use binary detector instead
+
+feb 2
+- split EnvVar into the parts that hack the live environment and utils - also SystemEnvironment is confusing too.
+- make sure env var updates call unique
+
+- PackageManager and ToolsManager are inconsistent in env_vars related functions.  killall that chit
+
+feb 3
+- add a checksum to tools and maybe packages so that those with same versions trigger reinstalls during development
+- Step.py:#FIXME: unify the replacements here with those in step_pkg_config_make_pc.py
+
+PkgConfig.py:
+# FIXME: maybe this should be centralized
+  def __pkg_config_exe():
+
+support for packages such as glib that provide multiple .pc files
+
+automate the import of steps
+
+rename SYstemCompilers to SystemToolchain
+
+feb 6
+- need much tighter control of what goes in the package metadata and no magic numbers
+g
+feb 7
+- control-c during a tester run results in a corrupted package installation
+
+package tester deps for some reason exe does not get rebuilt if comand is the same
+
+add notion of runtime_tools and compile_tools
+
+
+feb 13
+move SystemEnvironment to a more shared place
+
+feb 14
+make archive abstract class be good also matcherbase
+
+feb 22
+fix invoation of rebuild_ar.py script to set the proper python path
+
+get rid of the builtin pkg-config and instead when writing a package install its flags at package time
+
+
+
+feb 24
+- change SHell.execute to process.run or whatever
+
+mar 3
+- the resolution of dicts in Step should be a key value list not a dict
+- reverse order of ctor arts for CompileFlags to match build_target
+- ncurses build.py has lots of cut n paste
+- xz build.py has some screwy names using the word "caca"
+- change shell = True to shell = False in step.call_shell
+
+mar 7
+- libspotify build.py is not working the enabled hack
+
+return sdl1 crap
+
+mar 9
+- rewrite requirement as a state machine
+- BuildScriptEnv DISTRO maybe should be part of build_target somehow
+- PackageInfo.ParsedDep -> requirement
+- when building in static mode - check binaries to make sure they dont link to anything other than system libs dynamically to catch libz libxml etc that might be part of the system
+
+- PackageInfo -> PackageDescriptor
+
+mar 12
+- file cache never expires
+
+mar 13
+- fix the notion of build_target in PackageManager seems fucked up
+
+
+
+CACA:
+theres no filtering of requirements in BuildScript.py used to be in __load_requirements()
+theres some weirdness about None system_mask in requirement
+step_setup_install_deps -> step_setup_install_requirements
+
+Context.package_descriptor needs to be renamed
+step_setup_tools -> step_setup_build_requirements
+requirements dont take into account operators
+
+need better example projects that zlib and libpng
+
+mar 14
+unit_test_helper: data_path -> unit_test_data_file or something
+
+mar 17
+mv bes/hardware somewhere better
+
+get rid of export_compilation_flags_requirements
+
+
+mar 18
+- the notion of tools depending on non tools is a bit weird.  see build_script_runner.__init__
+s /is_package_info_list/is_package_descriptor_list/
+- unify dependency code in build_script_runner and PackageManager
+
+mar 19
+- all python projects should automagically have set 'copy_source_to_build_dir': True,
+- make python egg steps copy_source_to_build_dir automafically
+- there should be a global way to set 'copy_source_to_build_dir': True, for python eggs
+- fix ncurses build to use delete files directive instead of hook
+
+mar 21
+- steps should accept standard pythons args like *args, and **kargs
+- step logging setup is fucked up
+- change THIRD_PARTY_PREFIX = 'rebbe_' to THIRD_PARTY_PREFIX = 'rebuild_' in package_env.py but make it a variable somewheres
+- populate ~/third-party-sources/
+- s / package_managers  / requirement_managers in rebuild_tool
+- rebuild_manager.py:_command_test() fix opts parsing issue and test it make sure it works
+
+old attic notes:
+ffmpeg configure_flags='--disable-securetransport'
+
+
+mar 25
+get rid of scons stuff in rebuild and move it elsewhere
+
+mar 28
+- refactor ~/software into projects
+
+mar 30
+- write rebuilder_ar.py script tests
+
+apr 4
+- add unit test for a build script with multiple recipes
+
+apr 13
+- package_manager notion of build_target is inconsistent.  install needs it uninstall doesnt
+- bes_refactor.py needs to remove empty dirs when done
+- get rid of uppercase in mirror cause it makes refactor hard
+
+apr 18
+- write my own topological sort
+
+
+may 31
+- install a clean mac and have warnings for missing xcode and tools
+
+jul 18
+- bes_archive_tool.py imports from rebuild
+
+jul 19
+- figure out why os.link() does not work on macos sierra for rebuild.sync
+
+jul 23
+- s/requirements/runtime_requriments or so
