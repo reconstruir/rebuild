@@ -13,18 +13,20 @@ class rebuild_manager_script(object):
   def __init__(self, template, basename):
     self.template = template
     self.basename = basename
-    if template.starts_with('#!/'):
+    if template.startswith('#!/'):
       self.mode = 0755
     else:
       self.mode = 0644
   
-  def save(self, root_dir, variables, mode):
+  def save(self, root_dir, variables):
     filename = path.join(root_dir, self.basename)
     variables = copy.deepcopy(variables)
     variables[path.expanduser('~/')] = '~/'
     content = string_util.replace(self.template, variables)
     if self._content_changed(filename, content):
       file_util.save(filename, content = content, mode = self.mode)
+      return True
+    return False
 
   def _determine_mode(clazz, template):
     if template.starts_with('#!/'):
@@ -33,4 +35,6 @@ class rebuild_manager_script(object):
       return 0644
     
   def _content_changed(clazz, filename, content):
-    return path.isfile(filename) and file_util.read(filename) != content
+    if not path.isfile(filename):
+      return True
+    return file_util.read(filename) != content
