@@ -2,9 +2,9 @@ from setuptools import setup, find_packages
 
 setup(
   name = 'rebuild',
-  version = '1.0',
+  version = '1.0.0',
   packages = find_packages(),
-  zip_safe = True,
+  zip_safe = False,
   author = 'Ramiro Estrugo',
   author_email = 'bes@fateware.com',
   scripts = [
