@@ -4,7 +4,7 @@ setup(
   name = 'rebuild',
   version = '1.0.0',
   packages = find_packages(),
-  zip_safe = False,
+  zip_safe = True,
   author = 'Ramiro Estrugo',
   author_email = 'bes@fateware.com',
   scripts = [
