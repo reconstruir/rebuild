@@ -37,6 +37,7 @@ class packager_env(object):
     self.test_dir = path.join(self.working_dir, 'test')
     self.check_dir = path.join(self.working_dir, 'check')
     self.tmp_dir = path.join(self.working_dir, 'tmp')
+    self.download_dir = path.join(self.working_dir, 'download')
     self.artifact_manager = artifact_manager(publish_dir, no_git = True)
     self.requirements_manager = package_manager(path.join(self.working_dir, 'requirements'))
     self.rebbe = rebuild_manager(rebbe_root, self.artifact_manager)

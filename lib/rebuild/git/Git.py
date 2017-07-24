@@ -128,5 +128,6 @@ class Git(object):
       archive_filename,
       tag
     ]
+    file_util.mkdir(path.dirname(archive_filename))
     rv = clazz.__call_git(tmp_dir, args)
     file_util.remove(tmp_dir)

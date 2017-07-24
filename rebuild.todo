@@ -449,3 +449,11 @@ jul 19
 
 jul 23
 - s/requirements/runtime_requriments or so
+
+jul 23
+- split todo files by project
+- figure out why bes_test.py always makes .pyc droppings
+
+jul 24
+- the code that loads steps automatically should use ast and do the subclasses of Step instead of a string wildcard
+- fix the code in steps to download and unpack tarballs to do the work in execute not parse args.  also split out the find tarball step into its own step class
