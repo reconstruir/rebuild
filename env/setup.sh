@@ -13,6 +13,6 @@ rebuild-dev-go()
 rebuild-dev-setup()
 {
   bes-dev-setup
-  bes-setup $(rebuild-dev-root)
+  bes-setup $(rebuild-dev-root) ${1+"$@"}
   return 0
 }
