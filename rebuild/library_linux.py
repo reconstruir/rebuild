@@ -9,19 +9,20 @@ from binary_format_elf import binary_format_elf
 
 class library_linux(library_base):
 
-  def __init__(self):
-    super(library_linux, self).__init__()
-    self._format = binary_format_elf()
-    
-  def is_shared_library(self, filename):
-    'Return True if filename is a shared library.'
-    return self._format.file_is_of_type(filename, binary_format_elf.FILE_TYPE_SHARED_LIB)
+  _format = binary_format_elf()
 
-  def is_static_library(self, filename):
+  @classmethod
+  def is_shared_library(clazz, filename):
     'Return True if filename is a shared library.'
-    return self._format.file_is_of_type(filename, binary_format_elf.FILE_TYPE_ARCHIVE)
+    return clazz._format.file_is_of_type(filename, binary_format_elf.FILE_TYPE_SHARED_LIB)
 
-  def dependencies(self, filename):
+  @classmethod
+  def is_static_library(clazz, filename):
+    'Return True if filename is a shared library.'
+    return clazz._format.file_is_of_type(filename, binary_format_elf.FILE_TYPE_ARCHIVE)
+
+  @classmethod
+  def dependencies(clazz, filename):
     'Return a list of dependencies for filename (executable or shared lib) or None if not applicable.'
     types = [ binary_format_elf.FILE_TYPE_EXECUTABLE, binary_format_elf.FILE_TYPE_SHARED_LIB ]
     if not binary_format_elf().file_is_of_type(filename, types):
@@ -30,11 +31,12 @@ class library_linux(library_base):
     rv = Shell.execute(cmd)
     assert rv.stdout.find('not a dynamic executable') == -1
     lines = rv.stdout.split('\n')
-    deps = [ self.__parse_ldd_line(line) for line in lines ]
+    deps = [ clazz.__parse_ldd_line(line) for line in lines ]
     deps = [ d for d in deps if d ]
     return sorted(deps)
 
-  def __parse_ldd_line(self, line):
+  @classmethod
+  def __parse_ldd_line(clazz, line):
     line = line.strip()
     if not line:
       return None
@@ -46,18 +48,22 @@ class library_linux(library_base):
     else:
       return None
 
-  def shared_extension(self):
+  @classmethod
+  def shared_extension(clazz):
     'Return the shared library extension.'
     return 'so'
 
-  def static_extension(self):
+  @classmethod
+  def static_extension(clazz):
     'Return the static library extension.'
     return 'a'
 
-  def shared_prefix(self):
+  @classmethod
+  def shared_prefix(clazz):
     'Return the shared library prefix.'
     return 'lib'
 
-  def static_prefix(self):
+  @classmethod
+  def static_prefix(clazz):
     'Return the static library prefix.'
     return 'lib'

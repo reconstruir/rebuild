@@ -2,19 +2,13 @@
 #-*- coding:utf-8 -*-
 
 import os.path as path, re
-from library_base import library_base
 from bes.system import impl_loader
 from bes.fs import dir_util, file_util
 
-class library(library_base):
+_library_super_class = impl_loader.load('library', globals())
+
+class library(_library_super_class):
   'Top level class for dealing with system libraries.'
-
-  _impl = impl_loader.load(__file__, 'library')
-
-  @classmethod
-  def is_shared_library(clazz, filename):
-    'Return True if filename is a shared library.'
-    return clazz._impl.is_shared_library(filename)
 
   @classmethod
   def is_static_library(clazz, filename):
@@ -23,7 +17,7 @@ class library(library_base):
       return False
     if clazz.is_archive(filename):
       return True
-    return clazz._impl.is_static_library(filename)
+    return super(library, clazz).is_static_library(filename)
 
   @classmethod
   def is_archive(clazz, filename):
@@ -33,11 +27,6 @@ class library(library_base):
     with open(filename, 'r') as fin:
       magic = fin.read(8)
       return len(magic) == 8 and magic == '!<arch>\n'
-
-  @classmethod
-  def dependencies(clazz, filename):
-    'Return a list of dependencies for filename (executable or shared lib) or None if not applicable.'
-    return clazz._impl.dependencies(filename)
 
   @classmethod
   def is_library(clazz, filename):

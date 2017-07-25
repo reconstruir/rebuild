@@ -8,19 +8,20 @@ from binary_format_macho import binary_format_macho
 
 class library_macos(library_base):
 
-  def __init__(self):
-    super(library_macos, self).__init__()
-    self._format = binary_format_macho()
+  _format = binary_format_macho()
     
-  def is_shared_library(self, filename):
+  @classmethod
+  def is_shared_library(clazz, filename):
     'Return True if filename is a shared library.'
-    return self._format.file_is_of_type(filename, binary_format_macho.FILE_TYPE_SHARED_LIB)
+    return clazz._format.file_is_of_type(filename, binary_format_macho.FILE_TYPE_SHARED_LIB)
 
-  def is_static_library(self, filename):
+  @classmethod
+  def is_static_library(clazz, filename):
     'Return True if filename is a shared library.'
-    return self._format.file_is_of_type(filename, binary_format_macho.FILE_TYPE_ARCHIVE)
+    return clazz._format.file_is_of_type(filename, binary_format_macho.FILE_TYPE_ARCHIVE)
 
-  def dependencies(self, filename):
+  @classmethod
+  def dependencies(clazz, filename):
     'Return a list of dependencies for filename (executable or shared lib) or None if not applicable.'
     filename = path.abspath(filename)
     types = [ binary_format_macho.FILE_TYPE_EXECUTABLE, binary_format_macho.FILE_TYPE_SHARED_LIB ]
@@ -39,18 +40,22 @@ class library_macos(library_base):
       deps.remove(filename)
     return sorted(deps)
 
-  def shared_extension(self):
+  @classmethod
+  def shared_extension(clazz):
     'Return the shared library extension.'
     return 'dylib'
 
-  def static_extension(self):
+  @classmethod
+  def static_extension(clazz):
     'Return the static library extension.'
     return 'a'
 
-  def shared_prefix(self):
+  @classmethod
+  def shared_prefix(clazz):
     'Return the shared library prefix.'
     return 'lib'
 
-  def static_prefix(self):
+  @classmethod
+  def static_prefix(clazz):
     'Return the static library prefix.'
     return 'lib'
