@@ -42,7 +42,7 @@ root	ALL=(ALL:ALL) ALL
 #includedir /etc/sudoers.d
 '''
 
-  __BES_SUDO_EDITOR_PY = path.normpath(path.join(path.dirname(__file__), '../../../../bin/rebuild_sudo_editor.py'))
+  __BES_SUDO_EDITOR_PY = path.normpath(path.join(path.dirname(__file__), '../../../bin/rebuild_sudo_editor.py'))
 
   DEBUG = False
   #DEBUG = True

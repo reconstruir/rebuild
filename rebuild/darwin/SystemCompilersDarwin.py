@@ -15,7 +15,7 @@ class SystemCompilersDarwin(object):
   def compilers_environment(clazz, build_target):
     'Return the compiler environment for the given darwin sdk.'
     sdk = Sdk.SYSTEM_TO_SDK[build_target.system]
-    ar_replacement = path.abspath(path.normpath(path.join(path.dirname(__file__), '../../../bin/rebuild_ar.py')))
+    ar_replacement = path.abspath(path.normpath(path.join(path.dirname(__file__), '../../bin/rebuild_ar.py')))
     env = {
       'CC': Xcrun.find_tool(sdk, 'clang'),
       'CXX': Xcrun.find_tool(sdk, 'clang++'),

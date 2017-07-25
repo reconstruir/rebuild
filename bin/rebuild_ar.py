@@ -7,9 +7,9 @@ import argparse, os, os.path as path, sys
 try:
   from bes.common import Shell
 except:
-  p = path.abspath(path.normpath(path.join(path.dirname(__file__), '../../bes/lib')))
+  p = path.abspath(path.normpath(path.join(path.dirname(__file__), '../../bes')))
   sys.path.append(p)
-  p = path.abspath(path.normpath(path.join(path.dirname(__file__), '../lib')))
+  p = path.abspath(path.normpath(path.join(path.dirname(__file__), '..')))
   sys.path.append(p)
 
 from bes.common import Shell
