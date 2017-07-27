@@ -127,7 +127,7 @@ class rebuild_manager(object):
   export PYTHONPATH=${_prefix}/lib/python:${PYTHONPATH}
   export PKG_CONFIG_PATH=${_prefix}/lib/pkgconfig:${PKG_CONFIG_PATH}
   export @LIBRARY_PATH@=${_prefix}/lib:${@LIBRARY_PATH@}
-  export MANPATH=${_prefix}/man:MANPATH=${_prefix}/share/man:${MANPATH}
+  export MANPATH=${_prefix}/man:${_prefix}/share/man:${MANPATH}
 }
 '''
 
