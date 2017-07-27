@@ -9,7 +9,8 @@
 import os, os.path as path, argparse, shutil, tempfile
 
 class sudo_editor_cli(object):
-
+  pass
+  
 DEFAULT_SUDOERS = '/etc/sudoers'
 
 def main():
