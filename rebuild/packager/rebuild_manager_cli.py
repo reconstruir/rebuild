@@ -107,15 +107,11 @@ class rebuild_manager_cli(object):
     # packages.print
     print_parser = self.packages_subparsers.add_parser('print', help = 'Print packages')
     self._packages_add_common_args(print_parser)
-    print_parser.add_argument('dest_dir',
-                               action = 'store',
-                               default = None,
-                               help = 'Destination directory [ None ]')
     print_parser.add_argument('project_name',
-                               action = 'store',
-                               default = None,
-                               nargs='?',
-                               help = 'Project name [ None ]')
+                              action = 'store',
+                              default = None,
+                              nargs='?',
+                              help = 'Project name [ None ]')
 
     # package
     self.package_parser = self.commands_subparser.add_parser('package', help = 'Package')
@@ -252,7 +248,7 @@ class rebuild_manager_cli(object):
                                                args.packages,
                                                self._validate_build_target(args))
     elif command in [ 'packages:print' ]:
-      return self.__command_packages_print(args.dest_dir,
+      return self.__command_packages_print(args.root_dir,
                                            args.project_name,
                                            self._validate_build_target(args))
     elif command in [ 'config:packages' ]:
