@@ -459,5 +459,6 @@ jul 24
 - fix the code in steps to download and unpack tarballs to do the work in execute not parse args.  also split out the find tarball step into its own step class
 
 jul 25
-- rename impl_loader to impl_importer
+- rename impl_import to impl_importer
 - figure out why there is import hackery in rebuild_ar.py
+- bes_refactor rename of files does not git add new files
