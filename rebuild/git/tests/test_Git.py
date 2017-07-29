@@ -23,7 +23,7 @@ class TestGit(unittest.TestCase):
     tmp_repo = self.__create_tmp_repo()
     new_files = self.__create_tmp_files(tmp_repo)
     Git.add(tmp_repo, new_files)
-    expected_status = [ Git.StatusItem(Git.ADDED, f) for f in new_files ]
+    expected_status = [ Git.status_item(Git.ADDED, f) for f in new_files ]
     actual_status = Git.status(tmp_repo, '.')
     self.assertEqual( expected_status, actual_status )
 
