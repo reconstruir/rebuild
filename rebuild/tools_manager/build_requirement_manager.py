@@ -11,7 +11,7 @@ from bes.system import host
 
 from rebuild.pkg_config import pkg_config
 from rebuild import build_target, build_type, package_descriptor, System
-from bes.fs import dir_util, file_search, file_util, temp_file
+from bes.fs import dir_util, file_search, file_util, file_path, temp_file
 
 from rebuild.package_manager import artifact_manager, ArtifactNotFoundError, Package
 
@@ -92,7 +92,7 @@ class build_requirement_manager(object):
     if not bin_dir:
       return None
     exe = path.join(bin_dir, tool_name)
-    if not file_util.is_exe(exe):
+    if not file_path.is_executable(exe):
       return None
     return exe
 
