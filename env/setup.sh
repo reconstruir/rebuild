@@ -4,7 +4,7 @@ rebuild-dev-root()
   return 0
 }
 
-rebuild-dev-go()
+rebuild-go()
 {
   cd $(rebuild-dev-root)
   return 0

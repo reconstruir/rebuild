@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import os, os.path as path
+import os, os.path as path, re
 from collections import namedtuple
 from bes.common import object_util, Shell, string_util
 from bes.fs import dir_util, file_util, temp_file
@@ -19,7 +19,8 @@ class Git(object):
   UNMERGED = 'U'
   UNKNOWN = '??'
 
-  StatusItem = namedtuple('StatusItem', 'action, filename')
+  status_item = namedtuple('status_item', 'action,filename')
+  branch_status_t = namedtuple('branch_status', 'ahead,behind')
   
   @classmethod
   def status(clazz, root, filenames):
@@ -29,6 +30,24 @@ class Git(object):
     rv = clazz.__call_git(root, args)
     return clazz.__parse_status_output(rv.stdout)
 
+  @classmethod
+  def branch_status(clazz, root):
+    clazz.__call_git(root, [ 'remote', 'update' ])
+    rv = clazz.__call_git(root, [ 'status', '-b', '--porcelain' ])
+    ahead, behind = clazz._parse_branch_status_output(root, rv.stdout)
+    return clazz.branch_status_t(ahead, behind)
+
+  @classmethod
+  def _parse_branch_status_output(clazz, root, s):
+    lines = [ line.strip() for line in s.split('\n') ]
+    ahead = re.findall('.*\[ahead\s+(\d+).*', lines[0])
+    if ahead:
+      ahead = int(ahead[0])
+    behind = re.findall('.*behind\s+(\d+).*', lines[0])
+    if behind:
+      behind = int(behind[0])
+    return ( ahead or 0, behind or 0 )
+    
   @classmethod
   def has_changes(clazz, root):
     return clazz.status(root, '.') != []
@@ -77,7 +96,7 @@ class Git(object):
   def __parse_status_line(clazz, s):
     v = string_util.split_by_white_space(s)
     assert len(v) == 2
-    return clazz.StatusItem(v[0], v[1])
+    return clazz.status_item(v[0], v[1])
 
   @classmethod
   def clone(clazz, address, dest_dir, enforce_empty_dir = True):
