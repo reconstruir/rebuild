@@ -24,15 +24,15 @@ class _state_expecting_key(_state):
   def handle_token(self, token):
     self.log_d('handle_token(%s)' % (str(token)))
     new_state = None
-    if token.type == lexer.COMMENT:
+    if token.type == lexer.TOKEN_COMMENT:
       new_state = self.parser.STATE_EXPECTING_KEY
-    elif token.type == lexer.SPACE:
+    elif token.type == lexer.TOKEN_SPACE:
       new_state = self.parser.STATE_EXPECTING_KEY
-    elif token.type == lexer.DELIMITER:
+    elif token.type == lexer.TOKEN_DELIMITER:
       raise RuntimeError('unexpected colon instead of key: %s' % (self.parser.text))
-    elif token.type == lexer.DONE:
+    elif token.type == lexer.TOKEN_DONE:
       new_state = self.parser.STATE_DONE
-    elif token.type == lexer.STRING:
+    elif token.type == lexer.TOKEN_STRING:
       self.parser.new_key(token.value)
       new_state = self.parser.STATE_EXPECTING_COLON
     self.change_state(new_state, token)
@@ -45,15 +45,15 @@ class _state_expecting_colon(_state):
     self.log_d('handle_token(%s)' % (str(token)))
     new_state = None
     key_value_result = None
-    if token.type == lexer.COMMENT:
+    if token.type == lexer.TOKEN_COMMENT:
       raise RuntimeError('unexpected comment instead of colon: %s' % (self.parser.text))
-    elif token.type == lexer.SPACE:
+    elif token.type == lexer.TOKEN_SPACE:
       new_state = self.parser.STATE_EXPECTING_COLON
-    elif token.type == lexer.DELIMITER:
+    elif token.type == lexer.TOKEN_DELIMITER:
       new_state = self.parser.STATE_EXPECTING_FIRST_VALUE
-    elif token.type == lexer.DONE:
+    elif token.type == lexer.TOKEN_DONE:
       raise RuntimeError('unexpected done instead of colon: %s' % (self.parser.text))
-    elif token.type == lexer.STRING:
+    elif token.type == lexer.TOKEN_STRING:
       raise RuntimeError('unexpected string \"%s\" instead of colon: %s' % (token.value, self.parser.text))
     self.change_state(new_state, token)
     return key_value_result
@@ -66,15 +66,15 @@ class _state_expecting_first_value(_state):
     self.log_d('handle_token(%s)' % (str(token)))
     new_state = None
     key_value_result = None
-    if token.type == lexer.COMMENT:
+    if token.type == lexer.TOKEN_COMMENT:
       raise RuntimeError('unexpected comment \"%s\" instead of value: %s' % (token.value, self.parser.text))
-    elif token.type == lexer.SPACE:
+    elif token.type == lexer.TOKEN_SPACE:
       new_state = self.parser.STATE_EXPECTING_FIRST_VALUE
-    elif token.type == lexer.DELIMITER:
+    elif token.type == lexer.TOKEN_DELIMITER:
       raise RuntimeError('unexpected colon instead of value: %s' % (self.parser.text))
-    elif token.type == lexer.DONE:
+    elif token.type == lexer.TOKEN_DONE:
       raise RuntimeError('unexpected end of string instead of value: %s' % (self.parser.text))
-    elif token.type == lexer.STRING:
+    elif token.type == lexer.TOKEN_STRING:
       self.parser.new_value(token.value)
       new_state = self.parser.STATE_EXPECTING_MORE_VALUES
     self.change_state(new_state, token)
@@ -88,20 +88,20 @@ class _state_expecting_more_values(_state):
     self.log_d('handle_token(%s)' % (str(token)))
     new_state = None
     key_value_result = None
-    if token.type == lexer.COMMENT:
+    if token.type == lexer.TOKEN_COMMENT:
       new_state = self.parser.STATE_EXPECTING_KEY
-    elif token.type == lexer.SPACE:
+    elif token.type == lexer.TOKEN_SPACE:
       new_state = self.parser.STATE_EXPECTING_MORE_VALUES
-    elif token.type == lexer.DELIMITER:
+    elif token.type == lexer.TOKEN_DELIMITER:
       key = self.parser.pop_value()
       self.log_d('popped key: \"%s\"' % (key))
       key_value_result = self.parser.make_key_value()
       self.parser.new_key(key)
       new_state = self.parser.STATE_EXPECTING_FIRST_VALUE
-    elif token.type == lexer.DONE:
+    elif token.type == lexer.TOKEN_DONE:
       key_value_result = self.parser.make_key_value()
       new_state = self.parser.STATE_DONE
-    elif token.type == lexer.STRING:
+    elif token.type == lexer.TOKEN_STRING:
       self.log_d('new value: \"%s\"' % (token.value))
       self.parser.new_value(token.value)
       new_state = self.parser.STATE_EXPECTING_MORE_VALUES
@@ -114,7 +114,7 @@ class _state_done(_state):
 
   def handle_token(self, token):
     self.log_d('handle_token(%s)' % (str(token)))
-    if token.type != lexer.DONE:
+    if token.type != lexer.TOKEN_DONE:
       raise RuntimeError('unexpected token in done state: %s' % (str(token)))
     self.change_state(self.parser.STATE_DONE, token)
   
