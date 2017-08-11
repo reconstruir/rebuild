@@ -460,3 +460,7 @@ jul 24
 jul 25
 - figure out why there is import hackery in rebuild_ar.py
 - bes_refactor rename of files does not git add new files
+
+aug 11
+- kivy build.py macos: deps broken they show up on linux
+- writing ~/.rebuild/update.sh users /users/ instead of ~/
