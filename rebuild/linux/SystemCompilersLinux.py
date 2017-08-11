@@ -11,7 +11,7 @@ class SystemCompilersLinux(object):
   def compilers_environment(clazz, build_target):
     'Return the compiler environment for linux'
 
-    ar_replacement = path.abspath(path.normpath(path.join(path.dirname(__file__), '../../../bin/rebuild_ar.py')))
+    ar_replacement = path.abspath(path.normpath(path.join(path.dirname(__file__), '../../bin/rebuild_ar.py')))
 
     env = {
       'CC': 'gcc',

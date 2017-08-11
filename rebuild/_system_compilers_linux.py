@@ -3,12 +3,10 @@
 
 from _system_compilers_base import _system_compilers_base
 
-from rebuild.build_type import build_type
-from darwin.Xcrun import Xcrun
-from darwin.Sdk import Sdk
+from build_type import build_type
 import os.path as path
 
-class _system_compilers_macos(_system_compilers_base):
+class _system_compilers_linux(_system_compilers_base):
 
   @classmethod
   def compilers_environment(clazz, build_target):

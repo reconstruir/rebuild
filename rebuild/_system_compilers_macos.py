@@ -3,7 +3,7 @@
 
 from _system_compilers_base import _system_compilers_base
 
-from rebuild.build_type import build_type
+from build_type import build_type
 from darwin.Xcrun import Xcrun
 from darwin.Sdk import Sdk
 import os.path as path
