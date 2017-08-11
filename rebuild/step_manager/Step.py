@@ -9,7 +9,7 @@ from abc import abstractmethod, ABCMeta
 from collections import namedtuple
 from bes.common import dict_util, object_util, string_util, Shell, variable
 from bes.system import log
-from rebuild import build_blurb, build_target, SystemCompilers, SystemEnvironment
+from rebuild import build_blurb, build_target, SystemCompilers, SystemEnvironment, system_compilers
 from rebuild import hook, variable_manager
 from rebuild import platform_specific_config as psc
 from rebuild.pkg_config import pkg_config
@@ -138,6 +138,7 @@ class Step(object):
     env['REBUILD_PACKAGE_VERSION'] = str(packager_env.package_descriptor.version)
 
     compiler_flags = SystemCompilers.compiler_flags(packager_env.build_target)
+    assert compiler_flags == system_compilers.compiler_flags(packager_env.build_target)
     env['REBUILD_COMPILE_CFLAGS'] = ' '.join(compiler_flags.get('CFLAGS', []))
     env['REBUILD_COMPILE_LDFLAGS'] = ' '.join(compiler_flags.get('LDFLAGS', []))
     env['REBUILD_COMPILE_CXXFLAGS'] = ' '.join(compiler_flags.get('CXXFLAGS', []))
@@ -145,6 +146,7 @@ class Step(object):
     env['REBUILD_COMPILE_OPT_FLAGS'] = ' '.join(compiler_flags.get('REBUILD_COMPILE_OPT_FLAGS', []))
 
     ce = SystemCompilers.compilers_environment(packager_env.build_target)
+    assert ce == system_compilers.compilers_environment(packager_env.build_target)
     SystemEnvironment.update(env, ce)
     env['REBUILD_COMPILE_ENVIRONMENT'] = SystemCompilers.flatten_for_shell(ce)
 

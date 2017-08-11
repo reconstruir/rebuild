@@ -32,3 +32,5 @@ from requirement import requirement
 from strip import strip
 from variable_manager import variable_manager
 from version import version
+from system_compilers import system_compilers
+
