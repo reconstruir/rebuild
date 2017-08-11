@@ -3,12 +3,12 @@
 
 from abc import abstractmethod, ABCMeta
 
-class _system_compilers_base(object):
+class _toolchain_base(object):
 
   __metaclass__ = ABCMeta
 
   @abstractmethod
-  def compilers_environment(self, build_target):
+  def compiler_environment(self, build_target):
     pass
 
   @abstractmethod

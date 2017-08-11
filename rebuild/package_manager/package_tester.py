@@ -9,7 +9,7 @@ from collections import namedtuple
 
 from rebuild.step_manager import Step, step_result
 from rebuild.package_manager import Package, package_manager
-from rebuild import build_target, build_blurb, Patch, system_compilers, SystemEnvironment, requirement
+from rebuild import build_target, build_blurb, Patch, toolchain, SystemEnvironment, requirement
 from rebuild.dependency import dependency_resolver
 from bes.common import object_util, Shell
 from bes.fs import file_replace, file_util, temp_file
@@ -30,8 +30,8 @@ class package_tester(object):
   def __run_test(clazz, config, test):
     build_blurb.blurb('tester', 'Testing %s with %s' % (config.package_tarball, test))
     assert path.isfile(test)
-    ce = system_compilers.compilers_environment(config.build_target)
-    compiler_flags = system_compilers.compiler_flags(config.build_target)
+    ce = toolchain.compiler_environment(config.build_target)
+    compiler_flags = toolchain.compiler_flags(config.build_target)
     if test.endswith('.cpp'):
       return clazz.__run_c_test(config, test, ce['CXX'], compiler_flags['CXXFLAGS'])
     if test.endswith('.c'):

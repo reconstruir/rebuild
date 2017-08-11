@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.common import Shell
-from rebuild import system_compilers
+from toolchain import toolchain
 
 class strip(object):
 
@@ -11,8 +11,8 @@ class strip(object):
     'Strip binaries.'
     if not binaries:
       return
-    toolchain = system_compilers.compilers_environment(build_target)
-    strip_exe = toolchain['STRIP']
+    ce = toolchain.compiler_environment(build_target)
+    strip_exe = ce['STRIP']
     for binary in binaries:
       cmd = '%s %s' % (strip_exe, binary)
       rv = Shell.execute(cmd, raise_error = False)

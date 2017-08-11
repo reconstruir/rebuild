@@ -29,6 +29,6 @@ from package_descriptor_list import package_descriptor_list
 from platform_specific_config import platform_specific_config
 from requirement import requirement
 from strip import strip
-from system_compilers import system_compilers
+from toolchain import toolchain
 from variable_manager import variable_manager
 from version import version
