@@ -137,25 +137,7 @@ class rebuild_manager_cli(object):
 
     # config.packages
     packages_parser = self.config_subparsers.add_parser('packages', help = 'Packages config')
-    packages_parser.add_argument('--system',
-                                 '-s',
-                                 action = 'store',
-                                 default = host.SYSTEM,
-                                help = 'The system [ %s ]' % (host.SYSTEM))
-    packages_parser.add_argument('--build-type',
-                                 '-b',
-                                 action = 'store',
-                                 default = build_type.RELEASE,
-                                 help = 'The system [ %s ]' % (build_type.RELEASE))
-    packages_parser.add_argument('--verbose',
-                                 '-v',
-                                 action = 'store_true',
-                                 default = False,
-                                 help = 'Verbose debug spew [ False ]')
-    packages_parser.add_argument('dest_dir',
-                                 action = 'store',
-                                 default = None,
-                                 help = 'Destination directory [ None ]')
+    self._packages_add_common_args(packages_parser)
     packages_parser.add_argument('project_name',
                                  action = 'store',
                                  default = None,
@@ -253,7 +235,7 @@ class rebuild_manager_cli(object):
                                            self._validate_build_target(args))
     elif command in [ 'config:packages' ]:
       bt = self._validate_build_target(args)
-      return self.__command_config_packages(args.dest_dir, args.project_name, bt)
+      return self.__command_config_packages(args.root_dir, args.project_name, bt)
     elif command == 'package:files':
       return self.__command_package_files(args.package)
     elif command == 'package:info':
@@ -308,21 +290,21 @@ class rebuild_manager_cli(object):
     success = rebbe.uninstall_packages(project_name, packages, bt)
     return self.bool_to_exit_code(success)
 
-  def __command_packages_print(self, dest_dir, project_name, bt):
-    rebbe = rebuild_manager(dest_dir, artifact_manager = None)
+  def __command_packages_print(self, root_dir, project_name, bt):
+    rebbe = rebuild_manager(root_dir, artifact_manager = None)
     assert project_name
     packages = rebbe.installed_packages(project_name, bt)
     for p in packages:
       print p
     return 0
 
-  def __command_config_packages(self, dest_dir, project_name, bt):
-    rebbe = rebuild_manager(dest_dir, artifact_manager = None)
+  def __command_config_packages(self, root_dir, project_name, bt):
+    rebbe = rebuild_manager(root_dir, artifact_manager = None)
     config = rebbe.config(bt)
     section = config.get(project_name, None)
     if not section:
       return 1
-    packages = section.packages
+    packages = section.get('packages', None)
     if not packages:
       return 1
     for p in sorted(packages):
