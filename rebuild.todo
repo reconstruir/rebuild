@@ -464,3 +464,6 @@ jul 25
 aug 11
 - kivy build.py macos: deps broken they show up on linux
 - writing ~/.rebuild/update.sh users /users/ instead of ~/
+
+aug 19
+- do a clean ubuntu 16 install to do a kivy build to have the build tell what rpms it needs and have a way to specify these in the build recipes
