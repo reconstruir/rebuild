@@ -102,7 +102,7 @@ class binary_format_macho(binary_format_base):
   def read_magic(self, filename):
     'Return the Mach-O or FAT magic from filename or None if not an Mach-O file.'
     if self.DEBUG_HEXDUMP:
-      print "filename=%s hexdump:\n%s\n" % (filename, hexdump(filename))
+      print "filename=%s hexdump:\n%s\n" % (filename, hexdump.filename(filename))
     elif self.DEBUG:
       print "filename=%s" % (filename)
     with open(filename, 'rb') as fin:

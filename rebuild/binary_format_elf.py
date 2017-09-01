@@ -96,7 +96,7 @@ class binary_format_elf(binary_format_base):
   def read_info(self, filename):
     'Return info about the ELF binary file or None if it is not ELF.'
     if self.DEBUG_HEXDUMP:
-      print "filename=%s hexdump:\n%s\n" % (filename, hexdump(filename))
+      print "filename=%s hexdump:\n%s\n" % (filename, hexdump.filename(filename))
     elif self.DEBUG:
       print "filename=%s" % (filename)
     with open(filename, 'rb') as fin:
