@@ -3,14 +3,14 @@
 #
 
 import os.path as path
-from bes.test import unit_test_helper
+from bes.test import unit_test
 from bes.fs import file_util, temp_file
 from rebuild import build_target
 from rebuild.packager import build_script, packager
 from bes.archive import archiver
 from rebuild.packager.unit_test_packaging import unit_test_packaging
 
-class test_packager(unit_test_helper):
+class test_packager(unit_test):
 
   __unit_test_data_dir__ = 'test_data/packager'
 
@@ -54,4 +54,4 @@ class test_packager(unit_test_helper):
     metadata = archiver.extract_member_to_string(artifact_path, 'metadata/info.json')
 
 if __name__ == '__main__':
-  unit_test_helper.main()
+  unit_test.main()

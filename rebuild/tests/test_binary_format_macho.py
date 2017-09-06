@@ -2,10 +2,10 @@
 #-*- coding:utf-8 -*-
 #
 
-from bes.test import unit_test_helper
+from bes.test import unit_test
 from rebuild import binary_format_macho as macho
 
-class test_binary_format_macho(unit_test_helper):
+class test_binary_format_macho(unit_test):
 
   __unit_test_data_dir__ = 'test_data/binary_objects'
 
@@ -101,4 +101,4 @@ class test_binary_format_macho(unit_test_helper):
     return macho().read_magic(self.data_path(filename))
   
 if __name__ == '__main__':
-  unit_test_helper.main()
+  unit_test.main()

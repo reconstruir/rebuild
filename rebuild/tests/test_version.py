@@ -2,10 +2,10 @@
 #-*- coding:utf-8 -*-
 #
 
-from bes.test import unit_test_helper
+from bes.test import unit_test
 from rebuild import version
 
-class test_version(unit_test_helper):
+class test_version(unit_test):
 
   def test_upstream_version_is_valid(self):
     self.assertTrue( version.upstream_version_is_valid('1.2.3') )
@@ -155,4 +155,4 @@ class test_version(unit_test_helper):
     return version.cmp(version.parse(v1), version.parse(v2))
 
 if __name__ == "__main__":
-  unit_test_helper.main()
+  unit_test.main()

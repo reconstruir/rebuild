@@ -8,9 +8,9 @@ from bes.archive import archiver, archive_extension, temp_archive
 from rebuild.darwin import fat_archive, Lipo
 from bes.system import host
 from bes.test.unit_test_skip import raise_skip_if_not_platform
-from bes.test import unit_test_helper
+from bes.test import unit_test
 
-class test_darwin_package_util(unit_test_helper):
+class test_darwin_package_util(unit_test):
 
   __unit_test_data_dir__ = 'test_data/binary_objects'
 
@@ -93,4 +93,4 @@ class test_darwin_package_util(unit_test_helper):
     return temp_archive.make_temp_archive(items + other_items, archive_extension.TGZ, prefix = '%s_' % (arch), delete = not self.DEBUG)
   
 if __name__ == '__main__':
-  unit_test_helper.main()
+  unit_test.main()

@@ -3,12 +3,12 @@
 #
 
 import os, os.path as path
-from bes.test import unit_test_helper
+from bes.test import unit_test
 from bes.common import Shell
 from bes.fs import file_util, temp_file
 from rebuild import SystemEnvironment
 
-class test_bes_sudo_editor_py(unit_test_helper):
+class test_bes_sudo_editor_py(unit_test):
 
   __SUDOERS_UBUNTU = '''#
 # This file MUST be edited with the 'visudo' command as root.
@@ -86,4 +86,4 @@ root	ALL=(ALL:ALL) ALL
     self.assertEquals( 'chupacabra ALL = (root) NOPASSWD: /usr/sbin/chroot # bes_sudo:v1\ntjefferson ALL = (root) NOPASSWD: /bin/cat # bes_sudo:v1' , difference )
 
 if __name__ == '__main__':
-  unit_test_helper.main()
+  unit_test.main()

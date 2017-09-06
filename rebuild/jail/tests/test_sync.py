@@ -3,11 +3,11 @@
 #
 
 import os, os.path as path
-from bes.test import unit_test_helper
+from bes.test import unit_test
 from bes.fs import file_find, file_util, tar_util, temp_file
 from rebuild.jail import sync
 
-class test_sync(unit_test_helper):
+class test_sync(unit_test):
 
   __unit_test_data_dir__ = 'test_data/sync'
 
@@ -51,4 +51,4 @@ class test_sync(unit_test_helper):
     return [ os.stat(f).st_nlink for f in files ]
     
 if __name__ == '__main__':
-  unit_test_helper.main()
+  unit_test.main()

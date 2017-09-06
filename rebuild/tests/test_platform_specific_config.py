@@ -2,12 +2,12 @@
 #-*- coding:utf-8 -*-
 #
 
-from bes.test import unit_test_helper
+from bes.test import unit_test
 from bes.key_value import key_value
 from rebuild import platform_specific_config as psc
 from rebuild import System
 
-class test_platform_specific_config(unit_test_helper):
+class test_platform_specific_config(unit_test):
 
   def test_simple(self):
     self.assertEqual( ( 'linux', 'foo bar baz' ), psc.parse('linux: foo bar baz') )
@@ -259,4 +259,4 @@ class test_platform_specific_config(unit_test_helper):
                       psc.resolve_list(config, 'android') )
 
 if __name__ == "__main__":
-  unit_test_helper.main()
+  unit_test.main()

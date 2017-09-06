@@ -2,11 +2,11 @@
 #-*- coding:utf-8 -*-
 #
 import os.path as path
-from bes.test import unit_test_helper
+from bes.test import unit_test
 from rebuild import build_target, package_descriptor, requirement, System
 from rebuild.package_manager.DatabaseEntry import DatabaseEntry
 
-class test_database_entry(unit_test_helper):
+class test_database_entry(unit_test):
 
   TEST_REQUIREMENTS = requirement.parse('foo >= 1.2.3-1 bar >= 6.6.6-1', default_system_mask = System.ALL)
   TEST_FILES = [ 'f1', 'f2' ]
@@ -61,4 +61,4 @@ class test_database_entry(unit_test_helper):
     self.assertEqual( expected_entry, actual_entry )
 
 if __name__ == '__main__':
-  unit_test_helper.main()
+  unit_test.main()

@@ -2,13 +2,13 @@
 #-*- coding:utf-8 -*-
 #
 import os.path as path
-from bes.test import unit_test_helper
+from bes.test import unit_test
 from bes.fs import file_util, temp_file
 from rebuild import build_target
 from rebuild.packager import rebuild_builder
 from rebuild.packager.unit_test_packaging import unit_test_packaging
 
-class test_rebuild_builder(unit_test_helper):
+class test_rebuild_builder(unit_test):
 
   __unit_test_data_dir__ = 'test_data/packager'
 
@@ -119,4 +119,4 @@ class test_rebuild_builder(unit_test_helper):
     self.assertEqual( rebuild_builder.EXIT_CODE_SUCCESS, rv )
     
 if __name__ == '__main__':
-  unit_test_helper.main()
+  unit_test.main()

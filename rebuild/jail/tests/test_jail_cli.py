@@ -3,14 +3,14 @@
 #
 
 import os, os.path as path
-from bes.test import unit_test_helper
+from bes.test import unit_test
 from bes.fs import file_find, temp_file
 from rebuild import SystemEnvironment
 from rebuild.native_package_manager import native_package_manager as npm
 from bes.test.unit_test_skip import skip_if
 from bes.system import host
 
-class test_jail_cli(unit_test_helper):
+class test_jail_cli(unit_test):
 
   __unit_test_data_dir__ = 'test_data/jail_cli'
 
@@ -138,4 +138,4 @@ binaries:
     self.assertEqual( expected_files, actual_files )
 
 if __name__ == '__main__':
-  pass #unit_test_helper.main()
+  pass #unit_test.main()

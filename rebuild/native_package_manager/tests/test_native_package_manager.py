@@ -2,12 +2,12 @@
 #-*- coding:utf-8 -*-
 #
 
-from bes.test import unit_test_helper
+from bes.test import unit_test
 from rebuild.native_package_manager import native_package_manager
 from bes.test.unit_test_skip import skip_if
 from bes.system import host
 
-class test_native_package_manager(unit_test_helper):
+class test_native_package_manager(unit_test):
 
   #__unit_test_data_dir__ = 'test_data/binary_objects'
 
@@ -30,4 +30,4 @@ class test_native_package_manager(unit_test_helper):
     self.assertTrue( len(native_package_manager.installed_packages()) > 0 )
   
 if __name__ == '__main__':
-  unit_test_helper.main()
+  unit_test.main()

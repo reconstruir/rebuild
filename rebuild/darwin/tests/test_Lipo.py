@@ -7,9 +7,9 @@ from bes.fs import file_checksum, file_util, temp_file
 from rebuild.darwin import Lipo
 from bes.system import host
 from bes.test.unit_test_skip import raise_skip_if_not_platform
-from bes.test import unit_test_helper
+from bes.test import unit_test
 
-class test_lipo(unit_test_helper):
+class test_lipo(unit_test):
 
   TEST_DATA_DIR = path.abspath(path.join(path.dirname(__file__), 'test_data/binary_objects/macos'))
 

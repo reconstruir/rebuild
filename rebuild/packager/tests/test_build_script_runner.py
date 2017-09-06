@@ -2,14 +2,14 @@
 #-*- coding:utf-8 -*-
 #
 import os.path as path
-from bes.test import unit_test_helper
+from bes.test import unit_test
 from bes.fs import file_util, temp_file
 from rebuild import build_target, version as rebuild_version
 from rebuild.packager import build_script_runner
 from rebuild.package_manager import Package
 from rebuild.packager.unit_test_packaging import unit_test_packaging
 
-class test_build_script_runner(unit_test_helper):
+class test_build_script_runner(unit_test):
 
   __unit_test_data_dir__ = 'test_data/packager'
   
@@ -68,4 +68,4 @@ class test_build_script_runner(unit_test_helper):
     self.assertEqual( 'lib', package.info.properties['category'] )
 
 if __name__ == '__main__':
-  unit_test_helper.main()
+  unit_test.main()

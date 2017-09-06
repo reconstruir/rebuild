@@ -2,10 +2,10 @@
 #-*- coding:utf-8 -*-
 #
 
-from bes.test import unit_test_helper
+from bes.test import unit_test
 from rebuild import requirement as R
 
-class test_requirement(unit_test_helper):
+class test_requirement(unit_test):
 
   def test_requirement(self):
     text = 'apple >= 1.2.3 kiwi pear lychee bananna kiwi-foo orange >= 6.6.6 strawberry >= 1.9'
@@ -168,4 +168,4 @@ class test_requirement(unit_test_helper):
     ], R.resolve_requirements(requirements, 'android') )
 
 if __name__ == "__main__":
-  unit_test_helper.main()
+  unit_test.main()

@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 #
-from bes.test import unit_test_helper
+from bes.test import unit_test
 from rebuild import build_target, package_descriptor, requirement, System
 from bes.common import string_util
 
-class test_package_info(unit_test_helper):
+class test_package_info(unit_test):
 
   def test_init(self):
     self.assertEqual( 'foo-1.2.3-1', package_descriptor('foo', '1.2.3-1', []).full_name )
@@ -152,4 +152,4 @@ class test_package_info(unit_test_helper):
     self.assertEqual( 'linux/debug/foo-1.2.3-1.tar.gz', package_descriptor('foo', '1.2.3-1').artifact_path(build_target('linux', 'debug')) )
 
 if __name__ == '__main__':
-  unit_test_helper.main()
+  unit_test.main()

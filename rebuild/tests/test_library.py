@@ -3,12 +3,12 @@
 #
 
 import os.path as path
-from bes.test import unit_test_helper
+from bes.test import unit_test
 from rebuild import library
 from bes.test.unit_test_skip import skip_if
 from bes.system import host
 
-class test_library(unit_test_helper):
+class test_library(unit_test):
 
   __unit_test_data_dir__ = 'test_data/binary_objects'
 
@@ -253,4 +253,4 @@ class test_library(unit_test_helper):
     ]
     self.assertEqual( expected_libs, library.list_libraries(self.data_dir(platform_specific = True)) )
 if __name__ == '__main__':
-  unit_test_helper.main()
+  unit_test.main()

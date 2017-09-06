@@ -2,12 +2,12 @@
 #-*- coding:utf-8 -*-
 #
 import os.path as path
-from bes.test import unit_test_helper
+from bes.test import unit_test
 from bes.fs import file_util, temp_file
 
 from rebuild.packager import rebuild_manager_script
 
-class test_rebuild_manager_script(unit_test_helper):
+class test_rebuild_manager_script(unit_test):
 
   def test_save_executable(self):
     template = '#!/bin/bash\necho @FOO@ @BAR@'
@@ -45,4 +45,4 @@ class test_rebuild_manager_script(unit_test_helper):
     self.assertEqual( True, save_rv )
     
 if __name__ == '__main__':
-  unit_test_helper.main()
+  unit_test.main()

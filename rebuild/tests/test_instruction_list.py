@@ -2,11 +2,11 @@
 #-*- coding:utf-8 -*-
 #
 
-from bes.test import unit_test_helper
+from bes.test import unit_test
 from rebuild import instruction_list as IL
 from rebuild import instruction as I
 
-class test_instruction_list(unit_test_helper):
+class test_instruction_list(unit_test):
 
   __unit_test_data_dir__ = 'test_data/instruction_list'
     
@@ -123,4 +123,4 @@ class test_instruction_list(unit_test_helper):
     self.assertEqual( expected, actual )
     
 if __name__ == "__main__":
-  unit_test_helper.main()
+  unit_test.main()

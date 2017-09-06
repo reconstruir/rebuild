@@ -2,11 +2,11 @@
 #-*- coding:utf-8 -*-
 #
 
-from bes.test import unit_test_helper
+from bes.test import unit_test
 from bes.fs import temp_file
 from rebuild.jail import config_file
 
-class test_config_file(unit_test_helper):
+class test_config_file(unit_test):
 
   __TEST_CONFIG_CONTENT = '''
 [jail]
@@ -73,4 +73,4 @@ cleanup:
     self.assertEqual( [ 'rm -f caca/foo' ], config.jail.hooks.cleanup )
     
 if __name__ == '__main__':
-  unit_test_helper.main()
+  unit_test.main()

@@ -2,10 +2,10 @@
 #-*- coding:utf-8 -*-
 #
 
-from bes.test import unit_test_helper
+from bes.test import unit_test
 from rebuild import binary_detector
 
-class test_binary_detector(unit_test_helper):
+class test_binary_detector(unit_test):
 
   __unit_test_data_dir__ = 'test_data/binary_objects'
 
@@ -53,4 +53,4 @@ class test_binary_detector(unit_test_helper):
     return binary_detector.is_strippable(self.data_path(program_name))
   
 if __name__ == '__main__':
-  unit_test_helper.main()
+  unit_test.main()

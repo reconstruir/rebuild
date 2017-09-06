@@ -2,12 +2,12 @@
 #-*- coding:utf-8 -*-
 #
 import os.path as path
-from bes.test import unit_test_helper
+from bes.test import unit_test
 from bes.fs import temp_file
 from bes.system import host
 from bes.common import Shell
 
-class test_rebuilder_script(unit_test_helper):
+class test_rebuilder_script(unit_test):
 
   __unit_test_data_dir__ = 'test_data/rebuilder'
 
@@ -83,4 +83,4 @@ class test_rebuilder_script(unit_test_helper):
                          cwd = self.data_dir(), stderr_to_stdout = True)
     
 if __name__ == '__main__':
-  unit_test_helper.main()
+  unit_test.main()
