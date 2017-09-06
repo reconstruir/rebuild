@@ -120,6 +120,11 @@ class Git(object):
     clazz.__call_git(root, args)
 
   @classmethod
+  def push(clazz, root):
+    args = [ 'push', '--verbose' ]
+    clazz.__call_git(root, args)
+
+  @classmethod
   def commit(clazz, root, message, filenames):
     filenames = object_util.listify(filenames)
     message_filename = temp_file.make_temp_file(content = message)
