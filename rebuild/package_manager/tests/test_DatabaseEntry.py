@@ -36,7 +36,7 @@ class test_database_entry(unit_test):
   }
 }'''
 
-    self.assert_string_equal_no_whitespace( expected_json, e.to_json() )
+    self.assert_string_equal_ws( expected_json, e.to_json() )
 
   def test_parse_json(self):
     json = '''\

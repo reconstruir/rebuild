@@ -42,7 +42,7 @@ class test_package_info(unit_test):
     pi = package_descriptor('foo', '1.2.3-1', self.TEST_REQUIREMENTS)
     actual_json = pi.to_json()
 
-    self.assert_string_equal_no_whitespace( expected_json, actual_json )
+    self.assert_string_equal_ws( expected_json, actual_json )
 
   def test_parse_json(self):
     json = '''\
