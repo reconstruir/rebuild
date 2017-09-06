@@ -32,10 +32,13 @@ class Git(object):
 
   @classmethod
   def branch_status(clazz, root):
-    clazz.__call_git(root, [ 'remote', 'update' ])
     rv = clazz.__call_git(root, [ 'status', '-b', '--porcelain' ])
     ahead, behind = clazz._parse_branch_status_output(root, rv.stdout)
     return clazz.branch_status_t(ahead, behind)
+
+  @classmethod
+  def remote_update(clazz, root):
+    clazz.__call_git(root, [ 'remote', 'update' ])
 
   @classmethod
   def _parse_branch_status_output(clazz, root, s):
