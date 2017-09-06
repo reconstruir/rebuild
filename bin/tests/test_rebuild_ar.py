@@ -9,8 +9,7 @@ class test_rebuild_ar(script_tester):
   __script__ = __file__, '../rebuild_ar.py'
 
   def test_contents(self):
-    cmd = self.make_command('t', self.platform_data_path('libarm64.a'))
-    rv = self.run_command(cmd)
+    rv = self.run_command('t', self.platform_data_path('libarm64.a'))
     expected = '''
 __.SYMDEF SORTED
 cherry.o
