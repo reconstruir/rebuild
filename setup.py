@@ -10,7 +10,7 @@ setup(
   author_email = 'bes@fateware.com',
   include_package_data = True,
   package_data = {
-    'rebuild': bes_tools.find_tests('rebuild'),
+    'rebuild': bes_tools.find_tests_if_wanted('rebuild'),
   },
   scripts = [
     'bin/rebuild_ar.py',
