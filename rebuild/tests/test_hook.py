@@ -3,7 +3,7 @@
 #
 
 import os.path as path
-from bes.test import unit_test
+from bes.unit_test import unit_test
 from rebuild import hook
 
 class test_hook(unit_test):

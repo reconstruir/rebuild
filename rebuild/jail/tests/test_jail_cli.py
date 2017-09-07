@@ -3,11 +3,11 @@
 #
 
 import os, os.path as path
-from bes.test import unit_test
+from bes.unit_test import unit_test
 from bes.fs import file_find, temp_file
 from rebuild import SystemEnvironment
 from rebuild.native_package_manager import native_package_manager as npm
-from bes.test.unit_test_skip import skip_if
+from bes.unit_test.unit_test_skip import skip_if
 from bes.system import host
 
 class test_jail_cli(unit_test):

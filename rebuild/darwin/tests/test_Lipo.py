@@ -6,8 +6,8 @@ import os.path as path, unittest
 from bes.fs import file_checksum, file_util, temp_file
 from rebuild.darwin import Lipo
 from bes.system import host
-from bes.test.unit_test_skip import raise_skip_if_not_platform
-from bes.test import unit_test
+from bes.unit_test.unit_test_skip import raise_skip_if_not_platform
+from bes.unit_test import unit_test
 
 class test_lipo(unit_test):
 

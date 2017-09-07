@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 #
 
-from bes.test import unit_test
+from bes.unit_test import unit_test
 from rebuild import requirement as R
 
 class test_requirement(unit_test):

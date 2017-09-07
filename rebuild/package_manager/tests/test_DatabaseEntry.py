@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 #
 import os.path as path
-from bes.test import unit_test
+from bes.unit_test import unit_test
 from rebuild import build_target, package_descriptor, requirement, System
 from rebuild.package_manager.DatabaseEntry import DatabaseEntry
 

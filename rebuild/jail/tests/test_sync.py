@@ -3,7 +3,7 @@
 #
 
 import os, os.path as path
-from bes.test import unit_test
+from bes.unit_test import unit_test
 from bes.fs import file_find, file_util, tar_util, temp_file
 from rebuild.jail import sync
 

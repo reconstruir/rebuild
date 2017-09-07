@@ -3,7 +3,7 @@
 #
 
 import os, os.path as path
-from bes.test import unit_test
+from bes.unit_test import unit_test
 from bes.common import Shell
 from bes.fs import file_util, temp_file
 from rebuild import SystemEnvironment

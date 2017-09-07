@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 #
 import os.path as path
-from bes.test import unit_test
+from bes.unit_test import unit_test
 from bes.fs import temp_file
 from bes.system import host
 from bes.common import Shell

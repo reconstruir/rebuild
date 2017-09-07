@@ -3,9 +3,9 @@
 #
 
 import os.path as path
-from bes.test import unit_test
+from bes.unit_test import unit_test
 from rebuild import library
-from bes.test.unit_test_skip import skip_if
+from bes.unit_test.unit_test_skip import skip_if
 from bes.system import host
 
 class test_library(unit_test):

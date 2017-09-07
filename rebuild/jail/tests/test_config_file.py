@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 #
 
-from bes.test import unit_test
+from bes.unit_test import unit_test
 from bes.fs import temp_file
 from rebuild.jail import config_file
 
