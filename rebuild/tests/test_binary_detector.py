@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 #
 
-from bes.unit_test import unit_test
+from bes.testing.unit_test import unit_test
 from rebuild import binary_detector
 
 class test_binary_detector(unit_test):

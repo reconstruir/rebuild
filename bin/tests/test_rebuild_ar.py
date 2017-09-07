@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.unit_test import script_unit_test
+from bes.testing.unit_test import script_unit_test
 
 class test_rebuild_ar(script_unit_test):
 

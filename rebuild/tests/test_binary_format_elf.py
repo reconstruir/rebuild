@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 #
 
-from bes.unit_test import unit_test
+from bes.testing.unit_test import unit_test
 from rebuild import binary_format_elf as elf
 
 class test_binary_format_elf(unit_test):

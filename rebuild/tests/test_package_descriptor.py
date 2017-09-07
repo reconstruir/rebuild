@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 #
-from bes.unit_test import unit_test
+from bes.testing.unit_test import unit_test
 from rebuild import build_target, package_descriptor, requirement, System
 from bes.common import string_util
 

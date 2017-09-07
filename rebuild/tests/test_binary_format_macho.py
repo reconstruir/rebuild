@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 #
 
-from bes.unit_test import unit_test
+from bes.testing.unit_test import unit_test
 from rebuild import binary_format_macho as macho
 
 class test_binary_format_macho(unit_test):

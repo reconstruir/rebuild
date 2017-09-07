@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 #
 
-from bes.unit_test import unit_test
+from bes.testing.unit_test import unit_test
 from bes.key_value import key_value
 from rebuild import platform_specific_config as psc
 from rebuild import System

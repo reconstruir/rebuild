@@ -5,7 +5,7 @@ import os.path as path, unittest
 from bes.system import host
 from rebuild import ar_replacement, System
 from bes.fs import dir_util, temp_file
-from bes.unit_test.unit_test_skip import skip_if
+from bes.testing.unit_test.unit_test_skip import skip_if
 
 class test_ar(unittest.TestCase):
 

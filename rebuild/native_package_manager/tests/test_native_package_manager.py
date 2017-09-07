@@ -2,9 +2,9 @@
 #-*- coding:utf-8 -*-
 #
 
-from bes.unit_test import unit_test
+from bes.testing.unit_test import unit_test
 from rebuild.native_package_manager import native_package_manager
-from bes.unit_test.unit_test_skip import skip_if
+from bes.testing.unit_test.unit_test_skip import skip_if
 from bes.system import host
 
 class test_native_package_manager(unit_test):
