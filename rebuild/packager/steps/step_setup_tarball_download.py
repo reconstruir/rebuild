@@ -34,9 +34,9 @@ class step_setup_tarball_download(Step):
     pd = packager_env.package_descriptor
     tarball_address = args.get('tarball_address', None)
     if tarball_address:
+      tarball_revision = args.get('tarball_revision', 'HEAD')
       timestamp = time_util.timestamp(delimiter = '.', milliseconds = False)
       basename = '%s-%s-%s.tar.gz' % (pd.name, pd.version, timestamp)
       filename = path.join(packager_env.download_dir, basename)
-      git.download_tarball(pd.name, 'HEAD', tarball_address, filename)
-      print "FUCK: downloaded: ", filename
+      git.download_tarball(pd.name, tarball_revision, tarball_address, filename)
     return {}
