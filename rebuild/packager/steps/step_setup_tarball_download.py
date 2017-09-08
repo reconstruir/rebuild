@@ -9,7 +9,7 @@ from rebuild.step_manager import Step, step_result
 from rebuild import build_blurb #, TarballUtil
 #from bes.common import object_util, dict_util
 #from bes.fs import file_util
-from rebuild.git import Git
+from bes.git import git
 from bes.common import time_util
 
 class step_setup_tarball_download(Step):
@@ -37,6 +37,6 @@ class step_setup_tarball_download(Step):
       timestamp = time_util.timestamp(delimiter = '.', milliseconds = False)
       basename = '%s-%s-%s.tar.gz' % (pd.name, pd.version, timestamp)
       filename = path.join(packager_env.download_dir, basename)
-      Git.download_tarball(pd.name, 'HEAD', tarball_address, filename)
+      git.download_tarball(pd.name, 'HEAD', tarball_address, filename)
       print "FUCK: downloaded: ", filename
     return {}

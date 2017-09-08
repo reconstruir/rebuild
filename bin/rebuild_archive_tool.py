@@ -280,14 +280,14 @@ def _command_find(root_dir, name, version):
   return 0
 
 def _command_download(name, url, tag):
-  from rebuild.git import Git
+  from bes.git import git
   from bes.common import time_util
   import urlparse
   parts = urlparse.urlparse(url)
   site = parts.netloc.split('.')[0]
   timestamp = time_util.timestamp(delimiter = '.', milliseconds = False)
   archive = '%s-%s-%s-%s.tar.gz' % (name, site, tag, timestamp)
-  Git.download_tarball(name, tag, url, archive)
+  git.download_tarball(name, tag, url, archive)
   print archive
   return 0
 

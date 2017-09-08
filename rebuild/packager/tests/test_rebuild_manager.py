@@ -4,7 +4,7 @@
 import os.path as path, unittest
 from bes.fs import tar_util, temp_file
 from bes.common import Shell
-from rebuild.git import Git
+from bes.git import git
 from rebuild import build_target, package_descriptor
 from rebuild.packager import rebuild_manager
 from rebuild.package_manager import artifact_manager
@@ -21,10 +21,10 @@ class test_rebuild_manager(unittest.TestCase):
     if self.DEBUG:
       print "tmp_repo:\n%s\n" % (tmp_repo)
     unit_test_packages.make_test_packages(unit_test_packages.TEST_PACKAGES, tmp_repo)
-    assert not Git.is_repo(tmp_repo)
-    Git.init(tmp_repo)
-    Git.add(tmp_repo, '.')
-    Git.commit(tmp_repo, 'unittest', '.')
+    assert not git.is_repo(tmp_repo)
+    git.init(tmp_repo)
+    git.add(tmp_repo, '.')
+    git.commit(tmp_repo, 'unittest', '.')
     return self.__make_test_artifact_manager(address = tmp_repo)
 
   @classmethod

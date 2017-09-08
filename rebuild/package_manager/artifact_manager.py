@@ -5,7 +5,7 @@ import os.path as path
 from bes.common import string_util
 from bes.system import log
 from rebuild import build_blurb, package_descriptor, package_descriptor_list
-from rebuild.git import Git
+from bes.git import git
 from bes.fs import dir_util, file_util
 
 from Package import Package
@@ -36,9 +36,9 @@ class artifact_manager(object):
 
     if not self.no_git:
       if address:
-        Git.clone_or_update(address, self.publish_dir, enforce_empty_dir = False)
-      if not Git.is_repo(self.publish_dir):
-        Git.init(self.publish_dir)
+        git.clone_or_update(address, self.publish_dir, enforce_empty_dir = False)
+      if not git.is_repo(self.publish_dir):
+        git.init(self.publish_dir)
 
     self._package_cache = {}
 
@@ -52,7 +52,7 @@ class artifact_manager(object):
     artifact_path = self.artifact_path(package_info, build_target)
     file_util.copy(tarball, artifact_path)
     if not self.no_git:
-      Git.add(self.publish_dir, package_info.artifact_path(build_target))
+      git.add(self.publish_dir, package_info.artifact_path(build_target))
     return artifact_path
 
   def available_packages(self, build_target):
