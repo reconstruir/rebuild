@@ -363,4 +363,4 @@ class Build(object):
     elif  self.verbose == self.SPEW_HI:
       pass
 
-    print str(canvas).rstrip()
+    print(str(canvas).rstrip())

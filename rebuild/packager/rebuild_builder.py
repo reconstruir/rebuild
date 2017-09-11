@@ -103,7 +103,7 @@ class rebuild_builder(object):
       self.blurb('%s - SUCCESS' % (script.package_info.name))
       return self.EXIT_CODE_SUCCESS
     elif result.status == build_script_runner.FAILED:
-      print result.packager_result.message
+      print(result.packager_result.message)
       self.blurb('step failed - %s' % (result.packager_result.failed_step.__class__.__name__))
       self.blurb('%s - FAILED' % (script.package_info.name))
       return self.EXIT_CODE_FAILED

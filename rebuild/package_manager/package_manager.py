@@ -203,7 +203,7 @@ class package_manager(object):
           self.install_tarball(package.tarball)
           return True
         else:
-          print('warning: installed package %s newer than available package %s' % (old_package_info.full_name, package_info.full_name))
+          print(('warning: installed package %s newer than available package %s' % (old_package_info.full_name, package_info.full_name)))
         return False
     else:
       self.install_tarball(package.tarball)

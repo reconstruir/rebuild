@@ -28,7 +28,7 @@ def main():
       if deps != None:
         print(f)
         for d in deps:
-          print('  %s' % (d))
+          print(('  %s' % (d)))
 
   return 0
 

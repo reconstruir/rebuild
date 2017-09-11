@@ -268,11 +268,11 @@ class rebuild_manager_cli(object):
     return bt
 
   def __command_tools_update(self):
-    print "__command_tools_update()"
+    print("__command_tools_update()")
     return 0
 
   def __command_tools_print(self):
-    print "__command_tools_print()"
+    print("__command_tools_print()")
     return 0
 
   def __command_tools_install(self, dest_dir):
@@ -295,7 +295,7 @@ class rebuild_manager_cli(object):
     assert project_name
     packages = rebbe.installed_packages(project_name, bt)
     for p in packages:
-      print p
+      print(p)
     return 0
 
   def __command_config_packages(self, root_dir, project_name, bt):
@@ -308,7 +308,7 @@ class rebuild_manager_cli(object):
     if not packages:
       return 1
     for p in sorted(packages):
-      print p
+      print(p)
     return 0
   
   UPDATE_SCRIPT_TEMPLATE = '''#!/bin/bash
@@ -350,12 +350,12 @@ rebuild_manager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir @ROOT_
     info = str(package_info)
     parts = info.split(';')
     for part in parts:
-      print(part.strip())
+      print((part.strip()))
     return 0
 
   def __command_package_metadata(self, tarball):
     content = archiver.extract_member_to_string(tarball, Package.INFO_FILENAME)
-    print content
+    print(content)
     return 0
 
   def __command_test(self, bt, package_tarball, test, artifacts_dir, tools_dir, tmp_dir, opts, verbose):
@@ -413,7 +413,7 @@ rebuild_manager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir @ROOT_
     result = tester.run()
 
     if not result.success:
-      print "result: ", result
+      print("result: ", result)
       return 1
 
     return 0

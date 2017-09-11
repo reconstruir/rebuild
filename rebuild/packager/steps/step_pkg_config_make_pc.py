@@ -18,7 +18,7 @@ class step_pkg_config_make_pc(Step):
 
   def execute(self, argument):
     pc_files = argument.args.get('pc_files', [])
-    print "FUCK: pc_files=", pc_files
+    print("FUCK: pc_files=", pc_files)
     if not pc_files:
       message = 'No .pc files for %s' % (argument.env.package_descriptor.full_name)
       self.log_d(message)

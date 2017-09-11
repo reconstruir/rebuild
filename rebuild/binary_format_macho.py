@@ -102,9 +102,9 @@ class binary_format_macho(binary_format_base):
   def read_magic(self, filename):
     'Return the Mach-O or FAT magic from filename or None if not an Mach-O file.'
     if self.DEBUG_HEXDUMP:
-      print "filename=%s hexdump:\n%s\n" % (filename, hexdump.filename(filename))
+      print("filename=%s hexdump:\n%s\n" % (filename, hexdump.filename(filename)))
     elif self.DEBUG:
-      print "filename=%s" % (filename)
+      print("filename=%s" % (filename))
     with open(filename, 'rb') as fin:
       magic = self.fin_read_magic(fin, 4, self.ENDIAN_BE)
       if not magic:
@@ -116,9 +116,9 @@ class binary_format_macho(binary_format_base):
   def read_info(self, filename):
     'Return info about the Mach-O or FAT file.'
     if self.DEBUG_HEXDUMP:
-      print "filename=%s hexdump:\n%s\n" % (filename, hexdump(filename))
+      print("filename=%s hexdump:\n%s\n" % (filename, hexdump(filename)))
     elif self.DEBUG:
-      print "filename=%s" % (filename)
+      print("filename=%s" % (filename))
     with open(filename, 'rb') as fin:
       container_magic = self.fin_read_magic(fin, 4, self.ENDIAN_BE)
       if not container_magic:
@@ -126,12 +126,12 @@ class binary_format_macho(binary_format_base):
       if not container_magic in self.__ALL_MAGICS:
         return None
       if self.DEBUG:
-        print "      container_magic: %x" % (container_magic)
+        print("      container_magic: %x" % (container_magic))
       is_fat = container_magic in self.__FAT_MAGICS
       container_endian = self.__determine_endian(container_magic)
       if self.DEBUG:
-        print "               is_fat: %s" % (is_fat)
-        print "           container_endian: %s" % (container_endian)
+        print("               is_fat: %s" % (is_fat))
+        print("           container_endian: %s" % (container_endian))
       if is_fat:
         return self.__read_info_fat(filename, fin, container_magic, container_endian)
       else:
@@ -147,7 +147,7 @@ class binary_format_macho(binary_format_base):
   def __read_info_fat(self, filename, fin, container_magic, container_endian):
     nfat_arch = self.unpack(fin, 4, container_endian)
     if self.DEBUG:
-      print "            nfat_arch: %d" % (nfat_arch)
+      print("            nfat_arch: %d" % (nfat_arch))
     if nfat_arch < 1:
       return None
     fat_headers = []
@@ -155,11 +155,11 @@ class binary_format_macho(binary_format_base):
       fat_header = self.__read_fat_arch(fin, container_endian)
       fat_headers.append(fat_header)
       if self.DEBUG:
-        print "%d:       fat_cpu_type: %s" % (i, self.__CPU_TYPES[fat_header.cpu_type])
-        print "%d:   fat_cpu_sub_type: %x - %d" % (i, fat_header.cpu_sub_type, fat_header.cpu_sub_type)
-        print "%d:         fat_offset: %x - %d" % (i, fat_header.offset, fat_header.offset)
-        print "%d:           fat_size: %x - %d" % (i, fat_header.size, fat_header.size)
-        print "%d:          fat_align: %x - %d" % (i, fat_header.align, fat_header.align)
+        print("%d:       fat_cpu_type: %s" % (i, self.__CPU_TYPES[fat_header.cpu_type]))
+        print("%d:   fat_cpu_sub_type: %x - %d" % (i, fat_header.cpu_sub_type, fat_header.cpu_sub_type))
+        print("%d:         fat_offset: %x - %d" % (i, fat_header.offset, fat_header.offset))
+        print("%d:           fat_size: %x - %d" % (i, fat_header.size, fat_header.size))
+        print("%d:          fat_align: %x - %d" % (i, fat_header.align, fat_header.align))
     objects = []
     for fat_header, index in zip(fat_headers, range(0, nfat_arch)):
       objects.append(self.__read_info_one_object(filename, fin, fat_header, index, container_endian))
@@ -181,15 +181,15 @@ class binary_format_macho(binary_format_base):
       if not object_magic in self.__ALL_MAGICS:
         return None
       if self.DEBUG:
-        print "%d:       object_magic: %s(%s)" % (index, self.__MAGIC_TO_STRING[object_magic], type(object_magic))
+        print("%d:       object_magic: %s(%s)" % (index, self.__MAGIC_TO_STRING[object_magic], type(object_magic)))
       assert object_magic in self.__THIN_MAGICS
       object_endian = self.__determine_endian(object_magic)
       mach_header = self.__read_mach_header(fin, object_magic, object_endian)
       assert mach_header.magic == object_magic
       if self.DEBUG:
-        print "%d:    object_cpu_type: %s" % (index, self.__CPU_TYPES[mach_header.cpu_type])
-        print "%d:object_cpu_sub_type: %x - %d" % (index, mach_header.cpu_sub_type, mach_header.cpu_sub_type)
-        print "%d:   object_file_type: %s" % (index, self.__FILE_TYPES[mach_header.file_type])
+        print("%d:    object_cpu_type: %s" % (index, self.__CPU_TYPES[mach_header.cpu_type]))
+        print("%d:object_cpu_sub_type: %x - %d" % (index, mach_header.cpu_sub_type, mach_header.cpu_sub_type))
+        print("%d:   object_file_type: %s" % (index, self.__FILE_TYPES[mach_header.file_type]))
       obj = binary_format_object(self.__MAGIC_TO_STRING[mach_header.magic],
                                  self.__CPU_TYPES[mach_header.cpu_type],
                                  self.__FILE_TYPES[mach_header.file_type])

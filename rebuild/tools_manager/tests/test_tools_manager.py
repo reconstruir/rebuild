@@ -20,14 +20,14 @@ class test_tools_manager(unittest.TestCase):
     root_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     tools_dir = path.join(root_dir, 'tools')
     if self.DEBUG:
-      print "\ntools_dir:\n", tools_dir
+      print("\ntools_dir:\n", tools_dir)
     return tools_manager(tools_dir)
 
   @classmethod
   def __make_test_artifact_manager(clazz):
     publish_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
     if clazz.DEBUG:
-      print "publish_dir:\n%s\n" % (publish_dir)
+      print("publish_dir:\n%s\n" % (publish_dir))
     am = artifact_manager(publish_dir, address = None, no_git = True)
     unit_test_packages.make_test_packages(unit_test_packages.TEST_PACKAGES, am.publish_dir)
     return am

@@ -32,7 +32,7 @@ class test_package_manager(unittest.TestCase):
     root_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     pm_dir = path.join(root_dir, 'package_manager')
     if self.DEBUG:
-      print "\nroot_dir:\n", root_dir
+      print("\nroot_dir:\n", root_dir)
     return package_manager(pm_dir)
 
   def test_install_tarball_simple(self):
@@ -125,7 +125,7 @@ class test_package_manager(unittest.TestCase):
   def __make_artifact_manager(clazz):
     publish_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
     if clazz.DEBUG:
-      print "publish_dir:\n%s\n" % (publish_dir)
+      print("publish_dir:\n%s\n" % (publish_dir))
     am = artifact_manager(publish_dir, address = None, no_git = True)
     unit_test_packages.make_test_packages(unit_test_packages.TEST_PACKAGES, am.publish_dir)
     return am

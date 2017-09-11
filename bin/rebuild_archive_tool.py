@@ -188,31 +188,31 @@ def main():
 def _command_print(filename):
   members = archiver.members(filename)
   for member in members:
-    print member
+    print(member)
   return 0
 
 def _command_cat(archive, members):
   actual_members = archiver.members(archive)
   not_found = list(set(members)  - set(actual_members))
   if not_found:
-    print 'Members not found in %s: %s' % (archive, ', '.join(not_found))
+    print('Members not found in %s: %s' % (archive, ', '.join(not_found)))
     return 1
   print_member_name = len(members) > 1
   for member in members:
     content = archiver.extract_member_to_string(archive, member)
     if print_member_name:
-      print '%s:' % (member)
-    print content
+      print('%s:' % (member))
+    print(content)
   return 0
 
 def _command_help(archive):
   help = TarballUtil.autoconf_help(archive)
-  print help
+  print(help)
   return 0
 
 def _command_grep(archive, pattern):
   result = TarballUtil.grep(archive, pattern)
-  print result
+  print(result)
   return 0
 
 def _command_patch_prepare(archive, dest_dir):
@@ -221,7 +221,7 @@ def _command_patch_prepare(archive, dest_dir):
 
 def _command_patch_make(working_dir):
   patch = TarballUtil.patch_make(path.abspath(working_dir))
-  print patch
+  print(patch)
   return 0
 
 def _command_extract(archives, dest_dir, base_dir, strip_common_base):
@@ -250,13 +250,13 @@ def _command_create(root_dir, name, version, revision):
   package_info = package_descriptor(name, version, revision)
   base_dir = package_info.full_name
   filename = '%s.tar.gz' % (base_dir)
-  print "         base_dir: ", base_dir
+  print("         base_dir: ", base_dir)
   archiver.create(filename, root_dir, base_dir = base_dir)
 
 def _command_info(filename):
   common_base = archiver.common_base(filename)
-  print '   filename: %s' % (filename)
-  print 'common_base: %s' % (common_base)
+  print('   filename: %s' % (filename))
+  print('common_base: %s' % (common_base))
   return 0
 
 def _command_patch(args):
@@ -274,9 +274,9 @@ def _command_patch(args):
 def _command_find(root_dir, name, version):
   tarball = TarballUtil.find(root_dir, name, version)
   if len(tarball) != 1:
-    print "Error: too many tarballs found: %s" % (tarball)
+    print("Error: too many tarballs found: %s" % (tarball))
     return 1
-  print tarball[0]
+  print(tarball[0])
   return 0
 
 def _command_download(name, url, tag):
@@ -288,12 +288,12 @@ def _command_download(name, url, tag):
   timestamp = time_util.timestamp(delimiter = '.', milliseconds = False)
   archive = '%s-%s-%s-%s.tar.gz' % (name, site, tag, timestamp)
   git.download_tarball(name, tag, url, archive)
-  print archive
+  print(archive)
   return 0
 
 def _command_diff(archive1, archive2):
   diff = TarballUtil.diff(archive1, archive2, strip_common_base = True)
-  print diff
+  print(diff)
   return 0
 
 if __name__ == '__main__':

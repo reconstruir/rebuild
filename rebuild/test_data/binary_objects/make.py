@@ -102,9 +102,9 @@ def _make_object(compiler, source, label, archs):
   obj = _object_from_source(source, 'o', label)
   arch_flags = _make_arch_flags(archs)
   if DEBUG:
-    print "       obj: ", obj
-    print "arch_flags: ", arch_flags
-    print "    source: ", source
+    print("       obj: ", obj)
+    print("arch_flags: ", arch_flags)
+    print("    source: ", source)
   _compile(compiler, obj, source, arch_flags)
 
 def _compile(compiler, target, source, cflags):
@@ -187,10 +187,10 @@ def _resolve_filenames(filenames):
 
 def _shell_cmd(cmd):
   if DEBUG:
-    print "CMD: %s" % (' '.join(cmd))
+    print("CMD: %s" % (' '.join(cmd)))
   rv = Shell.execute(cmd, stderr_to_stdout = True, raise_error = False)
   if rv.exit_code != 0:
-    print rv.stdout
+    print(rv.stdout)
     raise SystemExit(rv.exit_code)
   
 if __name__ == '__main__':

@@ -26,10 +26,10 @@ def main():
   if not path.isfile(args.sudoers):
     raise RuntimeError('No such sudoers file: %s' % (args.sudoers))
   
-  print " sudoers: ", args.sudoers
-  print "username: ", args.username
-  print " program: ", args.program
-  print " version: ", args.version
+  print(" sudoers: ", args.sudoers)
+  print("username: ", args.username)
+  print(" program: ", args.program)
+  print(" version: ", args.version)
 
   content = __read_file(args.sudoers)
   line = __make_sudo_line(args.username, args.program, args.version)

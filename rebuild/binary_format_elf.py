@@ -96,9 +96,9 @@ class binary_format_elf(binary_format_base):
   def read_info(self, filename):
     'Return info about the ELF binary file or None if it is not ELF.'
     if self.DEBUG_HEXDUMP:
-      print "filename=%s hexdump:\n%s\n" % (filename, hexdump.filename(filename))
+      print("filename=%s hexdump:\n%s\n" % (filename, hexdump.filename(filename)))
     elif self.DEBUG:
-      print "filename=%s" % (filename)
+      print("filename=%s" % (filename))
     with open(filename, 'rb') as fin:
       magic = self.fin_read_magic(fin, 4, self.ENDIAN_BE)
       if not magic:
@@ -106,7 +106,7 @@ class binary_format_elf(binary_format_base):
       if not magic in [ self.__MAGIC_NUMBER_ELF ]:
         return None
       if self.DEBUG:
-        print "                magic: %x" % (magic)
+        print("                magic: %x" % (magic))
       elf_class = self.unpack(fin, 1, self.ENDIAN_BE)
       elf_endian = self.unpack(fin, 1, self.ENDIAN_BE)
       endian = self.__ELF_ENDIAN_MAP[elf_endian]
@@ -120,14 +120,14 @@ class binary_format_elf(binary_format_base):
       elf_machine = self.unpack(fin, 2, endian)
       assert elf_endian in self.__ELF_VALID_ENDIANS
       if self.DEBUG:
-        print "            elf_class: %x" % (elf_class)
-        print "           elf_endian: %x" % (elf_endian)
-        print "               endian: %s" % (endian)
-        print "          elf_version: %x" % (elf_version)
-        print "           elf_os_abi: %x" % (elf_version)
-        print "      elf_abi_version: %x" % (elf_abi_version)
-        print "             elf_type: %x" % (elf_type)
-        print "          elf_machine: %x" % (elf_machine)
+        print("            elf_class: %x" % (elf_class))
+        print("           elf_endian: %x" % (elf_endian))
+        print("               endian: %s" % (endian))
+        print("          elf_version: %x" % (elf_version))
+        print("           elf_os_abi: %x" % (elf_version))
+        print("      elf_abi_version: %x" % (elf_abi_version))
+        print("             elf_type: %x" % (elf_type))
+        print("          elf_machine: %x" % (elf_machine))
       if self.__MACHINES.has_key(elf_machine):
         elf_machine_name = self.__MACHINES[elf_machine]
       else:

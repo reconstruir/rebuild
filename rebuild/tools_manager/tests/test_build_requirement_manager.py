@@ -18,14 +18,14 @@ class test_build_requirement_manager(unittest.TestCase):
     root_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     pm_dir = path.join(root_dir, 'package_manager')
     if self.DEBUG:
-      print "\nroot_dir:\n", root_dir
+      print("\nroot_dir:\n", root_dir)
     return build_requirement_manager(pm_dir)
 
   @classmethod
   def __make_test_artifact_manager(clazz):
     publish_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
     if clazz.DEBUG:
-      print "publish_dir:\n%s\n" % (publish_dir)
+      print("publish_dir:\n%s\n" % (publish_dir))
     am = artifact_manager(publish_dir, address = None, no_git = True)
     unit_test_packages.make_test_packages(unit_test_packages.TEST_PACKAGES, am.publish_dir)
     return am

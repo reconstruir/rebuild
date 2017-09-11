@@ -115,7 +115,7 @@ class unit_test_packages(object):
     target_path = path.join(root_dir, artifact_path)
     file_util.rename(package.tarball, target_path)
     if self.debug:
-      print('DEBUG: test_package.create_tarball() package=%s' % (target_path))
+      print(('DEBUG: test_package.create_tarball() package=%s' % (target_path)))
     return target_path
 
   test_package = namedtuple('test_package', 'tarball,package_info,build_target')

@@ -53,7 +53,7 @@ class test_rebuild_builder(unit_test):
     bt = build_target()
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     if self.DEBUG:
-      print "tmp_dir: ", tmp_dir
+      print("tmp_dir: ", tmp_dir)
     data_files = [
       'build_fructose.py',
       'fructose-3.4.5.tar.gz',
@@ -80,7 +80,7 @@ class test_rebuild_builder(unit_test):
     bt = build_target()
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     if self.DEBUG:
-      print "tmp_dir: ", tmp_dir
+      print("tmp_dir: ", tmp_dir)
     orange_requirements = [
       'all: fructose >= 3.4.5-6',
       'all: fiber >= 1.0.0-0',

@@ -27,7 +27,7 @@ class step_setup_unpack(Step):
 
   @classmethod
   def parse_step_args(clazz, packager_env, args):
-    print "FUCK step_setup_unpack.parse_step_args - %s" % (packager_env.package_descriptor.full_name)
+    print("FUCK step_setup_unpack.parse_step_args - %s" % (packager_env.package_descriptor.full_name))
     tarball_source_dir_override_args = clazz.resolve_step_args_dir(packager_env, args, 'tarball_source_dir_override')
     if tarball_source_dir_override_args:
       tarball_source_dir_override = tarball_source_dir_override_args['tarball_source_dir_override']

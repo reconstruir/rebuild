@@ -22,10 +22,10 @@ class sudo(object):
       raise RuntimeError('path is not an absolute path: %s' % (program))
     info = clazz.__info_load(clazz.__INFO_FILE_PATH)
     key = '%s_%s' % (user, program)
-    print "info: ", info
+    print("info: ", info)
     if info.has_key(key):
       return True
-    print "CACA:"
+    print("CACA:")
     return False
 
   @classmethod

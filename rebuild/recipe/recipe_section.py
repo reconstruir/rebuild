@@ -38,6 +38,6 @@ class recipe_section(object):
 #    return str(self)
 
   def __eq__(self, other):
-    print "HERE:   self: %s - %s" % (self.header, self.values)
-    print "HERE:  other: %s - %s" % (other.header, other.values)
+    print("HERE:   self: %s - %s" % (self.header, self.values))
+    print("HERE:  other: %s - %s" % (other.header, other.values))
     return self.__dict__ == other.__dict__

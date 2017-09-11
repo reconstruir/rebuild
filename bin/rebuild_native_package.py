@@ -61,7 +61,7 @@ def main():
 def __command_all():
   packages = npm.installed_packages()
   for p in packages:
-    print p
+    print(p)
   return 0
 
 def __command_installed(name):
@@ -91,14 +91,14 @@ def __command_contents(name, levels, files_only, dirs_only):
     files = [ __level_path(p, levels) for p in files ]
     files = algorithm.unique(files)
   for f in files:
-    print f
+    print(f)
   return 0
 
 def __command_owner(filename):
   owner = npm.owner(filename)
   if not owner:
     return 1
-  print owner
+  print(owner)
   return 0
 
 if __name__ == '__main__':

@@ -170,7 +170,7 @@ def _command_extract(archive, tools):
 def _command_contents(archive, tools):
   contents = ar_replacement.contents(archive, tools = tools)
   for c in contents:
-    print c
+    print(c)
   
 if __name__ == '__main__':
   raise SystemExit(main())

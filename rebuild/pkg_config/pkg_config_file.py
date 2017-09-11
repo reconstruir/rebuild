@@ -24,7 +24,7 @@ class pkg_config_file(object):
     try:
       return self.parse_string(file_util.read(filename))
     except:
-      print "failed loading %s" % (filename)
+      print("failed loading %s" % (filename))
       raise
 
   def write_file(self, filename, backup = True):

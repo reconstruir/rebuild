@@ -51,17 +51,17 @@ def _command_magic(macho, files):
   abs_files = file_util.make_paths_absolute(files)
   for filename, abs_filename in zip(files, abs_files):
     magic = macho.read_magic(abs_filename)
-    print '%8s %s' % (magic, filename)
+    print('%8s %s' % (magic, filename))
   return 0
 
 def _command_info(macho, files):
   abs_files = file_util.make_paths_absolute(files)
-  print '%-8s %-8s %-13s %s' % ('MAGIC', 'CPU TYPE', 'FILE TYPE', 'FILENAME')
+  print('%-8s %-8s %-13s %s' % ('MAGIC', 'CPU TYPE', 'FILE TYPE', 'FILENAME'))
   for filename, abs_filename in zip(files, abs_files):
     info = macho.read_info(abs_filename)
     if info:
       for obj in info.objects:
-        print '%-8s %-8s %-11s %s' % (obj.magic, obj.cpu_type, obj.file_type, filename)
+        print('%-8s %-8s %-11s %s' % (obj.magic, obj.cpu_type, obj.file_type, filename))
   return 0
 
 if __name__ == '__main__':

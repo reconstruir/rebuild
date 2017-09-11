@@ -28,10 +28,10 @@ class fat_archive(object):
 
     def dump(self, indent = 0):
       spaces = ''.zfill(indent).replace('0', ' ')
-      print "%sthin_package: %s" % (spaces, self.filename)
-      print "%s extract_dir: %s" % (spaces, self.extract_dir)
-      print "%s     objects: %s" % (spaces, [ str(x) for x in self.members.objects ])
-      print "%s     normals: %s" % (spaces, [ str(x) for x in self.members.normals ])
+      print("%sthin_package: %s" % (spaces, self.filename))
+      print("%s extract_dir: %s" % (spaces, self.extract_dir))
+      print("%s     objects: %s" % (spaces, [ str(x) for x in self.members.objects ]))
+      print("%s     normals: %s" % (spaces, [ str(x) for x in self.members.normals ]))
 
     def normals_checksums(self):
       return [ m.checksum for m in self.members.normals ]

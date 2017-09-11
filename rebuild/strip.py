@@ -17,4 +17,4 @@ class strip(object):
       cmd = '%s %s' % (strip_exe, binary)
       rv = Shell.execute(cmd, raise_error = False)
       if rv.exit_code != 0:
-        print "FAILED TO STRIP: %s" % (binary)
+        print("FAILED TO STRIP: %s" % (binary))

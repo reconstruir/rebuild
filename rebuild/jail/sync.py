@@ -24,10 +24,10 @@ class sync(object):
       st = os.lstat(src_filename)
     except OSError, ex:
       if ex.errno == errno.ENOENT:
-        print('warning: missing: %s - %s' % (src_filename, label))
+        print(('warning: missing: %s - %s' % (src_filename, label)))
         return
       elif ex.errno == errno.EACCES:
-        print('warning: access denied: %s - %s' % (src_filename, label))
+        print(('warning: access denied: %s - %s' % (src_filename, label)))
         return
       else:
         raise
@@ -55,7 +55,7 @@ class sync(object):
     except OSError, ex:
       if ex.errno == errno.EEXIST:
         # ignore file exists
-        print('warning: file already exists: %s - %s' % (src_filename, label))
+        print(('warning: file already exists: %s - %s' % (src_filename, label)))
       else:
         raise
 
@@ -65,7 +65,7 @@ class sync(object):
     try:
       shutil.copy2(src_filename, dst_filename)
     except OSError, ex:
-      print('warning: caught: %s%s' % (ex))
+      print(('warning: caught: %s%s' % (ex)))
       raise
 
   @classmethod
@@ -77,7 +77,7 @@ class sync(object):
     except OSError, ex:
       if ex.errno == errno.EEXIST:
         # ignore file exists
-        print('warning: link already exists: %s - %s' % (src_filename, label))
+        print(('warning: link already exists: %s - %s' % (src_filename, label)))
       else:
         raise
 
@@ -90,5 +90,5 @@ class sync(object):
       if ex.errno == errno.EEXIST:
         return
       else:
-        print("__sync_file_dir: caught: %s" % (ex))
+        print(("__sync_file_dir: caught: %s" % (ex)))
         raise

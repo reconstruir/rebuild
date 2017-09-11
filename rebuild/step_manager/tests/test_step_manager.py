@@ -270,10 +270,10 @@ class test_step_manager(unittest.TestCase):
     #self.assertEqual( expected_saved_args, step.saved_args )
 
     for k, v in sorted(expected_saved_args1.items()):
-      print "EXPECTED: %s=%s" % (k, v)
+      print("EXPECTED: %s=%s" % (k, v))
 
     for k, v in sorted(step.steps[0].saved_args.items()):
-      print "  ACTUAL: %s=%s" % (k, v)
+      print("  ACTUAL: %s=%s" % (k, v))
     
     self.assertEqual( expected_saved_args1, step.steps[0].saved_args )
 #    self.assertEqual( expected_saved_args2, step.steps[1].saved_args )

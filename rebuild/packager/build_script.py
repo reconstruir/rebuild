@@ -28,7 +28,7 @@ class build_script(object):
     try:
       self._step_manager.add_steps(self.steps, packager_env)
     except Exception, ex:
-      print('Caught exception loading script: %s' % (self.filename))
+      print(('Caught exception loading script: %s' % (self.filename)))
       raise
 
   def step_list(self, args):
@@ -142,7 +142,7 @@ class build_script(object):
 
   def __sources(self):
     'Return a list of all script and dependency sources for this script.'
-    print "CACA: %s%s" % (self.filename, '\n   '.join(self.__script_sources() + self.__dep_sources()))
+    print("CACA: %s%s" % (self.filename, '\n   '.join(self.__script_sources() + self.__dep_sources())))
     return self.__script_sources() + self.__dep_sources()
 
   def __targets(self):

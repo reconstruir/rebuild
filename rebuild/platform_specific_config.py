@@ -41,7 +41,7 @@ class platform_specific_config(namedtuple('platform_specific_config', 'system_ma
     try:
       return clazz.parse(text, parse_func = clazz.__parse_key_values)
     except Exception, ex:
-      print('Caught exceptions parsing: %s' % (str(text)))
+      print(('Caught exceptions parsing: %s' % (str(text))))
       raise
 
   @classmethod

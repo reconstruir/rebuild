@@ -70,7 +70,7 @@ class instruction_list(object):
     return result
 
   def save(self, where):
-    print "FUCK: saving inst"
+    print("FUCK: saving inst")
     for instruction in iter(self):
       filename = '%s.rci' % (instruction.name)
       filepath = path.join(where, filename)

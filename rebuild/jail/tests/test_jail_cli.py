@@ -44,7 +44,7 @@ packages:
       tmp_jail_config,
     ]
     rv = SystemEnvironment.call_python_script(cmd)
-    print rv.stdout
+    print(rv.stdout)
     self.assertEqual( 0, rv.exit_code )
 
     expected_files = npm.package_contents(self.__PACKAGE_ID)
@@ -74,7 +74,7 @@ binaries:
       tmp_jail_config,
     ]
     rv = SystemEnvironment.call_python_script(cmd)
-    print rv.stdout
+    print(rv.stdout)
     self.assertEqual( 0, rv.exit_code )
 
     expected_files = sorted([

@@ -18,7 +18,7 @@ class test_artifact_manager(unittest.TestCase):
   def __make_test_artifact_manager(clazz, address = None, items = None):
     publish_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
     if clazz.DEBUG:
-      print "publish_dir:\n%s\n" % (publish_dir)
+      print("publish_dir:\n%s\n" % (publish_dir))
     am = artifact_manager(publish_dir, address = address)
     if items:
       unit_test_packages.make_test_packages(items, am.publish_dir)
@@ -48,7 +48,7 @@ class test_artifact_manager(unittest.TestCase):
   def __make_test_artifacts_git_repo(self):
     tmp_repo = temp_file.make_temp_dir(delete = not self.DEBUG)
     if self.DEBUG:
-      print "tmp_repo:\n%s\n" % (tmp_repo)
+      print("tmp_repo:\n%s\n" % (tmp_repo))
     unit_test_packages.make_test_packages(unit_test_packages.TEST_PACKAGES, tmp_repo)
     assert not git.is_repo(tmp_repo)
     git.init(tmp_repo)

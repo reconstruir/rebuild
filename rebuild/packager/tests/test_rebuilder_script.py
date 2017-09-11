@@ -28,7 +28,7 @@ class test_rebuilder_script(unit_test):
     ]
     rv = self._call_shell(cmd)
     if rv.exit_code != 0:
-      print(rv.stdout)
+      print((rv.stdout))
     self.assertEqual( 0, rv.exit_code )
     artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, self.BUILD_TYPE)
     self.assertTrue( path.exists(path.join(artifacts_dir, 'fructose-3.4.5-6.tar.gz')) )
@@ -46,7 +46,7 @@ class test_rebuilder_script(unit_test):
     ]
     rv = self._call_shell(cmd)
     if rv.exit_code != 0:
-      print(rv.stdout)
+      print((rv.stdout))
     self.assertEqual( 0, rv.exit_code )
     artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, self.BUILD_TYPE)
     self.assertTrue( path.exists(path.join(artifacts_dir, 'fructose-3.4.5-6.tar.gz')) )
@@ -63,7 +63,7 @@ class test_rebuilder_script(unit_test):
     ]
     rv = self._call_shell(cmd)
     if rv.exit_code != 0:
-      print(rv.stdout)
+      print((rv.stdout))
     self.assertEqual( 0, rv.exit_code )
     artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, self.BUILD_TYPE)
     self.assertTrue( path.exists(path.join(artifacts_dir, 'fructose-3.4.5-6.tar.gz')) )
@@ -73,12 +73,12 @@ class test_rebuilder_script(unit_test):
   def _make_temp_dir(self):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     if self.DEBUG:
-      print "tmp_dir: ", tmp_dir
+      print("tmp_dir: ", tmp_dir)
     return tmp_dir
 
   def _call_shell(self, cmd):
-    print "FUCK: cmd=", cmd
-    print "FUCK: cwd=", self.data_dir()
+    print("FUCK: cmd=", cmd)
+    print("FUCK: cwd=", self.data_dir())
     return Shell.execute(cmd, non_blocking = True, raise_error = False,
                          cwd = self.data_dir(), stderr_to_stdout = True)
     

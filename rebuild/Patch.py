@@ -25,7 +25,7 @@ class Patch(object):
   def depth(clazz, patch, target_files):
     'Return the depth of a patch relative to target_files.  depth can then be used for Patch.patch(strip = depth)'
     affected_files = clazz.affected_files(patch)
-    print "         patch: ", patch
+    print("         patch: ", patch)
 #    print "affected_files: ", affected_files
 #    print "  target_files: ", target_files
     depths = []
@@ -33,7 +33,7 @@ class Patch(object):
       for affected in affected_files:
         d = clazz.__compute_path(affected, target)
         if d != None:
-          print "  DEPTH: affected=%s; target=%s;  depth=%d" % (affected, target, d)
+          print("  DEPTH: affected=%s; target=%s;  depth=%d" % (affected, target, d))
           depths.append(d)
     depths = algorithm.unique(depths)
     if len(depths) != 1:
