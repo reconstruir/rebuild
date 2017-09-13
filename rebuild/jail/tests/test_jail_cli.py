@@ -48,7 +48,7 @@ packages:
     self.assertEqual( 0, rv.exit_code )
 
     expected_files = npm.package_contents(self.__PACKAGE_ID)
-    actual_files = file_find.find(tmp_dir, file_type = file_find.ALL, relative = True)
+    actual_files = file_find.find(tmp_dir, file_type = file_find.ANY, relative = True)
     actual_files = [ path.join('/', f) for f in actual_files ]
     self.assertEqual( expected_files, actual_files )
 
@@ -133,7 +133,7 @@ binaries:
       '/usr/lib/system/libunwind.dylib',
       '/usr/lib/system/libxpc.dylib',
     ])
-    actual_files = file_find.find(tmp_dir, file_type = file_find.ALL, relative = True)
+    actual_files = file_find.find(tmp_dir, file_type = file_find.ANY, relative = True)
     actual_files = [ path.join('/', f) for f in actual_files ]
     self.assertEqual( expected_files, actual_files )
 

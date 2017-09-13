@@ -12,8 +12,10 @@ class step_cleanup_libtool_droppings(Step):
     super(step_cleanup_libtool_droppings, self).__init__()
 
   def execute(self, argument):
-    droppings = file_find.find_fnmatch(path.join(argument.env.stage_dir, 'lib'),
-                                      [ '*.la' ],
-                                      relative = False)
-    file_util.remove(droppings)
+    stage_lib_dir = path.join(argument.env.stage_dir, 'lib')
+    if path.isdir(stage_lib_dir):
+      droppings = file_find.find_fnmatch(path.join(argument.env.stage_dir, 'lib'),
+                                         [ '*.la' ],
+                                         relative = False)
+      file_util.remove(droppings)
     return step_result(True, None)

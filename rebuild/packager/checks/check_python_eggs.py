@@ -11,7 +11,7 @@ class check_python_eggs(Check):
     super(check_python_eggs, self).__init__()
 
   def check(self, files_dir, env):
-    eggs = file_find.find_fnmatch(files_dir, [ '*.egg', '*.egg-info' ], relative = False, file_type = file_find.ALL)
+    eggs = file_find.find_fnmatch(files_dir, [ '*.egg', '*.egg-info' ], relative = False, file_type = file_find.ANY)
     num_eggs = len(eggs)
     if num_eggs != 1:
       return check_result(False, 'found %d eggs instead of 1: %s' % (num_eggs, ' '.join(eggs)))

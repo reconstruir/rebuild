@@ -39,7 +39,7 @@ class test_sync(unit_test):
 
     sync.sync_files(src_dir, tmp_dst_dir, files, 'foo')
     
-    actual_files = file_find.find(tmp_dst_dir, file_type = file_find.ALL)
+    actual_files = file_find.find(tmp_dst_dir, file_type = file_find.ANY)
     self.assertEqual( actual_files, files )
 
     num_links_after = self.num_links(src_dir)

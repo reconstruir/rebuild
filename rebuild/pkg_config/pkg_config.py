@@ -84,7 +84,8 @@ class pkg_config(object):
     pkg_config_path = clazz.make_pkg_config_path(root_dir)
     pc_files = []
     for p in pkg_config_path:
-      pc_files += file_find.find_fnmatch(p, [ '*.pc' ], file_match.ALL, relative = False)
+      if path.isdir(p):
+        pc_files += file_find.find_fnmatch(p, [ '*.pc' ], file_match.ALL, relative = False)
     # Filter out symlinks
     return [ f for f in pc_files ]
 
