@@ -3,7 +3,7 @@
 
 import os, os.path as path, re, subprocess, sys
 
-from bes.fs import compressed_file, file_find, file_util, file_type, temp_file
+from bes.fs import compressed_file, file_find, file_util, file_mime, temp_file
 from bes.common import algorithm, object_util
 
 class Patch(object):
@@ -79,7 +79,7 @@ class Patch(object):
   @classmethod
   def patch_is_compressed(clazz, patch):
     'Return True if the patch is compressed with gzip.'
-    ft = file_type.mime_type(patch)
+    ft = file_mime.mime_type(patch)
     return ft.find('gzip') >= 0
 
   @classmethod

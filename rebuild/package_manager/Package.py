@@ -5,7 +5,7 @@ import os.path as path, re
 
 from bes.archive import archiver
 from rebuild import package_descriptor
-from bes.fs import file_replace, file_search, file_type, file_util
+from bes.fs import file_replace, file_search, file_mime, file_util
 from bes.match import matcher_filename
 from rebuild.pkg_config import pkg_config_file
 from bes.python import setup_tools
@@ -66,7 +66,7 @@ class Package(object):
     file_search.search_replace(installation_dir,
                               replacements,
                               backup = False,
-                              test_func = file_type.is_text)
+                              test_func = file_mime.is_text)
 
   def __post_install_hooks(self, installation_dir):
     self.__update_python_config_files(installation_dir)
