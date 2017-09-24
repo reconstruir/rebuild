@@ -13,7 +13,7 @@ class _toolchain_macos(_toolchain_base):
   @classmethod
   def compiler_environment(clazz, build_target):
     sdk = Sdk.SYSTEM_TO_SDK[build_target.system]
-    ar_replacement = path.abspath(path.normpath(path.join(path.dirname(__file__), '../bin/rebuild_ar.py')))
+    ar_replacement = path.abspath(path.normpath(path.join(path.dirname(__file__), '../../bin/rebuild_ar.py')))
     env = {
       'CC': Xcrun.find_tool(sdk, 'clang'),
       'CXX': Xcrun.find_tool(sdk, 'clang++'),

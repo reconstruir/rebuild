@@ -75,6 +75,7 @@ class build_script_runner(object):
         return self.RunResult(self.CURRENT, None)
       build_blurb.blurb('build', '%s - building' % (script.package_info.name))
       packager_result = pkg.execute(no_checksums)
+      print "FUCK: packager_result: ", packager_result
       if packager_result.success:
         return self.RunResult(self.SUCCESS, packager_result)
       else:

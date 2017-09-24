@@ -14,7 +14,7 @@ class test_rebuilder_script(unit_test):
   DEBUG = False
   DEBUG = True
 
-  REBUILDER_SCRIPT = path.abspath(path.join(path.dirname(__file__), '../../../bin/rebuilder.py'))
+  REBUILDER_SCRIPT = path.abspath(path.join(path.dirname(__file__), '../../../../bin/rebuilder.py'))
   BUILD_TYPE = 'release'
   
   def test_fructose(self):

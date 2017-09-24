@@ -114,8 +114,10 @@ class pkg_config(object):
       'PATH': os_env_var('PATH').value,
     }
     #build_blurb.blurb_verbose('pkg_config', '__call_pkg_config() cmd=%s' % (str(cmd)))
+    #print('pkg_config', '__call_pkg_config() cmd=%s' % (str(cmd)))
     rv = Shell.execute(cmd, env = env)
     #build_blurb.blurb_verbose('pkg_config', '__call_pkg_config() rv=%s' % (str(rv)))
+    #print('pkg_config', '__call_pkg_config() rv=%s' % (str(rv)))
     return rv
     
   @classmethod

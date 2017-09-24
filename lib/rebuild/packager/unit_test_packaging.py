@@ -24,6 +24,8 @@ class unit_test_packaging(object):
     runner = build_script_runner(filenames, build_target())
     script = runner.scripts[ name ]
     rv = runner.run_build_script(script, tmp_dir = temp_file.make_temp_dir(), no_checksums = True)
+    if not rv.status == build_script_runner.SUCCESS:
+      print rv.stdout
     asserter.assertEqual( build_script_runner.SUCCESS, rv.status )
     tarball = rv.packager_result.output['published_tarball']
     package = Package(tarball)

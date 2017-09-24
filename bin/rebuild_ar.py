@@ -7,10 +7,11 @@ import argparse, os, os.path as path, sys
 try:
   from bes.common import Shell
 except:
-  p = path.abspath(path.normpath(path.join(path.dirname(__file__), '../../bes')))
+  p = path.abspath(path.normpath(path.join(path.dirname(__file__), '../../bes/lib')))
   sys.path.append(p)
-  p = path.abspath(path.normpath(path.join(path.dirname(__file__), '..')))
+  p = path.abspath(path.normpath(path.join(path.dirname(__file__), '../lib')))
   sys.path.append(p)
+
 
 from bes.common import Shell
 from rebuild.darwin import Sdk

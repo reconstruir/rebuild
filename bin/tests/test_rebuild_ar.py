@@ -5,7 +5,7 @@ from bes.testing.unit_test import script_unit_test
 
 class test_rebuild_ar(script_unit_test):
 
-  __unit_test_data_dir__ = '../../rebuild/test_data/binary_objects'
+  __unit_test_data_dir__ = '../../lib/rebuild/test_data/binary_objects'
   __script__ = __file__, '../rebuild_ar.py'
 
   def test_contents(self):
