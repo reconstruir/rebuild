@@ -2,6 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import script_unit_test
+from bes.system import host
 
 class test_rebuild_ar(script_unit_test):
 
@@ -10,11 +11,19 @@ class test_rebuild_ar(script_unit_test):
 
   def test_contents(self):
     rv = self.run_command('t', self.platform_data_path('libarm64.a'))
-    expected = '''
+    if host.SYSTEM == host.MACOS:
+      expected = '''
 __.SYMDEF SORTED
 cherry.o
 kiwi.o
 '''
+    else:
+      expected = '''
+cherry.o
+kiwi.o
+'''
+      
+      
     self.assertEqual( 0, rv.exit_code )
     self.assert_string_equal_strip( expected, rv.stdout )
 
