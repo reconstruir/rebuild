@@ -1,0 +1,5 @@
+# rebuild
+name: rebuild
+PATH: ${root}/bin
+PYTHONPATH: ${root}/lib
+requires: bes

@@ -114,15 +114,15 @@ class rebuild_manager(object):
     return True
   
   SETUP_SCRIPT_TEMPLATE = '''
-@NAME@-prefix()
+@NAME@_prefix()
 {
   echo "@PREFIX@"
   return 0
 }
 
-@NAME@-setup()
+@NAME@_setup()
 {
-  local _prefix=$(@NAME@-prefix)
+  local _prefix=$(@NAME@_prefix)
   export PATH=${_prefix}/bin:${PATH}
   export PYTHONPATH=${_prefix}/lib/python:${PYTHONPATH}
   export PKG_CONFIG_PATH=${_prefix}/lib/pkgconfig:${PKG_CONFIG_PATH}
@@ -133,7 +133,7 @@ class rebuild_manager(object):
 
   RUN_SCRIPT_TEMPLATE = '''#!/bin/bash
 source "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/setup.sh"
-@NAME@-setup
+@NAME@_setup
 exec ${1+"$@"}
 '''
 
