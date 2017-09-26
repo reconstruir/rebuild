@@ -214,7 +214,7 @@ class Step(object):
 
   @classmethod
   def __write_retry_script(clazz, command, env, packager_env):
-    from cStringIO import StringIO
+    from StringIO import StringIO
     s = StringIO()
     s.write('#!/bin/bash\n')
     s.write('mkdir -p %s\n' % (packager_env.stage_dir))
