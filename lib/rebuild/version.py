@@ -4,7 +4,7 @@
 import re
 from bes.common import algorithm, object_util, string_util, number_util
 from collections import namedtuple
-from StringIO import StringIO
+from io import StringIO
 from System import System
 
 class version(namedtuple('version', 'upstream_version,revision,epoch')):
@@ -82,12 +82,12 @@ class version(namedtuple('version', 'upstream_version,revision,epoch')):
   def __str__(self):
     buf = StringIO()
     if self.epoch != 0:
-      buf.write(self.epoch)
-      buf.write(':')
-    buf.write(self.upstream_version)
+      buf.write(unicode(self.epoch))
+      buf.write(u':')
+    buf.write(unicode(self.upstream_version))
     if self.revision != 0:
-      buf.write('-')
-      buf.write(self.revision)
+      buf.write(u'-')
+      buf.write(unicode(self.revision))
     return buf.getvalue()
 
   @classmethod

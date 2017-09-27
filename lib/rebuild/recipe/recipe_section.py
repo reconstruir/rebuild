@@ -4,7 +4,7 @@
 from bes.common import algorithm, dict_util
 from bes.common.check_type import check_type
 from bes.key_value import key_value, key_value_list
-from StringIO import StringIO
+from io import StringIO
 
 class recipe_section(object):
 
@@ -29,9 +29,9 @@ class recipe_section(object):
     buf = StringIO()
     delimiter = ': '
     value_delimiter = '\n'
-    buf.write(self.header.to_string(delimiter = delimiter))
-    buf.write(value_delimiter)
-    buf.write(self.values.to_string(delimiter = delimiter, value_delimiter = value_delimiter))
+    buf.write(unicode(self.header.to_string(delimiter = delimiter)))
+    buf.write(unicode(value_delimiter))
+    buf.write(unicode(self.values.to_string(delimiter = delimiter, value_delimiter = value_delimiter)))
     return buf.getvalue()
 
 #  def __repr__(self):

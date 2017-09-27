@@ -4,7 +4,7 @@
 from bes.common import string_util
 from rebuild import System
 from ConfigParser import ConfigParser
-from StringIO import StringIO
+from io import StringIO
 from collections import OrderedDict
 
 class rebuild_manager_config(OrderedDict):
