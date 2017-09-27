@@ -96,7 +96,7 @@ class recipe_section_list(object):
     return clazz.parse(file_util.read(filename))
 
   def dependencies(self, target):
-    if not isinstance(target, basestring):
+    if not string_util.is_string(target):
       raise TypeError('target should be a string: \"%s\"' % (target))
     dependency_map = self._dependency_map()
     if not target in dependency_map:

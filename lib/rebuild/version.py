@@ -40,7 +40,7 @@ class version(namedtuple('version', 'upstream_version,revision,epoch')):
 
   @classmethod
   def _upstream_version_is_valid(clazz, upstream_version):
-    if not isinstance(upstream_version, basestring):
+    if not string_util.is_string(upstream_version):
       return clazz._validation(False, 'invalid upstream_version of type %s - should be string: \"%s\"' % (type(upstream_version), str(upstream_version)))
     if upstream_version == None:
       return clazz._validation(False, 'upstream_version is None')
