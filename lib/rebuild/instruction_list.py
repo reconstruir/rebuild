@@ -6,7 +6,7 @@ from bes.fs import file_util
 from bes.common import algorithm, dict_util, string_util
 from bes.common.check_type import check_type
 from bes.text import string_list_parser
-from StringIO import StringIO
+from io import StringIO
 from instruction_list_parser import instruction_list_parser
 from instruction import instruction
 from rebuild.dependency import dependency_resolver
@@ -19,8 +19,8 @@ class instruction_list(object):
   def __str__(self):
     buf = StringIO()
     for instruction in iter(self):
-      buf.write(str(instruction))
-      buf.write('\n\n')
+      buf.write(unicode(instruction))
+      buf.write(u'\n\n')
     return buf.getvalue()
 
   def __eq__(self, other):

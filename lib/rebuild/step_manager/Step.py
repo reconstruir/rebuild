@@ -214,10 +214,10 @@ class Step(object):
 
   @classmethod
   def __write_retry_script(clazz, command, env, packager_env):
-    from StringIO import StringIO
+    from io import StringIO
     s = StringIO()
-    s.write('#!/bin/bash\n')
-    s.write('mkdir -p %s\n' % (packager_env.stage_dir))
+    s.write(u'#!/bin/bash\n')
+    s.write(u'mkdir -p %s\n' % (packager_env.stage_dir))
     items = sorted(env.items())
     last_item = items.pop(-1)
 
@@ -225,14 +225,14 @@ class Step(object):
       return '%s=\"%s\"%s\n' % (key, value, slash)
 
     for key, value in items:
-      s.write(_item_str(key, value, '\\'))
+      s.write(unicode(_item_str(key, value, '\\')))
 
-    s.write(_item_str(last_item[0], last_item[1], ''))
+    s.write(unicode(_item_str(last_item[0], last_item[1], '')))
 
     if isinstance(command, basestring):
-      s.write(command)
+      s.write(unicode(command))
     else:
-      s.write(' '.join(command))
+      s.write(unicode(' '.join(command)))
     content = s.getvalue()
     file_path = path.join(packager_env.build_dir, clazz.RETRY_SCRIPT_FILENAME)
     file_util.save(file_path, content = content, mode = 0755)

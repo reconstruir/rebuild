@@ -5,7 +5,7 @@ from bes.common import string_util
 from bes.key_value import key_value_parser
 from bes.text import string_list_parser
 from collections import namedtuple
-from StringIO import StringIO
+from io import StringIO
 from System import System
 from requirement import requirement
 
@@ -17,9 +17,9 @@ class platform_specific_config(namedtuple('platform_specific_config', 'system_ma
   def __str__(self):
     buf = StringIO()
     if self.system_mask:
-      buf.write(self.system_mask)
-      buf.write(': ')
-    buf.write(str(self.data))
+      buf.write(unicode(self.system_mask))
+      buf.write(u': ')
+    buf.write(unicode(self.data))
     return buf.getvalue()
 
   @classmethod
@@ -79,7 +79,7 @@ class platform_specific_config(namedtuple('platform_specific_config', 'system_ma
 
   @classmethod
   def __parse_list(clazz, text):
-    return [ s for s in string_list_parser.parse(text, options = key_value_parser.KEEP_QUOTES) ]
+    return [ str(s) for s in string_list_parser.parse(text, options = key_value_parser.KEEP_QUOTES) ]
 
   @classmethod
   def __parse_requirement(clazz, text):

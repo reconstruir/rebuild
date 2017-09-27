@@ -3,7 +3,7 @@
 
 import re
 from bes.common import algorithm, dict_util, object_util, string_util
-from StringIO import StringIO
+from io import StringIO
 
 class instruction(object):
 
@@ -22,16 +22,16 @@ class instruction(object):
 
   def __str__(self):
     buf = StringIO()
-    buf.write('name: ')
-    buf.write(self.name)
-    buf.write('\n')
+    buf.write(u'name: ')
+    buf.write(unicode(self.name))
+    buf.write(u'\n')
     for key in sorted(self.flags.keys()):
-      buf.write(key)
-      buf.write(': ')
-      buf.write(self.flags[key])
-      buf.write('\n')
-    buf.write('requires: ')
-    buf.write(' '.join(self.requires))
+      buf.write(unicode(key))
+      buf.write(u': ')
+      buf.write(unicode(self.flags[key]))
+      buf.write(u'\n')
+    buf.write(u'requires: ')
+    buf.write(unicode(' '.join(self.requires)))
     return buf.getvalue()
 
   def __eq__(self, other):
