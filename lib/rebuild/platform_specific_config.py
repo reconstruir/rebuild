@@ -79,7 +79,7 @@ class platform_specific_config(namedtuple('platform_specific_config', 'system_ma
 
   @classmethod
   def __parse_list(clazz, text):
-    return [ s for s in string_list_parser.parse(text, options = key_value_parser.KEEP_QUOTES) ]
+    return [ str(s) for s in string_list_parser.parse(text, options = key_value_parser.KEEP_QUOTES) ]
 
   @classmethod
   def __parse_requirement(clazz, text):
