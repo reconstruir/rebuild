@@ -4,7 +4,7 @@
 import copy, re, glob, os.path as path
 from bes.fs import file_util
 from bes.common import algorithm, dict_util, string_util, string_list_parser
-from io import StringIO
+from bes.compat import StringIO
 from recipe_section_list_parser import recipe_section_list_parser
 from recipe_section import recipe_section
 from rebuild.dependency import dependency_resolver
@@ -17,8 +17,8 @@ class recipe_section_list(object):
   def __str__(self):
     buf = StringIO()
     for recipe_section in iter(self):
-      buf.write(unicode(recipe_section))
-      buf.write(u'\n\n')
+      buf.write(recipe_section)
+      buf.write('\n\n')
     return buf.getvalue()
 
   def __eq__(self, other):

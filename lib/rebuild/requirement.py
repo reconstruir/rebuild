@@ -4,7 +4,7 @@
 import re
 from bes.common import algorithm, object_util, string_util
 from collections import namedtuple
-from io import StringIO
+from bes.compat import StringIO
 from System import System
 
 class requirement(namedtuple('requirement', 'name,operator,version,system_mask')):
@@ -26,16 +26,16 @@ class requirement(namedtuple('requirement', 'name,operator,version,system_mask')
 
   def __str__(self):
     buf = StringIO()
-    buf.write(unicode(self.name))
+    buf.write(self.name)
     if self.system_mask and self.system_mask != 'all':
-      buf.write(u'(')
-      buf.write(unicode(self.system_mask))
-      buf.write(u')')
+      buf.write('(')
+      buf.write(self.system_mask)
+      buf.write(')')
     if self.operator:
-      buf.write(u' ')
-      buf.write(unicode(self.operator))
-      buf.write(u' ')
-      buf.write(unicode(self.version))
+      buf.write(' ')
+      buf.write(self.operator)
+      buf.write(' ')
+      buf.write(self.version)
     return buf.getvalue()
 
   @classmethod
