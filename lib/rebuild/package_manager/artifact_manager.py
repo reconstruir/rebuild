@@ -25,7 +25,7 @@ class artifact_manager(object):
     build_blurb.add_blurb(self, 'artifact_manager')
 
     if publish_dir:
-      assert isinstance( publish_dir, basestring )
+      assert string_util.is_string(publish_dir)
     
     self.publish_dir = path.abspath(publish_dir or self.DEFAULT_PUBLISH_DIR)
     self.no_git = no_git

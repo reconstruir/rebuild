@@ -4,7 +4,7 @@
 import copy, re, glob, os.path as path
 from bes.fs import file_util
 from bes.common import algorithm, dict_util, string_util
-from bes.common.check_type import check_type
+from bes.common.check_type import check_type, check_is_string
 from bes.text import string_list_parser
 from io import StringIO
 from instruction_list_parser import instruction_list_parser
@@ -99,7 +99,7 @@ class instruction_list(object):
     return clazz.parse(file_util.read(filename))
 
   def dependencies(self, target):
-    check_type(target, basestring, 'target')
+    check_is_string(target, 'target')
     dependency_map = self._dependency_map()
     if not target in dependency_map:
       raise KeyError('target not found: \"%s\"' % (target))

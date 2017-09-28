@@ -6,6 +6,7 @@ import os.path as path, re
 from bes.archive import archiver
 from rebuild import package_descriptor
 from bes.fs import file_replace, file_search, file_mime, file_util
+from bes.common import string_util
 from bes.match import matcher_filename
 from rebuild.pkg_config import pkg_config_file
 from bes.python import setup_tools
@@ -17,7 +18,7 @@ class Package(object):
   FILES_DIR = 'files'
 
   def __init__(self, tarball):
-    assert isinstance(tarball, basestring)
+    assert string_util.is_string(tarball)
     assert archiver.is_valid(tarball)
     self.tarball = tarball
     self._info = None

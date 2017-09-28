@@ -3,17 +3,18 @@
 
 import re
 from bes.common import algorithm, dict_util, object_util, string_util
+from bes.system import compat
 from io import StringIO
 
 class instruction(object):
 
   def __init__(self, name, flags, requires):
-    if not isinstance(name, basestring):
+    if not string_util.is_string(name):
       raise RuntimeError('name should be a string: %s' % (name))
     self.name = name
     if not isinstance(flags, dict):
       raise RuntimeError('flags should be a dict: %s' % (flags))
-    if not dict_util.is_homogeneous(flags, basestring, basestring):
+    if not dict_util.is_homogeneous(flags, compat.STRING_TYPES, compat.STRING_TYPES):
       raise RuntimeError('invalid flags.  all keys and values should be strings: %s' % (flags))
     self.flags = flags
     if not isinstance(requires, set):

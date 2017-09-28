@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import json, os.path as path
-from bes.common import object_util
+from bes.common import object_util, string_util
 from rebuild.dependency import dependency_resolver
 from Category import Category
 from System import System
@@ -213,7 +213,7 @@ class package_descriptor(object):
     for dep in requirements:
       if requirement.is_requirement(dep):
         result.append(dep)
-      elif isinstance(dep, basestring):
+      elif string_util.is_string(dep):
         reqs = psc.parse_requirement(dep).data
         result.extend(reqs)
       else:
@@ -222,7 +222,7 @@ class package_descriptor(object):
 
   @classmethod
   def name_is_valid(clazz, name):
-    if not isinstance(name, basestring):
+    if not string_util.is_string(name):
       return False
     if not name:
       return False
