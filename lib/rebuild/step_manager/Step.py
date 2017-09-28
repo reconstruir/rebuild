@@ -229,7 +229,7 @@ class Step(object):
 
     s.write(unicode(_item_str(last_item[0], last_item[1], '')))
 
-    if isinstance(command, basestring):
+    if string_util.is_string(command):
       s.write(unicode(command))
     else:
       s.write(unicode(' '.join(command)))

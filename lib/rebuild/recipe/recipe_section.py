@@ -4,6 +4,7 @@
 from bes.common import algorithm, dict_util
 from bes.common.check_type import check_type
 from bes.key_value import key_value, key_value_list
+from bes.system import compat
 from io import StringIO
 
 class recipe_section(object):
@@ -14,13 +15,13 @@ class recipe_section(object):
       raise TypeError('header key should not be empty: %s' % (header.key))
     if not header.value:
       raise TypeError('header value should not be empty: %s' % (header.value))
-    if not header.is_homogeneous(basestring, basestring):
+    if not header.is_instance(compat.STRING_TYPES, compat.STRING_TYPES):
       raise TypeError('invalid header.  key and value should be strings: %s' % (header))
     self.header = header
     values = key_value_list.verify_key_value_list(values or [])
     if values is None:
       raise TypeError('values should be a key_value_list or iterable of key_values: %s' % (values))
-    if not values.is_homogeneous(basestring, basestring):
+    if not values.is_homogeneous(compat.STRING_TYPES, compat.STRING_TYPES):
       raise TypeError('invalid values.  all keys and values should be strings: %s' % (values))
     self.values = values
     assert isinstance(self.values, key_value_list)

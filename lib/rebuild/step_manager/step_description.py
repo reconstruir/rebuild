@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy
-from bes.common import object_util
+from bes.common import object_util, string_util
 from Step import Step
 from step_registry import step_register, step_registry
 
@@ -27,7 +27,7 @@ class step_description(object):
       if isinstance(item, step_register):
         current_desc = step_description(item, {})
         result.append(current_desc)
-      elif isinstance(item, basestring):
+      elif string_util.is_string(item):
         step_class = step_registry.get(item)
         if not step_class:
           raise RuntimeError('no such step class: %s' % (item))

@@ -3,6 +3,7 @@
 
 import copy, platform
 from System import System
+from bes.common import string_util
 
 class build_arch(object):
 
@@ -45,7 +46,7 @@ class build_arch(object):
     else:
       if not tentative_archs or tentative_archs == 'default':
         return clazz.ARCHS[system]
-      if isinstance(tentative_archs, basestring):
+      if string_util.is_string(tentative_archs):
         return clazz.parse_archs(system, tentative_archs)
       for arch in tentative_archs:
         if not clazz.arch_is_valid(arch, system):

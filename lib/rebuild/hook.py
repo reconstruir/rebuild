@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common import object_util, string_list
+from bes.common import object_util, string_list, string_util
 from rebuild.dependency import dependency_provider
 
 class hook(dependency_provider):
@@ -57,7 +57,7 @@ class hook(dependency_provider):
   @classmethod
   def parse(clazz, s):
     'Parse a hook from a string.'
-    if not isinstance(s, basestring):
+    if not string_util.is_string(s):
       raise RuntimeError('Invalid hook: \"%s\"' % (s))
     v = s.partition(':')
     if not v[1] == ':':

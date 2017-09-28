@@ -6,7 +6,7 @@
 
 import copy, os.path as path
 
-from bes.common import dict_util, json_util, variable
+from bes.common import dict_util, json_util, string_util, variable
 from bes.system import host
 
 from rebuild.pkg_config import pkg_config
@@ -83,7 +83,7 @@ class build_requirement_manager(object):
     return path.join(self.__package_dir(package_info), 'lib/python')
 
   def tool_exe(self, package_info, tool_name):
-    if isinstance(package_info, basestring):
+    if string_util.is_string(package_info):
       found_package = self.find_package(package_info)
       if not found_package:
         raise RuntimeError('No package found for: %s' % (package_info))

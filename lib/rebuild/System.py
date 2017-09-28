@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.system import host
-from bes.common import algorithm
+from bes.common import algorithm, string_util
 
 class System(object):
 
@@ -41,7 +41,7 @@ class System(object):
 
   @classmethod
   def __resolve_mask_to_list(clazz, s):
-    assert isinstance(s, basestring)
+    assert string_util.is_string(s)
     s = s.lower()
     s = clazz.ALIASES.get(s, s)
     parts = [ part for part in clazz.mask_split(s) if part ]
@@ -55,7 +55,7 @@ class System(object):
 
   @classmethod
   def __resolve_mask_part(clazz, part):
-    assert isinstance(part, basestring)
+    assert string_util.is_string(part)
     assert clazz.DELIMITER not in part
     part = clazz.ALIASES.get(part, part)
     if clazz.DELIMITER in part:
@@ -73,7 +73,7 @@ class System(object):
 
   @classmethod
   def mask_is_valid(clazz, mask):
-    if not isinstance(mask, basestring):
+    if not string_util.is_string(mask):
       return False
     parts = clazz.mask_split(mask)
     for part in parts:
@@ -83,7 +83,7 @@ class System(object):
 
   @classmethod
   def parse_system(clazz, s):
-    if not isinstance(s, basestring):
+    if not string_util.is_string(s):
       raise RuntimeError('Not a string: %s' % (str(s)))
     systems = clazz.mask_split(clazz.resolve_mask(s))
     if len(systems) != 1:
