@@ -4,7 +4,7 @@
 import re
 from bes.common import algorithm, dict_util, object_util, string_util
 from bes.system import compat
-from io import StringIO
+from bes.compat import StringIO
 
 class instruction(object):
 
@@ -23,16 +23,16 @@ class instruction(object):
 
   def __str__(self):
     buf = StringIO()
-    buf.write(u'name: ')
-    buf.write(unicode(self.name))
-    buf.write(u'\n')
+    buf.write('name: ')
+    buf.write(self.name)
+    buf.write('\n')
     for key in sorted(self.flags.keys()):
-      buf.write(unicode(key))
-      buf.write(u': ')
-      buf.write(unicode(self.flags[key]))
-      buf.write(u'\n')
-    buf.write(u'requires: ')
-    buf.write(unicode(' '.join(self.requires)))
+      buf.write(key)
+      buf.write(': ')
+      buf.write(self.flags[key])
+      buf.write('\n')
+    buf.write('requires: ')
+    buf.write(' '.join(self.requires))
     return buf.getvalue()
 
   def __eq__(self, other):
