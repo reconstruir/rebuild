@@ -2,7 +2,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.common import string_util, variable
-from ConfigParser import ConfigParser
+
+from bes.compat import ConfigParser
 
 from collections import namedtuple
 

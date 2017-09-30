@@ -7,8 +7,8 @@ from bes.common import algorithm, dict_util, string_util
 from bes.common.check_type import check_type, check_is_string
 from bes.text import string_list_parser
 from bes.compat import StringIO
-from instruction_list_parser import instruction_list_parser
-from instruction import instruction
+from .instruction_list_parser import instruction_list_parser
+from .instruction import instruction
 from rebuild.dependency import dependency_resolver
 
 class instruction_list(object):
@@ -76,7 +76,7 @@ class instruction_list(object):
       filepath = path.join(where, filename)
       if path.exists(filepath):
         return False, 'Instruction already exists: %s' % (filepath)
-      file_util.save(filepath, content = str(instruction), mode = 0644)
+      file_util.save(filepath, content = str(instruction), mode = 0o644)
     return True, None
 
   @classmethod

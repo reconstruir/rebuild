@@ -4,13 +4,13 @@
 import json, os.path as path
 from bes.common import object_util, string_util
 from rebuild.dependency import dependency_resolver
-from Category import Category
-from System import System
-from build_target import build_target
+from .Category import Category
+from .System import System
+from .build_target import build_target
 from collections import namedtuple
-from requirement import requirement
-from version import version
-from platform_specific_config import platform_specific_config as psc
+from .requirement import requirement
+from .version import version
+from .platform_specific_config import platform_specific_config as psc
 
 class package_descriptor(object):
 
@@ -184,8 +184,8 @@ class package_descriptor(object):
   
   @classmethod
   def parse_dict(clazz, d):
-    assert d.has_key('name')
-    assert d.has_key('version')
+    assert 'name' in d
+    assert 'version' in d
     requirements = clazz.parse_requirements(d.get('requirements', None))
     build_requirements = clazz.parse_requirements(d.get('build_requirements', None))
     properties = d.get('properties', {})

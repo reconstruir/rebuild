@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 
 import os.path as path
-from native_package_manager_base import native_package_manager_base
+from .native_package_manager_base import native_package_manager_base
 from bes.common import Shell, string_util, string_list
 
 class native_package_manager_linux(native_package_manager_base):

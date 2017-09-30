@@ -9,23 +9,22 @@ from abc import abstractmethod, ABCMeta
 from collections import namedtuple
 from bes.common import dict_util, object_util, string_util, Shell, variable
 from bes.system import log
+from bes.system.compat import with_metaclass
 from rebuild import build_blurb, build_target, SystemEnvironment, toolchain
 from rebuild import hook, variable_manager
 from rebuild import platform_specific_config as psc
 from rebuild.pkg_config import pkg_config
 from bes.fs import file_util
-from step_result import step_result
+from .step_result import step_result
 from rebuild.hook_extra_code import HOOK_EXTRA_CODE
-from step_registry import step_register
+from .step_registry import step_register
 
-class Step(object):
-
-  __metaclass__ = step_register
+class Step(with_metaclass(ABCMeta, object)):
 
   @abstractmethod
   def execute(self, argument):
     'Execute the step.'
-    assert False
+    pass
 
   @abstractmethod
   def on_tag_changed(self):
@@ -235,7 +234,7 @@ class Step(object):
       s.write(' '.join(command))
     content = s.getvalue()
     file_path = path.join(packager_env.build_dir, clazz.RETRY_SCRIPT_FILENAME)
-    file_util.save(file_path, content = content, mode = 0755)
+    file_util.save(file_path, content = content, mode = 0o755)
     return file_path
 
   @classmethod

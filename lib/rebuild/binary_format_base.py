@@ -5,14 +5,13 @@ import struct
 from collections import namedtuple
 from abc import abstractmethod, ABCMeta
 from bes.common import object_util
+from bes.system.compat import with_metaclass
 
 binary_format_object = namedtuple('binary_format_object', 'magic,cpu_type,file_type')
 binary_format_file = namedtuple('binary_format_file', 'format,magic,is_fat,objects')
 
-class binary_format_base(object):
+class binary_format_base(with_metaclass(ABCMeta, object)):
   'Base class for binary formats.'
-
-  __metaclass__ = ABCMeta
 
   FILE_TYPE_OBJECT = 'object'
   FILE_TYPE_EXECUTABLE = 'executable'
@@ -66,6 +65,6 @@ class binary_format_base(object):
     try:
       magic = self.unpack(fin, n, self.ENDIAN_BE)
     # Handle struct errors only (such as short reads for files smaller than 4 bytes)
-    except struct.error, ex:
+    except struct.error as ex:
       magic = None
     return magic

@@ -8,8 +8,8 @@ from rebuild.native_package_manager import native_package_manager as npm
 from bes.match import matcher_util
 from rebuild import library
 
-from config_file import config_file
-from sync import sync
+from .config_file import config_file
+from .sync import sync
 
 class jail(object):
 

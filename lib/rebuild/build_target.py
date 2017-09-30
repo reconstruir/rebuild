@@ -3,10 +3,10 @@
 
 import os.path as path
 
-from build_arch import build_arch
-from build_type import build_type as BT
-from Category import Category
-from System import System
+from .build_arch import build_arch
+from .build_type import build_type as BT
+from .Category import Category
+from .System import System
 
 class build_target(object):
 

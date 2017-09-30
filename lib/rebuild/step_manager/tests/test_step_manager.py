@@ -79,6 +79,9 @@ class test_step_manager(unittest.TestCase):
       self.saved_args = copy.deepcopy(argument.args)
       return step_result(True, None)
 
+    def on_tag_changed(self):
+      pass
+  
   def __add_save_args_step(self, sm):
     description = step_description(self.SaveArgsStep)
     return sm.add_step(description, None)

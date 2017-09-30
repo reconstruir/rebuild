@@ -5,7 +5,8 @@ import re
 from bes.common import algorithm, object_util, string_util, number_util
 from collections import namedtuple
 from bes.compat import StringIO
-from System import System
+from bes.compat import cmp
+from .System import System
 
 class version(namedtuple('version', 'upstream_version,revision,epoch')):
   '''
@@ -115,7 +116,7 @@ class version(namedtuple('version', 'upstream_version,revision,epoch')):
     return version.parse(v)
 
   @classmethod
-  def cmp(clazz, v1, v2):
+  def compare(clazz, v1, v2):
     epoch_cmp = cmp(v1.epoch, v2.epoch)
     if epoch_cmp != 0:
       return epoch_cmp

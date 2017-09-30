@@ -5,7 +5,7 @@ import re
 from bes.common import algorithm, object_util, string_util
 from collections import namedtuple
 from bes.compat import StringIO
-from System import System
+from .System import System
 
 class requirement(namedtuple('requirement', 'name,operator,version,system_mask')):
 

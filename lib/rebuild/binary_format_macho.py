@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 
 from collections import namedtuple
-from binary_format_base import binary_format_base, binary_format_object, binary_format_file
+from .binary_format_base import binary_format_base, binary_format_object, binary_format_file
 from bes.debug import hexdump
 
 class binary_format_macho(binary_format_base):

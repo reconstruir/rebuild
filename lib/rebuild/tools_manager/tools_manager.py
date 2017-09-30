@@ -7,7 +7,7 @@ from bes.system import host, os_env_var
 from bes.fs import file_util
 from rebuild import build_target, package_descriptor, SystemEnvironment, System
 from rebuild.package_manager import artifact_manager
-from build_requirement_manager import build_requirement_manager
+from .build_requirement_manager import build_requirement_manager
 
 class tools_manager(object):
 

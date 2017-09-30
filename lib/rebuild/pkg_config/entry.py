@@ -30,7 +30,7 @@ class entry(object):
     return self.__str__()
   
   def __eq__(self, entry):
-    return cmp(self.__dict__, entry.__dict__) == 0
+    return self.__dict__ == entry.__dict__
 
   @classmethod
   def parse(clazz, s):

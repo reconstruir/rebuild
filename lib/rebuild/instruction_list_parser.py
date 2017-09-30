@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.system import log
-from instruction import instruction
+from .instruction import instruction
 from rebuild.recipe import recipe_section_parser
 
 class instruction_list_parser(object):

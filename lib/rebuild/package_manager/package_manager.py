@@ -12,10 +12,10 @@ from rebuild.dependency import dependency_resolver
 from rebuild.pkg_config import pkg_config
 from bes.archive import archive, archiver
 from bes.fs import file_util, temp_file
-from artifact_manager import artifact_manager, ArtifactNotFoundError
-from Package import Package
-from PackageDatabase import PackageDatabase
-from package_list import package_list
+from .artifact_manager import artifact_manager, ArtifactNotFoundError
+from .Package import Package
+from .PackageDatabase import PackageDatabase
+from .package_list import package_list
 
 class PackageFilesConflictError(Exception):
   pass

@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.common import dict_util, object_util, string_list
-from package_descriptor import package_descriptor
+from .package_descriptor import package_descriptor
 from rebuild.dependency import dependency_resolver
 
 class package_descriptor_list(object):

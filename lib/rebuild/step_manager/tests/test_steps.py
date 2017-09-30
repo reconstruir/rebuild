@@ -21,6 +21,9 @@ class sample_step_save_args1(Step):
     self.saved_args = _save_args(argument.args)
     return step_result(True, None)
 
+  def on_tag_changed(self):
+    pass
+  
   @classmethod
   def parse_step_args(clazz, packager_env, args):
     keys = [ key for key in args.keys() if key.startswith('desc1_') ]
@@ -35,6 +38,9 @@ class sample_step_save_args2(Step):
     self.saved_args = _save_args(argument.args)
     return step_result(True, None)
 
+  def on_tag_changed(self):
+    pass
+  
   @classmethod
   def parse_step_args(clazz, packager_env, args):
     keys = [ key for key in args.keys() if key.startswith('desc2_') ]
@@ -49,6 +55,9 @@ class sample_step_save_args3(Step):
     self.saved_args = _save_args(argument.args)
     return step_result(True, None)
 
+  def on_tag_changed(self):
+    pass
+  
   @classmethod
   def parse_step_args(clazz, packager_env, args):
     keys = [ key for key in args.keys() if key.startswith('desc3_') ]
@@ -66,6 +75,9 @@ class sample_step_fake_success(Step):
       fake_message = 'step %s failed' % (argument.args['fake_name'])
     return step_result(fake_success, fake_message)
 
+  def on_tag_changed(self):
+    pass
+  
 class sample_step_fake_output1(Step):
   def __init__(self):
     super(sample_step_fake_output1, self).__init__()
@@ -74,6 +86,9 @@ class sample_step_fake_output1(Step):
     fake_output = argument.args.get('fake_output', None)
     return step_result(True, output = fake_output)
 
+  def on_tag_changed(self):
+    pass
+  
 class sample_step_fake_output2(Step):
   def __init__(self):
     super(sample_step_fake_output2, self).__init__()
@@ -82,6 +97,9 @@ class sample_step_fake_output2(Step):
     fake_output = argument.args.get('fake_output2', None)
     return step_result(True, output = fake_output)
 
+  def on_tag_changed(self):
+    pass
+  
 class sample_step_fake_output3(Step):
   def __init__(self):
     super(sample_step_fake_output3, self).__init__()
@@ -90,6 +108,9 @@ class sample_step_fake_output3(Step):
     fake_output = argument.args.get('fake_output3', None)
     return step_result(True, output = fake_output)
 
+  def on_tag_changed(self):
+    pass
+  
 class sample_step_save_args_with_global_args1(sample_step_save_args1):
   __step_global_args__ = {
     'global_arg10': '10',

@@ -6,8 +6,8 @@ from bes.key_value import key_value_parser
 from bes.text import string_list_parser
 from collections import namedtuple
 from bes.compat import StringIO
-from System import System
-from requirement import requirement
+from .System import System
+from .requirement import requirement
 
 class platform_specific_config(namedtuple('platform_specific_config', 'system_mask,data')):
 
@@ -40,7 +40,7 @@ class platform_specific_config(namedtuple('platform_specific_config', 'system_ma
   def parse_key_values(clazz, text):
     try:
       return clazz.parse(text, parse_func = clazz.__parse_key_values)
-    except Exception, ex:
+    except Exception as ex:
       print(('Caught exceptions parsing: %s' % (str(text))))
       raise
 

@@ -7,7 +7,7 @@ import copy, os.path as path
 from bes.common import algorithm, object_util, string_util
 from bes.key_value import key_value
 from bes.fs import file_util
-from entry import entry
+from .entry import entry
 from rebuild import requirement
 
 class pkg_config_file(object):
@@ -22,7 +22,7 @@ class pkg_config_file(object):
   def parse_file(self, filename):
     self.__reset()
     try:
-      return self.parse_string(file_util.read(filename))
+      return self.parse_string(file_util.read(filename).decode('utf-8'))
     except:
       print("failed loading %s" % (filename))
       raise
@@ -51,7 +51,7 @@ class pkg_config_file(object):
         self.exports.append(e)
 
   def __eq__(self, cf):
-    return cmp(self.__dict__, cf.__dict__) == 0
+    return self.__dict__ == cf.__dict__
 
   def __str__(self):
     variables_lines = [ str(variable) for variable in self.variables ]

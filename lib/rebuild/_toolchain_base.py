@@ -2,10 +2,9 @@
 #-*- coding:utf-8 -*-
 
 from abc import abstractmethod, ABCMeta
+from bes.system.compat import with_metaclass
 
-class _toolchain_base(object):
-
-  __metaclass__ = ABCMeta
+class _toolchain_base(with_metaclass(ABCMeta, object)):
 
   @abstractmethod
   def compiler_environment(self, build_target):

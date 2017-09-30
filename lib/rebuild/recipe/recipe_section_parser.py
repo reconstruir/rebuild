@@ -2,8 +2,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.system import log
-from recipe_section import recipe_section
-from recipe_values_parser import recipe_values_parser
+from .recipe_section import recipe_section
+from .recipe_values_parser import recipe_values_parser
 
 class _state(object):
 

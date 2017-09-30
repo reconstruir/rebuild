@@ -2,9 +2,9 @@
 #-*- coding:utf-8 -*-
 
 import os.path as path
-from library_base import library_base
+from .library_base import library_base
 from bes.common import Shell
-from binary_format_macho import binary_format_macho
+from .binary_format_macho import binary_format_macho
 
 class library_macos(library_base):
 

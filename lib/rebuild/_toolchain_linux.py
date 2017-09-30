@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 
-from _toolchain_base import _toolchain_base
-
-from build_type import build_type
+from ._toolchain_base import _toolchain_base
+from .build_type import build_type
 import os.path as path
 
 class _toolchain_linux(_toolchain_base):

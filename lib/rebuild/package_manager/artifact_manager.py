@@ -8,8 +8,8 @@ from rebuild import build_blurb, package_descriptor, package_descriptor_list
 from bes.git import git
 from bes.fs import dir_util, file_util
 
-from Package import Package
-from package_list import package_list
+from .Package import Package
+from .package_list import package_list
 
 class ArtifactNotFoundError(Exception):
   pass

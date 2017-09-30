@@ -5,7 +5,7 @@ import os.path as path
 from collections import namedtuple
 from bes.fs import file_checksum, file_util, temp_file
 from bes.archive import archiver
-from Lipo import Lipo
+from .Lipo import Lipo
 
 class fat_archive(object):
 

@@ -11,7 +11,7 @@ class Install(object):
   item = namedtuple('item', 'filename,dest_dir,mode')
   
   @classmethod
-  def install(clazz, filename, dest_dir, mode = 0755):
+  def install(clazz, filename, dest_dir, mode = 0o755):
     file_util.mkdir(dest_dir)
     file_util.copy(filename, dest_dir)
     os.chmod(path.join(dest_dir, filename), mode)

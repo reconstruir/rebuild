@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from System import System
-from build_type import build_type
+from .System import System
+from .build_type import build_type
 
 class CompileFlags(object):
 

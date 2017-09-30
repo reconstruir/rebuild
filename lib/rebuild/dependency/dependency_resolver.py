@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.common import object_util, string_util
-from toposort import toposort, toposort_flatten
+from .toposort import toposort, toposort_flatten
 
 class cyclic_dependency_error(Exception):
   def __init__(self, message, cyclic_deps):
@@ -47,7 +47,7 @@ class dependency_resolver(object):
     try:
       clazz.build_order_flat(dep_map)
       return []
-    except ValueError, ex:
+    except ValueError as ex:
       cyclic_deps = getattr(ex, 'cyclic_deps')
       return sorted(cyclic_deps.keys())
 

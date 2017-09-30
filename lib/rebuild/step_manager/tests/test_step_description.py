@@ -11,24 +11,32 @@ class Teststep_description(unittest.TestCase):
       super(Teststep_description.sample_step_save_args1, self).__init__()
     def execute(self, args):
       return step_result(True, None)
+    def on_tag_changed(self):
+      pass
 
   class sample_step_save_args2(Step):
     def __init__(self):
       super(Teststep_description.sample_step_save_args2, self).__init__()
     def execute(self, args):
       return step_result(True, None)
+    def on_tag_changed(self):
+      pass
 
   class sample_step_save_args3(Step):
     def __init__(self):
       super(Teststep_description.sample_step_save_args3, self).__init__()
     def execute(self, args):
       return step_result(True, None)
+    def on_tag_changed(self):
+      pass
 
   class test_step4(Step):
     def __init__(self):
       super(Teststep_description.test_step4, self).__init__()
     def execute(self, args):
       return step_result(True, None)
+    def on_tag_changed(self):
+      pass
 
   def test_parse_descriptions(self):
     items = [

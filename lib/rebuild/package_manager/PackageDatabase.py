@@ -8,7 +8,7 @@ from bes.common import object_util
 from bes.fs import file_util
 from rebuild import package_descriptor, version
 
-from DatabaseEntry import DatabaseEntry
+from .DatabaseEntry import DatabaseEntry
 
 class PackageDatabase(object):
 

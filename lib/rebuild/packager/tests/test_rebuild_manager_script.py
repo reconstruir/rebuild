@@ -24,7 +24,7 @@ class test_rebuild_manager_script(unit_test):
     content = file_util.read(tmp_filename)
     expected_content = '#!/bin/bash\necho foo bar'
     self.assertEqual( expected_content, content )
-    self.assertEqual( file_util.mode(tmp_filename), 0755 )
+    self.assertEqual( file_util.mode(tmp_filename), 0o755 )
     
   def test_save_not_executable(self):
     template = 'something @FOO@ and @BAR@'

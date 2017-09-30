@@ -152,7 +152,7 @@ class test_version(unit_test):
     self.assertEqual( 1, self.__cmp('0:1.2.3-3', '0:1.2.3-2') )
 
   def __cmp(self, v1, v2):
-    return version.cmp(version.parse(v1), version.parse(v2))
+    return version.compare(version.parse(v1), version.parse(v2))
 
 if __name__ == "__main__":
   unit_test.main()

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 
-from binary_format_base import binary_format_base, binary_format_object, binary_format_file
+from .binary_format_base import binary_format_base, binary_format_object, binary_format_file
 from bes.debug import hexdump
 
 class binary_format_elf(binary_format_base):

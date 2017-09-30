@@ -3,9 +3,9 @@
 
 import copy, os
 from bes.common import dict_util
-from Step import Step
-from step_result import step_result
-from step_argument import step_argument
+from .Step import Step
+from .step_result import step_result
+from .step_argument import step_argument
 
 class multiple_steps(Step):
 

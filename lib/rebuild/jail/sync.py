@@ -22,7 +22,7 @@ class sync(object):
     
     try:
       st = os.lstat(src_filename)
-    except OSError, ex:
+    except OSError as ex:
       if ex.errno == errno.ENOENT:
         print(('warning: missing: %s - %s' % (src_filename, label)))
         return
@@ -35,7 +35,7 @@ class sync(object):
     if stat.S_ISREG(st.st_mode):
       try:
         clazz.__sync_file_regular_with_hardlink(src_filename, dst_filename, label)
-      except OSError, ex:
+      except OSError as ex:
         if ex.errno == errno.EXDEV:
           clazz.__sync_file_regular_with_copy(src_filename, dst_filename, label)
         else:
@@ -52,7 +52,7 @@ class sync(object):
     'Sync a regular file using hard links.'
     try:
       os.link(src_filename, dst_filename)
-    except OSError, ex:
+    except OSError as ex:
       if ex.errno == errno.EEXIST:
         # ignore file exists
         print(('warning: file already exists: %s - %s' % (src_filename, label)))
@@ -64,7 +64,7 @@ class sync(object):
     'Sync a regular file by copying it.'
     try:
       shutil.copy2(src_filename, dst_filename)
-    except OSError, ex:
+    except OSError as ex:
       print(('warning: caught: %s%s' % (ex)))
       raise
 
@@ -74,7 +74,7 @@ class sync(object):
     real_source = os.readlink(src_filename)
     try:
       os.symlink(real_source, dst_filename)
-    except OSError, ex:
+    except OSError as ex:
       if ex.errno == errno.EEXIST:
         # ignore file exists
         print(('warning: link already exists: %s - %s' % (src_filename, label)))
@@ -86,7 +86,7 @@ class sync(object):
     'Sync a dir.'
     try:
       os.mkdir(dst_filename)
-    except OSError, ex:
+    except OSError as ex:
       if ex.errno == errno.EEXIST:
         return
       else:

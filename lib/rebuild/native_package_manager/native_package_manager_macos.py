@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 
-from native_package_manager_base import native_package_manager_base
+from .native_package_manager_base import native_package_manager_base
 
 import os.path as path
 import plistlib
@@ -55,7 +55,7 @@ class native_package_manager_macos(native_package_manager_base):
     'Return True if native_package_manager is installed.'
     try:
       clazz.package_info(package_name)
-    except RuntimeError, ex:
+    except RuntimeError as ex:
       return False
     return True
 

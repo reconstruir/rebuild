@@ -3,11 +3,10 @@
 
 from abc import abstractmethod, ABCMeta
 from collections import namedtuple
+from bes.system.compat import with_metaclass
 
-class native_package_manager_base(object):
+class native_package_manager_base(with_metaclass(ABCMeta, object)):
 
-  __metaclass__ = ABCMeta
-  
   def __init__(self):
     pass
   

@@ -67,7 +67,7 @@ class SystemEnvironment(object):
     env = dict_util.filter_with_keys(os.environ, clazz.CLEAN_ENV_VARS)
     env['PATH'] = os.pathsep.join(clazz.__CLEAN_PATH)
     for key in keep_keys:
-      if os.environ.has_key(key):
+      if key in os.environ:
         env[key] = os.environ[key]
     return env
 
@@ -96,7 +96,7 @@ class SystemEnvironment(object):
         clazz.__env_path_update(env, d, key, prepend = prepend)
       else:
         # Dont allow silent override of an existing key if the value changes
-        if env.has_key(key) and env[key] != d[key]:
+        if key in env and env[key] != d[key]:
           raise RuntimeError('Trying to change %s from \"%s\" to \"%s\"' % (key, env[key], d[key]))
         env[key] = d[key]
         

@@ -137,7 +137,7 @@ class unit_test_packages(object):
       temp_item('metadata/info.json', content = metadata),
       clazz.make_temp_item(name_override or name, version, '_foo.txt', 'docs'),
       clazz.make_temp_item(name_override or name, version, '_bar.txt', 'docs'),
-      clazz.make_temp_item(name_override or name, version, '_script.sh', 'bin', content = script_content, mode = 0755),
+      clazz.make_temp_item(name_override or name, version, '_script.sh', 'bin', content = script_content, mode = 0o755),
       temp_item('files/lib/pkgconfig/%s.pc' % (name), content = pkg_config_pc_contnet)
     ]
     tmp_dir = temp_file.make_temp_dir(items = items, delete = not debug)

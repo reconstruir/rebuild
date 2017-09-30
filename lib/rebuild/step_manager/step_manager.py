@@ -10,11 +10,11 @@ from bes.system import log
 
 from rebuild import build_blurb
 
-from multiple_steps import multiple_steps
-from Step import Step
-from step_argument import step_argument
-from step_description import step_description
-from step_result import step_result
+from .multiple_steps import multiple_steps
+from .Step import Step
+from .step_argument import step_argument
+from .step_description import step_description
+from .step_result import step_result
 
 class step_manager(object):
 
