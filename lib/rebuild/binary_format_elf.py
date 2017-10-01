@@ -128,7 +128,7 @@ class binary_format_elf(binary_format_base):
         print("      elf_abi_version: %x" % (elf_abi_version))
         print("             elf_type: %x" % (elf_type))
         print("          elf_machine: %x" % (elf_machine))
-      if self.__MACHINES.has_key(elf_machine):
+      if elf_machine in self.__MACHINES:
         elf_machine_name = self.__MACHINES[elf_machine]
       else:
         elf_machine_name = 'unknown'

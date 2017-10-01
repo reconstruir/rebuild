@@ -30,8 +30,8 @@ class test_instruction_list(unit_test):
     b.update(I('bar', { 'x': '10', 'y': 'go' }, set([ 'baz' ])))
     c = a + b
     it = iter(c.values())
-    self.assertEqual( I('bar', { 'x': '10', 'y': 'go' }, set([ 'baz' ])), it.next() )
-    self.assertEqual( I('foo', { 'x': '5', 'y': 'hi' }, set([ 'bar' ])), it.next() )
+    self.assertEqual( I('bar', { 'x': '10', 'y': 'go' }, set([ 'baz' ])), next(it) )
+    self.assertEqual( I('foo', { 'x': '5', 'y': 'hi' }, set([ 'bar' ])), next(it) )
     
   def test_add_invalid(self):
     a = IL()
@@ -49,39 +49,39 @@ class test_instruction_list(unit_test):
     a = IL.load_file(self.data_path('fruits/fructose.rci')).values()
     it = iter(a)
     self.assertEqual( 3, len(a) )
-    self.assertEqual( I('fructose', {}, set([ 'libfructose1', 'libfructose2' ])), it.next() )
+    self.assertEqual( I('fructose', {}, set([ 'libfructose1', 'libfructose2' ])), next(it) )
     self.assertEqual( I('libfructose1', { 'CFLAGS': '-I${REBUILD_PACKAGE_PREFIX}/include',
                                           'LDFLAGS': '-L${REBUILD_PACKAGE_PREFIX}/lib',
-                                          'LIBS': '-lfructose1' }, set()), it.next() )
+                                          'LIBS': '-lfructose1' }, set()), next(it) )
     self.assertEqual( I('libfructose2', { 'CFLAGS': '-I${REBUILD_PACKAGE_PREFIX}/include -I${REBUILD_PACKAGE_PREFIX}/include/caca',
                                           'LDFLAGS': '-L${REBUILD_PACKAGE_PREFIX}/lib',
-                                          'LIBS': '-lfructose2' }, set()), it.next() )
+                                          'LIBS': '-lfructose2' }, set()), next(it) )
 
   def test_load_dir(self):
     a = IL.load_dir(self.data_path('fruits')).values()
     self.assertEqual( 9, len(a) )
     it = iter(a)
-    self.assertEqual( I('fiber', {}, set([ 'libfiber1', 'libfiber2' ])), it.next() )
-    self.assertEqual( I('fructose', {}, set([ 'libfructose1', 'libfructose2' ])), it.next() )
+    self.assertEqual( I('fiber', {}, set([ 'libfiber1', 'libfiber2' ])), next(it) )
+    self.assertEqual( I('fructose', {}, set([ 'libfructose1', 'libfructose2' ])), next(it) )
     self.assertEqual( I('libfiber1', { 'CFLAGS': '-I${REBUILD_PACKAGE_PREFIX}/include',
                                        'LDFLAGS': '-L${REBUILD_PACKAGE_PREFIX}/lib',
-                                       'LIBS': '-lfiber1' }, set()), it.next() )
+                                       'LIBS': '-lfiber1' }, set()), next(it) )
     self.assertEqual( I('libfiber2', { 'CFLAGS': '-I${REBUILD_PACKAGE_PREFIX}/include -I${REBUILD_PACKAGE_PREFIX}/include/caca',
                                        'LDFLAGS': '-L${REBUILD_PACKAGE_PREFIX}/lib',
-                                       'LIBS': '-lfiber2' }, set()), it.next() )
+                                       'LIBS': '-lfiber2' }, set()), next(it) )
     self.assertEqual( I('libfructose1', { 'CFLAGS': '-I${REBUILD_PACKAGE_PREFIX}/include',
                                           'LDFLAGS': '-L${REBUILD_PACKAGE_PREFIX}/lib',
-                                          'LIBS': '-lfructose1' }, set()), it.next() )
+                                          'LIBS': '-lfructose1' }, set()), next(it) )
     self.assertEqual( I('libfructose2', { 'CFLAGS': '-I${REBUILD_PACKAGE_PREFIX}/include -I${REBUILD_PACKAGE_PREFIX}/include/caca',
                                           'LDFLAGS': '-L${REBUILD_PACKAGE_PREFIX}/lib',
-                                          'LIBS': '-lfructose2' }, set()), it.next() )
+                                          'LIBS': '-lfructose2' }, set()), next(it) )
     self.assertEqual( I('liborange1', { 'CFLAGS': '-I${REBUILD_PACKAGE_PREFIX}/include',
                                           'LDFLAGS': '-L${REBUILD_PACKAGE_PREFIX}/lib',
-                                          'LIBS': '-lorange1' }, set([ 'libfructose1'])), it.next() )
+                                          'LIBS': '-lorange1' }, set([ 'libfructose1'])), next(it) )
     self.assertEqual( I('liborange2', { 'CFLAGS': '-I${REBUILD_PACKAGE_PREFIX}/include -I${REBUILD_PACKAGE_PREFIX}/include/caca',
                                           'LDFLAGS': '-L${REBUILD_PACKAGE_PREFIX}/lib',
-                                          'LIBS': '-lorange2' }, set([ 'libfiber1' ])), it.next() )
-    self.assertEqual( I('orange', {}, set([ 'liborange1', 'liborange2' ])), it.next() )
+                                          'LIBS': '-lorange2' }, set([ 'libfiber1' ])), next(it) )
+    self.assertEqual( I('orange', {}, set([ 'liborange1', 'liborange2' ])), next(it) )
 
   def test_load_file_with_quoted_content(self):
     a = IL.load_file(self.data_path('quoted.rci')).values()

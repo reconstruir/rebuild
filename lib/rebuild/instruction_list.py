@@ -96,7 +96,7 @@ class instruction_list(object):
 
   @classmethod
   def load_file(clazz, filename):
-    return clazz.parse(file_util.read(filename))
+    return clazz.parse(file_util.read(filename, codec = 'utf-8'))
 
   def dependencies(self, target):
     check_is_string(target, 'target')

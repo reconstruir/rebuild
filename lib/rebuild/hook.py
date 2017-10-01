@@ -81,7 +81,12 @@ class hook(dependency_provider):
     tmp_locals = {}
     if extra_code:
       exec(extra_code, tmp_locals, tmp_globals)
-    execfile(filename, tmp_globals, tmp_locals)
+    try:      
+      with open(filename, 'r') as f:
+        content = f.read()
+    except Exeption as ex:
+      raise
+    exec(content, tmp_globals, tmp_locals)
     if not self._function_name in tmp_locals:
       raise RuntimeError('function not found in %s: %s' % (filename, self._function_name))
     function = tmp_locals[self._function_name]
