@@ -48,7 +48,7 @@ root	ALL=(ALL:ALL) ALL
   #DEBUG = True
   
   def test_bes_sudo_editor_py(self):
-    mode = 0440
+    mode = 0o440
     sudoers_tmp = temp_file.make_temp_file(content = self.__SUDOERS_UBUNTU, delete = not self.DEBUG)
     os.chmod(sudoers_tmp, mode)
     cmd = [
@@ -65,7 +65,7 @@ root	ALL=(ALL:ALL) ALL
     self.assertEquals( 0, rv.exit_code )
     self.assertEquals( mode, file_util.mode(sudoers_tmp) )
 
-    actual_content = file_util.read(sudoers_tmp)
+    actual_content = file_util.read(sudoers_tmp, codec = 'utf-8')
     difference = actual_content.replace(self.__SUDOERS_UBUNTU, '').strip()
     self.assertEquals( 'chupacabra ALL = (root) NOPASSWD: /usr/sbin/chroot # bes_sudo:v1' , difference )
 
@@ -81,7 +81,7 @@ root	ALL=(ALL:ALL) ALL
     if rv.exit_code != 0:
       raise RuntimeError('Failed to exectute \"%s\": %s' % (' '.join(cmd), rv.stdout))
     self.assertEquals( 0, rv.exit_code )
-    actual_content = file_util.read(sudoers_tmp)
+    actual_content = file_util.read(sudoers_tmp, codec = 'utf-8')
     difference = actual_content.replace(self.__SUDOERS_UBUNTU, '').strip()
     self.assertEquals( 'chupacabra ALL = (root) NOPASSWD: /usr/sbin/chroot # bes_sudo:v1\ntjefferson ALL = (root) NOPASSWD: /bin/cat # bes_sudo:v1' , difference )
 
