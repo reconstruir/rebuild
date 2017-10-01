@@ -17,7 +17,7 @@ class DatabaseEntry(object):
     return '%s[%s]' % (str(self.info), ', '.join(self.files))
 
   def __eq__(self, other):
-    return cmp(self.__dict__, other.__dict__) == 0
+    return self.__dict__ == other.__dict__
 
   def to_dict(self):
     return {
@@ -27,8 +27,8 @@ class DatabaseEntry(object):
 
   @classmethod
   def parse_dict(clazz, d):
-    assert d.has_key('info')
-    assert d.has_key('files')
+    assert 'info' in d
+    assert 'files' in d
     info = d['info']
     assert isinstance(info, dict)
     info = package_descriptor.parse_dict(info)

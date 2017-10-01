@@ -3,6 +3,7 @@
 
 import json, os.path as path
 from bes.common import object_util, string_util
+from bes.compat import cmp
 from rebuild.dependency import dependency_resolver
 from .Category import Category
 from .System import System
@@ -143,14 +144,14 @@ class package_descriptor(object):
   def __eq__(self, other):
     if not package_descriptor.is_package_info(other):
       raise RuntimeError('Got %s instead of package' % (type(other)))
-    return cmp(self.__dict__, other.__dict__) == 0
+    return self.__dict__ == other.__dict__
 
   def __lt__(self, other):
     assert package_descriptor.is_package_info(other)
     name_rv = cmp(self.name, other.name)
     if name_rv < 0:
       return True
-    version_rv = version.cmp(self.version, other.version)
+    version_rv = version.compare(self.version, other.version)
     if version_rv < 0:
       return True
     requirements_rv = cmp(self.requirements, other.requirements)
@@ -280,7 +281,7 @@ class package_descriptor(object):
     name_cmp = cmp(pi1.name, pi2.name)
     if name_cmp != 0:
       return name_cmp
-    return version.cmp(pi1.version, pi2.version)
+    return version.compare(pi1.version, pi2.version)
 
   @property
   def requirements_names(self):
