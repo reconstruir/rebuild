@@ -10,7 +10,7 @@ from rebuild.dependency import dependency_provider
 from rebuild.step_manager import step_description, step_manager
 from bes.fs import file_checksum
 from rebuild import platform_specific_config as psc
-from build_script_env import build_script_env
+from .build_script_env import build_script_env
 from rebuild.hook_extra_code import HOOK_EXTRA_CODE
 from rebuild import instruction_list
 
@@ -27,7 +27,7 @@ class build_script(object):
   def add_steps(self, packager_env):
     try:
       self._step_manager.add_steps(self.steps, packager_env)
-    except Exception, ex:
+    except Exception as ex:
       print(('Caught exception loading script: %s' % (self.filename)))
       raise
 
@@ -198,7 +198,7 @@ class build_script(object):
       if not file_checksum.verify(loaded_checksums.sources):
         return True
       return False
-    except IOError, ex:
+    except IOError as ex:
       return True
 
   _loaded_build_script = namedtuple('_loaded_build_script', 'filename,recipes')

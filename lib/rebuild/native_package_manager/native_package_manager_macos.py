@@ -4,7 +4,7 @@
 from .native_package_manager_base import native_package_manager_base
 
 import os.path as path
-import plistlib
+from bes.compat.plistlib import plistlib_loads
 from bes.common import algorithm, Shell, string_list
 
 class native_package_manager_macos(native_package_manager_base):
@@ -13,7 +13,7 @@ class native_package_manager_macos(native_package_manager_base):
   def installed_packages(clazz):
     'Return a list of installed pacakge.'
     cmd = 'pkgutil --packages'
-    rv = clazz.__call_pkgutil(cmd)
+    rv = clazz._call_pkgutil(cmd)
     if rv.exit_code != 0:
       raise RuntimeError('Failed to execute: %s' % (cmd))
     return sorted(algorithm.unique(rv.stdout.strip().split('\n')))
@@ -40,7 +40,7 @@ class native_package_manager_macos(native_package_manager_base):
   @classmethod
   def __package_files(clazz, package_name, flags):
     cmd = 'pkgutil --files %s %s' % (package_name, flags)
-    rv = clazz.__call_pkgutil(cmd)
+    rv = clazz._call_pkgutil(cmd)
     if rv.exit_code != 0:
       raise RuntimeError('Failed to execute: %s' % (cmd))
     files = sorted(algorithm.unique(rv.stdout.strip().split('\n')))
@@ -63,10 +63,10 @@ class native_package_manager_macos(native_package_manager_base):
   def owner(clazz, filename):
     'Return the package that owns filename.'
     cmd = 'pkgutil --file-info-plist %s' % (filename)
-    rv = clazz.__call_pkgutil(cmd)
+    rv = clazz._call_pkgutil(cmd)
     if rv.exit_code != 0:
       raise RuntimeError('Failed to get owner for package: %s' % (package_name))
-    pi = plistlib.readPlistFromString(rv.stdout).get('path-info', None)
+    pi = plistlib_loads(rv.stdout.encode('utf-8')).get('path-info', None)
     if not pi:
       return None
     return pi[0].get('pkgid', None)
@@ -75,10 +75,10 @@ class native_package_manager_macos(native_package_manager_base):
   def package_info(clazz, package_name):
     'Return True if native_package_manager is installed.'
     cmd = 'pkgutil --pkg-info-plist %s' % (package_name)
-    rv = clazz.__call_pkgutil(cmd)
+    rv = clazz._call_pkgutil(cmd)
     if rv.exit_code != 0:
       raise RuntimeError('Failed to get info for package: %s' % (package_name))
-    pi = plistlib.readPlistFromString(rv.stdout)
+    pi = plistlib_loads(rv.stdout.encode('utf-8'))
     return {
       'package_id': pi['pkgid'],
       'install_location': pi['install-location'],
@@ -87,6 +87,6 @@ class native_package_manager_macos(native_package_manager_base):
     }
 
   @classmethod
-  def __call_pkgutil(clazz, cmd):
+  def _call_pkgutil(clazz, cmd):
     'Return the output of pkgutil as lines.'
     return Shell.execute(cmd, raise_error = False)

@@ -31,7 +31,7 @@ class PackageDatabase(object):
     return sorted(result)
 
   def has_package(self, name):
-    return self.db.has_key(name)
+    return name in self.db
 
   def add_package(self, package_info, files):
     if self.has_package(package_info.name):

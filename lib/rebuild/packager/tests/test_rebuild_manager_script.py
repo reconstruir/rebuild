@@ -41,7 +41,7 @@ class test_rebuild_manager_script(unit_test):
     content = file_util.read(tmp_filename)
     expected_content = 'something foo and bar'
     self.assertEqual( expected_content, content )
-    self.assertEqual( file_util.mode(tmp_filename), 0644 )
+    self.assertEqual( file_util.mode(tmp_filename), 0o644 )
     self.assertEqual( True, save_rv )
     
 if __name__ == '__main__':
