@@ -8,7 +8,7 @@ class step_registry(object):
   @classmethod
   def register_step_class(clazz, registree):
     name = registree.__name__
-    if clazz._registry.has_key(name):
+    if name in clazz._registry:
       raise RuntimeError('a class named \"%s\" is already registered: %s' % (name, registree))
     clazz._registry[name] = registree
     
