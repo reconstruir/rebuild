@@ -65,9 +65,9 @@ class Package(object):
       '${REBUILD_PACKAGE_VERSION}': str(self.info.version),
     }
     file_search.search_replace(installation_dir,
-                              replacements,
-                              backup = False,
-                              test_func = file_mime.is_text)
+                               replacements,
+                               backup = False,
+                               test_func = file_mime.is_text)
 
   def __post_install_hooks(self, installation_dir):
     self.__update_python_config_files(installation_dir)

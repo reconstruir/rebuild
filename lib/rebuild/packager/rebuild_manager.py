@@ -9,8 +9,8 @@ from rebuild.dependency import dependency_resolver
 from rebuild.package_manager import artifact_manager, Package, package_manager, package_list
 from rebuild.tools_manager import tools_manager
 from collections import namedtuple
-from rebuild_manager_config import rebuild_manager_config
-from rebuild_manager_script import rebuild_manager_script
+from .rebuild_manager_config import rebuild_manager_config
+from .rebuild_manager_script import rebuild_manager_script
 
 class rebuild_manager(object):
 
