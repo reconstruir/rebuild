@@ -13,7 +13,7 @@ from rebuild import build_blurb, build_target, build_type, System
 from rebuild.packager import rebuild_manager
 from rebuild.package_manager import artifact_manager, Package, package_tester
 from rebuild.tools_manager import tools_manager
-from rebuild_manager_script import rebuild_manager_script
+from .rebuild_manager_script import rebuild_manager_script
 
 class rebuild_manager_cli(object):
 

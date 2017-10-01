@@ -14,9 +14,9 @@ class rebuild_manager_script(object):
     self.template = template
     self.basename = basename
     if template.startswith('#!/'):
-      self.mode = 0755
+      self.mode = 0o755
     else:
-      self.mode = 0644
+      self.mode = 0o644
   
   def save(self, root_dir, variables):
     filename = path.join(root_dir, self.basename)
@@ -30,9 +30,9 @@ class rebuild_manager_script(object):
 
   def _determine_mode(clazz, template):
     if template.starts_with('#!/'):
-      return 0755
+      return 0o755
     else:
-      return 0644
+      return 0o644
     
   def _content_changed(clazz, filename, content):
     if not path.isfile(filename):

@@ -45,9 +45,9 @@ class step_perl_module_post_install_cleanup(Step):
 
 class step_perl_module(multiple_steps):
   'A complete step to make python libs using the "build" target of setuptools.'
-  from step_setup import step_setup
-  from step_post_install import step_post_install
-  from step_make import step_make_install
+  from .step_setup import step_setup
+  from .step_post_install import step_post_install
+  from .step_make import step_make_install
 
   step_classes = [
     step_setup,

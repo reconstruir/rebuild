@@ -9,5 +9,5 @@ _step_files = glob.glob('%s/step_*.py' % (_this_dir))
 _step_files = [ path.basename(f) for f in _step_files ]
 _step_modules = [ f[0:-3] for f in _step_files ]
 for mod in _step_modules:
-  _code = 'from %s import *' % (mod)
+  _code = 'from .%s import *' % (mod)
   exec(_code)

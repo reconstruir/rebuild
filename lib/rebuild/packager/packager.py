@@ -11,8 +11,8 @@ from bes.fs import file_checksum, file_util
 
 from rebuild import build_blurb, build_target
 from rebuild.step_manager import step_manager
-from packager_env import packager_env
-from build_script import build_script
+from .packager_env import packager_env
+from .build_script import build_script
 
 TAG = 'packager'
 

@@ -5,7 +5,7 @@ import os.path as path, sys
 from bes.common import Shell
 from rebuild.step_manager import multiple_steps, Step, step_result
 from rebuild.pkg_config import pkg_config
-from step_make import step_make
+from .step_make import step_make
 
 class step_cmake_configure(Step):
   'Configure Setup.'
@@ -54,9 +54,9 @@ class step_cmake_install(Step):
 
 class step_cmake(multiple_steps):
   'A complete step to build cmake projects.'
-  from step_make import step_make
-  from step_setup import step_setup
-  from step_post_install import step_post_install
+  from .step_make import step_make
+  from .step_setup import step_setup
+  from .step_post_install import step_post_install
   
   step_classes = [
     step_setup,

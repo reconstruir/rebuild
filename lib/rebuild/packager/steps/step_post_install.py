@@ -6,15 +6,15 @@ from rebuild.step_manager import multiple_steps
 class step_post_install(multiple_steps):
   'Everything that needs to happen after the install step.'
 
-  from step_artifact_create import step_artifact_create
-  from step_check_darwin_archs import step_check_darwin_archs
-  from step_check_hard_coded_paths import step_check_hard_coded_paths
-  from step_cleanup import step_cleanup
-  from step_install_delete_files import step_install_delete_files
-  from step_install_install_files import step_install_install_files
-  from step_install_post_install_hooks import step_install_post_install_hooks
-  from step_make_instructions import step_make_instructions
-  from step_pkg_config_make_pc import step_pkg_config_make_pc
+  from .step_artifact_create import step_artifact_create
+  from .step_check_darwin_archs import step_check_darwin_archs
+  from .step_check_hard_coded_paths import step_check_hard_coded_paths
+  from .step_cleanup import step_cleanup
+  from .step_install_delete_files import step_install_delete_files
+  from .step_install_install_files import step_install_install_files
+  from .step_install_post_install_hooks import step_install_post_install_hooks
+  from .step_make_instructions import step_make_instructions
+  from .step_pkg_config_make_pc import step_pkg_config_make_pc
 
   step_classes = [
     step_install_delete_files,

@@ -95,8 +95,8 @@ class step_make_test(Step):
 
 class step_make_caca(multiple_steps):
   'A simple uber step for autoconf projects.'
-  from step_setup import step_setup
-  from step_post_install import step_post_install
+  from .step_setup import step_setup
+  from .step_post_install import step_post_install
   
   step_classes = [
     step_setup,

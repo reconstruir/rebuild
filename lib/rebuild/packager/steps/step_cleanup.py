@@ -3,14 +3,14 @@
 
 from rebuild.step_manager import multiple_steps
 
-from step_cleanup_droppings import step_cleanup_droppings
-from step_cleanup_gnu_info import step_cleanup_gnu_info
-from step_cleanup_library_filenames import step_cleanup_library_filenames
-from step_cleanup_binary_filenames import step_cleanup_binary_filenames
-from step_cleanup_libtool_droppings import step_cleanup_libtool_droppings
-from step_cleanup_pkg_config_pcs import step_cleanup_pkg_config_pcs
-from step_cleanup_python_droppings import step_cleanup_python_droppings
-from step_cleanup_strip_binaries import step_cleanup_strip_binaries
+from .step_cleanup_droppings import step_cleanup_droppings
+from .step_cleanup_gnu_info import step_cleanup_gnu_info
+from .step_cleanup_library_filenames import step_cleanup_library_filenames
+from .step_cleanup_binary_filenames import step_cleanup_binary_filenames
+from .step_cleanup_libtool_droppings import step_cleanup_libtool_droppings
+from .step_cleanup_pkg_config_pcs import step_cleanup_pkg_config_pcs
+from .step_cleanup_python_droppings import step_cleanup_python_droppings
+from .step_cleanup_strip_binaries import step_cleanup_strip_binaries
 
 class step_cleanup(multiple_steps):
   'A collection of multiple cleanup steps.'

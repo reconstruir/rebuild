@@ -6,13 +6,13 @@ import copy, imp, os, os.path as path, sys
 from bes.common import dict_util, object_util
 from bes.fs import dir_util, file_util
 
-from packager import packager
+from .packager import packager
 from rebuild import build_blurb, build_target, package_descriptor, requirement, TarballUtil
 from rebuild.dependency import dependency_resolver, missing_dependency_error
 from rebuild.step_manager import Step, step_aborted, step_result
 
 from collections import namedtuple
-from build_script import build_script
+from .build_script import build_script
 
 class build_script_runner(object):
 
@@ -58,9 +58,9 @@ class build_script_runner(object):
         script.package_info.resolved_requirements = resolved_requirements
         script.package_info.resolved_build_requirements = resolved_build_requirements
 
-      except missing_dependency_error, ex:
+      except missing_dependency_error as ex:
         raise missing_dependency_error('Missing dependency for %s: %s' % (script.filename, ' '.join(ex.missing_deps)), ex.missing_deps)
-      except Exception, ex:
+      except Exception as ex:
         assert False, 'caught unknown exception: %s' % (str(ex))
         
   def run_build_script(self, script, **kargs):
@@ -75,13 +75,13 @@ class build_script_runner(object):
         return self.RunResult(self.CURRENT, None)
       build_blurb.blurb('build', '%s - building' % (script.package_info.name))
       packager_result = pkg.execute(no_checksums)
-      print "FUCK: packager_result: ", packager_result
+      #print("CACA: packager_result: %s" % (str(packager_result)))
       if packager_result.success:
         return self.RunResult(self.SUCCESS, packager_result)
       else:
         return self.RunResult(self.FAILED, packager_result)
 
-    except step_aborted, ex:
+    except step_aborted as ex:
       return self.RunResult(self.ABORTED, None)
 
     assert False, 'Not Reached'

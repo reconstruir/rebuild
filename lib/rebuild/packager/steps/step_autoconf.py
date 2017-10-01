@@ -59,9 +59,9 @@ class step_autoconf_post_configure_hooks(step_call_hooks):
 
 class step_autoconf(multiple_steps):
   'A simple uber step for autoconf projects.'
-  from step_make import step_make, step_make_install
-  from step_setup import step_setup
-  from step_post_install import step_post_install
+  from .step_make import step_make, step_make_install
+  from .step_setup import step_setup
+  from .step_post_install import step_post_install
   
   step_classes = [
     step_setup,

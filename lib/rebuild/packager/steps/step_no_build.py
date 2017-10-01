@@ -6,7 +6,7 @@ from rebuild.step_manager import multiple_steps, Step, step_call_hooks, step_res
 
 class step_no_build(multiple_steps):
   'A simple uber step for autoconf projects.'
-  from step_artifact_create import step_artifact_create
+  from .step_artifact_create import step_artifact_create
 
   step_classes = [
     step_artifact_create,

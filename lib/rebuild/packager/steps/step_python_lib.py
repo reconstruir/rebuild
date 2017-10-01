@@ -35,8 +35,8 @@ class step_python_lib_install(Step):
 
 class step_python_lib(multiple_steps):
   'A complete step to make python libs using the "build" target of setuptools.'
-  from step_setup import step_setup
-  from step_post_install import step_post_install
+  from .step_setup import step_setup
+  from .step_post_install import step_post_install
 
   __step_global_args__ = {
     'copy_source_to_build_dir': True,

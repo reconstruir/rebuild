@@ -5,7 +5,7 @@ import os.path as path
 from bes.common import time_util
 from bes.fs import file_util, temp_file
 from rebuild.package_manager import artifact_manager, package_manager
-from rebuild_manager import rebuild_manager
+from .rebuild_manager import rebuild_manager
 from rebuild import package_descriptor, requirement
 
 class packager_env(object):

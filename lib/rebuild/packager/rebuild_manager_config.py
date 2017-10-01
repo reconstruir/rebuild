@@ -3,7 +3,7 @@
 
 from bes.common import string_util
 from rebuild import System
-from ConfigParser import ConfigParser
+from bes.compat import ConfigParser
 from bes.compat import StringIO
 from collections import OrderedDict
 

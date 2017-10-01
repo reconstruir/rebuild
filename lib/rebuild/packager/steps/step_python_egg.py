@@ -68,8 +68,8 @@ class step_python_egg_check_downloaded_dependencies(Step):
 
 class step_python_egg(multiple_steps):
   'A complete step to make python eggs using the "bdist_egg" target of setuptools.'
-  from step_setup import step_setup
-  from step_post_install import step_post_install
+  from .step_setup import step_setup
+  from .step_post_install import step_post_install
 
   __step_global_args__ = {
     #'FUCKFUCKFUCKFUCKFUCKFUCKFUCKFUCKFUCKFUCKFUCKFUCKFUCKFUCKFUCK': 666,

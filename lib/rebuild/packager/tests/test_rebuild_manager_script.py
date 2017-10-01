@@ -21,7 +21,7 @@ class test_rebuild_manager_script(unit_test):
     save_rv = script.save(tmp_root_dir, variables)
     tmp_filename = path.join(tmp_root_dir, basename)
     self.assertTrue( path.exists(tmp_filename) )
-    content = file_util.read(tmp_filename)
+    content = file_util.read(tmp_filename, 'utf-8')
     expected_content = '#!/bin/bash\necho foo bar'
     self.assertEqual( expected_content, content )
     self.assertEqual( file_util.mode(tmp_filename), 0o755 )
@@ -38,7 +38,7 @@ class test_rebuild_manager_script(unit_test):
     save_rv = script.save(tmp_root_dir, variables)
     tmp_filename = path.join(tmp_root_dir, basename)
     self.assertTrue( path.exists(tmp_filename) )
-    content = file_util.read(tmp_filename)
+    content = file_util.read(tmp_filename, 'utf-8')
     expected_content = 'something foo and bar'
     self.assertEqual( expected_content, content )
     self.assertEqual( file_util.mode(tmp_filename), 0o644 )
