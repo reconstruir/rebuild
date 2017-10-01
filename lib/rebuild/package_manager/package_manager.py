@@ -18,16 +18,24 @@ from .PackageDatabase import PackageDatabase
 from .package_list import package_list
 
 class PackageFilesConflictError(Exception):
-  pass
+  def __init__(self, message):
+    super(PackageFilesConflictError, self).__init__()
+    self.message = message
 
 class PackageNotFoundError(Exception):
-  pass
+  def __init__(self, message):
+    super(PackageNotFoundError, self).__init__()
+    self.message = message
 
 class PackageAlreadyInstallededError(Exception):
-  pass
+  def __init__(self, message):
+    super(PackageAlreadyInstallededError, self).__init__()
+    self.message = message
 
 class PackageMissingRequirementsError(Exception):
-  pass
+  def __init__(self, message):
+    super(PackageMissingRequirementsError, self).__init__()
+    self.message = message
 
 class package_manager(object):
 

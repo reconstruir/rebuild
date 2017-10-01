@@ -17,7 +17,7 @@ class package_descriptor_list(object):
     assert clazz.is_package_descriptor_list(descriptors)
     dep_map = {}
     for pd in descriptors:
-      if dep_map.has_key(pd.name):
+      if pd.name in dep_map:
         raise RuntimeError('already in dependency map: %s' % (pd.name))
       dep_map[pd.name] = pd.requirements_names | pd.build_requirements_names
     return dep_map
@@ -28,7 +28,7 @@ class package_descriptor_list(object):
     assert clazz.is_package_descriptor_list(descriptors)
     desc_map = {}
     for pd in descriptors:
-      if desc_map.has_key(pd.name):
+      if pd.name in desc_map:
         raise RuntimeError('already in descriptor map: %s' % (pd.name))
       desc_map[pd.name] = pd
     return desc_map

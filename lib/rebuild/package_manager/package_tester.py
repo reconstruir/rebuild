@@ -161,7 +161,7 @@ class package_tester(object):
       'REBUILD_PACKAGER_TEST_NAME': test_name,
     }
     file_replace.copy_with_substitute(test_source, test_source_with_replacements,
-                                     replacements, backup = False)
+                                      replacements, backup = False)
     return clazz.__test_setup(package.info, shell_env, saved_env,
                               test_root_dir, test_name,
                               test_source_with_replacements,

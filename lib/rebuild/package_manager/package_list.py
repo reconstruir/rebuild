@@ -14,7 +14,7 @@ class package_list(object):
   def sort_by_descriptor(clazz, packages):
     'Sort a list of packages in ascending order using package info.'
     assert clazz.is_package_list(packages)
-    return sorted(packages, cmp = Package.info_cmp)
+    return sorted(packages, key = lambda package: package.info)
 
   @classmethod
   def latest_versions(clazz, packages):

@@ -23,7 +23,7 @@ class sudo(object):
     info = clazz.__info_load(clazz.__INFO_FILE_PATH)
     key = '%s_%s' % (user, program)
     print("info: ", info)
-    if info.has_key(key):
+    if key in info:
       return True
     print("CACA:")
     return False

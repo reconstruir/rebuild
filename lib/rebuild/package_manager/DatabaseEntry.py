@@ -17,6 +17,8 @@ class DatabaseEntry(object):
     return '%s[%s]' % (str(self.info), ', '.join(self.files))
 
   def __eq__(self, other):
+    if not other:
+      return False
     return self.__dict__ == other.__dict__
 
   def to_dict(self):
