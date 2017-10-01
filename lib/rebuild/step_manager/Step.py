@@ -5,7 +5,6 @@
 
 import copy, os, os.path as path
 
-from abc import abstractmethod, ABCMeta
 from collections import namedtuple
 from bes.common import dict_util, object_util, string_util, Shell, variable
 from bes.system import log
@@ -19,14 +18,12 @@ from .step_result import step_result
 from rebuild.hook_extra_code import HOOK_EXTRA_CODE
 from .step_registry import step_register
 
-class Step(with_metaclass(ABCMeta, object)):
+class Step(with_metaclass(step_register, object)):
 
-  @abstractmethod
   def execute(self, argument):
     'Execute the step.'
-    pass
+    return step_result(False, 'not implemented')
 
-  @abstractmethod
   def on_tag_changed(self):
     'Called when the tag changes.'
     pass
