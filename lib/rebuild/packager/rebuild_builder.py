@@ -8,9 +8,9 @@ from bes.fs import dir_util, file_util
 from collections import namedtuple
 
 from rebuild import build_blurb, package_descriptor
-from rebuild_manager import rebuild_manager
+from .rebuild_manager import rebuild_manager
 
-from build_script_runner import build_script_runner
+from .build_script_runner import build_script_runner
 
 class rebuild_builder(object):
 

@@ -24,9 +24,9 @@ class library(_library_super_class):
     'Return True if filename is an ar archive'
     if not path.isfile(filename) or path.islink(filename):
       return False
-    with open(filename, 'r') as fin:
+    with open(filename, 'rb') as fin:
       magic = fin.read(8)
-      return len(magic) == 8 and magic == '!<arch>\n'
+      return len(magic) == 8 and magic == b'!<arch>\n'
 
   @classmethod
   def is_library(clazz, filename):
