@@ -5,7 +5,7 @@ import os.path as path, re
 from bes.system import impl_import
 from bes.fs import dir_util, file_util
 
-_library_super_class = impl_import.load('library', globals())
+_library_super_class = impl_import.load(__name__, 'library', globals())
 
 class library(_library_super_class):
   'Top level class for dealing with system libraries.'

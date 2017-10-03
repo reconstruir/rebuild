@@ -3,7 +3,7 @@
 
 from bes.system import impl_import
 
-class toolchain(impl_import.load('_toolchain', globals())):
+class toolchain(impl_import.load(__name__, '_toolchain', globals())):
   'Foo.'
 
   @classmethod
