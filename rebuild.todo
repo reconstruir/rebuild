@@ -470,3 +470,8 @@ aug 19
 
 sep 30
 - get rid of tag changed bullshit in Step
+
+oct 3
+- when a package changes names like python_beautiful_soup to python_beautifulsoup it creates conflicts need to remove the old one
+- add post_install and post_setup hoook unit tests
+- add file_replace unit tests

@@ -3,18 +3,18 @@
 
 import os, os.path as path, re, subprocess, sys
 
-from bes.fs import compressed_file, file_find, file_util, file_mime, temp_file
+from bes.fs import compressed_file, file_find, file_util, file_mime, file_path, temp_file
 from bes.common import algorithm, object_util
 
 class Patch(object):
 
   @classmethod
-  def patch(clazz, patches, cwd, strip = 1, backup = True, posix = True):
+  def patch(clazz, patches, cwd, strip = 1, backup = True, posix = True, program = None):
     'Apply the given patches by calling patch with strip, backup and posix.'
     patches = object_util.listify(patches)
     target_files = file_find.find(cwd, relative = True)
     for patch in patches:
-      rv = clazz.__call_patch(patch, cwd, strip, backup, posix)
+      rv = clazz._call_patch(patch, cwd, strip, backup, posix, program)
       if rv[0] != 0:
         sys.stderr.write(rv[1])
         sys.stderr.flush()
@@ -83,9 +83,12 @@ class Patch(object):
     return ft.find('gzip') >= 0
 
   @classmethod
-  def __call_patch(clazz, patch, cwd, strip, backup, posix):
-
-    cmd = [ 'patch', '--force' ]
+  def _call_patch(clazz, patch, cwd, strip, backup, posix, program):
+    program = program or 'patch'
+    program_abs = file_path.which(program)
+    if not program_abs:
+      raise RuntimeError('patch program not found: %s' % (program))
+    cmd = [ program_abs, '--force', '--silent' ]
     
     if strip != None:
       cmd.append('-p%d' % (strip))
