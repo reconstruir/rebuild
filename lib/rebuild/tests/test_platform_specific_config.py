@@ -12,6 +12,9 @@ class test_platform_specific_config(unit_test):
   def test_simple(self):
     self.assertEqual( ( 'linux', 'foo bar baz' ), psc.parse('linux: foo bar baz') )
 
+  def test_simple_var(self):
+    self.assertEqual( ( 'linux', '${foo} ${bar} ${baz}' ), psc.parse('linux: ${foo} ${bar} ${baz}') )
+    
   def test_simple_white_space(self):
     self.assertEqual( ( 'linux', 'foo bar baz' ), psc.parse('linux:      foo bar baz     ') )
 
@@ -27,6 +30,9 @@ class test_platform_specific_config(unit_test):
     self.assertEqual( ( 'linux', [ 'foo="a b c"' ] ), psc.parse_list('linux: foo="a b c"') )
     self.assertEqual( ( 'linux', [ 'CFLAGS="-f foo -g bar"' ] ), psc.parse_list(r'linux: CFLAGS="-f foo -g bar"') )
 
+  def test_key_values_with_vars(self):
+    self.assertEqual( ( 'linux', [ ( 'foo', '${a}' ) ] ), psc.parse_key_values('linux: foo=${a}') )
+    
   def test_resolve_key_values(self):
     config = [
       'all: foo=666 bar=hi',
