@@ -5,7 +5,7 @@ import os.path as path, unittest
 from bes.fs import file_util, temp_file
 from rebuild.pkg_config import pkg_config
 
-class Testpkg_config(unittest.TestCase):
+class test_pkg_config(unittest.TestCase):
 
   FOO_PC = '''prefix=/usr/foo
 exec_prefix=${prefix}

@@ -35,13 +35,13 @@ class entry(object):
   @classmethod
   def parse(clazz, s):
     'Parse a pkg-config .pc file entry.'
-    delimiter = clazz.__first_delimiter(s)
+    delimiter = clazz._first_delimiter(s)
     if not delimiter:
       raise RuntimeError('No valid delimiter (: or =) found in \"%s\"' % (s))
     if delimiter == clazz.COLON:
-      return clazz.__parse_export(s)
+      return clazz._parse_export(s)
     else:
-      return clazz.__parse_variable(s)
+      return clazz._parse_variable(s)
 
   def is_variable(self):
     return self._type == self.VARIABLE
@@ -53,7 +53,7 @@ class entry(object):
     self.value = variable.substitute(self.value, replacements)
 
   @classmethod
-  def __first_delimiter(clazz, s):
+  def _first_delimiter(clazz, s):
     'Return which delimiter comes first in s (either : or =).'
     colon_index = s.find(clazz.COLON)
     equal_index = s.find(clazz.EQUAL)
@@ -72,13 +72,13 @@ class entry(object):
       return None
 
   @classmethod
-  def __parse_variable(clazz, s):
+  def _parse_variable(clazz, s):
     v = s.partition(clazz.EQUAL)
     assert v[1] == clazz.EQUAL
     return clazz(clazz.VARIABLE, v[0].strip(), v[2].strip())
 
   @classmethod
-  def __parse_export(clazz, s):
+  def _parse_export(clazz, s):
     v = s.partition(clazz.COLON)
     assert v[1] == clazz.COLON
     return clazz(clazz.EXPORT, v[0].strip(), v[2].strip())

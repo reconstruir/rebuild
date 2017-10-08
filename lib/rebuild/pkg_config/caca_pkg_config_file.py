@@ -10,27 +10,17 @@ from bes.fs import dir_util, file_util
 from .entry import entry
 from rebuild import requirement
 
-class pkg_config_file(object):
+class caca_pkg_config_file(object):
 
-  def __init__(self):
-    self.__reset()
-
-  def __reset(self):
-    self.variables = []
-    self.exports = []
-
-  def parse_file(self, filename):
-    self.__reset()
-    try:
-      return self.parse_string(file_util.read(filename).decode('utf-8'))
-    except:
-      print("failed loading %s" % (filename))
-      raise
+  def __init__(self, filename):
+    self.filename = filename
+    self.content = file_util.read(path.abspath(filename)).decode('utf-8')
+    self.variables, self.exports = self._parse(self.content)
 
   def write_file(self, filename, backup = True):
     new_content = str(self)
     if path.exists(filename):
-      old_content = file_util.read(filename)
+      old_content = file_util.read(filename, codec = 'utf-8')
       if new_content == old_content:
         return False
     if backup:
@@ -38,18 +28,30 @@ class pkg_config_file(object):
     file_util.save(filename, new_content)
     return True
 
-  def parse_string(self, s):
-    self.__reset()
+  @classmethod
+  def _parse(self, s):
     lines = [ s.strip() for s in s.split('\n') ]
-    lines = [ line for line in lines if self.__line_is_valid(line) ]
-    
+    lines = [ line for line in lines if line and not line.startswith('#') ]
     entries = [ entry.parse(line) for line in lines ]
+    variables = []
+    exports = []
     for e in entries:
       if e.is_variable():
-        self.variables.append(e)
+        variables.append(e)
       else:
-        self.exports.append(e)
+        exports.append(e)
+    return ( variables, exports )
 
+  def _parse_file(self, filename):
+    content = file_util.read(filename).decode('utf-8')
+    self.__reset()
+    try:
+      return self.parse_string(file_util.read(filename).decode('utf-8'))
+    except:
+      print("failed loading %s" % (filename))
+      raise
+
+  
   def __eq__(self, cf):
     return self.__dict__ == cf.__dict__
 
@@ -67,7 +69,7 @@ class pkg_config_file(object):
     return True
 
   def deep_copy(self):
-    result = pkg_config_file()
+    result = caca_pkg_config_file()
     result.variables = copy.deepcopy(self.variables)
     result.exports = copy.deepcopy(self.exports)
     return result
@@ -138,7 +140,7 @@ class pkg_config_file(object):
 
   @classmethod
   def rewrite_cleanup(clazz, src_pc, dst_pc):
-    cf = pkg_config_file()
+    cf = caca_pkg_config_file()
     cf.parse_file(src_pc)
     cf.cleanup_duplicate_exports()
     return cf.write_file(dst_pc)

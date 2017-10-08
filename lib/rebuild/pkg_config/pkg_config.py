@@ -4,7 +4,7 @@
 import os.path as path
 from bes.common import algorithm, object_util, Shell, string_util
 from bes.system import log, os_env_var, host
-from bes.fs import file_find, file_match
+from bes.fs import file_find, file_match, file_util
 from rebuild import build_blurb, build_arch, System
 
 class pkg_config(object):
@@ -16,7 +16,8 @@ class pkg_config(object):
     tools_root = path.normpath(path.join(path.dirname(__file__), '..', 'tools', host.SYSTEM, build_arch.HOST_ARCH))
     return path.join(tools_root, 'pkg_config-%s_rev1' % (version), 'bin', exe)
 
-  PKG_CONFIG_EXE = __pkg_config_exe()
+  #PKG_CONFIG_EXE = __pkg_config_exe()
+  PKG_CONFIG_EXE = '/Users/ramiro/proj/software/tmp/builds/macos/release/pkg_config-0.29.1_2017-10-04-15-15-48-032758/build/pkg-config'
 
   @classmethod
   def list_all(clazz, PKG_CONFIG_PATH = []):
@@ -107,17 +108,19 @@ class pkg_config(object):
 
   @classmethod
   def __call_pkg_config(clazz, args, PKG_CONFIG_LIBDIR = [], PKG_CONFIG_PATH = []):
+    print("clazz.PKG_CONFIG_EXE: %s" % (clazz.PKG_CONFIG_EXE))
     cmd = [ clazz.PKG_CONFIG_EXE ] + object_util.listify(args)
     env = {
+      'PKG_CONFIG_DEBUG_SPEW': '1',
       'PKG_CONFIG_LIBDIR': ':'.join(PKG_CONFIG_LIBDIR),
       'PKG_CONFIG_PATH': ':'.join(PKG_CONFIG_PATH),
-      'PATH': os_env_var('PATH').value,
+#      'PATH': os_env_var('PATH').value,
     }
+    for p in PKG_CONFIG_PATH:
+      file_util.mkdir(p)
     #build_blurb.blurb_verbose('pkg_config', '__call_pkg_config() cmd=%s' % (str(cmd)))
     #print('pkg_config', '__call_pkg_config() cmd=%s' % (str(cmd)))
     rv = Shell.execute(cmd, env = env)
-    #build_blurb.blurb_verbose('pkg_config', '__call_pkg_config() rv=%s' % (str(rv)))
-    #print('pkg_config', '__call_pkg_config() rv=%s' % (str(rv)))
     return rv
     
   @classmethod
