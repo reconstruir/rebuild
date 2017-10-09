@@ -42,9 +42,9 @@ k6: v6
 name: foo
 k1: v1
 k2: v2="a b c"
-k3: v3
+k3: v3 foo bar
 '''
-    self.assertEqual( [ kv('name', 'foo'), kv('k1', 'v1'), kv('k2', 'v2="a b c"'), kv('k3', 'v3') ],
+    self.assertEqual( [ kv('name', 'foo'), kv('k1', 'v1'), kv('k2', 'v2="a b c"'), kv('k3', 'v3 foo bar') ],
                       self._parse(text) )
 
 
