@@ -16,7 +16,7 @@ class _state(object):
     raise RuntimeError('unhandled handle_key_value(%c) in state %s' % (self.name))
 
   def change_state(self, new_state, token):
-    self.parser.change_state(new_state, 'token="%s:%s"'  % (token.type, token.value))
+    self.parser.change_state(new_state, 'token="%s:%s"'  % (token.token_type, token.value))
 
   def unexpected_token(self, token):
     raise RuntimeError('unexpected token in %s state: %s' % (self.name, str(token)))
@@ -29,13 +29,13 @@ class _state_expecting_header(_state):
     self.log_d('handle_key_value(%s)' % (str(token)))
     new_state = None
     strings = []
-    if token.type == lexer.TOKEN_COMMENT:
+    if token.token_type == lexer.TOKEN_COMMENT:
       new_state = self.parser.STATE_DONE
-    elif token.type == lexer.TOKEN_SPACE:
+    elif token.token_type == lexer.TOKEN_SPACE:
       new_state = self.parser.STATE_EXPECTING_HEADER
-    elif token.type == lexer.TOKEN_DONE:
+    elif token.token_type == lexer.TOKEN_DONE:
       new_state = self.parser.STATE_DONE
-    elif token.type == lexer.TOKEN_STRING:
+    elif token.token_type == lexer.TOKEN_STRING:
       strings = [ token.value ]
       new_state = self.parser.STATE_EXPECTING_HEADER
     else:
@@ -49,7 +49,7 @@ class _state_done(_state):
 
   def handle_key_value(self, token):
     self.log_d('handle_key_value(%s)' % (str(token)))
-    if token.type != lexer.TOKEN_DONE:
+    if token.token_type != lexer.TOKEN_DONE:
       self.unexpected_token(token)
     self.change_state(self.parser.STATE_DONE, token)
     return []
