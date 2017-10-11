@@ -16,8 +16,8 @@ class pkg_config(object):
     tools_root = path.normpath(path.join(path.dirname(__file__), '..', 'tools', host.SYSTEM, build_arch.HOST_ARCH))
     return path.join(tools_root, 'pkg_config-%s_rev1' % (version), 'bin', exe)
 
-  #PKG_CONFIG_EXE = __pkg_config_exe()
-  PKG_CONFIG_EXE = '/Users/ramiro/proj/software/tmp/builds/macos/release/pkg_config-0.29.1_2017-10-04-15-15-48-032758/build/pkg-config'
+  PKG_CONFIG_EXE = __pkg_config_exe()
+  #PKG_CONFIG_EXE = '/Users/ramiro/proj/software/tmp/builds/macos/release/pkg_config-0.29.1_2017-10-04-15-15-48-032758/build/pkg-config'
 
   @classmethod
   def list_all(clazz, PKG_CONFIG_PATH = []):
