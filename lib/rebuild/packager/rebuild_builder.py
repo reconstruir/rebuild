@@ -5,6 +5,7 @@ import copy, fnmatch, os, os.path as path
 from bes.common import algorithm, dict_util, object_util
 from bes.thread import thread_pool
 from bes.fs import dir_util, file_util
+from bes.git import git_download_cache, git_repo
 from collections import namedtuple
 
 from rebuild import build_blurb, package_descriptor
@@ -24,12 +25,12 @@ class rebuild_builder(object):
     self._publish_dir = path.join(self._tmp_dir, 'artifacts')
     self._rebbe_root = path.join(self._tmp_dir, 'rebbe')
     self._downloads_root = path.join(self._tmp_dir, 'downloads')
-    self._third_party_sources_root = path.join(self._tmp_dir, 'third_party_sources')
-    self._third_party_sources_address = 'git@git:third_party_sources.git'
     self.build_script_filenames = build_script_filenames
     self._runner = build_script_runner(self.build_script_filenames, self.build_target)
     self.all_package_names = sorted(self._runner.scripts.keys())
     self.thread_pool = thread_pool(1)
+    self._third_party_sources = git_repo(path.join(self._tmp_dir, 'third_party_sources'),
+                                         'git@git:third_party_sources.git')
     
   def exclude(self, excluded_packages):
     excluded_packages = object_util.listify(excluded_packages)
@@ -102,8 +103,7 @@ class rebuild_builder(object):
                                            publish_dir = self._publish_dir,
                                            rebbe_root = self._rebbe_root,
                                            downloads_root = self._downloads_root,
-                                           third_party_sources_root = self._third_party_sources_root,
-                                           third_party_sources_address = self._third_party_sources_address,
+                                           third_party_sources = self._third_party_sources,
                                            **opts)
     if result.status == build_script_runner.SUCCESS:
       self.blurb('%s - SUCCESS' % (script.package_info.name))
@@ -152,6 +152,9 @@ class rebuild_builder(object):
     self.blurb('building packages:')
     self.blurb(' '.join(build_order_flat), fit = True)
 
+    self.blurb('Updating third party sources: %s' % (path.relpath(self._third_party_sources.root_dir)))
+    self._third_party_sources.update()
+    
     exit_code = self.EXIT_CODE_SUCCESS
 
 #    build_order = build_script_runner.build_order(resolved_scripts)

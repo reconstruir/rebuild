@@ -35,8 +35,7 @@ class packager(object):
                                      kargs.get('working_dir', None),
                                      kargs.get('rebbe_root', None),
                                      kargs.get('downloads_root', None),
-                                     kargs.get('third_party_sources_root', None),
-                                     kargs.get('third_party_sources_address', None))
+                                     kargs.get('third_party_sources', None))
     self.script.checksum_dir = self.packager_env.checksum_dir
     self.script.all_scripts = all_scripts
     self._execute_args = dict_util.combine(kargs, {})
@@ -54,9 +53,4 @@ class packager(object):
     return tmp_dir
 
   def execute(self, no_checksums = False):
-    self._update_third_party_sources()
     return self.script.execute(self.packager_env, self._execute_args, no_checksums)
-
-  def _update_third_party_sources(self):
-    self.blurb('Updating third party sources: %s' % (path.relpath(self.packager_env.third_party_sources.root_dir)))
-    self.packager_env.third_party_sources.update()

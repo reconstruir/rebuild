@@ -22,8 +22,7 @@ class packager_env(object):
                working_dir = None,
                rebbe_root = None,
                downloads_root = None,
-               third_party_sources_root = None,
-               third_party_sources_address = None):
+               third_party_sources = None):
     assert tmp_dir
     
     self.script = script
@@ -46,7 +45,7 @@ class packager_env(object):
     self.requirements_manager = package_manager(path.join(self.working_dir, 'requirements'))
     self.rebbe = rebuild_manager(rebbe_root, self.artifact_manager)
     self.downloads = git_download_cache(downloads_root)
-    self.third_party_sources = git_repo(third_party_sources_root, third_party_sources_address)
+    self.third_party_sources = third_party_sources
     self.sources = []
     self.targets = []
     self.stage_lib_dir = path.join(self.stage_dir, 'lib')
