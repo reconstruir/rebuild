@@ -33,18 +33,18 @@ class TarballUtil(object):
     version = version.replace('\\.', '.')
     version = version.replace('\\-', '.')
 
-    exp1 = r'.*%s.*%s.*' % (name, version)
-    exp2 = r'.*%s.*%s.*' % (name.replace('-', '_'), version)
-    exp3 = r'.*%s.*%s.*' % (name.replace('_', '-'), version)
-
-    expressions  = [
-      re.compile(exp1),
-      re.compile(exp1, re.IGNORECASE),
-      re.compile(exp2),
-      re.compile(exp2, re.IGNORECASE),
-      re.compile(exp3),
-      re.compile(exp3, re.IGNORECASE),
+    patterns = [
+      r'.*%s.*%s.*' % (name, version),
+      r'.*%s.*%s.*' % (name.replace('-', '_'), version),
+      r'.*%s.*%s.*' % (name.replace('_', '-'), version),
+      r'.*%s.*%s.*' % (name.replace('.', '_'), version),
+      r'.*%s.*%s.*' % (name.replace('_', '.'), version),
     ]
+    expressions = []
+    for pattern in patterns:
+      expressions.append(re.compile(pattern))
+      expressions.append(re.compile(pattern, re.IGNORECASE))
+
     result = []
     for filename in filenames:
       for i, expression in enumerate(expressions):
