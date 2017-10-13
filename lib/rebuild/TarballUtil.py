@@ -26,6 +26,7 @@ class TarballUtil(object):
       'lib': '',
     }
     name_prefix = clazz.__name_prefix(name)
+    #print('cACA: name=%s;  name_prefix=%s' % (name, name_prefix))
     if name_prefix:
       name_replacements[name_prefix] = ''
     name = re.escape(string_util.replace(name, name_replacements, word_boundary = False))
