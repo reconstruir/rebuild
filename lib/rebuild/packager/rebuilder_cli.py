@@ -14,6 +14,7 @@ from bes.fs import file_util
 from bes.archive import archiver
 from bes.common import string_util
 from bes.system import host
+from bes.python import code
 
 from rebuild.packager import rebuild_manager
 from rebuild.package_manager import artifact_manager, Package, package_tester
@@ -143,7 +144,7 @@ class rebuilder_cli(object):
       raise RuntimeError('rebuild structure file not found: %s' % (filename))
     tmp_globals = {}
     tmp_locals = {}
-    execfile(filename, tmp_globals, tmp_locals)
+    code.execfile(filename, tmp_globals, tmp_locals)
     if not 'rebuild_subdirs' in tmp_locals:
       raise RuntimeError('rebuild_subdirs not defined: %s' % (filename))
     func = tmp_locals['rebuild_subdirs']

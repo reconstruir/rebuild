@@ -5,6 +5,7 @@ import copy, os.path as path
 from collections import namedtuple
 
 from bes.common import algorithm, object_util
+from bes.python import code
 from rebuild import build_arch, build_type, build_target, Category, package_descriptor
 from rebuild.dependency import dependency_provider
 from rebuild.step_manager import step_description, step_manager
@@ -210,13 +211,7 @@ class build_script(object):
     tmp_globals = {}
     tmp_locals = {}
     exec(HOOK_EXTRA_CODE, tmp_locals, tmp_globals)
-
-    try:      
-      with open(filename, 'r') as f:
-        content = f.read()
-    except Exeption as ex:
-      raise
-    exec(content, tmp_globals, tmp_locals)
+    code.execfile(filename, tmp_globals, tmp_locals)
     assert 'rebuild_recipes' in tmp_locals
     rebuild_recipes_func = tmp_locals['rebuild_recipes']
     if not callable(rebuild_recipes_func):
