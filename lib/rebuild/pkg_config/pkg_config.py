@@ -108,7 +108,6 @@ class pkg_config(object):
 
   @classmethod
   def __call_pkg_config(clazz, args, PKG_CONFIG_LIBDIR = [], PKG_CONFIG_PATH = []):
-    print("clazz.PKG_CONFIG_EXE: %s" % (clazz.PKG_CONFIG_EXE))
     cmd = [ clazz.PKG_CONFIG_EXE ] + object_util.listify(args)
     env = {
       'PKG_CONFIG_DEBUG_SPEW': '1',

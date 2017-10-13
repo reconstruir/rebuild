@@ -15,7 +15,7 @@ class TarballUtil(object):
     filenames = []
     for d in dirs:
       if path.isdir(d):
-        filenames += file_find.find(d, max_depth = 1, relative = False, file_type = file_find.FILE | file_find.LINK)
+        filenames += file_find.find(d, max_depth = 3, relative = False, file_type = file_find.FILE | file_find.LINK)
     return clazz.find_in_list(filenames, name, version)
 
   @classmethod
@@ -28,7 +28,7 @@ class TarballUtil(object):
     name_prefix = clazz.__name_prefix(name)
     if name_prefix:
       name_replacements[name_prefix] = ''
-    name = re.escape(string_util.replace(name, name_replacements))
+    name = re.escape(string_util.replace(name, name_replacements, word_boundary = False))
     version = re.escape(version)
     version = version.replace('\\.', '.')
     version = version.replace('\\-', '.')
@@ -41,8 +41,10 @@ class TarballUtil(object):
     ]
     result = []
     for filename in filenames:
-      for expression in expressions:
-        if expression.match(filename):
+      for i, expression in enumerate(expressions):
+        base = path.basename(filename)
+        #print('CHECKING %s to %s => %s' % (expression.pattern, base, expression.match(base)))
+        if expression.match(base):
           result.append(filename)
     return sorted(algorithm.unique(result))
 

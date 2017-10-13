@@ -23,7 +23,8 @@ class step_setup_tarball_download(Step):
     if tarball_address:
       assert tarball_revision
       if not packager_env.downloads.has_tarball(tarball_address, tarball_revision):
-        clazz.blurb('Downloading %s @ %s' % (tarball_address, tarball_revision))
+        tarball_path = packager_env.downloads.tarball_path(tarball_address, tarball_revision)
+        clazz.blurb('Downloading %s@%s to %s' % (tarball_address, tarball_revision, tarball_path))
       downloaded_path = packager_env.downloads.get_tarball(tarball_address, tarball_revision)
       result = { 'downloaded_tarballs': [ downloaded_path ] }
     return result

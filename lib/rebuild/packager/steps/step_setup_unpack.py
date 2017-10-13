@@ -40,39 +40,49 @@ class step_setup_unpack(Step):
       archiver.create(tmp_tarball_path, tarball_source_dir_override, base_dir = packager_env.package_descriptor.full_name)
       tarballs_dict = { 'tarballs': [ tmp_tarball_path ] }
     else:
-      tarballs_dict = clazz.resolve_step_args_files(packager_env, args, 'tarballs')
-    if not tarballs_dict['tarballs']:
+      tarballs_dict = clazz.resolve_step_args_list(packager_env, args, 'tarballs')
+    if not tarballs_dict or 'tarballs' not in tarballs_dict:
       tarball_name = args.get('tarball_name', packager_env.package_descriptor.name)
-      tarball = clazz._find_tarball([ packager_env.source_dir, packager_env.download_dir ],
+
+      third_party_sources_root = packager_env.third_party_sources.root_dir
+
+      tarball = clazz._find_tarball([ path.join(third_party_sources_root, 'sources') ],
                                     tarball_name,
-                                    packager_env.package_descriptor.version)
+                                    packager_env.package_descriptor.version,
+                                    packager_env.build_target)
+
       if tarball:
         tarballs_dict = { 'tarballs': [ tarball ] }
       else:
         tarballs_dict = { 'tarballs': [] }
-    extra_tarballs_dict = clazz.resolve_step_args_files(packager_env, args, 'extra_tarballs')
+    extra_tarballs_dict = clazz.resolve_step_args_list(packager_env, args, 'extra_tarballs')
 
     assert tarballs_dict
     assert isinstance(tarballs_dict, dict)
     assert 'tarballs' in tarballs_dict
     assert 'extra_tarballs' not in tarballs_dict
 
-    assert extra_tarballs_dict
-    assert isinstance(extra_tarballs_dict, dict)
-    assert 'extra_tarballs' in extra_tarballs_dict
-    assert 'tarballs' not in extra_tarballs_dict
+    if extra_tarballs_dict:
+      assert isinstance(extra_tarballs_dict, dict)
+      assert 'extra_tarballs' in extra_tarballs_dict
+      assert 'tarballs' not in extra_tarballs_dict
 
     return dict_util.combine(tarballs_dict, extra_tarballs_dict)
 
   @classmethod
-  def _find_tarball(clazz, where, name, version):
+  def _find_tarball(clazz, where, name, version, build_target):
     tarball = TarballUtil.find(where, name, version.upstream_version)
 
+    # If we find more than one tarball it could be because there are 1 for each platform so
+    # filter out only the ones that match the current build system target
+    if len(tarball) > 1:
+      pattern = '/%s/' % (build_target.system)
+      tarball = [ t for t in tarball if pattern in t ]
+      
     if len(tarball) > 1:
       raise RuntimeError('Too many tarballs found for %s-%s: %s' % (name, version.upstream_version, ' '.join(tarball)))
-
     if len(tarball) == 0:
-      return None #raise RuntimeError('No tarball found for for %s-%s in %s' % (name, version.upstream_version, where))
+      return None
 
     tarball = tarball[0]
 
