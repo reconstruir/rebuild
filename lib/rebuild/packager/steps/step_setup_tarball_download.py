@@ -4,13 +4,8 @@
 
 import os.path as path
 
-#from bes.archive import archiver
 from rebuild.step_manager import Step, step_result
-from rebuild import build_blurb #, TarballUtil
-#from bes.common import object_util, dict_util
-#from bes.fs import file_util
-from bes.git import git
-from bes.common import time_util
+from bes.fs import file_util
 
 class step_setup_tarball_download(Step):
   'Download a tarball.'
@@ -19,11 +14,6 @@ class step_setup_tarball_download(Step):
     super(step_setup_tarball_download, self).__init__()
 
   def execute(self, argument):
-#    print "FUCK step_setup_tarball_download.execute - %s" % (argument.env.package_info.full_name)
-#    tarball_address = argument.args.get('tarball_address', None)
-#    print "FUCK: ", tarball_address
-#    if tarball_address:
-#      print "FUCK: ", tarball_address
     return step_result(True, None)
 
   def sources_keys(self):
@@ -31,12 +21,15 @@ class step_setup_tarball_download(Step):
 
   @classmethod
   def parse_step_args(clazz, packager_env, args):
+    #print('caca: %s' % (packager_env.downloads))
     pd = packager_env.package_descriptor
-    tarball_address = args.get('tarball_address', None)
+    tarball_address, tarball_revision = args.get('tarball_address', ( None, None ))
     if tarball_address:
-      tarball_revision = args.get('tarball_revision', 'HEAD')
-      timestamp = time_util.timestamp(delimiter = '.', milliseconds = False)
-      basename = '%s-%s-%s.tar.gz' % (pd.name, pd.version, timestamp)
+      assert tarball_revision
+      if not packager_env.downloads.has_tarball(tarball_address, tarball_revision):
+        clazz.blurb('Downloading %s @ %s' % (tarball_address, tarball_revision))
+      downloaded_path = packager_env.downloads.get_tarball(tarball_address, tarball_revision)
+      basename = '%s-%s-%s.tar.gz' % (pd.name, pd.version, tarball_revision)
       filename = path.join(packager_env.download_dir, basename)
-      git.download_tarball(pd.name, tarball_revision, tarball_address, filename)
+      file_util.copy(downloaded_path, filename)
     return {}

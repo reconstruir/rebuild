@@ -23,6 +23,7 @@ class rebuild_builder(object):
     self._builds_tmp_dir = path.join(self._tmp_dir, 'builds', build_target.build_name)
     self._publish_dir = path.join(self._tmp_dir, 'artifacts')
     self._rebbe_root = path.join(self._tmp_dir, 'rebbe')
+    self._downloads_root = path.join(self._tmp_dir, 'downloads')
     self.build_script_filenames = build_script_filenames
     self._runner = build_script_runner(self.build_script_filenames, self.build_target)
     self.all_package_names = sorted(self._runner.scripts.keys())
@@ -98,6 +99,7 @@ class rebuild_builder(object):
                                            tmp_dir = self._builds_tmp_dir,
                                            publish_dir = self._publish_dir,
                                            rebbe_root = self._rebbe_root,
+                                           downloads_root = self._downloads_root,
                                            **opts)
     if result.status == build_script_runner.SUCCESS:
       self.blurb('%s - SUCCESS' % (script.package_info.name))

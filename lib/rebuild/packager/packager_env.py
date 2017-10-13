@@ -4,9 +4,11 @@
 import os.path as path
 from bes.common import time_util
 from bes.fs import file_util, temp_file
+from bes.git import git_download_cache
 from rebuild.package_manager import artifact_manager, package_manager
-from .rebuild_manager import rebuild_manager
 from rebuild import package_descriptor, requirement
+
+from .rebuild_manager import rebuild_manager
 
 class packager_env(object):
 
@@ -18,7 +20,8 @@ class packager_env(object):
                tmp_dir,
                publish_dir,
                working_dir = None,
-               rebbe_root = None):
+               rebbe_root = None,
+               downloads_root = None):
     assert tmp_dir
     
     self.script = script
@@ -28,7 +31,6 @@ class packager_env(object):
       self.working_dir = working_dir
     else:
       self.working_dir = self.__make_tmp_working_dir(tmp_dir)
-
     self.source_unpacked_dir = path.join(self.working_dir, 'source')
     self.build_dir = path.join(self.working_dir, 'build')
     self.stage_dir = path.join(self.working_dir, 'stage')
@@ -41,6 +43,7 @@ class packager_env(object):
     self.artifact_manager = artifact_manager(publish_dir, no_git = True)
     self.requirements_manager = package_manager(path.join(self.working_dir, 'requirements'))
     self.rebbe = rebuild_manager(rebbe_root, self.artifact_manager)
+    self.downloads = git_download_cache(downloads_root)
     self.sources = []
     self.targets = []
     self.stage_lib_dir = path.join(self.stage_dir, 'lib')
