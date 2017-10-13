@@ -123,7 +123,7 @@ class rebuild_builder(object):
     return self.EXIT_CODE_FAILED
 
   # FIXME: rename users to dependents or somesuch
-  builder_config = namedtuple('builder_config', 'keep_going, disabled, users, deps_only, skip_to_step, tools_only')
+  builder_config = namedtuple('builder_config', 'keep_going,disabled,users,deps_only,skip_to_step,tools_only,no_network')
   
   def build_many_scripts(self, package_names, config, opts):
     opts = copy.deepcopy(opts)
@@ -152,8 +152,9 @@ class rebuild_builder(object):
     self.blurb('building packages:')
     self.blurb(' '.join(build_order_flat), fit = True)
 
-    self.blurb('Updating third party sources: %s' % (path.relpath(self._third_party_sources.root_dir)))
-    self._third_party_sources.update()
+    if not config.no_network:
+      self.blurb('Updating third party sources: %s' % (path.relpath(self._third_party_sources.root_dir)))
+      self._third_party_sources.update()
     
     exit_code = self.EXIT_CODE_SUCCESS
 
