@@ -143,7 +143,6 @@ class build_script(object):
 
   def __sources(self):
     'Return a list of all script and dependency sources for this script.'
-    print("CACA: %s%s" % (self.filename, '\n   '.join(self.__script_sources() + self.__dep_sources())))
     return self.__script_sources() + self.__dep_sources()
 
   def __targets(self):
