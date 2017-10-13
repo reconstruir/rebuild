@@ -50,8 +50,8 @@ class version(namedtuple('version', 'upstream_version,revision,epoch')):
     for c in upstream_version:
       if not clazz._upstream_char_is_valid(c):
         return clazz._validation(False, 'invalid character \"%s\" in upstream_version \"%s\"' % (c, upstream_version))
-    if not upstream_version[0].isdigit():
-      return clazz._validation(False, 'upstream_version should start with a digit: \"%s\"' % (upstream_version))
+    if not upstream_version[0].isalnum():
+      return clazz._validation(False, 'upstream_version should start with a alphanumeric: \"%s\"' % (upstream_version))
     return clazz._validation(True, None)
   
   @classmethod
