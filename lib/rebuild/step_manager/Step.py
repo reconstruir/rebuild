@@ -153,7 +153,7 @@ class Step(with_metaclass(step_register, object)):
       build_blurb.blurb_verbose('build', '%s(%s): %s=%s' % (label, package_name, key, value))
   
   @classmethod
-  def call_shell(clazz, command, packager_env, args, extra_env = None, save_logs = None):
+  def call_shell(clazz, command, packager_env, args, extra_env = None, save_logs = None, execution_dir = None):
     command = Shell.listify_command(command)
     command = [ part for part in command if part ]
     extra_env = extra_env or {}
@@ -191,9 +191,13 @@ class Step(with_metaclass(step_register, object)):
     for k,v in env.items():
       if string_util.is_quoted(v):
         env[k] = string_util.unquote(v)
-    
+
+    if execution_dir:
+      cwd = path.join(packager_env.build_dir, execution_dir)
+    else:
+      cwd = packager_env.build_dir
     rv = Shell.execute(command,
-                       cwd = packager_env.build_dir,
+                       cwd = cwd,
                        env = env,
                        shell = True,
                        non_blocking = build_blurb.verbose,

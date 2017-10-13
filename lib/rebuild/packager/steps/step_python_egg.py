@@ -15,8 +15,11 @@ class step_python_egg_build(Step):
 
   def execute(self, argument):
     setup_script = argument.args.get('setup_script', self.DEFAULT_SETUP_SCRIPT)
+    setup_dir = argument.args.get('setup_dir', None)
     cmd = '${PYTHON} %s bdist_egg --plat-name=${REBUILD_PYTHON_PLATFORM_NAME}' % (setup_script)
-    return self.call_shell(cmd, argument.env, argument.args, argument.args.get('shell_env', {}))
+    return self.call_shell(cmd, argument.env, argument.args,
+                           extra_env = argument.args.get('shell_env', {}),
+                           execution_dir = setup_dir)
 
   @classmethod
   def parse_step_args(clazz, packager_env, args):
@@ -29,7 +32,11 @@ class step_python_egg_install(Step):
     super(step_python_egg_install, self).__init__()
 
   def execute(self, argument):
-    dist_dir = path.join(argument.env.build_dir, 'dist')
+    setup_dir = argument.args.get('setup_dir', None)
+    if setup_dir:
+      dist_dir = path.join(argument.env.build_dir, setup_dir, 'dist')
+    else:
+      dist_dir = path.join(argument.env.build_dir, 'dist')
     eggs = setup_tools.list_eggs(dist_dir)
     if len(eggs) == 0:
       return step_result(False, 'No eggs found in %s' % (dist_dir))
@@ -57,7 +64,11 @@ class step_python_egg_check_downloaded_dependencies(Step):
     super(step_python_egg_check_downloaded_dependencies, self).__init__()
 
   def execute(self, argument):
-    eggs_build_dir = path.join(argument.env.build_dir, '.eggs')
+    setup_dir = argument.args.get('setup_dir', None)
+    if setup_dir:
+      eggs_build_dir = path.join(argument.env.build_dir, setup_dir, '.eggs')
+    else:
+      eggs_build_dir = path.join(argument.env.build_dir, '.eggs')
     if not path.exists(eggs_build_dir):
       return step_result(True)
     eggs = setup_tools.list_eggs(eggs_build_dir)
