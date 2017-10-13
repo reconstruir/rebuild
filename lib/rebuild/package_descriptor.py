@@ -160,8 +160,7 @@ class package_descriptor(object):
     build_requirements_rv = cmp(self.build_requirements, other.build_requirements)
     if build_requirements_rv < 0:
       return True
-    properties_rv = cmp(self.properties, other.properties)
-    if properties_rv < 0:
+    if self.properties.keys() < other.properties.keys():
       return True
     return False
 
