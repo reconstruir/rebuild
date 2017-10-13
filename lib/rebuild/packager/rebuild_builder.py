@@ -97,7 +97,7 @@ class rebuild_builder(object):
   EXIT_CODE_FAILED = 1
   EXIT_CODE_ABORTED = 2
 
-  def __build_script(self, script, opts):
+  def _run_build_script(self, script, opts):
     result = self._runner.run_build_script(script,
                                            tmp_dir = self._builds_tmp_dir,
                                            publish_dir = self._publish_dir,
@@ -162,21 +162,25 @@ class rebuild_builder(object):
 #    for b in build_order:
 #      print "CACA: b: ", b
 
+    failed_packages = []
     for name in  build_order_flat:
       script = self._runner.scripts[name]
       filename = file_util.remove_head(script.filename, os.getcwd())
       if script.disabled and not config.disabled:
         self.blurb('disabled: %s' % (filename))
         continue
-#      self.blurb('building %s' % (filename))
-      exit_code = self.__build_script(script, opts)
+      exit_code = self._run_build_script(script, opts)
       if exit_code == self.EXIT_CODE_FAILED:
-        if config.keep_going:
-          exit_code = self.EXIT_CODE_FAILED
-        else:
+        failed_packages.append(name)
+        if not config.keep_going:
           return self.EXIT_CODE_FAILED
       elif exit_code == self.EXIT_CODE_ABORTED:
         return self.EXIT_CODE_ABORTED
+
+    if config.keep_going and failed_packages:
+      self.blurb('failed packages: %s' % (' '.join(failed_packages)), fit = True)
+      return self.EXIT_CODE_FAILED
+      
     return exit_code
 
   def __resolve_package_names(self, package_names):
