@@ -149,8 +149,7 @@ class rebuild_builder(object):
       for package_name in package_names:
         build_order_flat.remove(package_name)
     
-    self.blurb('building packages:')
-    self.blurb(' '.join(build_order_flat), fit = True)
+    self.blurb('building packages: %s' % (' '.join(build_order_flat)), fit = True)
 
     if not config.no_network:
       self.blurb('Updating third party sources: %s' % (path.relpath(self._third_party_sources.root_dir)))
