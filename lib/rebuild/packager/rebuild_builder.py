@@ -123,10 +123,11 @@ class rebuild_builder(object):
     return self.EXIT_CODE_FAILED
 
   # FIXME: rename users to dependents or somesuch
-  builder_config = namedtuple('builder_config', 'keep_going,disabled,users,deps_only,skip_to_step,tools_only,no_network')
+  builder_config = namedtuple('builder_config', 'keep_going,disabled,users,deps_only,skip_to_step,tools_only,no_network,skip_tests')
   
   def build_many_scripts(self, package_names, config, opts):
     opts = copy.deepcopy(opts)
+    opts['builder_config'] = self.builder_config(*config)
     
     if config.users:
       depends_on_packages = []

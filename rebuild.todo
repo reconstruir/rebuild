@@ -478,5 +478,3 @@ oct 3
 
 oct 13
 - fix rebuild_builder.py _third_party_sources_address to be settable not card coded
-- add option to not update third_party_sources (test with no network)
-

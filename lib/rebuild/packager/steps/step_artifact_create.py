@@ -67,6 +67,11 @@ class step_artifact_create_test_package(Step):
     super(step_artifact_create_test_package, self).__init__()
 
   def execute(self, argument):
+    if argument.args['builder_config'].skip_tests:
+      message = '%s: Skipping tests because of --skip-tests' % (argument.env.package_descriptor.full_name)
+      self.blurb(message)
+      return step_result(True, message)
+      
     tests = argument.args.get('tests', [])
     if not tests:
       message = 'No tests for %s' % (argument.env.package_descriptor.full_name)

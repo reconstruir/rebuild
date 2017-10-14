@@ -48,6 +48,7 @@ class rebuilder_cli(object):
     self.parser.add_argument('-skip-to-step', action = 'store', type = str, help = 'Skip to the given step name. [ None ]')
     self.parser.add_argument('--deps-only', action = 'store_true', help = 'Only build dependencies')
     self.parser.add_argument('--no-network', action = 'store_true', help = 'Down go to the network.')
+    self.parser.add_argument('--skip-tests', action = 'store_true', help = 'Skip the tests part of the build.')
     self.parser.add_argument('--filter', nargs = '+', default = None, help = 'filter the list of build files to the given list.')
     self.parser.add_argument('--tmp-dir', action = 'store', type = str, default = path.abspath('tmp'), help = 'Temporary directory for storing builds and artifacts')
     self.parser.add_argument('target_packages', action = 'append', nargs = '*', type = str)
@@ -121,7 +122,8 @@ class rebuilder_cli(object):
                                             args.deps_only,
                                             args.skip_to_step,
                                             args.tools_only,
-                                            args.no_network)
+                                            args.no_network,
+                                            args.skip_tests)
     
     return builder.build_many_scripts(resolved_args.package_names, config, opts)
 
