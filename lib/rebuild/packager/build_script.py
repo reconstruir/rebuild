@@ -134,6 +134,9 @@ class build_script(object):
 
   def __dep_sources(self):
     'Return a list of dependency sources for this script.'
+    if not self.all_scripts:
+      print('WEIRD a build script with no all_scripts: %s' % (self.filename))
+      return []
     assert self.all_scripts
     sources = []
     for dep in self.package_info.requirements:
