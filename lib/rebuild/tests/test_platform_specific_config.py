@@ -251,6 +251,19 @@ class test_platform_specific_config(unit_test):
     self.assertEqual( [ ( 'forall1', None, None, None ), ( 'forall2', None, None, None ) ],
                       psc.resolve_requirement(config, 'android') )
 
+  def test_resolve_requirement_global_mask(self):
+    config = [
+      'macos: foo >= 1.0 bar >= 2.0 baz >= 3.0 kiwi >= 4.0',
+    ]
+    self.assertEqual( [
+      ( 'foo', '>=', '1.0', None ),
+      ( 'bar', '>=', '2.0', None ),
+      ( 'baz', '>=', '3.0', None ),
+      ( 'kiwi', '>=', '4.0', None ),
+    ], psc.resolve_requirement(config, 'macos') )
+    
+    self.assertEqual( [], psc.resolve_requirement(config, 'linux') )
+    
   def test_resolve_list_with_colons(self):
     config = [
       'all: orange:foo apple:bar',
