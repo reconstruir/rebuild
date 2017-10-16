@@ -16,6 +16,9 @@ class test_version(unit_test):
     self.assertTrue( version.upstream_version_is_valid('0') )
     self.assertTrue( version.upstream_version_is_valid('1') )
     self.assertTrue( version.upstream_version_is_valid('1a') )
+    self.assertTrue( version.upstream_version_is_valid('alpha1') )
+    self.assertTrue( version.upstream_version_is_valid('a123') )
+    self.assertTrue( version.upstream_version_is_valid('a') )
 
     self.assertFalse( version.upstream_version_is_valid(0) )
     self.assertFalse( version.upstream_version_is_valid(1) )
@@ -24,9 +27,6 @@ class test_version(unit_test):
     self.assertFalse( version.upstream_version_is_valid([]) )
     self.assertFalse( version.upstream_version_is_valid('') )
     self.assertFalse( version.upstream_version_is_valid('-1') )
-    self.assertFalse( version.upstream_version_is_valid('alpha1') )
-    self.assertFalse( version.upstream_version_is_valid('a123') )
-    self.assertFalse( version.upstream_version_is_valid('a') )
     
   def test_validate_upstream_version(self):
     self.assertEqual( '1.2.3', version.validate_upstream_version('1.2.3') )
@@ -53,12 +53,6 @@ class test_version(unit_test):
       version.validate_upstream_version('')
     with self.assertRaises(RuntimeError) as context:
       version.validate_upstream_version('-1')
-    with self.assertRaises(RuntimeError) as context:
-      version.validate_upstream_version('alpha1')
-    with self.assertRaises(RuntimeError) as context:
-      version.validate_upstream_version('a123')
-    with self.assertRaises(RuntimeError) as context:
-      version.validate_upstream_version('a')
 
   def test_epoch_is_valid(self):
     self.assertTrue( version.epoch_is_valid(0) )
