@@ -4,7 +4,6 @@
 from .source_finder import source_finder
 from rebuild import TarballUtil
 from bes.common import check_type
-from bes.archive import archiver
 
 class local_source_finder(source_finder):
 
@@ -22,7 +21,9 @@ class local_source_finder(source_finder):
     # filter out only the ones that match the current build system target
     if len(tarball) > 1:
       pattern = '/%s/' % (system)
-      tarball = [ t for t in tarball if pattern in t ]
+      system_specific_tarball = [ t for t in tarball if pattern in t ]
+      if system_specific_tarball:
+        tarball = system_specific_tarball
       
     if len(tarball) > 1:
       raise RuntimeError('Too many tarballs found for %s-%s: %s' % (name, version, ' '.join(tarball)))
@@ -31,7 +32,6 @@ class local_source_finder(source_finder):
 
     tarball = tarball[0]
 
-    if not archiver.is_valid(tarball):
-      raise RuntimeError('Unknown archive type: %s' % (tarball))
+    self.check_archive_valid(tarball)
 
     return tarball
