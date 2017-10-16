@@ -5,8 +5,9 @@ import os.path as path
 from bes.fs import file_util, temp_file
 from bes.common import string_util
 from rebuild import build_target, version as rebuild_version
-from rebuild.packager import build_script_runner
+from rebuild.packager import build_script_runner, rebuild_builder
 from rebuild.package_manager import Package
+from bes.git import git, repo as git_repo
 
 class unit_test_packaging(object):
 
@@ -23,9 +24,16 @@ class unit_test_packaging(object):
     filenames = [ build_script ]
     runner = build_script_runner(filenames, build_target())
     script = runner.scripts[ name ]
-    rv = runner.run_build_script(script, tmp_dir = temp_file.make_temp_dir(), no_checksums = True)
+    bc = rebuild_builder.builder_config(False, False, None, False, False, False, True, False)
+
+    rv = runner.run_build_script(script,
+                                 builder_config = bc,
+                                 verbose = True,
+                                 tmp_dir = temp_file.make_temp_dir(),
+                                 no_checksums = True,
+                                 third_party_sources = clazz._make_tmp_third_party_sources())
     if not rv.status == build_script_runner.SUCCESS:
-      print(rv.stdout)
+      print(rv.status)
     asserter.assertEqual( build_script_runner.SUCCESS, rv.status )
     tarball = rv.packager_result.output['published_tarball']
     package = Package(tarball)
@@ -73,6 +81,13 @@ def rebuild_recipes(env):
     filepath = path.join(tmp_dir, filename)
     file_util.save(filepath, content = content)
     return filepath
+
+  @classmethod
+  def _make_tmp_third_party_sources(clazz):
+    r = git_repo.make_temp_repo(content = [ 'file foo.txt "foo content" 644' ])
+    tmp_dir = temp_file.make_temp_dir()
+    r2 = git_repo(tmp_dir, address = r.root)
+    return r2
     
 if __name__ == '__main__':
   unittest.main()

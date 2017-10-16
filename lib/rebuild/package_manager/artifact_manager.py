@@ -36,7 +36,7 @@ class artifact_manager(object):
 
     if not self.no_git:
       if address:
-        git.clone_or_update(address, self.publish_dir, enforce_empty_dir = False)
+        git.clone_or_pull(address, self.publish_dir, enforce_empty_dir = False)
       if not git.is_repo(self.publish_dir):
         git.init(self.publish_dir)
 

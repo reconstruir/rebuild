@@ -24,6 +24,8 @@ class packager(object):
 
     assert isinstance(script, build_script)
 
+    assert 'third_party_sources' in kargs
+    
     #log.configure('software_packager=debug')
 
     tmp_dir = self.__tmp_dir(kargs)

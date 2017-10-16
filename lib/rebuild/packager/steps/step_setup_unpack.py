@@ -44,9 +44,9 @@ class step_setup_unpack(Step):
     if not tarballs_dict or 'tarballs' not in tarballs_dict:
       tarball_name = args.get('tarball_name', packager_env.package_descriptor.name)
 
-      third_party_sources_root = packager_env.third_party_sources.root_dir
+      third_party_sources_root = packager_env.third_party_sources.root
 
-      tarball = clazz._find_tarball([ path.join(third_party_sources_root, 'sources') ],
+      tarball = clazz._find_tarball([ packager_env.source_dir, path.join(third_party_sources_root, 'sources') ],
                                     tarball_name,
                                     packager_env.package_descriptor.version,
                                     packager_env.build_target)

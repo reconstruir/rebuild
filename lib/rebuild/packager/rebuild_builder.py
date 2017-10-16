@@ -5,7 +5,7 @@ import copy, fnmatch, os, os.path as path
 from bes.common import algorithm, dict_util, object_util
 from bes.thread import thread_pool
 from bes.fs import dir_util, file_util
-from bes.git import git_download_cache, git_repo
+from bes.git import git_download_cache, git_util, repo as git_repo
 from collections import namedtuple
 
 from rebuild import build_blurb, package_descriptor
@@ -29,8 +29,7 @@ class rebuild_builder(object):
     self._runner = build_script_runner(self.build_script_filenames, self.build_target)
     self.all_package_names = sorted(self._runner.scripts.keys())
     self.thread_pool = thread_pool(1)
-    self._third_party_sources = git_repo(path.join(self._tmp_dir, 'third_party_sources'),
-                                         'git@git:third_party_sources.git')
+    self._third_party_sources = self._make_third_party_sources_repo()
     
   def exclude(self, excluded_packages):
     excluded_packages = object_util.listify(excluded_packages)
@@ -151,10 +150,9 @@ class rebuild_builder(object):
         build_order_flat.remove(package_name)
     
     self.blurb('building packages: %s' % (' '.join(build_order_flat)), fit = True)
-
     if not config.no_network:
-      self.blurb('Updating third party sources: %s' % (path.relpath(self._third_party_sources.root_dir)))
-      self._third_party_sources.update()
+      self.blurb('Updating third party sources: %s' % (path.relpath(self._third_party_sources.root)))
+      self._third_party_sources.clone_or_pull()
     
     exit_code = self.EXIT_CODE_SUCCESS
 
@@ -204,3 +202,8 @@ class rebuild_builder(object):
   @property
   def publish_dir(self):
     return self._publish_dir
+
+  def _make_third_party_sources_repo(self):
+    address = 'git@git:third_party_sources.git'
+    root = path.join(self._tmp_dir, 'third_party_sources', git_util.sanitize_address(address))
+    return git_repo(root, address)
