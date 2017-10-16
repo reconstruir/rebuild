@@ -7,5 +7,5 @@ from bes.system.compat import with_metaclass
 class source_finder(with_metaclass(ABCMeta, object)):
 
   @abstractmethod
-  def find_tarball(self, name, version, build_target):
+  def find_source(self, name, version, build_target):
     pass
