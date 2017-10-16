@@ -478,3 +478,5 @@ oct 3
 
 oct 13
 - fix rebuild_builder.py _third_party_sources_address to be settable not card coded
+
+figute out the goofy test_fat_archive __make_test_archive that returns a tgz where it looks like a .a is expected.
