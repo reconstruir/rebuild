@@ -38,12 +38,12 @@ class source_dir_maker(object):
   @classmethod
   def _tarball_for_ext(clazz, ext):
     if not ext in clazz._TARBALLS:
-      clazz._TARBALLS[ext] = clazz._make_tarball(ext)
+      clazz._TARBALLS[ext] = clazz.make_tarball(ext)
     return clazz._TARBALLS[ext]
   
   # Any tarball will do for the tests as long as the file type is an archive
   @classmethod
-  def _make_tarball(clazz, ext):
+  def make_tarball(clazz, ext):
     return temp_archive.make_temp_archive([ temp_archive.Item('foo.txt', content = 'foo.txt\n') ], ext).filename
 
 class test_local_source_finder(unit_test):
