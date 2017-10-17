@@ -12,9 +12,15 @@ import os.path as path
 class source_dir_maker(object):
 
   @classmethod
-  def make(clazz, items):
+  def make(clazz, items, delete = True, where = None):
+    if where:
+      assert not delete
     items = [ clazz._munge_item(item) for item in items ]
-    return temp_content.write_items_to_temp_dir(items)
+    if not where:
+      return temp_content.write_items_to_temp_dir(items, delete = delete)
+    else:
+      temp_content.write_items(items, where)
+      return where
 
   @classmethod
   def _munge_item(clazz, item):
