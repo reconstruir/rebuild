@@ -80,6 +80,20 @@ class test_repo_source_finder(unit_test):
     self.assertEqual( [ 'a/alpha-1.2.3.tar.gz', 'b/beta-1.2.3.tar.gz' ],
                       f1.repo.find_all_files() )
 
+  def test_repo_source_finder_update_no_network(self):
+    tmp_source_repo = self._make_git_repo([
+      'file a/alpha-1.2.3.tar.gz "${tarball}" 644',
+      'file b/beta-1.2.3.tar.gz "${tarball}" 644',
+    ], delete = not self._DEBUG)
+    tmp_repo_dir = temp_file.make_temp_dir(delete = not self._DEBUG)
+    if self._DEBUG:
+      print('tmp_source_repo: %s' % (tmp_source_repo.root))
+      print('       tmp_repo_dir: %s' % (tmp_repo_dir))
+    f1 = repo_source_finder(tmp_repo_dir, tmp_source_repo.root, no_network = True)
+    self.assertEqual( None, f1.find_source('alpha', '1.2.3', 'linux') )
+    self.assertEqual( [], f1.repo.find_all_files() )
+
+    
   @classmethod
   def _make_git_repo(clazz, items, delete = True):
     tmp_source_dir = source_dir_maker.make(items, delete = True)
