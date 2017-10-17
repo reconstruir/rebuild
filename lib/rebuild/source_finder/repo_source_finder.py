@@ -4,7 +4,7 @@
 from .source_finder import source_finder
 from bes.git import repo
 from rebuild import build_blurb
-from os import path
+import os.path as path
 
 class repo_source_finder(source_finder):
 
@@ -22,7 +22,7 @@ class repo_source_finder(source_finder):
       return
     self._UPDATED = True
     if self.no_network:
-      pass #build_blurb('build', 'Repo sources disabled due to no_network: %s' % (path.relpath(self.repo.root)))
+      build_blurb.blurb('build', 'Repo sources disabled due to no_network: %s' % (path.relpath(self.repo.root)))
     else:
-      #build_blurb('build', 'Updating repo sources: %s' % (path.relpath(self.repo.root)))
+      build_blurb.blurb('build', 'Updating repo sources: %s' % (path.relpath(self.repo.root)))
       self.repo.clone_or_pull()
