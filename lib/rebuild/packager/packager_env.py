@@ -16,6 +16,7 @@ class packager_env(object):
 
   def __init__(self,
                script,
+               config,
                all_scripts,
                tmp_dir,
                publish_dir,
@@ -25,6 +26,7 @@ class packager_env(object):
                third_party_sources = None):
     assert tmp_dir
     
+    self.config = config
     self.script = script
     self.all_scripts = all_scripts
     self.build_target = script.build_target

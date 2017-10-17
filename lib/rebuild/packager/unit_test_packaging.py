@@ -24,9 +24,9 @@ class unit_test_packaging(object):
     filenames = [ build_script ]
     runner = build_script_runner(filenames, build_target())
     script = runner.scripts[ name ]
-    bc = rebuilder_config()
+    config = rebuilder_config()
     rv = runner.run_build_script(script,
-                                 builder_config = bc,
+                                 config,
                                  verbose = True,
                                  tmp_dir = temp_file.make_temp_dir(),
                                  no_checksums = True,

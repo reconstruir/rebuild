@@ -101,6 +101,7 @@ class rebuild_builder(object):
 
   def _run_build_script(self, script, opts):
     result = self._runner.run_build_script(script,
+                                           self._config,
                                            tmp_dir = self._builds_tmp_dir,
                                            publish_dir = self._publish_dir,
                                            rebbe_root = self._rebbe_root,
@@ -126,7 +127,7 @@ class rebuild_builder(object):
 
   def build_many_scripts(self, package_names, opts):
     opts = copy.deepcopy(opts)
-    opts['builder_config'] = self._config
+#    opts['builder_config'] = self._config
     
     if self._config.users:
       depends_on_packages = []

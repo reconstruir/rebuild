@@ -18,7 +18,7 @@ TAG = 'packager'
 
 class packager(object):
   
-  def __init__(self, script, all_scripts, **kargs):
+  def __init__(self, script, config, all_scripts, **kargs):
     log.add_logging(self, TAG)
     build_blurb.add_blurb(self, TAG)
 
@@ -31,6 +31,7 @@ class packager(object):
     tmp_dir = self.__tmp_dir(kargs)
     self.script = script
     self.packager_env = packager_env(script,
+                                     config,
                                      all_scripts,
                                      tmp_dir,
                                      kargs.get('publish_dir', None),

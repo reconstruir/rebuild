@@ -63,10 +63,10 @@ class build_script_runner(object):
       except Exception as ex:
         assert False, 'caught unknown exception: %s' % (str(ex))
         
-  def run_build_script(self, script, **kargs):
+  def run_build_script(self, script, config, **kargs):
     no_checksums = kargs.get('no_checksums', False)
     try:
-      pkg = packager(script, self.scripts, **kargs)
+      pkg = packager(script, config, self.scripts, **kargs)
       needs_rebuilding = no_checksums or script.needs_rebuilding()
       if not needs_rebuilding:
         # If the working directory is empty, it means no work happened and its useless

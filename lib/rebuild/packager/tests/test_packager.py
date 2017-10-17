@@ -6,7 +6,7 @@ import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import file_util, temp_file
 from rebuild import build_target
-from rebuild.packager import build_script, packager
+from rebuild.packager import build_script, packager, rebuilder_config
 from bes.archive import archiver
 from rebuild.packager.unit_test_packaging import unit_test_packaging
 
@@ -44,7 +44,8 @@ class test_packager(unit_test):
       'working_dir': working_dir,
       'rebbe_root': rebbe_root,
     }
-    pkg = packager(script, all_scripts, **args)
+    config = rebuilder_config()
+    pkg = packager(script, config, all_scripts, **args)
     result = pkg.execute()
     self.assertTrue( result.success )
     output = result.output
