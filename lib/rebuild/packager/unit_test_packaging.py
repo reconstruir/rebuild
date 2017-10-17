@@ -5,7 +5,7 @@ import os.path as path
 from bes.fs import file_util, temp_file
 from bes.common import string_util
 from rebuild import build_target, version as rebuild_version
-from rebuild.packager import build_script_runner, rebuild_builder
+from rebuild.packager import build_script_runner, rebuild_builder, rebuilder_config
 from rebuild.package_manager import Package
 from bes.git import git, repo as git_repo
 
@@ -24,8 +24,7 @@ class unit_test_packaging(object):
     filenames = [ build_script ]
     runner = build_script_runner(filenames, build_target())
     script = runner.scripts[ name ]
-    bc = rebuild_builder.builder_config(False, False, None, False, False, False, True, False)
-
+    bc = rebuilder_config()
     rv = runner.run_build_script(script,
                                  builder_config = bc,
                                  verbose = True,

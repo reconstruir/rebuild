@@ -8,6 +8,8 @@ from bes.fs import dir_util, file_util
 from bes.git import git_download_cache, git_util, repo as git_repo
 from collections import namedtuple
 
+from rebuild.source_finder import repo_source_finder
+
 from rebuild import build_blurb, package_descriptor
 from .rebuild_manager import rebuild_manager
 
@@ -17,8 +19,9 @@ class rebuild_builder(object):
 
   REBUILD_FILENAME = 'build.py'
   
-  def __init__(self, build_target, tmp_dir, build_script_filenames):
+  def __init__(self, config, build_target, tmp_dir, build_script_filenames):
     build_blurb.add_blurb(self, label = 'build')
+    self._config = config
     self.build_target = build_target
     self._tmp_dir = path.abspath(tmp_dir)
     self._builds_tmp_dir = path.join(self._tmp_dir, 'builds', build_target.build_name)
@@ -121,14 +124,11 @@ class rebuild_builder(object):
     assert False
     return self.EXIT_CODE_FAILED
 
-  # FIXME: rename users to dependents or somesuch
-  builder_config = namedtuple('builder_config', 'keep_going,disabled,users,deps_only,skip_to_step,tools_only,no_network,skip_tests')
-  
-  def build_many_scripts(self, package_names, config, opts):
+  def build_many_scripts(self, package_names, opts):
     opts = copy.deepcopy(opts)
-    opts['builder_config'] = self.builder_config(*config)
+    opts['builder_config'] = self._config
     
-    if config.users:
+    if self._config.users:
       depends_on_packages = []
       for package_name in package_names:
         depends_on_packages += self.__depends_on(package_name)
@@ -136,7 +136,7 @@ class rebuild_builder(object):
       package_names += depends_on_packages
     package_names = algorithm.unique(package_names)
 
-#      if config.tools_only and not script.package_info.is_tool():
+#      if self._config.tools_only and not script.package_info.is_tool():
 #        self.blurb('skipping non tool: %s' % (filename))
 #        continue
     
@@ -145,12 +145,12 @@ class rebuild_builder(object):
     resolved_scripts = dict_util.filter_with_keys(self._runner.scripts, resolved_package_names)
     build_order_flat = build_script_runner.build_order_flat(resolved_scripts)
 
-    if config.deps_only:
+    if self._config.deps_only:
       for package_name in package_names:
         build_order_flat.remove(package_name)
     
     self.blurb('building packages: %s' % (' '.join(build_order_flat)), fit = True)
-    if not config.no_network:
+    if not self._config.no_network:
       self.blurb('Updating third party sources: %s' % (path.relpath(self._third_party_sources.root)))
       self._third_party_sources.clone_or_pull()
     
@@ -164,18 +164,18 @@ class rebuild_builder(object):
     for name in  build_order_flat:
       script = self._runner.scripts[name]
       filename = file_util.remove_head(script.filename, os.getcwd())
-      if script.disabled and not config.disabled:
+      if script.disabled and not self._config.disabled:
         self.blurb('disabled: %s' % (filename))
         continue
       exit_code = self._run_build_script(script, opts)
       if exit_code == self.EXIT_CODE_FAILED:
         failed_packages.append(name)
-        if not config.keep_going:
+        if not self._config.keep_going:
           return self.EXIT_CODE_FAILED
       elif exit_code == self.EXIT_CODE_ABORTED:
         return self.EXIT_CODE_ABORTED
 
-    if config.keep_going and failed_packages:
+    if self._config.keep_going and failed_packages:
       self.blurb('failed packages: %s' % (' '.join(failed_packages)), fit = True)
       return self.EXIT_CODE_FAILED
       

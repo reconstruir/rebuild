@@ -93,7 +93,6 @@ class test_repo_source_finder(unit_test):
     self.assertEqual( None, f1.find_source('alpha', '1.2.3', 'linux') )
     self.assertEqual( [], f1.repo.find_all_files() )
 
-    
   @classmethod
   def _make_git_repo(clazz, items, delete = True):
     tmp_source_dir = source_dir_maker.make(items, delete = True)

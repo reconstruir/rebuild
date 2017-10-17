@@ -7,7 +7,6 @@ import sys
 import argparse, copy, os, os.path as path
 
 from rebuild import build_arch, build_type, build_blurb, build_target, System
-from rebuild.packager import rebuild_builder
 from bes.key_value import key_value_parser
 from bes.fs import file_util
 
@@ -19,6 +18,9 @@ from bes.python import code
 from rebuild.packager import rebuild_manager
 from rebuild.package_manager import artifact_manager, Package, package_tester
 from rebuild.tools_manager import tools_manager
+
+from .rebuild_builder import rebuild_builder
+from .rebuilder_config import rebuilder_config
 
 class rebuilder_cli(object):
 
@@ -45,13 +47,14 @@ class rebuilder_cli(object):
     self.parser.add_argument('-s', '--system', action = 'store', type = str, default = build_target.DEFAULT, help = 'System.  One of (%s) [ %s ]' % (systems, System.DEFAULT))
     self.parser.add_argument('-a', '--archs', action = 'store', type = str, default = build_target.DEFAULT, help = 'Architectures to build for.  One of (%s) [ %s ]' % (all_archs, default_archs))
     self.parser.add_argument('-b', '--build-type', action = 'store', type = str, default = build_target.DEFAULT, help = 'Build type.  One of (%s) [ %s ]' % (build_types, build_type.DEFAULT_BUILD_TYPE))
-    self.parser.add_argument('-skip-to-step', action = 'store', type = str, help = 'Skip to the given step name. [ None ]')
+    self.parser.add_argument('--skip-to-step', action = 'store', type = str, help = 'Skip to the given step name. [ None ]')
     self.parser.add_argument('--deps-only', action = 'store_true', help = 'Only build dependencies')
     self.parser.add_argument('--no-network', action = 'store_true', help = 'Down go to the network.')
     self.parser.add_argument('--skip-tests', action = 'store_true', help = 'Skip the tests part of the build.')
     self.parser.add_argument('--filter', nargs = '+', default = None, help = 'filter the list of build files to the given list.')
     self.parser.add_argument('--tmp-dir', action = 'store', type = str, default = path.abspath('tmp'), help = 'Temporary directory for storing builds and artifacts')
     self.parser.add_argument('target_packages', action = 'append', nargs = '*', type = str)
+    self.parser.add_argument('--tps-address', default = rebuilder_config.DEFAULT_TPS_ADDRESS, action = 'store', type = str, help = 'Third party sources address. [ %s ]' % (rebuilder_config.DEFAULT_TPS_ADDRESS))
     
   def main(self):
     args = self.parser.parse_args()
@@ -101,7 +104,19 @@ class rebuilder_cli(object):
 
     build_blurb.blurb('build', 'build_target: %s' % (str(bt)))
 
-    builder = rebuild_builder(bt, tmp_dir, filenames)
+    config = rebuilder_config()
+    config.keep_going = args.keep_going
+    config.disabled = args.disabled
+    config.users = args.users
+    config.deps_only = args.deps_only
+    config.skip_to_step = args.skip_to_step
+    config.tools_only = args.tools_only
+    config.no_network = args.no_network
+    config.skip_tests = args.skip_tests
+    config.tps_address = args.tps_address
+    
+    builder = rebuild_builder(config, bt, tmp_dir, filenames)
+
     resolved_args = builder.check_and_resolve_cmd_line_args(target_packages)
       
     if resolved_args.invalid_args:
@@ -116,16 +131,7 @@ class rebuilder_cli(object):
     if args.wipe:
       builder.wipe_build_dirs(resolved_args.package_names)
 
-    config = rebuild_builder.builder_config(args.keep_going,
-                                            args.disabled,
-                                            args.users,
-                                            args.deps_only,
-                                            args.skip_to_step,
-                                            args.tools_only,
-                                            args.no_network,
-                                            args.skip_tests)
-    
-    return builder.build_many_scripts(resolved_args.package_names, config, opts)
+    return builder.build_many_scripts(resolved_args.package_names, opts)
 
   @classmethod
   def _filter_target_packages(clazz, target_packages, limit):
