@@ -20,7 +20,7 @@ class step_setup_unpack(Step):
     extra_tarballs = argument.args.get('extra_tarballs', [])
     tarballs = argument.args.get('tarballs', []) + extra_tarballs + downloaded_tarballs
     if not tarballs:
-      return step_result(False, 'No tarballs found.')
+      return step_result(False, 'No tarballs found for %s.' % (argument.env.package_descriptor.full_name))
       
     for tarball in tarballs:
       self.blurb('Extracting %s' % (tarball))
@@ -44,12 +44,17 @@ class step_setup_unpack(Step):
     if not tarballs_dict or 'tarballs' not in tarballs_dict:
       tarball_name = args.get('tarball_name', packager_env.package_descriptor.name)
 
+      tarball = packager_env.config.source_finder.find_source(tarball_name,
+                                                              packager_env.package_descriptor.version.upstream_version,
+                                                              packager_env.build_target.system)
+      '''
       third_party_sources_root = packager_env.third_party_sources.root
 
       tarball = clazz._find_tarball([ packager_env.source_dir, path.join(third_party_sources_root, 'sources') ],
                                     tarball_name,
                                     packager_env.package_descriptor.version,
                                     packager_env.build_target)
+'''
 
       if tarball:
         tarballs_dict = { 'tarballs': [ tarball ] }

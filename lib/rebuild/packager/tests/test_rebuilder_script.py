@@ -21,6 +21,9 @@ class test_rebuilder_script(unit_test):
     tmp_dir = self._make_temp_dir()
     cmd = [
       self.REBUILDER_SCRIPT,
+      '--source-dir',
+      path.join(self.data_dir(), '../packager'),
+      '--no-network',
       '-v',
       '--tmp-dir', tmp_dir,
       '--build-type', self.BUILD_TYPE,
@@ -38,6 +41,8 @@ class test_rebuilder_script(unit_test):
     tmp_dir = self._make_temp_dir()
     cmd = [
       self.REBUILDER_SCRIPT,
+      '--source-dir',
+      path.join(self.data_dir(), '../packager'),
       '--no-network',
       '-v',
       '--tmp-dir', tmp_dir,
@@ -57,6 +62,8 @@ class test_rebuilder_script(unit_test):
     tmp_dir = self._make_temp_dir()
     cmd = [
       self.REBUILDER_SCRIPT,
+      '--source-dir',
+      path.join(self.data_dir(), '../packager'),
       '--no-network',
       '-v',
       '--tmp-dir', tmp_dir,

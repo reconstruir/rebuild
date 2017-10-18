@@ -24,7 +24,7 @@ class packager(object):
 
     assert isinstance(script, build_script)
 
-    assert 'third_party_sources' in kargs
+#    assert 'third_party_sources' in kargs
     
     #log.configure('software_packager=debug')
 
@@ -37,8 +37,7 @@ class packager(object):
                                      kargs.get('publish_dir', None),
                                      kargs.get('working_dir', None),
                                      kargs.get('rebbe_root', None),
-                                     kargs.get('downloads_root', None),
-                                     kargs.get('third_party_sources', None))
+                                     kargs.get('downloads_root', None))
     self.script.checksum_dir = self.packager_env.checksum_dir
     self.script.all_scripts = all_scripts
     self._execute_args = dict_util.combine(kargs, {})

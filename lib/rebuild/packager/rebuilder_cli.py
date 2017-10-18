@@ -55,6 +55,7 @@ class rebuilder_cli(object):
     self.parser.add_argument('--tmp-dir', action = 'store', type = str, default = path.abspath('tmp'), help = 'Temporary directory for storing builds and artifacts')
     self.parser.add_argument('target_packages', action = 'append', nargs = '*', type = str)
     self.parser.add_argument('--tps-address', default = rebuilder_config.DEFAULT_TPS_ADDRESS, action = 'store', type = str, help = 'Third party sources address. [ %s ]' % (rebuilder_config.DEFAULT_TPS_ADDRESS))
+    self.parser.add_argument('--source-dir', default = None, action = 'store', type = str, help = 'Local source directory to use instead of tps address. [ None]')
     
   def main(self):
     args = self.parser.parse_args()
@@ -114,6 +115,7 @@ class rebuilder_cli(object):
     config.no_network = args.no_network
     config.skip_tests = args.skip_tests
     config.tps_address = args.tps_address
+    config.source_finder = self._make_source_finder(tmp_dir, args.source_dir, config.tps_address, config.no_network)
     
     builder = rebuild_builder(config, bt, tmp_dir, filenames)
 
@@ -162,3 +164,14 @@ class rebuilder_cli(object):
       raise RuntimeError('not callable: %s' % (func))
     return func()
       
+  @classmethod
+  def _make_source_finder(self, tmp_dir, source_dir, address, no_network):
+    from bes.git import git_util
+    from rebuild.source_finder import repo_source_finder, local_source_finder, source_finder_chain
+    chain = source_finder_chain()
+    if source_dir:
+     chain.add_finder(local_source_finder(source_dir))
+    else:
+     root = path.join(tmp_dir, 'third_party_sources', git_util.sanitize_address(address))
+     chain.add_finder(repo_source_finder(root, address, no_network = no_network, update_only_once = True))
+    return chain

@@ -17,3 +17,4 @@ class rebuilder_config(object):
     self.no_network = False
     self.skip_tests = False
     self.tps_address = self.DEFAULT_TPS_ADDRESS
+    self.source_finder = None

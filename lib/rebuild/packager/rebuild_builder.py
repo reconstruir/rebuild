@@ -32,7 +32,7 @@ class rebuild_builder(object):
     self._runner = build_script_runner(self.build_script_filenames, self.build_target)
     self.all_package_names = sorted(self._runner.scripts.keys())
     self.thread_pool = thread_pool(1)
-    self._third_party_sources = self._make_third_party_sources_repo()
+#    self._third_party_sources = self._make_third_party_sources_repo()
     
   def exclude(self, excluded_packages):
     excluded_packages = object_util.listify(excluded_packages)
@@ -106,7 +106,7 @@ class rebuild_builder(object):
                                            publish_dir = self._publish_dir,
                                            rebbe_root = self._rebbe_root,
                                            downloads_root = self._downloads_root,
-                                           third_party_sources = self._third_party_sources,
+#                                           third_party_sources = self._third_party_sources,
                                            **opts)
     if result.status == build_script_runner.SUCCESS:
       self.blurb('%s - SUCCESS' % (script.package_info.name))
@@ -151,9 +151,9 @@ class rebuild_builder(object):
         build_order_flat.remove(package_name)
     
     self.blurb('building packages: %s' % (' '.join(build_order_flat)), fit = True)
-    if not self._config.no_network:
-      self.blurb('Updating third party sources: %s' % (path.relpath(self._third_party_sources.root)))
-      self._third_party_sources.clone_or_pull()
+#    if not self._config.no_network:
+#      self.blurb('Updating third party sources: %s' % (path.relpath(self._third_party_sources.root)))
+#      self._third_party_sources.clone_or_pull()
     
     exit_code = self.EXIT_CODE_SUCCESS
 
@@ -204,7 +204,8 @@ class rebuild_builder(object):
   def publish_dir(self):
     return self._publish_dir
 
-  def _make_third_party_sources_repo(self):
-    address = 'git@git:third_party_sources.git'
-    root = path.join(self._tmp_dir, 'third_party_sources', git_util.sanitize_address(address))
-    return git_repo(root, address)
+#  def _make_third_party_sources_repo(self):
+#    address = 'git@git:third_party_sources.git'
+#    root = path.join(self._tmp_dir, 'third_party_sources', git_util.sanitize_address(address))
+#    print("CACA1: root=%s" % (root))
+#    return git_repo(root, address)

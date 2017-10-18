@@ -9,6 +9,7 @@ from rebuild import build_target
 from rebuild.packager import build_script, packager, rebuilder_config
 from bes.archive import archiver
 from rebuild.packager.unit_test_packaging import unit_test_packaging
+from rebuild.source_finder import local_source_finder, source_finder_chain
 
 class test_packager(unit_test):
 
@@ -18,13 +19,9 @@ class test_packager(unit_test):
 #  DEBUG = True
   
   def test_amhello(self):
-
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     tmp_source_dir = path.join(tmp_dir, 'source')
     rebuildfile = path.join(tmp_source_dir, 'build_amhello.py')
-    tarball_filename = 'amhello-1.0.tar.gz'
-    tarball_path = path.join(tmp_source_dir, tarball_filename)
-    file_util.copy(self.data_path('amhello-1.0.tar.gz'), tarball_path)
     script_content = unit_test_packaging.make_build_script_content('amhello', '1.0', 0)
     print(script_content)
     file_util.save(rebuildfile, content = script_content)
@@ -45,6 +42,8 @@ class test_packager(unit_test):
       'rebbe_root': rebbe_root,
     }
     config = rebuilder_config()
+    config.source_finder = self._make_source_finder()
+    config.no_network = True
     pkg = packager(script, config, all_scripts, **args)
     result = pkg.execute()
     self.assertTrue( result.success )
@@ -53,6 +52,13 @@ class test_packager(unit_test):
     self.assertTrue( path.exists(artifact_path) )
 
     metadata = archiver.extract_member_to_string(artifact_path, 'metadata/info.json')
-
+    # FIXME: check the metadata
+    
+  def _make_source_finder(self):
+    chain = source_finder_chain()
+    finder = local_source_finder(self.data_dir())
+    chain.add_finder(finder)
+    return chain
+    
 if __name__ == '__main__':
   unit_test.main()

@@ -9,6 +9,8 @@ from rebuild.packager import build_script_runner, rebuild_builder, rebuilder_con
 from rebuild.package_manager import Package
 from bes.git import git, repo as git_repo
 
+from rebuild.source_finder import local_source_finder, source_finder_chain
+
 class unit_test_packaging(object):
 
   __test__ = False
@@ -25,6 +27,8 @@ class unit_test_packaging(object):
     runner = build_script_runner(filenames, build_target())
     script = runner.scripts[ name ]
     config = rebuilder_config()
+    config.source_finder = clazz._make_source_finder(tmp_dir)
+    config.no_network = True
     rv = runner.run_build_script(script,
                                  config,
                                  verbose = True,
@@ -87,6 +91,15 @@ def rebuild_recipes(env):
     tmp_dir = temp_file.make_temp_dir()
     r2 = git_repo(tmp_dir, address = r.root)
     return r2
-    
+
+  @classmethod
+  def _make_source_finder(self, where):
+    chain = source_finder_chain()
+    finder = local_source_finder(where)
+    chain.add_finder(finder)
+    return chain
+  
 if __name__ == '__main__':
   unittest.main()
+
+  

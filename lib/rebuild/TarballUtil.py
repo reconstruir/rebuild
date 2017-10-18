@@ -15,7 +15,7 @@ class TarballUtil(object):
     filenames = []
     for d in dirs:
       if path.isdir(d):
-        filenames += file_find.find(d, max_depth = 3, relative = False, file_type = file_find.FILE | file_find.LINK)
+        filenames += file_find.find(d, max_depth = 4, relative = False, file_type = file_find.FILE | file_find.LINK)
     return clazz.find_in_list(filenames, name, version)
 
   @classmethod

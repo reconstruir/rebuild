@@ -7,6 +7,7 @@ from bes.fs import file_util, temp_file
 from rebuild import build_target
 from rebuild.packager import rebuild_builder, rebuilder_config
 from rebuild.packager.unit_test_packaging import unit_test_packaging
+from rebuild.source_finder import local_source_finder, source_finder_chain
 
 class test_rebuild_builder(unit_test):
 
@@ -23,6 +24,7 @@ class test_rebuild_builder(unit_test):
     filenames = [ amhello_build_script ]
     config = rebuilder_config()
     config.no_network = True
+    config.source_finder = self._make_source_finder()
     builder = rebuild_builder(config, bt, tmp_dir, filenames)
     opts = {}
     packages = [ 'amhello' ]
@@ -36,6 +38,7 @@ class test_rebuild_builder(unit_test):
     filenames = [ self.data_path('zlib/build_zlib.py'), self.data_path('libpng/build_libpng.py') ]
     config = rebuilder_config()
     config.no_network = True
+    config.source_finder = self._make_source_finder()
     builder = rebuild_builder(config, bt, tmp_dir, filenames)
     opts = {}
     packages = [ 'zlib', 'libpng' ]
@@ -59,6 +62,7 @@ class test_rebuild_builder(unit_test):
     filenames = [ path.join(tmp_dir, 'build_fructose.py') ]
     config = rebuilder_config()
     config.no_network = True
+    config.source_finder = self._make_source_finder()
     builder = rebuild_builder(config, bt, tmp_dir, filenames)
     opts = {}
     packages_to_build = [ 'fructose' ]
@@ -97,11 +101,18 @@ class test_rebuild_builder(unit_test):
     filenames = [ orange_build_script, fructose_build_script, fiber_build_script ]
     config = rebuilder_config()
     config.no_network = True
+    config.source_finder = self._make_source_finder()
     builder = rebuild_builder(config, bt, tmp_dir, filenames)
     opts = {}
     packages_to_build = [ 'orange' ]
     rv = builder.build_many_scripts(packages_to_build, opts)
     self.assertEqual( rebuild_builder.EXIT_CODE_SUCCESS, rv )
+
+  def _make_source_finder(self):
+    chain = source_finder_chain()
+    finder = local_source_finder(self.data_dir())
+    chain.add_finder(finder)
+    return chain
     
 if __name__ == '__main__':
   unit_test.main()
