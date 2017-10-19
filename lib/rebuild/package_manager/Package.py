@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import os.path as path, re
+import json, os.path as path, re
 
 from bes.archive import archiver
 from rebuild import package_descriptor
@@ -23,12 +23,23 @@ class Package(object):
     self.tarball = tarball
     self._info = None
     self._files = None
+    self._metadata = None
+
+  @property
+  def metadata(self):
+    if not self._metadata:
+      self._metadata = self._load_metadata()
+    return self._metadata
     
   @property
   def info(self):
     if not self._info:
-      self._info = self.__read_descriptor()
+      self._info = self._load_descriptor()
     return self._info
+
+  @property
+  def system(self):
+    return self.metadata['system']
 
   @property
   def files(self):
@@ -36,10 +47,13 @@ class Package(object):
       self._files = self.__read_files()
     return self._files
 
-  def __read_descriptor(self):
+  def _load_descriptor(self):
+    return package_descriptor.parse_dict(self.metadata)
+
+  def _load_metadata(self):
     # FIXME: need to use a better root dir something that ends up in ~/.rebbe/pacakge_members_cache or such
     content = archiver.extract_member_to_string_cached(self.tarball, self.INFO_FILENAME)
-    return package_descriptor.parse_json(content)
+    return json.loads(content)
 
   def __read_files(self):
     'Return the list of files in the package.  Only files no metadata.'

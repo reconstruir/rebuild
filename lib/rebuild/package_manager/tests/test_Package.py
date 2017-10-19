@@ -12,8 +12,8 @@ class test_package(unittest.TestCase):
 
   DEBUG = False
   #DEBUG = True
-  
-  def test_package_info(self):
+
+  def test_package_info_water(self):
     tmp_tarball = unit_test_packages.make_water(debug = self.DEBUG)
     p = Package(tmp_tarball)
     self.assertEqual( 'water', p.info.name )
@@ -22,6 +22,7 @@ class test_package(unittest.TestCase):
     self.assertEqual( { 'category': Category.LIB }, p.info.properties )
     self.assertEqual( [ 'bin/water_script.sh', 'docs/water_bar.txt', 'docs/water_foo.txt', 'lib/pkgconfig/water.pc' ], p.files )
     self.assertEqual( [ 'lib/pkgconfig/water.pc' ], p.pkg_config_files )
+    self.assertEqual( 'macos', p.system )
 
   def test_package_info_with_requirements(self):
     tmp_tarball = unit_test_packages.make_orange(debug = self.DEBUG)
@@ -37,7 +38,7 @@ class test_package(unittest.TestCase):
     tmp_tarball = unit_test_packages.make_orange(debug = self.DEBUG)
     self.assertEqual( [ 'bin/orange_script.sh', 'docs/orange_bar.txt', 'docs/orange_foo.txt', 'lib/pkgconfig/orange.pc' ], Package.package_files(tmp_tarball) )
 
-  def test_package_info(self):
+  def test_package_info_orange(self):
     tmp_tarball = unit_test_packages.make_orange(debug = self.DEBUG)
     expected_pi = package_descriptor('orange', '6.5.4-3',
                               requirement.parse('fructose(all) >= 3.4.5-6 fiber(all) >= 1.0.0-0'),

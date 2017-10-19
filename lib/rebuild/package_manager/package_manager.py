@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-# FIXME: add system and machine checking for install_tarball()
 # FIXME: theres no notion of transactions or anything else robust in this nice code
 
 import copy, os.path as path, platform
@@ -119,11 +118,11 @@ class package_manager(object):
     if self.is_installed(package.info.name):
       raise PackageAlreadyInstallededError('package %s already installed' % (package.info.name))
 
-    missing_requirements = self.__missing_requirements(package)
+    missing_requirements = self._missing_requirements(package, package.system)
     if missing_requirements:
       raise PackageMissingRequirementsError('package %s missing requirements: %s' % (package.info.name, ', '.join(missing_requirements)))
       
-    conflicts = self.__find_conflicts(package.files)
+    conflicts = self._find_conflicts(package.files)
     if conflicts:
       conflict_packages = self._db.packages_with_files(conflicts)
       conflict_packages_str = ' '.join(conflict_packages)
@@ -149,7 +148,7 @@ class package_manager(object):
   def is_installed(self, package_name):
     return self._db.find_package(package_name) != None
 
-  def __find_conflicts(self, files):
+  def _find_conflicts(self, files):
     conflicts = []
     for f in files:
       if path.isfile(path.join(self._installation_dir, f)):
@@ -157,11 +156,12 @@ class package_manager(object):
     return sorted(conflicts)
 
   # FIXME: what about satisfying version and revision
-  def __missing_requirements(self, package):
-    if not package.info.requirements:
+  def _missing_requirements(self, package, system):
+    requirements = package.info.requirements_for_system(system)
+    if not requirements:
       return []
     missing_requirements = []
-    for req in package.info.requirements:
+    for req in requirements:
       if not self._db.has_package(req.name):
         missing_requirements.append(req.name)
     return missing_requirements
