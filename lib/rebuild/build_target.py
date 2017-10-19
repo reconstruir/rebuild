@@ -34,8 +34,8 @@ class build_target(object):
   def clone(self, system = None, build_type = None, archs = None):
     'Clone ourselves but override with args that are not None'
     return build_target(system or self.system,
-                     build_type or self.build_type,
-                     archs or self.archs)
+                        build_type or self.build_type,
+                        archs or self.archs)
 
   def __eq__(self, other):
     return self.system == other.system and self.archs == other.archs and self.build_type == other.build_type

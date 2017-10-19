@@ -395,8 +395,8 @@ rebuild_manager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir @ROOT_
     tm = tools_manager(tools_dir)
 
     target = build_target(opts.get('system', build_target.DEFAULT),
-                      opts.get('build_target', build_target.DEFAULT),
-                      opts.get('archs', build_target.DEFAULT))
+                          opts.get('build_target', build_target.DEFAULT),
+                          opts.get('archs', build_target.DEFAULT))
 
     build_blurb.blurb('tester', ' build_target: %s' % (target))
     build_blurb.blurb('tester', '      tmp_dir: %s' % (tmp_dir))

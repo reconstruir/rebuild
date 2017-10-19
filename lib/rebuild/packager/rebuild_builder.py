@@ -106,7 +106,6 @@ class rebuild_builder(object):
                                            publish_dir = self._publish_dir,
                                            rebbe_root = self._rebbe_root,
                                            downloads_root = self._downloads_root,
-#                                           third_party_sources = self._third_party_sources,
                                            **opts)
     if result.status == build_script_runner.SUCCESS:
       self.blurb('%s - SUCCESS' % (script.package_info.name))
@@ -127,7 +126,9 @@ class rebuild_builder(object):
 
   def build_many_scripts(self, package_names, opts):
     opts = copy.deepcopy(opts)
-#    opts['builder_config'] = self._config
+    if False:
+      import pprint
+      print('opts:\n%s' % (pprint.pformat(opts)))
     
     if self._config.users:
       depends_on_packages = []

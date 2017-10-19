@@ -24,8 +24,6 @@ class packager(object):
 
     assert isinstance(script, build_script)
 
-#    assert 'third_party_sources' in kargs
-    
     #log.configure('software_packager=debug')
 
     tmp_dir = self.__tmp_dir(kargs)
@@ -41,10 +39,8 @@ class packager(object):
     self.script.checksum_dir = self.packager_env.checksum_dir
     self.script.all_scripts = all_scripts
     self._execute_args = dict_util.combine(kargs, {})
-    verbose = kargs.get('verbose', '0') == '1' or kargs.get('v', '0') == '1'
-    if verbose:
+    if config.verbose:
       dict_util.dump(self._execute_args)
-    self._execute_args['verbose'] = verbose
     script.add_steps(self.packager_env)
 
   @classmethod

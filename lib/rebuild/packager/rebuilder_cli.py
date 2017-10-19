@@ -37,7 +37,7 @@ class rebuilder_cli(object):
     self.parser.add_argument('-o', '--opts', action = 'store', type = str, default = '')
     self.parser.add_argument('-f', '--rebuildstruct', action = 'store', type = str, default = 'rebuildstruct')
     self.parser.add_argument('-n', '--no-checksums', action = 'store_true')
-    self.parser.add_argument('-v', '--verbose', action = 'store_true')
+    self.parser.add_argument('-v', '--verbose', action = 'store_true', default = False)
     self.parser.add_argument('-w', '--wipe', action = 'store_true')
     self.parser.add_argument('-k', '--keep-going', action = 'store_true')
     self.parser.add_argument('-d', '--disabled', action = 'store_true')
@@ -59,7 +59,8 @@ class rebuilder_cli(object):
     
   def main(self):
     args = self.parser.parse_args()
-
+    args.verbose = bool(args.verbose)
+    
     target_packages = args.target_packages[0]
     opts = copy.deepcopy(self.DEFAULT_OPTIONS)
     parsed_opts = key_value_parser.parse_to_dict(args.opts)
@@ -93,7 +94,7 @@ class rebuilder_cli(object):
     opts['archs'] = args.archs
 
     build_blurb.set_process_name('build')
-    build_blurb.set_verbose(bool(args.verbose))
+    build_blurb.set_verbose(args.verbose)
 
     tmp_dir = args.tmp_dir
 
@@ -117,6 +118,7 @@ class rebuilder_cli(object):
     config.tps_address = args.tps_address
     config.source_finder = self._make_source_finder(tmp_dir, args.source_dir, config.tps_address, config.no_network)
     config.no_checksums = args.no_checksums
+    config.verbose = args.verbose
     
     builder = rebuild_builder(config, bt, tmp_dir, filenames)
 

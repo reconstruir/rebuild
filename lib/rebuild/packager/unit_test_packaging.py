@@ -30,9 +30,9 @@ class unit_test_packaging(object):
     config.source_finder = clazz._make_source_finder(tmp_dir)
     config.no_network = True
     config.no_checksums = True
+    config.verbose = True
     rv = runner.run_build_script(script,
                                  config,
-                                 verbose = True,
                                  tmp_dir = temp_file.make_temp_dir(),
                                  third_party_sources = clazz._make_tmp_third_party_sources())
     if not rv.status == build_script_runner.SUCCESS:

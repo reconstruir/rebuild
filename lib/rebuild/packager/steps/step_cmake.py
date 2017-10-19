@@ -21,7 +21,7 @@ class step_cmake_configure(Step):
     assert isinstance(cmake_env, dict)
 
     cmd = [ 'cmake' ]
-    if argument.args.get('verbose', False):
+    if argument.env.config.verbose:
       cmd.append('--debug-output')
     cmd.append('-DCMAKE_INSTALL_PREFIX=$REBUILD_STAGE_PREFIX_DIR')
     cmd.extend(cmake_flags)
