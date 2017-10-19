@@ -13,7 +13,7 @@ from bes.archive import archive, archiver
 from bes.fs import file_util, temp_file
 from .artifact_manager import artifact_manager, ArtifactNotFoundError
 from .Package import Package
-from .PackageDatabase import PackageDatabase
+from .package_database import package_database
 from .package_list import package_list
 
 class PackageFilesConflictError(Exception):
@@ -47,7 +47,7 @@ class package_manager(object):
   def __init__(self, root_dir):
     self.root_dir = root_dir
     self._database_path = path.join(self.root_dir, self.DATABASE_PATH)
-    self._db = PackageDatabase(self._database_path)
+    self._db = package_database(self._database_path)
     self._installation_dir = path.join(self.root_dir, self.INSTALLATION_DIR)
     self._lib_dir = path.join(self._installation_dir, 'lib')
     self._bin_dir = path.join(self._installation_dir, 'bin')

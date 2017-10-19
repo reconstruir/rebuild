@@ -10,7 +10,7 @@ from rebuild import package_descriptor, version
 
 from .DatabaseEntry import DatabaseEntry
 
-class PackageDatabase(object):
+class package_database(object):
 
   def __init__(self, filename):
     self.filename = filename

@@ -482,6 +482,7 @@ oct 13
 figute out the goofy test_fat_archive __make_test_archive that returns a tgz where it looks like a .a is expected.
 
 oct 17
+- remove the need for build_script to have all_scripts
 - in rebuilder_config rename users to dependents or somesuch
 - remove no_checksums from packager.execute()
 - better errors when source not found
