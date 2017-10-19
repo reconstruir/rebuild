@@ -14,7 +14,7 @@ class test_rebuild_builder(unit_test):
   __unit_test_data_dir__ = 'test_data/packager'
 
   DEBUG = False
-  DEBUG = True
+#  DEBUG = True
   
   def test_amhello(self):
     bt = build_target()
@@ -25,6 +25,8 @@ class test_rebuild_builder(unit_test):
     config = rebuilder_config()
     config.no_network = True
     config.source_finder = self._make_source_finder()
+    config.no_network = True
+    config.verbose = True
     builder = rebuild_builder(config, bt, tmp_dir, filenames)
     opts = {}
     packages = [ 'amhello' ]

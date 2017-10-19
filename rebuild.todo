@@ -484,3 +484,6 @@ oct 17
 - in rebuilder_config rename users to dependents or somesuch
 - better errors when source not found
 - move dep sources out of build_script.py into its own
+
+oct 18
+- only tools appears to be broken in rebuilder_cli.  need to fix dependencies for that case
