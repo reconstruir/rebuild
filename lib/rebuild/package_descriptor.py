@@ -289,3 +289,25 @@ class package_descriptor(object):
   @property
   def build_requirements_names(self):
     return set([ req.name for req in self.build_requirements ])
+
+  @property
+  def resolved_requirements_names(self):
+    return set([ req.name for req in self.resolved_requirements ])
+
+  @property
+  def resolved_build_requirements_names(self):
+    return set([ req.name for req in self.resolved_build_requirements ])
+  
+  def requirements_for_system(self, system):
+    return [ req for req in self.requirements if System.mask_matches(req.system_mask, system) ]
+
+  def requirements_names_for_system(self, system):
+    return set([ req.name for req in self.requirements_for_system(system) ])
+  
+  def build_requirements_for_system(self, system):
+    return [ req for req in self.build_requirements if System.mask_matches(req.system_mask, system) ]
+
+  def build_requirements_names_for_system(self, system):
+    return set([ req.name for req in self.build_requirements_for_system(system) ])
+  
+  

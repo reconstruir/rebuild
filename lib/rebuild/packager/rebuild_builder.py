@@ -91,7 +91,7 @@ class rebuild_builder(object):
   def wipe_build_dirs(self, package_names):
     patterns = [ '*%s-*' % (name) for name in package_names ]
     if path.isdir(self._builds_tmp_dir):
-      self.blurb('cleaning temporary build directories in %s' % (self._builds_tmp_dir))
+      self.blurb('cleaning temporary build directories in %s' % (path.relpath(self._builds_tmp_dir)))
       tmp_dirs = dir_util.list(self._builds_tmp_dir, patterns = patterns)
       file_util.remove(tmp_dirs)
 
@@ -144,7 +144,7 @@ class rebuild_builder(object):
     resolved_package_names = self.__resolve_package_names(package_names)
 
     resolved_scripts = dict_util.filter_with_keys(self._runner.scripts, resolved_package_names)
-    build_order_flat = build_script_runner.build_order_flat(resolved_scripts)
+    build_order_flat = build_script_runner.build_order_flat(resolved_scripts, self.build_target.system)
 
     if self._config.deps_only:
       for package_name in package_names:
@@ -185,7 +185,7 @@ class rebuild_builder(object):
   def __resolve_package_names(self, package_names):
     if not package_names:
       package_names = self.all_package_names
-    return build_script_runner.resolve_requirements(self._runner.scripts, package_names)
+    return build_script_runner.resolve_requirements(self._runner.scripts, package_names, self.build_target.system)
 
   def __depends_on(self, what):
     'Return a list of package names for packages that depend on what.'
