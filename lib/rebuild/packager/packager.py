@@ -54,5 +54,5 @@ class packager(object):
     file_util.mkdir(tmp_dir)
     return tmp_dir
 
-  def execute(self, no_checksums = False):
-    return self.script.execute(self.packager_env, self._execute_args, no_checksums)
+  def execute(self):
+    return self.script.execute(self.packager_env, self._execute_args)

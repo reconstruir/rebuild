@@ -35,10 +35,10 @@ class build_script(object):
   def step_list(self, args):
     return self._step_manager.step_list(args)
 
-  def execute(self, packager_env, args, no_checksums):
+  def execute(self, packager_env, args):
     result = self._step_manager.execute(packager_env, args)
     if result.success:
-      if not no_checksums:
+      if not packager_env.config.no_checksums:
         self.__save_checksums()
     return result
         

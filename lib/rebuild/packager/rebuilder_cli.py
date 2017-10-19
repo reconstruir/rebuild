@@ -116,6 +116,7 @@ class rebuilder_cli(object):
     config.skip_tests = args.skip_tests
     config.tps_address = args.tps_address
     config.source_finder = self._make_source_finder(tmp_dir, args.source_dir, config.tps_address, config.no_network)
+    config.no_checksums = args.no_checksums
     
     builder = rebuild_builder(config, bt, tmp_dir, filenames)
 
@@ -127,7 +128,7 @@ class rebuilder_cli(object):
       build_blurb.blurb('build', ' '.join(builder.all_package_names), fit = True)
       return 1
 
-    if args.no_checksums:
+    if config.no_checksums:
       builder.remove_checksums(resolved_args.package_names)
 
     if args.wipe:

@@ -23,7 +23,6 @@ class test_packager(unit_test):
     tmp_source_dir = path.join(tmp_dir, 'source')
     rebuildfile = path.join(tmp_source_dir, 'build_amhello.py')
     script_content = unit_test_packaging.make_build_script_content('amhello', '1.0', 0)
-    print(script_content)
     file_util.save(rebuildfile, content = script_content)
 
     bt = build_target()

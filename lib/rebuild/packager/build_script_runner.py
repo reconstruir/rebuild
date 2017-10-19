@@ -64,17 +64,16 @@ class build_script_runner(object):
         assert False, 'caught unknown exception: %s' % (str(ex))
         
   def run_build_script(self, script, config, **kargs):
-    no_checksums = kargs.get('no_checksums', False)
     try:
       pkg = packager(script, config, self.scripts, **kargs)
-      needs_rebuilding = no_checksums or script.needs_rebuilding()
+      needs_rebuilding = config.no_checksums or script.needs_rebuilding()
       if not needs_rebuilding:
         # If the working directory is empty, it means no work happened and its useless
         if dir_util.is_empty(pkg.packager_env.working_dir):
           file_util.remove(pkg.packager_env.working_dir)
         return self.RunResult(self.CURRENT, None)
       build_blurb.blurb('build', '%s - building' % (script.package_info.name))
-      packager_result = pkg.execute(no_checksums)
+      packager_result = pkg.execute()
       #print("CACA: packager_result: %s" % (str(packager_result)))
       if packager_result.success:
         return self.RunResult(self.SUCCESS, packager_result)
