@@ -52,10 +52,10 @@ class build_blurb(object):
     output.flush()
 
   @classmethod
-  def blurb_verbose(clazz, label, message, output = sys.stdout):
+  def blurb_verbose(clazz, label, message, output = sys.stdout, fit = False):
     if not clazz.verbose:
       return
-    clazz.blurb(label, message, output)
+    clazz.blurb(label, message, output = output, fit = fit)
 
   @classmethod
   def justified_label(clazz, label):
@@ -65,6 +65,11 @@ class build_blurb(object):
   def _transplant_blurb(obj, message, output = sys.stdout, fit = False):
     assert getattr(obj, 'rebuild_blurb_label__', None) != None
     build_blurb.blurb(obj.rebuild_blurb_label__, message, output = output, fit = fit)
+
+  @staticmethod
+  def _transplant_blurb_verbose(obj, message, output = sys.stdout, fit = False):
+    assert getattr(obj, 'rebuild_blurb_verbose_label__', None) != None
+    build_blurb.blurb_verbose(obj.rebuild_blurb_verbose_label__, message, output = output, fit = fit)
 
   @classmethod
   def add_blurb(clazz, obj, label = None):
@@ -84,6 +89,9 @@ class build_blurb(object):
     add_method(clazz._transplant_blurb, object_class, 'blurb')
     setattr(object_class, 'rebuild_blurb_label__', label)
 
+    add_method(clazz._transplant_blurb_verbose, object_class, 'blurb_verbose')
+    setattr(object_class, 'rebuild_blurb_verbose_label__', label)
+    
   @classmethod
   def set_process_name(clazz, process_name):
     'Set the global name for the current process.  Used to know what key to use for persistent settings.'

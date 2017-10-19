@@ -38,9 +38,8 @@ class packager(object):
                                      kargs.get('downloads_root', None))
     self.script.checksum_dir = self.packager_env.checksum_dir
     self.script.all_scripts = all_scripts
-    self._execute_args = dict_util.combine(kargs, {})
-    if config.verbose:
-      dict_util.dump(self._execute_args)
+    self._execute_args = copy.deepcopy(kargs)
+    self.blurb_verbose('execute_args:\n%s' % (dict_util.dumps(self._execute_args)))
     script.add_steps(self.packager_env)
 
   @classmethod
