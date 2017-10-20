@@ -9,6 +9,9 @@ class test_binary_format_macho(unit_test):
 
   __unit_test_data_dir__ = 'test_data/binary_objects'
 
+  def test_name(self):
+    self.assertEqual( 'macho', macho().name() )
+  
   def test_is_binary(self):
     self.assertTrue( self.__is_binary('macos/fat_fruits.so') )
     self.assertFalse( self.__is_binary('macos/thin_fruits_arm64.a') )

@@ -23,28 +23,20 @@ class binary_detector(object):
   ]
   
   @classmethod
-  def is_strippable(clazz, filename):
-    'Return True if filename is a binary type that can be stripped (exe or dylib).'
-    if filename.lower().endswith('.class'):
-      return False
-    for fmt in clazz._FORMATS:
-      if fmt.file_is_of_type(filename, clazz._STRIPPABLE_TYPES):
-        return True
-    return False
-
-  @classmethod
-  def find_strippable_binaries(clazz, d):
+  def find_strippable_binaries(clazz, d, format_name = None):
     'Recursively find binaries that can be stripped in d.'
     files = file_find.find(d, relative = False)
-    return [ f for f in files if clazz.is_strippable(f) ]
+    return [ f for f in files if clazz.is_strippable(f, format_name) ]
 
   @classmethod
-  def is_strippable(clazz, filename):
+  def is_strippable(clazz, filename, format_name = None):
     'Return True if filename is a binary type that can be stripped (exe or dylib).'
     #FIXME: this breaks for java class files need to differnetiate them.
     if filename.lower().endswith('.class'):
       return False
     for fmt in clazz._FORMATS:
+      if format_name and fmt.name() != format_name:
+        return False
       if fmt.file_is_of_type(filename, clazz._STRIPPABLE_TYPES):
         return True
     return False

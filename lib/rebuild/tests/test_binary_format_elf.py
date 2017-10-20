@@ -9,6 +9,9 @@ class test_binary_format_elf(unit_test):
 
   __unit_test_data_dir__ = 'test_data/binary_objects'
 
+  def test_name(self):
+    self.assertEqual( 'elf', elf().name() )
+  
   def test_is_binary(self):
     self.assertTrue( self.__is_binary('linux/cherry.o') )
     self.assertFalse( self.__is_binary('linux/empty.txt') )
