@@ -2,14 +2,14 @@
 #-*- coding:utf-8 -*-
 
 from ._toolchain_base import _toolchain_base
-from .build_type import build_type
+from rebuild import build_type
 import os.path as path
 
 class _toolchain_linux(_toolchain_base):
 
   @classmethod
   def compiler_environment(clazz, build_target):
-    ar_replacement = path.abspath(path.normpath(path.join(path.dirname(__file__), '../../bin/rebuild_ar.py')))
+    ar_replacement = path.abspath(path.normpath(path.join(path.dirname(__file__), '../../../bin/rebuild_ar.py')))
 
     env = {
       'CC': 'gcc',

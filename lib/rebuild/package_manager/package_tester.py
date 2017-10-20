@@ -9,7 +9,8 @@ from collections import namedtuple
 
 from rebuild.step_manager import Step, step_result
 from rebuild.package_manager import Package, package_manager
-from rebuild import build_target, build_blurb, Patch, toolchain, SystemEnvironment, requirement
+from rebuild import build_target, build_blurb, Patch, SystemEnvironment, requirement
+from rebuild.toolchain import toolchain
 from rebuild.dependency import dependency_resolver
 from bes.common import Shell
 from bes.fs import file_replace

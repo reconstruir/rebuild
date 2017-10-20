@@ -14,7 +14,7 @@ class binary_format_elf(binary_format_base):
   MAGIC_ELF = '7f454c46'
   
   # Magic numbers for Mach-O objects
-  __MAGIC_NUMBER_ELF = 0x7f454c46
+  _MAGIC_NUMBER_ELF = 0x7f454c46
   
   # Whether to spew debugging info
   DEBUG = False
@@ -23,18 +23,18 @@ class binary_format_elf(binary_format_base):
   DEBUG_HEXDUMP = False
   #DEBUG_HEXDUMP = True
 
-  __MAGIC_TO_STRING = {
-    __MAGIC_NUMBER_ELF: MAGIC_ELF,
+  _MAGIC_TO_STRING = {
+    _MAGIC_NUMBER_ELF: MAGIC_ELF,
   }
 
-  __FILE_TYPES = {
+  _FILE_TYPES = {
     0x1: binary_format_base.FILE_TYPE_OBJECT,
     0x2: binary_format_base.FILE_TYPE_EXECUTABLE,
     0x3: binary_format_base.FILE_TYPE_SHARED_LIB,
     0x4: binary_format_base.FILE_TYPE_CORE,
   }
 
-  __MACHINES = {
+  _MACHINES = {
     0x0: 'none',
     0x1: 'm32',
     0x2: 'sparc',
@@ -73,12 +73,16 @@ class binary_format_elf(binary_format_base):
     0xbeef: 'cygnus_mn10300',
   }
   
-  __ELF_ENDIAN_MAP = {
+  _ELF_ENDIAN_MAP = {
     0x1: binary_format_base.ENDIAN_LE,
     0x2: binary_format_base.ENDIAN_BE,
   }
-  __ELF_VALID_ENDIANS = __ELF_ENDIAN_MAP.keys()
+  _ELF_VALID_ENDIANS = _ELF_ENDIAN_MAP.keys()
 
+  def name(self):
+    'Return the name of this binary format.'
+    return 'elf'
+  
   def is_binary(self, filename):
     'Return True if filename is a binary.'
     return self.read_info(filename) != None
@@ -89,9 +93,9 @@ class binary_format_elf(binary_format_base):
       magic = self.fin_read_magic(fin, 4, self.ENDIAN_BE)
       if not magic:
         return None
-      if not magic in [ self.__MAGIC_NUMBER_ELF ]:
+      if not magic in [ self._MAGIC_NUMBER_ELF ]:
         return None
-      return self.__MAGIC_TO_STRING[magic]
+      return self._MAGIC_TO_STRING[magic]
 
   def read_info(self, filename):
     'Return info about the ELF binary file or None if it is not ELF.'
@@ -103,13 +107,13 @@ class binary_format_elf(binary_format_base):
       magic = self.fin_read_magic(fin, 4, self.ENDIAN_BE)
       if not magic:
         return None
-      if not magic in [ self.__MAGIC_NUMBER_ELF ]:
+      if not magic in [ self._MAGIC_NUMBER_ELF ]:
         return None
       if self.DEBUG:
         print("                magic: %x" % (magic))
       elf_class = self.unpack(fin, 1, self.ENDIAN_BE)
       elf_endian = self.unpack(fin, 1, self.ENDIAN_BE)
-      endian = self.__ELF_ENDIAN_MAP[elf_endian]
+      endian = self._ELF_ENDIAN_MAP[elf_endian]
       elf_version = self.unpack(fin, 1, self.ENDIAN_BE)
       elf_os_abi = self.unpack(fin, 1, self.ENDIAN_BE)
       elf_abi_version = self.unpack(fin, 1, self.ENDIAN_BE)
@@ -118,7 +122,7 @@ class binary_format_elf(binary_format_base):
       # starting with offset 0x10 (elf_type) the endian needs to be that given in the elf object itself
       elf_type = self.unpack(fin, 2, endian)
       elf_machine = self.unpack(fin, 2, endian)
-      assert elf_endian in self.__ELF_VALID_ENDIANS
+      assert elf_endian in self._ELF_VALID_ENDIANS
       if self.DEBUG:
         print("            elf_class: %x" % (elf_class))
         print("           elf_endian: %x" % (elf_endian))
@@ -128,13 +132,13 @@ class binary_format_elf(binary_format_base):
         print("      elf_abi_version: %x" % (elf_abi_version))
         print("             elf_type: %x" % (elf_type))
         print("          elf_machine: %x" % (elf_machine))
-      if elf_machine in self.__MACHINES:
-        elf_machine_name = self.__MACHINES[elf_machine]
+      if elf_machine in self._MACHINES:
+        elf_machine_name = self._MACHINES[elf_machine]
       else:
         elf_machine_name = 'unknown'
-      obj = binary_format_object(self.__MAGIC_TO_STRING[magic],
+      obj = binary_format_object(self._MAGIC_TO_STRING[magic],
                                  elf_machine_name,
-                                 self.__FILE_TYPES[elf_type])
+                                 self._FILE_TYPES[elf_type])
       info = binary_format_file('elf', None, False, [ obj ])
       return info
 

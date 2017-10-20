@@ -3,9 +3,9 @@
 
 from ._toolchain_base import _toolchain_base
 
-from .build_type import build_type
-from .darwin.Xcrun import Xcrun
-from .darwin.Sdk import Sdk
+from rebuild import build_type
+from rebuild.darwin.Xcrun import Xcrun
+from rebuild.darwin.Sdk import Sdk
 import os.path as path
 
 class _toolchain_macos(_toolchain_base):
@@ -13,7 +13,7 @@ class _toolchain_macos(_toolchain_base):
   @classmethod
   def compiler_environment(clazz, build_target):
     sdk = Sdk.SYSTEM_TO_SDK[build_target.system]
-    ar_replacement = path.abspath(path.normpath(path.join(path.dirname(__file__), '../../bin/rebuild_ar.py')))
+    ar_replacement = path.abspath(path.normpath(path.join(path.dirname(__file__), '../../../bin/rebuild_ar.py')))
     env = {
       'CC': Xcrun.find_tool(sdk, 'clang'),
       'CXX': Xcrun.find_tool(sdk, 'clang++'),

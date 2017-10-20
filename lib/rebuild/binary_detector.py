@@ -12,12 +12,12 @@ class binary_detector(object):
   # Whether to spew debugging info
   DEBUG = False
 
-  __FORMATS = [
+  _FORMATS = [
     binary_format_macho(),
     binary_format_elf(),
   ]
 
-  __STRIPPABLE_TYPES = [
+  _STRIPPABLE_TYPES = [
     binary_format_macho.FILE_TYPE_EXECUTABLE,
     binary_format_macho.FILE_TYPE_SHARED_LIB,
   ]
@@ -27,8 +27,8 @@ class binary_detector(object):
     'Return True if filename is a binary type that can be stripped (exe or dylib).'
     if filename.lower().endswith('.class'):
       return False
-    for fmt in clazz.__FORMATS:
-      if fmt.file_is_of_type(filename, clazz.__STRIPPABLE_TYPES):
+    for fmt in clazz._FORMATS:
+      if fmt.file_is_of_type(filename, clazz._STRIPPABLE_TYPES):
         return True
     return False
 
@@ -44,8 +44,8 @@ class binary_detector(object):
     #FIXME: this breaks for java class files need to differnetiate them.
     if filename.lower().endswith('.class'):
       return False
-    for fmt in clazz.__FORMATS:
-      if fmt.file_is_of_type(filename, clazz.__STRIPPABLE_TYPES):
+    for fmt in clazz._FORMATS:
+      if fmt.file_is_of_type(filename, clazz._STRIPPABLE_TYPES):
         return True
     return False
 

@@ -21,6 +21,11 @@ class binary_format_base(with_metaclass(ABCMeta, object)):
 
   ENDIAN_LE = 'le'
   ENDIAN_BE = 'be'
+
+  @abstractmethod
+  def name(self):
+    'Return the name of this binary format.'
+    pass
   
   @abstractmethod
   def is_binary(self, filename):
