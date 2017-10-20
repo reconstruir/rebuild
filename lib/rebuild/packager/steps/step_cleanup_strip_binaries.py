@@ -19,7 +19,7 @@ class step_cleanup_strip_binaries(Step):
     else:
       if not argument.args.get('strip_binaries', False):
         return step_result(True, None)
-    if not path.isdir(argument.env.stage_bin_dir):
+    if not path.isdir(argument.env.stage_dir):
       return step_result(True, None)
     binaries = binary_detector.find_strippable_binaries(argument.env.stage_dir)
     blurb_binaries = [ path.relpath(b) for b in binaries ]

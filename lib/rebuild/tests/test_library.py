@@ -252,5 +252,10 @@ class test_library(unit_test):
       'thin_fruits_x86_64.so',
     ]
     self.assertEqual( expected_libs, library.list_libraries(self.data_dir(platform_specific = True)) )
+
+  def test_relative_rpath(self):
+    self.assertEqual( '../lib/libx.so', library.relative_rpath('/foo/bar/bin/pngfix', '/foo/bar/lib/libx.so') )
+    self.assertEqual( '', library.relative_rpath('/foo/bar/lib/liby.so', '/foo/bar/lib/libx.so') )
+
 if __name__ == '__main__':
   unit_test.main()

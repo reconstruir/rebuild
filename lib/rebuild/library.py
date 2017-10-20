@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 
-import os.path as path, re
+import os, os.path as path, re
 from bes.system import impl_import
-from bes.fs import dir_util, file_util
+from bes.fs import dir_util, file_util, file_path
 
 _library_super_class = impl_import.load(__name__, 'library', globals())
 
@@ -86,3 +86,33 @@ class library(_library_super_class):
     if not name:
       return None
     return filename.replace(name, prefix + name)
+  
+  @classmethod
+  def relative_rpath(clazz, filename, library):
+    'Return relative rpath'
+    prefix = path.commonprefix([filename, library])
+    if prefix == os.sep:
+      return None
+    filename_depth = file_path.depth(filename)
+    library_depth = file_path.depth(library)
+    prefix_depth = file_path.depth(prefix)
+    filename_rel = file_util.remove_head(filename, prefix)
+    library_rel = file_util.remove_head(library, prefix)
+    if filename_depth == library_depth == prefix_depth:
+      return ''
+    delta_depth = filename_depth - prefix_depth
+    library_dir = path.dirname(library_rel)
+#    print('    filename: %s (%d)' % (filename, filename_depth))
+#    print('     library: %s (%d)' % (library, library_depth))
+#    print('      prefix: %s (%d)' % (prefix, prefix_depth))
+#    print('filename_rel: %s' % (filename_rel))
+#    print(' library_rel: %s' % (library_rel))
+#    print(' delta_depth: %s' % (delta_depth))
+#    print(' library_dir: %s' % (library_dir))
+
+    between = os.sep.join(['..'] * (delta_depth - 1))
+    result = path.join(between, library_rel)
+#    print('      result: %s' % (result))
+    
+    return result
+  
