@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from .binary_format_macho import binary_format_macho
 from .binary_format_elf import binary_format_elf
@@ -34,9 +34,11 @@ class binary_detector(object):
     #FIXME: this breaks for java class files need to differnetiate them.
     if filename.lower().endswith('.class'):
       return False
-    for fmt in clazz._FORMATS:
-      if format_name and fmt.name() != format_name:
-        return False
+    if format_name:
+      formats = [ f for f in clazz._FORMATS if f.name() == format_name ]
+    else:
+      formats = clazz._FORMATS
+    for fmt in formats:
       if fmt.file_is_of_type(filename, clazz._STRIPPABLE_TYPES):
         return True
     return False
