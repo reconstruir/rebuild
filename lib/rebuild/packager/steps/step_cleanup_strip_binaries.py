@@ -3,7 +3,8 @@
 
 import os.path as path
 from rebuild.step_manager import Step, step_result
-from rebuild import build_type, binary_detector, strip
+from rebuild import build_type, binary_detector
+from rebuild.toolchain import strip
 
 class step_cleanup_strip_binaries(Step):
   'Strip binaries.'
@@ -22,8 +23,8 @@ class step_cleanup_strip_binaries(Step):
     if not path.isdir(argument.env.stage_dir):
       return step_result(True, None)
     binaries = binary_detector.find_strippable_binaries(argument.env.stage_dir)
-    blurb_binaries = [ path.relpath(b) for b in binaries ]
-    for b in blurb_binaries:
-      self.blurb('stripping binary: %s' % (b))
-    strip.strip(argument.env.build_target, binaries)
+    for b in binaries:
+      self.blurb('stripping binary: %s' % (path.relpath(b)))
+      if not strip.strip(argument.env.build_target, b):
+        step_result(False, 'Failed to strip: %s' % (b))
     return step_result(True, None)

@@ -45,11 +45,15 @@ class binary_format_base(with_metaclass(ABCMeta, object)):
   def file_is_of_type(self, filename, types):
     'Return True of file is of one of the given type or types.'
     types = object_util.listify(types)
+    return self.file_type(filename) in types
+
+  def file_type(self, filename):
+    'Return the file type for filename or None if its not a valid binary.'
     info = self.read_info(filename)
     if not info:
       return False
     assert len(info.objects) >= 1
-    return info.objects[0].file_type in types
+    return info.objects[0].file_type
 
   def endian_is_valid(self, endian):
     'Return True if endian is a valid endian.'

@@ -16,6 +16,9 @@ class step_setup_unpack(Step):
     super(step_setup_unpack, self).__init__()
 
   def execute(self, argument):
+    if argument.args.get('skip_unpack', False):
+      return step_result(True, None)
+
     downloaded_tarballs = argument.args.get('downloaded_tarballs', [])
     extra_tarballs = argument.args.get('extra_tarballs', [])
     tarballs = argument.args.get('tarballs', []) + extra_tarballs + downloaded_tarballs
@@ -47,15 +50,6 @@ class step_setup_unpack(Step):
       tarball = packager_env.config.source_finder.find_source(tarball_name,
                                                               packager_env.package_descriptor.version.upstream_version,
                                                               packager_env.build_target.system)
-      '''
-      third_party_sources_root = packager_env.third_party_sources.root
-
-      tarball = clazz._find_tarball([ packager_env.source_dir, path.join(third_party_sources_root, 'sources') ],
-                                    tarball_name,
-                                    packager_env.package_descriptor.version,
-                                    packager_env.build_target)
-'''
-
       if tarball:
         tarballs_dict = { 'tarballs': [ tarball ] }
       else:
@@ -73,25 +67,3 @@ class step_setup_unpack(Step):
       assert 'tarballs' not in extra_tarballs_dict
 
     return dict_util.combine(tarballs_dict, extra_tarballs_dict)
-
-  @classmethod
-  def _find_tarball(clazz, where, name, version, build_target):
-    tarball = TarballUtil.find(where, name, version.upstream_version)
-
-    # If we find more than one tarball it could be because there are 1 for each platform so
-    # filter out only the ones that match the current build system target
-    if len(tarball) > 1:
-      pattern = '/%s/' % (build_target.system)
-      tarball = [ t for t in tarball if pattern in t ]
-      
-    if len(tarball) > 1:
-      raise RuntimeError('Too many tarballs found for %s-%s: %s' % (name, version.upstream_version, ' '.join(tarball)))
-    if len(tarball) == 0:
-      return None
-
-    tarball = tarball[0]
-
-    if not archiver.is_valid(tarball):
-      raise RuntimeError('Unknown archive type: %s' % (tarball))
-
-    return tarball
