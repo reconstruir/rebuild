@@ -5,7 +5,7 @@ from bes.system import impl_import
 from rebuild import binary_detector
 
 class strip(impl_import.load(__name__, '_strip', globals())):
-  'Foo.'
+  'Strip binaries.'
 
   @classmethod
   def check_strippable(clazz, binary):
