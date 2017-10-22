@@ -17,8 +17,8 @@ class checksum_manager(object):
   def ignore_all(self, ignore_all):
     self._ignore_all = ignore_all
 
-  def add_ignored(self, name):
-    self.ignored.add(name)
+  def ignore(self, name):
+    self._ignored.add(name)
 
   def is_ignored(self, name):
-    return name in self.ignored
+    return name in self._ignored
