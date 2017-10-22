@@ -183,6 +183,6 @@ exec ${1+"$@"}
       existing_package = dep_map.get(package.info.name, None)
       if existing_package:
         raise RuntimeError('package \"%s\" is already in dep_map (multiple versions) as \"%s\""' % (package.info, existing_package))
-      dep_map[package.info.name] = package.info.requirements_names
+      dep_map[package.info.name] = package.info.requirements_names_for_system(build_target.system)
     return dep_map
 
