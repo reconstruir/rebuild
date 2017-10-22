@@ -18,6 +18,7 @@ from bes.python import code
 from rebuild.packager import rebuild_manager
 from rebuild.package_manager import artifact_manager, Package, package_tester
 from rebuild.tools_manager import tools_manager
+from rebuild.checksum import checksum_manager
 
 from .rebuild_builder import rebuild_builder
 from .rebuilder_config import rebuilder_config
@@ -117,8 +118,10 @@ class rebuilder_cli(object):
     config.skip_tests = args.skip_tests
     config.tps_address = args.tps_address
     config.source_finder = self._make_source_finder(tmp_dir, args.source_dir, config.tps_address, config.no_network)
+    config.checksum_manager = self._make_checksum_manager(tmp_dir, bt)
     config.no_checksums = args.no_checksums
     config.verbose = args.verbose
+    config.wipe = args.wipe
     
     builder = rebuild_builder(config, bt, tmp_dir, filenames)
 
@@ -129,12 +132,6 @@ class rebuilder_cli(object):
       build_blurb.blurb('build', 'possible targets:')
       build_blurb.blurb('build', ' '.join(builder.all_package_names), fit = True)
       return 1
-
-    if config.no_checksums:
-      builder.remove_checksums(resolved_args.package_names)
-
-    if args.wipe:
-      builder.wipe_build_dirs(resolved_args.package_names)
 
     return builder.build_many_scripts(resolved_args.package_names, opts)
 
@@ -178,3 +175,9 @@ class rebuilder_cli(object):
      root = path.join(tmp_dir, 'third_party_sources', git_util.sanitize_address(address))
      chain.add_finder(repo_source_finder(root, address, no_network = no_network, update_only_once = True))
     return chain
+
+  @classmethod
+  def _make_checksum_manager(self, tmp_dir, bt):
+    checksum_dir = path.join(tmp_dir, 'checksums', bt.build_path())
+    cm = checksum_manager(checksum_dir)
+    return cm

@@ -28,8 +28,7 @@ class rebuild_builder(object):
     self._publish_dir = path.join(self._tmp_dir, 'artifacts')
     self._rebbe_root = path.join(self._tmp_dir, 'rebbe')
     self._downloads_root = path.join(self._tmp_dir, 'downloads')
-    self.build_script_filenames = build_script_filenames
-    self._runner = build_script_runner(self.build_script_filenames, self.build_target)
+    self._runner = build_script_runner(build_script_filenames, self.build_target)
     self.all_package_names = sorted(self._runner.scripts.keys())
     self.thread_pool = thread_pool(1)
     
@@ -124,6 +123,15 @@ class rebuild_builder(object):
     return self.EXIT_CODE_FAILED
 
   def build_many_scripts(self, package_names, opts):
+
+    if self._config.no_checksums:
+      self.blurb('removing checksums for: %s' % (' '.join(package_names)), fit = True)
+      self.remove_checksums(package_names)
+
+    if self._config.wipe:
+      self.blurb('wiping build dirs for: %s' % (' '.join(package_names)), fit = True)
+      self.wipe_build_dirs(package_names)
+
     opts = copy.deepcopy(opts)
     self.blurb_verbose('opts:\n%s' % (dict_util.dumps(opts)))
     if self._config.users:

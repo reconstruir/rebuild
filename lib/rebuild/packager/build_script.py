@@ -175,7 +175,7 @@ class build_script(object):
     if self.all_scripts is None:
       raise RuntimeError('all_scripts is not set.')
     return self.file_checksums(file_checksum.checksums(self.__sources()),
-                          file_checksum.checksums(self.__targets()))
+                               file_checksum.checksums(self.__targets()))
 
   def needs_rebuilding(self):
     try:

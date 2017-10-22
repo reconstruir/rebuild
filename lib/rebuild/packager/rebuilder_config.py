@@ -20,4 +20,5 @@ class rebuilder_config(object):
     self.source_finder = None
     self.no_checksums = False
     self.verbose = False
+    self.wipe = False
     

@@ -16,8 +16,6 @@ when specifying tools or dependencies, allow for just giving the name as a way f
 
 cleanup mess in blurb and add way to unit test
 
-add line wrapping to blurb
-
 dec 19
 - formalize the hackery of *-config scripts a bit similar to
   pkg-config

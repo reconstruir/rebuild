@@ -5,7 +5,8 @@ class checksum_manager(object):
   'Manage checksums.'
 
   def __init__(self, checksum_dir):
-    self.checksum_dir = checksum_dir
+    self._checksum_dir = checksum_dir
+    print('FUCK: checksum_dir: %s' % (self._checksum_dir))
     self._ignored = set()
     self._ignore_all = False
 
@@ -21,4 +22,4 @@ class checksum_manager(object):
     self._ignored.add(name)
 
   def is_ignored(self, name):
-    return name in self._ignored
+    return self._ignore_all or name in self._ignored
