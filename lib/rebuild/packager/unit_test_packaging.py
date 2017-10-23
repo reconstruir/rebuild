@@ -7,6 +7,7 @@ from bes.common import string_util
 from rebuild import build_target, version as rebuild_version
 from rebuild.packager import build_script_runner, rebuild_builder, rebuilder_config
 from rebuild.package_manager import Package
+from rebuild.checksum import checksum_manager
 from bes.git import git, repo as git_repo
 
 from rebuild.source_finder import local_source_finder, source_finder_chain
@@ -24,13 +25,16 @@ class unit_test_packaging(object):
     tarball_path = path.join(tarball_dir, tarball_filename)
     file_util.copy(path.join(tarball_dir, tarball_filename), tmp_dir)
     filenames = [ build_script ]
-    runner = build_script_runner(filenames, build_target())
+    bt = build_target()
+    runner = build_script_runner(filenames, bt)
     script = runner.scripts[ name ]
     config = rebuilder_config()
     config.source_finder = clazz._make_source_finder(tmp_dir)
+    config.checksum_manager = clazz._make_checksum_manager(tmp_dir, bt)
     config.no_network = True
     config.no_checksums = True
     config.verbose = True
+    config.checksum_manager.ignore(script.package_info.full_name)
     rv = runner.run_build_script(script,
                                  config,
                                  tmp_dir = temp_file.make_temp_dir(),
@@ -93,11 +97,18 @@ def rebuild_recipes(env):
     return r2
 
   @classmethod
-  def _make_source_finder(self, where):
+  def _make_source_finder(clazz, where):
     chain = source_finder_chain()
     finder = local_source_finder(where)
     chain.add_finder(finder)
     return chain
+
+  @classmethod
+  def _make_checksum_manager(clazz, bt):
+    tmp_dir = temp_file.make_temp_dir()
+    checksum_dir = path.join(tmp_dir, 'checksums', bt.build_path())
+    cm = checksum_manager(checksum_dir)
+    return cm
   
 if __name__ == '__main__':
   unittest.main()

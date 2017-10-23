@@ -18,6 +18,7 @@ class rebuilder_config(object):
     self.skip_tests = False
     self.tps_address = self.DEFAULT_TPS_ADDRESS
     self.source_finder = None
+    self.checksum_manager = None
     self.no_checksums = False
     self.verbose = False
     self.wipe = False

@@ -486,5 +486,3 @@ oct 17
 oct 18
 - only tools appears to be broken in rebuilder_cli.  need to fix dependencies for that case
 - rebuild_ar.py script frailness when shit moves around is ridiculous fix it
-
-- rebuilder.py -n should affect only the explicit arguments not their dependencies

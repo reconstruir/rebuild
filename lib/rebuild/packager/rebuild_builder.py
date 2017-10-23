@@ -31,7 +31,7 @@ class rebuild_builder(object):
     self._runner = build_script_runner(build_script_filenames, self.build_target)
     self.all_package_names = sorted(self._runner.scripts.keys())
     self.thread_pool = thread_pool(1)
-    
+
   def exclude(self, excluded_packages):
     excluded_packages = object_util.listify(excluded_packages)
     for excluded_package in excluded_packages:
@@ -124,10 +124,17 @@ class rebuild_builder(object):
 
   def build_many_scripts(self, package_names, opts):
 
+#    for name, script in self._runner.scripts.items():
+#      self._config.checksum_manager.set_sources(script.package_info.full_name, script.sources)
+#    self._config.checksum_manager.print_sources()
+    
     if self._config.no_checksums:
       self.blurb('removing checksums for: %s' % (' '.join(package_names)), fit = True)
       self.remove_checksums(package_names)
-
+      for name in package_names:
+        script = self._runner.scripts[name]
+        self._config.checksum_manager.ignore(script.package_info.full_name)
+      
     if self._config.wipe:
       self.blurb('wiping build dirs for: %s' % (' '.join(package_names)), fit = True)
       self.wipe_build_dirs(package_names)

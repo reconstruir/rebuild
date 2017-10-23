@@ -38,8 +38,7 @@ class build_script(object):
   def execute(self, packager_env, args):
     result = self._step_manager.execute(packager_env, args)
     if result.success:
-      if not packager_env.config.no_checksums:
-        self.__save_checksums()
+      self.__save_checksums()
     return result
         
   def __load_from_factory_func(self, factory_func, script_env):
@@ -114,6 +113,10 @@ class build_script(object):
   def disabled(self):
     return self.package_info.disabled
 
+  @property
+  def sources(self):
+    return self.__script_sources()
+
   file_checksums = namedtuple('file_checksums', 'sources,targets')
 
   CHECKSUMS_SOURCES_FILENAME = 'sources.checksums'
@@ -146,6 +149,8 @@ class build_script(object):
 
   def __sources(self):
     'Return a list of all script and dependency sources for this script.'
+#    for f in self.__script_sources():
+#      print('%s: %s' % (self.package_info.full_name, f))
     return self.__script_sources() + self.__dep_sources()
 
   def __targets(self):
@@ -180,7 +185,7 @@ class build_script(object):
   def needs_rebuilding(self):
     try:
       loaded_checksums = self.__load_checksums()
-
+      
       # If the stored checksums don't match the current checksums, then we 
       if loaded_checksums:
         loaded_source_filenames = file_checksum.filenames(loaded_checksums.sources)
