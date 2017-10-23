@@ -16,15 +16,14 @@ class packager_env(object):
 
   def __init__(self,
                script,
-               config,
+               rebuild_env,
                all_scripts,
                tmp_dir,
-               publish_dir,
                working_dir = None,
                rebbe_root = None):
     assert tmp_dir
     
-    self.config = config
+    self.rebuild_env = rebuild_env
     self.script = script
     self.all_scripts = all_scripts
     self.build_target = script.build_target
@@ -39,10 +38,8 @@ class packager_env(object):
     self.logs_dir = path.join(self.working_dir, 'logs')
     self.test_dir = path.join(self.working_dir, 'test')
     self.check_dir = path.join(self.working_dir, 'check')
-    self.tmp_dir = path.join(self.working_dir, 'tmp')
-    self.artifact_manager = artifact_manager(publish_dir, no_git = True)
     self.requirements_manager = package_manager(path.join(self.working_dir, 'requirements'))
-    self.rebbe = rebuild_manager(rebbe_root, self.artifact_manager)
+    self.rebbe = rebuild_manager(rebbe_root, self.rebuild_env.artifact_manager)
     self.sources = []
     self.targets = []
     self.stage_lib_dir = path.join(self.stage_dir, 'lib')

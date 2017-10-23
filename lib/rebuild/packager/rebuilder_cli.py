@@ -9,18 +9,12 @@ from rebuild import build_arch, build_type, build_blurb, build_target, System
 from bes.key_value import key_value_parser
 from bes.fs import file_util
 
-from bes.archive import archiver
-from bes.common import string_util
 from bes.system import host
 from bes.python import code
 
-from rebuild.packager import rebuild_manager
-from rebuild.package_manager import artifact_manager, Package, package_tester
-from rebuild.tools_manager import tools_manager
-from rebuild.checksum import checksum_manager
-
 from .rebuild_builder import rebuild_builder
-from .rebuilder_config import rebuilder_config
+from .rebuild_config import rebuild_config
+from .rebuild_env import rebuild_env
 
 from bes.git import git_download_cache
 
@@ -56,7 +50,7 @@ class rebuilder_cli(object):
     self.parser.add_argument('--filter', nargs = '+', default = None, help = 'filter the list of build files to the given list.')
     self.parser.add_argument('--tmp-dir', action = 'store', type = str, default = path.abspath('tmp'), help = 'Temporary directory for storing builds and artifacts')
     self.parser.add_argument('target_packages', action = 'append', nargs = '*', type = str)
-    self.parser.add_argument('--tps-address', default = rebuilder_config.DEFAULT_TPS_ADDRESS, action = 'store', type = str, help = 'Third party sources address. [ %s ]' % (rebuilder_config.DEFAULT_TPS_ADDRESS))
+    self.parser.add_argument('--tps-address', default = rebuild_config.DEFAULT_TPS_ADDRESS, action = 'store', type = str, help = 'Third party sources address. [ %s ]' % (rebuild_config.DEFAULT_TPS_ADDRESS))
     self.parser.add_argument('--source-dir', default = None, action = 'store', type = str, help = 'Local source directory to use instead of tps address. [ None]')
     
   def main(self):
@@ -102,30 +96,28 @@ class rebuilder_cli(object):
 
     filenames = [ path.join(p, 'build.py') for p in available_packages ]
 
-    bt = build_target(opts.get('system', build_target.DEFAULT),
-                      opts.get('build_type', build_target.DEFAULT),
-                      opts.get('archs', build_target.DEFAULT))
-
-    build_blurb.blurb('build', 'build_target: %s' % (str(bt)))
-
-    config = rebuilder_config()
-    config.keep_going = args.keep_going
-    config.disabled = args.disabled
-    config.users = args.users
+    config = rebuild_config()
+    config.build_target = build_target(opts.get('system', build_target.DEFAULT),
+                                       opts.get('build_type', build_target.DEFAULT),
+                                       opts.get('archs', build_target.DEFAULT))
     config.deps_only = args.deps_only
-    config.skip_to_step = args.skip_to_step
-    config.tools_only = args.tools_only
+    config.disabled = args.disabled
+    config.keep_going = args.keep_going
+    config.no_checksums = args.no_checksums
     config.no_network = args.no_network
     config.skip_tests = args.skip_tests
+    config.skip_to_step = args.skip_to_step
+    config.source_dir = args.source_dir
+    config.tools_only = args.tools_only
     config.tps_address = args.tps_address
-    config.source_finder = self._make_source_finder(tmp_dir, args.source_dir, config.tps_address, config.no_network)
-    config.checksum_manager = self._make_checksum_manager(tmp_dir, bt)
-    config.no_checksums = args.no_checksums
+    config.users = args.users
     config.verbose = args.verbose
     config.wipe = args.wipe
-    config.downloads_manager = self._make_downloads_manager(tmp_dir)
+    env = rebuild_env(tmp_dir, config)
     
-    builder = rebuild_builder(config, bt, tmp_dir, filenames)
+    build_blurb.blurb('build', 'build_target: %s' % (str(config.build_target)))
+    
+    builder = rebuild_builder(env, tmp_dir, filenames)
 
     resolved_args = builder.check_and_resolve_cmd_line_args(target_packages)
       
@@ -165,26 +157,3 @@ class rebuilder_cli(object):
     if not callable(func):
       raise RuntimeError('not callable: %s' % (func))
     return func()
-      
-  @classmethod
-  def _make_source_finder(self, tmp_dir, source_dir, address, no_network):
-    from bes.git import git_util
-    from rebuild.source_finder import repo_source_finder, local_source_finder, source_finder_chain
-    chain = source_finder_chain()
-    if source_dir:
-     chain.add_finder(local_source_finder(source_dir))
-    else:
-     root = path.join(tmp_dir, 'third_party_sources', git_util.sanitize_address(address))
-     chain.add_finder(repo_source_finder(root, address, no_network = no_network, update_only_once = True))
-    return chain
-
-  @classmethod
-  def _make_checksum_manager(self, tmp_dir, bt):
-    checksum_dir = path.join(tmp_dir, 'checksums', bt.build_path())
-    cm = checksum_manager(checksum_dir)
-    return cm
-
-  @classmethod
-  def _make_downloads_manager(self, tmp_dir):
-    return git_download_cache(path.join(tmp_dir, 'downloads'))
-  

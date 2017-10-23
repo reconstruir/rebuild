@@ -20,7 +20,7 @@ class step_setup_tarball_download(Step):
     result = {}
     tarball_address, tarball_revision = args.get('tarball_address', ( None, None ))
     if tarball_address:
-      dm = packager_env.config.downloads_manager
+      dm = packager_env.rebuild_env.downloads_manager
       assert tarball_revision
       if not dm.has_tarball(tarball_address, tarball_revision):
         tarball_path = dm.tarball_path(tarball_address, tarball_revision)

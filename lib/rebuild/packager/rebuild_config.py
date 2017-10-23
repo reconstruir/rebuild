@@ -2,24 +2,24 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from collections import namedtuple
+from rebuild import build_target
 
-class rebuilder_config(object):
+class rebuild_config(object):
 
   DEFAULT_TPS_ADDRESS = 'git@git:third_party_sources.git'
   
   def __init__(self):
-    self.keep_going = False
-    self.disabled = False
-    self.users = False
+    self.build_target = build_target()
     self.deps_only = False
-    self.skip_to_step = None
-    self.tools_only = False
+    self.disabled = False
+    self.keep_going = False
+    self.no_checksums = False
     self.no_network = False
     self.skip_tests = False
+    self.skip_to_step = None
+    self.source_dir = None
+    self.tools_only = False
     self.tps_address = self.DEFAULT_TPS_ADDRESS
-    self.source_finder = None
-    self.checksum_manager = None
-    self.no_checksums = False
+    self.users = False
     self.verbose = False
     self.wipe = False
-    self.downloads_manager = None

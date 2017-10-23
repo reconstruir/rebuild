@@ -5,7 +5,7 @@ import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import file_util, temp_file
 from rebuild import build_target
-from rebuild.packager import rebuild_builder, rebuilder_config
+from rebuild.packager import rebuild_builder, rebuild_config, rebuild_env
 from rebuild.packager.unit_test_packaging import unit_test_packaging
 from rebuild.source_finder import local_source_finder, source_finder_chain
 from bes.git import git_download_cache
@@ -24,14 +24,13 @@ class test_rebuild_builder(unit_test):
     amhello_build_script = unit_test_packaging.make_build_script(tmp_dir, 'build_amhello.py', 'amhello', '1.0', 0)
     file_util.copy(self.data_path('amhello-1.0.tar.gz'), tmp_dir)
     filenames = [ amhello_build_script ]
-    config = rebuilder_config()
+    config = rebuild_config()
     config.no_network = True
-    config.source_finder = self._make_source_finder()
-    config.downloads_manager = self._make_downloads_manager()
-    config.checksum_manager = self._make_checksum_manager(bt)
+    config.source_dir = self.data_dir()
     config.no_network = True
     config.verbose = True
-    builder = rebuild_builder(config, bt, tmp_dir, filenames)
+    env = rebuild_env(tmp_dir, config)
+    builder = rebuild_builder(env, tmp_dir, filenames)
     opts = {}
     packages = [ 'amhello' ]
     
@@ -42,12 +41,11 @@ class test_rebuild_builder(unit_test):
     bt = build_target()
     tmp_dir = temp_file.make_temp_dir()
     filenames = [ self.data_path('zlib/build_zlib.py'), self.data_path('libpng/build_libpng.py') ]
-    config = rebuilder_config()
+    config = rebuild_config()
     config.no_network = True
-    config.source_finder = self._make_source_finder()
-    config.downloads_manager = self._make_downloads_manager()
-    config.checksum_manager = self._make_checksum_manager(bt)
-    builder = rebuild_builder(config, bt, tmp_dir, filenames)
+    config.source_dir = self.data_dir()
+    env = rebuild_env(tmp_dir, config)
+    builder = rebuild_builder(env, tmp_dir, filenames)
     opts = {}
     packages = [ 'zlib', 'libpng' ]
     rv = builder.build_many_scripts(packages, opts)
@@ -68,12 +66,11 @@ class test_rebuild_builder(unit_test):
       file_util.copy(self.data_path(f), tmp_dir)
 
     filenames = [ path.join(tmp_dir, 'build_fructose.py') ]
-    config = rebuilder_config()
+    config = rebuild_config()
     config.no_network = True
-    config.source_finder = self._make_source_finder()
-    config.downloads_manager = self._make_downloads_manager()
-    config.checksum_manager = self._make_checksum_manager(bt)
-    builder = rebuild_builder(config, bt, tmp_dir, filenames)
+    config.source_dir = self.data_dir()
+    env = rebuild_env(tmp_dir, config)
+    builder = rebuild_builder(env, tmp_dir, filenames)
     opts = {}
     packages_to_build = [ 'fructose' ]
     rv = builder.build_many_scripts(packages_to_build, opts)
@@ -109,30 +106,15 @@ class test_rebuild_builder(unit_test):
       file_util.copy(self.data_path(f), tmp_dir)
 
     filenames = [ orange_build_script, fructose_build_script, fiber_build_script ]
-    config = rebuilder_config()
+    config = rebuild_config()
     config.no_network = True
-    config.source_finder = self._make_source_finder()
-    config.downloads_manager = self._make_downloads_manager()
-    config.checksum_manager = self._make_checksum_manager(bt)
-    builder = rebuild_builder(config, bt, tmp_dir, filenames)
+    config.source_dir = self.data_dir()
+    env = rebuild_env(tmp_dir, config)
+    builder = rebuild_builder(env, tmp_dir, filenames)
     opts = {}
     packages_to_build = [ 'orange' ]
     rv = builder.build_many_scripts(packages_to_build, opts)
     self.assertEqual( rebuild_builder.EXIT_CODE_SUCCESS, rv )
 
-  def _make_source_finder(self):
-    chain = source_finder_chain()
-    finder = local_source_finder(self.data_dir())
-    chain.add_finder(finder)
-    return chain
-
-  def _make_downloads_manager(self):
-    return git_download_cache(temp_file.make_temp_dir())
-
-  def _make_checksum_manager(self, bt):
-    checksum_dir = path.join(temp_file.make_temp_dir(), bt.build_path())
-    cm = checksum_manager(checksum_dir)
-    return cm
-  
 if __name__ == '__main__':
   unit_test.main()
