@@ -5,12 +5,9 @@ import copy, fnmatch, os, os.path as path
 from bes.common import algorithm, dict_util, object_util
 from bes.thread import thread_pool
 from bes.fs import dir_util, file_util
-from bes.git import git_download_cache, git_util, repo as git_repo
 from collections import namedtuple
 
-from rebuild.source_finder import repo_source_finder
-
-from rebuild import build_blurb, package_descriptor
+from rebuild import build_blurb
 from .rebuild_manager import rebuild_manager
 
 from .build_script_runner import build_script_runner
@@ -27,7 +24,6 @@ class rebuild_builder(object):
     self._builds_tmp_dir = path.join(self._tmp_dir, 'builds', build_target.build_name)
     self._publish_dir = path.join(self._tmp_dir, 'artifacts')
     self._rebbe_root = path.join(self._tmp_dir, 'rebbe')
-    self._downloads_root = path.join(self._tmp_dir, 'downloads')
     self._runner = build_script_runner(build_script_filenames, self.build_target)
     self.all_package_names = sorted(self._runner.scripts.keys())
     self.thread_pool = thread_pool(1)
@@ -103,7 +99,6 @@ class rebuild_builder(object):
                                            tmp_dir = self._builds_tmp_dir,
                                            publish_dir = self._publish_dir,
                                            rebbe_root = self._rebbe_root,
-                                           downloads_root = self._downloads_root,
                                            **opts)
     if result.status == build_script_runner.SUCCESS:
       self.blurb('%s - SUCCESS' % (script.package_info.name))

@@ -34,8 +34,7 @@ class packager(object):
                                      tmp_dir,
                                      kargs.get('publish_dir', None),
                                      kargs.get('working_dir', None),
-                                     kargs.get('rebbe_root', None),
-                                     kargs.get('downloads_root', None))
+                                     kargs.get('rebbe_root', None))
     self.script.checksum_dir = self.packager_env.checksum_dir
     self.script.all_scripts = all_scripts
     self._execute_args = copy.deepcopy(kargs)

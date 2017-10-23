@@ -30,7 +30,7 @@ class unit_test_packaging(object):
     script = runner.scripts[ name ]
     config = rebuilder_config()
     config.source_finder = clazz._make_source_finder(tmp_dir)
-    config.checksum_manager = clazz._make_checksum_manager(tmp_dir, bt)
+    config.checksum_manager = clazz._make_checksum_manager(bt)
     config.no_network = True
     config.no_checksums = True
     config.verbose = True

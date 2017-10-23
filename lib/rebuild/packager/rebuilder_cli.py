@@ -22,6 +22,8 @@ from rebuild.checksum import checksum_manager
 from .rebuild_builder import rebuild_builder
 from .rebuilder_config import rebuilder_config
 
+from bes.git import git_download_cache
+
 class rebuilder_cli(object):
 
   DEFAULT_OPTIONS = {
@@ -121,6 +123,7 @@ class rebuilder_cli(object):
     config.no_checksums = args.no_checksums
     config.verbose = args.verbose
     config.wipe = args.wipe
+    config.downloads_manager = self._make_downloads_manager(tmp_dir)
     
     builder = rebuild_builder(config, bt, tmp_dir, filenames)
 
@@ -180,3 +183,8 @@ class rebuilder_cli(object):
     checksum_dir = path.join(tmp_dir, 'checksums', bt.build_path())
     cm = checksum_manager(checksum_dir)
     return cm
+
+  @classmethod
+  def _make_downloads_manager(self, tmp_dir):
+    return git_download_cache(path.join(tmp_dir, 'downloads'))
+  

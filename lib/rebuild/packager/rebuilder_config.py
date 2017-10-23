@@ -22,4 +22,4 @@ class rebuilder_config(object):
     self.no_checksums = False
     self.verbose = False
     self.wipe = False
-    
+    self.downloads_manager = None
