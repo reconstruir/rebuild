@@ -36,6 +36,7 @@ class checksum_manager(object):
     return self._ignore_all or name in self._ignored
 
   def set_sources(self, name, sources):
+    assert False
     self._sources[name] = sources
 
   def print_sources(self):

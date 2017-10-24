@@ -26,8 +26,11 @@ class build_script(object):
     self._step_manager = step_manager('build')
 
   def add_steps(self, packager_env):
+    if self._step_manager.has_steps:
+      raise RuntimeError('Script already has steps.')
     try:
       self._step_manager.add_steps(self.steps, packager_env)
+      self._steps_added()
     except Exception as ex:
       print(('Caught exception loading script: %s' % (self.filename)))
       raise
@@ -263,3 +266,7 @@ class build_script(object):
                                     build_arch.DEFAULT_ARCHS[old_build_target.system])
     script.build_target = new_build_target
     return True
+
+  def _steps_added(self):
+    'Do work that can happen only after the steps are added.'
+    pass

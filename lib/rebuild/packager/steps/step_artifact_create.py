@@ -89,7 +89,7 @@ class step_artifact_create_test_package(Step):
                                           argument.env.source_dir,
                                           argument.env.test_dir,
                                           argument.env.rebuild_env.artifact_manager,
-                                          argument.env.rebbe.tools_manager,
+                                          argument.env.rebuild_env.tools_manager,
                                           argument.env.build_target)
       tester = package_tester(config, test)
       result =  tester.run() #self.__run_test(config, test)

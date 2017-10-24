@@ -7,7 +7,6 @@ from bes.common import dict_util, object_util
 from rebuild import build_blurb, build_target, package_descriptor, SystemEnvironment
 from rebuild.dependency import dependency_resolver
 from rebuild.package_manager import artifact_manager, Package, package_manager, package_list
-from rebuild.tools_manager import tools_manager
 from collections import namedtuple
 from .rebuild_manager_config import rebuild_manager_config
 from .rebuild_manager_script import rebuild_manager_script
@@ -20,9 +19,8 @@ class rebuild_manager(object):
   
   def __init__(self, root_dir = None, artifact_manager = None):
     build_blurb.add_blurb(self, label = 'build')
+    #assert root_dir
     self.root_dir = path.abspath(root_dir or self.DEFAULT_ROOT_DIR)
-    self.tools_dir = path.join(self.root_dir, 'tools')
-    self.tools_manager = tools_manager(self.tools_dir)
     self.artifact_manager = artifact_manager
     self.package_managers = {}
     self.config_filename = path.join(self.root_dir, self.CONFIG_FILENAME)
@@ -32,10 +30,6 @@ class rebuild_manager(object):
       root_dir = path.join(self.root_dir, project_name)
       self.package_managers[project_name] = package_manager(root_dir)
     return self.package_managers[project_name]
-
-  def update_tools(self, packages):
-    assert package_descriptor.is_package_info_list(packages)
-    self.tools_manager.update(packages, self.artifact_manager)
 
   def update_packages(self, project_name, packages, build_target, allow_downgrade = False):
     pm = self.__package_manager(project_name)
@@ -156,14 +150,6 @@ exec ${1+"$@"}
     project_root_dir = self.project_root_dir(project_name)
     self.blurb('wiping root dir: %s' % (project_root_dir))
     file_util.remove(project_root_dir)
-
-  def uninstall_tools(self, package_name):
-    assert package_descriptor.is_package_info_list(packages)
-    assert False
-
-  def tool_exe(self, package_info, tool_name):
-    'Return an abs path to the given tool.'
-    return self.tools_manager.tool_exe(package_info, tool_name)
 
   def remove_checksums(self, packages, build_target):
     assert False

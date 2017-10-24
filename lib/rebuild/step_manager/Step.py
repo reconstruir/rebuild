@@ -121,7 +121,7 @@ class Step(with_metaclass(step_register, object)):
     env['REBUILD_STAGE_PYTHON_LIB_DIR'] = path.join(packager_env.stage_dir, 'lib/python')
     env['REBUILD_STAGE_FRAMEWORKS_DIR'] = path.join(packager_env.stage_dir, 'frameworks')
 
-    SystemEnvironment.update(env, packager_env.rebbe.tools_manager.shell_env(packager_env.package_descriptor.resolved_build_requirements))
+    SystemEnvironment.update(env, packager_env.rebuild_env.tools_manager.shell_env(packager_env.package_descriptor.resolved_build_requirements))
     SystemEnvironment.update(env, packager_env.requirements_manager.shell_env(packager_env.package_descriptor.resolved_requirements))
     SystemEnvironment.update(env, SystemEnvironment.make_shell_env(packager_env.stage_dir))
 

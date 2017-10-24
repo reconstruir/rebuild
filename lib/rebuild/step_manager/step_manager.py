@@ -81,3 +81,8 @@ class step_manager(object):
   @stop_step.setter
   def stop_step(self, stop_step):
     self._stop_step = stop_step
+
+  @property
+  def has_steps(self):
+    return len(self._steps) > 0
+    

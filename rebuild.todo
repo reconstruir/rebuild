@@ -490,4 +490,7 @@ oct 18
 oct 23
 - add unit test of downloading from git
 - add unit test of source finder
+
+oct 24 
 - add unit tests of rebuilder no_checksums
+- change package_descriptor.is_package_info_list to package_descriptor.is_package_descriptor_list
