@@ -44,18 +44,18 @@ class Package(object):
   @property
   def files(self):
     if not self._files:
-      self._files = self.__read_files()
+      self._files = self._read_files()
     return self._files
 
   def _load_descriptor(self):
     return package_descriptor.parse_dict(self.metadata)
 
   def _load_metadata(self):
-    # FIXME: need to use a better root dir something that ends up in ~/.rebbe/pacakge_members_cache or such
+    # FIXME: need to use a better root dir something that ends up in ~/.rebuild/tmp/package_members_cache or such
     content = archiver.extract_member_to_string_cached(self.tarball, self.INFO_FILENAME)
     return json.loads(content)
 
-  def __read_files(self):
+  def _read_files(self):
     'Return the list of files in the package.  Only files no metadata.'
     files = [ m for m in archiver.members(self.tarball) if m.startswith(self.FILES_DIR) ]
     files = [ file_util.remove_head(f, self.FILES_DIR) for f in files ]
@@ -65,13 +65,13 @@ class Package(object):
     archiver.extract(self.tarball, installation_dir,
                      strip_head = self.FILES_DIR,
                      exclude = self.METADATA_DIR + '/*')
-    self.__post_install_hooks(installation_dir)
+    self._post_install_hooks(installation_dir)
 
-  def __update_python_config_files(self, installation_dir):
+  def _update_python_config_files(self, installation_dir):
     python_lib_dir = path.join(installation_dir, 'lib/python')
     setup_tools.update_egg_directory(python_lib_dir)
 
-  def __rebbe_variable_substitution_hook(self, installation_dir):
+  def _variable_substitution_hook(self, installation_dir):
     replacements = {
       '${REBUILD_PACKAGE_PREFIX}': installation_dir,
       '${REBUILD_PACKAGE_NAME}': self.info.name,
@@ -83,20 +83,10 @@ class Package(object):
                                backup = False,
                                test_func = file_mime.is_text)
 
-  def __post_install_hooks(self, installation_dir):
-    self.__update_python_config_files(installation_dir)
-    self.__rebbe_variable_substitution_hook(installation_dir)
+  def _post_install_hooks(self, installation_dir):
+    self._update_python_config_files(installation_dir)
+    self._variable_substitution_hook(installation_dir)
     
-  def __is_old_crappy_config_file(self, filename):
-    assert path.isfile(filename)
-    if path.islink(filename):
-      return False
-    with open(filename, 'r') as fp:
-      first_two = fp.read(2)
-      if first_two == '#!':
-        return True
-    return False
-
   @property
   def pkg_config_files(self):
     return matcher_filename('*.pc').filter(self.files)

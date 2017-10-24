@@ -494,3 +494,6 @@ oct 23
 oct 24 
 - add unit tests of rebuilder no_checksums
 - change package_descriptor.is_package_info_list to package_descriptor.is_package_descriptor_list
+- fix Package._load_metadata() to use a better cache dir
+- some unit test is crapping in ~/.rebbe for checksum chit
+- add cmake rebuild unit test

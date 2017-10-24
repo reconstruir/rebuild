@@ -19,6 +19,5 @@ class step_setup_install_build_requirements(Step):
       message = 'No tools for %s' % (argument.env.package_descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
-    assert argument.env.rebbe
     argument.env.rebuild_env.update_tools(package_desc.resolved_build_requirements)
     return step_result(True, None)

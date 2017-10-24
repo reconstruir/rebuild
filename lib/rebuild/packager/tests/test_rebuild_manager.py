@@ -37,7 +37,7 @@ class test_rebuild_manager(unittest.TestCase):
       unit_test_packages.make_test_packages(items, am.publish_dir)
     return am
 
-  def test_update_tools(self):
+  def xxxtest_update_tools(self):
     am = self.__make_test_artifacts_git_repo()
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     rebbe = rebuild_manager(root_dir = tmp_dir, artifact_manager = am)
