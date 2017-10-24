@@ -18,18 +18,13 @@ class packager_env(object):
                script,
                rebuild_env,
                all_scripts,
-               tmp_dir,
-               working_dir = None):
+               tmp_dir):
     assert tmp_dir
-    
     self.rebuild_env = rebuild_env
     self.script = script
     self.all_scripts = all_scripts
     self.build_target = script.build_target
-    if working_dir:
-      self.working_dir = working_dir
-    else:
-      self.working_dir = self.__make_tmp_working_dir(tmp_dir)
+    self.working_dir = self._make_build_dir(tmp_dir)
     self.source_unpacked_dir = path.join(self.working_dir, 'source')
     self.build_dir = path.join(self.working_dir, 'build')
     self.stage_dir = path.join(self.working_dir, 'stage')
@@ -52,7 +47,7 @@ class packager_env(object):
   def package_descriptor(self):
     return self.script.package_info
 
-  def __make_tmp_working_dir(self, tmp_dir):
+  def _make_build_dir(self, tmp_dir):
     assert tmp_dir
     base_dir = '%s_%s' % (self.script.package_info.full_name, time_util.timestamp())
     working_dir = path.join(tmp_dir, base_dir)

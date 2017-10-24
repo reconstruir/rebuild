@@ -497,3 +497,4 @@ oct 24
 - fix Package._load_metadata() to use a better cache dir
 - some unit test is crapping in ~/.rebbe for checksum chit
 - add cmake rebuild unit test
+- add a progress meter or feedback to third party sources downloader

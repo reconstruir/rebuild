@@ -86,8 +86,6 @@ class test_rebuilder_script(unit_test):
     return tmp_dir
 
   def _call_shell(self, cmd):
-    print("FUCK: cmd=", cmd)
-    print("FUCK: cwd=", self.data_dir())
     return Shell.execute(cmd, non_blocking = True, raise_error = False,
                          cwd = self.data_dir(), stderr_to_stdout = True)
     

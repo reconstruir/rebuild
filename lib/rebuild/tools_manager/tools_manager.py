@@ -12,7 +12,6 @@ from .build_requirement_manager import build_requirement_manager
 class tools_manager(object):
 
   def __init__(self, tools_dir):
-    print('FUCK: tools_dir=%s' % (tools_dir))
     assert tools_dir
     tools_dir = path.abspath(tools_dir)
     self.tools_dir = path.join(tools_dir, host.SYSTEM)

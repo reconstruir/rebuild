@@ -28,17 +28,9 @@ class test_packager(unit_test):
     bt = build_target()
     script = build_script.load_build_scripts(rebuildfile, bt)[0]
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
-
-    publish_dir = path.join(tmp_dir, 'publish_dir')
-    working_dir = path.join(tmp_dir, 'working_dir')
-    rebbe_root = path.join(tmp_dir, 'rebbe_root')
-    
     all_scripts = { script.package_info.name: script }
     args = {
       'tmp_dir': tmp_dir,
-      'publish_dir': publish_dir,
-      'working_dir': working_dir,
-      'rebbe_root': rebbe_root,
     }
     config = rebuild_config()
     config.no_network = True

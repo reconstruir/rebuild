@@ -28,11 +28,7 @@ class packager(object):
 
     tmp_dir = self.__tmp_dir(kargs)
     self.script = script
-    self.packager_env = packager_env(script,
-                                     env,
-                                     all_scripts,
-                                     tmp_dir,
-                                     kargs.get('working_dir', None))
+    self.packager_env = packager_env(script, env, all_scripts, tmp_dir)
     self.script.checksum_dir = path.join(env.checksum_manager.root_dir, env.config.build_target.build_path)
     self.script.all_scripts = all_scripts
     self._execute_args = copy.deepcopy(kargs)
