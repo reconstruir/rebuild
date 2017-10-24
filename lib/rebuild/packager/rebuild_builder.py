@@ -95,7 +95,6 @@ class rebuild_builder(object):
     result = self._runner.run_build_script(script,
                                            self._env,
                                            tmp_dir = self._builds_tmp_dir,
-                                           rebbe_root = self._rebbe_root,
                                            **opts)
     if result.status == build_script_runner.SUCCESS:
       self.blurb('%s - SUCCESS' % (script.package_info.name))

@@ -19,8 +19,7 @@ class packager_env(object):
                rebuild_env,
                all_scripts,
                tmp_dir,
-               working_dir = None,
-               rebbe_root = None):
+               working_dir = None):
     assert tmp_dir
     
     self.rebuild_env = rebuild_env
@@ -39,7 +38,6 @@ class packager_env(object):
     self.test_dir = path.join(self.working_dir, 'test')
     self.check_dir = path.join(self.working_dir, 'check')
     self.requirements_manager = package_manager(path.join(self.working_dir, 'requirements'))
-#    self.rebbe = rebuild_manager(rebbe_root, self.rebuild_env.artifact_manager)
     self.sources = []
     self.targets = []
     self.stage_lib_dir = path.join(self.stage_dir, 'lib')

@@ -32,8 +32,7 @@ class packager(object):
                                      env,
                                      all_scripts,
                                      tmp_dir,
-                                     kargs.get('working_dir', None),
-                                     kargs.get('rebbe_root', None))
+                                     kargs.get('working_dir', None))
     self.script.checksum_dir = path.join(env.checksum_manager.root_dir, env.config.build_target.build_path)
     self.script.all_scripts = all_scripts
     self._execute_args = copy.deepcopy(kargs)
