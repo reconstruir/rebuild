@@ -1,18 +1,25 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+import os.path as path
+from bes.common import check_type, object_util
+from bes.fs import file_util
+from rebuild import build_target, package_descriptor
+
 class checksum_manager(object):
   'Manage checksums.'
 
-  def __init__(self, checksum_dir):
-    self._checksum_dir = checksum_dir
+  def __init__(self, root_dir):
+    check_type.check_string(root_dir, 'root_dir')
+    self._root_dir = root_dir
+    self._build_target = build_target
     self._ignored = set()
     self._ignore_all = False
     self._sources = {}
 
   @property
-  def checksum_dir(self):
-    return self._checksum_dir
+  def root_dir(self):
+    return self._root_dir
     
   @property
   def ignore_all(self):
@@ -36,3 +43,14 @@ class checksum_manager(object):
       print('%s:' % (name))
       for source in sources:
         print('  %s' % (source))
+
+  def remove_checksums(self, packages, bt):
+    packages = object_util.listify(packages)
+    assert package_descriptor.is_package_info_list(packages)
+    checksum_dirs = [ self._checksum_dir(pd, bt) for pd in packages ]
+    file_util.remove(checksum_dirs)
+
+  def _checksum_dir(self, pd, bt):
+    check_type.check(pd, package_descriptor, 'package_descriptor')
+    check_type.check(bt, build_target, 'build_target')
+    return path.join(self._root_dir, bt.build_path, pd.full_name)

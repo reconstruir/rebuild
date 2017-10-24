@@ -60,8 +60,3 @@ class packager_env(object):
     working_dir = path.join(tmp_dir, base_dir)
     file_util.mkdir(working_dir)
     return working_dir
-
-  @property
-  def checksum_dir(self):
-    assert False
-    return self.rebbe.checksum_dir(self.script.package_info, self.build_target)

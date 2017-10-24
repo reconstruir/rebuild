@@ -69,6 +69,6 @@ class build_target(object):
       'build_type': self.build_type,
     }
 
+  @property
   def build_path(self):
     return path.join(self.system, build_arch.archs_to_string(self.archs, delimiter = '-'), self.build_type)
-    #return path.join(self.system, self.build_type)

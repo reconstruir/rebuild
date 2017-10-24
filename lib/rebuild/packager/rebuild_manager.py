@@ -165,10 +165,8 @@ exec ${1+"$@"}
     'Return an abs path to the given tool.'
     return self.tools_manager.tool_exe(package_info, tool_name)
 
-  def checksum_dir(self, package_info, build_target):
-    return path.join(self.root_dir, 'packager', 'checksums', build_target.build_name, package_info.full_name)
-
   def remove_checksums(self, packages, build_target):
+    assert False
     packages = object_util.listify(packages)
     assert package_descriptor.is_package_info_list(packages)
     checksum_dirs = [ self.checksum_dir(package_info, build_target) for package_info in packages ]
