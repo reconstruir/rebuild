@@ -11,6 +11,10 @@ class checksum_manager(object):
     self._sources = {}
 
   @property
+  def checksum_dir(self):
+    return self._checksum_dir
+    
+  @property
   def ignore_all(self):
     return self._ignore_all
     

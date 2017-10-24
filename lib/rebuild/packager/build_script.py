@@ -160,19 +160,23 @@ class build_script(object):
         targets.append(args['output_artifact_path'])
     return targets
 
+
+  def _checksum_filename(self, filename):
+    return path.join(self.checksum_dir, self.package_info.full_name, filename)
+  
   def __load_checksums(self):
     if self.checksum_dir is None:
       raise RuntimeError('checksum_dir is not set.')
-    sources = file_checksum.load_checksums(path.join(self.checksum_dir, self.CHECKSUMS_SOURCES_FILENAME))
-    targets = file_checksum.load_checksums(path.join(self.checksum_dir, self.CHECKSUMS_TARGETS_FILENAME))
+    sources = file_checksum.load_checksums(self._checksum_filename(self.CHECKSUMS_SOURCES_FILENAME))
+    targets = file_checksum.load_checksums(self._checksum_filename(self.CHECKSUMS_TARGETS_FILENAME))
     if not sources and not targets:
       return None
     return self.file_checksums(sources, targets)
 
   def __save_checksums(self):
     checksums = self.__current_checksums()
-    file_checksum.save_checksums(path.join(self.checksum_dir, self.CHECKSUMS_SOURCES_FILENAME), checksums.sources)
-    file_checksum.save_checksums(path.join(self.checksum_dir, self.CHECKSUMS_TARGETS_FILENAME), checksums.targets)
+    file_checksum.save_checksums(self._checksum_filename(self.CHECKSUMS_SOURCES_FILENAME), checksums.sources)
+    file_checksum.save_checksums(self._checksum_filename(self.CHECKSUMS_TARGETS_FILENAME), checksums.targets)
 
   def __current_checksums(self):
     if self.checksum_dir is None:

@@ -63,4 +63,5 @@ class packager_env(object):
 
   @property
   def checksum_dir(self):
+    assert False
     return self.rebbe.checksum_dir(self.script.package_info, self.build_target)
