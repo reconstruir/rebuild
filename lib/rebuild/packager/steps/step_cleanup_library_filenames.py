@@ -19,7 +19,7 @@ class step_cleanup_library_filenames(Step):
     if path.isdir(argument.env.stage_lib_dir):
       libraries = library.list_libraries(argument.env.stage_lib_dir, relative = True)
       for l in libraries:
-        link_filename = library.name_add_prefix(l, argument.env.THIRD_PARTY_PREFIX)
+        link_filename = library.name_add_prefix(l, argument.env.rebuild_env.config.third_party_prefix)
         link_path = path.join(argument.env.stage_lib_dir, link_filename)
         file_util.symlink(l, link_path)
 
@@ -34,7 +34,7 @@ class step_cleanup_library_filenames(Step):
   def __pc_file_add_third_party_prefix(clazz, env, filename):
     basename = path.basename(filename)
     if basename.startswith('lib'):
-      new_base = 'lib%s%s' % (env.THIRD_PARTY_PREFIX, string_util.remove_head(basename, 'lib'))
+      new_base = 'lib%s%s' % (env.rebuild_env.config.third_party_prefix, string_util.remove_head(basename, 'lib'))
     else:
-      new_base = '%s%s' % (env.THIRD_PARTY_PREFIX, basename)
+      new_base = '%s%s' % (env.rebuild_env.config.third_party_prefix, basename)
     return path.join(path.dirname(filename), new_base)

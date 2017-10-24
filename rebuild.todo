@@ -406,7 +406,6 @@ mar 19
 mar 21
 - steps should accept standard pythons args like *args, and **kargs
 - step logging setup is fucked up
-- change THIRD_PARTY_PREFIX = 'rebbe_' to THIRD_PARTY_PREFIX = 'rebuild_' in package_env.py but make it a variable somewheres
 - populate ~/third-party-sources/
 - s / package_managers  / requirement_managers in rebuild_tool
 - rebuild_manager.py:_command_test() fix opts parsing issue and test it make sure it works
@@ -498,3 +497,5 @@ oct 24
 - some unit test is crapping in ~/.rebbe for checksum chit
 - add cmake rebuild unit test
 - add a progress meter or feedback to third party sources downloader
+- change DEFAULT_THIRD_PARTY_PREFIX = 'rebbe_' to 'rebuild_' in rebuild_config.py and test
+

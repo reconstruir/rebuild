@@ -19,8 +19,8 @@ class step_cleanup_binary_filenames(Step):
     binaries = dir_util.list(argument.env.stage_bin_dir)
     for b in binaries:
       link_src = path.basename(b)
-      if not link_src.startswith(argument.env.THIRD_PARTY_PREFIX):
-        link_filename = '%s%s' % (argument.env.THIRD_PARTY_PREFIX, link_src)
+      if not link_src.startswith(argument.env.rebuild_env.config.third_party_prefix):
+        link_filename = '%s%s' % (argument.env.rebuild_env.config.third_party_prefix, link_src)
         link_dst = path.join(argument.env.stage_bin_dir, link_filename)
         file_util.symlink(link_src, link_dst)
     return step_result(True, None)
@@ -28,5 +28,5 @@ class step_cleanup_binary_filenames(Step):
   @classmethod
   def __pc_file_add_third_party_prefix(clazz, filename):
     basename = path.basename(filename)
-    new_base = '%s%s' % (argument.env.THIRD_PARTY_PREFIX, basename)
+    new_base = '%s%s' % (argument.env.rebuild_env.config.third_party_prefix, basename)
     return path.join(path.dirname(filename), new_base)

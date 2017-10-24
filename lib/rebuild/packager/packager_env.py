@@ -8,8 +8,6 @@ from rebuild.package_manager import package_manager
 
 class packager_env(object):
 
-  THIRD_PARTY_PREFIX = 'rebbe_'
-
   def __init__(self,
                script,
                rebuild_env,
