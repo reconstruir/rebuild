@@ -3,12 +3,8 @@
 
 import os.path as path
 from bes.common import time_util
-from bes.fs import file_util, temp_file
-from bes.git import git_download_cache
-from rebuild.package_manager import artifact_manager, package_manager
-from rebuild import package_descriptor, requirement
-
-from .rebuild_manager import rebuild_manager
+from bes.fs import file_util
+from rebuild.package_manager import package_manager
 
 class packager_env(object):
 
