@@ -35,7 +35,7 @@ class test_packager(unit_test):
     config = rebuild_config()
     config.no_network = True
     config.source_dir = self.data_dir()
-    env = rebuild_env(tmp_dir, config)
+    env = rebuild_env(tmp_dir, config, [ rebuildfile ])
     pkg = packager(script, env, all_scripts, **args)
     result = pkg.execute()
     self.assertTrue( result.success )

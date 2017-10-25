@@ -18,29 +18,22 @@ TAG = 'packager'
 
 class packager(object):
   
-  def __init__(self, script, env, all_scripts, **kargs):
+  def __init__(self, script, env, all_scripts, tmp_dir):
     log.add_logging(self, TAG)
     build_blurb.add_blurb(self, TAG)
 
+    file_util.mkdir(tmp_dir)
     assert isinstance(script, build_script)
 
     #log.configure('software_packager=debug')
 
-    tmp_dir = self.__tmp_dir(kargs)
     self.script = script
     self.packager_env = packager_env(script, env, all_scripts, tmp_dir)
     self.script.checksum_dir = path.join(env.checksum_manager.root_dir, env.config.build_target.build_path)
     self.script.all_scripts = all_scripts
-    self._execute_args = copy.deepcopy(kargs)
-    self.blurb_verbose('execute_args:\n%s' % (dict_util.dumps(self._execute_args)))
+#    self._execute_args = copy.deepcopy(kargs)
+#    self.blurb_verbose('execute_args:\n%s' % (dict_util.dumps(self._execute_args)))
     script.add_steps(self.packager_env)
 
-  @classmethod
-  def __tmp_dir(clazz, args):
-    tmp_dir = args.get('tmp_dir', None)
-    assert tmp_dir
-    file_util.mkdir(tmp_dir)
-    return tmp_dir
-
   def execute(self):
-    return self.script.execute(self.packager_env, self._execute_args)
+    return self.script.execute(self.packager_env, {})#self._execute_args)

@@ -11,17 +11,19 @@ from rebuild.package_manager import artifact_manager
 from rebuild import package_descriptor
 from bes.git import git_download_cache, git_util
 from rebuild.source_finder import repo_source_finder, local_source_finder, source_finder_chain
+from .build_script_manager import build_script_manager
 
 class rebuild_env(object):
 
-  def __init__(self, root_dir, config):
+  def __init__(self, root_dir, config, filenames):
     self.config = config
     self.source_finder = self._make_source_finder(root_dir, config.source_dir, config.third_party_address, config.no_network)
     self.checksum_manager = self._make_checksum_manager(root_dir)
     self.tools_manager = self._make_tools_manager(root_dir)
     self.downloads_manager = self._make_downloads_manager(root_dir)
     self.artifact_manager = self._make_artifact_manager(root_dir)
-      
+#    self.build_script_manager = build_script_manager(filenames, config.build_target)
+    
   @classmethod
   def _make_source_finder(clazz, tmp_dir, source_dir, address, no_network):
     chain = source_finder_chain()

@@ -120,7 +120,7 @@ class rebuilder_cli(object):
     config.verbose = args.verbose
     config.wipe = args.wipe
     config.third_party_prefix = args.third_party_prefix
-    env = rebuild_env(tmp_dir, config)
+    env = rebuild_env(tmp_dir, config, filenames)
     
     build_blurb.blurb('build', 'build_target: %s' % (str(config.build_target)))
     

@@ -29,7 +29,7 @@ class test_rebuild_builder(unit_test):
     config.source_dir = self.data_dir()
     config.no_network = True
     config.verbose = True
-    env = rebuild_env(tmp_dir, config)
+    env = rebuild_env(tmp_dir, config, filenames)
     builder = rebuild_builder(env, tmp_dir, filenames)
     opts = {}
     packages = [ 'amhello' ]
@@ -44,7 +44,7 @@ class test_rebuild_builder(unit_test):
     config = rebuild_config()
     config.no_network = True
     config.source_dir = self.data_dir()
-    env = rebuild_env(tmp_dir, config)
+    env = rebuild_env(tmp_dir, config, filenames)
     builder = rebuild_builder(env, tmp_dir, filenames)
     opts = {}
     packages = [ 'zlib', 'libpng' ]
@@ -69,7 +69,7 @@ class test_rebuild_builder(unit_test):
     config = rebuild_config()
     config.no_network = True
     config.source_dir = self.data_dir()
-    env = rebuild_env(tmp_dir, config)
+    env = rebuild_env(tmp_dir, config, filenames)
     builder = rebuild_builder(env, tmp_dir, filenames)
     opts = {}
     packages_to_build = [ 'fructose' ]
@@ -109,7 +109,7 @@ class test_rebuild_builder(unit_test):
     config = rebuild_config()
     config.no_network = True
     config.source_dir = self.data_dir()
-    env = rebuild_env(tmp_dir, config)
+    env = rebuild_env(tmp_dir, config, filenames)
     builder = rebuild_builder(env, tmp_dir, filenames)
     opts = {}
     packages_to_build = [ 'orange' ]

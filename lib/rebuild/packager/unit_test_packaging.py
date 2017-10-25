@@ -34,11 +34,9 @@ class unit_test_packaging(object):
     config.no_network = True
     config.no_checksums = True
     config.verbose = True
-    env = rebuild_env(tmp_dir, config)
+    env = rebuild_env(tmp_dir, config, filenames)
     env.checksum_manager.ignore(script.package_descriptor.full_name)
-    rv = runner.run_build_script(script,
-                                 env,
-                                 tmp_dir = temp_file.make_temp_dir())
+    rv = runner.run_build_script(script, env, temp_file.make_temp_dir())
     if not rv.status == build_script_runner.SUCCESS:
       print(rv.status)
     asserter.assertEqual( build_script_runner.SUCCESS, rv.status )

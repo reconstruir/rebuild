@@ -92,10 +92,7 @@ class rebuild_builder(object):
   EXIT_CODE_ABORTED = 2
 
   def _run_build_script(self, script, opts):
-    result = self._runner.run_build_script(script,
-                                           self._env,
-                                           tmp_dir = self._builds_tmp_dir,
-                                           **opts)
+    result = self._runner.run_build_script(script, self._env, self._tmp_dir)
     if result.status == build_script_runner.SUCCESS:
       self.blurb('%s - SUCCESS' % (script.package_descriptor.name))
       return self.EXIT_CODE_SUCCESS
