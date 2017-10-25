@@ -4,16 +4,16 @@
 import copy
 
 from bes.system import host
-from rebuild import build_target, build_type, System
+from rebuild import build_type, System
 from rebuild import variable_manager
 
 class build_script_env(object):
 
   def __init__(self, build_target):
-    self._build_target = build_target
+    self.build_target = build_target
 
-    self.system = self._build_target.system
-    self.build_type = self._build_target.build_type
+    self.system = self.build_target.system
+    self.build_type = self.build_target.build_type
 
     self.ANDROID = System.ANDROID
     self.IOS = System.IOS
@@ -52,10 +52,10 @@ class build_script_env(object):
     variable_manager.add_variable(key, value)
 
   def target_is_darwin(self):
-    return self._build_target.is_darwin()
+    return self.build_target.is_darwin()
 
   def target_is_macos(self):
-    return self._build_target.is_macos()
+    return self.build_target.is_macos()
 
   def target_is_linux(self):
-    return self._build_target.is_linux()
+    return self.build_target.is_linux()

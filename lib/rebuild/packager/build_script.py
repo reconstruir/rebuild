@@ -6,7 +6,7 @@ from collections import namedtuple
 
 from bes.common import algorithm, object_util
 from bes.python import code
-from rebuild import build_arch, build_type, build_target, Category, package_descriptor
+from rebuild import build_arch, build_type, package_descriptor
 from rebuild.dependency import dependency_provider
 from rebuild.step_manager import step_description, step_manager
 from bes.fs import file_checksum
@@ -17,10 +17,9 @@ from rebuild import instruction_list
 
 class build_script(object):
 
-  def __init__(self, filename, build_target):
+  def __init__(self, filename):
     self.filename = filename
-    self.build_target = build_target
-    self.checksum_dir = None
+#    self.build_target = build_target
     self.all_scripts = None
     self.source_dir = path.dirname(self.filename)
     self._step_manager = step_manager('build')
@@ -43,7 +42,7 @@ class build_script(object):
     if result.success:
       packager_env.rebuild_env.checksum_manager.save_checksums(self.__current_checksums(),
                                                                self.package_descriptor,
-                                                               self.build_target)
+                                                               packager_env.rebuild_env.config.build_target)
     return result
         
   def __load_from_factory_func(self, factory_func, script_env):
@@ -165,17 +164,15 @@ class build_script(object):
     return targets
 
   def __current_checksums(self):
-    if self.checksum_dir is None:
-      raise RuntimeError('checksum_dir is not set.')
     if self.all_scripts is None:
       raise RuntimeError('all_scripts is not set.')
     return self.file_checksums(file_checksum.checksums(self.__sources()),
                                file_checksum.checksums(self.__targets()))
 
-  def needs_rebuilding(self, checksum_manager):
+  def needs_rebuilding(self, rebuild_env):
     try:
-      loaded_checksums = checksum_manager.load_checksums(self.package_descriptor,
-                                                         self.build_target)
+      loaded_checksums = rebuild_env.checksum_manager.load_checksums(self.package_descriptor,
+                                                                     rebuild_env.config.build_target)
       
       # If the stored checksums don't match the current checksums, then we 
       if loaded_checksums:
@@ -234,22 +231,22 @@ class build_script(object):
     scripts = []
     for recipe in loaded_build_script.recipes:
       assert isinstance(recipe, dict)
-      script = build_script(loaded_build_script.filename, build_target)
+      script = build_script(loaded_build_script.filename)
       script.__load_from_dict(recipe)
-      clazz.__fix_tool_build_target(script)
+#      clazz.__fix_tool_build_target(script)
       scripts.append(script)
     return scripts
   
-  @classmethod
-  def __fix_tool_build_target(clazz, script):
-    'Document why this is needed'
-    if not script.package_descriptor.is_tool():
-      return False
-    old_build_target = script.build_target
-    new_build_target = build_target(old_build_target.system, build_type.RELEASE,
-                                    build_arch.DEFAULT_ARCHS[old_build_target.system])
-    script.build_target = new_build_target
-    return True
+#  @classmethod
+#  def __fix_tool_build_target(clazz, script):
+#    'Document why this is needed'
+#    if not script.package_descriptor.is_tool():
+#      return False
+#    old_build_target = script.build_target
+#    new_build_target = build_target(old_build_target.system, build_type.RELEASE,
+#                                    build_arch.DEFAULT_ARCHS[old_build_target.system])
+#    script.build_target = new_build_target
+#    return True
 
   def _steps_added(self):
     'Do work that can happen only after the steps are added.'
