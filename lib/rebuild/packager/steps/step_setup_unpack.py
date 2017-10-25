@@ -49,7 +49,7 @@ class step_setup_unpack(Step):
 
       tarball = packager_env.rebuild_env.source_finder.find_source(tarball_name,
                                                                    packager_env.package_descriptor.version.upstream_version,
-                                                                   packager_env.build_target.system)
+                                                                   packager_env.rebuild_env.config.build_target.system)
       if tarball:
         tarballs_dict = { 'tarballs': [ tarball ] }
       else:

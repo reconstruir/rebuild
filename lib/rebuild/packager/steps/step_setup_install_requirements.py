@@ -21,6 +21,6 @@ class step_setup_install_requirements(Step):
       self.log_d(message)
       return step_result(True, message)
     argument.env.requirements_manager.install_packages(package_desc.resolved_requirements,
-                                                       argument.env.build_target,
+                                                       argument.env.rebuild_env.config.build_target,
                                                        argument.env.rebuild_env.artifact_manager)
     return step_result(True, None)

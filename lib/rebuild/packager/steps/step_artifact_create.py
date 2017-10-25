@@ -18,7 +18,7 @@ class step_artifact_create_make_package(Step):
     assert 'output_tarball_path' in argument.args
     staged_tarball = argument.env.requirements_manager.create_package(argument.args['output_tarball_path'],
                                                                       argument.env.package_descriptor,
-                                                                      argument.env.build_target,
+                                                                      argument.env.rebuild_env.config.build_target,
                                                                       argument.env.stage_dir)
     self.blurb('staged tarball: %s' % (staged_tarball))
     return step_result(True, None, output = { 'staged_tarball': staged_tarball })
@@ -34,7 +34,7 @@ class step_artifact_create_make_package(Step):
     output_tarball_path = args.get('output_tarball_path', None)
     if not output_tarball_path:
       output_tarball_path = clazz.__default_output_tarball_path(packager_env, args)
-    output_artifact_path = packager_env.rebuild_env.artifact_manager.artifact_path(packager_env.package_descriptor, packager_env.build_target)
+    output_artifact_path = packager_env.rebuild_env.artifact_manager.artifact_path(packager_env.package_descriptor, packager_env.rebuild_env.config.build_target)
     return { 
       'output_tarball_path': output_tarball_path,
       'output_artifact_path': output_artifact_path,
@@ -90,7 +90,7 @@ class step_artifact_create_test_package(Step):
                                           argument.env.test_dir,
                                           argument.env.rebuild_env.artifact_manager,
                                           argument.env.rebuild_env.tools_manager,
-                                          argument.env.build_target)
+                                          argument.env.rebuild_env.config.build_target)
       tester = package_tester(config, test)
       result =  tester.run() #self.__run_test(config, test)
       if not result.success:
@@ -114,7 +114,7 @@ class step_artifact_create_publish_package(Step):
     staged_tarball = argument.output.get('staged_tarball', None)
     assert staged_tarball
     assert archiver.is_valid(staged_tarball)
-    published_tarball = argument.env.rebuild_env.artifact_manager.publish(staged_tarball, argument.env.build_target)
+    published_tarball = argument.env.rebuild_env.artifact_manager.publish(staged_tarball, argument.env.rebuild_env.config.build_target)
     self.blurb('published tarball: %s' % (published_tarball))
     return step_result(True, None, output = { 'published_tarball': published_tarball })
 

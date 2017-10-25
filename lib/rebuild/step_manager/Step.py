@@ -91,7 +91,7 @@ class Step(with_metaclass(step_register, object)):
 
     STATIC = True
     assert packager_env.package_descriptor.resolved_requirements != None
-    export_compilation_flags_requirements = packager_env.package_descriptor.export_compilation_flags_requirements(packager_env.build_target.system)
+    export_compilation_flags_requirements = packager_env.package_descriptor.export_compilation_flags_requirements(packager_env.rebuild_env.config.build_target.system)
     if STATIC:
       env['REBBE_PKG_CONFIG_STATIC'] = '1'
       
@@ -101,7 +101,7 @@ class Step(with_metaclass(step_register, object)):
       cflags = []
       libs = []
 
-    cflags += packager_env.package_descriptor.extra_cflags(packager_env.build_target.system)
+    cflags += packager_env.package_descriptor.extra_cflags(packager_env.rebuild_env.config.build_target.system)
 
     env['REBUILD_REQUIREMENTS_CFLAGS'] = ' '.join(cflags)
     env['REBUILD_REQUIREMENTS_CXXFLAGS'] = ' '.join(cflags)
@@ -127,20 +127,20 @@ class Step(with_metaclass(step_register, object)):
 
     env['REBUILD_PYTHON_VERSION'] = '2.7'
     env['PYTHON'] = 'python%s' % (env['REBUILD_PYTHON_VERSION'])
-    env['REBUILD_PYTHON_PLATFORM_NAME'] =  packager_env.build_target.system
+    env['REBUILD_PYTHON_PLATFORM_NAME'] =  packager_env.rebuild_env.config.build_target.system
 
     env['REBUILD_PACKAGE_NAME'] = packager_env.package_descriptor.name
     env['REBUILD_PACKAGE_DESCRIPTION'] = packager_env.package_descriptor.name
     env['REBUILD_PACKAGE_VERSION'] = str(packager_env.package_descriptor.version)
 
-    compiler_flags = toolchain.compiler_flags(packager_env.build_target)
+    compiler_flags = toolchain.compiler_flags(packager_env.rebuild_env.config.build_target)
     env['REBUILD_COMPILE_CFLAGS'] = ' '.join(compiler_flags.get('CFLAGS', []))
     env['REBUILD_COMPILE_LDFLAGS'] = ' '.join(compiler_flags.get('LDFLAGS', []))
     env['REBUILD_COMPILE_CXXFLAGS'] = ' '.join(compiler_flags.get('CXXFLAGS', []))
     env['REBUILD_COMPILE_ARCH_FLAGS'] = ' '.join(compiler_flags.get('REBUILD_COMPILE_ARCH_FLAGS', []))
     env['REBUILD_COMPILE_OPT_FLAGS'] = ' '.join(compiler_flags.get('REBUILD_COMPILE_OPT_FLAGS', []))
 
-    ce = toolchain.compiler_environment(packager_env.build_target)
+    ce = toolchain.compiler_environment(packager_env.rebuild_env.config.build_target)
     SystemEnvironment.update(env, ce)
     env['REBUILD_COMPILE_ENVIRONMENT'] = toolchain.flatten_for_shell(ce)
 
@@ -244,7 +244,7 @@ class Step(with_metaclass(step_register, object)):
     if not name or not name in args:
       return {}
     config = args[name]
-    resolved = psc.resolve_list(config, packager_env.build_target.system)
+    resolved = psc.resolve_list(config, packager_env.rebuild_env.config.build_target.system)
     return { name: resolved }
       
   @classmethod
@@ -287,14 +287,14 @@ class Step(with_metaclass(step_register, object)):
     env_dict = {}
     if env_name and env_name in args:
       config = args[env_name]
-      resolved = psc.resolve_key_values_to_dict(config, packager_env.build_target.system)
+      resolved = psc.resolve_key_values_to_dict(config, packager_env.rebuild_env.config.build_target.system)
       assert isinstance(resolved, dict)
       env_dict = { env_name: resolved }
 
     flags_dict = {}
     if flags_name and flags_name in args:
       config = args[flags_name]
-      resolved = psc.resolve_list(config, packager_env.build_target.system)
+      resolved = psc.resolve_list(config, packager_env.rebuild_env.config.build_target.system)
       flags_dict = { flags_name: resolved }
 
     return dict_util.combine(env_dict, flags_dict)

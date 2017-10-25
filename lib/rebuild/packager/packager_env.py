@@ -17,7 +17,7 @@ class packager_env(object):
     self.rebuild_env = rebuild_env
     self.script = script
     self.all_scripts = all_scripts
-    self.build_target = script.build_target
+#    self.build_target = script.build_target
     self.working_dir = self._make_build_dir(tmp_dir)
     self.source_unpacked_dir = path.join(self.working_dir, 'source')
     self.build_dir = path.join(self.working_dir, 'build')

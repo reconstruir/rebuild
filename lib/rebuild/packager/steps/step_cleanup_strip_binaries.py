@@ -13,7 +13,7 @@ class step_cleanup_strip_binaries(Step):
     super(step_cleanup_strip_binaries, self).__init__()
 
   def execute(self, argument):
-    is_release = argument.env.build_target.build_type == build_type.RELEASE
+    is_release = argument.env.rebuild_env.config.build_target.build_type == build_type.RELEASE
     if is_release:
       if argument.args.get('dont_strip_binaries', False):
         return step_result(True, None)
@@ -25,6 +25,6 @@ class step_cleanup_strip_binaries(Step):
     binaries = binary_detector.find_strippable_binaries(argument.env.stage_dir)
     for b in binaries:
       self.blurb('stripping binary: %s' % (path.relpath(b)))
-      if not strip.strip(argument.env.build_target, b):
+      if not strip.strip(argument.env.rebuild_env.config.build_target, b):
         step_result(False, 'Failed to strip: %s' % (b))
     return step_result(True, None)
