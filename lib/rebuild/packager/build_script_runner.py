@@ -68,7 +68,7 @@ class build_script_runner(object):
     try:
       pkg = packager(script, env, self.scripts, **kargs)
       checksum_ignored = env.checksum_manager.is_ignored(script.package_descriptor.full_name)
-      needs_rebuilding = checksum_ignored or script.needs_rebuilding()
+      needs_rebuilding = checksum_ignored or script.needs_rebuilding(env.checksum_manager)
       if not needs_rebuilding:
         # If the working directory is empty, it means no work happened and its useless
         if dir_util.is_empty(pkg.packager_env.working_dir):

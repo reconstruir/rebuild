@@ -41,7 +41,9 @@ class build_script(object):
   def execute(self, packager_env, args):
     result = self._step_manager.execute(packager_env, args)
     if result.success:
-      self.__save_checksums()
+      packager_env.rebuild_env.checksum_manager.save_checksums(self.__current_checksums(),
+                                                               self.package_descriptor,
+                                                               self.build_target)
     return result
         
   def __load_from_factory_func(self, factory_func, script_env):
@@ -121,7 +123,6 @@ class build_script(object):
     return self.__script_sources()
 
   file_checksums = namedtuple('file_checksums', 'sources,targets')
-
   CHECKSUMS_SOURCES_FILENAME = 'sources.checksums'
   CHECKSUMS_TARGETS_FILENAME = 'targets.checksums'
 
@@ -163,24 +164,6 @@ class build_script(object):
         targets.append(args['output_artifact_path'])
     return targets
 
-
-  def _checksum_filename(self, filename):
-    return path.join(self.checksum_dir, self.package_descriptor.full_name, filename)
-  
-  def __load_checksums(self):
-    if self.checksum_dir is None:
-      raise RuntimeError('checksum_dir is not set.')
-    sources = file_checksum.load_checksums(self._checksum_filename(self.CHECKSUMS_SOURCES_FILENAME))
-    targets = file_checksum.load_checksums(self._checksum_filename(self.CHECKSUMS_TARGETS_FILENAME))
-    if not sources and not targets:
-      return None
-    return self.file_checksums(sources, targets)
-
-  def __save_checksums(self):
-    checksums = self.__current_checksums()
-    file_checksum.save_checksums(self._checksum_filename(self.CHECKSUMS_SOURCES_FILENAME), checksums.sources)
-    file_checksum.save_checksums(self._checksum_filename(self.CHECKSUMS_TARGETS_FILENAME), checksums.targets)
-
   def __current_checksums(self):
     if self.checksum_dir is None:
       raise RuntimeError('checksum_dir is not set.')
@@ -189,9 +172,10 @@ class build_script(object):
     return self.file_checksums(file_checksum.checksums(self.__sources()),
                                file_checksum.checksums(self.__targets()))
 
-  def needs_rebuilding(self):
+  def needs_rebuilding(self, checksum_manager):
     try:
-      loaded_checksums = self.__load_checksums()
+      loaded_checksums = checksum_manager.load_checksums(self.package_descriptor,
+                                                         self.build_target)
       
       # If the stored checksums don't match the current checksums, then we 
       if loaded_checksums:
