@@ -3,12 +3,18 @@
 
 import os.path as path
 from bes.common import check_type, object_util
-from bes.fs import file_util
+from bes.fs import file_checksum, file_util
 from rebuild import build_target, package_descriptor
+from collections import namedtuple
 
 class checksum_manager(object):
   'Manage checksums.'
 
+  file_checksums = namedtuple('file_checksums', 'sources,targets')
+
+  CHECKSUMS_SOURCES_FILENAME = 'sources.checksums'
+  CHECKSUMS_TARGETS_FILENAME = 'targets.checksums'
+  
   def __init__(self, root_dir):
     check_type.check_string(root_dir, 'root_dir')
     self._root_dir = root_dir
@@ -55,3 +61,19 @@ class checksum_manager(object):
     check_type.check(pd, package_descriptor, 'package_descriptor')
     check_type.check(bt, build_target, 'build_target')
     return path.join(self._root_dir, bt.build_path, pd.full_name)
+
+  def load_checksums(self, pd, bt):
+    d = self._checksum_dir(pd, bt)
+    sources = file_checksum.load_checksums(path.join(d, self.CHECKSUMS_SOURCES_FILENAME))
+    targets = file_checksum.load_checksums(path.join(d, self.CHECKSUMS_TARGETS_FILENAME))
+    if not sources and not targets:
+      return None
+    return self.file_checksums(sources, targets)
+
+  def save_checksums(self, checksums, pd, bt):
+    d = self._checksum_dir(pd, bt)
+    file_checksum.save_checksums(path.join(d, self.CHECKSUMS_SOURCES_FILENAME), checksums.sources)
+    file_checksum.save_checksums(path.join(d, self.CHECKSUMS_TARGETS_FILENAME), checksums.targets)
+  
+
+  
