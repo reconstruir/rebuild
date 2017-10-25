@@ -50,9 +50,9 @@ class rebuilder_cli(object):
     self.parser.add_argument('--filter', nargs = '+', default = None, help = 'filter the list of build files to the given list.')
     self.parser.add_argument('--tmp-dir', action = 'store', type = str, default = path.abspath('tmp'), help = 'Temporary directory for storing builds and artifacts')
     self.parser.add_argument('target_packages', action = 'append', nargs = '*', type = str)
-    self.parser.add_argument('--tps-address', default = rebuild_config.DEFAULT_TPS_ADDRESS,
+    self.parser.add_argument('--tps-address', default = rebuild_config.DEFAULT_THIRD_PARTY_ADDRESS,
                              action = 'store', type = str,
-                             help = 'Third party sources address. [ %s ]' % (rebuild_config.DEFAULT_TPS_ADDRESS))
+                             help = 'Third party sources address. [ %s ]' % (rebuild_config.DEFAULT_THIRD_PARTY_ADDRESS))
     self.parser.add_argument('--source-dir', default = None, action = 'store', type = str,
                              help = 'Local source directory to use instead of tps address. [ None]')
     self.parser.add_argument('--third-party-prefix', default = rebuild_config.DEFAULT_THIRD_PARTY_PREFIX,
@@ -115,7 +115,7 @@ class rebuilder_cli(object):
     config.skip_to_step = args.skip_to_step
     config.source_dir = args.source_dir
     config.tools_only = args.tools_only
-    config.tps_address = args.tps_address
+    config.third_party_address = args.tps_address
     config.users = args.users
     config.verbose = args.verbose
     config.wipe = args.wipe

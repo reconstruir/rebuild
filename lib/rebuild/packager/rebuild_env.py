@@ -16,7 +16,7 @@ class rebuild_env(object):
 
   def __init__(self, root_dir, config):
     self.config = config
-    self.source_finder = self._make_source_finder(root_dir, config.source_dir, config.tps_address, config.no_network)
+    self.source_finder = self._make_source_finder(root_dir, config.source_dir, config.third_party_address, config.no_network)
     self.checksum_manager = self._make_checksum_manager(root_dir)
     self.tools_manager = self._make_tools_manager(root_dir)
     self.downloads_manager = self._make_downloads_manager(root_dir)

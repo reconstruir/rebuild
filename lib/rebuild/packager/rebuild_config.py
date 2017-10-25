@@ -6,7 +6,7 @@ from rebuild import build_target
 
 class rebuild_config(object):
 
-  DEFAULT_TPS_ADDRESS = 'git@git:third_party_sources.git'
+  DEFAULT_THIRD_PARTY_ADDRESS = 'git@git:third_party_sources.git'
   DEFAULT_THIRD_PARTY_PREFIX = 'rebbe_'
   
   def __init__(self):
@@ -20,7 +20,7 @@ class rebuild_config(object):
     self.skip_to_step = None
     self.source_dir = None
     self.tools_only = False
-    self.tps_address = self.DEFAULT_TPS_ADDRESS
+    self.third_party_address = self.DEFAULT_THIRD_PARTY_ADDRESS
     self.users = False
     self.verbose = False
     self.wipe = False
