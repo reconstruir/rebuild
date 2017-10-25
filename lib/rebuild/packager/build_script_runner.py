@@ -30,7 +30,7 @@ class build_script_runner(object):
       build_blurb.blurb_verbose('build', 'loading %s' % (filename))
       build_scripts = build_script.load_build_scripts(filename, build_target, **kargs)
       for script in build_scripts:
-        self.scripts[script.package_info.name] = script
+        self.scripts[script.package_descriptor.name] = script
         #print "filename: %s" % (script.filename)
         #print "    name: %s" % (script.name)
         #print "    requirements: %s" % (script.requirements)
@@ -41,9 +41,9 @@ class build_script_runner(object):
     
     # Resolve and order all the dependencies for all the scripts
     for name, script in sorted(self.scripts.items()):
-      build_blurb.blurb_verbose('build', 'resolving dependencies for: %s - %s' % (path.relpath(script.filename), script.package_info.name))
+      build_blurb.blurb_verbose('build', 'resolving dependencies for: %s - %s' % (path.relpath(script.filename), script.package_descriptor.name))
       try:
-        all_requirements = script.package_info.requirements + script.package_info.build_requirements
+        all_requirements = script.package_descriptor.requirements + script.package_descriptor.build_requirements
         all_requirements_system_resolved = requirement.resolve_requirements(all_requirements, build_target.system)
 
         all_requirements_dependencies_resolved = self._resolve_and_order_dependencies(all_requirements_system_resolved,
@@ -55,25 +55,26 @@ class build_script_runner(object):
         assert package_descriptor.is_package_info_list(resolved_requirements)
         assert package_descriptor.is_package_info_list(resolved_build_requirements)
 
-        script.package_info.resolved_requirements = resolved_requirements
-        script.package_info.resolved_build_requirements = resolved_build_requirements
+        script.package_descriptor.resolved_requirements = resolved_requirements
+        script.package_descriptor.resolved_build_requirements = resolved_build_requirements
 
       except missing_dependency_error as ex:
         raise missing_dependency_error('Missing dependency for %s: %s' % (script.filename, ' '.join(ex.missing_deps)), ex.missing_deps)
       except Exception as ex:
-        assert False, 'caught unknown exception: %s' % (str(ex))
+        print('caught unknown exception: %s' % (str(ex)))
+        raise
         
   def run_build_script(self, script, env, **kargs):
     try:
       pkg = packager(script, env, self.scripts, **kargs)
-      checksum_ignored = env.checksum_manager.is_ignored(script.package_info.full_name)
+      checksum_ignored = env.checksum_manager.is_ignored(script.package_descriptor.full_name)
       needs_rebuilding = checksum_ignored or script.needs_rebuilding()
       if not needs_rebuilding:
         # If the working directory is empty, it means no work happened and its useless
         if dir_util.is_empty(pkg.packager_env.working_dir):
           file_util.remove(pkg.packager_env.working_dir)
         return self.RunResult(self.CURRENT, None)
-      build_blurb.blurb('build', '%s - building' % (script.package_info.name))
+      build_blurb.blurb('build', '%s - building' % (script.package_descriptor.name))
       packager_result = pkg.execute()
       #print("CACA: packager_result: %s" % (str(packager_result)))
       if packager_result.success:
@@ -91,10 +92,10 @@ class build_script_runner(object):
   def _resolve_and_order_dependencies(clazz, requirements, scripts, dependency_map):
     names = [ dep.name for dep in requirements ]
     resolved_names = dependency_resolver.resolve_deps(dependency_map, names)
-    resolved = [ scripts[name].package_info for name in resolved_names ]
+    resolved = [ scripts[name].package_descriptor for name in resolved_names ]
     resolved_map = dict_util.filter_with_keys(dependency_map, resolved_names)
     build_order = dependency_resolver.build_order_flat(resolved_map)
-    resolved = [ scripts[name].package_info for name in build_order ]
+    resolved = [ scripts[name].package_descriptor for name in build_order ]
     return resolved
 
   @classmethod
@@ -123,7 +124,7 @@ class build_script_runner(object):
     dep_map = {}
     for name in sorted(scripts.keys()):
       script = scripts[name]
-      requirements_names = script.package_info.requirements_names_for_system(system)
-      build_requirements_names = script.package_info.build_requirements_names_for_system(system)
+      requirements_names = script.package_descriptor.requirements_names_for_system(system)
+      build_requirements_names = script.package_descriptor.build_requirements_names_for_system(system)
       dep_map[name] = requirements_names | build_requirements_names
     return dep_map

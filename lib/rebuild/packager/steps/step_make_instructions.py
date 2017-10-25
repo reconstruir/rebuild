@@ -15,7 +15,7 @@ class step_make_instructions(Step):
 
   def execute(self, argument):
     if not argument.env.script.instruction_list:
-      message = 'No build instructions for %s' % (argument.env.package_descriptor.full_name)
+      message = 'No build instructions for %s' % (argument.env.script.package_descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
     success, message = argument.env.script.instruction_list.save(argument.env.stage_compile_instructions_dir)

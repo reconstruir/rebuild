@@ -5,6 +5,7 @@
 
 import copy, os, os.path as path
 
+from abc import abstractmethod, ABCMeta
 from collections import namedtuple
 from bes.common import dict_util, object_util, string_util, Shell, variable
 from bes.system import log
@@ -18,6 +19,17 @@ from bes.fs import file_util
 from .step_result import step_result
 from rebuild.hook_extra_code import HOOK_EXTRA_CODE
 from .step_registry import step_register
+
+class step_base(with_metaclass(ABCMeta, object)):
+
+  @abstractmethod
+  def execute(self, argument):
+    'Execute the step.'
+    pass
+
+  def on_tag_changed(self):
+    'Called when the tag changes.'
+    pass
 
 class Step(with_metaclass(step_register, object)):
 
@@ -90,8 +102,8 @@ class Step(with_metaclass(step_register, object)):
     env = SystemEnvironment.make_clean_env()
 
     STATIC = True
-    assert packager_env.package_descriptor.resolved_requirements != None
-    export_compilation_flags_requirements = packager_env.package_descriptor.export_compilation_flags_requirements(packager_env.rebuild_env.config.build_target.system)
+    assert packager_env.script.package_descriptor.resolved_requirements != None
+    export_compilation_flags_requirements = packager_env.script.package_descriptor.export_compilation_flags_requirements(packager_env.rebuild_env.config.build_target.system)
     if STATIC:
       env['REBBE_PKG_CONFIG_STATIC'] = '1'
       
@@ -101,7 +113,7 @@ class Step(with_metaclass(step_register, object)):
       cflags = []
       libs = []
 
-    cflags += packager_env.package_descriptor.extra_cflags(packager_env.rebuild_env.config.build_target.system)
+    cflags += packager_env.script.package_descriptor.extra_cflags(packager_env.rebuild_env.config.build_target.system)
 
     env['REBUILD_REQUIREMENTS_CFLAGS'] = ' '.join(cflags)
     env['REBUILD_REQUIREMENTS_CXXFLAGS'] = ' '.join(cflags)
@@ -114,24 +126,24 @@ class Step(with_metaclass(step_register, object)):
     env['REBUILD_REQUIREMENTS_SHARE_DIR'] = packager_env.requirements_manager.share_dir
 
     env['REBUILD_PACKAGER_BUILD_DIR'] = packager_env.build_dir
-    env['REBUILD_PACKAGER_SOURCE_DIR'] = packager_env.source_dir
+    env['REBUILD_PACKAGER_SOURCE_DIR'] = packager_env.script.source_dir
     env['REBUILD_PACKAGER_TEST_DIR'] = packager_env.test_dir
 
     env['REBUILD_STAGE_PREFIX_DIR'] = packager_env.stage_dir
     env['REBUILD_STAGE_PYTHON_LIB_DIR'] = path.join(packager_env.stage_dir, 'lib/python')
     env['REBUILD_STAGE_FRAMEWORKS_DIR'] = path.join(packager_env.stage_dir, 'frameworks')
 
-    SystemEnvironment.update(env, packager_env.rebuild_env.tools_manager.shell_env(packager_env.package_descriptor.resolved_build_requirements))
-    SystemEnvironment.update(env, packager_env.requirements_manager.shell_env(packager_env.package_descriptor.resolved_requirements))
+    SystemEnvironment.update(env, packager_env.rebuild_env.tools_manager.shell_env(packager_env.script.package_descriptor.resolved_build_requirements))
+    SystemEnvironment.update(env, packager_env.requirements_manager.shell_env(packager_env.script.package_descriptor.resolved_requirements))
     SystemEnvironment.update(env, SystemEnvironment.make_shell_env(packager_env.stage_dir))
 
     env['REBUILD_PYTHON_VERSION'] = '2.7'
     env['PYTHON'] = 'python%s' % (env['REBUILD_PYTHON_VERSION'])
     env['REBUILD_PYTHON_PLATFORM_NAME'] =  packager_env.rebuild_env.config.build_target.system
 
-    env['REBUILD_PACKAGE_NAME'] = packager_env.package_descriptor.name
-    env['REBUILD_PACKAGE_DESCRIPTION'] = packager_env.package_descriptor.name
-    env['REBUILD_PACKAGE_VERSION'] = str(packager_env.package_descriptor.version)
+    env['REBUILD_PACKAGE_NAME'] = packager_env.script.package_descriptor.name
+    env['REBUILD_PACKAGE_DESCRIPTION'] = packager_env.script.package_descriptor.name
+    env['REBUILD_PACKAGE_VERSION'] = str(packager_env.script.package_descriptor.version)
 
     compiler_flags = toolchain.compiler_flags(packager_env.rebuild_env.config.build_target)
     env['REBUILD_COMPILE_CFLAGS'] = ' '.join(compiler_flags.get('CFLAGS', []))
@@ -167,7 +179,7 @@ class Step(with_metaclass(step_register, object)):
 
     env.update(extra_env)
 
-    clazz.env_dump(env, packager_env.package_descriptor.name, 'PRE ENVIRONMENT')
+    clazz.env_dump(env, packager_env.script.package_descriptor.name, 'PRE ENVIRONMENT')
 
     SystemEnvironment.env_substitite(env)
 
@@ -182,12 +194,12 @@ class Step(with_metaclass(step_register, object)):
       if variable.has_rogue_dollar_signs(part):
         raise RuntimeError('Rogue dollar sign (\"$\") found in: %s' % (part))
       
-    build_blurb.blurb('build', '%s - %s' % (packager_env.package_descriptor.name, ' '.join(command)))
+    build_blurb.blurb('build', '%s - %s' % (packager_env.script.package_descriptor.name, ' '.join(command)))
 
     file_util.mkdir(packager_env.build_dir)
     retry_script = clazz.__write_retry_script(command, env, packager_env)
 
-    clazz.env_dump(env, packager_env.package_descriptor.name, clazz.__name__ + ' : ' + 'POST ENVIRONMENT')
+    clazz.env_dump(env, packager_env.script.package_descriptor.name, clazz.__name__ + ' : ' + 'POST ENVIRONMENT')
 
     for k,v in env.items():
       if string_util.is_quoted(v):
@@ -259,7 +271,7 @@ class Step(with_metaclass(step_register, object)):
   def resolve_step_args_files(clazz, packager_env, args, name):
     d = clazz.resolve_step_args_list(packager_env, args, name)
     filenames = d.get(name, [])
-    files = [ path.join(packager_env.source_dir, f) for f in filenames ]
+    files = [ path.join(packager_env.script.source_dir, f) for f in filenames ]
     for f in files:
       if not path.isfile(f):
         raise RuntimeError('Not found for \"%s\": %s' % (name, f))

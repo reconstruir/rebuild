@@ -498,4 +498,5 @@ oct 24
 - add cmake rebuild unit test
 - add a progress meter or feedback to third party sources downloader
 - change DEFAULT_THIRD_PARTY_PREFIX = 'rebbe_' to 'rebuild_' in rebuild_config.py and test
+- add unit test that patches
 

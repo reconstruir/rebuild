@@ -28,7 +28,7 @@ class test_packager(unit_test):
     bt = build_target()
     script = build_script.load_build_scripts(rebuildfile, bt)[0]
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
-    all_scripts = { script.package_info.name: script }
+    all_scripts = { script.package_descriptor.name: script }
     args = {
       'tmp_dir': tmp_dir,
     }

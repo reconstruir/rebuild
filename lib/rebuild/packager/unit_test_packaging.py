@@ -35,7 +35,7 @@ class unit_test_packaging(object):
     config.no_checksums = True
     config.verbose = True
     env = rebuild_env(tmp_dir, config)
-    env.checksum_manager.ignore(script.package_info.full_name)
+    env.checksum_manager.ignore(script.package_descriptor.full_name)
     rv = runner.run_build_script(script,
                                  env,
                                  tmp_dir = temp_file.make_temp_dir())

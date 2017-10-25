@@ -17,7 +17,7 @@ class step_artifact_create_make_package(Step):
   def execute(self, argument):
     assert 'output_tarball_path' in argument.args
     staged_tarball = argument.env.requirements_manager.create_package(argument.args['output_tarball_path'],
-                                                                      argument.env.package_descriptor,
+                                                                      argument.env.script.package_descriptor,
                                                                       argument.env.rebuild_env.config.build_target,
                                                                       argument.env.stage_dir)
     self.blurb('staged tarball: %s' % (staged_tarball))
@@ -25,16 +25,16 @@ class step_artifact_create_make_package(Step):
 
   @classmethod
   def __default_output_tarball_path(clazz, env, args):
-    tarball_name = '%s.tar.gz' % (env.package_descriptor.full_name)
-    assert tarball_name == env.package_descriptor.tarball_filename
-    return path.join(env.artifact_stage_dir, env.package_descriptor.tarball_filename)
+    tarball_name = '%s.tar.gz' % (env.script.package_descriptor.full_name)
+    assert tarball_name == env.script.package_descriptor.tarball_filename
+    return path.join(env.artifact_stage_dir, env.script.package_descriptor.tarball_filename)
 
   @classmethod
   def parse_step_args(clazz, packager_env, args):
     output_tarball_path = args.get('output_tarball_path', None)
     if not output_tarball_path:
       output_tarball_path = clazz.__default_output_tarball_path(packager_env, args)
-    output_artifact_path = packager_env.rebuild_env.artifact_manager.artifact_path(packager_env.package_descriptor, packager_env.rebuild_env.config.build_target)
+    output_artifact_path = packager_env.rebuild_env.artifact_manager.artifact_path(packager_env.script.package_descriptor, packager_env.rebuild_env.config.build_target)
     return { 
       'output_tarball_path': output_tarball_path,
       'output_artifact_path': output_artifact_path,
@@ -68,25 +68,25 @@ class step_artifact_create_test_package(Step):
 
   def execute(self, argument):
     if argument.env.rebuild_env.config.skip_tests:
-      message = '%s: Skipping tests because of --skip-tests' % (argument.env.package_descriptor.full_name)
+      message = '%s: Skipping tests because of --skip-tests' % (argument.env.script.package_descriptor.full_name)
       self.blurb(message)
       return step_result(True, message)
       
     tests = argument.args.get('tests', [])
     if not tests:
-      message = 'No tests for %s' % (argument.env.package_descriptor.full_name)
+      message = 'No tests for %s' % (argument.env.script.package_descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
 
     staged_tarball = argument.output.get('staged_tarball', None)
     if not staged_tarball or not path.isfile(staged_tarball):
-      message = 'Missing staged tarball for %s: ' % (str(argument.env.package_descriptor))
+      message = 'Missing staged tarball for %s: ' % (str(argument.env.script.package_descriptor))
       self.log_d(message)
       return step_result(False, message)
       
     for test in tests:
       config = package_tester.test_config(staged_tarball,
-                                          argument.env.source_dir,
+                                          argument.env.script.source_dir,
                                           argument.env.test_dir,
                                           argument.env.rebuild_env.artifact_manager,
                                           argument.env.rebuild_env.tools_manager,

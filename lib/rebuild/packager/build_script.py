@@ -71,10 +71,10 @@ class build_script(object):
     # Check that some important properties are given
     if not package_descriptor.PROPERTY_CATEGORY in properties:
       raise RuntimeError('\"%s\" property missing from %s' % (package_descriptor.PROPERTY_CATEGORY, self.filename))
-    self.package_info = package_descriptor(name, version,
-                                           requirements = requirements,
-                                           build_requirements = build_requirements,
-                                           properties = properties)
+    self.package_descriptor = package_descriptor(name, version,
+                                                 requirements = requirements,
+                                                 build_requirements = build_requirements,
+                                                 properties = properties)
     self.instruction_list = self.__load_instructions(args, 'instructions')
     self.steps = self.__load_steps(args)
     if args:
@@ -114,7 +114,7 @@ class build_script(object):
 
   @property
   def disabled(self):
-    return self.package_info.disabled
+    return self.package_descriptor.disabled
 
   @property
   def sources(self):
@@ -145,7 +145,7 @@ class build_script(object):
       return []
     assert self.all_scripts
     sources = []
-    for dep in self.package_info.requirements:
+    for dep in self.package_descriptor.requirements:
       dep_script = self.all_scripts[dep.name]
       sources += dep_script.__sources()
     return sources
@@ -153,7 +153,7 @@ class build_script(object):
   def __sources(self):
     'Return a list of all script and dependency sources for this script.'
 #    for f in self.__script_sources():
-#      print('%s: %s' % (self.package_info.full_name, f))
+#      print('%s: %s' % (self.package_descriptor.full_name, f))
     return self.__script_sources() + self.__dep_sources()
 
   def __targets(self):
@@ -165,7 +165,7 @@ class build_script(object):
 
 
   def _checksum_filename(self, filename):
-    return path.join(self.checksum_dir, self.package_info.full_name, filename)
+    return path.join(self.checksum_dir, self.package_descriptor.full_name, filename)
   
   def __load_checksums(self):
     if self.checksum_dir is None:
@@ -259,7 +259,7 @@ class build_script(object):
   @classmethod
   def __fix_tool_build_target(clazz, script):
     'Document why this is needed'
-    if not script.package_info.is_tool():
+    if not script.package_descriptor.is_tool():
       return False
     old_build_target = script.build_target
     new_build_target = build_target(old_build_target.system, build_type.RELEASE,

@@ -17,7 +17,6 @@ class packager_env(object):
     self.rebuild_env = rebuild_env
     self.script = script
     self.all_scripts = all_scripts
-#    self.build_target = script.build_target
     self.working_dir = self._make_build_dir(tmp_dir)
     self.source_unpacked_dir = path.join(self.working_dir, 'source')
     self.build_dir = path.join(self.working_dir, 'build')
@@ -32,18 +31,10 @@ class packager_env(object):
     self.stage_lib_dir = path.join(self.stage_dir, 'lib')
     self.stage_bin_dir = path.join(self.stage_dir, 'bin')
     self.stage_compile_instructions_dir = path.join(self.stage_lib_dir, 'rebuild_instructions')
-    
-  @property
-  def source_dir(self):
-    return self.script.source_dir
-
-  @property
-  def package_descriptor(self):
-    return self.script.package_info
 
   def _make_build_dir(self, tmp_dir):
     assert tmp_dir
-    base_dir = '%s_%s' % (self.script.package_info.full_name, time_util.timestamp())
+    base_dir = '%s_%s' % (self.script.package_descriptor.full_name, time_util.timestamp())
     working_dir = path.join(tmp_dir, base_dir)
     file_util.mkdir(working_dir)
     return working_dir

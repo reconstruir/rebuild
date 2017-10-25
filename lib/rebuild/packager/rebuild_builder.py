@@ -76,7 +76,7 @@ class rebuild_builder(object):
     'Remove checksums for the given packages given as package names.'
     rebbe = rebuild_manager(self._rebbe_root, None)
     scripts_todo = dict_util.filter_with_keys(self._runner.scripts, package_names)
-    checksums_to_delete = [ script.package_info for script in scripts_todo.values() ]
+    checksums_to_delete = [ script.package_descriptor for script in scripts_todo.values() ]
     self.blurb('removing checksums: %s' % (' '.join(package_names)))
     self._env.checksum_manager.remove_checksums(checksums_to_delete, self._env.config.build_target)
 
@@ -97,15 +97,15 @@ class rebuild_builder(object):
                                            tmp_dir = self._builds_tmp_dir,
                                            **opts)
     if result.status == build_script_runner.SUCCESS:
-      self.blurb('%s - SUCCESS' % (script.package_info.name))
+      self.blurb('%s - SUCCESS' % (script.package_descriptor.name))
       return self.EXIT_CODE_SUCCESS
     elif result.status == build_script_runner.FAILED:
       print(result.packager_result.message)
       self.blurb('step failed - %s' % (result.packager_result.failed_step.__class__.__name__))
-      self.blurb('%s - FAILED' % (script.package_info.name))
+      self.blurb('%s - FAILED' % (script.package_descriptor.name))
       return self.EXIT_CODE_FAILED
     elif result.status == build_script_runner.CURRENT:
-      self.blurb('%s - up-to-date.' % (script.package_info.name))
+      self.blurb('%s - up-to-date.' % (script.package_descriptor.name))
       return self.EXIT_CODE_SUCCESS
     elif result.status == build_script_runner.ABORTED:
       self.blurb('aborted')
@@ -116,7 +116,7 @@ class rebuild_builder(object):
   def build_many_scripts(self, package_names, opts):
 
 #    for name, script in self._runner.scripts.items():
-#      self._env.checksum_manager.set_sources(script.package_info.full_name, script.sources)
+#      self._env.checksum_manager.set_sources(script.package_descriptor.full_name, script.sources)
 #    self._env.checksum_manager.print_sources()
     
     if self._env.config.no_checksums:
@@ -124,7 +124,7 @@ class rebuild_builder(object):
       self.remove_checksums(package_names)
       for name in package_names:
         script = self._runner.scripts[name]
-        self._env.checksum_manager.ignore(script.package_info.full_name)
+        self._env.checksum_manager.ignore(script.package_descriptor.full_name)
       
     if self._env.config.wipe:
       self.blurb('wiping build dirs for: %s' % (' '.join(package_names)), fit = True)
@@ -140,7 +140,7 @@ class rebuild_builder(object):
       package_names += depends_on_packages
     package_names = algorithm.unique(package_names)
 
-#      if self._env.config.tools_only and not script.package_info.is_tool():
+#      if self._env.config.tools_only and not script.package_descriptor.is_tool():
 #        self.blurb('skipping non tool: %s' % (filename))
 #        continue
     
@@ -187,9 +187,9 @@ class rebuild_builder(object):
     'Return a list of package names for packages that depend on what.'
     result = []
     for _, script in self._runner.scripts.items():
-      requirements_names = sorted([ req.name for req in script.package_info.requirements ])
+      requirements_names = sorted([ req.name for req in script.package_descriptor.requirements ])
       if what in requirements_names:
-        result.append(script.package_info.name)
+        result.append(script.package_descriptor.name)
     return result
 
   def package_info(self, package_name):

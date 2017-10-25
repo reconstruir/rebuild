@@ -15,7 +15,7 @@ class step_setup_patch(Step):
   def execute(self, argument):
     patches = argument.args.get('patches', None)
     if not patches:
-      message = 'No patches for %s' % (argument.env.package_descriptor.full_name)
+      message = 'No patches for %s' % (argument.env.script.package_descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
 

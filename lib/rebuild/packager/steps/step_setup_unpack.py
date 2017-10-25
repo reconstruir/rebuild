@@ -38,17 +38,17 @@ class step_setup_unpack(Step):
     tarball_source_dir_override_args = clazz.resolve_step_args_dir(packager_env, args, 'tarball_source_dir_override')
     if tarball_source_dir_override_args:
       tarball_source_dir_override = tarball_source_dir_override_args['tarball_source_dir_override']
-      tmp_tarball_filename = '%s.tar.gz' % (packager_env.package_descriptor.full_name)
+      tmp_tarball_filename = '%s.tar.gz' % (packager_env.script.package_descriptor.full_name)
       tmp_tarball_path = path.join(packager_env.tmp_dir, tmp_tarball_filename)
-      archiver.create(tmp_tarball_path, tarball_source_dir_override, base_dir = packager_env.package_descriptor.full_name)
+      archiver.create(tmp_tarball_path, tarball_source_dir_override, base_dir = packager_env.script.package_descriptor.full_name)
       tarballs_dict = { 'tarballs': [ tmp_tarball_path ] }
     else:
       tarballs_dict = clazz.resolve_step_args_list(packager_env, args, 'tarballs')
     if not tarballs_dict or 'tarballs' not in tarballs_dict:
-      tarball_name = args.get('tarball_name', packager_env.package_descriptor.name)
+      tarball_name = args.get('tarball_name', packager_env.script.package_descriptor.name)
 
       tarball = packager_env.rebuild_env.source_finder.find_source(tarball_name,
-                                                                   packager_env.package_descriptor.version.upstream_version,
+                                                                   packager_env.script.package_descriptor.version.upstream_version,
                                                                    packager_env.rebuild_env.config.build_target.system)
       if tarball:
         tarballs_dict = { 'tarballs': [ tarball ] }
