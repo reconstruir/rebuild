@@ -5,6 +5,7 @@
 
 import copy, os, os.path as path
 
+from abc import abstractmethod, ABCMeta
 from collections import namedtuple
 from bes.common import dict_util, object_util, string_util, Shell, variable
 from bes.system import log
@@ -19,8 +20,9 @@ from .step_result import step_result
 from rebuild.hook_extra_code import HOOK_EXTRA_CODE
 from .step_registry import step_register
 
-class Step(with_metaclass(step_register, object)):
+class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, object)):
 
+  #@abstractmethod
   def execute(self, argument):
     'Execute the step.'
     return step_result(False, 'not implemented')
