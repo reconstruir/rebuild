@@ -19,7 +19,6 @@ class build_script(object):
 
   def __init__(self, filename):
     self.filename = filename
-#    self.build_target = build_target
     self.all_scripts = None
     self.source_dir = path.dirname(self.filename)
     self._step_manager = step_manager('build')
@@ -122,8 +121,6 @@ class build_script(object):
     return self.__script_sources()
 
   file_checksums = namedtuple('file_checksums', 'sources,targets')
-  CHECKSUMS_SOURCES_FILENAME = 'sources.checksums'
-  CHECKSUMS_TARGETS_FILENAME = 'targets.checksums'
 
   def __script_sources(self):
     'Return a list of sources for this script.'
