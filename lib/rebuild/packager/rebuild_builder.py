@@ -16,12 +16,11 @@ class rebuild_builder(object):
 
   REBUILD_FILENAME = 'build.py'
   
-  def __init__(self, env, tmp_dir, build_script_filenames):
+  def __init__(self, env, build_script_filenames):
     build_blurb.add_blurb(self, label = 'build')
     self._env = env
-    self._tmp_dir = path.abspath(tmp_dir)
-    self._builds_tmp_dir = path.join(self._tmp_dir, 'builds', self._env.config.build_target.build_name)
-    self._rebbe_root = path.join(self._tmp_dir, 'rebbe')
+    self._builds_dir = path.join(self._env.config.build_dir, 'builds', self._env.config.build_target.build_name)
+    self._rebbe_root = path.join(self._env.config.build_dir, 'rebbe')
     self._runner = build_script_runner(build_script_filenames, self._env.config.build_target)
     self.all_package_names = sorted(self._runner.scripts.keys())
     self.thread_pool = thread_pool(1)
@@ -82,9 +81,9 @@ class rebuild_builder(object):
 
   def wipe_build_dirs(self, package_names):
     patterns = [ '*%s-*' % (name) for name in package_names ]
-    if path.isdir(self._builds_tmp_dir):
-      self.blurb('cleaning temporary build directories in %s' % (path.relpath(self._builds_tmp_dir)))
-      tmp_dirs = dir_util.list(self._builds_tmp_dir, patterns = patterns)
+    if path.isdir(self._builds_dir):
+      self.blurb('cleaning temporary build directories in %s' % (path.relpath(self._builds_dir)))
+      tmp_dirs = dir_util.list(self._builds_dir, patterns = patterns)
       file_util.remove(tmp_dirs)
 
   EXIT_CODE_SUCCESS = 0
@@ -92,7 +91,7 @@ class rebuild_builder(object):
   EXIT_CODE_ABORTED = 2
 
   def _run_build_script(self, script, opts):
-    result = self._runner.run_build_script(script, self._env, self._tmp_dir)
+    result = self._runner.run_build_script(script, self._env)
     if result.status == build_script_runner.SUCCESS:
       self.blurb('%s - SUCCESS' % (script.package_descriptor.name))
       return self.EXIT_CODE_SUCCESS

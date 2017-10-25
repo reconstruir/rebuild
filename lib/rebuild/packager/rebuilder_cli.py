@@ -98,11 +98,11 @@ class rebuilder_cli(object):
     build_blurb.set_process_name('build')
     build_blurb.set_verbose(args.verbose)
 
-    tmp_dir = args.tmp_dir
 
     filenames = [ path.join(p, 'build.py') for p in available_packages ]
 
     config = rebuild_config()
+    config.build_dir = path.abspath(args.tmp_dir)
     config.build_target = build_target(opts.get('system', build_target.DEFAULT),
                                        opts.get('build_type', build_target.DEFAULT),
                                        opts.get('archs', build_target.DEFAULT))
@@ -120,11 +120,11 @@ class rebuilder_cli(object):
     config.verbose = args.verbose
     config.wipe = args.wipe
     config.third_party_prefix = args.third_party_prefix
-    env = rebuild_env(tmp_dir, config, filenames)
+    env = rebuild_env(config, filenames)
     
     build_blurb.blurb('build', 'build_target: %s' % (str(config.build_target)))
-    
-    builder = rebuild_builder(env, tmp_dir, filenames)
+
+    builder = rebuild_builder(env, filenames)
 
     resolved_args = builder.check_and_resolve_cmd_line_args(target_packages)
       

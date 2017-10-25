@@ -500,3 +500,6 @@ oct 24
 - change DEFAULT_THIRD_PARTY_PREFIX = 'rebbe_' to 'rebuild_' in rebuild_config.py and test
 - add unit test that patches
 - add unit test with all kinds of hoooks and checks
+
+oct 25
+- improve rebuild_env - add defaults notion at __getitem__ to check for invalid entries etc.  add check that values are valid etc

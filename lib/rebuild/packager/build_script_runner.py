@@ -64,9 +64,9 @@ class build_script_runner(object):
         print('caught unknown exception: %s' % (str(ex)))
         raise
         
-  def run_build_script(self, script, env, tmp_dir):
+  def run_build_script(self, script, env):
     try:
-      pkg = packager(script, env, self.scripts, tmp_dir)
+      pkg = packager(script, env, self.scripts)
       checksum_ignored = env.checksum_manager.is_ignored(script.package_descriptor.full_name)
       needs_rebuilding = checksum_ignored or script.needs_rebuilding(env)
       if not needs_rebuilding:

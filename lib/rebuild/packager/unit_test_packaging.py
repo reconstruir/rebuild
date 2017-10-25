@@ -30,13 +30,14 @@ class unit_test_packaging(object):
     script = runner.scripts[ name ]
     config = rebuild_config()
     # FIXME change this to the tarball_dir see if it works remove need for tmp_dir
+    config.build_dir = path.join(tmp_dir, 'BUILD')
     config.source_dir = tmp_dir
     config.no_network = True
     config.no_checksums = True
     config.verbose = True
-    env = rebuild_env(tmp_dir, config, filenames)
+    env = rebuild_env(config, filenames)
     env.checksum_manager.ignore(script.package_descriptor.full_name)
-    rv = runner.run_build_script(script, env, temp_file.make_temp_dir())
+    rv = runner.run_build_script(script, env)
     if not rv.status == build_script_runner.SUCCESS:
       print(rv.status)
     asserter.assertEqual( build_script_runner.SUCCESS, rv.status )

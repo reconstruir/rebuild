@@ -15,40 +15,40 @@ from .build_script_manager import build_script_manager
 
 class rebuild_env(object):
 
-  def __init__(self, root_dir, config, filenames):
+  def __init__(self, config, filenames):
     self.config = config
-    self.source_finder = self._make_source_finder(root_dir, config.source_dir, config.third_party_address, config.no_network)
-    self.checksum_manager = self._make_checksum_manager(root_dir)
-    self.tools_manager = self._make_tools_manager(root_dir)
-    self.downloads_manager = self._make_downloads_manager(root_dir)
-    self.artifact_manager = self._make_artifact_manager(root_dir)
+    self.source_finder = self._make_source_finder(config.build_dir, config.source_dir, config.third_party_address, config.no_network)
+    self.checksum_manager = self._make_checksum_manager(config.build_dir)
+    self.tools_manager = self._make_tools_manager(config.build_dir)
+    self.downloads_manager = self._make_downloads_manager(config.build_dir)
+    self.artifact_manager = self._make_artifact_manager(config.build_dir)
 #    self.build_script_manager = build_script_manager(filenames, config.build_target)
     
   @classmethod
-  def _make_source_finder(clazz, tmp_dir, source_dir, address, no_network):
+  def _make_source_finder(clazz, build_dir, source_dir, address, no_network):
     chain = source_finder_chain()
     if source_dir:
      chain.add_finder(local_source_finder(source_dir))
     else:
-     root = path.join(tmp_dir, 'third_party_sources', git_util.sanitize_address(address))
+     root = path.join(build_dir, 'third_party_sources', git_util.sanitize_address(address))
      chain.add_finder(repo_source_finder(root, address, no_network = no_network, update_only_once = True))
     return chain
 
   @classmethod
-  def _make_checksum_manager(clazz, tmp_dir):
-    return checksum_manager(path.join(tmp_dir, 'checksums'))
+  def _make_checksum_manager(clazz, build_dir):
+    return checksum_manager(path.join(build_dir, 'checksums'))
 
   @classmethod
-  def _make_downloads_manager(clazz, tmp_dir):
-    return git_download_cache(path.join(tmp_dir, 'downloads'))
+  def _make_downloads_manager(clazz, build_dir):
+    return git_download_cache(path.join(build_dir, 'downloads'))
   
   @classmethod
-  def _make_artifact_manager(clazz, tmp_dir):
-    return artifact_manager(path.join(tmp_dir, 'artifacts'), no_git = True)
+  def _make_artifact_manager(clazz, build_dir):
+    return artifact_manager(path.join(build_dir, 'artifacts'), no_git = True)
 
   @classmethod
-  def _make_tools_manager(clazz, tmp_dir):
-    return tools_manager(path.join(tmp_dir, 'tools'))
+  def _make_tools_manager(clazz, build_dir):
+    return tools_manager(path.join(build_dir, 'tools'))
 
   def update_tools(self, packages):
     assert package_descriptor.is_package_info_list(packages)

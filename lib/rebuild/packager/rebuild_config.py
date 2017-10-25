@@ -21,6 +21,7 @@ class rebuild_config(object):
     self.source_dir = None
     self.tools_only = False
     self.third_party_address = self.DEFAULT_THIRD_PARTY_ADDRESS
+    self.tmp_dir = None
     self.users = False
     self.verbose = False
     self.wipe = False
