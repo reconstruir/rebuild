@@ -254,7 +254,7 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
     d = clazz.resolve_step_args_list(packager_env, args, name)
     hooks = hook.parse_list(d.get(name, []))
     for h in hooks:
-      h.root_dir = packager_env.source_dir
+      h.root_dir = packager_env.script.source_dir
     return { name: hooks }
   
   @classmethod

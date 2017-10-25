@@ -499,4 +499,4 @@ oct 24
 - add a progress meter or feedback to third party sources downloader
 - change DEFAULT_THIRD_PARTY_PREFIX = 'rebbe_' to 'rebuild_' in rebuild_config.py and test
 - add unit test that patches
-
+- add unit test with all kinds of hoooks and checks
