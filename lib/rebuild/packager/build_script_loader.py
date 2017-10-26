@@ -5,7 +5,7 @@ import copy, os.path as path
 from collections import namedtuple
 
 #from bes.system import log
-#from bes.common import algorithm, object_util
+from bes.common import check_type #algorithm, object_util
 #from bes.fs import file_checksum
 #from bes.python import code
 
@@ -22,51 +22,52 @@ from .build_script_env import build_script_env as build_script_load_env
 
 class build_script_loader(object):
 
+  _loaded_script = namedtuple('_loaded_script', 'filename,source_dir,recipe,source_dir,properties,requirements,build_requirements,descriptor,instructions,steps')
+
   @classmethod
   def load(clazz, filename, rebuild_env):
     load_env = build_script_load_env(build_target)
-    loaded_build_script = clazz.__load_recipes(filename, load_env)
+    recipes = clazz._load_recipes(filename, load_env)
     scripts = []
-    for recipe in loaded_build_script.recipes:
-      assert isinstance(recipe, dict)
-      script = build_script(loaded_build_script.filename, rebuild_env)
-      script.__load_from_dict(recipe)
+    for recipe in recipes.recipes:
+      check_type.check_dict(recipe, 'recipe')
+      script = clazz._load_from_dict(recipe)
       scripts.append(script)
     return scripts
   
-  def _load_from_factory_func(self, factory_func, script_env):
+  @classmethod
+  def _load_from_factory_func(clazz, factory_func, load_env):
     assert callable(factory_func)
-    args = copy.deepcopy(factory_func(script_env))
-    self._load_from_dict(args)
+    args = copy.deepcopy(factory_func(load_env))
+    clazz._load_from_dict(args)
 
-  def _load_from_dict(self, args):
-    if not self.source_dir:
-      if not 'source_dir' in args:
-        raise RuntimeError('Not loading from a file and no source_dir given.')
-      self.source_dir = args['source_dir']
-      del args['source_dir']
-
-    properties = self._load_properties(args)
+  @classmethod
+  def _load_from_recipe(clazz, recipe):
+    
+    
+  @classmethod
+  def _load_from_dict(clazz, args):
+    properties = clazz._load_properties(args)
     name = properties.get('name', None)
     if not name:
-      raise RuntimeError('No name given in %s.' % (self.filename))
+      raise RuntimeError('No name given in %s.' % (clazz.filename))
     version = properties.get('version', None)
     if not version:
-      raise RuntimeError('No version given in %s.' % (self.filename))
+      raise RuntimeError('No version given in %s.' % (clazz.filename))
     del properties['name']
     del properties['version']
-    requirements = self._load_requirements(args, 'requirements')
-    build_requirements = self._load_requirements(args, 'build_requirements')
+    requirements = clazz._load_requirements(args, 'requirements')
+    build_requirements = clazz._load_requirements(args, 'build_requirements')
     
     # Check that some important properties are given
     if not package_descriptor.PROPERTY_CATEGORY in properties:
-      raise RuntimeError('\"%s\" property missing from %s' % (package_descriptor.PROPERTY_CATEGORY, self.filename))
-    self.package_descriptor = package_descriptor(name, version,
+      raise RuntimeError('\"%s\" property missing from %s' % (package_descriptor.PROPERTY_CATEGORY, clazz.filename))
+    clazz.package_descriptor = package_descriptor(name, version,
                                                  requirements = requirements,
                                                  build_requirements = build_requirements,
                                                  properties = properties)
-    self.instruction_list = self._load_instructions(args, 'instructions')
-    self.steps = self._load_steps(args)
+    clazz.instruction_list = clazz._load_instructions(args, 'instructions')
+    clazz.steps = clazz._load_steps(args)
     if args:
       raise RuntimeError('Unknown args: %s' % (args))
 
