@@ -503,3 +503,4 @@ oct 24
 
 oct 25
 - improve rebuild_env - add defaults notion at __getitem__ to check for invalid entries etc.  add check that values are valid etc
+- python errors in build.py files are impossible to debug

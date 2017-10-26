@@ -23,7 +23,7 @@ class step_setup_unpack(Step):
     extra_tarballs = argument.args.get('extra_tarballs', [])
     tarballs = argument.args.get('tarballs', []) + extra_tarballs + downloaded_tarballs
     if not tarballs:
-      return step_result(False, 'No tarballs found for %s.' % (argument.env.package_descriptor.full_name))
+      return step_result(False, 'No tarballs found for %s.' % (argument.env.script.package_descriptor.full_name))
       
     for tarball in tarballs:
       self.blurb('Extracting %s' % (tarball))
