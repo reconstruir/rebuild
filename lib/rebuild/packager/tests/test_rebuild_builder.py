@@ -25,7 +25,7 @@ class test_rebuild_builder(unit_test):
     file_util.copy(self.data_path('amhello-1.0.tar.gz'), tmp_dir)
     filenames = [ amhello_build_script ]
     config = rebuild_config()
-    config.build_dir = path.join(tmp_dir, 'BUILD')
+    config.build_root = path.join(tmp_dir, 'BUILD')
     config.source_dir = self.data_dir()
     config.no_network = True
     config.verbose = True
@@ -42,7 +42,7 @@ class test_rebuild_builder(unit_test):
     tmp_dir = temp_file.make_temp_dir()
     filenames = [ self.data_path('zlib/build_zlib.py'), self.data_path('libpng/build_libpng.py') ]
     config = rebuild_config()
-    config.build_dir = path.join(tmp_dir, 'BUILD')
+    config.build_root = path.join(tmp_dir, 'BUILD')
     config.no_network = True
     config.source_dir = self.data_dir()
     env = rebuild_env(config, filenames)
@@ -68,7 +68,7 @@ class test_rebuild_builder(unit_test):
 
     filenames = [ path.join(tmp_dir, 'build_fructose.py') ]
     config = rebuild_config()
-    config.build_dir = path.join(tmp_dir, 'BUILD')
+    config.build_root = path.join(tmp_dir, 'BUILD')
     config.no_network = True
     config.source_dir = self.data_dir()
     env = rebuild_env(config, filenames)
@@ -109,7 +109,7 @@ class test_rebuild_builder(unit_test):
 
     filenames = [ orange_build_script, fructose_build_script, fiber_build_script ]
     config = rebuild_config()
-    config.build_dir = path.join(tmp_dir, 'BUILD')
+    config.build_root = path.join(tmp_dir, 'BUILD')
     config.no_network = True
     config.source_dir = self.data_dir()
     env = rebuild_env(config, filenames)

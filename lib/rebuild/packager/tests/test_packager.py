@@ -30,7 +30,7 @@ class test_packager(unit_test):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     all_scripts = { script.package_descriptor.name: script }
     config = rebuild_config()
-    config.build_dir = path.join(tmp_dir, 'BUILD')
+    config.build_root = path.join(tmp_dir, 'BUILD')
     config.no_network = True
     config.source_dir = self.data_dir()
     env = rebuild_env(config, [ rebuildfile ])

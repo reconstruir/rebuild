@@ -30,7 +30,7 @@ class unit_test_packaging(object):
     script = runner.scripts[ name ]
     config = rebuild_config()
     # FIXME change this to the tarball_dir see if it works remove need for tmp_dir
-    config.build_dir = path.join(tmp_dir, 'BUILD')
+    config.build_root = path.join(tmp_dir, 'BUILD')
     config.source_dir = tmp_dir
     config.no_network = True
     config.no_checksums = True

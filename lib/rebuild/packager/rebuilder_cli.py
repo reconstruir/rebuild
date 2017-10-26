@@ -48,7 +48,7 @@ class rebuilder_cli(object):
     self.parser.add_argument('--no-network', action = 'store_true', help = 'Down go to the network.')
     self.parser.add_argument('--skip-tests', action = 'store_true', help = 'Skip the tests part of the build.')
     self.parser.add_argument('--filter', nargs = '+', default = None, help = 'filter the list of build files to the given list.')
-    self.parser.add_argument('--build-root', action = 'store', type = str, default = path.abspath('BUILD'), help = 'Root dir where to store the build.')
+    self.parser.add_argument('-r', '--root', action = 'store', type = str, default = path.abspath('BUILD'), help = 'Root dir where to store the build.')
     self.parser.add_argument('target_packages', action = 'append', nargs = '*', type = str)
     self.parser.add_argument('--tps-address', default = rebuild_config.DEFAULT_THIRD_PARTY_ADDRESS,
                              action = 'store', type = str,
@@ -102,7 +102,7 @@ class rebuilder_cli(object):
     filenames = [ path.join(p, 'build.py') for p in available_packages ]
 
     config = rebuild_config()
-    config.build_root = path.abspath(args.build_root)
+    config.build_root = path.abspath(args.root)
     config.build_target = build_target(opts.get('system', build_target.DEFAULT),
                                        opts.get('build_type', build_target.DEFAULT),
                                        opts.get('archs', build_target.DEFAULT))

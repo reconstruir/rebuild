@@ -25,7 +25,7 @@ class test_rebuilder_script(unit_test):
       path.join(self.data_dir(), '../packager'),
       '--no-network',
       '-v',
-      '--tmp-dir', tmp_dir,
+      '--root', tmp_dir,
       '--build-type', self.BUILD_TYPE,
       'fructose',
     ]
@@ -45,7 +45,7 @@ class test_rebuilder_script(unit_test):
       path.join(self.data_dir(), '../packager'),
       '--no-network',
       '-v',
-      '--tmp-dir', tmp_dir,
+      '--root', tmp_dir,
       '--build-type', self.BUILD_TYPE,
       'fructose',
       'fiber',
@@ -66,7 +66,7 @@ class test_rebuilder_script(unit_test):
       path.join(self.data_dir(), '../packager'),
       '--no-network',
       '-v',
-      '--tmp-dir', tmp_dir,
+      '--root', tmp_dir,
       '--build-type', self.BUILD_TYPE,
       'orange',
     ]
