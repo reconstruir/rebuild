@@ -21,8 +21,8 @@ class packager_env(object):
     self.test_dir = path.join(self.working_dir, 'test')
     self.check_dir = path.join(self.working_dir, 'check')
     self.requirements_manager = package_manager(path.join(self.working_dir, 'requirements'))
-    self.sources = []
-    self.targets = []
+#    self.sources = []
+#    self.targets = []
     self.stage_lib_dir = path.join(self.stage_dir, 'lib')
     self.stage_bin_dir = path.join(self.stage_dir, 'bin')
     self.stage_compile_instructions_dir = path.join(self.stage_lib_dir, 'rebuild_instructions')

@@ -2,15 +2,11 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy, os, os.path as path, platform
-from abc import abstractmethod
-from collections import namedtuple
 
-from bes.common import dict_util
+#from bes.common import dict_util
 from bes.system import log
-from bes.fs import file_checksum, file_util
 
-from rebuild import build_blurb, build_target
-from rebuild.step_manager import step_manager
+from rebuild import build_blurb
 from .packager_env import packager_env
 from .build_script import build_script
 
