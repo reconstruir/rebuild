@@ -28,8 +28,6 @@ class packager(object):
 
     self.script = script
     self.packager_env = packager_env(script, env, all_scripts)
-    self.script.checksum_dir = path.join(env.checksum_manager.root_dir, env.config.build_target.build_path)
-    self.script.all_scripts = all_scripts
 #    self._execute_args = copy.deepcopy(kargs)
 #    self.blurb_verbose('execute_args:\n%s' % (dict_util.dumps(self._execute_args)))
     script.add_steps(self.packager_env)
