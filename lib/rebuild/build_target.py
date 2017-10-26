@@ -72,3 +72,12 @@ class build_target(object):
   @property
   def build_path(self):
     return path.join(self.system, build_arch.archs_to_string(self.archs, delimiter = '-'), self.build_type)
+
+  @property
+  def binary_format(self):
+    if self.system == System.LINUX:
+      return 'elf'
+    elif self.system == System.LINUX:
+      return 'macho'
+    else:
+      return None

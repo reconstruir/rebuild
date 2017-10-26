@@ -22,7 +22,10 @@ class step_cleanup_strip_binaries(Step):
         return step_result(True, None)
     if not path.isdir(argument.env.stage_dir):
       return step_result(True, None)
-    binaries = binary_detector.find_strippable_binaries(argument.env.stage_dir)
+    binary_format = argument.env.rebuild_env.config.build_target.binary_format
+    if not binary_format:
+      return step_result(True, 'Unknown binary format: %s' % (binary_format))
+    binaries = binary_detector.find_strippable_binaries(argument.env.stage_dir, format_name = binary_format)
     for b in binaries:
       self.blurb('stripping binary: %s' % (path.relpath(b)))
       if not strip.strip(argument.env.rebuild_env.config.build_target, b):

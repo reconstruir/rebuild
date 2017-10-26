@@ -33,7 +33,7 @@ class step_perl_module_post_install_cleanup(Step):
     super(step_perl_module_post_install_cleanup, self).__init__()
 
   def execute(self, argument):
-    bi = argument.env.build_target
+    bi = argument.env.rebuild_env.config.build_target
     if not bi.system == System.LINUX:
       return step_result(True)
     return step_result(True)

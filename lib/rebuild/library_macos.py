@@ -3,7 +3,7 @@
 
 import os.path as path
 from .library_base import library_base
-from bes.common import Shell
+from bes.common import algorithm, Shell
 from .binary_format_macho import binary_format_macho
 
 class library_macos(library_base):
@@ -33,12 +33,11 @@ class library_macos(library_base):
     lines = rv.stdout.split('\n')
     if len(lines) < 2:
       return None
-    assert lines[0].endswith(filename + ':')
     deps = [ l.partition(' ')[0].strip() for l in lines[ 1:] ]
     deps = [ l for l in deps if l ]
     if filename in deps:
       deps.remove(filename)
-    return sorted(deps)
+    return sorted(algorithm.unique(deps))
 
   @classmethod
   def shared_extension(clazz):
