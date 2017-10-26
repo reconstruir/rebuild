@@ -23,12 +23,12 @@ class build_script_runner(object):
 
   RunResult = namedtuple('RunResult', 'status,packager_result')
 
-  def __init__(self, filenames, build_target, **kargs):
+  def __init__(self, filenames, build_target):
     # Load all the scripts
     self.scripts = {}
     for filename in filenames:
       build_blurb.blurb_verbose('build', 'loading %s' % (filename))
-      build_scripts = build_script.load_build_scripts(filename, build_target, **kargs)
+      build_scripts = build_script.load_build_scripts(filename, build_target)
       for script in build_scripts:
         self.scripts[script.package_descriptor.name] = script
         #print "filename: %s" % (script.filename)
@@ -68,7 +68,7 @@ class build_script_runner(object):
     try:
       pkg = packager(script, env, self.scripts)
       checksum_ignored = env.checksum_manager.is_ignored(script.package_descriptor.full_name)
-      needs_rebuilding = checksum_ignored or script.needs_rebuilding(env)
+      needs_rebuilding = checksum_ignored or script.needs_rebuilding(pkg.packager_env)
       if not needs_rebuilding:
         # If the working directory is empty, it means no work happened and its useless
         if dir_util.is_empty(pkg.packager_env.working_dir):

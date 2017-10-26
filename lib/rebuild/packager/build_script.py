@@ -19,7 +19,6 @@ class build_script(object):
 
   def __init__(self, filename):
     self.filename = filename
-    self.all_scripts = None
     self.source_dir = path.dirname(self.filename)
     self._step_manager = step_manager('build')
 
@@ -39,7 +38,7 @@ class build_script(object):
   def execute(self, packager_env, args):
     result = self._step_manager.execute(packager_env, args)
     if result.success:
-      packager_env.rebuild_env.checksum_manager.save_checksums(self.__current_checksums(),
+      packager_env.rebuild_env.checksum_manager.save_checksums(self.__current_checksums(packager_env.all_scripts),
                                                                self.package_descriptor,
                                                                packager_env.rebuild_env.config.build_target)
     return result
@@ -135,23 +134,22 @@ class build_script(object):
     sources.append(self.filename)
     return sorted(algorithm.unique(sources))
 
-  def __dep_sources(self):
+  def __dep_sources(self, all_scripts):
     'Return a list of dependency sources for this script.'
-    if not self.all_scripts:
+    if not all_scripts:
       print('WEIRD a build script with no all_scripts: %s' % (self.filename))
       return []
-    assert self.all_scripts
     sources = []
     for dep in self.package_descriptor.requirements:
-      dep_script = self.all_scripts[dep.name]
-      sources += dep_script.__sources()
+      dep_script = all_scripts[dep.name]
+      sources += dep_script.__sources(all_scripts)
     return sources
 
-  def __sources(self):
+  def __sources(self, all_scripts):
     'Return a list of all script and dependency sources for this script.'
 #    for f in self.__script_sources():
 #      print('%s: %s' % (self.package_descriptor.full_name, f))
-    return self.__script_sources() + self.__dep_sources()
+    return self.__script_sources() + self.__dep_sources(all_scripts)
 
   def __targets(self):
     targets = []
@@ -160,13 +158,12 @@ class build_script(object):
         targets.append(args['output_artifact_path'])
     return targets
 
-  def __current_checksums(self):
-    if self.all_scripts is None:
-      raise RuntimeError('all_scripts is not set.')
-    return self.file_checksums(file_checksum.checksums(self.__sources()),
+  def __current_checksums(self, all_scripts):
+    return self.file_checksums(file_checksum.checksums(self.__sources(all_scripts)),
                                file_checksum.checksums(self.__targets()))
 
-  def needs_rebuilding(self, rebuild_env):
+  def needs_rebuilding(self, packager_env):
+    rebuild_env = packager_env.rebuild_env
     try:
       loaded_checksums = rebuild_env.checksum_manager.load_checksums(self.package_descriptor,
                                                                      rebuild_env.config.build_target)
@@ -176,7 +173,7 @@ class build_script(object):
         loaded_source_filenames = file_checksum.filenames(loaded_checksums.sources)
         loaded_target_filenames = file_checksum.filenames(loaded_checksums.targets)
 
-        current_checksums = self.__current_checksums()
+        current_checksums = self.__current_checksums(packager_env.all_scripts)
         current_source_filenames = file_checksum.filenames(current_checksums.sources)
         current_target_filenames = file_checksum.filenames(current_checksums.targets)
         
@@ -230,20 +227,8 @@ class build_script(object):
       assert isinstance(recipe, dict)
       script = build_script(loaded_build_script.filename)
       script.__load_from_dict(recipe)
-#      clazz.__fix_tool_build_target(script)
       scripts.append(script)
     return scripts
-  
-#  @classmethod
-#  def __fix_tool_build_target(clazz, script):
-#    'Document why this is needed'
-#    if not script.package_descriptor.is_tool():
-#      return False
-#    old_build_target = script.build_target
-#    new_build_target = build_target(old_build_target.system, build_type.RELEASE,
-#                                    build_arch.DEFAULT_ARCHS[old_build_target.system])
-#    script.build_target = new_build_target
-#    return True
 
   def _steps_added(self):
     'Do work that can happen only after the steps are added.'

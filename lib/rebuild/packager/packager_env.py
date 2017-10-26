@@ -12,7 +12,7 @@ class packager_env(object):
     self.rebuild_env = rebuild_env
     self.script = script
     self.all_scripts = all_scripts
-    self.working_dir = self._make_working_dir(rebuild_env.config.builds_dir)
+    self.working_dir = self._make_working_dir(rebuild_env.config.build_root)
     self.source_unpacked_dir = path.join(self.working_dir, 'source')
     self.build_dir = path.join(self.working_dir, 'build')
     self.stage_dir = path.join(self.working_dir, 'stage')
