@@ -11,6 +11,7 @@ class rebuild_config(object):
   
   def __init__(self):
     self.build_target = build_target()
+    self.root_dir = None
     self.deps_only = False
     self.disabled = False
     self.keep_going = False

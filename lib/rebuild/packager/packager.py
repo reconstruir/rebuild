@@ -21,7 +21,7 @@ class packager(object):
   def __init__(self, script, env, all_scripts):
     log.add_logging(self, TAG)
     build_blurb.add_blurb(self, TAG)
-    file_util.mkdir(env.config.build_dir)
+#    file_util.mkdir(env.config.build_dir)
     assert isinstance(script, build_script)
 
     #log.configure('software_packager=debug')

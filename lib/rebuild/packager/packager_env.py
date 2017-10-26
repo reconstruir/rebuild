@@ -8,14 +8,11 @@ from rebuild.package_manager import package_manager
 
 class packager_env(object):
 
-  def __init__(self,
-               script,
-               rebuild_env,
-               all_scripts):
+  def __init__(self, script, rebuild_env, all_scripts):
     self.rebuild_env = rebuild_env
     self.script = script
     self.all_scripts = all_scripts
-    self.working_dir = self._make_working_dir(rebuild_env.config.build_dir)
+    self.working_dir = self._make_working_dir(rebuild_env.config.builds_dir)
     self.source_unpacked_dir = path.join(self.working_dir, 'source')
     self.build_dir = path.join(self.working_dir, 'build')
     self.stage_dir = path.join(self.working_dir, 'stage')

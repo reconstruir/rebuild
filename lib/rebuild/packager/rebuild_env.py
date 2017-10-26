@@ -17,11 +17,13 @@ class rebuild_env(object):
 
   def __init__(self, config, filenames):
     self.config = config
-    self.source_finder = self._make_source_finder(config.build_dir, config.source_dir, config.third_party_address, config.no_network)
-    self.checksum_manager = self._make_checksum_manager(config.build_dir)
-    self.tools_manager = self._make_tools_manager(config.build_dir)
-    self.downloads_manager = self._make_downloads_manager(config.build_dir)
-    self.artifact_manager = self._make_artifact_manager(config.build_dir)
+    # FIXME: move this to config
+    self.config.builds_dir = path.join(config.build_root, 'builds', self.config.build_target.build_path)
+    self.source_finder = self._make_source_finder(config.build_root, config.source_dir, config.third_party_address, config.no_network)
+    self.checksum_manager = self._make_checksum_manager(config.build_root)
+    self.tools_manager = self._make_tools_manager(config.build_root)
+    self.downloads_manager = self._make_downloads_manager(config.build_root)
+    self.artifact_manager = self._make_artifact_manager(config.build_root)
 #    self.build_script_manager = build_script_manager(filenames, config.build_target)
     
   @classmethod

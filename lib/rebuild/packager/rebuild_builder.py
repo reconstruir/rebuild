@@ -19,8 +19,8 @@ class rebuild_builder(object):
   def __init__(self, env, build_script_filenames):
     build_blurb.add_blurb(self, label = 'build')
     self._env = env
-    self._builds_dir = path.join(self._env.config.build_dir, 'builds', self._env.config.build_target.build_name)
-    self._rebbe_root = path.join(self._env.config.build_dir, 'rebbe')
+    self._builds_dir = path.join(self._env.config.build_root, 'builds', self._env.config.build_target.build_name)
+    self._rebbe_root = path.join(self._env.config.build_root, 'rebbe')
     self._runner = build_script_runner(build_script_filenames, self._env.config.build_target)
     self.all_package_names = sorted(self._runner.scripts.keys())
     self.thread_pool = thread_pool(1)
