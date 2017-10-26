@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import copy, os, os.path as path, platform
+import os.path as path
 
 #from bes.common import dict_util
 from bes.system import log
@@ -14,7 +14,7 @@ TAG = 'packager'
 
 class packager(object):
   
-  def __init__(self, script, env, all_scripts):
+  def __init__(self, script, env):
     log.add_logging(self, TAG)
     build_blurb.add_blurb(self, TAG)
 #    file_util.mkdir(env.config.build_dir)
@@ -23,7 +23,7 @@ class packager(object):
     #log.configure('software_packager=debug')
 
     self.script = script
-    self.packager_env = packager_env(script, env, all_scripts)
+    self.packager_env = packager_env(script, env)
 #    self._execute_args = copy.deepcopy(kargs)
 #    self.blurb_verbose('execute_args:\n%s' % (dict_util.dumps(self._execute_args)))
     script.add_steps(self.packager_env)

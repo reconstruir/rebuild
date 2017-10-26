@@ -27,7 +27,6 @@ class unit_test_packaging(object):
     filenames = [ build_script ]
     bt = build_target()
     runner = build_script_runner(filenames, bt)
-    script = runner.scripts[ name ]
     config = rebuild_config()
     # FIXME change this to the tarball_dir see if it works remove need for tmp_dir
     config.build_root = path.join(tmp_dir, 'BUILD')
@@ -36,6 +35,7 @@ class unit_test_packaging(object):
     config.no_checksums = True
     config.verbose = True
     env = rebuild_env(config, filenames)
+    script = env.script_manager.scripts[ name ]
     env.checksum_manager.ignore(script.package_descriptor.full_name)
     rv = runner.run_build_script(script, env)
     if not rv.status == build_script_runner.SUCCESS:

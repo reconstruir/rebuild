@@ -24,7 +24,7 @@ class rebuild_env(object):
     self.tools_manager = self._make_tools_manager(config.build_root)
     self.downloads_manager = self._make_downloads_manager(config.build_root)
     self.artifact_manager = self._make_artifact_manager(config.build_root)
-    #self.script_manager = build_script_manager(filenames, config.build_target)
+    self.script_manager = build_script_manager(filenames, config.build_target)
     
   @classmethod
   def _make_source_finder(clazz, build_dir, source_dir, address, no_network):

@@ -22,19 +22,19 @@ class rebuild_builder(object):
     self._builds_dir = path.join(self._env.config.build_root, 'builds', self._env.config.build_target.build_name)
     self._rebbe_root = path.join(self._env.config.build_root, 'rebbe')
     self._runner = build_script_runner(build_script_filenames, self._env.config.build_target)
-    self.all_package_names = sorted(self._runner.scripts.keys())
+    self.all_package_names = sorted(env.script_manager.scripts.keys())
     self.thread_pool = thread_pool(1)
 
   def exclude(self, excluded_packages):
     excluded_packages = object_util.listify(excluded_packages)
     for excluded_package in excluded_packages:
-      if excluded_package in self._runner.scripts:
-        del self._runner.scripts[excluded_package]
+      if excluded_package in self._env.script_manager.scripts:
+        del self._env.script_manager.scripts[excluded_package]
 
   def __match_arg_exact(self, arg):
-    if arg in self._runner.scripts:
+    if arg in self._env.script_manager.scripts:
       return arg
-    for package_name, script in self._runner.scripts.items():
+    for package_name, script in self._env.script_manager.scripts.items():
       if script.filename.endswith(arg):
         return package_name
       p = path.normpath(path.join(arg, self.REBUILD_FILENAME))
@@ -45,7 +45,7 @@ class rebuild_builder(object):
   def __match_arg_with_pattern(self, arg):
     result = []
     pattern = '*%s*' % (arg)
-    for package_name, script in self._runner.scripts.items():
+    for package_name, script in self._env.script_manager.scripts.items():
       filename = path.relpath(script.filename)
       if fnmatch.fnmatch(filename, pattern):
         result.append(package_name)
@@ -74,7 +74,7 @@ class rebuild_builder(object):
   def remove_checksums(self, package_names):
     'Remove checksums for the given packages given as package names.'
     rebbe = rebuild_manager(self._rebbe_root, None)
-    scripts_todo = dict_util.filter_with_keys(self._runner.scripts, package_names)
+    scripts_todo = dict_util.filter_with_keys(self._env.script_manager.scripts, package_names)
     checksums_to_delete = [ script.package_descriptor for script in scripts_todo.values() ]
     self.blurb('removing checksums: %s' % (' '.join(package_names)))
     self._env.checksum_manager.remove_checksums(checksums_to_delete, self._env.config.build_target)
@@ -111,7 +111,7 @@ class rebuild_builder(object):
 
   def build_many_scripts(self, package_names, opts):
 
-#    for name, script in self._runner.scripts.items():
+#    for name, script in self._env.script_manager.scripts.items():
 #      self._env.checksum_manager.set_sources(script.package_descriptor.full_name, script.sources)
 #    self._env.checksum_manager.print_sources()
     
@@ -119,7 +119,7 @@ class rebuild_builder(object):
       self.blurb('removing checksums for: %s' % (' '.join(package_names)), fit = True)
       self.remove_checksums(package_names)
       for name in package_names:
-        script = self._runner.scripts[name]
+        script = self._env.script_manager.scripts[name]
         self._env.checksum_manager.ignore(script.package_descriptor.full_name)
       
     if self._env.config.wipe:
@@ -142,8 +142,8 @@ class rebuild_builder(object):
     
     resolved_package_names = self.__resolve_package_names(package_names)
 
-    resolved_scripts = dict_util.filter_with_keys(self._runner.scripts, resolved_package_names)
-    build_order_flat = build_script_runner.build_order_flat(resolved_scripts, self._env.config.build_target.system)
+    resolved_scripts = dict_util.filter_with_keys(self._env.script_manager.scripts, resolved_package_names)
+    build_order_flat = self._env.script_manager.build_order_flat(resolved_scripts, self._env.config.build_target.system)
 
     if self._env.config.deps_only:
       for package_name in package_names:
@@ -155,7 +155,7 @@ class rebuild_builder(object):
 
     failed_packages = []
     for name in  build_order_flat:
-      script = self._runner.scripts[name]
+      script = self._env.script_manager.scripts[name]
       filename = file_util.remove_head(script.filename, os.getcwd())
       if script.disabled and not self._env.config.disabled:
         self.blurb('disabled: %s' % (filename))
@@ -177,12 +177,14 @@ class rebuild_builder(object):
   def __resolve_package_names(self, package_names):
     if not package_names:
       package_names = self.all_package_names
-    return build_script_runner.resolve_requirements(self._runner.scripts, package_names, self._env.config.build_target.system)
+    return self._env.script_manager.resolve_requirements(self._env.script_manager.scripts,
+                                                         package_names,
+                                                         self._env.config.build_target.system)
 
   def __depends_on(self, what):
     'Return a list of package names for packages that depend on what.'
     result = []
-    for _, script in self._runner.scripts.items():
+    for _, script in self._env.script_manager.scripts.items():
       requirements_names = sorted([ req.name for req in script.package_descriptor.requirements ])
       if what in requirements_names:
         result.append(script.package_descriptor.name)
@@ -190,4 +192,4 @@ class rebuild_builder(object):
 
   def package_info(self, package_name):
     'Return the package info for a package.'
-    return self._runner.scripts[package_name].package_info
+    return self._env.script_manager.scripts[package_name].package_info

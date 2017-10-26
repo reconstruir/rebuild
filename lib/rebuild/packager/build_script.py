@@ -38,7 +38,7 @@ class build_script(object):
   def execute(self, packager_env, args):
     result = self._step_manager.execute(packager_env, args)
     if result.success:
-      packager_env.rebuild_env.checksum_manager.save_checksums(self.__current_checksums(packager_env.all_scripts),
+      packager_env.rebuild_env.checksum_manager.save_checksums(self.__current_checksums(packager_env.rebuild_env.script_manager.scripts),
                                                                self.package_descriptor,
                                                                packager_env.rebuild_env.config.build_target)
     return result
@@ -173,7 +173,7 @@ class build_script(object):
         loaded_source_filenames = file_checksum.filenames(loaded_checksums.sources)
         loaded_target_filenames = file_checksum.filenames(loaded_checksums.targets)
 
-        current_checksums = self.__current_checksums(packager_env.all_scripts)
+        current_checksums = self.__current_checksums(rebuild_env.script_manager.scripts)
         current_source_filenames = file_checksum.filenames(current_checksums.sources)
         current_target_filenames = file_checksum.filenames(current_checksums.targets)
         

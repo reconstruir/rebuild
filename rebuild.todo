@@ -507,4 +507,4 @@ oct 25
 
 - version compare is fucked when finding latest version of an artifact 1.1.1.1 might match improperly with 1.1.2
   fix this shit to break the version into compoentns and compare that way
-  
+- figure out if rebuild_builder.exclude() is really needed
