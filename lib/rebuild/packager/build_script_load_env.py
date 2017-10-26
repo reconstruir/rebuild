@@ -7,7 +7,7 @@ from bes.system import host
 from rebuild import build_type, System
 from rebuild import variable_manager
 
-class build_script_env(object):
+class build_script_load_env(object):
 
   def __init__(self, build_target):
     self.build_target = build_target

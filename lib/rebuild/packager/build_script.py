@@ -11,7 +11,7 @@ from rebuild.dependency import dependency_provider
 from rebuild.step_manager import step_description, step_manager
 from bes.fs import file_checksum
 from rebuild import platform_specific_config as psc
-from .build_script_env import build_script_env
+from .build_script_load_env import build_script_load_env
 from rebuild.hook_extra_code import HOOK_EXTRA_CODE
 from rebuild import instruction_list
 
@@ -220,7 +220,7 @@ class build_script(object):
 
   @classmethod
   def load_build_scripts(clazz, filename, build_target):
-    script_env = build_script_env(build_target)
+    script_env = build_script_load_env(build_target)
     loaded_build_script = clazz.__load_build_script_recipes(filename, script_env)
     scripts = []
     for recipe in loaded_build_script.recipes:
