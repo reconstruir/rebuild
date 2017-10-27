@@ -25,6 +25,3 @@ def rebuild_recipes(env):
       step_artifact_create,
     ],
   )
-
-if __name__ == '__main__':
-  Script.main(rebuild_recipes)
