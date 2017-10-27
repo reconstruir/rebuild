@@ -10,6 +10,7 @@ class rebuild_config(object):
   DEFAULT_THIRD_PARTY_PREFIX = 'rebbe_'
   
   def __init__(self):
+    self.build_root = None
     self.build_target = build_target()
     self.root_dir = None
     self.deps_only = False
