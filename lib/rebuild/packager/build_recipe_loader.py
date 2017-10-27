@@ -18,16 +18,16 @@ from rebuild import package_descriptor
 from rebuild.hook_extra_code import HOOK_EXTRA_CODE
 from rebuild.step_manager import step_description#, step_manager
 
-from .build_script_load_env import build_script_load_env
+from .build_recipe_env import build_recipe_env
 #from .packager_env import packager_env
 
-class build_script_loader(object):
+class build_recipe_loader(object):
 
-  _script = namedtuple('_script', 'filename,recipe,properties,requirements,build_requirements,descriptor,instructions,steps')
+  _recipe = namedtuple('_recipe', 'filename,recipe,properties,requirements,build_requirements,descriptor,instructions,steps')
 
   @classmethod
   def load(clazz, filename, build_target):
-    load_env = build_script_load_env(build_target)
+    load_env = build_recipe_env(build_target)
     recipes = clazz._load_recipes(filename, load_env)
     scripts = []
     for recipe in recipes.recipes:
@@ -65,7 +65,7 @@ class build_script_loader(object):
     steps = clazz._load_steps(recipe)
     if recipe:
       raise RuntimeError('Unknown recipe: %s' % (recipe))
-    return clazz._script(filename, recipe, properties, requirements,
+    return clazz._recipe(filename, recipe, properties, requirements,
                          build_requirements, descriptor, instructions, steps)
 
   @classmethod
@@ -121,8 +121,6 @@ class build_script_loader(object):
     for recipe in recipes:
       if callable(recipe):
         recipe = recipe(load_env)
-      elif not isinstance(recipe, dict):
-        raise RuntimeError('Build recipe \"%s\" is not a dictionary: %s' % (recipe, filename))
-      assert isinstance(recipe, dict)
+      check_type.check_dict(recipe, 'recipe')
       result.append(recipe)
     return clazz._recipes(filename, result)
