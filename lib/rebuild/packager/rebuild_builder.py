@@ -19,8 +19,6 @@ class rebuild_builder(object):
   def __init__(self, env, build_script_filenames):
     build_blurb.add_blurb(self, label = 'build')
     self._env = env
-    self._builds_dir = path.join(self._env.config.build_root, 'builds', self._env.config.build_target.build_name)
-    self._rebbe_root = path.join(self._env.config.build_root, 'rebbe')
     self._runner = build_script_runner(build_script_filenames, self._env.config.build_target)
     self.all_package_names = sorted(env.script_manager.scripts.keys())
     self.thread_pool = thread_pool(1)
@@ -73,7 +71,6 @@ class rebuild_builder(object):
 
   def remove_checksums(self, package_names):
     'Remove checksums for the given packages given as package names.'
-    rebbe = rebuild_manager(self._rebbe_root, None)
     scripts_todo = dict_util.filter_with_keys(self._env.script_manager.scripts, package_names)
     checksums_to_delete = [ script.package_descriptor for script in scripts_todo.values() ]
     self.blurb('removing checksums: %s' % (' '.join(package_names)))
@@ -81,9 +78,9 @@ class rebuild_builder(object):
 
   def wipe_build_dirs(self, package_names):
     patterns = [ '*%s-*' % (name) for name in package_names ]
-    if path.isdir(self._builds_dir):
-      self.blurb('cleaning temporary build directories in %s' % (path.relpath(self._builds_dir)))
-      tmp_dirs = dir_util.list(self._builds_dir, patterns = patterns)
+    if path.isdir(self._env.config.builds_dir):
+      self.blurb('cleaning temporary build directories in %s' % (path.relpath(self._env.config.builds_dir)))
+      tmp_dirs = dir_util.list(self._env.config.builds_dir, patterns = patterns)
       file_util.remove(tmp_dirs)
 
   EXIT_CODE_SUCCESS = 0
