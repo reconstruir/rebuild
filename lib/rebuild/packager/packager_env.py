@@ -8,7 +8,7 @@ from rebuild.package_manager import package_manager
 
 class packager_env(object):
 
-  def __init__(self, rebuild_env):
+  def __init__(self, script, rebuild_env):
     self.rebuild_env = rebuild_env
     self.script = script
     self.working_dir = self._make_working_dir(rebuild_env.config.build_root)

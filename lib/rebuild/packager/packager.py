@@ -4,9 +4,9 @@
 import os.path as path
 
 #from bes.common import dict_util
-from bes.system import log
+#from bes.system import log
 
-from rebuild import build_blurb
+#from rebuild import build_blurb
 from .packager_env import packager_env
 from .build_script import build_script
 
@@ -15,10 +15,10 @@ TAG = 'packager'
 class packager(object):
   
   def __init__(self, script, rebuild_env):
-    log.add_logging(self, TAG)
-    build_blurb.add_blurb(self, TAG)
+#    log.add_logging(self, TAG)
+#    build_blurb.add_blurb(self, TAG)
 #    file_util.mkdir(rebuild_env.config.build_dir)
-    assert isinstance(script, build_script)
+#    assert isinstance(script, build_script)
 
     #log.configure('software_packager=debug')
 
