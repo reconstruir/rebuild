@@ -26,8 +26,8 @@ class build_script_loader(object):
   _script = namedtuple('_script', 'filename,recipe,properties,requirements,build_requirements,descriptor,instructions,steps')
 
   @classmethod
-  def load(clazz, filename, rebuild_env):
-    load_env = build_script_load_env(rebuild_env.config.build_target)
+  def load(clazz, filename, build_target):
+    load_env = build_script_load_env(build_target)
     recipes = clazz._load_recipes(filename, load_env)
     scripts = []
     for recipe in recipes.recipes:
