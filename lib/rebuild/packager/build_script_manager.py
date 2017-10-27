@@ -14,7 +14,7 @@ class build_script_manager(object):
     self.scripts = {}
     for filename in filenames:
       build_blurb.blurb_verbose('build', 'loading %s' % (filename))
-      build_scripts = build_script.load_build_scripts(filename, build_target, build_root)
+      build_scripts = build_script.load_build_scripts(filename, build_target)#, build_root)
       for script in build_scripts:
         self.scripts[script.package_descriptor.name] = script
         #print "filename: %s" % (script.filename)
