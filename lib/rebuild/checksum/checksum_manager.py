@@ -6,6 +6,7 @@ from bes.common import check_type, object_util
 from bes.fs import file_checksum, file_util
 from rebuild import build_target, package_descriptor
 from collections import namedtuple
+from rebuild import build_blurb
 
 class checksum_manager(object):
   'Manage checksums.'
@@ -17,6 +18,7 @@ class checksum_manager(object):
   
   def __init__(self, root_dir):
     check_type.check_string(root_dir, 'root_dir')
+    build_blurb.add_blurb(self, label = 'build')
     self._root_dir = root_dir
     self._build_target = build_target
     self._ignored = set()
@@ -55,6 +57,8 @@ class checksum_manager(object):
     packages = object_util.listify(packages)
     assert package_descriptor.is_package_info_list(packages)
     checksum_dirs = [ self._checksum_dir(pd, bt) for pd in packages ]
+    for d in checksum_dirs:
+      self.blurb('removing checksums: %s' % (path.relpath(d)))
     file_util.remove(checksum_dirs)
 
   def _checksum_dir(self, pd, bt):
@@ -74,6 +78,3 @@ class checksum_manager(object):
     d = self._checksum_dir(pd, bt)
     file_checksum.save_checksums(path.join(d, self.CHECKSUMS_SOURCES_FILENAME), checksums.sources)
     file_checksum.save_checksums(path.join(d, self.CHECKSUMS_TARGETS_FILENAME), checksums.targets)
-  
-
-  

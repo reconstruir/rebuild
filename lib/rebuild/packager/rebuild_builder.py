@@ -71,10 +71,9 @@ class rebuild_builder(object):
 
   def remove_checksums(self, package_names):
     'Remove checksums for the given packages given as package names.'
-    scripts_todo = dict_util.filter_with_keys(self._env.script_manager.scripts, package_names)
-    checksums_to_delete = [ script.package_descriptor for script in scripts_todo.values() ]
-    self.blurb('removing checksums: %s' % (' '.join(package_names)))
-    self._env.checksum_manager.remove_checksums(checksums_to_delete, self._env.config.build_target)
+    scripts = self._env.script_manager.subset(package_names)
+    descriptors = [ script.package_descriptor for script in scripts.values() ]
+    self._env.checksum_manager.remove_checksums(descriptors, self._env.config.build_target)
 
   def wipe_build_dirs(self, package_names):
     patterns = [ '*%s-*' % (name) for name in package_names ]

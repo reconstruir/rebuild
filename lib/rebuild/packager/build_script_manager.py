@@ -93,3 +93,7 @@ class build_script_manager(object):
       build_requirements_names = script.package_descriptor.build_requirements_names_for_system(system)
       dep_map[name] = requirements_names | build_requirements_names
     return dep_map
+
+  def subset(self, names):
+    return dict_util.filter_with_keys(self.scripts, names)
+  
