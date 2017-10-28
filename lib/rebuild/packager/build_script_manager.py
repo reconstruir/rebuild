@@ -96,4 +96,6 @@ class build_script_manager(object):
 
   def subset(self, names):
     return dict_util.filter_with_keys(self.scripts, names)
-  
+
+  def package_names(self):
+    return sorted(self.scripts.keys())

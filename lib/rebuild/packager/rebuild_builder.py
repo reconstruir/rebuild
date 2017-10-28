@@ -8,7 +8,6 @@ from bes.fs import dir_util, file_util
 from collections import namedtuple
 
 from rebuild import build_blurb
-from .rebuild_manager import rebuild_manager
 
 from .build_script_runner import build_script_runner
 
@@ -20,7 +19,6 @@ class rebuild_builder(object):
     build_blurb.add_blurb(self, label = 'build')
     self._env = env
     self._runner = build_script_runner(build_script_filenames, self._env.config.build_target)
-    self.all_package_names = sorted(env.script_manager.scripts.keys())
     self.thread_pool = thread_pool(1)
 
   def exclude(self, excluded_packages):
@@ -49,7 +47,7 @@ class rebuild_builder(object):
         result.append(package_name)
     return result
 
-  def __resolve_arg(self, arg):
+  def _resolve_arg(self, arg):
     exact_match = self.__match_arg_exact(arg)
     if exact_match:
       return [ exact_match ]
@@ -62,7 +60,7 @@ class rebuild_builder(object):
     package_names = []
     invalid_args = []
     for arg in args:
-      resolved_package_names = self.__resolve_arg(arg)
+      resolved_package_names = self._resolve_arg(arg)
       if resolved_package_names:
         package_names.extend(resolved_package_names)
       else:
@@ -127,7 +125,7 @@ class rebuild_builder(object):
     if self._env.config.users:
       depends_on_packages = []
       for package_name in package_names:
-        depends_on_packages += self.__depends_on(package_name)
+        depends_on_packages += self._depends_on(package_name)
       depends_on_packages = algorithm.unique(depends_on_packages)
       package_names += depends_on_packages
     package_names = algorithm.unique(package_names)
@@ -136,7 +134,7 @@ class rebuild_builder(object):
 #        self.blurb('skipping non tool: %s' % (filename))
 #        continue
     
-    resolved_package_names = self.__resolve_package_names(package_names)
+    resolved_package_names = self._resolve_package_names(package_names)
 
     resolved_scripts = dict_util.filter_with_keys(self._env.script_manager.scripts, resolved_package_names)
     build_order_flat = self._env.script_manager.build_order_flat(resolved_scripts, self._env.config.build_target.system)
@@ -170,14 +168,14 @@ class rebuild_builder(object):
       
     return exit_code
 
-  def __resolve_package_names(self, package_names):
+  def _resolve_package_names(self, package_names):
     if not package_names:
-      package_names = self.all_package_names
+      package_names = self._env.script_manager.package_names()
     return self._env.script_manager.resolve_requirements(self._env.script_manager.scripts,
                                                          package_names,
                                                          self._env.config.build_target.system)
 
-  def __depends_on(self, what):
+  def _depends_on(self, what):
     'Return a list of package names for packages that depend on what.'
     result = []
     for _, script in self._env.script_manager.scripts.items():
