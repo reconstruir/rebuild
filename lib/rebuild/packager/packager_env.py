@@ -25,7 +25,7 @@ class packager_env(object):
     self.stage_compile_instructions_dir = path.join(self.stage_lib_dir, 'rebuild_instructions')
 
   def _make_working_dir(self, build_dir):
-    base_dir = '%s_%s' % (self.script.package_descriptor.full_name, time_util.timestamp())
+    base_dir = '%s_%s' % (self.script.descriptor.full_name, time_util.timestamp())
     working_dir = path.join(build_dir, base_dir)
     file_util.mkdir(working_dir)
     return working_dir

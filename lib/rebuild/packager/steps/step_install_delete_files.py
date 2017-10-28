@@ -15,7 +15,7 @@ class step_install_delete_files(Step):
   def execute(self, argument):
     delete_files = argument.args.get('delete_files', [])
     if not delete_files:
-      message = 'No delete_files for %s' % (argument.env.script.package_descriptor.full_name)
+      message = 'No delete_files for %s' % (argument.env.script.descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
     delete_files_in_stage_dir = [ path.join(argument.env.stage_dir, f) for f in delete_files ]

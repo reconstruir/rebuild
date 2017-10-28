@@ -92,8 +92,8 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
     env = SystemEnvironment.make_clean_env()
 
     STATIC = True
-    assert packager_env.script.package_descriptor.resolved_requirements != None
-    export_compilation_flags_requirements = packager_env.script.package_descriptor.export_compilation_flags_requirements(packager_env.rebuild_env.config.build_target.system)
+    assert packager_env.script.descriptor.resolved_requirements != None
+    export_compilation_flags_requirements = packager_env.script.descriptor.export_compilation_flags_requirements(packager_env.rebuild_env.config.build_target.system)
     if STATIC:
       env['REBBE_PKG_CONFIG_STATIC'] = '1'
       
@@ -103,7 +103,7 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
       cflags = []
       libs = []
 
-    cflags += packager_env.script.package_descriptor.extra_cflags(packager_env.rebuild_env.config.build_target.system)
+    cflags += packager_env.script.descriptor.extra_cflags(packager_env.rebuild_env.config.build_target.system)
 
     env['REBUILD_REQUIREMENTS_CFLAGS'] = ' '.join(cflags)
     env['REBUILD_REQUIREMENTS_CXXFLAGS'] = ' '.join(cflags)
@@ -123,17 +123,17 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
     env['REBUILD_STAGE_PYTHON_LIB_DIR'] = path.join(packager_env.stage_dir, 'lib/python')
     env['REBUILD_STAGE_FRAMEWORKS_DIR'] = path.join(packager_env.stage_dir, 'frameworks')
 
-    SystemEnvironment.update(env, packager_env.rebuild_env.tools_manager.shell_env(packager_env.script.package_descriptor.resolved_build_requirements))
-    SystemEnvironment.update(env, packager_env.requirements_manager.shell_env(packager_env.script.package_descriptor.resolved_requirements))
+    SystemEnvironment.update(env, packager_env.rebuild_env.tools_manager.shell_env(packager_env.script.descriptor.resolved_build_requirements))
+    SystemEnvironment.update(env, packager_env.requirements_manager.shell_env(packager_env.script.descriptor.resolved_requirements))
     SystemEnvironment.update(env, SystemEnvironment.make_shell_env(packager_env.stage_dir))
 
     env['REBUILD_PYTHON_VERSION'] = '2.7'
     env['PYTHON'] = 'python%s' % (env['REBUILD_PYTHON_VERSION'])
     env['REBUILD_PYTHON_PLATFORM_NAME'] =  packager_env.rebuild_env.config.build_target.system
 
-    env['REBUILD_PACKAGE_NAME'] = packager_env.script.package_descriptor.name
-    env['REBUILD_PACKAGE_DESCRIPTION'] = packager_env.script.package_descriptor.name
-    env['REBUILD_PACKAGE_VERSION'] = str(packager_env.script.package_descriptor.version)
+    env['REBUILD_PACKAGE_NAME'] = packager_env.script.descriptor.name
+    env['REBUILD_PACKAGE_DESCRIPTION'] = packager_env.script.descriptor.name
+    env['REBUILD_PACKAGE_VERSION'] = str(packager_env.script.descriptor.version)
 
     compiler_flags = toolchain.compiler_flags(packager_env.rebuild_env.config.build_target)
     env['REBUILD_COMPILE_CFLAGS'] = ' '.join(compiler_flags.get('CFLAGS', []))
@@ -169,7 +169,7 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
 
     env.update(extra_env)
 
-    clazz.env_dump(env, packager_env.script.package_descriptor.name, 'PRE ENVIRONMENT')
+    clazz.env_dump(env, packager_env.script.descriptor.name, 'PRE ENVIRONMENT')
 
     SystemEnvironment.env_substitite(env)
 
@@ -184,12 +184,12 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
       if variable.has_rogue_dollar_signs(part):
         raise RuntimeError('Rogue dollar sign (\"$\") found in: %s' % (part))
       
-    build_blurb.blurb('build', '%s - %s' % (packager_env.script.package_descriptor.name, ' '.join(command)))
+    build_blurb.blurb('build', '%s - %s' % (packager_env.script.descriptor.name, ' '.join(command)))
 
     file_util.mkdir(packager_env.build_dir)
     retry_script = clazz.__write_retry_script(command, env, packager_env)
 
-    clazz.env_dump(env, packager_env.script.package_descriptor.name, clazz.__name__ + ' : ' + 'POST ENVIRONMENT')
+    clazz.env_dump(env, packager_env.script.descriptor.name, clazz.__name__ + ' : ' + 'POST ENVIRONMENT')
 
     for k,v in env.items():
       if string_util.is_quoted(v):

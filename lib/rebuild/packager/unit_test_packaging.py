@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
-#
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
+
 import os.path as path
 from bes.fs import file_util, temp_file
 from bes.common import string_util
@@ -36,7 +36,7 @@ class unit_test_packaging(object):
     config.verbose = True
     env = rebuild_env(config, filenames)
     script = env.script_manager.scripts[ name ]
-    env.checksum_manager.ignore(script.package_descriptor.full_name)
+    env.checksum_manager.ignore(script.descriptor.full_name)
     rv = runner.run_build_script(script, env)
     if not rv.status == build_script_runner.SUCCESS:
       print(rv.status)

@@ -19,14 +19,14 @@ class step_pkg_config_make_pc(Step):
   def execute(self, argument):
     pc_files = argument.args.get('pc_files', [])
     if not pc_files:
-      message = 'No .pc files for %s' % (argument.env.script.package_descriptor.full_name)
+      message = 'No .pc files for %s' % (argument.env.script.descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
 
     replacements = {
-      'REBUILD_PACKAGE_NAME': argument.env.script.package_descriptor.name,
-      'REBUILD_PACKAGE_DESCRIPTION': argument.env.script.package_descriptor.name,
-      'REBUILD_PACKAGE_VERSION': str(argument.env.script.package_descriptor.version),
+      'REBUILD_PACKAGE_NAME': argument.env.script.descriptor.name,
+      'REBUILD_PACKAGE_DESCRIPTION': argument.env.script.descriptor.name,
+      'REBUILD_PACKAGE_VERSION': str(argument.env.script.descriptor.version),
     }
 
     pc_file_variables = argument.args.get('pc_file_variables', {})

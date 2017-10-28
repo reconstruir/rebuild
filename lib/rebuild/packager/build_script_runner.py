@@ -23,14 +23,14 @@ class build_script_runner(object):
   def run_build_script(self, script, env):
     try:
       pkg = packager(script, env)
-      checksum_ignored = env.checksum_manager.is_ignored(script.package_descriptor.full_name)
+      checksum_ignored = env.checksum_manager.is_ignored(script.descriptor.full_name)
       needs_rebuilding = checksum_ignored or script.needs_rebuilding(pkg.packager_env)
       if not needs_rebuilding:
         # If the working directory is empty, it means no work happened and its useless
         if dir_util.is_empty(pkg.packager_env.working_dir):
           file_util.remove(pkg.packager_env.working_dir)
         return self.RunResult(self.CURRENT, None)
-      build_blurb.blurb('build', '%s - building' % (script.package_descriptor.name))
+      build_blurb.blurb('build', '%s - building' % (script.descriptor.name))
       packager_result = pkg.execute()
       #print("CACA: packager_result: %s" % (str(packager_result)))
       if packager_result.success:

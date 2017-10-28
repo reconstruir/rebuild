@@ -16,7 +16,7 @@ class step_install_install_files(Step):
   def execute(self, argument):
     install_files = argument.args.get('install_files', [])
     if not install_files:
-      message = 'No install_files for %s' % (argument.env.script.package_descriptor.full_name)
+      message = 'No install_files for %s' % (argument.env.script.descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
 

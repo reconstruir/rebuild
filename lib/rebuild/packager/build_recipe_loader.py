@@ -12,7 +12,7 @@ from bes.python import code
 from rebuild import package_descriptor
 #from rebuild import build_arch, build_type, package_descriptor
 #from rebuild import build_blurb
-#from rebuild import instruction_list
+from rebuild import instruction_list
 #from rebuild import platform_specific_config as psc
 #from rebuild.dependency import dependency_provider
 from rebuild.hook_extra_code import HOOK_EXTRA_CODE

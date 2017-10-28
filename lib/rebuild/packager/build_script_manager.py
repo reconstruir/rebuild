@@ -16,7 +16,7 @@ class build_script_manager(object):
       build_blurb.blurb_verbose('build', 'loading %s' % (filename))
       build_scripts = build_script.load_build_scripts(filename, build_target)#, build_root)
       for script in build_scripts:
-        self.scripts[script.package_descriptor.name] = script
+        self.scripts[script.descriptor.name] = script
         #print "filename: %s" % (script.filename)
         #print "    name: %s" % (script.name)
         #print "    requirements: %s" % (script.requirements)
@@ -27,9 +27,9 @@ class build_script_manager(object):
     
     # Resolve and order all the dependencies for all the scripts
     for name, script in sorted(self.scripts.items()):
-      build_blurb.blurb_verbose('build', 'resolving dependencies for: %s - %s' % (path.relpath(script.filename), script.package_descriptor.name))
+      build_blurb.blurb_verbose('build', 'resolving dependencies for: %s - %s' % (path.relpath(script.filename), script.descriptor.name))
       try:
-        all_requirements = script.package_descriptor.requirements + script.package_descriptor.build_requirements
+        all_requirements = script.descriptor.requirements + script.descriptor.build_requirements
         all_requirements_system_resolved = requirement.resolve_requirements(all_requirements, build_target.system)
 
         all_requirements_dependencies_resolved = self._resolve_and_order_dependencies(all_requirements_system_resolved,
@@ -41,8 +41,8 @@ class build_script_manager(object):
         assert package_descriptor.is_package_info_list(resolved_requirements)
         assert package_descriptor.is_package_info_list(resolved_build_requirements)
 
-        script.package_descriptor.resolved_requirements = resolved_requirements
-        script.package_descriptor.resolved_build_requirements = resolved_build_requirements
+        script.descriptor.resolved_requirements = resolved_requirements
+        script.descriptor.resolved_build_requirements = resolved_build_requirements
 
       except missing_dependency_error as ex:
         raise missing_dependency_error('Missing dependency for %s: %s' % (script.filename, ' '.join(ex.missing_deps)), ex.missing_deps)
@@ -57,10 +57,10 @@ class build_script_manager(object):
   def _resolve_and_order_dependencies(clazz, requirements, scripts, dependency_map):
     names = [ dep.name for dep in requirements ]
     resolved_names = dependency_resolver.resolve_deps(dependency_map, names)
-    resolved = [ scripts[name].package_descriptor for name in resolved_names ]
+    resolved = [ scripts[name].descriptor for name in resolved_names ]
     resolved_map = dict_util.filter_with_keys(dependency_map, resolved_names)
     build_order = dependency_resolver.build_order_flat(resolved_map)
-    resolved = [ scripts[name].package_descriptor for name in build_order ]
+    resolved = [ scripts[name].descriptor for name in build_order ]
     return resolved
 
   @classmethod
@@ -89,8 +89,8 @@ class build_script_manager(object):
     dep_map = {}
     for name in sorted(scripts.keys()):
       script = scripts[name]
-      requirements_names = script.package_descriptor.requirements_names_for_system(system)
-      build_requirements_names = script.package_descriptor.build_requirements_names_for_system(system)
+      requirements_names = script.descriptor.requirements_names_for_system(system)
+      build_requirements_names = script.descriptor.build_requirements_names_for_system(system)
       dep_map[name] = requirements_names | build_requirements_names
     return dep_map
 

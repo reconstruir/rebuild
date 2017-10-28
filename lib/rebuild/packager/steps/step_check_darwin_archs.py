@@ -24,7 +24,7 @@ class step_check_darwin_archs(Step):
   def execute(self, argument):
     if not argument.env.rebuild_env.config.build_target.is_darwin():
       return step_result(True, None)
-    if argument.env.script.package_descriptor.category != Category.LIB:
+    if argument.env.script.descriptor.category != Category.LIB:
       return step_result(True, None)
     if path.isdir(argument.env.stage_lib_dir):
       expected_archs = argument.env.rebuild_env.config.build_target.archs

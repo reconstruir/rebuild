@@ -4,22 +4,21 @@
 import copy, os.path as path
 from collections import namedtuple
 
-from bes.common import algorithm, object_util
-from bes.python import code
-from rebuild import build_arch, build_type, package_descriptor
+from bes.system import log
+from bes.common import algorithm
+from rebuild import build_blurb
 from rebuild.dependency import dependency_provider
 from rebuild.step_manager import step_description, step_manager
 from bes.fs import file_checksum
-from rebuild import platform_specific_config as psc
-from rebuild.hook_extra_code import HOOK_EXTRA_CODE
-from rebuild import instruction_list
 
-from .build_recipe_env import build_recipe_env
 from .build_recipe_loader import build_recipe_loader
 
 class build_script(object):
 
   def __init__(self, filename):
+    log.add_logging(self, 'build')
+    build_blurb.add_blurb(self, 'build')
+
     self.filename = filename
     self.source_dir = path.dirname(self.filename)
     self._step_manager = step_manager('build')
@@ -29,7 +28,6 @@ class build_script(object):
       raise RuntimeError('Script already has steps.')
     try:
       self._step_manager.add_steps(self.steps, packager_env)
-      self._steps_added()
     except Exception as ex:
       print(('Caught exception loading script: %s' % (self.filename)))
       raise
@@ -41,71 +39,13 @@ class build_script(object):
     result = self._step_manager.execute(packager_env, args)
     if result.success:
       packager_env.rebuild_env.checksum_manager.save_checksums(self._current_checksums(packager_env.rebuild_env.script_manager.scripts),
-                                                               self.package_descriptor,
+                                                               self.descriptor,
                                                                packager_env.rebuild_env.config.build_target)
     return result
         
-  def _load_from_dict(self, args):
-    assert self.source_dir
-    properties = self._load_properties(args)
-    name = properties.get('name', None)
-    if not name:
-      raise RuntimeError('No name given in %s.' % (self.filename))
-    version = properties.get('version', None)
-    if not version:
-      raise RuntimeError('No version given in %s.' % (self.filename))
-    del properties['name']
-    del properties['version']
-    requirements = self._load_requirements(args, 'requirements')
-    build_requirements = self._load_requirements(args, 'build_requirements')
-    
-    # Check that some important properties are given
-    if not package_descriptor.PROPERTY_CATEGORY in properties:
-      raise RuntimeError('\"%s\" property missing from %s' % (package_descriptor.PROPERTY_CATEGORY, self.filename))
-    self.package_descriptor = package_descriptor(name, version,
-                                                 requirements = requirements,
-                                                 build_requirements = build_requirements,
-                                                 properties = properties)
-    self.instruction_list = self._load_instructions(args, 'instructions')
-    self.steps = self._load_steps(args)
-    if args:
-      raise RuntimeError('Unknown args: %s' % (args))
-
-  @classmethod
-  def _load_requirements(clazz, args, key):
-    if not key in args:
-      return []
-    requirements = package_descriptor.parse_requirements(args[key])
-    del args[key]
-    return requirements
-
-  @classmethod
-  def _load_instructions(clazz, args, key):
-    if not key in args:
-      return []
-    result = instruction_list.parse(args[key])
-    del args[key]
-    return result
-  
-  @classmethod
-  def _load_steps(clazz, args):
-    if not 'steps' in args:
-      return []
-    steps = step_description.parse_descriptions(args['steps'])
-    del args['steps']
-    return steps
-
-  @classmethod
-  def _load_properties(clazz, args):
-    if not 'properties' in args:
-      return {}
-    properties = args['properties']
-    del args['properties']
-    return properties
-
   @property
   def disabled(self):
-    return self.package_descriptor.disabled
+    return self.descriptor.disabled
 
   @property
   def sources(self):
@@ -132,7 +72,7 @@ class build_script(object):
       print('WEIRD a build script with no all_scripts: %s' % (self.filename))
       return []
     sources = []
-    for dep in self.package_descriptor.requirements:
+    for dep in self.descriptor.requirements:
       dep_script = all_scripts[dep.name]
       sources += dep_script._sources(all_scripts)
     return sources
@@ -140,7 +80,7 @@ class build_script(object):
   def _sources(self, all_scripts):
     'Return a list of all script and dependency sources for this script.'
 #    for f in self._script_sources():
-#      print('%s: %s' % (self.package_descriptor.full_name, f))
+#      print('%s: %s' % (self.descriptor.full_name, f))
     return self._script_sources() + self._dep_sources(all_scripts)
 
   def _targets(self):
@@ -157,19 +97,26 @@ class build_script(object):
   def needs_rebuilding(self, packager_env):
     rebuild_env = packager_env.rebuild_env
     try:
-      loaded_checksums = rebuild_env.checksum_manager.load_checksums(self.package_descriptor,
+      loaded_checksums = rebuild_env.checksum_manager.load_checksums(self.descriptor,
                                                                      rebuild_env.config.build_target)
       
       # If the stored checksums don't match the current checksums, then we 
       if loaded_checksums:
         loaded_source_filenames = file_checksum.filenames(loaded_checksums.sources)
         loaded_target_filenames = file_checksum.filenames(loaded_checksums.targets)
-
+#        for f in loaded_source_filenames:
+#          self.blurb('%s CACA LOADED SOURCE: %s' % (self.descriptor.full_name, path.relpath(f)))
+#        for f in loaded_target_filenames:
+#          self.blurb('%s CACA LOADED TARGET: %s' % (self.descriptor.full_name, path.relpath(f)))
         current_checksums = self._current_checksums(rebuild_env.script_manager.scripts)
         current_source_filenames = file_checksum.filenames(current_checksums.sources)
         current_target_filenames = file_checksum.filenames(current_checksums.targets)
-        
-        if loaded_source_filenames != current_source_filenames:
+#        for f in current_source_filenames:
+#          self.blurb('%s CACA CURRENT SOURCE: %s' % (self.descriptor.full_name, path.relpath(f)))
+#        for f in current_target_filenames:
+#          self.blurb('%s CACA CURRENT TARGET: %s' % (self.descriptor.full_name, path.relpath(f)))
+        if current_source_filenames != current_source_filenames:
+#          self.blurb('%s needs rebuilding because loaded and current source filenames are different.')
           return True
 
         if loaded_target_filenames != current_target_filenames:
@@ -183,46 +130,17 @@ class build_script(object):
     except IOError as ex:
       return True
 
-  _loaded_build_script = namedtuple('_loaded_build_script', 'filename,recipes')
-  @classmethod
-  def _load_build_script_recipes(clazz, filename, script_env):
-    filename = path.abspath(path.normpath(filename))
-    if not path.isfile(filename):
-      raise RuntimeError('Build script file not found: %s' % (filename))
-    tmp_globals = {}
-    tmp_locals = {}
-    exec(HOOK_EXTRA_CODE, tmp_locals, tmp_globals)
-    code.execfile(filename, tmp_globals, tmp_locals)
-    assert 'rebuild_recipes' in tmp_locals
-    rebuild_recipes_func = tmp_locals['rebuild_recipes']
-    if not callable(rebuild_recipes_func):
-      raise RuntimeError('Build recipe factory \"%s\" is not callable: %s' % (rebuild_recipes_func, filename))
-    recipes = rebuild_recipes_func(script_env)
-    if not isinstance(recipes, list):
-      recipes = [ recipes ]
-    loaded_recipes = []
-    for recipe in recipes:
-      if callable(recipe):
-        recipe = recipe(script_env)
-      elif not isinstance(recipe, dict):
-        raise RuntimeError('Build recipe \"%s\" is not a dictionary: %s' % (recipe, filename))
-      assert isinstance(recipe, dict)
-      loaded_recipes.append(recipe)
-    return clazz._loaded_build_script(filename, loaded_recipes)
-
   @classmethod
   def load_build_scripts(clazz, filename, build_target):
-#    recipes = build_recipe_loader.load(filename, build_target)
-    script_env = build_recipe_env(build_target)
-    loaded_build_script = clazz._load_build_script_recipes(filename, script_env)
+    recipes = build_recipe_loader.load(filename, build_target)
     scripts = []
-    for recipe in loaded_build_script.recipes:
-      assert isinstance(recipe, dict)
-      script = build_script(loaded_build_script.filename)
-      script._load_from_dict(recipe)
+    for recipe in recipes:
+      script = build_script(recipe.filename)
+      script.properties = recipe.properties
+      script.requirements = recipe.requirements
+      script.build_requirements = recipe.build_requirements
+      script.descriptor = recipe.descriptor
+      script.instructions = recipe.instructions
+      script.steps = recipe.steps
       scripts.append(script)
     return scripts
-
-  def _steps_added(self):
-    'Do work that can happen only after the steps are added.'
-    pass

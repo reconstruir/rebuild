@@ -14,18 +14,18 @@ class test_build_script(unittest.TestCase):
     script = build_script.load_build_scripts(filename, build_target())[0]
     expected_requirements = []
     expected_properties = { package_descriptor.PROPERTY_CATEGORY: Category.LIB }
-    self.assertEqual( package_descriptor('zlib', '1.2.8-1', requirements = expected_requirements, properties = expected_properties), script.package_descriptor )
-    self.assertEqual( [], script.package_descriptor.requirements )
-    self.assertEqual( [], script.package_descriptor.build_requirements )
+    self.assertEqual( package_descriptor('zlib', '1.2.8-1', requirements = expected_requirements, properties = expected_properties), script.descriptor )
+    self.assertEqual( [], script.descriptor.requirements )
+    self.assertEqual( [], script.descriptor.build_requirements )
 
   def test_libjpeg(self):
     filename = path.join(self.TEST_DATA_DIR, 'build_libjpeg.py')
     script = build_script.load_build_scripts(filename, build_target())[0]
     expected_requirements = []
     expected_properties = { package_descriptor.PROPERTY_CATEGORY: Category.LIB }
-    self.assertEqual( package_descriptor('libjpeg', '9a-1', requirements = expected_requirements, properties = expected_properties), script.package_descriptor )
-    self.assertEqual( [], script.package_descriptor.requirements )
-    self.assertEqual( [], script.package_descriptor.build_requirements )
+    self.assertEqual( package_descriptor('libjpeg', '9a-1', requirements = expected_requirements, properties = expected_properties), script.descriptor )
+    self.assertEqual( [], script.descriptor.requirements )
+    self.assertEqual( [], script.descriptor.build_requirements )
 
   def test_libopenjpeg(self):
     filename = path.join(self.TEST_DATA_DIR, 'build_libopenjpeg.py')
@@ -38,9 +38,9 @@ class test_build_script(unittest.TestCase):
                                                requirements = expected_requirements,
                                                build_requirements = expected_build_requirements,
                                                properties = expected_properties)
-    self.assertEqual( expected_package_info, script.package_descriptor )
-    self.assertEqual( expected_requirements, script.package_descriptor.requirements )
-    self.assertEqual( expected_build_requirements, script.package_descriptor.build_requirements )
+    self.assertEqual( expected_package_info, script.descriptor )
+    self.assertEqual( expected_requirements, script.descriptor.requirements )
+    self.assertEqual( expected_build_requirements, script.descriptor.build_requirements )
 
   def test_libpng(self):
     filename = path.join(self.TEST_DATA_DIR, 'build_libpng.py')
@@ -53,10 +53,10 @@ class test_build_script(unittest.TestCase):
                                                requirements = expected_requirements,
                                                properties = expected_properties)
 
-    self.assertEqual( expected_package_info, script.package_descriptor )
-    self.assertEqual( expected_requirements, script.package_descriptor.requirements )
-    self.assertEqual( expected_build_requirements, script.package_descriptor.build_requirements )
-    self.assertEqual( Category.LIB, script.package_descriptor.properties[package_descriptor.PROPERTY_CATEGORY] )
+    self.assertEqual( expected_package_info, script.descriptor )
+    self.assertEqual( expected_requirements, script.descriptor.requirements )
+    self.assertEqual( expected_build_requirements, script.descriptor.build_requirements )
+    self.assertEqual( Category.LIB, script.descriptor.properties[package_descriptor.PROPERTY_CATEGORY] )
 
 if __name__ == '__main__':
   unittest.main()
