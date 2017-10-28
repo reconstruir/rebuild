@@ -176,10 +176,10 @@ class test_step_manager(unittest.TestCase):
 
   def test_step_results(self):
     sm = step_manager('sm')
-    packager_env = {}
-    step = sm.add_step(step_description(sample_step_fake_output1), packager_env)
+    script = {}
+    step = sm.add_step(step_description(sample_step_fake_output1), script)
     expected_output = { 'foo': 6, 'bar': 'hi' }
-    result = sm.execute(packager_env, { 'fake_output': expected_output })
+    result = sm.execute(script, { 'fake_output': expected_output })
     self.assertTrue( result.success )
     self.assertEqual( None, result.message )
     self.assertEqual( None, result.failed_step )
@@ -194,8 +194,8 @@ class test_step_manager(unittest.TestCase):
     self.maxDiff = None
 
     sm = step_manager('sm')
-    packager_env = {}
-    step = sm.add_step(step_description(self.test_multi_step), packager_env)
+    script = {}
+    step = sm.add_step(step_description(self.test_multi_step), script)
     expected_output1 = { 'foo': 6, 'bar': 'hi' }
     expected_output2 = { 'fruit': 'kiwi', 'cheese': 'manchego' }
     expected_output3 = { 'wine': 'barolo', 'nut': 'almond' }
@@ -205,7 +205,7 @@ class test_step_manager(unittest.TestCase):
       'fake_output3': expected_output3,
     }      
     expected_output = dict_util.combine(expected_output1, expected_output2, expected_output3)
-    result = sm.execute(packager_env, execute_args)
+    result = sm.execute(script, execute_args)
     self.assertTrue( result.success )
     self.assertEqual( None, result.message )
     self.assertEqual( None, result.failed_step )
@@ -259,7 +259,7 @@ class test_step_manager(unittest.TestCase):
     def __init__(self):
       super(test_step_manager.test_multi_step_with_global_args_and_steps_with_global_args, self).__init__()
 
-  def xxxtest_multiple_steps_global_args_with_steps_with_global_args(self):
+  def xtest_multiple_steps_global_args_with_steps_with_global_args(self):
     self.maxDiff = None
     sm = step_manager('sm')
     step = sm.add_step(step_description(self.test_multi_step_with_global_args_and_steps_with_global_args), {})
@@ -282,5 +282,39 @@ class test_step_manager(unittest.TestCase):
 #    self.assertEqual( expected_saved_args2, step.steps[1].saved_args )
 #    self.assertEqual( expected_saved_args3, step.steps[2].saved_args )
 
+  def test_last_input(self):
+    class step_one(Step):
+      def __init__(self):
+        super(step_one, self).__init__()
+
+      def execute(self, argument):
+        self.saved_args = copy.deepcopy(argument.args)
+        return step_result(True, None, output = { 'foo': '5', 'bar': 6 })
+
+    class step_two(Step):
+      def __init__(self):
+        super(step_two, self).__init__()
+
+      def execute(self, argument):
+        self.saved_last_input = argument.last_input
+        return step_result(True, None, output = { 'fruit': 'kiwi' })
+
+    class step_three(Step):
+      def __init__(self):
+        super(step_three, self).__init__()
+
+      def execute(self, argument):
+        self.saved_last_input = argument.last_input
+        return step_result(True)
+
+    sm = step_manager('sm')
+    s1 = sm.add_step(step_description(step_one), {})
+    s2 = sm.add_step(step_description(step_two), {})
+    s3 = sm.add_step(step_description(step_three), {})
+    result = sm.execute({}, {})
+    self.assertTrue( result.success )
+    self.assertEqual( { 'foo': '5', 'bar': 6 }, s2.saved_last_input )
+    self.assertEqual( { 'foo': '5', 'bar': 6, 'fruit': 'kiwi' }, s3.saved_last_input )
+        
 if __name__ == '__main__':
   unittest.main()

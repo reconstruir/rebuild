@@ -5,7 +5,7 @@ import unittest
 from test_steps import *
 from rebuild.step_manager import multiple_steps, Step, step_argument
 
-class TestMultiStep(unittest.TestCase):
+class test_multiple_steps(unittest.TestCase):
 
   def test_multi_step(self):
 
@@ -17,9 +17,9 @@ class TestMultiStep(unittest.TestCase):
 
     three_steps = ThreeSteps()
 
-    packager_env = { 'foo': 'hi', 'bar': 666 }
+    script = { 'foo': 'hi', 'bar': 666 }
     global_args = { 'food': 'steak', 'drink': 'wine' }
-    result = three_steps.execute(step_argument(packager_env, global_args))
+    result = three_steps.execute(step_argument(script, global_args))
     self.assertTrue( result.success )
     self.assertEqual( None, result.message )
     self.assertEqual( None, result.failed_step )

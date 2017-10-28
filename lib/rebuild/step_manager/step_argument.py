@@ -5,19 +5,19 @@ import copy
 
 class step_argument(object):
 
-  def __init__(self, script, args = {}, output = {}):
+  def __init__(self, script, args = {}, last_input = {}):
     self.script = script
     assert isinstance(args, dict)
-    assert isinstance(output, dict)
+    assert isinstance(last_input, dict)
     self.args = copy.deepcopy(args)
-    self.output = copy.deepcopy(output)
+    self.last_input = copy.deepcopy(last_input)
 
   def clone(self):
-    return step_argument(self.script, args = self.args, output = self.output)
+    return step_argument(self.script, args = self.args, last_input = self.last_input)
 
   def update_args(self, args):
     self.args.update(args or {})
 
-  def update_output(self, output):
-    self.output.update(output or {})
+  def update_last_input(self, last_input):
+    self.last_input.update(last_input or {})
     

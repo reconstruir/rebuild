@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-# FIXME: unify the replacements here with those in step_pkg_config_make_pc.py
-
 import copy
 from rebuild.step_manager import Step, step_result
 

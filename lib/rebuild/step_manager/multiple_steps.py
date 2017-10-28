@@ -5,7 +5,6 @@ import copy, os
 from bes.common import dict_util
 from .Step import Step
 from .step_result import step_result
-from .step_argument import step_argument
 
 class multiple_steps(Step):
 
@@ -43,13 +42,13 @@ class multiple_steps(Step):
       import inspect
       result = step.execute(cloned_args)
 #      self.log_d('%s: multiple_steps.execute() executed %s => %s' % (self, step.execute, result))
-      cloned_args.update_output(result.output)
+      cloned_args.update_last_input(result.output)
       if not result.success:
         return step_result(False,
                            message = result.message,
                            failed_step = step,
                            output = cloned_args.output)
-    return step_result(True, output = cloned_args.output)
+    return step_result(True, output = cloned_args.last_input)
 
   def update_args(self, args):
     super(multiple_steps, self).update_args(args)
