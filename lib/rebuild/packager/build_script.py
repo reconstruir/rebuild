@@ -18,7 +18,6 @@ class build_script(object):
   def __init__(self, filename):
     log.add_logging(self, 'build')
     build_blurb.add_blurb(self, 'build')
-
     self.filename = filename
     self.source_dir = path.dirname(self.filename)
     self._step_manager = step_manager('build')
@@ -104,17 +103,9 @@ class build_script(object):
       if loaded_checksums:
         loaded_source_filenames = file_checksum.filenames(loaded_checksums.sources)
         loaded_target_filenames = file_checksum.filenames(loaded_checksums.targets)
-#        for f in loaded_source_filenames:
-#          self.blurb('%s CACA LOADED SOURCE: %s' % (self.descriptor.full_name, path.relpath(f)))
-#        for f in loaded_target_filenames:
-#          self.blurb('%s CACA LOADED TARGET: %s' % (self.descriptor.full_name, path.relpath(f)))
         current_checksums = self._current_checksums(rebuild_env.script_manager.scripts)
         current_source_filenames = file_checksum.filenames(current_checksums.sources)
         current_target_filenames = file_checksum.filenames(current_checksums.targets)
-#        for f in current_source_filenames:
-#          self.blurb('%s CACA CURRENT SOURCE: %s' % (self.descriptor.full_name, path.relpath(f)))
-#        for f in current_target_filenames:
-#          self.blurb('%s CACA CURRENT TARGET: %s' % (self.descriptor.full_name, path.relpath(f)))
         if current_source_filenames != current_source_filenames:
 #          self.blurb('%s needs rebuilding because loaded and current source filenames are different.')
           return True
