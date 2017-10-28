@@ -9,12 +9,12 @@ from .build_script import build_script
 
 class build_script_manager(object):
 
-  def __init__(self, filenames, build_target, build_root):
+  def __init__(self, filenames, build_target, builds_dir):
     # Load all the scripts
     self.scripts = {}
     for filename in filenames:
       build_blurb.blurb_verbose('build', 'loading %s' % (filename))
-      build_scripts = build_script.load_build_scripts(filename, build_target)#, build_root)
+      build_scripts = build_script.load_build_scripts(filename, build_target, builds_dir)
       for script in build_scripts:
         self.scripts[script.descriptor.name] = script
         #print "filename: %s" % (script.filename)

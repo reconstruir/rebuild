@@ -2,6 +2,7 @@
 #-*- coding:utf-8 -*-
 #
 import os.path as path, unittest
+from bes.fs import temp_file
 from rebuild import build_target, Category, package_descriptor, requirement
 from rebuild.packager import build_script
 
@@ -11,7 +12,7 @@ class test_build_script(unittest.TestCase):
 
   def test_zlib(self):
     filename = path.join(self.TEST_DATA_DIR, 'build_zlib.py')
-    script = build_script.load_build_scripts(filename, build_target())[0]
+    script = self._load_build_script(filename)
     expected_requirements = []
     expected_properties = { package_descriptor.PROPERTY_CATEGORY: Category.LIB }
     self.assertEqual( package_descriptor('zlib', '1.2.8-1', requirements = expected_requirements, properties = expected_properties), script.descriptor )
@@ -20,7 +21,7 @@ class test_build_script(unittest.TestCase):
 
   def test_libjpeg(self):
     filename = path.join(self.TEST_DATA_DIR, 'build_libjpeg.py')
-    script = build_script.load_build_scripts(filename, build_target())[0]
+    script = self._load_build_script(filename)
     expected_requirements = []
     expected_properties = { package_descriptor.PROPERTY_CATEGORY: Category.LIB }
     self.assertEqual( package_descriptor('libjpeg', '9a-1', requirements = expected_requirements, properties = expected_properties), script.descriptor )
@@ -29,7 +30,7 @@ class test_build_script(unittest.TestCase):
 
   def test_libopenjpeg(self):
     filename = path.join(self.TEST_DATA_DIR, 'build_libopenjpeg.py')
-    script = build_script.load_build_scripts(filename, build_target())[0]
+    script = self._load_build_script(filename)
 
     expected_requirements = []
     expected_properties = { package_descriptor.PROPERTY_CATEGORY: Category.LIB }
@@ -44,7 +45,7 @@ class test_build_script(unittest.TestCase):
 
   def test_libpng(self):
     filename = path.join(self.TEST_DATA_DIR, 'build_libpng.py')
-    script = build_script.load_build_scripts(filename, build_target())[0]
+    script = self._load_build_script(filename)
 
     expected_requirements = requirement.parse('zlib(all) >= 1.2.8-1')
     expected_properties = { package_descriptor.PROPERTY_CATEGORY: Category.LIB }
@@ -58,5 +59,12 @@ class test_build_script(unittest.TestCase):
     self.assertEqual( expected_build_requirements, script.descriptor.build_requirements )
     self.assertEqual( Category.LIB, script.descriptor.properties[package_descriptor.PROPERTY_CATEGORY] )
 
+  def _load_build_script(self, filename):
+    bt = build_target()
+    tmp_dir = temp_file.make_temp_dir()
+    scripts = build_script.load_build_scripts(filename, bt, tmp_dir)
+    self.assertEqual( 1, len(scripts) )
+    return scripts[0]
+    
 if __name__ == '__main__':
   unittest.main()

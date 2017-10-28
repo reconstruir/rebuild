@@ -9,18 +9,20 @@ from bes.common import algorithm
 from rebuild import build_blurb
 from rebuild.dependency import dependency_provider
 from rebuild.step_manager import step_description, step_manager
+from rebuild.package_manager import package_manager
 from bes.fs import file_checksum
 
 from .build_recipe_loader import build_recipe_loader
 
 class build_script(object):
 
-  def __init__(self, filename):
+  def __init__(self, filename, builds_dir):
     log.add_logging(self, 'build')
     build_blurb.add_blurb(self, 'build')
     self.filename = filename
     self.source_dir = path.dirname(self.filename)
     self._step_manager = step_manager('build')
+#    self.requirements_manager = package_manager(path.join(self.working_dir, 'requirements'))
 
   def add_steps(self, packager_env):
     if self._step_manager.has_steps:
@@ -122,11 +124,11 @@ class build_script(object):
       return True
 
   @classmethod
-  def load_build_scripts(clazz, filename, build_target):
+  def load_build_scripts(clazz, filename, build_target, builds_dir):
     recipes = build_recipe_loader.load(filename, build_target)
     scripts = []
     for recipe in recipes:
-      script = build_script(recipe.filename)
+      script = build_script(recipe.filename, builds_dir)
       script.properties = recipe.properties
       script.requirements = recipe.requirements
       script.build_requirements = recipe.build_requirements

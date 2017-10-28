@@ -24,10 +24,9 @@ class test_packager(unit_test):
     rebuildfile = path.join(tmp_source_dir, 'build_amhello.py')
     script_content = unit_test_packaging.make_build_script_content('amhello', '1.0', 0)
     file_util.save(rebuildfile, content = script_content)
-
     bt = build_target()
-    script = build_script.load_build_scripts(rebuildfile, bt)[0]
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
+    script = build_script.load_build_scripts(rebuildfile, bt, tmp_dir)[0]
     config = rebuild_config()
     config.build_root = path.join(tmp_dir, 'BUILD')
     config.no_network = True
