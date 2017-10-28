@@ -16,25 +16,25 @@ class step_artifact_create_make_package(Step):
 
   def execute(self, argument):
     assert 'output_tarball_path' in argument.args
-    staged_tarball = argument.env.requirements_manager.create_package(argument.args['output_tarball_path'],
-                                                                      argument.env.script.descriptor,
-                                                                      argument.env.rebuild_env.config.build_target,
-                                                                      argument.env.stage_dir)
+    staged_tarball = argument.script.requirements_manager.create_package(argument.args['output_tarball_path'],
+                                                                      argument.script.descriptor,
+                                                                      argument.script.env.config.build_target,
+                                                                      argument.script.stage_dir)
     self.blurb('staged tarball: %s' % (staged_tarball))
     return step_result(True, None, output = { 'staged_tarball': staged_tarball })
 
   @classmethod
-  def __default_output_tarball_path(clazz, env, args):
-    tarball_name = '%s.tar.gz' % (env.script.descriptor.full_name)
-    assert tarball_name == env.script.descriptor.tarball_filename
-    return path.join(env.artifact_stage_dir, env.script.descriptor.tarball_filename)
+  def _default_output_tarball_path(clazz, script, args):
+    tarball_name = '%s.tar.gz' % (script.descriptor.full_name)
+    assert tarball_name == script.descriptor.tarball_filename
+    return path.join(script.artifact_stage_dir, script.descriptor.tarball_filename)
 
   @classmethod
-  def parse_step_args(clazz, packager_env, args):
+  def parse_step_args(clazz, script, args):
     output_tarball_path = args.get('output_tarball_path', None)
     if not output_tarball_path:
-      output_tarball_path = clazz.__default_output_tarball_path(packager_env, args)
-    output_artifact_path = packager_env.rebuild_env.artifact_manager.artifact_path(packager_env.script.descriptor, packager_env.rebuild_env.config.build_target)
+      output_tarball_path = clazz._default_output_tarball_path(script, args)
+    output_artifact_path = script.env.artifact_manager.artifact_path(script.descriptor, script.env.config.build_target)
     return { 
       'output_tarball_path': output_tarball_path,
       'output_artifact_path': output_artifact_path,
@@ -50,12 +50,12 @@ class step_artifact_create_check_package(Step):
     staged_tarball = argument.output.get('staged_tarball', None)
     assert staged_tarball
     assert archiver.is_valid(staged_tarball)
-    unpack_dir = path.join(argument.env.check_dir, 'unpacked')
+    unpack_dir = path.join(argument.script.check_dir, 'unpacked')
     archiver.extract(staged_tarball, unpack_dir, strip_common_base = True)
 
     for check_class in argument.args.get('checks', []):
       check = check_class()
-      check_result = check.check(path.join(unpack_dir, 'files'), argument.env)
+      check_result = check.check(path.join(unpack_dir, 'files'), argument.script)
       if not check_result.success:
         return step_result(False, check_result.message)
     return step_result(True, None)
@@ -67,30 +67,30 @@ class step_artifact_create_test_package(Step):
     super(step_artifact_create_test_package, self).__init__()
 
   def execute(self, argument):
-    if argument.env.rebuild_env.config.skip_tests:
-      message = '%s: Skipping tests because of --skip-tests' % (argument.env.script.descriptor.full_name)
+    if argument.script.env.config.skip_tests:
+      message = '%s: Skipping tests because of --skip-tests' % (argument.script.descriptor.full_name)
       self.blurb(message)
       return step_result(True, message)
       
     tests = argument.args.get('tests', [])
     if not tests:
-      message = 'No tests for %s' % (argument.env.script.descriptor.full_name)
+      message = 'No tests for %s' % (argument.script.descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
 
     staged_tarball = argument.output.get('staged_tarball', None)
     if not staged_tarball or not path.isfile(staged_tarball):
-      message = 'Missing staged tarball for %s: ' % (str(argument.env.script.descriptor))
+      message = 'Missing staged tarball for %s: ' % (str(argument.script.descriptor))
       self.log_d(message)
       return step_result(False, message)
       
     for test in tests:
       config = package_tester.test_config(staged_tarball,
-                                          argument.env.script.source_dir,
-                                          argument.env.test_dir,
-                                          argument.env.rebuild_env.artifact_manager,
-                                          argument.env.rebuild_env.tools_manager,
-                                          argument.env.rebuild_env.config.build_target)
+                                          argument.script.source_dir,
+                                          argument.script.test_dir,
+                                          argument.script.env.artifact_manager,
+                                          argument.script.env.tools_manager,
+                                          argument.script.env.config.build_target)
       tester = package_tester(config, test)
       result =  tester.run() #self.__run_test(config, test)
       if not result.success:
@@ -101,8 +101,8 @@ class step_artifact_create_test_package(Step):
     return [ 'tests' ]
 
   @classmethod
-  def parse_step_args(clazz, packager_env, args):
-    return clazz.resolve_step_args_files(packager_env, args, 'tests')
+  def parse_step_args(clazz, script, args):
+    return clazz.resolve_step_args_files(script, args, 'tests')
 
 class step_artifact_create_publish_package(Step):
   'Publish the package created by step_artifact_create_make_package.'
@@ -114,7 +114,7 @@ class step_artifact_create_publish_package(Step):
     staged_tarball = argument.output.get('staged_tarball', None)
     assert staged_tarball
     assert archiver.is_valid(staged_tarball)
-    published_tarball = argument.env.rebuild_env.artifact_manager.publish(staged_tarball, argument.env.rebuild_env.config.build_target)
+    published_tarball = argument.script.env.artifact_manager.publish(staged_tarball, argument.script.env.config.build_target)
     self.blurb('published tarball: %s' % (published_tarball))
     return step_result(True, None, output = { 'published_tarball': published_tarball })
 

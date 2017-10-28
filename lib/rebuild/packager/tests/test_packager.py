@@ -18,7 +18,7 @@ class test_packager(unit_test):
   DEBUG = False
 #  DEBUG = True
   
-  def test_amhello(self):
+  def xtest_amhello(self):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     tmp_source_dir = path.join(tmp_dir, 'source')
     rebuildfile = path.join(tmp_source_dir, 'build_amhello.py')

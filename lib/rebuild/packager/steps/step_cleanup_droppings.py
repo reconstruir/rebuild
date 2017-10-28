@@ -12,7 +12,7 @@ class step_cleanup_droppings(Step):
     super(step_cleanup_droppings, self).__init__()
 
   def execute(self, argument):
-    droppings = file_find.find_fnmatch(argument.env.stage_dir,
+    droppings = file_find.find_fnmatch(argument.script.stage_dir,
                                        [ '*.bak' ],
                                        relative = False)
     file_util.remove(droppings)

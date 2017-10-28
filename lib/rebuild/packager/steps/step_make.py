@@ -31,11 +31,11 @@ class step_make(Step):
     cmd += make_flags
     cmd += self.extra_make_flags()
       
-    return self.call_shell(cmd, argument.env, argument.args, extra_env = argument.args.get('make_env', {}))
+    return self.call_shell(cmd, argument.script, argument.args, extra_env = argument.args.get('make_env', {}))
 
   @classmethod
-  def parse_step_args(clazz, packager_env, args):
-    return clazz.resolve_step_args_env_and_flags(packager_env, args, 'make_env', 'make_flags')
+  def parse_step_args(clazz, script, args):
+    return clazz.resolve_step_args_env_and_flags(script, args, 'make_env', 'make_flags')
 
 class step_make_install(Step):
   'make install phase of make.'
@@ -57,14 +57,14 @@ class step_make_install(Step):
       'make',
       makefile_flags,
       install_target,
-      'prefix=%s' % (argument.env.stage_dir),
+      'prefix=%s' % (argument.script.stage_dir),
       'V=1',
     ] + make_install_flags
-    return self.call_shell(cmd, argument.env, argument.args, extra_env = argument.args.get('make_install_env', {}))
+    return self.call_shell(cmd, argument.script, argument.args, extra_env = argument.args.get('make_install_env', {}))
 
   @classmethod
-  def parse_step_args(clazz, packager_env, args):
-    return clazz.resolve_step_args_env_and_flags(packager_env, args, 'make_install_env', 'make_install_flags')
+  def parse_step_args(clazz, script, args):
+    return clazz.resolve_step_args_env_and_flags(script, args, 'make_install_env', 'make_install_flags')
 
 class step_make_test(Step):
   'make test phase of make.'
@@ -87,11 +87,11 @@ class step_make_test(Step):
       'test',
       'V=1',
     ] + make_test_flags
-    return self.call_shell(cmd, argument.env, argument.args, extra_env = argument.args.get('make_test_env', {}))
+    return self.call_shell(cmd, argument.script, argument.args, extra_env = argument.args.get('make_test_env', {}))
 
   @classmethod
-  def parse_step_args(clazz, packager_env, args):
-    return clazz.resolve_step_args_env_and_flags(packager_env, args, 'make_test_env', 'make_test_flags')
+  def parse_step_args(clazz, script, args):
+    return clazz.resolve_step_args_env_and_flags(script, args, 'make_test_env', 'make_test_flags')
 
 class step_make_caca(multiple_steps):
   'A simple uber step for autoconf projects.'

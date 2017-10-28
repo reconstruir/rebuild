@@ -23,38 +23,38 @@ class step_setup_unpack(Step):
     extra_tarballs = argument.args.get('extra_tarballs', [])
     tarballs = argument.args.get('tarballs', []) + extra_tarballs + downloaded_tarballs
     if not tarballs:
-      return step_result(False, 'No tarballs found for %s.' % (argument.env.script.descriptor.full_name))
+      return step_result(False, 'No tarballs found for %s.' % (argument.script.descriptor.full_name))
       
     for tarball in tarballs:
       self.blurb('Extracting %s' % (tarball))
-    TarballUtil.extract(tarballs, argument.env.working_dir, 'source', True)
+    TarballUtil.extract(tarballs, argument.script.working_dir, 'source', True)
     return step_result(True, None)
 
   def sources_keys(self):
     return [ 'tarballs', 'extra_tarballs' ]
 
   @classmethod
-  def parse_step_args(clazz, packager_env, args):
-    tarball_source_dir_override_args = clazz.resolve_step_args_dir(packager_env, args, 'tarball_source_dir_override')
+  def parse_step_args(clazz, script, args):
+    tarball_source_dir_override_args = clazz.resolve_step_args_dir(script, args, 'tarball_source_dir_override')
     if tarball_source_dir_override_args:
       tarball_source_dir_override = tarball_source_dir_override_args['tarball_source_dir_override']
-      tmp_tarball_filename = '%s.tar.gz' % (packager_env.script.descriptor.full_name)
-      tmp_tarball_path = path.join(packager_env.tmp_dir, tmp_tarball_filename)
-      archiver.create(tmp_tarball_path, tarball_source_dir_override, base_dir = packager_env.script.descriptor.full_name)
+      tmp_tarball_filename = '%s.tar.gz' % (script.descriptor.full_name)
+      tmp_tarball_path = path.join(script.tmp_dir, tmp_tarball_filename)
+      archiver.create(tmp_tarball_path, tarball_source_dir_override, base_dir = script.descriptor.full_name)
       tarballs_dict = { 'tarballs': [ tmp_tarball_path ] }
     else:
-      tarballs_dict = clazz.resolve_step_args_list(packager_env, args, 'tarballs')
+      tarballs_dict = clazz.resolve_step_args_list(script, args, 'tarballs')
     if not tarballs_dict or 'tarballs' not in tarballs_dict:
-      tarball_name = args.get('tarball_name', packager_env.script.descriptor.name)
+      tarball_name = args.get('tarball_name', script.descriptor.name)
 
-      tarball = packager_env.rebuild_env.source_finder.find_source(tarball_name,
-                                                                   packager_env.script.descriptor.version.upstream_version,
-                                                                   packager_env.rebuild_env.config.build_target.system)
+      tarball = script.env.source_finder.find_source(tarball_name,
+                                                             script.descriptor.version.upstream_version,
+                                                             script.env.config.build_target.system)
       if tarball:
         tarballs_dict = { 'tarballs': [ tarball ] }
       else:
         tarballs_dict = { 'tarballs': [] }
-    extra_tarballs_dict = clazz.resolve_step_args_list(packager_env, args, 'extra_tarballs')
+    extra_tarballs_dict = clazz.resolve_step_args_list(script, args, 'extra_tarballs')
 
     assert tarballs_dict
     assert isinstance(tarballs_dict, dict)

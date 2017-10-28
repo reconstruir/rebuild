@@ -13,11 +13,11 @@ class step_python_lib_build(Step):
 
   def execute(self, argument):
     cmd = '${PYTHON} setup.py build %s' % (argument.args.get('python_lib_build_flags', ''))
-    return self.call_shell(cmd, argument.env, argument.args, argument.args.get('python_lib_build_env', {}))
+    return self.call_shell(cmd, argument.script, argument.args, argument.args.get('python_lib_build_env', {}))
 
   @classmethod
-  def parse_step_args(clazz, packager_env, args):
-    return clazz.resolve_step_args_env_and_flags(packager_env, args, 'python_lib_build_env', 'python_lib_build_flags')
+  def parse_step_args(clazz, script, args):
+    return clazz.resolve_step_args_env_and_flags(script, args, 'python_lib_build_env', 'python_lib_build_flags')
 
 class step_python_lib_install(Step):
   'Install the dist produced by setuptools install.'
@@ -27,11 +27,11 @@ class step_python_lib_install(Step):
 
   def execute(self, argument):
     cmd = 'mkdir -p ${REBUILD_STAGE_PYTHON_LIB_DIR} && ${PYTHON} setup.py install --home=${REBUILD_STAGE_PREFIX_DIR} --install-lib=${REBUILD_STAGE_PYTHON_LIB_DIR} %s' % (argument.args.get('python_lib_install_flags', ''))
-    return self.call_shell(cmd, argument.env, argument.args, argument.args.get('python_lib_install_env', {}))
+    return self.call_shell(cmd, argument.script, argument.args, argument.args.get('python_lib_install_env', {}))
 
   @classmethod
-  def parse_step_args(clazz, packager_env, args):
-    return clazz.resolve_step_args_env_and_flags(packager_env, args, 'python_lib_install_env', 'python_lib_install_flags')
+  def parse_step_args(clazz, script, args):
+    return clazz.resolve_step_args_env_and_flags(script, args, 'python_lib_install_env', 'python_lib_install_flags')
 
 class step_python_lib(multiple_steps):
   'A complete step to make python libs using the "build" target of setuptools.'

@@ -170,11 +170,14 @@ class rebuild_builder(object):
 
   def _resolve_package_names(self, package_names):
     if not package_names:
-      package_names = self._env.script_manager.package_names()
+      package_names = self.package_names()
     return self._env.script_manager.resolve_requirements(self._env.script_manager.scripts,
                                                          package_names,
                                                          self._env.config.build_target.system)
 
+  def package_names(self):
+    return self._env.script_manager.package_names()
+  
   def _depends_on(self, what):
     'Return a list of package names for packages that depend on what.'
     result = []

@@ -37,29 +37,29 @@ class System(object):
   
   @classmethod
   def resolve_mask(clazz, s):
-    return clazz.DELIMITER.join(clazz.__resolve_mask_to_list(s))
+    return clazz.DELIMITER.join(clazz._resolve_mask_to_list(s))
 
   @classmethod
-  def __resolve_mask_to_list(clazz, s):
+  def _resolve_mask_to_list(clazz, s):
     assert string_util.is_string(s)
     s = s.lower()
     s = clazz.ALIASES.get(s, s)
     parts = [ part for part in clazz.mask_split(s) if part ]
     result = []
     for part in parts:
-      result.extend(clazz.__resolve_mask_part(part))
+      result.extend(clazz._resolve_mask_part(part))
     result = sorted(algorithm.unique(result))
     if not result:
       return [ clazz.NONE ]
     return result
 
   @classmethod
-  def __resolve_mask_part(clazz, part):
+  def _resolve_mask_part(clazz, part):
     assert string_util.is_string(part)
     assert clazz.DELIMITER not in part
     part = clazz.ALIASES.get(part, part)
     if clazz.DELIMITER in part:
-      return clazz.__resolve_mask_to_list(part)
+      return clazz._resolve_mask_to_list(part)
     if part == clazz.NONE:
       return []
     elif part == clazz.ALL:
@@ -96,4 +96,4 @@ class System(object):
 
   @classmethod
   def mask_matches(clazz, mask, system):
-    return system in clazz.__resolve_mask_to_list(mask)
+    return system in clazz._resolve_mask_to_list(mask)

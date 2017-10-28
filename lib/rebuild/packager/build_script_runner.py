@@ -3,7 +3,6 @@
 
 import os.path as path
 from bes.fs import dir_util, file_util
-from .packager import packager
 from rebuild import build_blurb
 from rebuild.step_manager import step_aborted
 from collections import namedtuple
@@ -22,17 +21,15 @@ class build_script_runner(object):
   
   def run_build_script(self, script, env):
     try:
-      pkg = packager(script, env)
       checksum_ignored = env.checksum_manager.is_ignored(script.descriptor.full_name)
-      needs_rebuilding = checksum_ignored or script.needs_rebuilding(pkg.packager_env)
+      needs_rebuilding = checksum_ignored or script.needs_rebuilding()
       if not needs_rebuilding:
         # If the working directory is empty, it means no work happened and its useless
-        if dir_util.is_empty(pkg.packager_env.working_dir):
-          file_util.remove(pkg.packager_env.working_dir)
+        if dir_util.is_empty(script.working_dir):
+          file_util.remove(script.working_dir)
         return self.RunResult(self.CURRENT, None)
       build_blurb.blurb('build', '%s - building' % (script.descriptor.name))
-      packager_result = pkg.execute()
-      #print("CACA: packager_result: %s" % (str(packager_result)))
+      packager_result = script.execute({})
       if packager_result.success:
         return self.RunResult(self.SUCCESS, packager_result)
       else:

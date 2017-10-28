@@ -50,11 +50,11 @@ class step_manager(object):
     for description in descriptions:
       self.add_step(description, packager_env)
 
-  def execute(self, packager_env, args):
+  def execute(self, script, args):
     output = {}
     for step in self._steps:
       step_args = dict_util.combine(args, step.args)
-      arg = step_argument(packager_env, step_args, output)
+      arg = step_argument(script, step_args, output)
 #      try:
       result = step.execute(arg)
 #      except Exception, ex:

@@ -16,10 +16,10 @@ from .build_recipe_loader import build_recipe_loader
 
 class build_script(object):
 
-  def __init__(self, recipe, builds_dir):
+  def __init__(self, recipe, env):
     log.add_logging(self, 'build')
     build_blurb.add_blurb(self, 'build')
-
+    self.env = env
     self.filename = recipe.filename
     self.properties = recipe.properties
     self.requirements = recipe.requirements
@@ -31,7 +31,7 @@ class build_script(object):
     self.source_dir = path.dirname(self.filename)
     self._step_manager = step_manager('build')
 
-    self.working_dir = self._make_working_dir(builds_dir)
+    self.working_dir = self._make_working_dir(env.config.builds_dir)
     self.source_unpacked_dir = path.join(self.working_dir, 'source')
     self.build_dir = path.join(self.working_dir, 'build')
     self.stage_dir = path.join(self.working_dir, 'stage')
@@ -43,18 +43,17 @@ class build_script(object):
     self.stage_lib_dir = path.join(self.stage_dir, 'lib')
     self.stage_bin_dir = path.join(self.stage_dir, 'bin')
     self.stage_compile_instructions_dir = path.join(self.stage_lib_dir, 'rebuild_instructions')
-
+    self._add_steps()
+    
   def _make_working_dir(self, build_dir):
     base_dir = '%s_%s' % (self.descriptor.full_name, time_util.timestamp())
     working_dir = path.join(build_dir, base_dir)
     file_util.mkdir(working_dir)
     return working_dir
     
-  def add_steps(self, packager_env):
-    if self._step_manager.has_steps:
-      raise RuntimeError('Script already has steps.')
+  def _add_steps(self):
     try:
-      self._step_manager.add_steps(self.steps, packager_env)
+      self._step_manager.add_steps(self.steps, self)
     except Exception as ex:
       print(('Caught exception loading script: %s' % (self.filename)))
       raise
@@ -62,12 +61,12 @@ class build_script(object):
   def step_list(self, args):
     return self._step_manager.step_list(args)
 
-  def execute(self, packager_env, args):
-    result = self._step_manager.execute(packager_env, args)
+  def execute(self, args):
+    result = self._step_manager.execute(self, args)
     if result.success:
-      packager_env.rebuild_env.checksum_manager.save_checksums(self._current_checksums(packager_env.rebuild_env.script_manager.scripts),
-                                                               self.descriptor,
-                                                               packager_env.rebuild_env.config.build_target)
+      self.env.checksum_manager.save_checksums(self._current_checksums(self.env.script_manager.scripts),
+                                               self.descriptor,
+                                               self.env.config.build_target)
     return result
         
   @property
@@ -121,17 +120,16 @@ class build_script(object):
     return self.file_checksums(file_checksum.checksums(self._sources(all_scripts)),
                                file_checksum.checksums(self._targets()))
 
-  def needs_rebuilding(self, packager_env):
-    rebuild_env = packager_env.rebuild_env
+  def needs_rebuilding(self):
     try:
-      loaded_checksums = rebuild_env.checksum_manager.load_checksums(self.descriptor,
-                                                                     rebuild_env.config.build_target)
+      loaded_checksums = self.env.checksum_manager.load_checksums(self.descriptor,
+                                                                  self.env.config.build_target)
       
       # If the stored checksums don't match the current checksums, then we 
       if loaded_checksums:
         loaded_source_filenames = file_checksum.filenames(loaded_checksums.sources)
         loaded_target_filenames = file_checksum.filenames(loaded_checksums.targets)
-        current_checksums = self._current_checksums(rebuild_env.script_manager.scripts)
+        current_checksums = self._current_checksums(self.env.script_manager.scripts)
         current_source_filenames = file_checksum.filenames(current_checksums.sources)
         current_target_filenames = file_checksum.filenames(current_checksums.targets)
         if current_source_filenames != current_source_filenames:
@@ -150,6 +148,6 @@ class build_script(object):
       return True
 
   @classmethod
-  def load_build_scripts(clazz, filename, build_target, builds_dir):
-    recipes = build_recipe_loader.load(filename, build_target)
-    return [ build_script(recipe, builds_dir) for recipe in recipes ]
+  def load_build_scripts(clazz, filename, env):
+    recipes = build_recipe_loader.load(filename, env.config.build_target)
+    return [ build_script(recipe, env) for recipe in recipes ]

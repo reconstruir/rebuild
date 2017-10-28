@@ -15,7 +15,7 @@ class step_setup_patch(Step):
   def execute(self, argument):
     patches = argument.args.get('patches', None)
     if not patches:
-      message = 'No patches for %s' % (argument.env.script.descriptor.full_name)
+      message = 'No patches for %s' % (argument.script.descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
 
@@ -23,10 +23,10 @@ class step_setup_patch(Step):
     patch_program = argument.args.get('patch_program', None)
     
     for patch in patches:
-      self.blurb('Patching with %s at %s' % (patch, argument.env.source_unpacked_dir))
+      self.blurb('Patching with %s at %s' % (patch, argument.script.source_unpacked_dir))
 
     exit_code, msg = Patch.patch(patches,
-                                 argument.env.source_unpacked_dir,
+                                 argument.script.source_unpacked_dir,
                                  strip = patch_strip_depth,
                                  backup = True,
                                  posix = True,
@@ -37,5 +37,5 @@ class step_setup_patch(Step):
     return [ 'patches' ]
 
   @classmethod
-  def parse_step_args(clazz, packager_env, args):
-    return clazz.resolve_step_args_files(packager_env, args, 'patches')
+  def parse_step_args(clazz, script, args):
+    return clazz.resolve_step_args_files(script, args, 'patches')

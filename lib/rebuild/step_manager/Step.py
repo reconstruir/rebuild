@@ -36,7 +36,7 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
 #    self.log_d('%s: Step.__init__() args=%s' % (self, self._args))
     
   @classmethod
-  def parse_step_args(clazz, packager_env, args):
+  def parse_step_args(clazz, script, args):
     result = copy.deepcopy(clazz.global_args())
 #    self.log_d('%s: Step.parse_step_args() global_args=%s' % (clazz, result))
     if args:
@@ -88,61 +88,61 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
    ]
 
   @classmethod
-  def create_command_env(clazz, packager_env):
+  def create_command_env(clazz, script):
     env = SystemEnvironment.make_clean_env()
 
     STATIC = True
-    assert packager_env.script.descriptor.resolved_requirements != None
-    export_compilation_flags_requirements = packager_env.script.descriptor.export_compilation_flags_requirements(packager_env.rebuild_env.config.build_target.system)
+    assert script.descriptor.resolved_requirements != None
+    export_compilation_flags_requirements = script.descriptor.export_compilation_flags_requirements(script.env.config.build_target.system)
     if STATIC:
       env['REBBE_PKG_CONFIG_STATIC'] = '1'
       
     if export_compilation_flags_requirements:
-      cflags, libs = packager_env.requirements_manager.compilation_flags(export_compilation_flags_requirements, static = STATIC)
+      cflags, libs = script.requirements_manager.compilation_flags(export_compilation_flags_requirements, static = STATIC)
     else:
       cflags = []
       libs = []
 
-    cflags += packager_env.script.descriptor.extra_cflags(packager_env.rebuild_env.config.build_target.system)
+    cflags += script.descriptor.extra_cflags(script.env.config.build_target.system)
 
     env['REBUILD_REQUIREMENTS_CFLAGS'] = ' '.join(cflags)
     env['REBUILD_REQUIREMENTS_CXXFLAGS'] = ' '.join(cflags)
     env['REBUILD_REQUIREMENTS_LDFLAGS'] = ' '.join(libs)
 
-    env['REBUILD_REQUIREMENTS_DIR'] = packager_env.requirements_manager.installation_dir
-    env['REBUILD_REQUIREMENTS_BIN_DIR'] = packager_env.requirements_manager.bin_dir
-    env['REBUILD_REQUIREMENTS_INCLUDE_DIR'] = packager_env.requirements_manager.include_dir
-    env['REBUILD_REQUIREMENTS_LIB_DIR'] = packager_env.requirements_manager.lib_dir
-    env['REBUILD_REQUIREMENTS_SHARE_DIR'] = packager_env.requirements_manager.share_dir
+    env['REBUILD_REQUIREMENTS_DIR'] = script.requirements_manager.installation_dir
+    env['REBUILD_REQUIREMENTS_BIN_DIR'] = script.requirements_manager.bin_dir
+    env['REBUILD_REQUIREMENTS_INCLUDE_DIR'] = script.requirements_manager.include_dir
+    env['REBUILD_REQUIREMENTS_LIB_DIR'] = script.requirements_manager.lib_dir
+    env['REBUILD_REQUIREMENTS_SHARE_DIR'] = script.requirements_manager.share_dir
 
-    env['REBUILD_PACKAGER_BUILD_DIR'] = packager_env.build_dir
-    env['REBUILD_PACKAGER_SOURCE_DIR'] = packager_env.script.source_dir
-    env['REBUILD_PACKAGER_TEST_DIR'] = packager_env.test_dir
+    env['REBUILD_PACKAGER_BUILD_DIR'] = script.build_dir
+    env['REBUILD_PACKAGER_SOURCE_DIR'] = script.source_dir
+    env['REBUILD_PACKAGER_TEST_DIR'] = script.test_dir
 
-    env['REBUILD_STAGE_PREFIX_DIR'] = packager_env.stage_dir
-    env['REBUILD_STAGE_PYTHON_LIB_DIR'] = path.join(packager_env.stage_dir, 'lib/python')
-    env['REBUILD_STAGE_FRAMEWORKS_DIR'] = path.join(packager_env.stage_dir, 'frameworks')
+    env['REBUILD_STAGE_PREFIX_DIR'] = script.stage_dir
+    env['REBUILD_STAGE_PYTHON_LIB_DIR'] = path.join(script.stage_dir, 'lib/python')
+    env['REBUILD_STAGE_FRAMEWORKS_DIR'] = path.join(script.stage_dir, 'frameworks')
 
-    SystemEnvironment.update(env, packager_env.rebuild_env.tools_manager.shell_env(packager_env.script.descriptor.resolved_build_requirements))
-    SystemEnvironment.update(env, packager_env.requirements_manager.shell_env(packager_env.script.descriptor.resolved_requirements))
-    SystemEnvironment.update(env, SystemEnvironment.make_shell_env(packager_env.stage_dir))
+    SystemEnvironment.update(env, script.env.tools_manager.shell_env(script.descriptor.resolved_build_requirements))
+    SystemEnvironment.update(env, script.requirements_manager.shell_env(script.descriptor.resolved_requirements))
+    SystemEnvironment.update(env, SystemEnvironment.make_shell_env(script.stage_dir))
 
     env['REBUILD_PYTHON_VERSION'] = '2.7'
     env['PYTHON'] = 'python%s' % (env['REBUILD_PYTHON_VERSION'])
-    env['REBUILD_PYTHON_PLATFORM_NAME'] =  packager_env.rebuild_env.config.build_target.system
+    env['REBUILD_PYTHON_PLATFORM_NAME'] =  script.env.config.build_target.system
 
-    env['REBUILD_PACKAGE_NAME'] = packager_env.script.descriptor.name
-    env['REBUILD_PACKAGE_DESCRIPTION'] = packager_env.script.descriptor.name
-    env['REBUILD_PACKAGE_VERSION'] = str(packager_env.script.descriptor.version)
+    env['REBUILD_PACKAGE_NAME'] = script.descriptor.name
+    env['REBUILD_PACKAGE_DESCRIPTION'] = script.descriptor.name
+    env['REBUILD_PACKAGE_VERSION'] = str(script.descriptor.version)
 
-    compiler_flags = toolchain.compiler_flags(packager_env.rebuild_env.config.build_target)
+    compiler_flags = toolchain.compiler_flags(script.env.config.build_target)
     env['REBUILD_COMPILE_CFLAGS'] = ' '.join(compiler_flags.get('CFLAGS', []))
     env['REBUILD_COMPILE_LDFLAGS'] = ' '.join(compiler_flags.get('LDFLAGS', []))
     env['REBUILD_COMPILE_CXXFLAGS'] = ' '.join(compiler_flags.get('CXXFLAGS', []))
     env['REBUILD_COMPILE_ARCH_FLAGS'] = ' '.join(compiler_flags.get('REBUILD_COMPILE_ARCH_FLAGS', []))
     env['REBUILD_COMPILE_OPT_FLAGS'] = ' '.join(compiler_flags.get('REBUILD_COMPILE_OPT_FLAGS', []))
 
-    ce = toolchain.compiler_environment(packager_env.rebuild_env.config.build_target)
+    ce = toolchain.compiler_environment(script.env.config.build_target)
     SystemEnvironment.update(env, ce)
     env['REBUILD_COMPILE_ENVIRONMENT'] = toolchain.flatten_for_shell(ce)
 
@@ -156,7 +156,7 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
       build_blurb.blurb_verbose('build', '%s(%s): %s=%s' % (label, package_name, key, value))
   
   @classmethod
-  def call_shell(clazz, command, packager_env, args, extra_env = None, save_logs = None, execution_dir = None):
+  def call_shell(clazz, command, script, args, extra_env = None, save_logs = None, execution_dir = None):
     command = Shell.listify_command(command)
     command = [ part for part in command if part ]
     extra_env = extra_env or {}
@@ -165,11 +165,11 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
     log.log_i('build', 'call_shell(cmd=%s, args=%s)' % (command, args))
     build_blurb.blurb_verbose('build', 'call_shell(cmd=%s, args=%s, extra_env=%s)' % (command, args, extra_env))
 
-    env = clazz.create_command_env(packager_env)
+    env = clazz.create_command_env(script)
 
     env.update(extra_env)
 
-    clazz.env_dump(env, packager_env.script.descriptor.name, 'PRE ENVIRONMENT')
+    clazz.env_dump(env, script.descriptor.name, 'PRE ENVIRONMENT')
 
     SystemEnvironment.env_substitite(env)
 
@@ -184,21 +184,21 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
       if variable.has_rogue_dollar_signs(part):
         raise RuntimeError('Rogue dollar sign (\"$\") found in: %s' % (part))
       
-    build_blurb.blurb('build', '%s - %s' % (packager_env.script.descriptor.name, ' '.join(command)))
+    build_blurb.blurb('build', '%s - %s' % (script.descriptor.name, ' '.join(command)))
 
-    file_util.mkdir(packager_env.build_dir)
-    retry_script = clazz.__write_retry_script(command, env, packager_env)
+    file_util.mkdir(script.build_dir)
+    retry_script = clazz.__write_retry_script(command, env, script)
 
-    clazz.env_dump(env, packager_env.script.descriptor.name, clazz.__name__ + ' : ' + 'POST ENVIRONMENT')
+    clazz.env_dump(env, script.descriptor.name, clazz.__name__ + ' : ' + 'POST ENVIRONMENT')
 
     for k,v in env.items():
       if string_util.is_quoted(v):
         env[k] = string_util.unquote(v)
 
     if execution_dir:
-      cwd = path.join(packager_env.build_dir, execution_dir)
+      cwd = path.join(script.build_dir, execution_dir)
     else:
-      cwd = packager_env.build_dir
+      cwd = script.build_dir
     rv = Shell.execute(command,
                        cwd = cwd,
                        env = env,
@@ -210,17 +210,17 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
     if rv.stderr:
       message = message + '\n' + rv.stderr
     result = step_result(rv.exit_code == 0, message)
-    clazz.save_build_dir_logs(packager_env, save_logs)
+    clazz.save_build_dir_logs(script, save_logs)
     return result
 
   RETRY_SCRIPT_FILENAME = 'rebbe_retry.sh'
 
   @classmethod
-  def __write_retry_script(clazz, command, env, packager_env):
+  def __write_retry_script(clazz, command, env, script):
     from bes.compat import StringIO
     s = StringIO()
     s.write('#!/bin/bash\n')
-    s.write('mkdir -p %s\n' % (packager_env.stage_dir))
+    s.write('mkdir -p %s\n' % (script.stage_dir))
     items = sorted(env.items())
     last_item = items.pop(-1)
 
@@ -237,38 +237,38 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
     else:
       s.write(' '.join(command))
     content = s.getvalue()
-    file_path = path.join(packager_env.build_dir, clazz.RETRY_SCRIPT_FILENAME)
+    file_path = path.join(script.build_dir, clazz.RETRY_SCRIPT_FILENAME)
     file_util.save(file_path, content = content, mode = 0o755)
     return file_path
 
   @classmethod
-  def resolve_step_args_list(clazz, packager_env, args, name):
+  def resolve_step_args_list(clazz, script, args, name):
     if not name or not name in args:
       return {}
     config = args[name]
-    resolved = psc.resolve_list(config, packager_env.rebuild_env.config.build_target.system)
+    resolved = psc.resolve_list(config, script.env.config.build_target.system)
     return { name: resolved }
       
   @classmethod
-  def resolve_step_args_hooks(clazz, packager_env, args, name):
-    d = clazz.resolve_step_args_list(packager_env, args, name)
+  def resolve_step_args_hooks(clazz, script, args, name):
+    d = clazz.resolve_step_args_list(script, args, name)
     hooks = hook.parse_list(d.get(name, []))
     for h in hooks:
-      h.root_dir = packager_env.script.source_dir
+      h.root_dir = script.source_dir
     return { name: hooks }
   
   @classmethod
-  def resolve_step_args_files(clazz, packager_env, args, name):
-    d = clazz.resolve_step_args_list(packager_env, args, name)
+  def resolve_step_args_files(clazz, script, args, name):
+    d = clazz.resolve_step_args_list(script, args, name)
     filenames = d.get(name, [])
-    files = [ path.join(packager_env.script.source_dir, f) for f in filenames ]
+    files = [ path.join(script.source_dir, f) for f in filenames ]
     for f in files:
       if not path.isfile(f):
         raise RuntimeError('Not found for \"%s\": %s' % (name, f))
     return { name: files }
   
   @classmethod
-  def resolve_step_args_dir(clazz, packager_env, args, name):
+  def resolve_step_args_dir(clazz, script, args, name):
     if not name in args:
       return {}
     d = args.get(name, None)
@@ -277,26 +277,26 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
     if path.isdir(d):
       d = path.abspath(d)
     else:
-      d = path.join(packager_env.source_dir, d)
+      d = path.join(script.source_dir, d)
     if not path.isdir(d):
       raise RuntimeError('Dir not found for \"%s\": %s' % (name, d))
     return { name: d }
 
   @classmethod
-  def resolve_step_args_env_and_flags(clazz, packager_env, args, env_name, flags_name):
+  def resolve_step_args_env_and_flags(clazz, script, args, env_name, flags_name):
     assert env_name or flags_name
 
     env_dict = {}
     if env_name and env_name in args:
       config = args[env_name]
-      resolved = psc.resolve_key_values_to_dict(config, packager_env.rebuild_env.config.build_target.system)
+      resolved = psc.resolve_key_values_to_dict(config, script.env.config.build_target.system)
       assert isinstance(resolved, dict)
       env_dict = { env_name: resolved }
 
     flags_dict = {}
     if flags_name and flags_name in args:
       config = args[flags_name]
-      resolved = psc.resolve_list(config, packager_env.rebuild_env.config.build_target.system)
+      resolved = psc.resolve_list(config, script.env.config.build_target.system)
       flags_dict = { flags_name: resolved }
 
     return dict_util.combine(env_dict, flags_dict)

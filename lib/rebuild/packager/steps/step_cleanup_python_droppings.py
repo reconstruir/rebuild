@@ -17,6 +17,6 @@ class step_cleanup_python_droppings(Step):
       'lib/python/site.py',
       'lib/python/site.pyc',
     ]
-    droppings = [ path.join(argument.env.stage_dir, dropping) for dropping in droppings ]
+    droppings = [ path.join(argument.script.stage_dir, dropping) for dropping in droppings ]
     file_util.remove(droppings)
     return step_result(True, None)

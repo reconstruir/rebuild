@@ -16,25 +16,25 @@ class step_cleanup_library_filenames(Step):
     super(step_cleanup_library_filenames, self).__init__()
 
   def execute(self, argument):
-    if path.isdir(argument.env.stage_lib_dir):
-      libraries = library.list_libraries(argument.env.stage_lib_dir, relative = True)
+    if path.isdir(argument.script.stage_lib_dir):
+      libraries = library.list_libraries(argument.script.stage_lib_dir, relative = True)
       for l in libraries:
-        link_filename = library.name_add_prefix(l, argument.env.rebuild_env.config.third_party_prefix)
-        link_path = path.join(argument.env.stage_lib_dir, link_filename)
+        link_filename = library.name_add_prefix(l, argument.script.env.config.third_party_prefix)
+        link_path = path.join(argument.script.stage_lib_dir, link_filename)
         file_util.symlink(l, link_path)
 
-    pc_files = pkg_config.find_pc_files(argument.env.stage_dir)
+    pc_files = pkg_config.find_pc_files(argument.script.stage_dir)
     for pc_file in pc_files:
       pc_file_basename = path.basename(pc_file)
-      new_pc_file = self.__pc_file_add_third_party_prefix(argument.env, pc_file)
+      new_pc_file = self._pc_file_add_third_party_prefix(argument.script, pc_file)
       file_util.symlink(pc_file_basename, new_pc_file)
     return step_result(True, None)
 
   @classmethod
-  def __pc_file_add_third_party_prefix(clazz, env, filename):
+  def _pc_file_add_third_party_prefix(clazz, script, filename):
     basename = path.basename(filename)
     if basename.startswith('lib'):
-      new_base = 'lib%s%s' % (env.rebuild_env.config.third_party_prefix, string_util.remove_head(basename, 'lib'))
+      new_base = 'lib%s%s' % (script.env.config.third_party_prefix, string_util.remove_head(basename, 'lib'))
     else:
-      new_base = '%s%s' % (env.rebuild_env.config.third_party_prefix, basename)
+      new_base = '%s%s' % (script.env.config.third_party_prefix, basename)
     return path.join(path.dirname(filename), new_base)

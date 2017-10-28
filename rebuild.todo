@@ -510,3 +510,7 @@ oct 25
 - figure out if rebuild_builder.exclude() is really needed
 - get rid of the hook_extra_code shit or at least move it to hook not
 - add a timing stats cache per project and use it for a progress bar
+
+oct26
+- this shit in a build.py script is impossible to debug
+''' step_setup_patch, { 'patches': [ 'libpng-zlib.patch' ] } '''

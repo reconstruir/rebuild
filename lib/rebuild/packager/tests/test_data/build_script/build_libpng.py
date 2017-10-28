@@ -16,11 +16,11 @@ def rebuild_recipes(env):
       category = 'lib',
     ),
     requirements = [
-      'all: zlib >= 1.2.8-1',
+ #     'all: zlib >= 1.2.8-1',
     ],
     steps = [
       step_setup,
-      step_setup_patch, { 'patches': [ 'libpng-zlib.patch' ] },
+#      step_setup_patch, { 'patches': [ 'all: reb-libpng-zlib.patch' ] },
       step_autoconf_configure, { 'configure_env': configure_env },
       step_make,
       step_make_install,

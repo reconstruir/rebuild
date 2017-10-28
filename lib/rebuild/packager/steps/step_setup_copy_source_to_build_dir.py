@@ -13,5 +13,5 @@ class step_setup_copy_source_to_build_dir(Step):
 
   def execute(self, argument):
     if argument.args.get('copy_source_to_build_dir', False):
-      tar_util.copy_tree_with_tar(argument.env.source_unpacked_dir, argument.env.build_dir)
+      tar_util.copy_tree_with_tar(argument.script.source_unpacked_dir, argument.script.build_dir)
     return step_result(True, None)

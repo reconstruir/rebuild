@@ -16,7 +16,7 @@ class step_install_install_files(Step):
   def execute(self, argument):
     install_files = argument.args.get('install_files', [])
     if not install_files:
-      message = 'No install_files for %s' % (argument.env.script.descriptor.full_name)
+      message = 'No install_files for %s' % (argument.script.descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
 
@@ -27,7 +27,7 @@ class step_install_install_files(Step):
       parts = install_file.split(path.sep)
       sep_index = parts.index(separator)
       install_file_rel = path.sep.join(parts[sep_index + 1:])
-      dest_filename = path.join(argument.env.stage_dir, install_file_rel)
+      dest_filename = path.join(argument.script.stage_dir, install_file_rel)
       if path.exists(dest_filename):
         return step_result(False, 'File already exists: %s' % (dest_filename))
       dest_dir = path.dirname(dest_filename)
@@ -40,5 +40,5 @@ class step_install_install_files(Step):
     return [ 'install_files' ]
 
   @classmethod
-  def parse_step_args(clazz, packager_env, args):
-    return clazz.resolve_step_args_files(packager_env, args, 'install_files')
+  def parse_step_args(clazz, script, args):
+    return clazz.resolve_step_args_files(script, args, 'install_files')

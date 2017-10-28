@@ -19,20 +19,20 @@ class step_pkg_config_make_pc(Step):
   def execute(self, argument):
     pc_files = argument.args.get('pc_files', [])
     if not pc_files:
-      message = 'No .pc files for %s' % (argument.env.script.descriptor.full_name)
+      message = 'No .pc files for %s' % (argument.script.descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
 
     replacements = {
-      'REBUILD_PACKAGE_NAME': argument.env.script.descriptor.name,
-      'REBUILD_PACKAGE_DESCRIPTION': argument.env.script.descriptor.name,
-      'REBUILD_PACKAGE_VERSION': str(argument.env.script.descriptor.version),
+      'REBUILD_PACKAGE_NAME': argument.script.descriptor.name,
+      'REBUILD_PACKAGE_DESCRIPTION': argument.script.descriptor.name,
+      'REBUILD_PACKAGE_VERSION': str(argument.script.descriptor.version),
     }
 
     pc_file_variables = argument.args.get('pc_file_variables', {})
     replacements.update(pc_file_variables)
     for src_pc in pc_files:
-      dst_dir = path.join(argument.env.stage_dir, 'lib/pkgconfig')
+      dst_dir = path.join(argument.script.stage_dir, 'lib/pkgconfig')
       dst_pc = path.join(dst_dir, path.basename(src_pc))
       file_replace.copy_with_substitute(src_pc, dst_pc, replacements, backup = False)
 
@@ -42,5 +42,5 @@ class step_pkg_config_make_pc(Step):
     return [ 'pc_files' ]
 
   @classmethod
-  def parse_step_args(clazz, packager_env, args):
-    return clazz.resolve_step_args_files(packager_env, args, 'pc_files')
+  def parse_step_args(clazz, script, args):
+    return clazz.resolve_step_args_files(script, args, 'pc_files')

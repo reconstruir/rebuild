@@ -21,17 +21,17 @@ class step_cmake_configure(Step):
     assert isinstance(cmake_env, dict)
 
     cmd = [ 'cmake' ]
-    if argument.env.rebuild_env.config.verbose:
+    if argument.script.env.config.verbose:
       cmd.append('--debug-output')
     cmd.append('-DCMAKE_INSTALL_PREFIX=$REBUILD_STAGE_PREFIX_DIR')
     cmd.extend(cmake_flags)
-    cmd.append(argument.env.source_unpacked_dir)
-    return self.call_shell(cmd, argument.env, argument.args, extra_env = cmake_env,
+    cmd.append(argument.script.source_unpacked_dir)
+    return self.call_shell(cmd, argument.script, argument.args, extra_env = cmake_env,
                            save_logs = [ 'CMakeFiles/CMakeError.log', 'CMakeFiles/CMakeOutput.log' ])
 
   @classmethod
-  def parse_step_args(clazz, packager_env, args):
-    return clazz.resolve_step_args_env_and_flags(packager_env, args, 'cmake_env', 'cmake_flags')
+  def parse_step_args(clazz, script, args):
+    return clazz.resolve_step_args_env_and_flags(script, args, 'cmake_env', 'cmake_flags')
 
 class step_cmake_make(step_make):
   'step to build with cmake.  same as step_make with some extra flags'
@@ -50,7 +50,7 @@ class step_cmake_install(Step):
 
   def execute(self, argument):
     cmd = 'make install prefix=$REBUILD_STAGE_PREFIX_DIR'
-    return self.call_shell(cmd, argument.env, argument.args, None)
+    return self.call_shell(cmd, argument.script, argument.args, None)
 
 class step_cmake(multiple_steps):
   'A complete step to build cmake projects.'

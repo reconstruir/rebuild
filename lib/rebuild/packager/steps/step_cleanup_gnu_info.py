@@ -12,6 +12,6 @@ class step_cleanup_gnu_info(Step):
     super(step_cleanup_gnu_info, self).__init__()
 
   def execute(self, argument):
-    info_dir = path.join(argument.env.stage_dir, 'share/info')
+    info_dir = path.join(argument.script.stage_dir, 'share/info')
     file_util.remove(info_dir)
     return step_result(True, None)

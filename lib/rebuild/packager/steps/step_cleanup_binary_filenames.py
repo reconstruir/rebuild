@@ -13,20 +13,20 @@ class step_cleanup_binary_filenames(Step):
     super(step_cleanup_binary_filenames, self).__init__()
 
   def execute(self, argument):
-    if not path.isdir(argument.env.stage_bin_dir):
+    if not path.isdir(argument.script.stage_bin_dir):
       return step_result(True, None)
       
-    binaries = dir_util.list(argument.env.stage_bin_dir)
+    binaries = dir_util.list(argument.script.stage_bin_dir)
     for b in binaries:
       link_src = path.basename(b)
-      if not link_src.startswith(argument.env.rebuild_env.config.third_party_prefix):
-        link_filename = '%s%s' % (argument.env.rebuild_env.config.third_party_prefix, link_src)
-        link_dst = path.join(argument.env.stage_bin_dir, link_filename)
+      if not link_src.startswith(argument.script.env.config.third_party_prefix):
+        link_filename = '%s%s' % (argument.script.env.config.third_party_prefix, link_src)
+        link_dst = path.join(argument.script.stage_bin_dir, link_filename)
         file_util.symlink(link_src, link_dst)
     return step_result(True, None)
 
   @classmethod
   def __pc_file_add_third_party_prefix(clazz, filename):
     basename = path.basename(filename)
-    new_base = '%s%s' % (argument.env.rebuild_env.config.third_party_prefix, basename)
+    new_base = '%s%s' % (argument.script.env.config.third_party_prefix, basename)
     return path.join(path.dirname(filename), new_base)

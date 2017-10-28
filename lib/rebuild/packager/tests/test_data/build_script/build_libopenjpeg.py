@@ -12,7 +12,7 @@ def rebuild_recipes(env):
       category = 'lib',
     ),
     build_requirements = [ 
-      'all: cmake >= 3.3.1-1',
+#      'all: cmake >= 3.3.1-1',
     ],
     steps = [
       step_setup,

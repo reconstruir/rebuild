@@ -13,5 +13,5 @@ class step_setup_post_setup_hook(Step):
     return self.call_hooks(argument, 'post_setup_hooks')
 
   @classmethod
-  def parse_step_args(clazz, packager_env, args):
-    return clazz.resolve_step_args_hooks(packager_env, args, 'post_setup_hooks')
+  def parse_step_args(clazz, script, args):
+    return clazz.resolve_step_args_hooks(script, args, 'post_setup_hooks')

@@ -9,12 +9,12 @@ from .build_script import build_script
 
 class build_script_manager(object):
 
-  def __init__(self, filenames, build_target, builds_dir):
+  def __init__(self, filenames, env):
     # Load all the scripts
     self.scripts = {}
     for filename in filenames:
       build_blurb.blurb_verbose('build', 'loading %s' % (filename))
-      build_scripts = build_script.load_build_scripts(filename, build_target, builds_dir)
+      build_scripts = build_script.load_build_scripts(filename, env)
       for script in build_scripts:
         self.scripts[script.descriptor.name] = script
         #print "filename: %s" % (script.filename)
@@ -23,14 +23,14 @@ class build_script_manager(object):
         #print "    args: %s" % (script.args)
         #print ""
 
-    dependency_map = self._dependency_map(self.scripts, build_target.system)
+    dependency_map = self._dependency_map(self.scripts, env.config.build_target.system)
     
     # Resolve and order all the dependencies for all the scripts
     for name, script in sorted(self.scripts.items()):
       build_blurb.blurb_verbose('build', 'resolving dependencies for: %s - %s' % (path.relpath(script.filename), script.descriptor.name))
       try:
         all_requirements = script.descriptor.requirements + script.descriptor.build_requirements
-        all_requirements_system_resolved = requirement.resolve_requirements(all_requirements, build_target.system)
+        all_requirements_system_resolved = requirement.resolve_requirements(all_requirements, env.config.build_target.system)
 
         all_requirements_dependencies_resolved = self._resolve_and_order_dependencies(all_requirements_system_resolved,
                                                                                        self.scripts, dependency_map)

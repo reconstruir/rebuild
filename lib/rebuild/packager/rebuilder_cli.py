@@ -131,7 +131,7 @@ class rebuilder_cli(object):
     if resolved_args.invalid_args:
       build_blurb.blurb('build', 'Invalid targets: %s' % (' '.join(resolved_args.invalid_args)))
       build_blurb.blurb('build', 'possible targets:')
-      build_blurb.blurb('build', ' '.join(builder.all_package_names), fit = True)
+      build_blurb.blurb('build', ' '.join(builder.package_names()), fit = True)
       return 1
 
     return builder.build_many_scripts(resolved_args.package_names, opts)

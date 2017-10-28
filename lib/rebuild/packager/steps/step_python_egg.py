@@ -17,13 +17,13 @@ class step_python_egg_build(Step):
     setup_script = argument.args.get('setup_script', self.DEFAULT_SETUP_SCRIPT)
     setup_dir = argument.args.get('setup_dir', None)
     cmd = '${PYTHON} %s bdist_egg --plat-name=${REBUILD_PYTHON_PLATFORM_NAME}' % (setup_script)
-    return self.call_shell(cmd, argument.env, argument.args,
+    return self.call_shell(cmd, argument.script, argument.args,
                            extra_env = argument.args.get('shell_env', {}),
                            execution_dir = setup_dir)
 
   @classmethod
-  def parse_step_args(clazz, packager_env, args):
-    return clazz.resolve_step_args_env_and_flags(packager_env, args, 'shell_env', None)
+  def parse_step_args(clazz, script, args):
+    return clazz.resolve_step_args_env_and_flags(script, args, 'shell_env', None)
 
 class step_python_egg_install(Step):
   'Install the egg file produced by step_bdist_egg_build.'
@@ -34,9 +34,9 @@ class step_python_egg_install(Step):
   def execute(self, argument):
     setup_dir = argument.args.get('setup_dir', None)
     if setup_dir:
-      dist_dir = path.join(argument.env.build_dir, setup_dir, 'dist')
+      dist_dir = path.join(argument.script.build_dir, setup_dir, 'dist')
     else:
-      dist_dir = path.join(argument.env.build_dir, 'dist')
+      dist_dir = path.join(argument.script.build_dir, 'dist')
     eggs = setup_tools.list_eggs(dist_dir)
     if len(eggs) == 0:
       return step_result(False, 'No eggs found in %s' % (dist_dir))
@@ -55,7 +55,7 @@ class step_python_egg_install(Step):
     easy_install_cmd = ' '.join(easy_install_cmd_parts)
     cmd_parts = [ mkdir_cmd, easy_install_cmd ]
     cmd = ' && '.join(cmd_parts)
-    return self.call_shell(cmd, argument.env, argument.args, None)
+    return self.call_shell(cmd, argument.script, argument.args, None)
 
 class step_python_egg_check_downloaded_dependencies(Step):
   'Check that the egg build and install process does not Install the egg file produced by step_bdist_egg_build.'
@@ -66,9 +66,9 @@ class step_python_egg_check_downloaded_dependencies(Step):
   def execute(self, argument):
     setup_dir = argument.args.get('setup_dir', None)
     if setup_dir:
-      eggs_build_dir = path.join(argument.env.build_dir, setup_dir, '.eggs')
+      eggs_build_dir = path.join(argument.script.build_dir, setup_dir, '.eggs')
     else:
-      eggs_build_dir = path.join(argument.env.build_dir, '.eggs')
+      eggs_build_dir = path.join(argument.script.build_dir, '.eggs')
     if not path.exists(eggs_build_dir):
       return step_result(True)
     eggs = setup_tools.list_eggs(eggs_build_dir)

@@ -27,10 +27,10 @@ class step_autoconf_configure(Step):
     else:
       autoreconf_cmd = None
       
-    configure_script_path = path.join(argument.env.source_unpacked_dir, configure_script)
+    configure_script_path = path.join(argument.script.source_unpacked_dir, configure_script)
     configure_cmd = [
       configure_script_path,
-      '--prefix=%s' % (argument.env.stage_dir),
+      '--prefix=%s' % (argument.script.stage_dir),
     ] + configure_flags
 
     if autoreconf_cmd:
@@ -38,12 +38,12 @@ class step_autoconf_configure(Step):
     else:
       cmd = configure_cmd
 
-    return self.call_shell(cmd, argument.env, argument.args, configure_env,
+    return self.call_shell(cmd, argument.script, argument.args, configure_env,
                            save_logs = [ 'config.log', 'config.status' ])
 
   @classmethod
-  def parse_step_args(clazz, packager_env, args):
-    return clazz.resolve_step_args_env_and_flags(packager_env, args, 'configure_env', 'configure_flags')
+  def parse_step_args(clazz, script, args):
+    return clazz.resolve_step_args_env_and_flags(script, args, 'configure_env', 'configure_flags')
 
 class step_autoconf_pre_configure_hooks(step_call_hooks):
   'Run hooks before configure.'

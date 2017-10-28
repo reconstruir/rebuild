@@ -4,7 +4,6 @@
 import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import file_util, temp_file
-from rebuild import build_target
 from rebuild.packager import rebuild_builder, rebuild_config, rebuild_env
 from rebuild.packager.unit_test_packaging import unit_test_packaging
 from rebuild.source_finder import local_source_finder, source_finder_chain
@@ -19,7 +18,6 @@ class test_rebuild_builder(unit_test):
 #  DEBUG = True
   
   def test_amhello(self):
-    bt = build_target()
     tmp_dir = temp_file.make_temp_dir()
     amhello_build_script = unit_test_packaging.make_build_script(tmp_dir, 'build_amhello.py', 'amhello', '1.0', 0)
     file_util.copy(self.data_path('amhello-1.0.tar.gz'), tmp_dir)
@@ -38,7 +36,6 @@ class test_rebuild_builder(unit_test):
     self.assertEqual( rebuild_builder.EXIT_CODE_SUCCESS, rv )
 
   def test_libpng(self):
-    bt = build_target()
     tmp_dir = temp_file.make_temp_dir()
     filenames = [ self.data_path('zlib/build_zlib.py'), self.data_path('libpng/build_libpng.py') ]
     config = rebuild_config()
@@ -53,7 +50,6 @@ class test_rebuild_builder(unit_test):
     self.assertEqual( rebuild_builder.EXIT_CODE_SUCCESS, rv )
 
   def test_fructose(self):
-    bt = build_target()
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     if self.DEBUG:
       print("tmp_dir: ", tmp_dir)
@@ -79,7 +75,6 @@ class test_rebuild_builder(unit_test):
     self.assertEqual( rebuild_builder.EXIT_CODE_SUCCESS, rv )
     
   def xxxtest_orange(self):
-    bt = build_target()
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     if self.DEBUG:
       print("tmp_dir: ", tmp_dir)
