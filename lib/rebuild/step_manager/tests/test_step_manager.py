@@ -79,9 +79,6 @@ class test_step_manager(unittest.TestCase):
       self.saved_args = copy.deepcopy(argument.args)
       return step_result(True, None)
 
-    def on_tag_changed(self):
-      pass
-  
   def _add_save_args_step(self, sm):
     description = step_description(self.SaveArgsStep)
     return sm.add_step(description, {})
@@ -315,6 +312,18 @@ class test_step_manager(unittest.TestCase):
     self.assertTrue( result.success )
     self.assertEqual( { 'foo': '5', 'bar': 6 }, s2.saved_last_input )
     self.assertEqual( { 'foo': '5', 'bar': 6, 'fruit': 'kiwi' }, s3.saved_last_input )
-        
+
+    '''
+    @classmathod
+    def _make_step_class(clazz, name
+    class step_one(Step):
+      def __init__(self):
+        super(step_one, self).__init__()
+
+      def execute(self, argument):
+        self.saved_args = copy.deepcopy(argument.args)
+        return step_result(True, None, output = { 'foo': '5', 'bar': 6 })
+'''
+    
 if __name__ == '__main__':
   unittest.main()
