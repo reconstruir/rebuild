@@ -9,16 +9,15 @@ def _save_args(args):
   return copy.deepcopy(args)
 
 class sample_step_save_args1(Step):
-  def __init__(self, result = step_result(True, None)):
+  def __init__(self):
     self.tag = 'sample_step_save_args1'
-    self.result = result
     super(sample_step_save_args1, self).__init__()
     self.saved_args = None
 
   def execute(self, argument):
     self.log_d('%s: execute(argument=%s)' % (self, argument))
     self.saved_args = _save_args(argument.args)
-    return self.result
+    return step_result(True, None)
 
   @classmethod
   def parse_step_args(clazz, script, args):
@@ -26,15 +25,14 @@ class sample_step_save_args1(Step):
     return { key: args[key] for key in keys }
 
 class sample_step_save_args2(Step):
-  def __init__(self, result = step_result(True, None)):
+  def __init__(self):
     self.tag = 'sample_step_save_args2'
-    self.result = result
     super(sample_step_save_args2, self).__init__()
     self.saved_args = None
 
   def execute(self, argument):
     self.saved_args = _save_args(argument.args)
-    return self.result
+    return step_result(True, None)
 
   @classmethod
   def parse_step_args(clazz, script, args):
@@ -42,15 +40,14 @@ class sample_step_save_args2(Step):
     return { key: args[key] for key in keys }
 
 class sample_step_save_args3(Step):
-  def __init__(self, result = step_result(True, None)):
+  def __init__(self):
     self.tag = 'sample_step_save_args3'
-    self.result = result
     super(sample_step_save_args3, self).__init__()
     self.saved_args = None
 
   def execute(self, argument):
     self.saved_args = _save_args(argument.args)
-    return self.result
+    return step_result(True, None)
 
   @classmethod
   def parse_step_args(clazz, script, args):
