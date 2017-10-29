@@ -124,7 +124,6 @@ feb 6.5
 - get rid of StepManager 'name'
 - perhaps move previous_step_output to be an argument to execute()
 - move cpp and python tests out of step_test_artifact_lib to hooks or checks
-- change  all parse_step_args() to use 'env' instead of 'context' and maybe argument
 - rename step_setup_install_deps to step_setup_deps_install
 - move StepResult and StepDescription into Step
 
@@ -514,3 +513,7 @@ oct 25
 oct26
 - this shit in a build.py script is impossible to debug
 ''' step_setup_patch, { 'patches': [ 'libpng-zlib.patch' ] } '''
+
+oct 28
+- write unit test for multiple steps input output i think its busted
+

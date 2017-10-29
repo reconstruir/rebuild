@@ -20,10 +20,10 @@ class multiple_steps(Step):
       self.steps.append(step)
 
   @classmethod
-  def parse_step_args(clazz, packager_env, args):
+  def parse_step_args(clazz, script, args):
     args = copy.deepcopy(args)
     for step_class in clazz.step_classes:
-      parsed_args = step_class.parse_step_args(packager_env, args)
+      parsed_args = step_class.parse_step_args(script, args)
       args.update(parsed_args)
     return args
 
@@ -37,11 +37,9 @@ class multiple_steps(Step):
   def execute(self, args):
     assert self.steps
     cloned_args = args.clone()
-#    self.log_d('%s: multiple_steps.execute() steps=%s' % (self, self.steps))
     for step in self.steps:
       import inspect
       result = step.execute(cloned_args)
-#      self.log_d('%s: multiple_steps.execute() executed %s => %s' % (self, step.execute, result))
       cloned_args.update_last_input(result.output)
       if not result.success:
         return step_result(False,

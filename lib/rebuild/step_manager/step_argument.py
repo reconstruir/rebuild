@@ -7,6 +7,10 @@ import copy
 class step_argument(object):
 
   def __init__(self, script, env, args = {}, last_input = {}):
+    if script is None:
+      raise RuntimeError('script cannot be None.')
+    if env is None:
+      raise RuntimeError('env cannot be None.')
     self.script = script
     self.env = env
     check_type.check_dict(args, 'args')
