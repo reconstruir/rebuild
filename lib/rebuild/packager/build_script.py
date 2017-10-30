@@ -62,7 +62,7 @@ class build_script(object):
     return self._step_manager.step_list(args)
 
   def execute(self, args):
-    result = self._step_manager.execute(self, args)
+    result = self._step_manager.execute(self, self.env, args)
     if result.success:
       self.env.checksum_manager.save_checksums(self._current_checksums(self.env.script_manager.scripts),
                                                self.descriptor,

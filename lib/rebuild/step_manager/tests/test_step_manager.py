@@ -25,7 +25,7 @@ class test_step_manager(unittest.TestCase):
     sm = step_manager('sm')
 
     step = self._add_test_step(sm, 'one', True)
-    result = sm.execute({}, {})
+    result = sm.execute({}, {}, {})
     self.assertTrue( result.success )
     self.assertEqual( None, result.message )
     self.assertEqual( None, result.failed_step )
@@ -45,7 +45,7 @@ class test_step_manager(unittest.TestCase):
     step_three_b = self._add_test_step(sm, 'three_b', True)
     step_three_c = self._add_test_step(sm, 'three_c', True)
 
-    result = sm.execute({}, {})
+    result = sm.execute({}, {}, {})
     self.assertTrue( result.success )
     self.assertEqual( None, result.message )
     self.assertEqual( None, result.failed_step )
@@ -65,7 +65,7 @@ class test_step_manager(unittest.TestCase):
     step_three_b = self._add_test_step(sm, 'three_b', True)
     step_three_c = self._add_test_step(sm, 'three_c', True)
 
-    result = sm.execute({}, {})
+    result = sm.execute({}, {}, {})
     self.assertFalse( result.success )
     self.assertEqual( 'step two_b failed', result.message )
     self.assertEqual( step_two_b, result.failed_step )
@@ -92,7 +92,7 @@ class test_step_manager(unittest.TestCase):
 
     bar_step.update_args(step_args)
 
-    result = sm.execute({}, {})
+    result = sm.execute({}, {}, {})
     self.assertTrue( result.success )
     self.assertEqual( None, result.message )
     self.assertEqual( None, result.failed_step )
@@ -124,7 +124,7 @@ class test_step_manager(unittest.TestCase):
 
     bar_step.update_args(step_args)
 
-    result = sm.execute({}, global_args)
+    result = sm.execute({}, {}, global_args)
     self.assertTrue( result.success )
     self.assertEqual( None, result.message )
     self.assertEqual( None, result.failed_step )
@@ -160,7 +160,7 @@ class test_step_manager(unittest.TestCase):
 
     multi_step.update_args(all_steps_args)
 
-    result = sm.execute({}, execute_args)
+    result = sm.execute({}, {}, execute_args)
 
     expected_saved_args = dict_util.combine(execute_args, all_steps_args, description_args)
 
@@ -176,7 +176,7 @@ class test_step_manager(unittest.TestCase):
     script = {}
     step = sm.add_step(step_description(sample_step_fake_output1), script)
     expected_output = { 'foo': 6, 'bar': 'hi' }
-    result = sm.execute(script, { 'fake_output': expected_output })
+    result = sm.execute(script, {}, { 'fake_output': expected_output })
     self.assertTrue( result.success )
     self.assertEqual( None, result.message )
     self.assertEqual( None, result.failed_step )
@@ -202,7 +202,7 @@ class test_step_manager(unittest.TestCase):
       'fake_output3': expected_output3,
     }      
     expected_output = dict_util.combine(expected_output1, expected_output2, expected_output3)
-    result = sm.execute(script, execute_args)
+    result = sm.execute(script, {}, execute_args)
     self.assertTrue( result.success )
     self.assertEqual( None, result.message )
     self.assertEqual( None, result.failed_step )
@@ -219,7 +219,7 @@ class test_step_manager(unittest.TestCase):
   def test_global_args(self):
     sm = step_manager('sm')
     step = sm.add_step(step_description(self.test_step_with_global_args), {})
-    result = sm.execute({}, {})
+    result = sm.execute({}, {}, {})
     expected_saved_args = self.test_step_with_global_args.__step_global_args__
     self.assertTrue( result.success )
     self.assertEqual( None, result.message )
@@ -238,7 +238,7 @@ class test_step_manager(unittest.TestCase):
   def test_multiple_steps_global_args(self):
     sm = step_manager('sm')
     step = sm.add_step(step_description(self.test_multi_step_with_global_args), {})
-    result = sm.execute({}, {})
+    result = sm.execute({}, {}, {})
     expected_saved_args = self.test_multi_step_with_global_args.__step_global_args__
     self.assertTrue( result.success )
     self.assertEqual( None, result.message )
@@ -260,7 +260,7 @@ class test_step_manager(unittest.TestCase):
     self.maxDiff = None
     sm = step_manager('sm')
     step = sm.add_step(step_description(self.test_multi_step_with_global_args_and_steps_with_global_args), {})
-    result = sm.execute({}, {})
+    result = sm.execute({}, {}, {})
     expected_saved_args1 = dict_util.combine(sample_step_save_args_with_global_args1.__step_global_args__, self.test_multi_step_with_global_args_and_steps_with_global_args.__step_global_args__)
     expected_saved_args2 = dict_util.combine(sample_step_save_args_with_global_args2.__step_global_args__, self.test_multi_step_with_global_args_and_steps_with_global_args.__step_global_args__)
     expected_saved_args3 = dict_util.combine(sample_step_save_args_with_global_args3.__step_global_args__, self.test_multi_step_with_global_args_and_steps_with_global_args.__step_global_args__)
@@ -285,7 +285,7 @@ class test_step_manager(unittest.TestCase):
     s2 = sm.add_step(step_description(step_with_output2), {})
     s3 = sm.add_step(step_description(step_with_output3), {})
     s4 = sm.add_step(step_description(step_with_output4), {})
-    result = sm.execute({}, {})
+    result = sm.execute({}, {}, {})
     self.assertTrue( result.success )
     self.assertEqual( {}, s1.saved_args )
     self.assertEqual( { 'foo': '5', 'bar': 6 }, s2.saved_args )
@@ -301,7 +301,7 @@ class test_step_manager(unittest.TestCase):
   def test_output_goes_to_next_step_args_multi_step(self):
     sm = step_manager('sm')
     s = sm.add_step(step_description(self.multi_step_with_steps_that_output), {})
-    result = sm.execute({}, {})
+    result = sm.execute({}, {}, {})
     self.assertTrue( result.success )
     self.assertEqual( {}, s.steps[0].saved_args )
     self.assertEqual( { 'foo': '5', 'bar': 6 }, s.steps[1].saved_args )

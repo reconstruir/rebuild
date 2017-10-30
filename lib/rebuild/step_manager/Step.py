@@ -25,8 +25,9 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
   #@abstractmethod
   def execute(self, argument):
     'Execute the step.'
+    assert False
     return step_result(False, 'not implemented')
-
+ 
   def on_tag_changed(self):
     'Called when the tag changes.'
     pass
@@ -322,3 +323,11 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
       dst = path.join(env.logs_dir, path.basename(src))
       if path.isfile(src):
         file_util.copy(src, dst)
+
+  def call_execute(self, argument):
+    if hasattr(self, 'execute_caca'):
+      return self.execute_caca(argument.script, argument.env, argument.args)
+    else:
+      return self.execute(argument)
+ 
+         

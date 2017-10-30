@@ -50,15 +50,12 @@ class step_manager(object):
     for description in descriptions:
       self.add_step(description, script)
 
-  def execute(self, script, args):
+  def execute(self, script, env, args):
     output = {}
     for step in self._steps:
       step_args = dict_util.combine(args, step.args, output)
-      arg = step_argument(script, env = {}, args = step_args)
-#      try:
-      result = step.execute(arg)
-#      except Exception, ex:
-#        raise RuntimeError('Caught exception in %s.execute(): %s' % (step.__class__.__name__, str(ex)))
+      arg = step_argument(script, env = env, args = step_args)
+      result = step.call_execute(arg)
       output.update(result.output or {})
       if not result.success:
         return step_result(False, message = result.message, failed_step = step, output = output)
