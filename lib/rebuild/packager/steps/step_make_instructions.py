@@ -13,7 +13,7 @@ class step_make_instructions(Step):
   def __init__(self):
     super(step_make_instructions, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     if not script.instructions:
       message = 'No build instructions for %s' % (script.descriptor.full_name)
       self.log_d(message)

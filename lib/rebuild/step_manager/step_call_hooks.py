@@ -10,7 +10,7 @@ class step_call_hooks(Step):
   def __init__(self):
     super(step_call_hooks, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     return self.call_hooks(script, env, args, self.HOOKS_NAMES)
 
   @classmethod

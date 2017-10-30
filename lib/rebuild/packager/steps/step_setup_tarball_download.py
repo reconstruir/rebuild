@@ -9,7 +9,7 @@ class step_setup_tarball_download(Step):
   def __init__(self):
     super(step_setup_tarball_download, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     return step_result(True, None)
 
   def sources_keys(self):

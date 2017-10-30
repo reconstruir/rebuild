@@ -14,7 +14,7 @@ class step_artifact_create_make_package(Step):
   def __init__(self):
     super(step_artifact_create_make_package, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     assert 'output_tarball_path' in args
     print('env: %s - %s' % (env, type(env)))
     staged_tarball = script.requirements_manager.create_package(args['output_tarball_path'],
@@ -47,7 +47,7 @@ class step_artifact_create_check_package(Step):
   def __init__(self):
     super(step_artifact_create_check_package, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     staged_tarball = args.get('staged_tarball', None)
     assert staged_tarball
     assert archiver.is_valid(staged_tarball)
@@ -67,7 +67,7 @@ class step_artifact_create_test_package(Step):
   def __init__(self):
     super(step_artifact_create_test_package, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     if env.config.skip_tests:
       message = '%s: Skipping tests because of --skip-tests' % (script.descriptor.full_name)
       self.blurb(message)
@@ -111,7 +111,7 @@ class step_artifact_create_publish_package(Step):
   def __init__(self):
     super(step_artifact_create_publish_package, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     staged_tarball = args.get('staged_tarball', None)
     assert staged_tarball
     assert archiver.is_valid(staged_tarball)

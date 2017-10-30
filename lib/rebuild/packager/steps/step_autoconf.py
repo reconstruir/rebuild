@@ -11,7 +11,7 @@ class step_autoconf_configure(Step):
   def __init__(self):
     super(step_autoconf_configure, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
 
     configure_flags = args.get('configure_flags', [])
     assert isinstance(configure_flags, list)

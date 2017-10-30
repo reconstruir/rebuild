@@ -12,7 +12,7 @@ class step_cleanup_strip_binaries(Step):
   def __init__(self):
     super(step_cleanup_strip_binaries, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     is_release = script.env.config.build_target.build_type == build_type.RELEASE
     if is_release:
       if args.get('dont_strip_binaries', False):

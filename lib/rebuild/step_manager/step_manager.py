@@ -54,7 +54,7 @@ class step_manager(object):
     output = {}
     for step in self._steps:
       step_args = dict_util.combine(args, step.args, output)
-      result = step.execute_caca(script, env, step_args)
+      result = step.execute(script, env, step_args)
       output.update(result.output or {})
       if not result.success:
         return step_result(False, message = result.message, failed_step = step, output = output)

@@ -13,7 +13,7 @@ class step_cmake_configure(Step):
   def __init__(self):
     super(step_cmake_configure, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     cmake_flags = args.get('cmake_flags', [])
     assert isinstance(cmake_flags, list)
 
@@ -48,7 +48,7 @@ class step_cmake_install(Step):
   def __init__(self):
     super(step_cmake_install, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     cmd = 'make install prefix=$REBUILD_STAGE_PREFIX_DIR'
     return self.call_shell(cmd, script, args, None)
 

@@ -11,7 +11,7 @@ class step_check_hard_coded_paths(Step):
   def __init__(self):
     super(step_check_hard_coded_paths, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     replacements = {
       script.stage_dir: '${REBUILD_PACKAGE_PREFIX}',
       script.requirements_manager.installation_dir: '${REBUILD_PACKAGE_PREFIX}',

@@ -13,7 +13,7 @@ class step_setup_install_requirements(Step):
   def __init__(self):
     super(step_setup_install_requirements, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     package_desc = script.descriptor
     build_blurb.blurb('build', '%s - requirements: %s' % (package_desc.name, ' '.join([ t.name for t in package_desc.resolved_requirements ])))
     if not package_desc.resolved_requirements:

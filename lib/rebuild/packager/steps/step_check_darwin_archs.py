@@ -21,7 +21,7 @@ class step_check_darwin_archs(Step):
         return False
     return True
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     if not script.env.config.build_target.is_darwin():
       return step_result(True, None)
     if script.descriptor.category != Category.LIB:

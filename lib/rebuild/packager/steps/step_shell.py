@@ -11,7 +11,7 @@ class step_shell(Step):
   def __init__(self):
     super(step_shell, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     cmd = args.get('cmd', None)
     assert string_util.is_string(cmd)
     shell_env = args.get('shell_env', {})

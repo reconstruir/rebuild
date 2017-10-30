@@ -9,7 +9,7 @@ class step_install_post_install_hooks(Step):
   def __init__(self):
     super(step_install_post_install_hooks, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     return self.call_hooks(script, env, args, 'post_install_hooks')
 
   @classmethod

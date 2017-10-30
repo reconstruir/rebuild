@@ -12,7 +12,7 @@ class step_cleanup_pkg_config_pcs(Step):
   def __init__(self):
     super(step_cleanup_pkg_config_pcs, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     pc_files = pkg_config.find_pc_files(script.stage_dir)
     for pc_file in pc_files:
       if pkg_config_file.rewrite_cleanup(pc_file, pc_file):

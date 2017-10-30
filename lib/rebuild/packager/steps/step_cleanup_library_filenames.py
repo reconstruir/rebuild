@@ -15,7 +15,7 @@ class step_cleanup_library_filenames(Step):
   def __init__(self):
     super(step_cleanup_library_filenames, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     if path.isdir(script.stage_lib_dir):
       libraries = library.list_libraries(script.stage_lib_dir, relative = True)
       for l in libraries:

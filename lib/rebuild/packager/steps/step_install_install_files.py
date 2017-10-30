@@ -13,7 +13,7 @@ class step_install_install_files(Step):
   def __init__(self):
     super(step_install_install_files, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     install_files = args.get('install_files', [])
     if not install_files:
       message = 'No install_files for %s' % (script.descriptor.full_name)

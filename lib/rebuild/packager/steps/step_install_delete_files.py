@@ -12,7 +12,7 @@ class step_install_delete_files(Step):
   def __init__(self):
     super(step_install_delete_files, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     delete_files = args.get('delete_files', [])
     if not delete_files:
       message = 'No delete_files for %s' % (script.descriptor.full_name)

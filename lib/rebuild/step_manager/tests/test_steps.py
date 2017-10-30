@@ -14,7 +14,7 @@ class sample_step_save_args1(Step):
     super(sample_step_save_args1, self).__init__()
     self.saved_args = None
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     self.log_d('%s: execute(script=%s; env=%s; args=%s)' % (self, script, env, args))
     self.saved_args = _save_args(args)
     return step_result(True, None)
@@ -30,7 +30,7 @@ class sample_step_save_args2(Step):
     super(sample_step_save_args2, self).__init__()
     self.saved_args = None
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     self.saved_args = _save_args(args)
     return step_result(True, None)
 
@@ -45,7 +45,7 @@ class sample_step_save_args3(Step):
     super(sample_step_save_args3, self).__init__()
     self.saved_args = None
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     self.saved_args = _save_args(args)
     return step_result(True, None)
 
@@ -58,7 +58,7 @@ class sample_step_fake_success(Step):
   def __init__(self):
     super(sample_step_fake_success, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     fake_success = args['fake_success']
     if fake_success:
       fake_message = ''
@@ -70,7 +70,7 @@ class sample_step_fake_output1(Step):
   def __init__(self):
     super(sample_step_fake_output1, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     fake_output = args.get('fake_output', None)
     return step_result(True, output = fake_output)
 
@@ -78,7 +78,7 @@ class sample_step_fake_output2(Step):
   def __init__(self):
     super(sample_step_fake_output2, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     fake_output = args.get('fake_output2', None)
     return step_result(True, output = fake_output)
 
@@ -86,7 +86,7 @@ class sample_step_fake_output3(Step):
   def __init__(self):
     super(sample_step_fake_output3, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     fake_output = args.get('fake_output3', None)
     return step_result(True, output = fake_output)
 
@@ -118,7 +118,7 @@ class step_with_output1(Step):
   def __init__(self):
     super(step_with_output1, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     self.saved_args = copy.deepcopy(args)
     return step_result(True, message = None, output = { 'foo': '5', 'bar': 6 })
 
@@ -126,7 +126,7 @@ class step_with_output2(Step):
   def __init__(self):
     super(step_with_output2, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     self.saved_args = copy.deepcopy(args)
     return step_result(True, None, output = { 'fruit': 'kiwi' })
 
@@ -134,7 +134,7 @@ class step_with_output3(Step):
   def __init__(self):
     super(step_with_output3, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     self.saved_args = copy.deepcopy(args)
     return step_result(True, None, output = { 'cheese': 'blue' })
 
@@ -142,7 +142,7 @@ class step_with_output4(Step):
   def __init__(self):
     super(step_with_output4, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     self.saved_args = copy.deepcopy(args)
     return step_result(True, None, output = { 'drink': 'bourbon' })
   

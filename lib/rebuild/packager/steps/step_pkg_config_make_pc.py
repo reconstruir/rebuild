@@ -16,7 +16,7 @@ class step_pkg_config_make_pc(Step):
   def __init__(self):
     super(step_pkg_config_make_pc, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     pc_files = args.get('pc_files', [])
     if not pc_files:
       message = 'No .pc files for %s' % (script.descriptor.full_name)

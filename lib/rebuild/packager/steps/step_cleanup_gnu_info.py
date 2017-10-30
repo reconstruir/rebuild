@@ -11,7 +11,7 @@ class step_cleanup_gnu_info(Step):
   def __init__(self):
     super(step_cleanup_gnu_info, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     info_dir = path.join(script.stage_dir, 'share/info')
     file_util.remove(info_dir)
     return step_result(True, None)

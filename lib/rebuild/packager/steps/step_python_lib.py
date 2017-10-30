@@ -11,7 +11,7 @@ class step_python_lib_build(Step):
   def __init__(self):
     super(step_python_lib_build, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     cmd = '${PYTHON} setup.py build %s' % (args.get('python_lib_build_flags', ''))
     return self.call_shell(cmd, script, args, args.get('python_lib_build_env', {}))
 
@@ -25,7 +25,7 @@ class step_python_lib_install(Step):
   def __init__(self):
     super(step_python_lib_install, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     cmd = 'mkdir -p ${REBUILD_STAGE_PYTHON_LIB_DIR} && ${PYTHON} setup.py install --home=${REBUILD_STAGE_PREFIX_DIR} --install-lib=${REBUILD_STAGE_PYTHON_LIB_DIR} %s' % (args.get('python_lib_install_flags', ''))
     return self.call_shell(cmd, script, args, args.get('python_lib_install_env', {}))
 

@@ -13,7 +13,7 @@ class step_perl_module_setup(Step):
   def __init__(self):
     super(step_perl_module_setup, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     makefile = args.get('makefile', 'Makefile.PL')
     mkdir_cmd = 'mkdir -p ${REBUILD_STAGE_PYTHON_LIB_DIR}'
     perl_cmd = '${PERL} %s PREFIX=${REBUILD_STAGE_PREFIX_DIR} INSTALLDIRS=perl' % (makefile)
@@ -32,7 +32,7 @@ class step_perl_module_post_install_cleanup(Step):
   def __init__(self):
     super(step_perl_module_post_install_cleanup, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     bi = script.env.config.build_target
     if not bi.system == System.LINUX:
       return step_result(True)

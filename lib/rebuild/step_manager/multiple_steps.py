@@ -35,11 +35,11 @@ class multiple_steps(Step):
       args.update(step_class.global_args())
     return args
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     assert self.steps
     output = {}
     for step in self.steps:
-      result = step.execute_caca(script, env, dict_util.combine(args, output))
+      result = step.execute(script, env, dict_util.combine(args, output))
       output.update(result.output or {})
       if not result.success:
         return step_result(False,

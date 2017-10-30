@@ -13,7 +13,7 @@ class step_python_egg_build(Step):
   def __init__(self):
     super(step_python_egg_build, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     setup_script = args.get('setup_script', self.DEFAULT_SETUP_SCRIPT)
     setup_dir = args.get('setup_dir', None)
     cmd = '${PYTHON} %s bdist_egg --plat-name=${REBUILD_PYTHON_PLATFORM_NAME}' % (setup_script)
@@ -31,7 +31,7 @@ class step_python_egg_install(Step):
   def __init__(self):
     super(step_python_egg_install, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     setup_dir = args.get('setup_dir', None)
     if setup_dir:
       dist_dir = path.join(script.build_dir, setup_dir, 'dist')
@@ -63,7 +63,7 @@ class step_python_egg_check_downloaded_dependencies(Step):
   def __init__(self):
     super(step_python_egg_check_downloaded_dependencies, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     setup_dir = args.get('setup_dir', None)
     if setup_dir:
       eggs_build_dir = path.join(script.build_dir, setup_dir, '.eggs')

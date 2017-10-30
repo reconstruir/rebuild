@@ -16,7 +16,7 @@ class step_make(Step):
   def extra_make_flags(self):
     return []
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     makefile = args.get('makefile', None)
     make_flags = args.get('make_flags', [])
     make_num_jobs = int(args.get('make_num_jobs', self.DEFAULT_NUM_JOBS))
@@ -43,7 +43,7 @@ class step_make_install(Step):
   def __init__(self):
     super(step_make_install, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     install_target = args.get('install_target', 'install')
     make_install_flags = args.get('make_install_flags', [])
 
@@ -72,7 +72,7 @@ class step_make_test(Step):
   def __init__(self):
     super(step_make_test, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     make_test_flags = args.get('make_test_flags', [])
 
     makefile = args.get('makefile', None)

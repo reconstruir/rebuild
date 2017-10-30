@@ -9,7 +9,7 @@ class step_setup_post_unpack_hook(Step):
   def __init__(self):
     super(step_setup_post_unpack_hook, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     return self.call_hooks(script, env, args, 'post_unpack_hooks')
 
   @classmethod

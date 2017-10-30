@@ -15,7 +15,7 @@ class step_setup_unpack(Step):
   def __init__(self):
     super(step_setup_unpack, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     if args.get('skip_unpack', False):
       return step_result(True, None)
 

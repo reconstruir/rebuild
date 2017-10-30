@@ -12,7 +12,7 @@ class step_setup_patch(Step):
   def __init__(self):
     super(step_setup_patch, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     patches = args.get('patches', None)
     if not patches:
       message = 'No patches for %s' % (script.descriptor.full_name)

@@ -12,7 +12,7 @@ class step_cleanup_binary_filenames(Step):
   def __init__(self):
     super(step_cleanup_binary_filenames, self).__init__()
 
-  def execute_caca(self, script, env, args):
+  def execute(self, script, env, args):
     if not path.isdir(script.stage_bin_dir):
       return step_result(True, None)
       
