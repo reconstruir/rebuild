@@ -11,7 +11,7 @@ from bes.archive import archiver
 from rebuild.packager.unit_test_packaging import unit_test_packaging
 from rebuild.source_finder import local_source_finder, source_finder_chain
 
-class test_packager(unit_test):
+class test_build_script_execute(unit_test):
 
   __unit_test_data_dir__ = 'test_data/packager'
 
