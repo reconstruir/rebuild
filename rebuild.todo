@@ -513,7 +513,3 @@ oct 25
 oct26
 - this shit in a build.py script is impossible to debug
 ''' step_setup_patch, { 'patches': [ 'libpng-zlib.patch' ] } '''
-
-oct 28
-- write unit test for multiple steps input output i think its busted
-
