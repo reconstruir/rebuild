@@ -20,7 +20,7 @@ class test_multiple_steps(unittest.TestCase):
     script = { 'foo': 'hi', 'bar': 666 }
     global_args = { 'food': 'steak', 'drink': 'wine' }
     env = { 'fruit': 'kiwi' }
-    result = three_steps.execute(step_argument(script, env, args = global_args))
+    result = three_steps.execute_caca(script, env, args = global_args)
     self.assertTrue( result.success )
     self.assertEqual( None, result.message )
     self.assertEqual( None, result.failed_step )

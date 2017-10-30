@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import copy, os
+import copy
 from bes.common import dict_util
 from .Step import Step
 from .step_result import step_result
@@ -35,13 +35,11 @@ class multiple_steps(Step):
       args.update(step_class.global_args())
     return args
 
-  def execute(self, args):
+  def execute_caca(self, script, env, args):
     assert self.steps
     output = {}
     for step in self.steps:
-      args = args.clone()
-      args.update_args(output)
-      result = step.call_execute(args)
+      result = step.execute_caca(script, env, dict_util.combine(args, output))
       output.update(result.output or {})
       if not result.success:
         return step_result(False,
@@ -49,9 +47,6 @@ class multiple_steps(Step):
                            failed_step = step,
                            output = output)
     return step_result(True, output = output)
-
-  def execute_caca(self, script, env, args):
-    return self.execute(step_argument(script, env, args = args)) 
   
   def update_args(self, args):
     super(multiple_steps, self).update_args(args)
