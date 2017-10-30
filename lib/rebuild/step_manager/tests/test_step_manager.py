@@ -75,8 +75,8 @@ class test_step_manager(unittest.TestCase):
       super(test_step_manager.SaveArgsStep, self).__init__()
       self.saved_args = None
 
-    def execute(self, argument):
-      self.saved_args = copy.deepcopy(argument.args)
+    def execute_caca(self, script, env, args):
+      self.saved_args = copy.deepcopy(args)
       return step_result(True, None)
 
   def _add_save_args_step(self, sm):
@@ -317,8 +317,8 @@ class %s(Step):
   def __init__(self):
     super(%s, self).__init__()
 
-    def execute(self, argument):
-      self.saved_args = copy.deepcopy(argument.args)
+    def execute_caca(self, script, env, args):
+      self.saved_args = copy.deepcopy(args)
       return %s
 
     @classmethod
