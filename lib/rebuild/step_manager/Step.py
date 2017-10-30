@@ -23,7 +23,7 @@ from .step_registry import step_register
 class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, object)):
 
   #@abstractmethod
-  def execute(self, argument):
+  def execute_caca(self, script, env, args):
     'Execute the step.'
     assert False
     return step_result(False, 'not implemented')
