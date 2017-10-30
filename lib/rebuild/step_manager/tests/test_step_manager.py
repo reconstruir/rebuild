@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 #
 import copy, unittest
-from bes.common import dict_util
+from bes.common import check_type, dict_util
 from test_steps import *
 from rebuild.step_manager import Step, multiple_steps, step_description, step_manager
 
@@ -280,13 +280,55 @@ class test_step_manager(unittest.TestCase):
 #    self.assertEqual( expected_saved_args3, step.steps[2].saved_args )
 
   def test_last_input(self):
+    class step_with_output1(Step):
+      def __init__(self):
+        super(step_with_output1, self).__init__()
+
+      def execute(self, argument):
+        self.saved_args = copy.deepcopy(argument.args)
+        return step_result(True, message = None, output = { 'foo': '5', 'bar': 6 })
+
+    class step_with_output2(Step):
+      def __init__(self):
+        super(step_with_output2, self).__init__()
+
+      def execute(self, argument):
+        self.saved_last_input = argument.last_input
+        return step_result(True, None, output = { 'fruit': 'kiwi' })
+
+    class step_with_output3(Step):
+      def __init__(self):
+        super(step_with_output3, self).__init__()
+
+      def execute(self, argument):
+        self.saved_last_input = argument.last_input
+        return step_result(True, None, output = { 'cheese': 'blue' })
+
+    class step_with_output4(Step):
+      def __init__(self):
+        super(step_with_output4, self).__init__()
+
+      def execute(self, argument):
+        self.saved_last_input = argument.last_input
+        return step_result(True, None)
+
+    sm = step_manager('sm')
+    s1 = sm.add_step(step_description(step_with_output1), {})
+    s2 = sm.add_step(step_description(step_with_output2), {})
+    s3 = sm.add_step(step_description(step_with_output3), {})
+    result = sm.execute({}, {})
+    self.assertTrue( result.success )
+    self.assertEqual( { 'foo': '5', 'bar': 6 }, s2.saved_last_input )
+    self.assertEqual( { 'foo': '5', 'bar': 6, 'fruit': 'kiwi' }, s3.saved_last_input )
+
+  def test_last_input_multi_step(self):
     class step_one(Step):
       def __init__(self):
         super(step_one, self).__init__()
 
       def execute(self, argument):
         self.saved_args = copy.deepcopy(argument.args)
-        return step_result(True, None, output = { 'foo': '5', 'bar': 6 })
+        return step_result(True, message = None, output = { 'foo': '5', 'bar': 6 })
 
     class step_two(Step):
       def __init__(self):
@@ -309,21 +351,36 @@ class test_step_manager(unittest.TestCase):
     s2 = sm.add_step(step_description(step_two), {})
     s3 = sm.add_step(step_description(step_three), {})
     result = sm.execute({}, {})
+    print('result: %s' % (result))
     self.assertTrue( result.success )
     self.assertEqual( { 'foo': '5', 'bar': 6 }, s2.saved_last_input )
     self.assertEqual( { 'foo': '5', 'bar': 6, 'fruit': 'kiwi' }, s3.saved_last_input )
+    
+  @classmethod
+  def _make_step_class(clazz, name,
+                       result_code = 'step_result(True, None)',
+                       parse_step_args_code = '{}'):
+    code = '''
+class %s(Step):
+  def __init__(self):
+    super(%s, self).__init__()
 
-    '''
-    @classmathod
-    def _make_step_class(clazz, name
-    class step_one(Step):
-      def __init__(self):
-        super(step_one, self).__init__()
+    def execute(self, argument):
+      self.saved_args = copy.deepcopy(argument.args)
+      return %s
 
-      def execute(self, argument):
-        self.saved_args = copy.deepcopy(argument.args)
-        return step_result(True, None, output = { 'foo': '5', 'bar': 6 })
-'''
+    @classmethod
+    def parse_step_args(clazz, script, args):
+      return %s
+''' % (name, name, result_code, parse_step_args_code)
+#    print(code)
+    tmp_locals = {}
+    exec(code, globals(), tmp_locals)
+    assert name in tmp_locals
+    result_class = tmp_locals[name]
+    check_type.check_class(result_class, 'result_class')
+    globals()[name] = result_class
+    return result_class
     
 if __name__ == '__main__':
   unittest.main()
