@@ -303,12 +303,12 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
     return dict_util.combine(env_dict, flags_dict)
   
   @classmethod
-  def call_hooks(clazz, argument, name):
-    hooks = argument.args.get(name, [])
+  def call_hooks(clazz, script, env, args, name):
+    hooks = args.get(name, [])
     if not hooks:
       return step_result(True, None)
     for h in hooks:
-      hook_result = h.execute(argument, extra_code = HOOK_EXTRA_CODE)
+      hook_result = h.execute(script, env, args, extra_code = HOOK_EXTRA_CODE)
       if not isinstance(hook_result, step_result):
         raise RuntimeError('hook did not return step_result: %s' % (h))
       if not hook_result.success:

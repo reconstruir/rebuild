@@ -9,5 +9,5 @@ class step_noop(Step):
   def __init__(self):
     super(step_noop, self).__init__()
 
-  def execute(self, argument):
+  def execute_caca(self, script, env, args):
     return step_result(True)

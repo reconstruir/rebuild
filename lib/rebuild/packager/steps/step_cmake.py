@@ -13,20 +13,20 @@ class step_cmake_configure(Step):
   def __init__(self):
     super(step_cmake_configure, self).__init__()
 
-  def execute(self, argument):
-    cmake_flags = argument.args.get('cmake_flags', [])
+  def execute_caca(self, script, env, args):
+    cmake_flags = args.get('cmake_flags', [])
     assert isinstance(cmake_flags, list)
 
-    cmake_env = argument.args.get('cmake_env', {})
+    cmake_env = args.get('cmake_env', {})
     assert isinstance(cmake_env, dict)
 
     cmd = [ 'cmake' ]
-    if argument.script.env.config.verbose:
+    if script.env.config.verbose:
       cmd.append('--debug-output')
     cmd.append('-DCMAKE_INSTALL_PREFIX=$REBUILD_STAGE_PREFIX_DIR')
     cmd.extend(cmake_flags)
-    cmd.append(argument.script.source_unpacked_dir)
-    return self.call_shell(cmd, argument.script, argument.args, extra_env = cmake_env,
+    cmd.append(script.source_unpacked_dir)
+    return self.call_shell(cmd, script, args, extra_env = cmake_env,
                            save_logs = [ 'CMakeFiles/CMakeError.log', 'CMakeFiles/CMakeOutput.log' ])
 
   @classmethod
@@ -48,9 +48,9 @@ class step_cmake_install(Step):
   def __init__(self):
     super(step_cmake_install, self).__init__()
 
-  def execute(self, argument):
+  def execute_caca(self, script, env, args):
     cmd = 'make install prefix=$REBUILD_STAGE_PREFIX_DIR'
-    return self.call_shell(cmd, argument.script, argument.args, None)
+    return self.call_shell(cmd, script, args, None)
 
 class step_cmake(multiple_steps):
   'A complete step to build cmake projects.'

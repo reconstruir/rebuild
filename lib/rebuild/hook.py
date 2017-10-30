@@ -90,10 +90,10 @@ class hook(dependency_provider):
       raise RuntimeError('not callable in %s: %s' % (filename, self._function_name))
     return function
 
-  def execute(self, arg, extra_code = None):
+  def execute(self, script, env, args, extra_code = None):
     if not self._function:
       self._function = self._load(extra_code = extra_code)
-    return self._function(arg)
+    return self._function(script, env, args)
 
   @classmethod
   def is_hook(clazz, o):

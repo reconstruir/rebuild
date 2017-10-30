@@ -5,6 +5,7 @@ import copy, os
 from bes.common import dict_util
 from .Step import Step
 from .step_result import step_result
+from .step_argument import step_argument
 
 class multiple_steps(Step):
 
@@ -49,6 +50,9 @@ class multiple_steps(Step):
                            output = output)
     return step_result(True, output = output)
 
+  def caca_execute(self, script, env, args):
+    return self.execute(step_argument(script, env, args = args)) 
+  
   def update_args(self, args):
     super(multiple_steps, self).update_args(args)
     for step in self.steps:

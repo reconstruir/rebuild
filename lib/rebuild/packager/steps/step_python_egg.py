@@ -13,12 +13,12 @@ class step_python_egg_build(Step):
   def __init__(self):
     super(step_python_egg_build, self).__init__()
 
-  def execute(self, argument):
-    setup_script = argument.args.get('setup_script', self.DEFAULT_SETUP_SCRIPT)
-    setup_dir = argument.args.get('setup_dir', None)
+  def execute_caca(self, script, env, args):
+    setup_script = args.get('setup_script', self.DEFAULT_SETUP_SCRIPT)
+    setup_dir = args.get('setup_dir', None)
     cmd = '${PYTHON} %s bdist_egg --plat-name=${REBUILD_PYTHON_PLATFORM_NAME}' % (setup_script)
-    return self.call_shell(cmd, argument.script, argument.args,
-                           extra_env = argument.args.get('shell_env', {}),
+    return self.call_shell(cmd, script, args,
+                           extra_env = args.get('shell_env', {}),
                            execution_dir = setup_dir)
 
   @classmethod
@@ -31,12 +31,12 @@ class step_python_egg_install(Step):
   def __init__(self):
     super(step_python_egg_install, self).__init__()
 
-  def execute(self, argument):
-    setup_dir = argument.args.get('setup_dir', None)
+  def execute_caca(self, script, env, args):
+    setup_dir = args.get('setup_dir', None)
     if setup_dir:
-      dist_dir = path.join(argument.script.build_dir, setup_dir, 'dist')
+      dist_dir = path.join(script.build_dir, setup_dir, 'dist')
     else:
-      dist_dir = path.join(argument.script.build_dir, 'dist')
+      dist_dir = path.join(script.build_dir, 'dist')
     eggs = setup_tools.list_eggs(dist_dir)
     if len(eggs) == 0:
       return step_result(False, 'No eggs found in %s' % (dist_dir))
@@ -55,7 +55,7 @@ class step_python_egg_install(Step):
     easy_install_cmd = ' '.join(easy_install_cmd_parts)
     cmd_parts = [ mkdir_cmd, easy_install_cmd ]
     cmd = ' && '.join(cmd_parts)
-    return self.call_shell(cmd, argument.script, argument.args, None)
+    return self.call_shell(cmd, script, args, None)
 
 class step_python_egg_check_downloaded_dependencies(Step):
   'Check that the egg build and install process does not Install the egg file produced by step_bdist_egg_build.'
@@ -63,12 +63,12 @@ class step_python_egg_check_downloaded_dependencies(Step):
   def __init__(self):
     super(step_python_egg_check_downloaded_dependencies, self).__init__()
 
-  def execute(self, argument):
-    setup_dir = argument.args.get('setup_dir', None)
+  def execute_caca(self, script, env, args):
+    setup_dir = args.get('setup_dir', None)
     if setup_dir:
-      eggs_build_dir = path.join(argument.script.build_dir, setup_dir, '.eggs')
+      eggs_build_dir = path.join(script.build_dir, setup_dir, '.eggs')
     else:
-      eggs_build_dir = path.join(argument.script.build_dir, '.eggs')
+      eggs_build_dir = path.join(script.build_dir, '.eggs')
     if not path.exists(eggs_build_dir):
       return step_result(True)
     eggs = setup_tools.list_eggs(eggs_build_dir)

@@ -11,7 +11,7 @@ class step_setup_copy_source_to_build_dir(Step):
   def __init__(self):
     super(step_setup_copy_source_to_build_dir, self).__init__()
 
-  def execute(self, argument):
-    if argument.args.get('copy_source_to_build_dir', False):
-      tar_util.copy_tree_with_tar(argument.script.source_unpacked_dir, argument.script.build_dir)
+  def execute_caca(self, script, env, args):
+    if args.get('copy_source_to_build_dir', False):
+      tar_util.copy_tree_with_tar(script.source_unpacked_dir, script.build_dir)
     return step_result(True, None)

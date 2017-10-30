@@ -10,7 +10,7 @@ class step_setup_prepare_environment(Step):
   def __init__(self):
     super(step_setup_prepare_environment, self).__init__()
 
-  def execute(self, argument):
+  def execute_caca(self, script, env, args):
     # We want a clean environment for tools to work
     SystemEnvironment.path_reset()
     return step_result(True, None)

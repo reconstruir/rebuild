@@ -11,8 +11,8 @@ class step_cleanup_droppings(Step):
   def __init__(self):
     super(step_cleanup_droppings, self).__init__()
 
-  def execute(self, argument):
-    droppings = file_find.find_fnmatch(argument.script.stage_dir,
+  def execute_caca(self, script, env, args):
+    droppings = file_find.find_fnmatch(script.stage_dir,
                                        [ '*.bak' ],
                                        relative = False)
     file_util.remove(droppings)

@@ -26,7 +26,7 @@ class test_hook(unit_test):
   def test_execute(self):
     h = hook('myhookfile.py', 'my_hook_func')
     h.root_dir = self.data_dir()
-    self.assertEqual( 'foo:bar', h.execute('bar') )
+    self.assertEqual( 'myhookprivate:script:env:args', h.execute('script', 'env', 'args') )
     
 if __name__ == '__main__':
   unit_test.main()

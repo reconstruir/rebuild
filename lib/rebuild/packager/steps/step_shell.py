@@ -11,12 +11,12 @@ class step_shell(Step):
   def __init__(self):
     super(step_shell, self).__init__()
 
-  def execute(self, argument):
-    cmd = argument.args.get('cmd', None)
+  def execute_caca(self, script, env, args):
+    cmd = args.get('cmd', None)
     assert string_util.is_string(cmd)
-    shell_env = argument.args.get('shell_env', {})
+    shell_env = args.get('shell_env', {})
     self.log_d('step_shell.execute() cmd=%s; shell_env=%s' % (cmd, shell_env))
-    return self.call_shell(cmd, argument.script, argument.args, shell_env)
+    return self.call_shell(cmd, script, args, shell_env)
 
   @classmethod
   def parse_step_args(clazz, script, args):

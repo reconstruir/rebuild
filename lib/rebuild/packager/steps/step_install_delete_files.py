@@ -12,15 +12,15 @@ class step_install_delete_files(Step):
   def __init__(self):
     super(step_install_delete_files, self).__init__()
 
-  def execute(self, argument):
-    delete_files = argument.args.get('delete_files', [])
+  def execute_caca(self, script, env, args):
+    delete_files = args.get('delete_files', [])
     if not delete_files:
-      message = 'No delete_files for %s' % (argument.script.descriptor.full_name)
+      message = 'No delete_files for %s' % (script.descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
-    delete_files_in_stage_dir = [ path.join(argument.script.stage_dir, f) for f in delete_files ]
+    delete_files_in_stage_dir = [ path.join(script.stage_dir, f) for f in delete_files ]
     missing_files = [ f for f in delete_files_in_stage_dir if not path.exists(f) ]
-    ignore_missing = argument.args.get('delete_files_ignore_missing', False)
+    ignore_missing = args.get('delete_files_ignore_missing', False)
     if missing_files and not ignore_missing:
       return step_result(False, 'File(s) to delete not found: %s' % (' '.join(missing_files)))
     file_util.remove(delete_files_in_stage_dir)

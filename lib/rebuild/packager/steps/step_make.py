@@ -16,10 +16,10 @@ class step_make(Step):
   def extra_make_flags(self):
     return []
 
-  def execute(self, argument):
-    makefile = argument.args.get('makefile', None)
-    make_flags = argument.args.get('make_flags', [])
-    make_num_jobs = int(argument.args.get('make_num_jobs', self.DEFAULT_NUM_JOBS))
+  def execute_caca(self, script, env, args):
+    makefile = args.get('makefile', None)
+    make_flags = args.get('make_flags', [])
+    make_num_jobs = int(args.get('make_num_jobs', self.DEFAULT_NUM_JOBS))
     if make_num_jobs < 1:
       raise RuntimeError('make_num_jobs should be between 1 and %d instead of %s' % (self.MAX_NUM_JOBS, make_num_jobs))
     if make_num_jobs > 8:
@@ -31,7 +31,7 @@ class step_make(Step):
     cmd += make_flags
     cmd += self.extra_make_flags()
       
-    return self.call_shell(cmd, argument.script, argument.args, extra_env = argument.args.get('make_env', {}))
+    return self.call_shell(cmd, script, args, extra_env = args.get('make_env', {}))
 
   @classmethod
   def parse_step_args(clazz, script, args):
@@ -43,11 +43,11 @@ class step_make_install(Step):
   def __init__(self):
     super(step_make_install, self).__init__()
 
-  def execute(self, argument):
-    install_target = argument.args.get('install_target', 'install')
-    make_install_flags = argument.args.get('make_install_flags', [])
+  def execute_caca(self, script, env, args):
+    install_target = args.get('install_target', 'install')
+    make_install_flags = args.get('make_install_flags', [])
 
-    makefile = argument.args.get('makefile', None)
+    makefile = args.get('makefile', None)
     if makefile:
       makefile_flags = '-f %s' % (makefile)
     else:
@@ -57,10 +57,10 @@ class step_make_install(Step):
       'make',
       makefile_flags,
       install_target,
-      'prefix=%s' % (argument.script.stage_dir),
+      'prefix=%s' % (script.stage_dir),
       'V=1',
     ] + make_install_flags
-    return self.call_shell(cmd, argument.script, argument.args, extra_env = argument.args.get('make_install_env', {}))
+    return self.call_shell(cmd, script, args, extra_env = args.get('make_install_env', {}))
 
   @classmethod
   def parse_step_args(clazz, script, args):
@@ -72,10 +72,10 @@ class step_make_test(Step):
   def __init__(self):
     super(step_make_test, self).__init__()
 
-  def execute(self, argument):
-    make_test_flags = argument.args.get('make_test_flags', [])
+  def execute_caca(self, script, env, args):
+    make_test_flags = args.get('make_test_flags', [])
 
-    makefile = argument.args.get('makefile', None)
+    makefile = args.get('makefile', None)
     if makefile:
       makefile_flags = '-f %s' % (makefile)
     else:
@@ -87,7 +87,7 @@ class step_make_test(Step):
       'test',
       'V=1',
     ] + make_test_flags
-    return self.call_shell(cmd, argument.script, argument.args, extra_env = argument.args.get('make_test_env', {}))
+    return self.call_shell(cmd, script, args, extra_env = args.get('make_test_env', {}))
 
   @classmethod
   def parse_step_args(clazz, script, args):

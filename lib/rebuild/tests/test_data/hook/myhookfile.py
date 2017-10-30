@@ -1,8 +1,10 @@
 
 def _private():
-  return 'foo'
+  return 'myhookprivate'
 
-def my_hook_func(arg):
-  assert arg
+def my_hook_func(script, env, args):
+  assert script
+  assert env
+  assert args
   global _private
-  return _private() + ':' + arg
+  return _private() + ':' + script + ':' + env + ':' + args

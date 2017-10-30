@@ -9,8 +9,8 @@ class step_setup_post_setup_hook(Step):
   def __init__(self):
     super(step_setup_post_setup_hook, self).__init__()
 
-  def execute(self, argument):
-    return self.call_hooks(argument, 'post_setup_hooks')
+  def execute_caca(self, script, env, args):
+    return self.call_hooks(script, env, args, 'post_setup_hooks')
 
   @classmethod
   def parse_step_args(clazz, script, args):

@@ -16,23 +16,23 @@ class step_pkg_config_make_pc(Step):
   def __init__(self):
     super(step_pkg_config_make_pc, self).__init__()
 
-  def execute(self, argument):
-    pc_files = argument.args.get('pc_files', [])
+  def execute_caca(self, script, env, args):
+    pc_files = args.get('pc_files', [])
     if not pc_files:
-      message = 'No .pc files for %s' % (argument.script.descriptor.full_name)
+      message = 'No .pc files for %s' % (script.descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
 
     replacements = {
-      'REBUILD_PACKAGE_NAME': argument.script.descriptor.name,
-      'REBUILD_PACKAGE_DESCRIPTION': argument.script.descriptor.name,
-      'REBUILD_PACKAGE_VERSION': str(argument.script.descriptor.version),
+      'REBUILD_PACKAGE_NAME': script.descriptor.name,
+      'REBUILD_PACKAGE_DESCRIPTION': script.descriptor.name,
+      'REBUILD_PACKAGE_VERSION': str(script.descriptor.version),
     }
 
-    pc_file_variables = argument.args.get('pc_file_variables', {})
+    pc_file_variables = args.get('pc_file_variables', {})
     replacements.update(pc_file_variables)
     for src_pc in pc_files:
-      dst_dir = path.join(argument.script.stage_dir, 'lib/pkgconfig')
+      dst_dir = path.join( script.stage_dir, 'lib/pkgconfig')
       dst_pc = path.join(dst_dir, path.basename(src_pc))
       file_replace.copy_with_substitute(src_pc, dst_pc, replacements, backup = False)
 

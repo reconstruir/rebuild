@@ -13,14 +13,14 @@ class step_perl_module_setup(Step):
   def __init__(self):
     super(step_perl_module_setup, self).__init__()
 
-  def execute(self, argument):
-    makefile = argument.args.get('makefile', 'Makefile.PL')
+  def execute_caca(self, script, env, args):
+    makefile = args.get('makefile', 'Makefile.PL')
     mkdir_cmd = 'mkdir -p ${REBUILD_STAGE_PYTHON_LIB_DIR}'
     perl_cmd = '${PERL} %s PREFIX=${REBUILD_STAGE_PREFIX_DIR} INSTALLDIRS=perl' % (makefile)
-    perl_env_args = argument.args.get('perl_module_setup_flags', '')
+    perl_env_args = args.get('perl_module_setup_flags', '')
     assert isinstance(perl_env_args, list)
     cmd = '%s && %s %s' % (mkdir_cmd, perl_cmd, ' '.join(perl_env_args))
-    return self.call_shell(cmd, argument.script, argument.args, argument.args.get('perl_module_setup_env', {}))
+    return self.call_shell(cmd, script, args, args.get('perl_module_setup_env', {}))
 
   @classmethod
   def parse_step_args(clazz, script, args):
@@ -32,15 +32,15 @@ class step_perl_module_post_install_cleanup(Step):
   def __init__(self):
     super(step_perl_module_post_install_cleanup, self).__init__()
 
-  def execute(self, argument):
-    bi = argument.script.env.config.build_target
+  def execute_caca(self, script, env, args):
+    bi = script.env.config.build_target
     if not bi.system == System.LINUX:
       return step_result(True)
     return step_result(True)
-    new_path = path.join(argument.script.stage_lib_dir, 'x86_64-linux-gnu')
+    new_path = path.join(script.stage_lib_dir, 'x86_64-linux-gnu')
     if not path.exists(new_path):
       cmd = 'mkdir x86_64-linux-gnu && mv perl x86_64-linux-gnu'
-      Shell.execute(cmd, cwd = argument.script.stage_lib_dir, shell = True)
+      Shell.execute(cmd, cwd = script.stage_lib_dir, shell = True)
     return step_result(True)
 
 class step_perl_module(multiple_steps):

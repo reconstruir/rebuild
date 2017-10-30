@@ -13,14 +13,14 @@ class step_setup_install_requirements(Step):
   def __init__(self):
     super(step_setup_install_requirements, self).__init__()
 
-  def execute(self, argument):
-    package_desc = argument.script.descriptor
+  def execute_caca(self, script, env, args):
+    package_desc = script.descriptor
     build_blurb.blurb('build', '%s - requirements: %s' % (package_desc.name, ' '.join([ t.name for t in package_desc.resolved_requirements ])))
     if not package_desc.resolved_requirements:
-      message = 'No requirements for %s' % (argument.script.descriptor.full_name)
+      message = 'No requirements for %s' % (script.descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
-    argument.script.requirements_manager.install_packages(package_desc.resolved_requirements,
-                                                       argument.script.env.config.build_target,
-                                                       argument.script.env.artifact_manager)
+    script.requirements_manager.install_packages(package_desc.resolved_requirements,
+                                                 script.env.config.build_target,
+                                                 script.env.artifact_manager)
     return step_result(True, None)

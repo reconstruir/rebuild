@@ -12,21 +12,21 @@ class step_setup_patch(Step):
   def __init__(self):
     super(step_setup_patch, self).__init__()
 
-  def execute(self, argument):
-    patches = argument.args.get('patches', None)
+  def execute_caca(self, script, env, args):
+    patches = args.get('patches', None)
     if not patches:
-      message = 'No patches for %s' % (argument.script.descriptor.full_name)
+      message = 'No patches for %s' % (script.descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
 
-    patch_strip_depth = argument.args.get('patch_strip_depth', self.DEFAULT_PATCH_STRIP_DEPTH)
-    patch_program = argument.args.get('patch_program', None)
+    patch_strip_depth = args.get('patch_strip_depth', self.DEFAULT_PATCH_STRIP_DEPTH)
+    patch_program = args.get('patch_program', None)
     
     for patch in patches:
-      self.blurb('Patching with %s at %s' % (patch, argument.script.source_unpacked_dir))
+      self.blurb('Patching with %s at %s' % (patch, script.source_unpacked_dir))
 
     exit_code, msg = Patch.patch(patches,
-                                 argument.script.source_unpacked_dir,
+                                 script.source_unpacked_dir,
                                  strip = patch_strip_depth,
                                  backup = True,
                                  posix = True,

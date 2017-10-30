@@ -22,17 +22,17 @@ class step_hook(object):
       raise RuntimeError('hook is not callable: %s' % (hook.__name__))
   
   @classmethod
-  def call_hook(clazz, hook, argument):
+  def call_hook(clazz, hook, script, env, args):
     clazz.check_hook(hook)
-    hook_result = hook(argument)
+    hook_result = hook(script, env, args)
     if not isinstance(hook_result, step_result):
       raise RuntimeError('hook %s did not return step_result.' % (hook.__name__))
     return hook_result
 
   @classmethod
-  def call_hooks(clazz, hooks, argument):
+  def call_hooks(clazz, hooks, script, env, args):
     for hook in hooks:
-      hook_result = clazz.call_hook(hook, argument)
+      hook_result = clazz.call_hook(hook, script, env, args)
       if not hook_result.success:
         return hook_result
     return step_result(True)
