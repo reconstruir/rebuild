@@ -11,12 +11,12 @@ class step_check_hard_coded_paths(Step):
   def __init__(self):
     super(step_check_hard_coded_paths, self).__init__()
 
-  def execute(self, argument):
+  def execute_caca(self, script, env, args):
     replacements = {
-      argument.script.stage_dir: '${REBUILD_PACKAGE_PREFIX}',
-      argument.script.requirements_manager.installation_dir: '${REBUILD_PACKAGE_PREFIX}',
+      script.stage_dir: '${REBUILD_PACKAGE_PREFIX}',
+      script.requirements_manager.installation_dir: '${REBUILD_PACKAGE_PREFIX}',
     }
-    file_search.search_replace(argument.script.stage_dir,
+    file_search.search_replace(script.stage_dir,
                                replacements,
                                backup = False,
                                test_func = file_mime.is_text)

@@ -9,5 +9,5 @@ class step_abort(Step):
   def __init__(self):
     super(step_abort, self).__init__()
 
-  def execute(self, argument):
+  def execute_caca(self, script, env, args):
     raise step_aborted()

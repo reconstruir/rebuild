@@ -21,14 +21,14 @@ class step_check_darwin_archs(Step):
         return False
     return True
 
-  def execute(self, argument):
-    if not argument.script.env.config.build_target.is_darwin():
+  def execute_caca(self, script, env, args):
+    if not script.env.config.build_target.is_darwin():
       return step_result(True, None)
-    if argument.script.descriptor.category != Category.LIB:
+    if script.descriptor.category != Category.LIB:
       return step_result(True, None)
-    if path.isdir(argument.script.stage_lib_dir):
-      expected_archs = argument.script.env.config.build_target.archs
-      for lib in library.list_libraries(argument.script.stage_lib_dir, relative = False):
+    if path.isdir(script.stage_lib_dir):
+      expected_archs = script.env.config.build_target.archs
+      for lib in library.list_libraries(script.stage_lib_dir, relative = False):
         actual_archs = Lipo.archs(lib)
         if not self.__matches(expected_archs, actual_archs):
           expected_label = ','.join(expected_archs)
@@ -37,7 +37,7 @@ class step_check_darwin_archs(Step):
           else:
             actual_label = 'None'
           msg = 'Expected archs for %s dont match.  Should be \"%s\" instead if \"%s\"' % (lib, expected_label, actual_label)
-          if argument.args.get('ignore_check_darwin_archs', False):
+          if args.get('ignore_check_darwin_archs', False):
             return step_result(True, None)
           else:
             return step_result(False, msg)

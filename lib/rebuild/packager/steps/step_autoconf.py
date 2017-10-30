@@ -11,26 +11,26 @@ class step_autoconf_configure(Step):
   def __init__(self):
     super(step_autoconf_configure, self).__init__()
 
-  def execute(self, argument):
+  def execute_caca(self, script, env, args):
 
-    configure_flags = argument.args.get('configure_flags', [])
+    configure_flags = args.get('configure_flags', [])
     assert isinstance(configure_flags, list)
 
-    configure_env = argument.args.get('configure_env', {})
+    configure_env = args.get('configure_env', {})
     assert isinstance(configure_env, dict)
 
-    configure_script = argument.args.get('configure_script', 'configure')
+    configure_script = args.get('configure_script', 'configure')
 
-    need_autoreconf = argument.args.get('need_autoreconf', False)
+    need_autoreconf = args.get('need_autoreconf', False)
     if need_autoreconf:
       autoreconf_cmd = [ 'autoreconf', '-i' ]
     else:
       autoreconf_cmd = None
       
-    configure_script_path = path.join(argument.script.source_unpacked_dir, configure_script)
+    configure_script_path = path.join(script.source_unpacked_dir, configure_script)
     configure_cmd = [
       configure_script_path,
-      '--prefix=%s' % (argument.script.stage_dir),
+      '--prefix=%s' % (script.stage_dir),
     ] + configure_flags
 
     if autoreconf_cmd:
@@ -38,7 +38,7 @@ class step_autoconf_configure(Step):
     else:
       cmd = configure_cmd
 
-    return self.call_shell(cmd, argument.script, argument.args, configure_env,
+    return self.call_shell(cmd, script, args, configure_env,
                            save_logs = [ 'config.log', 'config.status' ])
 
   @classmethod
