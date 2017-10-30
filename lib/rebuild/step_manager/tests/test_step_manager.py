@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
-#
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
+
 import copy, unittest
 from bes.common import check_type, dict_util
 from test_steps import *
@@ -279,7 +279,7 @@ class test_step_manager(unittest.TestCase):
 #    self.assertEqual( expected_saved_args2, step.steps[1].saved_args )
 #    self.assertEqual( expected_saved_args3, step.steps[2].saved_args )
 
-  def test_last_input(self):
+  def test_output_goes_to_next_step_args(self):
     sm = step_manager('sm')
     s1 = sm.add_step(step_description(step_with_output1), {})
     s2 = sm.add_step(step_description(step_with_output2), {})
@@ -287,9 +287,10 @@ class test_step_manager(unittest.TestCase):
     s4 = sm.add_step(step_description(step_with_output4), {})
     result = sm.execute({}, {})
     self.assertTrue( result.success )
-    self.assertEqual( { 'foo': '5', 'bar': 6 }, s2.saved_last_input )
-    self.assertEqual( { 'foo': '5', 'bar': 6, 'fruit': 'kiwi' }, s3.saved_last_input )
-    self.assertEqual( { 'cheese': 'blue', 'foo': '5', 'bar': 6, 'fruit': 'kiwi' }, s4.saved_last_input )
+    self.assertEqual( {}, s1.saved_args )
+    self.assertEqual( { 'foo': '5', 'bar': 6 }, s2.saved_args )
+    self.assertEqual( { 'foo': '5', 'bar': 6, 'fruit': 'kiwi' }, s3.saved_args )
+    self.assertEqual( { 'cheese': 'blue', 'foo': '5', 'bar': 6, 'fruit': 'kiwi' }, s4.saved_args )
     self.assertEqual( { 'drink': 'bourbon', 'cheese': 'blue', 'foo': '5', 'bar': 6, 'fruit': 'kiwi' }, result.output)
 
   class multi_step_with_steps_that_output(multiple_steps):
@@ -297,15 +298,15 @@ class test_step_manager(unittest.TestCase):
     def __init__(self):
       super(test_step_manager.multi_step_with_steps_that_output, self).__init__()
     
-  def test_last_input_multi_step(self):
+  def test_output_goes_to_next_step_args_multi_step(self):
     sm = step_manager('sm')
     s = sm.add_step(step_description(self.multi_step_with_steps_that_output), {})
     result = sm.execute({}, {})
     self.assertTrue( result.success )
-    self.assertEqual( { 'foo': '5', 'bar': 6 }, s.steps[1].saved_last_input )
-    self.assertEqual( { 'foo': '5', 'bar': 6, 'fruit': 'kiwi' }, s.steps[2].saved_last_input )
-    self.assertEqual( { 'cheese': 'blue', 'foo': '5', 'bar': 6, 'fruit': 'kiwi' }, s.steps[3].saved_last_input )
-    self.assertEqual( { 'cheese': 'blue', 'foo': '5', 'bar': 6, 'fruit': 'kiwi' }, s.steps[3].saved_last_input )
+    self.assertEqual( {}, s.steps[0].saved_args )
+    self.assertEqual( { 'foo': '5', 'bar': 6 }, s.steps[1].saved_args )
+    self.assertEqual( { 'foo': '5', 'bar': 6, 'fruit': 'kiwi' }, s.steps[2].saved_args )
+    self.assertEqual( { 'cheese': 'blue', 'foo': '5', 'bar': 6, 'fruit': 'kiwi' }, s.steps[3].saved_args )
     
   @classmethod
   def _make_step_class(clazz, name,

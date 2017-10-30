@@ -127,7 +127,7 @@ class step_with_output2(Step):
     super(step_with_output2, self).__init__()
 
   def execute(self, argument):
-    self.saved_last_input = argument.last_input
+    self.saved_args = copy.deepcopy(argument.args)
     return step_result(True, None, output = { 'fruit': 'kiwi' })
 
 class step_with_output3(Step):
@@ -135,7 +135,7 @@ class step_with_output3(Step):
     super(step_with_output3, self).__init__()
 
   def execute(self, argument):
-    self.saved_last_input = argument.last_input
+    self.saved_args = copy.deepcopy(argument.args)
     return step_result(True, None, output = { 'cheese': 'blue' })
 
 class step_with_output4(Step):
@@ -143,6 +143,6 @@ class step_with_output4(Step):
     super(step_with_output4, self).__init__()
 
   def execute(self, argument):
-    self.saved_last_input = argument.last_input
+    self.saved_args = copy.deepcopy(argument.args)
     return step_result(True, None, output = { 'drink': 'bourbon' })
   

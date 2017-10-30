@@ -53,8 +53,8 @@ class step_manager(object):
   def execute(self, script, args):
     output = {}
     for step in self._steps:
-      step_args = dict_util.combine(args, step.args)
-      arg = step_argument(script, env = {}, args = step_args, last_input = output)
+      step_args = dict_util.combine(args, step.args, output)
+      arg = step_argument(script, env = {}, args = step_args)
 #      try:
       result = step.execute(arg)
 #      except Exception, ex:

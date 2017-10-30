@@ -39,7 +39,7 @@ class multiple_steps(Step):
     output = {}
     for step in self.steps:
       args = args.clone()
-      args.update_last_input(output)
+      args.update_args(output)
       result = step.execute(args)
       output.update(result.output or {})
       if not result.success:

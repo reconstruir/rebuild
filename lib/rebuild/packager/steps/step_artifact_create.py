@@ -47,7 +47,7 @@ class step_artifact_create_check_package(Step):
     super(step_artifact_create_check_package, self).__init__()
 
   def execute(self, argument):
-    staged_tarball = argument.last_input.get('staged_tarball', None)
+    staged_tarball = argument.args.get('staged_tarball', None)
     assert staged_tarball
     assert archiver.is_valid(staged_tarball)
     unpack_dir = path.join(argument.script.check_dir, 'unpacked')
@@ -78,7 +78,7 @@ class step_artifact_create_test_package(Step):
       self.log_d(message)
       return step_result(True, message)
 
-    staged_tarball = argument.last_input.get('staged_tarball', None)
+    staged_tarball = argument.args.get('staged_tarball', None)
     if not staged_tarball or not path.isfile(staged_tarball):
       message = 'Missing staged tarball for %s: ' % (str(argument.script.descriptor))
       self.log_d(message)
@@ -111,7 +111,7 @@ class step_artifact_create_publish_package(Step):
     super(step_artifact_create_publish_package, self).__init__()
 
   def execute(self, argument):
-    staged_tarball = argument.last_input.get('staged_tarball', None)
+    staged_tarball = argument.args.get('staged_tarball', None)
     assert staged_tarball
     assert archiver.is_valid(staged_tarball)
     published_tarball = argument.script.env.artifact_manager.publish(staged_tarball, argument.script.env.config.build_target)

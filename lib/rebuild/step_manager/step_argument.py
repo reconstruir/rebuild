@@ -6,7 +6,7 @@ import copy
 
 class step_argument(object):
 
-  def __init__(self, script, env, args = {}, last_input = {}):
+  def __init__(self, script, env, args = {}):
     if script is None:
       raise RuntimeError('script cannot be None.')
     if env is None:
@@ -14,15 +14,10 @@ class step_argument(object):
     self.script = script
     self.env = env
     check_type.check_dict(args, 'args')
-    check_type.check_dict(last_input, 'last_input')
     self.args = copy.deepcopy(args)
-    self.last_input = copy.deepcopy(last_input)
 
   def clone(self):
-    return step_argument(self.script, self.env, args = self.args, last_input = self.last_input)
+    return step_argument(self.script, self.env, args = self.args)
 
   def update_args(self, args):
     self.args.update(args or {})
-
-  def update_last_input(self, last_input):
-    self.last_input.update(last_input or {})
