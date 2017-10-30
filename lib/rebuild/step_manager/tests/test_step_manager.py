@@ -279,47 +279,49 @@ class test_step_manager(unittest.TestCase):
 #    self.assertEqual( expected_saved_args2, step.steps[1].saved_args )
 #    self.assertEqual( expected_saved_args3, step.steps[2].saved_args )
 
+  class step_with_output1(Step):
+    def __init__(self):
+      super(test_step_manager.step_with_output1, self).__init__()
+
+    def execute(self, argument):
+      self.saved_args = copy.deepcopy(argument.args)
+      return step_result(True, message = None, output = { 'foo': '5', 'bar': 6 })
+
+  class step_with_output2(Step):
+    def __init__(self):
+      super(test_step_manager.step_with_output2, self).__init__()
+
+    def execute(self, argument):
+      self.saved_last_input = argument.last_input
+      return step_result(True, None, output = { 'fruit': 'kiwi' })
+
+  class step_with_output3(Step):
+    def __init__(self):
+      super(test_step_manager.step_with_output3, self).__init__()
+
+    def execute(self, argument):
+      self.saved_last_input = argument.last_input
+      return step_result(True, None, output = { 'cheese': 'blue' })
+
+  class step_with_output4(Step):
+    def __init__(self):
+      super(test_step_manager.step_with_output4, self).__init__()
+
+    def execute(self, argument):
+      self.saved_last_input = argument.last_input
+      return step_result(True, None)
+
   def test_last_input(self):
-    class step_with_output1(Step):
-      def __init__(self):
-        super(step_with_output1, self).__init__()
-
-      def execute(self, argument):
-        self.saved_args = copy.deepcopy(argument.args)
-        return step_result(True, message = None, output = { 'foo': '5', 'bar': 6 })
-
-    class step_with_output2(Step):
-      def __init__(self):
-        super(step_with_output2, self).__init__()
-
-      def execute(self, argument):
-        self.saved_last_input = argument.last_input
-        return step_result(True, None, output = { 'fruit': 'kiwi' })
-
-    class step_with_output3(Step):
-      def __init__(self):
-        super(step_with_output3, self).__init__()
-
-      def execute(self, argument):
-        self.saved_last_input = argument.last_input
-        return step_result(True, None, output = { 'cheese': 'blue' })
-
-    class step_with_output4(Step):
-      def __init__(self):
-        super(step_with_output4, self).__init__()
-
-      def execute(self, argument):
-        self.saved_last_input = argument.last_input
-        return step_result(True, None)
-
     sm = step_manager('sm')
-    s1 = sm.add_step(step_description(step_with_output1), {})
-    s2 = sm.add_step(step_description(step_with_output2), {})
-    s3 = sm.add_step(step_description(step_with_output3), {})
+    s1 = sm.add_step(step_description(self.step_with_output1), {})
+    s2 = sm.add_step(step_description(self.step_with_output2), {})
+    s3 = sm.add_step(step_description(self.step_with_output3), {})
+    s4 = sm.add_step(step_description(self.step_with_output4), {})
     result = sm.execute({}, {})
     self.assertTrue( result.success )
     self.assertEqual( { 'foo': '5', 'bar': 6 }, s2.saved_last_input )
     self.assertEqual( { 'foo': '5', 'bar': 6, 'fruit': 'kiwi' }, s3.saved_last_input )
+    self.assertEqual( { 'cheese': 'blue', 'foo': '5', 'bar': 6, 'fruit': 'kiwi' }, s4.saved_last_input )
 
   def test_last_input_multi_step(self):
     class step_one(Step):
