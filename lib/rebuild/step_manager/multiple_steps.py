@@ -36,17 +36,18 @@ class multiple_steps(Step):
 
   def execute(self, args):
     assert self.steps
-    cloned_args = args.clone()
+    output = {}
     for step in self.steps:
-      import inspect
-      result = step.execute(cloned_args)
-      cloned_args.update_last_input(result.output)
+      args = args.clone()
+      args.update_last_input(output)
+      result = step.execute(args)
+      output.update(result.output or {})
       if not result.success:
         return step_result(False,
                            message = result.message,
                            failed_step = step,
-                           output = cloned_args.output)
-    return step_result(True, output = cloned_args.last_input)
+                           output = output)
+    return step_result(True, output = output)
 
   def update_args(self, args):
     super(multiple_steps, self).update_args(args)

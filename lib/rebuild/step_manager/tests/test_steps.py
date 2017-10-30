@@ -113,3 +113,36 @@ class sample_step_save_args_with_global_args3(sample_step_save_args3):
   }
   def __init__(self):
     super(sample_step_save_args_with_global_args3, self).__init__()
+
+class step_with_output1(Step):
+  def __init__(self):
+    super(step_with_output1, self).__init__()
+
+  def execute(self, argument):
+    self.saved_args = copy.deepcopy(argument.args)
+    return step_result(True, message = None, output = { 'foo': '5', 'bar': 6 })
+
+class step_with_output2(Step):
+  def __init__(self):
+    super(step_with_output2, self).__init__()
+
+  def execute(self, argument):
+    self.saved_last_input = argument.last_input
+    return step_result(True, None, output = { 'fruit': 'kiwi' })
+
+class step_with_output3(Step):
+  def __init__(self):
+    super(step_with_output3, self).__init__()
+
+  def execute(self, argument):
+    self.saved_last_input = argument.last_input
+    return step_result(True, None, output = { 'cheese': 'blue' })
+
+class step_with_output4(Step):
+  def __init__(self):
+    super(step_with_output4, self).__init__()
+
+  def execute(self, argument):
+    self.saved_last_input = argument.last_input
+    return step_result(True, None, output = { 'drink': 'bourbon' })
+  
