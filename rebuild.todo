@@ -513,6 +513,3 @@ oct 25
 oct26
 - this shit in a build.py script is impossible to debug
 ''' step_setup_patch, { 'patches': [ 'libpng-zlib.patch' ] } '''
-
-oct29
-- fix test_packager.py its commented out

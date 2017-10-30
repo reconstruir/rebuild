@@ -16,7 +16,6 @@ class step_artifact_create_make_package(Step):
 
   def execute(self, script, env, args):
     assert 'output_tarball_path' in args
-    print('env: %s - %s' % (env, type(env)))
     staged_tarball = script.requirements_manager.create_package(args['output_tarball_path'],
                                                                 script.descriptor,
                                                                 env.config.build_target,

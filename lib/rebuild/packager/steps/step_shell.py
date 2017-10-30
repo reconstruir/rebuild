@@ -16,7 +16,7 @@ class step_shell(Step):
     assert string_util.is_string(cmd)
     shell_env = args.get('shell_env', {})
     self.log_d('step_shell.execute() cmd=%s; shell_env=%s' % (cmd, shell_env))
-    return self.call_shell(cmd, script, args, shell_env)
+    return self.call_shell(cmd, script, args, extra_env = shell_env)
 
   @classmethod
   def parse_step_args(clazz, script, args):

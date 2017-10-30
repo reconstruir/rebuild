@@ -55,7 +55,7 @@ class step_python_egg_install(Step):
     easy_install_cmd = ' '.join(easy_install_cmd_parts)
     cmd_parts = [ mkdir_cmd, easy_install_cmd ]
     cmd = ' && '.join(cmd_parts)
-    return self.call_shell(cmd, script, args, None)
+    return self.call_shell(cmd, script, args)
 
 class step_python_egg_check_downloaded_dependencies(Step):
   'Check that the egg build and install process does not Install the egg file produced by step_bdist_egg_build.'

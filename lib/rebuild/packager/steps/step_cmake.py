@@ -50,7 +50,7 @@ class step_cmake_install(Step):
 
   def execute(self, script, env, args):
     cmd = 'make install prefix=$REBUILD_STAGE_PREFIX_DIR'
-    return self.call_shell(cmd, script, args, None)
+    return self.call_shell(cmd, script, args)
 
 class step_cmake(multiple_steps):
   'A complete step to build cmake projects.'
