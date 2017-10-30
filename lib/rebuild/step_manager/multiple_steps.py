@@ -50,7 +50,7 @@ class multiple_steps(Step):
                            output = output)
     return step_result(True, output = output)
 
-  def caca_execute(self, script, env, args):
+  def execute_caca(self, script, env, args):
     return self.execute(step_argument(script, env, args = args)) 
   
   def update_args(self, args):
