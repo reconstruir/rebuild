@@ -38,7 +38,7 @@ class step_autoconf_configure(Step):
     else:
       cmd = configure_cmd
 
-    return self.call_shell(cmd, script, args,
+    return self.call_shell(cmd, script, env, args,
                            extra_env = configure_env,
                            save_logs = [ 'config.log', 'config.status' ])
 

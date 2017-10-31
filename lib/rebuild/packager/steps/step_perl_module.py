@@ -20,7 +20,7 @@ class step_perl_module_setup(Step):
     perl_env_args = args.get('perl_module_setup_flags', '')
     assert isinstance(perl_env_args, list)
     cmd = '%s && %s %s' % (mkdir_cmd, perl_cmd, ' '.join(perl_env_args))
-    return self.call_shell(cmd, script, args, extra_env = args.get('perl_module_setup_env'))
+    return self.call_shell(cmd, script, env, args, extra_env = args.get('perl_module_setup_env'))
 
   @classmethod
   def parse_step_args(clazz, script, env, args):

@@ -157,7 +157,7 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
       build_blurb.blurb_verbose('build', '%s(%s): %s=%s' % (label, package_name, key, value))
   
   @classmethod
-  def call_shell(clazz, command, script, args, extra_env = None, save_logs = None, execution_dir = None):
+  def call_shell(clazz, command, script, env, args, extra_env = None, save_logs = None, execution_dir = None):
     command = Shell.listify_command(command)
     command = [ part for part in command if part ]
     extra_env = extra_env or {}

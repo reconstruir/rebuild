@@ -26,7 +26,7 @@ class step_cmake_configure(Step):
     cmd.append('-DCMAKE_INSTALL_PREFIX=$REBUILD_STAGE_PREFIX_DIR')
     cmd.extend(cmake_flags)
     cmd.append(script.source_unpacked_dir)
-    return self.call_shell(cmd, script, args, extra_env = cmake_env,
+    return self.call_shell(cmd, script, env, args, extra_env = cmake_env,
                            save_logs = [ 'CMakeFiles/CMakeError.log', 'CMakeFiles/CMakeOutput.log' ])
 
   @classmethod
@@ -50,7 +50,7 @@ class step_cmake_install(Step):
 
   def execute(self, script, env, args):
     cmd = 'make install prefix=$REBUILD_STAGE_PREFIX_DIR'
-    return self.call_shell(cmd, script, args)
+    return self.call_shell(cmd, script, env, args)
 
 class step_cmake(multiple_steps):
   'A complete step to build cmake projects.'

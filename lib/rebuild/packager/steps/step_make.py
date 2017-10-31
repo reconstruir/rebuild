@@ -31,7 +31,7 @@ class step_make(Step):
     cmd += make_flags
     cmd += self.extra_make_flags()
       
-    return self.call_shell(cmd, script, args, extra_env = args.get('make_env', {}))
+    return self.call_shell(cmd, script, env, args, extra_env = args.get('make_env', {}))
 
   @classmethod
   def parse_step_args(clazz, script, env, args):
@@ -60,7 +60,7 @@ class step_make_install(Step):
       'prefix=%s' % (script.stage_dir),
       'V=1',
     ] + make_install_flags
-    return self.call_shell(cmd, script, args, extra_env = args.get('make_install_env', {}))
+    return self.call_shell(cmd, script, env, args, extra_env = args.get('make_install_env', {}))
 
   @classmethod
   def parse_step_args(clazz, script, env, args):
@@ -87,7 +87,7 @@ class step_make_test(Step):
       'test',
       'V=1',
     ] + make_test_flags
-    return self.call_shell(cmd, script, args, extra_env = args.get('make_test_env', {}))
+    return self.call_shell(cmd, script, env, args, extra_env = args.get('make_test_env', {}))
 
   @classmethod
   def parse_step_args(clazz, script, env, args):

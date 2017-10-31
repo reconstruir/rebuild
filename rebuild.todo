@@ -513,3 +513,6 @@ oct 25
 oct26
 - this shit in a build.py script is impossible to debug
 ''' step_setup_patch, { 'patches': [ 'libpng-zlib.patch' ] } '''
+
+oct 31
+- change call_shell() extra_env to shell_env
