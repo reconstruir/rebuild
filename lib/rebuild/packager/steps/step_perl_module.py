@@ -33,8 +33,8 @@ class step_perl_module_post_install_cleanup(Step):
     super(step_perl_module_post_install_cleanup, self).__init__()
 
   def execute(self, script, env, args):
-    bi = script.env.config.build_target
-    if not bi.system == System.LINUX:
+    bt = env.config.build_target
+    if not bt.system == System.LINUX:
       return step_result(True)
     return step_result(True)
     new_path = path.join(script.stage_lib_dir, 'x86_64-linux-gnu')

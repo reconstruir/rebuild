@@ -34,7 +34,7 @@ class step_artifact_create_make_package(Step):
     output_tarball_path = args.get('output_tarball_path', None)
     if not output_tarball_path:
       output_tarball_path = clazz._default_output_tarball_path(script, args)
-    output_artifact_path = script.env.artifact_manager.artifact_path(script.descriptor, script.env.config.build_target)
+    output_artifact_path = env.artifact_manager.artifact_path(script.descriptor, env.config.build_target)
     return { 
       'output_tarball_path': output_tarball_path,
       'output_artifact_path': output_artifact_path,

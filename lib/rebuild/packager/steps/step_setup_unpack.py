@@ -48,9 +48,9 @@ class step_setup_unpack(Step):
     if not tarballs_dict or 'tarballs' not in tarballs_dict:
       tarball_name = args.get('tarball_name', script.descriptor.name)
 
-      tarball = script.env.source_finder.find_source(tarball_name,
-                                                             script.descriptor.version.upstream_version,
-                                                             script.env.config.build_target.system)
+      tarball = env.source_finder.find_source(tarball_name,
+                                              script.descriptor.version.upstream_version,
+                                              env.config.build_target.system)
       if tarball:
         tarballs_dict = { 'tarballs': [ tarball ] }
       else:
