@@ -322,7 +322,7 @@ class %s(Step):
       return %s
 
     @classmethod
-    def parse_step_args(clazz, script, args):
+    def parse_step_args(clazz, script, env, args):
       return %s
 ''' % (name, name, result_code, parse_step_args_code)
 #    print(code)

@@ -34,7 +34,7 @@ class step_make(Step):
     return self.call_shell(cmd, script, args, extra_env = args.get('make_env', {}))
 
   @classmethod
-  def parse_step_args(clazz, script, args):
+  def parse_step_args(clazz, script, env, args):
     return clazz.resolve_step_args_env_and_flags(script, args, 'make_env', 'make_flags')
 
 class step_make_install(Step):
@@ -63,7 +63,7 @@ class step_make_install(Step):
     return self.call_shell(cmd, script, args, extra_env = args.get('make_install_env', {}))
 
   @classmethod
-  def parse_step_args(clazz, script, args):
+  def parse_step_args(clazz, script, env, args):
     return clazz.resolve_step_args_env_and_flags(script, args, 'make_install_env', 'make_install_flags')
 
 class step_make_test(Step):
@@ -90,7 +90,7 @@ class step_make_test(Step):
     return self.call_shell(cmd, script, args, extra_env = args.get('make_test_env', {}))
 
   @classmethod
-  def parse_step_args(clazz, script, args):
+  def parse_step_args(clazz, script, env, args):
     return clazz.resolve_step_args_env_and_flags(script, args, 'make_test_env', 'make_test_flags')
 
 class step_make_caca(multiple_steps):

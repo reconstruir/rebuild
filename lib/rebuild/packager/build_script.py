@@ -53,7 +53,7 @@ class build_script(object):
     
   def _add_steps(self):
     try:
-      self._step_manager.add_steps(self.steps, self)
+      self._step_manager.add_steps(self.steps, self, self.env)
     except Exception as ex:
       print(('Caught exception loading script: %s' % (self.filename)))
       raise

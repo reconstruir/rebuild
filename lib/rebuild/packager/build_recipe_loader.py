@@ -4,22 +4,15 @@
 import copy, os.path as path
 from collections import namedtuple
 
-#from bes.system import log
-from bes.common import check_type #algorithm, object_util
-#from bes.fs import file_checksum
+from bes.common import check_type
 from bes.python import code
 
 from rebuild import package_descriptor
-#from rebuild import build_arch, build_type, package_descriptor
-#from rebuild import build_blurb
 from rebuild import instruction_list
-#from rebuild import platform_specific_config as psc
-#from rebuild.dependency import dependency_provider
 from rebuild.hook_extra_code import HOOK_EXTRA_CODE
-from rebuild.step_manager import step_description#, step_manager
+from rebuild.step_manager import step_description
 
 from .build_recipe_env import build_recipe_env
-#from .packager_env import packager_env
 
 class build_recipe_loader(object):
 
@@ -36,10 +29,6 @@ class build_recipe_loader(object):
       scripts.append(script)
     return scripts
 
-#  @classmethod
-#  def _load_from_recipe(clazz, recipe):
-    
-    
   @classmethod
   def _load_from_dict(clazz, recipe, filename):
     properties = clazz._load_properties(recipe)

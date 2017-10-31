@@ -21,10 +21,10 @@ class multiple_steps(Step):
       self.steps.append(step)
 
   @classmethod
-  def parse_step_args(clazz, script, args):
+  def parse_step_args(clazz, script, env, args):
     args = copy.deepcopy(args)
     for step_class in clazz.step_classes:
-      parsed_args = step_class.parse_step_args(script, args)
+      parsed_args = step_class.parse_step_args(script, env, args)
       args.update(parsed_args)
     return args
 

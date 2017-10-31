@@ -30,7 +30,7 @@ class step_cmake_configure(Step):
                            save_logs = [ 'CMakeFiles/CMakeError.log', 'CMakeFiles/CMakeOutput.log' ])
 
   @classmethod
-  def parse_step_args(clazz, script, args):
+  def parse_step_args(clazz, script, env, args):
     return clazz.resolve_step_args_env_and_flags(script, args, 'cmake_env', 'cmake_flags')
 
 class step_cmake_make(step_make):

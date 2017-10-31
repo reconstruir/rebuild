@@ -23,7 +23,7 @@ class step_perl_module_setup(Step):
     return self.call_shell(cmd, script, args, extra_env = args.get('perl_module_setup_env'))
 
   @classmethod
-  def parse_step_args(clazz, script, args):
+  def parse_step_args(clazz, script, env, args):
     return clazz.resolve_step_args_env_and_flags(script, args, 'perl_module_setup_env', 'perl_module_setup_flags')
 
 class step_perl_module_post_install_cleanup(Step):

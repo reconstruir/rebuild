@@ -37,7 +37,7 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
 #    self.log_d('%s: Step.__init__() args=%s' % (self, self._args))
     
   @classmethod
-  def parse_step_args(clazz, script, args):
+  def parse_step_args(clazz, script, env, args):
     result = copy.deepcopy(clazz.global_args())
 #    self.log_d('%s: Step.parse_step_args() global_args=%s' % (clazz, result))
     if args:

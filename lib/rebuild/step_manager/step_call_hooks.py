@@ -14,5 +14,5 @@ class step_call_hooks(Step):
     return self.call_hooks(script, env, args, self.HOOKS_NAMES)
 
   @classmethod
-  def parse_step_args(clazz, packager_env, args):
-    return clazz.resolve_step_args_list(packager_env, args, clazz.HOOKS_NAMES)
+  def parse_step_args(clazz, script, env, args):
+    return clazz.resolve_step_args_list(script, args, clazz.HOOKS_NAMES)

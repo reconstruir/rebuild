@@ -35,7 +35,7 @@ class step_setup_unpack(Step):
     return [ 'tarballs', 'extra_tarballs' ]
 
   @classmethod
-  def parse_step_args(clazz, script, args):
+  def parse_step_args(clazz, script, env, args):
     tarball_source_dir_override_args = clazz.resolve_step_args_dir(script, args, 'tarball_source_dir_override')
     if tarball_source_dir_override_args:
       tarball_source_dir_override = tarball_source_dir_override_args['tarball_source_dir_override']

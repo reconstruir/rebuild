@@ -30,7 +30,7 @@ class step_artifact_create_make_package(Step):
     return path.join(script.artifact_stage_dir, script.descriptor.tarball_filename)
 
   @classmethod
-  def parse_step_args(clazz, script, args):
+  def parse_step_args(clazz, script, env, args):
     output_tarball_path = args.get('output_tarball_path', None)
     if not output_tarball_path:
       output_tarball_path = clazz._default_output_tarball_path(script, args)
@@ -101,7 +101,7 @@ class step_artifact_create_test_package(Step):
     return [ 'tests' ]
 
   @classmethod
-  def parse_step_args(clazz, script, args):
+  def parse_step_args(clazz, script, env, args):
     return clazz.resolve_step_args_files(script, args, 'tests')
 
 class step_artifact_create_publish_package(Step):

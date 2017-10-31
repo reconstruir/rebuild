@@ -22,7 +22,7 @@ class step_python_egg_build(Step):
                            execution_dir = setup_dir)
 
   @classmethod
-  def parse_step_args(clazz, script, args):
+  def parse_step_args(clazz, script, env, args):
     return clazz.resolve_step_args_env_and_flags(script, args, 'shell_env', None)
 
 class step_python_egg_install(Step):

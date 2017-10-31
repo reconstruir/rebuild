@@ -19,7 +19,7 @@ class step_shell(Step):
     return self.call_shell(cmd, script, args, extra_env = shell_env)
 
   @classmethod
-  def parse_step_args(clazz, script, args):
+  def parse_step_args(clazz, script, env, args):
     result = clazz.resolve_step_args_env_and_flags(script, args, 'shell_env', None)
     assert 'cmd' in args
     result['cmd'] = args['cmd']
