@@ -16,19 +16,20 @@ class step_setup_unpack(Step):
     super(step_setup_unpack, self).__init__()
 
   def execute(self, script, env, args):
-    if args.get('skip_unpack', False):
-      return step_result(True, None)
 
     downloaded_tarballs = args.get('downloaded_tarballs', [])
     extra_tarballs = args.get('extra_tarballs', [])
     tarballs = args.get('tarballs', []) + extra_tarballs + downloaded_tarballs
     if not tarballs:
       return step_result(False, 'No tarballs found for %s.' % (script.descriptor.full_name))
-      
+
+    if args.get('skip_unpack', False):
+      return step_result(True, None, output = { 'tarballs': tarballs })
+    
     for tarball in tarballs:
       self.blurb('Extracting %s' % (tarball))
     TarballUtil.extract(tarballs, script.working_dir, 'source', True)
-    return step_result(True, None)
+    return step_result(True, None, output = { 'tarballs': tarballs })
 
   def sources_keys(self):
     return [ 'tarballs', 'extra_tarballs' ]
