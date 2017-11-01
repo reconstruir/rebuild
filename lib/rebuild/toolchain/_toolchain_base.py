@@ -6,10 +6,18 @@ from bes.system.compat import with_metaclass
 
 class _toolchain_base(with_metaclass(ABCMeta, object)):
 
+  def __init__(self, build_target):
+    self.build_target = build_target
+    
   @abstractmethod
-  def compiler_environment(self, build_target):
+  def compiler_environment(self):
     pass
 
   @abstractmethod
-  def compiler_flags(clazz, build_target):
+  def compiler_flags(clazz):
     pass
+
+  @abstractmethod
+  def sysroot(clazz):
+    pass
+  

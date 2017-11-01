@@ -3,7 +3,7 @@
 
 from rebuild.System import System
 
-class Sdk(object):
+class darwin_sdk(object):
   'Constants for xcode sdks and maps to convert with System constants.'
   MACOSX = 'macosx'
   IPHONE = 'iphoneos'

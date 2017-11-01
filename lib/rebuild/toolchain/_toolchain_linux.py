@@ -7,8 +7,10 @@ import os.path as path
 
 class _toolchain_linux(_toolchain_base):
 
-  @classmethod
-  def compiler_environment(clazz, build_target):
+  def __init__(self, build_target):
+    super(_toolchain_linux, self).__init__(build_target)
+  
+  def compiler_environment(self):
     ar_replacement = path.abspath(path.normpath(path.join(path.dirname(__file__), '../../../bin/rebuild_ar.py')))
 
     env = {
@@ -30,14 +32,13 @@ class _toolchain_linux(_toolchain_base):
     
     return env
 
-  @classmethod
-  def compiler_flags(clazz, build_target):
+  def compiler_flags(self):
     'Return the compiler flags for the given darwin.'
 
     arch_flags = []
     pic_flags = [ '-fPIC' ]
 
-    if build_target.build_type == build_type.RELEASE:
+    if self.build_target.build_type == build_type.RELEASE:
       opt_flags = [ '-O2' ]
     else:
       opt_flags = [ '-g' ]
@@ -54,5 +55,7 @@ class _toolchain_linux(_toolchain_base):
       'REBUILD_COMPILE_ARCH_FLAGS': arch_flags,
       'REBUILD_COMPILE_ARCHS': [],
     }
-
     return env
+
+  def sysroot(self):
+    return '/usr'

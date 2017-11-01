@@ -16,7 +16,8 @@ class _strip_macos(_strip_base):
     file_type = macho.file_type(binary)
     if not file_type:
       raise RuntimeError('not a valid binary: %s' % (binary))
-    ce = toolchain.compiler_environment(build_target)
+    tc = toolchain.get_toolchain(build_target)
+    ce = tc.compiler_environment()
     strip_exe = ce['STRIP']
     cmd = [ strip_exe ]
     if file_type == macho.FILE_TYPE_SHARED_LIB:

@@ -11,7 +11,8 @@ class _strip_linux(_strip_base):
   @classmethod
   def strip(clazz, build_target, binary):
     clazz.check_strippable(binary)
-    ce = toolchain.compiler_environment(build_target)
+    tc = toolchain.get_toolchain(build_target)
+    ce = tc.compiler_environment()
     strip_exe = ce['STRIP']
     cmd = [ strip_exe, binary ]
     rv = Shell.execute(cmd, raise_error = False)

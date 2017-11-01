@@ -26,13 +26,14 @@ int main(int argc, char* argv[])
 }
 '''
     bt = build_target()
-    cenv = toolchain.compiler_environment(bt)
+    tc = toolchain.get_toolchain(bt)
+    cenv = tc.compiler_environment()
     tmp_source_file = path.join(tmp_dir, 'test.c')
     file_util.save(tmp_source_file, content = source)
     cmd = '$CC -c $SOURCE -o $@'
 
     variables = {}
-    variables.update(toolchain.compiler_environment(bt))
+    variables.update(tc.compiler_environment())
 
     print(variables)
 

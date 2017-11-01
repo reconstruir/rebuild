@@ -3,9 +3,6 @@
 
 import re
 from bes.common import object_util, Shell, string_util
-from rebuild import System, build_target
-
-from .Xcrun import Xcrun
 
 class Lipo(object):
 

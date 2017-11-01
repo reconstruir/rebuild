@@ -31,8 +31,9 @@ class package_tester(object):
   def __run_test(clazz, config, test):
     build_blurb.blurb('tester', 'Testing %s with %s' % (config.package_tarball, test))
     assert path.isfile(test)
-    ce = toolchain.compiler_environment(config.build_target)
-    compiler_flags = toolchain.compiler_flags(config.build_target)
+    tc = toolchain.get_toolchain(config.build_target)
+    ce = tc.compiler_environment()
+    compiler_flags = tc.compiler_flags()
     if test.endswith('.cpp'):
       return clazz.__run_c_test(config, test, ce['CXX'], compiler_flags['CXXFLAGS'])
     if test.endswith('.c'):

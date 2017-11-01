@@ -136,14 +136,15 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
     env['REBUILD_PACKAGE_DESCRIPTION'] = script.descriptor.name
     env['REBUILD_PACKAGE_VERSION'] = str(script.descriptor.version)
 
-    compiler_flags = toolchain.compiler_flags(script.env.config.build_target)
+    tc = toolchain.get_toolchain(script.env.config.build_target)
+    compiler_flags = tc.compiler_flags()
     env['REBUILD_COMPILE_CFLAGS'] = ' '.join(compiler_flags.get('CFLAGS', []))
     env['REBUILD_COMPILE_LDFLAGS'] = ' '.join(compiler_flags.get('LDFLAGS', []))
     env['REBUILD_COMPILE_CXXFLAGS'] = ' '.join(compiler_flags.get('CXXFLAGS', []))
     env['REBUILD_COMPILE_ARCH_FLAGS'] = ' '.join(compiler_flags.get('REBUILD_COMPILE_ARCH_FLAGS', []))
     env['REBUILD_COMPILE_OPT_FLAGS'] = ' '.join(compiler_flags.get('REBUILD_COMPILE_OPT_FLAGS', []))
 
-    ce = toolchain.compiler_environment(script.env.config.build_target)
+    ce = tc.compiler_environment()
     SystemEnvironment.update(env, ce)
     env['REBUILD_COMPILE_ENVIRONMENT'] = toolchain.flatten_for_shell(ce)
 
