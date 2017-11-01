@@ -5,10 +5,10 @@
 import os.path as path
 from bes.testing.unit_test import unit_test
 from rebuild import build_target
-from rebuild.toolchain import toolchain
+from rebuild.toolchain import compiler, toolchain
 from bes.fs import file_util, temp_file
 from bes.system import host
-from bes.common import Shell, variable
+from bes.common import object_util, Shell, variable
 
 class test_toolchain(unit_test):
 
@@ -28,20 +28,12 @@ int main(int argc, char* argv[])
   printf("%s::main()\n", __FILE__);
 }
 '''
+    src = file_util.save(path.join(tmp_dir, 'test.c'), content = source)
     bt = build_target()
-    tc = toolchain.get_toolchain(bt)
-    cenv = tc.compiler_environment()
-    tmp_source_file = path.join(tmp_dir, 'test.c')
-    tmp_object_file = path.join(tmp_dir, 'test.o')
-    file_util.save(tmp_source_file, content = source)
-    cmd = '$CC -c $(SRC) -o $(OBJ)'
-    variables = {}
-    variables.update(tc.compiler_environment())
-    variables['SRC'] = tmp_source_file
-    variables['OBJ'] = tmp_object_file
-    cmd = variable.substitute(cmd, variables)
-    Shell.execute(cmd)
-    self.assertTrue( path.exists(tmp_object_file) )
+    cc = compiler(bt)
+    targets = cc.compile_c(src)
+    self.assertEqual( 1, len(targets) )
+    self.assertTrue( path.exists(targets[0][1]) )
     
 if __name__ == '__main__':
   unit_test.main()

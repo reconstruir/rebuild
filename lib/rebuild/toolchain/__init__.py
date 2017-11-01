@@ -3,3 +3,4 @@
 
 from .toolchain import toolchain
 from .strip import strip
+from .compiler import compiler
