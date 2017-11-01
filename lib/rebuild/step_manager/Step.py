@@ -37,7 +37,7 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
 #    self.log_d('%s: Step.__init__() args=%s' % (self, self._args))
     
   @classmethod
-  def parse_step_args(clazz, script, args):
+  def parse_step_args(clazz, script, env, args):
     result = copy.deepcopy(clazz.global_args())
 #    self.log_d('%s: Step.parse_step_args() global_args=%s' % (clazz, result))
     if args:
@@ -136,14 +136,15 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
     env['REBUILD_PACKAGE_DESCRIPTION'] = script.descriptor.name
     env['REBUILD_PACKAGE_VERSION'] = str(script.descriptor.version)
 
-    compiler_flags = toolchain.compiler_flags(script.env.config.build_target)
+    tc = toolchain.get_toolchain(script.env.config.build_target)
+    compiler_flags = tc.compiler_flags()
     env['REBUILD_COMPILE_CFLAGS'] = ' '.join(compiler_flags.get('CFLAGS', []))
     env['REBUILD_COMPILE_LDFLAGS'] = ' '.join(compiler_flags.get('LDFLAGS', []))
     env['REBUILD_COMPILE_CXXFLAGS'] = ' '.join(compiler_flags.get('CXXFLAGS', []))
     env['REBUILD_COMPILE_ARCH_FLAGS'] = ' '.join(compiler_flags.get('REBUILD_COMPILE_ARCH_FLAGS', []))
     env['REBUILD_COMPILE_OPT_FLAGS'] = ' '.join(compiler_flags.get('REBUILD_COMPILE_OPT_FLAGS', []))
 
-    ce = toolchain.compiler_environment(script.env.config.build_target)
+    ce = tc.compiler_environment()
     SystemEnvironment.update(env, ce)
     env['REBUILD_COMPILE_ENVIRONMENT'] = toolchain.flatten_for_shell(ce)
 
@@ -157,7 +158,7 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
       build_blurb.blurb_verbose('build', '%s(%s): %s=%s' % (label, package_name, key, value))
   
   @classmethod
-  def call_shell(clazz, command, script, args, extra_env = None, save_logs = None, execution_dir = None):
+  def call_shell(clazz, command, script, env, args, extra_env = None, save_logs = None, execution_dir = None):
     command = Shell.listify_command(command)
     command = [ part for part in command if part ]
     extra_env = extra_env or {}

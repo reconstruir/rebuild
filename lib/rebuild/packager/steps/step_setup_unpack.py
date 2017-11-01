@@ -16,25 +16,26 @@ class step_setup_unpack(Step):
     super(step_setup_unpack, self).__init__()
 
   def execute(self, script, env, args):
-    if args.get('skip_unpack', False):
-      return step_result(True, None)
 
     downloaded_tarballs = args.get('downloaded_tarballs', [])
     extra_tarballs = args.get('extra_tarballs', [])
     tarballs = args.get('tarballs', []) + extra_tarballs + downloaded_tarballs
     if not tarballs:
       return step_result(False, 'No tarballs found for %s.' % (script.descriptor.full_name))
-      
+
+    if args.get('skip_unpack', False):
+      return step_result(True, None, output = { 'tarballs': tarballs })
+    
     for tarball in tarballs:
       self.blurb('Extracting %s' % (tarball))
     TarballUtil.extract(tarballs, script.working_dir, 'source', True)
-    return step_result(True, None)
+    return step_result(True, None, output = { 'tarballs': tarballs })
 
   def sources_keys(self):
     return [ 'tarballs', 'extra_tarballs' ]
 
   @classmethod
-  def parse_step_args(clazz, script, args):
+  def parse_step_args(clazz, script, env, args):
     tarball_source_dir_override_args = clazz.resolve_step_args_dir(script, args, 'tarball_source_dir_override')
     if tarball_source_dir_override_args:
       tarball_source_dir_override = tarball_source_dir_override_args['tarball_source_dir_override']
@@ -51,9 +52,9 @@ class step_setup_unpack(Step):
       else:
         tarball_name = script.descriptor.name
 
-      tarball = script.env.source_finder.find_source(tarball_name,
-                                                             script.descriptor.version.upstream_version,
-                                                             script.env.config.build_target.system)
+      tarball = env.source_finder.find_source(tarball_name,
+                                              script.descriptor.version.upstream_version,
+                                              env.config.build_target.system)
       if tarball:
         tarballs_dict = { 'tarballs': [ tarball ] }
       else:

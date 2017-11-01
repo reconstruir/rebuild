@@ -34,21 +34,21 @@ class step_manager(object):
     return step
 
   # FIXME: only allow description
-  def add_step(self, description, script):
+  def add_step(self, description, script, env):
     assert step_description.is_step_description(description)
     step = description.step_class()
     assert isinstance(description.args, dict)
     global_args = step.global_args()
-    parsed_args = description.step_class.parse_step_args(script, description.args)
+    parsed_args = description.step_class.parse_step_args(script, env, description.args)
     if not isinstance(parsed_args, dict):
       raise RuntimeError('%s.parse_step_args() needs to return a dict instead of \"%s\"' % (description.step_class.__name__, type(parsed_args).__name__))
     step.args = dict_util.combine(global_args, parsed_args)
     return self.__add_step(step)
 
-  def add_steps(self, descriptions, script):
+  def add_steps(self, descriptions, script, env):
     assert step_description.is_step_description_list(descriptions)
     for description in descriptions:
-      self.add_step(description, script)
+      self.add_step(description, script, env)
 
   def execute(self, script, env, args):
     output = {}

@@ -42,5 +42,5 @@ class step_pkg_config_make_pc(Step):
     return [ 'pc_files' ]
 
   @classmethod
-  def parse_step_args(clazz, script, args):
+  def parse_step_args(clazz, script, env, args):
     return clazz.resolve_step_args_files(script, args, 'pc_files')

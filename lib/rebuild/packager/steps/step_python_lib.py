@@ -13,10 +13,10 @@ class step_python_lib_build(Step):
 
   def execute(self, script, env, args):
     cmd = '${PYTHON} setup.py build %s' % (args.get('python_lib_build_flags', ''))
-    return self.call_shell(cmd, script, args, extra_env = args.get('python_lib_build_env'))
+    return self.call_shell(cmd, script, env, args, extra_env = args.get('python_lib_build_env'))
 
   @classmethod
-  def parse_step_args(clazz, script, args):
+  def parse_step_args(clazz, script, env, args):
     return clazz.resolve_step_args_env_and_flags(script, args, 'python_lib_build_env', 'python_lib_build_flags')
 
 class step_python_lib_install(Step):
@@ -27,10 +27,10 @@ class step_python_lib_install(Step):
 
   def execute(self, script, env, args):
     cmd = 'mkdir -p ${REBUILD_STAGE_PYTHON_LIB_DIR} && ${PYTHON} setup.py install --home=${REBUILD_STAGE_PREFIX_DIR} --install-lib=${REBUILD_STAGE_PYTHON_LIB_DIR} %s' % (args.get('python_lib_install_flags', ''))
-    return self.call_shell(cmd, script, args, extra_env = args.get('python_lib_install_env'))
+    return self.call_shell(cmd, script, env, args, extra_env = args.get('python_lib_install_env'))
 
   @classmethod
-  def parse_step_args(clazz, script, args):
+  def parse_step_args(clazz, script, env, args):
     return clazz.resolve_step_args_env_and_flags(script, args, 'python_lib_install_env', 'python_lib_install_flags')
 
 class step_python_lib(multiple_steps):

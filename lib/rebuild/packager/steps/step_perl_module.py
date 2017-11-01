@@ -20,10 +20,10 @@ class step_perl_module_setup(Step):
     perl_env_args = args.get('perl_module_setup_flags', '')
     assert isinstance(perl_env_args, list)
     cmd = '%s && %s %s' % (mkdir_cmd, perl_cmd, ' '.join(perl_env_args))
-    return self.call_shell(cmd, script, args, extra_env = args.get('perl_module_setup_env'))
+    return self.call_shell(cmd, script, env, args, extra_env = args.get('perl_module_setup_env'))
 
   @classmethod
-  def parse_step_args(clazz, script, args):
+  def parse_step_args(clazz, script, env, args):
     return clazz.resolve_step_args_env_and_flags(script, args, 'perl_module_setup_env', 'perl_module_setup_flags')
 
 class step_perl_module_post_install_cleanup(Step):
@@ -33,8 +33,8 @@ class step_perl_module_post_install_cleanup(Step):
     super(step_perl_module_post_install_cleanup, self).__init__()
 
   def execute(self, script, env, args):
-    bi = script.env.config.build_target
-    if not bi.system == System.LINUX:
+    bt = env.config.build_target
+    if not bt.system == System.LINUX:
       return step_result(True)
     return step_result(True)
     new_path = path.join(script.stage_lib_dir, 'x86_64-linux-gnu')

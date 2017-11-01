@@ -40,5 +40,5 @@ class step_install_install_files(Step):
     return [ 'install_files' ]
 
   @classmethod
-  def parse_step_args(clazz, script, args):
+  def parse_step_args(clazz, script, env, args):
     return clazz.resolve_step_args_files(script, args, 'install_files')

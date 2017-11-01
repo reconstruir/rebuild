@@ -20,7 +20,7 @@ class sample_step_save_args1(Step):
     return step_result(True, None)
 
   @classmethod
-  def parse_step_args(clazz, script, args):
+  def parse_step_args(clazz, script, env, args):
     keys = [ key for key in args.keys() if key.startswith('desc1_') ]
     return { key: args[key] for key in keys }
 
@@ -35,7 +35,7 @@ class sample_step_save_args2(Step):
     return step_result(True, None)
 
   @classmethod
-  def parse_step_args(clazz, script, args):
+  def parse_step_args(clazz, script, env, args):
     keys = [ key for key in args.keys() if key.startswith('desc2_') ]
     return { key: args[key] for key in keys }
 
@@ -50,7 +50,7 @@ class sample_step_save_args3(Step):
     return step_result(True, None)
 
   @classmethod
-  def parse_step_args(clazz, script, args):
+  def parse_step_args(clazz, script, env, args):
     keys = [ key for key in args.keys() if key.startswith('desc3_') ]
     return { key: args[key] for key in keys }
 

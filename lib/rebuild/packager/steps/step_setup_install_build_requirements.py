@@ -19,5 +19,5 @@ class step_setup_install_build_requirements(Step):
       message = 'No tools for %s' % (script.descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
-    script.env.update_tools(package_desc.resolved_build_requirements)
+    env.update_tools(package_desc.resolved_build_requirements)
     return step_result(True, None)

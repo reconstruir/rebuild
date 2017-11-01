@@ -37,5 +37,5 @@ class step_setup_patch(Step):
     return [ 'patches' ]
 
   @classmethod
-  def parse_step_args(clazz, script, args):
+  def parse_step_args(clazz, script, env, args):
     return clazz.resolve_step_args_files(script, args, 'patches')

@@ -16,11 +16,11 @@ class step_setup_tarball_download(Step):
     return [ 'downloaded_tarballs' ]
 
   @classmethod
-  def parse_step_args(clazz, script, args):
+  def parse_step_args(clazz, script, env, args):
     result = {}
     tarball_address, tarball_revision = args.get('tarball_address', ( None, None ))
     if tarball_address:
-      dm = script.env.downloads_manager
+      dm = env.downloads_manager
       assert tarball_revision
       if not dm.has_tarball(tarball_address, tarball_revision):
         tarball_path = dm.tarball_path(tarball_address, tarball_revision)

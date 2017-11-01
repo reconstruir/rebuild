@@ -38,12 +38,12 @@ class step_autoconf_configure(Step):
     else:
       cmd = configure_cmd
 
-    return self.call_shell(cmd, script, args,
+    return self.call_shell(cmd, script, env, args,
                            extra_env = configure_env,
                            save_logs = [ 'config.log', 'config.status' ])
 
   @classmethod
-  def parse_step_args(clazz, script, args):
+  def parse_step_args(clazz, script, env, args):
     return clazz.resolve_step_args_env_and_flags(script, args, 'configure_env', 'configure_flags')
 
 class step_autoconf_pre_configure_hooks(step_call_hooks):

@@ -12,11 +12,11 @@ class step_make_echo_script(Step):
   def __init__(self):
     super(step_make_echo_script, self).__init__()
 
-  def execute(self, packager_env, args):
-    full_name = packager_env.package_info.full_name
+  def execute(self, script, env, args):
+    full_name = script.package_info.full_name
     content = '#!/bin/bash\necho %s\nexit 0\n' % (full_name)
     filename = '%s.sh' % (full_name)
-    file_util.save(path.join(packager_env.stage_dir, 'bin', filename), content = content, mode = 0755)
+    file_util.save(path.join(script.stage_dir, 'bin', filename), content = content, mode = 0755)
     return step_result(True, None)
 
 steps = [

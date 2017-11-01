@@ -21,6 +21,6 @@ class step_setup_install_requirements(Step):
       self.log_d(message)
       return step_result(True, message)
     script.requirements_manager.install_packages(package_desc.resolved_requirements,
-                                                 script.env.config.build_target,
-                                                 script.env.artifact_manager)
+                                                 env.config.build_target,
+                                                 env.artifact_manager)
     return step_result(True, None)

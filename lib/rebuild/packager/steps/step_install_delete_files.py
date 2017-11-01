@@ -27,5 +27,5 @@ class step_install_delete_files(Step):
     return step_result(True, None)
 
   @classmethod
-  def parse_step_args(clazz, script, args):
+  def parse_step_args(clazz, script, env, args):
     return clazz.resolve_step_args_list(script, args, 'delete_files')

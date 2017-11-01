@@ -14,8 +14,8 @@ except:
 
 
 from bes.common import Shell
-from rebuild.darwin import Sdk
-from rebuild.darwin import Xcrun
+from rebuild.toolchain.darwin import darwin_sdk
+from rebuild.toolchain.darwin import xcrun
 from rebuild import ar_replacement
 
 AR_COMMAND_CONTENTS = 't'
@@ -113,12 +113,12 @@ def main():
   objects = args.rest
 
   if args.sdk:
-    if not Sdk.is_valid_sdk(args.sdk):
-      raise RuntimeError('Invalid sdk \"%s\".  Should be one of: %s' % (sdk, ' '.join(Sdk.VALID_SDKS)))
-    tools = ar_replacement.Tools(Xcrun.find_tool(args.sdk, 'ar'),
-                                 Xcrun.find_tool(args.sdk, 'libtool'),
-                                 Xcrun.find_tool(args.sdk, 'lipo'),
-                                 Xcrun.find_tool(args.sdk, 'ranlib'))
+    if not darwin_sdk.is_valid_sdk(args.sdk):
+      raise RuntimeError('Invalid sdk \"%s\".  Should be one of: %s' % (sdk, ' '.join(darwin_sdk.VALID_SDKS)))
+    tools = ar_replacement.Tools(xcrun.find_tool(args.sdk, 'ar'),
+                                 xcrun.find_tool(args.sdk, 'libtool'),
+                                 xcrun.find_tool(args.sdk, 'lipo'),
+                                 xcrun.find_tool(args.sdk, 'ranlib'))
   else:
     tools = ar_replacement.Tools(args.ar, args.libtool, args.lipo, args.ranlib)
 

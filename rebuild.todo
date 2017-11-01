@@ -314,8 +314,6 @@ support for packages such as glib that provide multiple .pc files
 
 automate the import of steps
 
-rename SYstemCompilers to SystemToolchain
-
 feb 6
 - need much tighter control of what goes in the package metadata and no magic numbers
 g
@@ -513,3 +511,7 @@ oct 25
 oct26
 - this shit in a build.py script is impossible to debug
 ''' step_setup_patch, { 'patches': [ 'libpng-zlib.patch' ] } '''
+
+oct 31
+- change call_shell() extra_env to shell_env
+- not sure System.IOS_SIM is needd might be better to get rid and just use arch
