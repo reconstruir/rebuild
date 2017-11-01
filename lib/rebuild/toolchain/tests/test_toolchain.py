@@ -8,6 +8,7 @@ from rebuild import build_target
 from rebuild.toolchain import toolchain
 from bes.fs import file_util, temp_file
 from bes.system import host
+from bes.common import Shell, variable
 
 class test_toolchain(unit_test):
 
@@ -18,7 +19,9 @@ class test_toolchain(unit_test):
   
   def test_compile_cc(self):
     tmp_dir = temp_file.make_temp_dir(delete = not self._DEBUG)
-    source = '''
+    if self._DEBUG:
+      print('tmp_dir: %s' % (tmp_dir))
+    source = r'''
 #include <stdio.h>
 int main(int argc, char* argv[])
 {
@@ -29,22 +32,16 @@ int main(int argc, char* argv[])
     tc = toolchain.get_toolchain(bt)
     cenv = tc.compiler_environment()
     tmp_source_file = path.join(tmp_dir, 'test.c')
+    tmp_object_file = path.join(tmp_dir, 'test.o')
     file_util.save(tmp_source_file, content = source)
-    cmd = '$CC -c $SOURCE -o $@'
-
+    cmd = '$CC -c $(SRC) -o $(OBJ)'
     variables = {}
     variables.update(tc.compiler_environment())
-
-    print(variables)
-
-'''    
-  @skip_if(not host.is_macos(), 'not macos')
-  def test_dependencies_macos(self):
-    deps = library.dependencies('/bin/bash')
-    self.assertEquals( 2, len(deps) )
-    self.assertTrue( path.basename(deps[0]).startswith('libSystem') )
-    self.assertTrue( path.basename(deps[1]).startswith('libncurses') )
-'''
-
+    variables['SRC'] = tmp_source_file
+    variables['OBJ'] = tmp_object_file
+    cmd = variable.substitute(cmd, variables)
+    Shell.execute(cmd)
+    self.assertTrue( path.exists(tmp_object_file) )
+    
 if __name__ == '__main__':
   unit_test.main()
