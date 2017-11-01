@@ -45,7 +45,11 @@ class step_setup_unpack(Step):
     else:
       tarballs_dict = clazz.resolve_step_args_list(script, args, 'tarballs')
     if not tarballs_dict or 'tarballs' not in tarballs_dict:
-      tarball_name = args.get('tarball_name', script.descriptor.name)
+      tarball_name = args.get('tarball_name', None)
+      if tarball_name:
+        clazz.blurb_verbose('Using tarball name \"%s\" instead of \"%s\" for %s' % (tarball_name, script.descriptor.name, script.descriptor.full_name))
+      else:
+        tarball_name = script.descriptor.name
 
       tarball = script.env.source_finder.find_source(tarball_name,
                                                              script.descriptor.version.upstream_version,

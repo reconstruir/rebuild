@@ -90,9 +90,7 @@ class rebuild_builder(object):
       self.blurb('%s - SUCCESS' % (script.descriptor.name))
       return self.EXIT_CODE_SUCCESS
     elif result.status == build_script_runner.FAILED:
-      print(result.packager_result.message)
-      self.blurb('step failed - %s' % (result.packager_result.failed_step.__class__.__name__))
-      self.blurb('%s - FAILED' % (script.descriptor.name))
+      self.blurb('FAILED: %s - %s - %s' % (script.descriptor.name, result.packager_result.failed_step.__class__.__name__, result.packager_result.message))
       return self.EXIT_CODE_FAILED
     elif result.status == build_script_runner.CURRENT:
       self.blurb('%s - up-to-date.' % (script.descriptor.name))
