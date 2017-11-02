@@ -70,5 +70,13 @@ class step_setup_unpack(Step):
       assert isinstance(extra_tarballs_dict, dict)
       assert 'extra_tarballs' in extra_tarballs_dict
       assert 'tarballs' not in extra_tarballs_dict
+      extra_tarballs = extra_tarballs_dict['extra_tarballs']
+      caca = []
+      for extra_tarball in extra_tarballs:
+        tp = env.source_finder.find_source(extra_tarball, '', env.config.build_target.system)
+        if not tp:
+          raise RuntimeError('%s: Failed to find extra tarball: %s' % (script.descriptor.full_name, extra_tarball))
+        caca.append(tp)
+      extra_tarballs_dict['extra_tarballs'] = caca
 
     return dict_util.combine(tarballs_dict, extra_tarballs_dict)

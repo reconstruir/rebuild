@@ -520,3 +520,5 @@ nov 2
 - find out why ~/.rebbe comes to exists when running unit tests
 - check that scripts in env dir of package manager installation dont clobber each other
 - rerite TarballUtil.find() to be more sane in its pattern matching
+- extra tarball mess needs to deal with version
+- android platform tools are not versioned

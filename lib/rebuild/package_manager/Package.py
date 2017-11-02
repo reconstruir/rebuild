@@ -68,31 +68,32 @@ class Package(object):
                      include = self.FILES_DIR + '/*')
     self._post_install_hooks(installation_dir)
 
-  def extract_env_files(self, env_dir):
+  def extract_env_files(self, env_dir, installation_dir):
     archiver.extract(self.tarball, env_dir,
                      strip_head = self.ENV_DIR,
                      include = self.ENV_DIR + '/*')
-    self._variable_substitution_hook(env_dir)
+    self._variable_substitution_hook(env_dir, installation_dir)
     
   def _update_python_config_files(self, installation_dir):
     python_lib_dir = path.join(installation_dir, 'lib/python')
     setup_tools.update_egg_directory(python_lib_dir)
 
-  def _variable_substitution_hook(self, installation_dir):
+  def _variable_substitution_hook(self, where, installation_dir):
     replacements = {
       '${REBUILD_PACKAGE_PREFIX}': installation_dir,
       '${REBUILD_PACKAGE_NAME}': self.info.name,
       '${REBUILD_PACKAGE_DESCRIPTION}': self.info.name,
       '${REBUILD_PACKAGE_VERSION}': str(self.info.version),
+      '${REBUILD_PACKAGE_FULL_NAME}': self.info.full_name,
     }
-    file_search.search_replace(installation_dir,
+    file_search.search_replace(where,
                                replacements,
                                backup = False,
                                test_func = file_mime.is_text)
 
   def _post_install_hooks(self, installation_dir):
     self._update_python_config_files(installation_dir)
-    self._variable_substitution_hook(installation_dir)
+    self._variable_substitution_hook(installation_dir, installation_dir)
     
   @property
   def pkg_config_files(self):

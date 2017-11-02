@@ -122,6 +122,12 @@ class rebuild_manager(object):
   export PKG_CONFIG_PATH=${_prefix}/lib/pkgconfig:${PKG_CONFIG_PATH}
   export @LIBRARY_PATH@=${_prefix}/lib:${@LIBRARY_PATH@}
   export MANPATH=${_prefix}/man:${_prefix}/share/man:${MANPATH}
+  local _env_dir=$_prefix/../env
+  if [ -d $_env_dir ]; then
+    for f in $_env_dir/*; do
+      source "$f"
+    done
+  fi  
 }
 '''
 

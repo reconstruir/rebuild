@@ -138,7 +138,7 @@ class package_manager(object):
                                                                                          conflict_packages_str,
                                                                                          conflicts_str))
     package.extract_files(self._installation_dir)
-    package.extract_env_files(self._env_dir)
+    package.extract_env_files(self._env_dir, self._installation_dir)
 
     self._db.add_package(package.info, package.files)
 
