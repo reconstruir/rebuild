@@ -10,7 +10,7 @@ from rebuild import instruction_list, package_descriptor, package_descriptor_lis
 from rebuild.dependency import dependency_resolver
 from rebuild.pkg_config import pkg_config
 from bes.archive import archive, archiver
-from bes.fs import file_util, temp_file
+from bes.fs import dir_util, file_util, temp_file
 from .artifact_manager import artifact_manager, ArtifactNotFoundError
 from .Package import Package
 from .package_database import package_database
@@ -44,11 +44,14 @@ class package_manager(object):
   PACKAGE_INFO_FILENAME = 'metadata/info.json'
   PACKAGE_FILES_DIR = 'files'
 
+  ENV_DIR = 'env'
+
   def __init__(self, root_dir):
     self.root_dir = root_dir
     self._database_path = path.join(self.root_dir, self.DATABASE_PATH)
     self._db = package_database(self._database_path)
     self._installation_dir = path.join(self.root_dir, self.INSTALLATION_DIR)
+    self._env_dir = path.join(self.root_dir, self.ENV_DIR)
     self._lib_dir = path.join(self._installation_dir, 'lib')
     self._bin_dir = path.join(self._installation_dir, 'bin')
     self._include_dir = path.join(self._installation_dir, 'include')
@@ -57,8 +60,12 @@ class package_manager(object):
     self._compile_instructions_dir = path.join(self._installation_dir, 'lib/rebuild_instructions')
 
   @property
-  def installation_dir(self):
+  def installation_dir(self): 
     return self._installation_dir
+
+  @property
+  def env_dir(self):
+    return self._env_dir
 
   @property
   def lib_dir(self):
@@ -131,6 +138,7 @@ class package_manager(object):
                                                                                          conflict_packages_str,
                                                                                          conflicts_str))
     package.extract_files(self._installation_dir)
+    package.extract_env_files(self._env_dir)
 
     self._db.add_package(package.info, package.files)
 
@@ -176,7 +184,7 @@ class package_manager(object):
 
   # FIXME: move this to Package maybe
   @classmethod
-  def create_package(clazz, tarball_path, package_info, build_target, stage_dir):
+  def create_package(clazz, tarball_path, package_info, build_target, stage_dir, env_dir):
     metadata_dict = dict_util.combine(package_info.to_dict(), build_target.to_dict())
     assert 'properties' in metadata_dict
     metadata = json_util.to_json(metadata_dict, indent = 2)
@@ -185,6 +193,10 @@ class package_manager(object):
     extra_items = [
       archive.Item(metadata_filename, clazz.PACKAGE_INFO_FILENAME),
     ]
+    if env_dir and path.isdir(env_dir):
+      env_files = dir_util.list(env_dir, relative = True)
+      for env_file in env_files:
+        extra_items.append(archive.Item(path.join(env_dir, env_file), clazz.ENV_DIR + '/' + env_file))
     archiver.create(tarball_path, stage_dir,
                     base_dir = 'files',
                     extra_items = extra_items,

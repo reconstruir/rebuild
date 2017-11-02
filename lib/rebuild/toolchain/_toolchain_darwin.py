@@ -13,6 +13,7 @@ class _toolchain_darwin(_toolchain_base):
   def __init__(self, build_target):
     super(_toolchain_darwin, self).__init__(build_target)
     self.sdk = darwin_sdk.SYSTEM_TO_SDK[self.build_target.system]
+    #print(self.sdk)
     
   def compiler_environment(self):
     ar_replacement = path.abspath(path.normpath(path.join(path.dirname(__file__), '../../../bin/rebuild_ar.py')))

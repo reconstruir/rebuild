@@ -15,12 +15,14 @@ class step_post_install(multiple_steps):
   from .step_install_post_install_hooks import step_install_post_install_hooks
   from .step_make_instructions import step_make_instructions
   from .step_pkg_config_make_pc import step_pkg_config_make_pc
+  from .step_install_env_files import step_install_env_files
 
   step_classes = [
     step_install_delete_files,
     step_install_install_files,
     step_install_post_install_hooks,
     step_pkg_config_make_pc,
+    step_install_env_files,
     step_make_instructions,
     step_check_hard_coded_paths,
     step_check_darwin_archs,

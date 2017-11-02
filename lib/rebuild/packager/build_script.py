@@ -35,6 +35,7 @@ class build_script(object):
     self.source_unpacked_dir = path.join(self.working_dir, 'source')
     self.build_dir = path.join(self.working_dir, 'build')
     self.stage_dir = path.join(self.working_dir, 'stage')
+    self.env_dir = path.join(self.working_dir, 'env')
     self.artifact_stage_dir = path.join(self.working_dir, 'artifact')
     self.logs_dir = path.join(self.working_dir, 'logs')
     self.test_dir = path.join(self.working_dir, 'test')

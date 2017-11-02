@@ -515,3 +515,7 @@ oct26
 oct 31
 - change call_shell() extra_env to shell_env
 - not sure System.IOS_SIM is needd might be better to get rid and just use arch
+
+nov 2
+- find out why ~/.rebbe comes to exists when running unit tests
+- check that scripts in env dir of package manager installation dont clobber each other

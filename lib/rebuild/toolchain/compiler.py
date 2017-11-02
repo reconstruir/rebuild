@@ -27,6 +27,7 @@ class compiler(object):
       variables['SRC'] = src
       variables['OBJ'] = obj
       cmd = variable.substitute(cmd, variables)
+      print(cmd)
       Shell.execute(cmd)
     return targets
   

@@ -16,6 +16,7 @@ class Package(object):
   METADATA_DIR = 'metadata'
   INFO_FILENAME = METADATA_DIR + '/' + 'info.json'
   FILES_DIR = 'files'
+  ENV_DIR = 'env'
 
   def __init__(self, tarball):
     assert string_util.is_string(tarball)
@@ -64,9 +65,15 @@ class Package(object):
   def extract_files(self, installation_dir):
     archiver.extract(self.tarball, installation_dir,
                      strip_head = self.FILES_DIR,
-                     exclude = self.METADATA_DIR + '/*')
+                     include = self.FILES_DIR + '/*')
     self._post_install_hooks(installation_dir)
 
+  def extract_env_files(self, env_dir):
+    archiver.extract(self.tarball, env_dir,
+                     strip_head = self.ENV_DIR,
+                     include = self.ENV_DIR + '/*')
+    self._variable_substitution_hook(env_dir)
+    
   def _update_python_config_files(self, installation_dir):
     python_lib_dir = path.join(installation_dir, 'lib/python')
     setup_tools.update_egg_directory(python_lib_dir)

@@ -19,7 +19,8 @@ class step_artifact_create_make_package(Step):
     staged_tarball = script.requirements_manager.create_package(args['output_tarball_path'],
                                                                 script.descriptor,
                                                                 env.config.build_target,
-                                                                script.stage_dir)
+                                                                script.stage_dir,
+                                                                script.env_dir)
     self.blurb('staged tarball: %s' % (staged_tarball))
     return step_result(True, None, output = { 'staged_tarball': staged_tarball })
   
