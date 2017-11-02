@@ -4,6 +4,7 @@
 
 import os.path as path, json
 from bes.testing.unit_test import unit_test
+from bes.system import host
 from bes.fs import file_util, temp_file
 from rebuild import build_target
 from rebuild.packager import build_script, rebuild_config, rebuild_env
@@ -50,7 +51,7 @@ class test_build_script_execute(unit_test):
       u'name': u'amhello',
       u'properties': {u'category': u'lib'},
       u'requirements': [],
-      u'system': u'macos',
+      u'system': u''+host.SYSTEM,
       u'version': u'1.0'
     }, json.loads(archiver.extract_member_to_string(artifact_path, 'metadata/info.json')) )
     
