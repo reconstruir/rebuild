@@ -189,28 +189,36 @@ class test_package_manager(unittest.TestCase):
 
   def test_create_package(self):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
-    tarball_path = self.__make_package(tmp_dir,
-                                       'foo', '1.2.3-1',
-                                       System.LINUX, build_type.RELEASE,
-                                       [
-                                         ( 'foo.txt', 'foo.txt\n' ),
-                                         ( 'bar.txt', 'bar.txt\n' ),
-                                       ])
+    tarball_path = self._make_package(tmp_dir,
+                                      'foo', '1.2.3-1',
+                                      System.LINUX, build_type.RELEASE,
+                                      [
+                                        ( 'foo.txt', 'foo.txt\n' ),
+                                        ( 'bar.txt', 'bar.txt\n' ),
+                                      ],
+                                      [
+                                        ( 'foo.sh', 'echo foo.sh\n' ),
+                                        ( 'bar.sh', 'echo bar.sh\n' ),
+                                      ])
     assert path.exists(tarball_path)
     expected_members = [
+      'env/bar.sh',
+      'env/foo.sh',
       'files/bar.txt',
       'files/foo.txt',
       'metadata/info.json',
     ]
     self.assertEqual( expected_members, archiver.members(tarball_path) )
 
-  def __make_package(self, dest_dir, name, version, system, build_type, items):
+  def _make_package(self, dest_dir, name, version, system, build_type, items, env_items):
     pi = package_descriptor(name, version)
     tarball_path = path.join(dest_dir, pi.tarball_filename)
     bi = build_target(system, build_type)
     items = temp_archive.make_temp_item_list(items)
     tmp_stage_dir = temp_archive.write_temp_items(items)
-    package_manager.create_package(tarball_path, pi, bi, tmp_stage_dir)
+    env_items = temp_archive.make_temp_item_list(env_items)
+    tmp_env_dir = temp_archive.write_temp_items(env_items)
+    package_manager.create_package(tarball_path, pi, bi, tmp_stage_dir, tmp_env_dir)
     return tarball_path
 
 if __name__ == '__main__':

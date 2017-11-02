@@ -5,7 +5,7 @@ from abc import abstractmethod, ABCMeta
 from bes.system.compat import with_metaclass
 from bes.archive import archiver
 from bes.common import check_type
-from rebuild import TarballUtil
+from .tarball_finder import tarball_finder
 
 class source_finder(with_metaclass(ABCMeta, object)):
 
@@ -19,7 +19,7 @@ class source_finder(with_metaclass(ABCMeta, object)):
     check_type.check_string(version, 'version')
     check_type.check_string(system, 'system')
 
-    tarball = TarballUtil.find(where, name, version)
+    tarball = tarball_finder.find(where, name, version)
 
     # If we find more than one tarball it could be because there are 1 for each platform so
     # filter out only the ones that match the current build system target

@@ -67,7 +67,8 @@ int main(int argc, char* argv[])
     targets = cc.compile_c(src)
     self.assertEqual( 1, len(targets) )
     self.assertTrue( path.exists(targets[0][1]) )
-    
+
+"""
 class test_toolchain_android(unit_test):
 
   __unit_test_data_dir__ = 'test_data/toolchain'
@@ -93,6 +94,6 @@ int main(int argc, char* argv[])
     targets = cc.compile_c(src)
     self.assertEqual( 1, len(targets) )
     self.assertTrue( path.exists(targets[0][1]) )
-    
+"""    
 if __name__ == '__main__':
   unit_test.main()
