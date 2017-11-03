@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from .System import System
-from .build_type import build_type
+from rebuild.base import build_system, build_type
 
 class CompileFlags(object):
 
@@ -11,16 +10,16 @@ class CompileFlags(object):
 
   DEFAULT_OPTIMIZATION_FLAGS = {
     build_type.DEBUG: {
-      System.ANDROID: COMMON_OPTIMIZATION_FLAGS_DEBUG,
-      System.MACOS: COMMON_OPTIMIZATION_FLAGS_DEBUG,
-      System.IOS: COMMON_OPTIMIZATION_FLAGS_DEBUG,
-      System.LINUX: COMMON_OPTIMIZATION_FLAGS_DEBUG,
+      build_system.ANDROID: COMMON_OPTIMIZATION_FLAGS_DEBUG,
+      build_system.MACOS: COMMON_OPTIMIZATION_FLAGS_DEBUG,
+      build_system.IOS: COMMON_OPTIMIZATION_FLAGS_DEBUG,
+      build_system.LINUX: COMMON_OPTIMIZATION_FLAGS_DEBUG,
     },
     build_type.RELEASE: {
-      System.ANDROID: COMMON_OPTIMIZATION_FLAGS_RELEASE,
-      System.MACOS: COMMON_OPTIMIZATION_FLAGS_RELEASE,
-      System.IOS: COMMON_OPTIMIZATION_FLAGS_RELEASE,
-      System.LINUX: COMMON_OPTIMIZATION_FLAGS_RELEASE,
+      build_system.ANDROID: COMMON_OPTIMIZATION_FLAGS_RELEASE,
+      build_system.MACOS: COMMON_OPTIMIZATION_FLAGS_RELEASE,
+      build_system.IOS: COMMON_OPTIMIZATION_FLAGS_RELEASE,
+      build_system.LINUX: COMMON_OPTIMIZATION_FLAGS_RELEASE,
     },
   }
 

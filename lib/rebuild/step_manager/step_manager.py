@@ -8,7 +8,7 @@ from abc import abstractmethod
 from bes.common import dict_util
 from bes.system import log
 
-from rebuild import build_blurb
+from rebuild.base import build_blurb
 
 from .multiple_steps import multiple_steps
 from .Step import Step

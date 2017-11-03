@@ -4,7 +4,7 @@
 from .library_base import library_base
 import os.path as path
 from bes.common import Shell, string_util
-from .binary_format_elf import binary_format_elf
+from rebuild.binary_format import binary_format_elf
 
 class library_linux(library_base):
 

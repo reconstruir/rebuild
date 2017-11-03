@@ -5,7 +5,8 @@ import os, os.path as path
 
 from bes.common import object_util
 from rebuild.step_manager import Step, step_result
-from rebuild import build_blurb, requirement
+from rebuild import requirement
+from rebuild.base import build_blurb
 
 class step_setup_install_requirements(Step):
   'Install package dependencies.'

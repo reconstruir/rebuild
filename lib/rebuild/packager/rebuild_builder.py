@@ -8,7 +8,7 @@ from bes.fs import dir_util, file_util
 from collections import namedtuple
 from rebuild.step_manager import step_aborted
 
-from rebuild import build_blurb
+from rebuild.base import build_blurb
 
 class rebuild_builder(object):
 

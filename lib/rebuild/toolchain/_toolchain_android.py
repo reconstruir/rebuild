@@ -3,7 +3,7 @@
 
 from ._toolchain_base import _toolchain_base
 from bes.system import host
-from rebuild import build_arch, build_type, System
+from rebuild.base import build_arch, build_blurb, build_system, build_type
 import os, os.path as path
 
 class _toolchain_android(_toolchain_base):
@@ -29,6 +29,8 @@ class _toolchain_android(_toolchain_base):
   def __init__(self, build_target):
     super(_toolchain_android, self).__init__(build_target)
     self.ndk_root = os.environ.get('REBUILD_ANDROID_NDK_ROOT', None)
+    if not self.ndk_root:
+      build_blurb.blurb('build', '*** ERROR *** Trying to use android NDK but REBUILD_ANDROID_NDK_ROOT is not set.')
     self._triplet = self._REBUILD_ARCH_TO_TRIPLET[self.build_target.archs[0]]
     self._api = '26'
     self._api_dir = 'android-%s' % (self._api)

@@ -5,7 +5,7 @@
 from bes.testing.unit_test import unit_test
 from bes.key_value import key_value
 from rebuild import platform_specific_config as psc
-from rebuild import System
+from rebuild.base import build_system
 
 class test_platform_specific_config(unit_test):
 
@@ -116,8 +116,8 @@ class test_platform_specific_config(unit_test):
     ]
 
     self.assertEqual( { 'ALL': 'x', 'A': '1' }, psc.resolve_key_values_to_dict(test_env, 'android') )
-    self.assertEqual( { 'ALL': 'x', 'I': '2' }, psc.resolve_key_values_to_dict(test_env, System.IOS) )
-    self.assertEqual( { 'ALL': 'x', 'S': '3' }, psc.resolve_key_values_to_dict(test_env, System.IOS_SIM) )
+    self.assertEqual( { 'ALL': 'x', 'I': '2' }, psc.resolve_key_values_to_dict(test_env, build_system.IOS) )
+    self.assertEqual( { 'ALL': 'x', 'S': '3' }, psc.resolve_key_values_to_dict(test_env, build_system.IOS_SIM) )
     self.assertEqual( { 'ALL': 'x', 'L': '4' }, psc.resolve_key_values_to_dict(test_env, 'linux') )
     self.assertEqual( { 'ALL': 'x', 'D': '5' }, psc.resolve_key_values_to_dict(test_env, 'macos') )
 
@@ -131,7 +131,7 @@ class test_platform_specific_config(unit_test):
       'android|macos: -f5',
     ]
     self.assertEqual( [ '-fall', '-f1', '-f5' ], psc.resolve_list(test_flags, 'android') )
-    self.assertEqual( [ '-fall', '-f2' ], psc.resolve_list(test_flags, System.IOS) )
+    self.assertEqual( [ '-fall', '-f2' ], psc.resolve_list(test_flags, build_system.IOS) )
     self.assertEqual( [ '-fall', '-f3' ], psc.resolve_list(test_flags, 'linux') )
     self.assertEqual( [ '-fall', '-f4', '-f5' ], psc.resolve_list(test_flags, 'macos') )
 
@@ -145,7 +145,7 @@ class test_platform_specific_config(unit_test):
       'MACOS|ANDROID: -f5',
     ]
     self.assertEqual( [ '-fall', '-f1', '-f5' ], psc.resolve_list(test_flags, 'android') )
-    self.assertEqual( [ '-fall', '-f2' ], psc.resolve_list(test_flags, System.IOS) )
+    self.assertEqual( [ '-fall', '-f2' ], psc.resolve_list(test_flags, build_system.IOS) )
     self.assertEqual( [ '-fall', '-f3' ], psc.resolve_list(test_flags, 'linux') )
     self.assertEqual( [ '-fall', '-f4', '-f5' ], psc.resolve_list(test_flags, 'macos') )
 
@@ -159,7 +159,7 @@ class test_platform_specific_config(unit_test):
       'macos|android: -f5',
     ]
     self.assertEqual( [ '-fall', '-f1', '-f5' ], psc.resolve_list(test_flags, 'android') )
-    self.assertEqual( [ '-fall', '-f2' ], psc.resolve_list(test_flags, System.IOS) )
+    self.assertEqual( [ '-fall', '-f2' ], psc.resolve_list(test_flags, build_system.IOS) )
     self.assertEqual( [ '-fall', '-f3' ], psc.resolve_list(test_flags, 'linux') )
     self.assertEqual( [ '-fall', '-f4', '-f5' ], psc.resolve_list(test_flags, 'macos') )
 

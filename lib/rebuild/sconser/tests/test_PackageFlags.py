@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
-#
-import unittest
-from rebuild import PackageFlags
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-class test_PackageFlags(unittest.TestCase):
+from bes.testing.unit_test import unit_test
+from rebuild.sconser import PackageFlags
+
+class test_PackageFlags(unit_test):
 
   def test_init(self):
     pf = PackageFlags(cpppath = 'a', libpath = 'b', shlinkflags = 'c', libs = 'd')
@@ -46,4 +46,4 @@ class test_PackageFlags(unittest.TestCase):
                       pf.to_scons_environment() )
     
 if __name__ == '__main__':
-  unittest.main()
+  unit_test.main()

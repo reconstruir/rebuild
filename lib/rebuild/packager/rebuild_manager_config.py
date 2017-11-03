@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.common import string_util
-from rebuild import System
+from rebuild.base import build_system
 from bes.compat import ConfigParser
 from bes.compat import StringIO
 from collections import OrderedDict
@@ -45,7 +45,7 @@ class rebuild_manager_config(OrderedDict):
   @classmethod
   def __update_value(clazz, section, key, system, value, build_target):
     if system:
-      system = System.parse_system(system)
+      system = build_system.parse_system(system)
       if system != build_target.system:
         return
     if key == clazz.KEY_PACKAGES:

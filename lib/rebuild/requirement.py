@@ -5,7 +5,7 @@ import re
 from bes.common import algorithm, object_util, string_util
 from collections import namedtuple
 from bes.compat import StringIO
-from .System import System
+from rebuild.base import build_system
 
 class requirement(namedtuple('requirement', 'name,operator,version,system_mask')):
 
@@ -163,8 +163,8 @@ class requirement(namedtuple('requirement', 'name,operator,version,system_mask')
   @classmethod
   def resolve_requirements(clazz, requirements, system):
     'Resolve requirements for the given system.'
-    if not System.system_is_valid(system):
+    if not build_system.system_is_valid(system):
       raise RuntimeError('Invalid system: %s' % (system))
     if not clazz.is_requirement_list(requirements):
       raise RuntimeError('requirements should be a list of requirement objects: %s' % (str(requirements)))
-    return [ req for req in requirements if req.system_mask == None or System.mask_matches(req.system_mask, system) ]
+    return [ req for req in requirements if req.system_mask == None or build_system.mask_matches(req.system_mask, system) ]

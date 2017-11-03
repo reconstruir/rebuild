@@ -4,7 +4,8 @@
 
 import os.path as path, unittest
 from bes.fs import temp_file, temp_item
-from rebuild import build_target, Category, package_descriptor, requirement, version
+from rebuild import Category, package_descriptor, requirement
+from rebuild.base import build_target, build_version
 from rebuild.package_manager.Package import Package
 from rebuild.package_manager.unit_test_packages import unit_test_packages
 
@@ -17,7 +18,7 @@ class test_package(unittest.TestCase):
     tmp_tarball = unit_test_packages.make_water(debug = self.DEBUG)
     p = Package(tmp_tarball)
     self.assertEqual( 'water', p.info.name )
-    self.assertEqual( version('1.0.0', '0', 0), p.info.version )
+    self.assertEqual( build_version('1.0.0', '0', 0), p.info.version )
     self.assertEqual( [], p.info.requirements )
     self.assertEqual( { 'category': Category.LIB }, p.info.properties )
     self.assertEqual( [ 'bin/water_script.sh', 'docs/water_bar.txt', 'docs/water_foo.txt', 'lib/pkgconfig/water.pc' ], p.files )
@@ -28,7 +29,7 @@ class test_package(unittest.TestCase):
     tmp_tarball = unit_test_packages.make_orange(debug = self.DEBUG)
     p = Package(tmp_tarball)
     self.assertEqual( 'orange', p.info.name )
-    self.assertEqual( version('6.5.4', '3', 0), p.info.version )
+    self.assertEqual( build_version('6.5.4', '3', 0), p.info.version )
     self.assertEqual( requirement.parse('fructose(all) >= 3.4.5-6 fiber(all) >= 1.0.0-0'), p.info.requirements )
     self.assertEqual( { 'category': Category.LIB }, p.info.properties )
     self.assertEqual( [ 'bin/orange_script.sh', 'docs/orange_bar.txt', 'docs/orange_foo.txt', 'lib/pkgconfig/orange.pc' ], p.files )

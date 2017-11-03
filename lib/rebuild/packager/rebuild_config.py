@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from collections import namedtuple
-from rebuild import build_target
+from rebuild.base import build_target
 
 class rebuild_config(object):
 

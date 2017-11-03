@@ -3,12 +3,13 @@
 #
 import os.path as path
 from bes.testing.unit_test import unit_test
-from rebuild import build_target, package_descriptor, requirement, System
+from rebuild import package_descriptor, requirement
+from rebuild.base import build_system, build_target
 from rebuild.package_manager.DatabaseEntry import DatabaseEntry
 
 class test_database_entry(unit_test):
 
-  TEST_REQUIREMENTS = requirement.parse('foo >= 1.2.3-1 bar >= 6.6.6-1', default_system_mask = System.ALL)
+  TEST_REQUIREMENTS = requirement.parse('foo >= 1.2.3-1 bar >= 6.6.6-1', default_system_mask = build_system.ALL)
   TEST_FILES = [ 'f1', 'f2' ]
 
   def test_str(self):

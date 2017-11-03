@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 
-from rebuild import build_target
+from rebuild.base import build_target
 
 from .Check import Check, check_result
 from .build_script import build_script

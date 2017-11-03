@@ -6,9 +6,8 @@ from bes.common import algorithm, object_util, string_util, number_util
 from collections import namedtuple
 from bes.compat import StringIO
 from bes.compat import cmp
-from .System import System
 
-class version(namedtuple('version', 'upstream_version,revision,epoch')):
+class build_version(namedtuple('build_version', 'upstream_version,revision,epoch')):
   '''
   Manage package versions.  Inspired by the debian version format described here:
 
@@ -17,7 +16,6 @@ class version(namedtuple('version', 'upstream_version,revision,epoch')):
   Notable deviations from the debian format:
     o Hyphens are never allowed in "upstream_version" regardless of the presence of "revision"
     o Colons are never allowed in either "upstream_version" or "revision" regardless of the presence of "epoch"
-    o Revision can only be a integer
   '''
 
   def __new__(clazz, upstream_version, revision, epoch):
@@ -111,9 +109,9 @@ class version(namedtuple('version', 'upstream_version,revision,epoch')):
 
   @classmethod
   def validate_version(clazz, v):
-    if isinstance(v, version):
+    if isinstance(v, build_version):
       return v
-    return version.parse(v)
+    return build_version.parse(v)
 
   @classmethod
   def compare(clazz, v1, v2):

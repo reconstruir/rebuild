@@ -4,7 +4,7 @@
 
 import unittest
 from bes.fs import tar_util, temp_file
-from rebuild import build_target, System
+from rebuild.base import build_system, build_target
 from rebuild.packager import rebuild_manager_config
 
 class test_rebuild_manager_config(unittest.TestCase):
@@ -32,22 +32,22 @@ packages: common10 common20
     tmp_config_filename = self.__make_test_config(self.TEST_CONFIG_INI)
     config = rebuild_manager_config()
 
-    config.load_file(tmp_config_filename, build_target(System.MACOS))
+    config.load_file(tmp_config_filename, build_target(build_system.MACOS))
     self.assertEqual( [ 'common1', 'common2', 'common3', 'common4', 'macos1', 'macos2' ], config['project1']['packages'] )
     self.assertEqual( 'project1 config', config['project1']['description'] )
 
     self.assertEqual( [ 'common10', 'common20' ], config['project2']['packages'] )
     self.assertEqual( 'project2 config', config['project2']['description'] )
 
-    config.load_file(tmp_config_filename, build_target(System.LINUX))
+    config.load_file(tmp_config_filename, build_target(build_system.LINUX))
     self.assertEqual( [ 'common1', 'common2', 'common3', 'common4', 'linux1', 'linux2' ], config['project1']['packages'] )
     self.assertEqual( 'project1 config', config['project1']['description'] )
 
-    config.load_file(tmp_config_filename, build_target(System.ANDROID))
+    config.load_file(tmp_config_filename, build_target(build_system.ANDROID))
     self.assertEqual( [ 'common1', 'common2', 'common3', 'common4' ], config['project1']['packages'] )
     self.assertEqual( 'project1 config', config['project1']['description'] )
 
-    config.load_file(tmp_config_filename, build_target(System.IOS))
+    config.load_file(tmp_config_filename, build_target(build_system.IOS))
     self.assertEqual( [ 'common1', 'common2', 'common3', 'common4' ], config['project1']['packages'] )
     self.assertEqual( 'project1 config', config['project1']['description'] )
     

@@ -3,7 +3,7 @@
 #
 
 from bes.testing.unit_test import unit_test
-from rebuild import binary_format_elf as elf
+from rebuild.binary_format import binary_format_elf as elf
 
 class test_binary_format_elf(unit_test):
 

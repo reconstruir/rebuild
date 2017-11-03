@@ -6,7 +6,7 @@ from bes.key_value import key_value_parser
 from bes.text import string_list_parser
 from collections import namedtuple
 from bes.compat import StringIO
-from .System import System
+from rebuild.base import build_system
 from .requirement import requirement
 
 class platform_specific_config(namedtuple('platform_specific_config', 'system_mask,data')):
@@ -65,7 +65,7 @@ class platform_specific_config(namedtuple('platform_specific_config', 'system_ma
       else:
         system_mask = req.system_mask
         if not system_mask:
-          pass #system_mask = System.ALL
+          pass #system_mask = build_system.ALL
       data.append(requirement(name, operator, version, system_mask))
     return clazz(parsed.system_mask, data)
     
@@ -88,25 +88,25 @@ class platform_specific_config(namedtuple('platform_specific_config', 'system_ma
 
   @classmethod
   def resolve_key_values(clazz, config, system):
-    if not System.system_is_valid(system):
+    if not build_system.system_is_valid(system):
       raise RuntimeError('Invalid system: %s' % (str(system)))
     result = []
     for line in config:
       psc = clazz.parse_key_values(line)
-      if System.mask_matches(psc.system_mask, system):
+      if build_system.mask_matches(psc.system_mask, system):
         result.extend(psc.data)
     return result
 
   @classmethod
   def resolve_list(clazz, config, system):
-    if not System.system_is_valid(system):
+    if not build_system.system_is_valid(system):
       raise RuntimeError('Invalid system: %s' % (str(system)))
     if not isinstance(config, list):
       raise RuntimeError('config is not a list.')
     result = []
     for line in config:
       psc = clazz.parse_list(line)
-      if System.mask_matches(psc.system_mask, system):
+      if build_system.mask_matches(psc.system_mask, system):
         result.extend(psc.data)
     return result
 
@@ -120,7 +120,7 @@ class platform_specific_config(namedtuple('platform_specific_config', 'system_ma
 
   @classmethod
   def resolve_requirement(clazz, config, system):
-    if not System.system_is_valid(system):
+    if not build_system.system_is_valid(system):
       raise RuntimeError('Invalid system: %s' % (str(system)))
     if not isinstance(config, list):
       raise RuntimeError('config is not a list.')
@@ -132,11 +132,11 @@ class platform_specific_config(namedtuple('platform_specific_config', 'system_ma
       for req in req_list:
         # Check for a requirement specific system mask
         if req.system_mask:
-          if System.mask_matches(req.system_mask, system):
+          if build_system.mask_matches(req.system_mask, system):
             # Clean the original system mask since it has been resolved
             clean_req = requirement(req.name, req.operator, req.version, None)
             result.append(clean_req)
         else:
-          if psc.system_mask and System.mask_matches(psc.system_mask, system):
+          if psc.system_mask and build_system.mask_matches(psc.system_mask, system):
             result.append(req)
     return result

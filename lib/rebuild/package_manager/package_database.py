@@ -6,7 +6,7 @@ import json, os.path as path
 from collections import namedtuple
 from bes.common import object_util
 from bes.fs import file_util
-from rebuild import package_descriptor, version
+from rebuild import package_descriptor
 
 from .DatabaseEntry import DatabaseEntry
 

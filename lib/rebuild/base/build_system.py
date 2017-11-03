@@ -4,7 +4,7 @@
 from bes.system import host
 from bes.common import algorithm, string_util
 
-class System(object):
+class build_system(object):
 
   # Systems supported
   ANDROID = 'android'

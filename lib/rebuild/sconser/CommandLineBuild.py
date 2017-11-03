@@ -5,7 +5,7 @@ import argparse, os, os.path as path, sys
 
 from bes.common import Shell
 
-from .build_blurb import build_blurb
+from rebuild.base import build_blurb
 
 class CommandLineBuild(object):
   

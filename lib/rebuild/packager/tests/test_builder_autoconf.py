@@ -4,7 +4,7 @@
 import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import file_util, temp_file
-from rebuild import build_target, version as rebuild_version
+from rebuild.base import build_target, build_version
 from rebuild.package_manager import Package
 from rebuild.packager.unit_test_packaging import unit_test_packaging
 from rebuild.packager import rebuild_builder, rebuild_config, rebuild_env
@@ -38,7 +38,7 @@ class test_builder_autoconf(unit_test):
     ]
     self.assertEqual( expected_files, package.files )
     self.assertEqual( 'mercury', package.info.name )
-    self.assertEqual( rebuild_version('2.3.4', 0, 0), package.info.version )
+    self.assertEqual( build_version('2.3.4', 0, 0), package.info.version )
     self.assertEqual( 'lib', package.info.properties['category'] )
 
   def test_arsenic(self):
@@ -64,7 +64,7 @@ class test_builder_autoconf(unit_test):
     ]
     self.assertEqual( expected_files, package.files )
     self.assertEqual( 'arsenic', package.info.name )
-    self.assertEqual( rebuild_version('1.2.9', 0, 0), package.info.version )
+    self.assertEqual( build_version('1.2.9', 0, 0), package.info.version )
     self.assertEqual( 'lib', package.info.properties['category'] )
 
   @classmethod

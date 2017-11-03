@@ -9,8 +9,7 @@ from bes.common import object_util, Shell, tuple_util
 from bes.text import text_canvas
 from bes.unix import terminal
 
-from .build_blurb import build_blurb
-from .build_target import build_target
+from rebuild.base import build_blurb, build_target
 from .PackageFlags import PackageFlags
 
 class Build(object):

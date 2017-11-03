@@ -3,7 +3,8 @@
 
 import os.path as path
 from rebuild.step_manager import Step, step_result
-from rebuild import build_type, binary_detector
+from rebuild.binary_format import binary_detector
+from rebuild.base import build_type
 from rebuild.toolchain import strip
 
 class step_cleanup_strip_binaries(Step):

@@ -1,10 +1,9 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
-#
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
 from bes.testing.unit_test import unit_test
-from rebuild import build_target, System
+from rebuild.base import build_target, build_system
 from rebuild.toolchain import compiler, toolchain
 from bes.fs import file_util, temp_file
 from bes.system import host
@@ -13,7 +12,7 @@ from bes.testing.unit_test.unit_test_skip import skip_if
 
 def _can_compile_macos(): return host.is_macos()
 def _can_compile_ios(): return host.is_macos()
-def _android_toolchain_is_valid(): return toolchain.get_toolchain(build_target(system = System.ANDROID)).is_valid()
+def _android_toolchain_is_valid(): return toolchain.get_toolchain(build_target(system = build_system.ANDROID)).is_valid()
 def _can_compile_android(): return (host.is_macos() or host.is_linux()) and _android_toolchain_is_valid()
 def _can_compile_linux(): return host.is_linux()
 
@@ -37,7 +36,7 @@ int main(int argc, char* argv[])
   def test_compile_cc_macos(self):
     tmp_dir = self._make_temp_dir()
     src = self._make_temp_source(tmp_dir, 'test.c', self.CC_SOURCE)
-    cc = self._make_compiler(System.MACOS)
+    cc = self._make_compiler(build_system.MACOS)
     targets = cc.compile_c(src)
     self.assertEqual( 1, len(targets) )
     self.assertTrue( path.exists(targets[0][1]) )
@@ -46,7 +45,7 @@ int main(int argc, char* argv[])
   def test_compile_cc_ios(self):
     tmp_dir = self._make_temp_dir()
     src = self._make_temp_source(tmp_dir, 'test.c', self.CC_SOURCE)
-    cc = self._make_compiler(System.IOS)
+    cc = self._make_compiler(build_system.IOS)
     targets = cc.compile_c(src)
     self.assertEqual( 1, len(targets) )
     self.assertTrue( path.exists(targets[0][1]) )
@@ -55,7 +54,7 @@ int main(int argc, char* argv[])
   def test_compile_cc_android(self):
     tmp_dir = self._make_temp_dir()
     src = self._make_temp_source(tmp_dir, 'test.c', self.CC_SOURCE)
-    cc = self._make_compiler(System.ANDROID)
+    cc = self._make_compiler(build_system.ANDROID)
     targets = cc.compile_c(src)
     self.assertEqual( 1, len(targets) )
     self.assertTrue( path.exists(targets[0][1]) )

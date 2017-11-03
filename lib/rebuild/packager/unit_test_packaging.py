@@ -4,7 +4,7 @@
 import os.path as path
 from bes.fs import file_util, temp_file
 from bes.common import string_util
-from rebuild import build_target, version as rebuild_version
+from rebuild.base import build_target
 from rebuild.packager import rebuild_builder, rebuild_config, rebuild_env
 from rebuild.package_manager import Package
 from rebuild.checksum import checksum_manager

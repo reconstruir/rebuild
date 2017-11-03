@@ -5,7 +5,8 @@ import os.path as path
 
 from bes.archive import archiver
 from rebuild.step_manager import Step, step_result
-from rebuild import build_blurb, TarballUtil
+from rebuild import TarballUtil
+from rebuild.base import build_blurb
 from bes.common import object_util, dict_util
 from bes.fs import file_util
 

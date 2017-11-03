@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
-#
-import unittest
-from rebuild import build_type
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-class test_build_type(unittest.TestCase):
+from bes.testing.unit_test import unit_test
+from rebuild.base import build_type
+
+class test_build_type(unit_test):
 
   def test_build_type_is_valid(self):
     self.assertTrue( build_type.build_type_is_valid('release') )
@@ -16,4 +16,4 @@ class test_build_type(unittest.TestCase):
     self.assertEqual( build_type.RELEASE, build_type.parse_build_type('default') )
     
 if __name__ == '__main__':
-  unittest.main()
+  unit_test.main()

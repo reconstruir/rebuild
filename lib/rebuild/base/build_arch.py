@@ -3,7 +3,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy, platform
-from .System import System
+from .build_system import build_system
 from bes.common import string_util
 
 class build_arch(object):
@@ -17,13 +17,13 @@ class build_arch(object):
 #  MIPS64 = 'mips64'
   
   ARCHS = {
-    System.ANDROID: [ ARMV7 ],
+    build_system.ANDROID: [ ARMV7 ],
     # FIXME: fix this when multiarch finally works
-    #System.MACOS: [ I386, X86_64 ],
-    System.MACOS: [ X86_64 ],
-    System.IOS: [ ARM64, ARMV7 ],
-    System.IOS_SIM: [ I386, X86_64 ],
-    System.LINUX: [],
+    #build_system.MACOS: [ I386, X86_64 ],
+    build_system.MACOS: [ X86_64 ],
+    build_system.IOS: [ ARM64, ARMV7 ],
+    build_system.IOS_SIM: [ I386, X86_64 ],
+    build_system.LINUX: [],
   }
 
   DEFAULT_ARCHS = copy.deepcopy(ARCHS)
@@ -40,7 +40,7 @@ class build_arch(object):
   @classmethod
   def determine_archs(clazz, system, tentative_archs):
     result = []
-    if system == System.LINUX:
+    if system == build_system.LINUX:
       python_machine = platform.machine()
       if python_machine in [ 'x86_64' ]:
         result = [ clazz.X86_64 ]
@@ -59,7 +59,7 @@ class build_arch(object):
   
   @classmethod
   def arch_is_valid(clazz, arch, system):
-    if system not in System.SYSTEMS:
+    if system not in build_system.SYSTEMS:
       raise RuntimeError('Unknown system: %d' % (system))
     return arch in clazz.ARCHS[system]
 
@@ -74,7 +74,7 @@ class build_arch(object):
     archs = s.split(',')
     for arch in archs:
       if not clazz.arch_is_valid(arch, system):
-        raise RuntimeError('Invalid arch \"%s\" for system \"%s\"' % (arch, System.system_to_string(system)))
+        raise RuntimeError('Invalid arch \"%s\" for system \"%s\"' % (arch, build_system.system_to_string(system)))
     return sorted(archs)
 
   @classmethod

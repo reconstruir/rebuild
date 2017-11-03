@@ -5,8 +5,7 @@ import os.path as path
 
 from .build_arch import build_arch
 from .build_type import build_type as BT
-from .Category import Category
-from .System import System
+from .build_system import build_system
 
 class build_target(object):
 
@@ -15,7 +14,7 @@ class build_target(object):
 
   def __init__(self, system = DEFAULT, build_type = DEFAULT, archs = DEFAULT):
     # Defaults
-    self.system = System.parse_system(system)
+    self.system = build_system.parse_system(system)
     self.archs = build_arch.determine_archs(self.system, archs)
     self.build_type = self.__determine_build_type(build_type)
 
@@ -54,13 +53,13 @@ class build_target(object):
     return tentative_build_type
 
   def is_darwin(self):
-    return self.system in [ System.MACOS, System.IOS ]
+    return self.system in [ build_system.MACOS, build_system.IOS ]
 
   def is_macos(self):
-    return self.system == System.MACOS
+    return self.system == build_system.MACOS
 
   def is_linux(self):
-    return self.system == System.LINUX
+    return self.system == build_system.LINUX
 
   def to_dict(self):
     return {
@@ -75,9 +74,9 @@ class build_target(object):
 
   @property
   def binary_format(self):
-    if self.system == System.LINUX:
+    if self.system == build_system.LINUX:
       return 'elf'
-    elif self.system == System.LINUX:
+    elif self.system == build_system.LINUX:
       return 'macho'
     else:
       return None

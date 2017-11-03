@@ -4,7 +4,7 @@
 import copy, os, os.path as path
 
 from rebuild.step_manager import Step, step_result
-from rebuild import build_blurb
+from rebuild.base import build_blurb
 
 class step_setup_install_build_requirements(Step):
   'Install package dependencies.'
