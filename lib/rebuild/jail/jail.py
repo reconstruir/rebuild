@@ -6,7 +6,7 @@ from bes.common import algorithm, Shell, string_list
 from bes.fs import dir_util, file_util
 from rebuild.native_package_manager import native_package_manager as npm
 from bes.match import matcher_util
-from rebuild import library
+from rebuild.toolchain import library
 
 from .config_file import config_file
 from .sync import sync

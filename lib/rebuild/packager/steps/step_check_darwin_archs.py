@@ -4,7 +4,7 @@
 import os.path as path
 
 from bes.fs import dir_util, file_util
-from rebuild import library
+from rebuild.toolchain import library
 from rebuild.base import build_category
 from rebuild.darwin import Lipo
 from rebuild.step_manager import Step, step_result

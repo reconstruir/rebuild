@@ -3,7 +3,7 @@
 #
 
 import os.path as path
-from rebuild.toolchain import toolchain
+from .toolchain import toolchain
 from bes.fs import file_util
 from bes.common import object_util, Shell, variable
 
