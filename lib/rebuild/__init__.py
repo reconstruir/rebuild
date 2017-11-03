@@ -8,8 +8,6 @@ from .SystemEnvironment import SystemEnvironment
 from .TarballUtil import TarballUtil
 from .ar_replacement import ar_replacement
 from .hook import hook
-from .instruction import instruction
-from .instruction_list import instruction_list
 from .library import library
 from .package_descriptor import package_descriptor
 from .package_descriptor_list import package_descriptor_list

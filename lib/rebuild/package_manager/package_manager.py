@@ -6,7 +6,8 @@
 import copy, os.path as path, platform
 from bes.common import dict_util, json_util, object_util, string_util, variable
 from bes.system import os_env_var
-from rebuild import instruction_list, package_descriptor, package_descriptor_list, requirement, SystemEnvironment
+from rebuild import package_descriptor, package_descriptor_list, requirement, SystemEnvironment
+from rebuild.instruction import instruction_list
 from rebuild.base import build_system
 from rebuild.dependency import dependency_resolver
 from rebuild.pkg_config import pkg_config

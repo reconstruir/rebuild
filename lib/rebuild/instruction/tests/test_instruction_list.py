@@ -1,10 +1,8 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
-#
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from rebuild import instruction_list as IL
-from rebuild import instruction as I
+from rebuild.instruction import instruction_list as IL, instruction as I
 
 class test_instruction_list(unit_test):
 

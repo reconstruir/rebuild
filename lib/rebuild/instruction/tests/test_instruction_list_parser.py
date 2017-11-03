@@ -1,12 +1,12 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
-#
-import unittest
-from rebuild.instruction_list_parser import instruction_list_parser as P
-from rebuild import instruction as C
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
+
+from bes.testing.unit_test import unit_test
+from rebuild.instruction.instruction_list_parser import instruction_list_parser as P
+from rebuild.instruction import instruction as C
 from bes.key_value import key_value as kv
 
-class test_instruction_list_parser(unittest.TestCase):
+class test_instruction_list_parser(unit_test):
 
   def test_empty(self):
     self.assertEqual( [ ], self._parse('') )
@@ -31,7 +31,5 @@ class test_instruction_list_parser(unittest.TestCase):
   def _parse(self, text):
     return [ i for i in P.parse(text) ]
     
-if __name__ == "__main__":
-  unittest.main()
-
-  
+if __name__ == '__main__':
+  unit_test.main()
