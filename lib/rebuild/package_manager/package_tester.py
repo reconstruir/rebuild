@@ -9,7 +9,7 @@ from collections import namedtuple
 
 from rebuild.step_manager import Step, step_result
 from rebuild.package_manager import Package, package_manager
-from rebuild import Patch, SystemEnvironment, requirement
+from rebuild import Patch, build_os_env, requirement
 from rebuild.base import build_blurb, build_target
 from rebuild.toolchain import toolchain
 from rebuild.dependency import dependency_resolver
@@ -148,14 +148,14 @@ class package_tester(object):
 
     config.tools_manager.update(pd.resolved_build_requirements, config.artifact_manager)
 
-    saved_env = SystemEnvironment.clone_current_env()
+    saved_env = build_os_env.clone_current_env()
 
     config.tools_manager.export_variables_to_current_env(pd.resolved_build_requirements)
     pm.export_variables_to_current_env(all_packages)
 
-    shell_env = SystemEnvironment.make_clean_env()
-    SystemEnvironment.update(shell_env, config.tools_manager.shell_env(pd.resolved_build_requirements), prepend = True)
-    SystemEnvironment.update(shell_env, pm.shell_env(all_packages), prepend = True)
+    shell_env = build_os_env.make_clean_env()
+    build_os_env.update(shell_env, config.tools_manager.shell_env(pd.resolved_build_requirements), prepend = True)
+    build_os_env.update(shell_env, pm.shell_env(all_packages), prepend = True)
 
     test_source_with_replacements = path.join(test_root_dir, path.basename(test_source))
     replacements = {

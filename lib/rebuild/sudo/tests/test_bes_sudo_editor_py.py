@@ -6,7 +6,7 @@ import os, os.path as path
 from bes.testing.unit_test import unit_test
 from bes.common import Shell
 from bes.fs import file_util, temp_file
-from rebuild import SystemEnvironment
+from rebuild import build_os_env
 
 class test_bes_sudo_editor_py(unit_test):
 
@@ -59,7 +59,7 @@ root	ALL=(ALL:ALL) ALL
       '/usr/sbin/chroot',
       '1',
     ]
-    rv = SystemEnvironment.call_python_script(cmd)
+    rv = build_os_env.call_python_script(cmd)
     if rv.exit_code != 0:
       raise RuntimeError('Failed to exectute \"%s\": %s' % (' '.join(cmd), rv.stdout))
     self.assertEquals( 0, rv.exit_code )
@@ -77,7 +77,7 @@ root	ALL=(ALL:ALL) ALL
       '/bin/cat',
       '1',
     ]
-    rv = SystemEnvironment.call_python_script(cmd)
+    rv = build_os_env.call_python_script(cmd)
     if rv.exit_code != 0:
       raise RuntimeError('Failed to exectute \"%s\": %s' % (' '.join(cmd), rv.stdout))
     self.assertEquals( 0, rv.exit_code )

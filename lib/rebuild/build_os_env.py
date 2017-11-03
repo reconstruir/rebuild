@@ -7,7 +7,7 @@ from bes.system import host
 from bes.common import dict_util, variable, Shell
 from bes.system import os_env_var
 
-class SystemEnvironment(object):
+class build_os_env(object):
 
   # The cleanest possible unix PATH
   CLEAN_PATH_MAP = {

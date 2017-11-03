@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from rebuild.step_manager import Step, step_result
-from rebuild import SystemEnvironment
+from rebuild import build_os_env
 
 class step_setup_prepare_environment(Step):
   'Prepare the environment.'
@@ -12,5 +12,5 @@ class step_setup_prepare_environment(Step):
 
   def execute(self, script, env, args):
     # We want a clean environment for tools to work
-    SystemEnvironment.path_reset()
+    build_os_env.path_reset()
     return step_result(True, None)

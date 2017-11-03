@@ -10,7 +10,7 @@ from collections import namedtuple
 from bes.common import dict_util, object_util, string_util, Shell, variable
 from bes.system import log
 from bes.system.compat import with_metaclass
-from rebuild import SystemEnvironment
+from rebuild import build_os_env
 from rebuild.base import build_blurb, build_target
 from rebuild.toolchain import toolchain
 from rebuild import hook, variable_manager
@@ -91,7 +91,7 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
 
   @classmethod
   def create_command_env(clazz, script):
-    env = SystemEnvironment.make_clean_env()
+    env = build_os_env.make_clean_env()
 
     STATIC = True
     assert script.descriptor.resolved_requirements != None
@@ -125,9 +125,9 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
     env['REBUILD_STAGE_PYTHON_LIB_DIR'] = path.join(script.stage_dir, 'lib/python')
     env['REBUILD_STAGE_FRAMEWORKS_DIR'] = path.join(script.stage_dir, 'frameworks')
 
-    SystemEnvironment.update(env, script.env.tools_manager.shell_env(script.descriptor.resolved_build_requirements))
-    SystemEnvironment.update(env, script.requirements_manager.shell_env(script.descriptor.resolved_requirements))
-    SystemEnvironment.update(env, SystemEnvironment.make_shell_env(script.stage_dir))
+    build_os_env.update(env, script.env.tools_manager.shell_env(script.descriptor.resolved_build_requirements))
+    build_os_env.update(env, script.requirements_manager.shell_env(script.descriptor.resolved_requirements))
+    build_os_env.update(env, build_os_env.make_shell_env(script.stage_dir))
 
     env['REBUILD_PYTHON_VERSION'] = '2.7'
     env['PYTHON'] = 'python%s' % (env['REBUILD_PYTHON_VERSION'])
@@ -146,7 +146,7 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
     env['REBUILD_COMPILE_OPT_FLAGS'] = ' '.join(compiler_flags.get('REBUILD_COMPILE_OPT_FLAGS', []))
 
     ce = tc.compiler_environment()
-    SystemEnvironment.update(env, ce)
+    build_os_env.update(env, ce)
     env['REBUILD_COMPILE_ENVIRONMENT'] = toolchain.flatten_for_shell(ce)
 
     env.update(variable_manager.get_variables())
@@ -174,9 +174,9 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
 
     clazz.env_dump(env, script.descriptor.name, 'PRE ENVIRONMENT')
 
-    SystemEnvironment.env_substitite(env)
+    build_os_env.env_substitite(env)
 
-    rogue_key = SystemEnvironment.env_find_roque_dollar_sign(env)
+    rogue_key = build_os_env.env_find_roque_dollar_sign(env)
     if rogue_key:
       raise RuntimeError('Rogue dollar sign (\"$\") found in %s: %s' % (rogue_key, env[rogue_key]))
 
