@@ -6,10 +6,9 @@ from bes.common import algorithm, dict_util, object_util
 from bes.thread import thread_pool
 from bes.fs import dir_util, file_util
 from collections import namedtuple
+from rebuild.step_manager import step_aborted
 
 from rebuild import build_blurb
-
-from .build_script_runner import build_script_runner
 
 class rebuild_builder(object):
 
@@ -18,7 +17,6 @@ class rebuild_builder(object):
   def __init__(self, env, build_script_filenames):
     build_blurb.add_blurb(self, label = 'build')
     self._env = env
-    self._runner = build_script_runner(build_script_filenames, self._env.config.build_target)
     self.thread_pool = thread_pool(1)
 
   def exclude(self, excluded_packages):
@@ -84,23 +82,51 @@ class rebuild_builder(object):
   EXIT_CODE_FAILED = 1
   EXIT_CODE_ABORTED = 2
 
-  def _run_build_script(self, script, opts):
-    result = self._runner.run_build_script(script, self._env)
-    if result.status == build_script_runner.SUCCESS:
+  def _call_run_build_script(self, script, opts):
+    result = self.run_build_script(script, self._env)
+    if result.status == self.SCRIPT_SUCCESS:
       self.blurb('%s - SUCCESS' % (script.descriptor.name))
       return self.EXIT_CODE_SUCCESS
-    elif result.status == build_script_runner.FAILED:
+    elif result.status == self.SCRIPT_FAILED:
       self.blurb('FAILED: %s - %s - %s' % (script.descriptor.name, result.packager_result.failed_step.__class__.__name__, result.packager_result.message))
       return self.EXIT_CODE_FAILED
-    elif result.status == build_script_runner.CURRENT:
+    elif result.status == self.SCRIPT_CURRENT:
       self.blurb('%s - up-to-date.' % (script.descriptor.name))
       return self.EXIT_CODE_SUCCESS
-    elif result.status == build_script_runner.ABORTED:
+    elif result.status == self.SCRIPT_ABORTED:
       self.blurb('aborted')
       return self.EXIT_CODE_ABORTED
     assert False
     return self.EXIT_CODE_FAILED
 
+  SCRIPT_SUCCESS = 'success'
+  SCRIPT_FAILED = 'failed'
+  SCRIPT_CURRENT = 'current'
+  SCRIPT_ABORTED = 'aborted'
+  _run_result = namedtuple('_run_result', 'status,packager_result')
+  
+  def run_build_script(self, script, env):
+    try:
+      checksum_ignored = env.checksum_manager.is_ignored(script.descriptor.full_name)
+      needs_rebuilding = checksum_ignored or script.needs_rebuilding()
+      if not needs_rebuilding:
+        # If the working directory is empty, it means no work happened and its useless
+        if path.exists(script.working_dir) and dir_util.is_empty(script.working_dir):
+          file_util.remove(script.working_dir)
+        return self._run_result(self.SCRIPT_CURRENT, None)
+      build_blurb.blurb('build', '%s - building' % (script.descriptor.name))
+      packager_result = script.execute({})
+      if packager_result.success:
+        return self._run_result(self.SCRIPT_SUCCESS, packager_result)
+      else:
+        return self._run_result(self.SCRIPT_FAILED, packager_result)
+
+    except step_aborted as ex:
+      return self._run_result(self.SCRIPT_ABORTED, None)
+
+    assert False, 'Not Reached'
+    return self._run_result(self.SCRIPT_FAILED, None)
+  
   def build_many_scripts(self, package_names, opts):
 
 #    for name, script in self._env.script_manager.scripts.items():
@@ -152,7 +178,7 @@ class rebuild_builder(object):
       if script.disabled and not self._env.config.disabled:
         self.blurb('disabled: %s' % (filename))
         continue
-      exit_code = self._run_build_script(script, opts)
+      exit_code = self._call_run_build_script(script, opts)
       if exit_code == self.EXIT_CODE_FAILED:
         failed_packages.append(name)
         if not self._env.config.keep_going:
@@ -188,3 +214,4 @@ class rebuild_builder(object):
   def package_info(self, package_name):
     'Return the package info for a package.'
     return self._env.script_manager.scripts[package_name].package_info
+

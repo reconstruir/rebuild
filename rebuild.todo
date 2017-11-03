@@ -523,3 +523,8 @@ nov 2
 - extra tarball mess needs to deal with version
 - android platform tools are not versioned
 - had to hack bes_test.py to pass through REBUILD_ env variables
+
+nov 3
+- filenames duplicated in rebuild_env and rebuild_builder __init__
+- env duplicated in rebuild_builder __init__ as well as rebuild_builder.run_build_script()
+- s _run_result packager_result to script_result
