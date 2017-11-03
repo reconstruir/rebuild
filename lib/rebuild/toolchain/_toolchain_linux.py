@@ -9,7 +9,10 @@ class _toolchain_linux(_toolchain_base):
 
   def __init__(self, build_target):
     super(_toolchain_linux, self).__init__(build_target)
-  
+
+  def is_valid(self):
+    return True
+    
   def compiler_environment(self):
     ar_replacement = path.abspath(path.normpath(path.join(path.dirname(__file__), '../../../bin/rebuild_ar.py')))
 
@@ -58,4 +61,4 @@ class _toolchain_linux(_toolchain_base):
     return env
 
   def sysroot(self):
-    return '/usr'
+    return '/'

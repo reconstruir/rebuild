@@ -14,6 +14,9 @@ class _toolchain_darwin(_toolchain_base):
     super(_toolchain_darwin, self).__init__(build_target)
     self.sdk = darwin_sdk.SYSTEM_TO_SDK[self.build_target.system]
     #print(self.sdk)
+
+  def is_valid(self):
+    return path.isdir(self.sysroot())
     
   def compiler_environment(self):
     ar_replacement = path.abspath(path.normpath(path.join(path.dirname(__file__), '../../../bin/rebuild_ar.py')))
@@ -66,5 +69,9 @@ class _toolchain_darwin(_toolchain_base):
       arch_flags += [ '-arch', arch ]
     return arch_flags
 
-  def sysroot(self, build_target):
-    return path.join(xcrun.sdk_path(self.sdk), 'usr')
+  def sysroot(self):
+    return xcrun.sdk_path(self.sdk)
+
+  def sysroot_flags(self):
+    'Return the sysroot flags.'
+    return []

@@ -13,6 +13,9 @@ class build_arch(object):
   I386 = 'i386'
   X86_64 = 'x86_64'
 
+#  MIPS = 'mips'
+#  MIPS64 = 'mips64'
+  
   ARCHS = {
     System.ANDROID: [ ARMV7 ],
     # FIXME: fix this when multiarch finally works

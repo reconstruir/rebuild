@@ -8,16 +8,24 @@ class _toolchain_base(with_metaclass(ABCMeta, object)):
 
   def __init__(self, build_target):
     self.build_target = build_target
-    
+
+  @abstractmethod
+  def is_valid(self):
+    pass
+
   @abstractmethod
   def compiler_environment(self):
     pass
 
   @abstractmethod
-  def compiler_flags(clazz):
+  def compiler_flags(self):
     pass
 
   @abstractmethod
-  def sysroot(clazz):
+  def sysroot(self):
+    pass
+  
+  @abstractmethod
+  def sysroot_flags(self):
     pass
   

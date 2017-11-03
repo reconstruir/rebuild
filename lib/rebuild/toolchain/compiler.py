@@ -13,7 +13,7 @@ class compiler(object):
     self.build_target = build_target
     self.toolchain = toolchain.get_toolchain(self.build_target)
 
-  def compile_c(self, sources, objects = None):
+  def compile_c(self, sources, objects = None, cflags = None):
     assert sources
     sources = object_util.listify(sources)
     if objects:

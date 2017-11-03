@@ -12,7 +12,9 @@ class step_extract_tarballs_to_stage_dir(Step):
   
   def execute(self, script, env, args):
     tarballs = args.get('tarballs', [])
+    strip_common_base = args.get('tarballs_strip_common_base', False)
     for tarball in tarballs:
       archiver.extract(tarball, script.stage_dir,
-                       base_dir = script.descriptor.full_name)
+                       base_dir = script.descriptor.full_name,
+                       strip_common_base = strip_common_base)
     return step_result(True)
