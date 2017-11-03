@@ -5,11 +5,10 @@ import json, os.path as path
 from bes.common import object_util, string_util
 from bes.compat import cmp
 from rebuild.dependency import dependency_resolver
-from .Category import Category
 from collections import namedtuple
 from .requirement import requirement
 from .platform_specific_config import platform_specific_config as psc
-from rebuild.base import build_system, build_target, build_version
+from rebuild.base import build_category, build_system, build_target, build_version
 
 class package_descriptor(object):
 
@@ -264,7 +263,7 @@ class package_descriptor(object):
     return object_util.listify(self.properties.get(self.PROPERTY_PKG_CONFIG_NAME, [ self.name ]))
 
   def is_tool(self):
-    return self.category == Category.TOOL
+    return self.category == build_category.TOOL
 
   @property
   def disabled(self):

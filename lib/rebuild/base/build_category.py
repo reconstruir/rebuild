@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-class Category(object):
+class build_category(object):
 
   LIB = 'lib'
   TOOL = 'tool'

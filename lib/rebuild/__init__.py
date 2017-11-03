@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 
-from .Category import Category
 from .Install import Install
 from .Patch import Patch
 from .SystemEnvironment import SystemEnvironment
