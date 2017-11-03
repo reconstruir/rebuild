@@ -21,13 +21,14 @@ class compiler(object):
     targets = self._make_targets(sources, objects)
 
     for src, obj in targets:
-      cmd = '$CC -c $(SRC) -o $(OBJ)'
+      cmd = '$CC $CFLAGS -c $(SRC) -o $(OBJ)'
       variables = {}
       variables.update(self.toolchain.compiler_environment())
+      variables.update(self.toolchain.compiler_flags_flat())
       variables['SRC'] = src
       variables['OBJ'] = obj
       cmd = variable.substitute(cmd, variables)
-      print(cmd)
+      print('CMD: %s' % (cmd))
       Shell.execute(cmd)
     return targets
   

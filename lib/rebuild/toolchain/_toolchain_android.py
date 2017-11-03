@@ -8,9 +8,32 @@ import os, os.path as path
 
 class _toolchain_android(_toolchain_base):
 
+  _REBUILD_ARCH_TO_TRIPLET = {
+    build_arch.ARMV7: 'arm-linux-androideabi',
+    build_arch.ARM64: 'aarch64-linux-android',
+    #build_arch.MIPS: 'mipsel-linux-android',
+    #build_arch.MIPS64: 'mips64el-linux-android',
+    build_arch.I386: 'i686-linux-android',
+    build_arch.X86_64: 'x86_64-linux-android',
+  }
+
+  _REBUILD_ARCH_TO_PLATFORM_ARCH = {
+    build_arch.ARMV7: 'arch-arm',
+    build_arch.ARM64: 'arch-arm64',
+    #build_arch.MIPS: 'arch-mips',
+    #build_arch.MIPS64: 'arch-mips64',
+    build_arch.I386: 'arch-x86',
+    build_arch.X86_64: 'arch-x86_64',
+  }
+  
   def __init__(self, build_target):
     super(_toolchain_android, self).__init__(build_target)
     self.ndk_root = os.environ.get('REBUILD_ANDROID_NDK_ROOT', None)
+    self._triplet = self._REBUILD_ARCH_TO_TRIPLET[self.build_target.archs[0]]
+    self._api = '26'
+    self._api_dir = 'android-%s' % (self._api)
+    self._arch_dir = self._REBUILD_ARCH_TO_PLATFORM_ARCH[self.build_target.archs[0]]
+    self._platforms_dir = path.join(self.ndk_root, 'platforms')
     
   def is_valid(self):
     return self.ndk_root and path.isdir(self.ndk_root)
@@ -35,7 +58,7 @@ class _toolchain_android(_toolchain_base):
 
   def compiler_flags(self):
     'Return the compiler flags for the given darwin.'
-
+    sysroot_flags = self.sysroot_flags()
     arch_flags = []
     pic_flags = [ '-fPIC' ]
 
@@ -44,9 +67,9 @@ class _toolchain_android(_toolchain_base):
     else:
       opt_flags = [ '-g' ]
 
-    cflags = arch_flags + opt_flags + pic_flags
+    cflags = sysroot_flags + arch_flags + opt_flags + pic_flags
     
-    ldflags = []
+    ldflags = sysroot_flags
       
     env = {
       'CFLAGS': cflags,
@@ -54,7 +77,7 @@ class _toolchain_android(_toolchain_base):
       'CXXFLAGS': cflags,
       'REBUILD_COMPILE_OPT_FLAGS': opt_flags,
       'REBUILD_COMPILE_ARCH_FLAGS': arch_flags,
-      'REBUILD_COMPILE_ARCHS': build_target.archs,
+      'REBUILD_COMPILE_ARCHS': self.build_target.archs,
     }
     
     return env
@@ -81,31 +104,11 @@ class _toolchain_android(_toolchain_base):
     
   def sysroot(self):
     return path.join(self.ndk_root, 'sysroot')
-
-  @classmethod
-  def _rebuild_arch_to_android_arch(clazz, build_target):
-    return None
-#    ARMV7 = 'armv7'
-#  ARM64 = 'arm64'
-#  I386 = 'i386'
-#  X86_64 = 'x86_64'
-
-
-
-    #ARM	arm-linux-androideabi
-#ARM64	aarch64-linux-android
-#MIPS	mipsel-linux-android
-#MIPS64	mips64el-linux-android
-#x86	i686-linux-android
-#x86_64	x86_64-linux-android
   
   def sysroot_flags(self):
     'Return the sysroot flags.'
-    return []
-#    sysroot = self.sysroot()
-#    return [
-##      -isystem $NDK/sysroot/usr/include/$TRIPLE when compiling. The triple has the following mapping:
-##      e -isysroot option, then the --sysroot option applies to libraries, but the -isysroot option applies to header file#s.
-##--sysroot should still point to $NDK/platforms/android-$API/arch-$ARCH/.
-#    ]
-  
+    sysroot = self.sysroot()
+    return [
+      '-isystem %s' % (path.join(sysroot, 'usr/include', self._triplet)),
+      '--sysroot %s' % (path.join(self._platforms_dir, self._api_dir, self._arch_dir)),
+    ]

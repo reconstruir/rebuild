@@ -17,19 +17,14 @@ def _android_toolchain_is_valid(): return toolchain.get_toolchain(build_target(s
 def _can_compile_android(): return (host.is_macos() or host.is_linux()) and _android_toolchain_is_valid()
 def _can_compile_linux(): return host.is_linux()
 
-class test_toolchain_macos(unit_test):
+class test_toolchain(unit_test):
 
   __unit_test_data_dir__ = 'test_data/toolchain'
 
   _DEBUG = True
   _DEBUG = False
-  
-  @skip_if(not _can_compile_macos(), 'cannot compile macos')
-  def test_compile_cc(self):
-    tmp_dir = temp_file.make_temp_dir(delete = not self._DEBUG)
-    if self._DEBUG:
-      print('tmp_dir: %s' % (tmp_dir))
-    source = r'''
+
+  CC_SOURCE = r'''
 #include <stdio.h>
 int main(int argc, char* argv[])
 {
@@ -37,64 +32,48 @@ int main(int argc, char* argv[])
   return 0;
 }
 '''
-    src = file_util.save(path.join(tmp_dir, 'test.c'), content = source)
-    bt = build_target(system = System.MACOS)
-    cc = compiler(bt)
+
+  @skip_if(not _can_compile_macos(), 'cannot compile macos')
+  def test_compile_cc_macos(self):
+    tmp_dir = self._make_temp_dir()
+    src = self._make_temp_source(tmp_dir, 'test.c', self.CC_SOURCE)
+    cc = self._make_compiler(System.MACOS)
     targets = cc.compile_c(src)
     self.assertEqual( 1, len(targets) )
     self.assertTrue( path.exists(targets[0][1]) )
 
-class test_toolchain_ios(unit_test):
-
-  __unit_test_data_dir__ = 'test_data/toolchain'
-
-  _DEBUG = True
-  _DEBUG = False
-  
   @skip_if(not _can_compile_ios(), 'cannot compile ios')
-  def test_compile_cc(self):
-    tmp_dir = temp_file.make_temp_dir(delete = not self._DEBUG)
-    if self._DEBUG:
-      print('tmp_dir: %s' % (tmp_dir))
-    source = r'''
-#include <stdio.h>
-int main(int argc, char* argv[])
-{
-  printf("%s::main()\n", __FILE__);
-}
-'''
-    src = file_util.save(path.join(tmp_dir, 'test.c'), content = source)
-    bt = build_target(system = System.IOS)
-    cc = compiler(bt)
+  def test_compile_cc_ios(self):
+    tmp_dir = self._make_temp_dir()
+    src = self._make_temp_source(tmp_dir, 'test.c', self.CC_SOURCE)
+    cc = self._make_compiler(System.IOS)
     targets = cc.compile_c(src)
     self.assertEqual( 1, len(targets) )
     self.assertTrue( path.exists(targets[0][1]) )
 
-class test_toolchain_android(unit_test):
-
-  __unit_test_data_dir__ = 'test_data/toolchain'
-
-  _DEBUG = True
-  _DEBUG = False
-  
   @skip_if(not _can_compile_android(), 'cannot compile android')
-  def test_compile_cc(self):
-    tmp_dir = temp_file.make_temp_dir(delete = not self._DEBUG)
-    if self._DEBUG:
-      print('tmp_dir: %s' % (tmp_dir))
-    source = r'''
-#include <stdio.h>
-int main(int argc, char* argv[])
-{
-  printf("%s::main()\n", __FILE__);
-}
-'''
-    src = file_util.save(path.join(tmp_dir, 'test.c'), content = source)
-    bt = build_target(system = System.ANDROID)
-    cc = compiler(bt)
+  def test_compile_cc_android(self):
+    tmp_dir = self._make_temp_dir()
+    src = self._make_temp_source(tmp_dir, 'test.c', self.CC_SOURCE)
+    cc = self._make_compiler(System.ANDROID)
     targets = cc.compile_c(src)
     self.assertEqual( 1, len(targets) )
     self.assertTrue( path.exists(targets[0][1]) )
     
+  @classmethod
+  def _make_temp_dir(clazz):
+    tmp_dir = temp_file.make_temp_dir(delete = not clazz._DEBUG)
+    if clazz._DEBUG:
+      print('tmp_dir: %s' % (tmp_dir))
+    return tmp_dir
+
+  @classmethod
+  def _make_temp_source(clazz, tmp_dir, filename, content):
+    return file_util.save(path.join(tmp_dir, filename), content = content)
+
+  @classmethod
+  def _make_compiler(clazz, system):
+    return compiler(build_target(system = system))
+
 if __name__ == '__main__':
   unit_test.main()

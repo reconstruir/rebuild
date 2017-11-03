@@ -39,6 +39,7 @@ class _toolchain_darwin(_toolchain_base):
   def compiler_flags(self):
     'Return the compiler flags for the given darwin.'
 
+    sysroot_flags = self.sysroot_flags()
     arch_flags = self._make_arch_flags(self.build_target.archs)
 
     if self.build_target.build_type == build_type.RELEASE:
@@ -46,7 +47,7 @@ class _toolchain_darwin(_toolchain_base):
     else:
       opt_flags = [ '-g' ]
 
-    cflags = arch_flags + opt_flags
+    cflags = sysroot_flags + arch_flags + opt_flags
 
     ldflags = []
       
@@ -74,4 +75,9 @@ class _toolchain_darwin(_toolchain_base):
 
   def sysroot_flags(self):
     'Return the sysroot flags.'
-    return []
+    sysroot = self.sysroot()
+    return [
+      '-isystem %s' % (path.join(sysroot, 'usr/include')),
+#      '--sysroot %s' % (path.join(self._platforms_dir, self._api_dir, self._arch_dir)),
+    ]
+  

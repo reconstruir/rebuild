@@ -522,3 +522,4 @@ nov 2
 - rerite TarballUtil.find() to be more sane in its pattern matching
 - extra tarball mess needs to deal with version
 - android platform tools are not versioned
+- had to hack bes_test.py to pass through REBUILD_ env variables
