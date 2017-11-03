@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 #
 import os, unittest
-from rebuild import build_os_env
+from rebuild.base import build_os_env
 from bes.system import host
 
 class Testbuild_os_env(unittest.TestCase):

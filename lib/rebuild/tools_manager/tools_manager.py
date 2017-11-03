@@ -5,8 +5,8 @@ import os.path as path
 from bes.common import object_util
 from bes.system import host, os_env_var
 from bes.fs import file_util
-from rebuild import package_descriptor, build_os_env
-from rebuild.base import build_target, build_system
+from rebuild import package_descriptor
+from rebuild.base import build_os_env, build_target, build_system
 from rebuild.package_manager import artifact_manager
 from .build_requirement_manager import build_requirement_manager
 

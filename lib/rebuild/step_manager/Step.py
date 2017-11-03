@@ -10,8 +10,7 @@ from collections import namedtuple
 from bes.common import dict_util, object_util, string_util, Shell, variable
 from bes.system import log
 from bes.system.compat import with_metaclass
-from rebuild import build_os_env
-from rebuild.base import build_blurb, build_target
+from rebuild.base import build_blurb, build_os_env, build_target
 from rebuild.toolchain import toolchain
 from rebuild import hook, variable_manager
 from rebuild import platform_specific_config as psc

@@ -5,7 +5,7 @@
 import os, os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import file_find, temp_file
-from rebuild import build_os_env
+from rebuild.base import build_os_env
 from rebuild.native_package_manager import native_package_manager as npm
 from bes.testing.unit_test.unit_test_skip import skip_if
 from bes.system import host

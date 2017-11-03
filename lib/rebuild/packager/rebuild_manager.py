@@ -4,8 +4,8 @@
 import os.path as path
 from bes.fs import file_util
 from bes.common import dict_util, object_util
-from rebuild import package_descriptor, build_os_env
-from rebuild.base import build_blurb, build_target
+from rebuild import package_descriptor
+from rebuild.base import build_blurb, build_os_env, build_target
 from rebuild.dependency import dependency_resolver
 from rebuild.package_manager import artifact_manager, Package, package_manager, package_list
 from collections import namedtuple

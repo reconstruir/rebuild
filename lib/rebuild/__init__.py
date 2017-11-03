@@ -3,7 +3,6 @@
 
 from .Install import Install
 from .Patch import Patch
-from .build_os_env import build_os_env
 from .TarballUtil import TarballUtil
 from .ar_replacement import ar_replacement
 from .hook import hook

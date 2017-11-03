@@ -6,7 +6,7 @@ import os, os.path as path
 from bes.testing.unit_test import unit_test
 from bes.common import Shell
 from bes.fs import file_util, temp_file
-from rebuild import build_os_env
+from rebuild.base import build_os_env
 
 class test_bes_sudo_editor_py(unit_test):
 
