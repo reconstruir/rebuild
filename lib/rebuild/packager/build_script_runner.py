@@ -14,7 +14,7 @@ class build_script_runner(object):
   CURRENT = 'current'
   ABORTED = 'aborted'
 
-  RunResult = namedtuple('RunResult', 'status,packager_result')
+  _run_result = namedtuple('_run_result', 'status,packager_result')
 
   def __init__(self, filenames, build_target):
     pass
@@ -25,18 +25,18 @@ class build_script_runner(object):
       needs_rebuilding = checksum_ignored or script.needs_rebuilding()
       if not needs_rebuilding:
         # If the working directory is empty, it means no work happened and its useless
-        if dir_util.is_empty(script.working_dir):
+        if path.exists(script.working_dir) and dir_util.is_empty(script.working_dir):
           file_util.remove(script.working_dir)
-        return self.RunResult(self.CURRENT, None)
+        return self._run_result(self.CURRENT, None)
       build_blurb.blurb('build', '%s - building' % (script.descriptor.name))
       packager_result = script.execute({})
       if packager_result.success:
-        return self.RunResult(self.SUCCESS, packager_result)
+        return self._run_result(self.SUCCESS, packager_result)
       else:
-        return self.RunResult(self.FAILED, packager_result)
+        return self._run_result(self.FAILED, packager_result)
 
     except step_aborted as ex:
-      return self.RunResult(self.ABORTED, None)
+      return self._run_result(self.ABORTED, None)
 
     assert False, 'Not Reached'
-    return self.RunResult(self.FAILED, None)
+    return self._run_result(self.FAILED, None)

@@ -188,8 +188,8 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
       
     build_blurb.blurb('build', '%s - %s' % (script.descriptor.name, ' '.join(command)))
 
-    file_util.mkdir(script.build_dir)
-    retry_script = clazz.__write_retry_script(command, env, script)
+#    file_util.mkdir(script.build_dir)
+    retry_script = clazz._write_retry_script(command, env, script)
 
     clazz.env_dump(env, script.descriptor.name, clazz.__name__ + ' : ' + 'POST ENVIRONMENT')
 
@@ -218,7 +218,7 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
   RETRY_SCRIPT_FILENAME = 'rebbe_retry.sh'
 
   @classmethod
-  def __write_retry_script(clazz, command, env, script):
+  def _write_retry_script(clazz, command, env, script):
     from bes.compat import StringIO
     s = StringIO()
     s.write('#!/bin/bash\n')

@@ -48,9 +48,7 @@ class build_script(object):
     
   def _make_working_dir(self, build_dir):
     base_dir = '%s_%s' % (self.descriptor.full_name, time_util.timestamp())
-    working_dir = path.join(build_dir, base_dir)
-    file_util.mkdir(working_dir)
-    return working_dir
+    return path.join(build_dir, base_dir)
     
   def _add_steps(self):
     try:

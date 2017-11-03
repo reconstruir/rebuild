@@ -81,3 +81,8 @@ class _toolchain_darwin(_toolchain_base):
 #      '--sysroot %s' % (path.join(self._platforms_dir, self._api_dir, self._arch_dir)),
     ]
   
+  def autoconf_flags(self):
+    return [
+#      '--host=%s' % (self._triplet),
+#      '--sysroot %s' % (self._sysroot_platform_dir),
+    ]

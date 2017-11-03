@@ -34,7 +34,8 @@ class _toolchain_android(_toolchain_base):
     self._api_dir = 'android-%s' % (self._api)
     self._arch_dir = self._REBUILD_ARCH_TO_PLATFORM_ARCH[self.build_target.archs[0]]
     self._platforms_dir = path.join(self.ndk_root, 'platforms')
-    
+    self._sysroot_platform_dir = path.join(self._platforms_dir, self._api_dir, self._arch_dir)
+
   def is_valid(self):
     return self.ndk_root and path.isdir(self.ndk_root)
     
@@ -110,5 +111,11 @@ class _toolchain_android(_toolchain_base):
     sysroot = self.sysroot()
     return [
       '-isystem %s' % (path.join(sysroot, 'usr/include', self._triplet)),
-      '--sysroot %s' % (path.join(self._platforms_dir, self._api_dir, self._arch_dir)),
+      '--sysroot %s' % (self._sysroot_platform_dir),
+    ]
+
+  def autoconf_flags(self):
+    return [
+      '--host=%s' % (self._triplet),
+      '--sysroot %s' % (self._sysroot_platform_dir),
     ]

@@ -62,3 +62,10 @@ class _toolchain_linux(_toolchain_base):
 
   def sysroot(self):
     return '/'
+
+  def autoconf_flags(self):
+    return [
+#      '--host=%s' % (self._triplet),
+#      '--sysroot %s' % (self._sysroot_platform_dir),
+    ]
+  
