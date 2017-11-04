@@ -45,7 +45,7 @@ class _toolchain_android(_toolchain_base):
       'CXX': self._find_tool('g++'),
       'RANLIB': self._find_tool('ranlib'),
       'STRIP': self._find_tool('strip'),
-      'AR': ar_replacement,
+      'AR': 'ar', #ar_replacement,
       'AR_REAL': self._find_tool('ar'),
       'AR_FLAGS': 'r',
       'ARFLAGS': 'r',

@@ -60,6 +60,15 @@ int main(int argc, char* argv[])
     self.assertEqual( 1, len(targets) )
     self.assertTrue( path.exists(targets[0][1]) )
     
+  @skip_if(not _can_compile_linux(), 'cannot compile linux')
+  def test_compile_cc_linux(self):
+    tmp_dir = self._make_temp_dir()
+    src = self._make_temp_source(tmp_dir, 'test.c', self.CC_SOURCE)
+    cc = self._make_compiler(System.LINUX)
+    targets = cc.compile_c(src)
+    self.assertEqual( 1, len(targets) )
+    self.assertTrue( path.exists(targets[0][1]) )
+    
   @classmethod
   def _make_temp_dir(clazz):
     tmp_dir = temp_file.make_temp_dir(delete = not clazz._DEBUG)

@@ -24,7 +24,7 @@ class _toolchain_linux(_toolchain_base):
       'RANLIB': 'ranlib',
       'STRIP': 'strip',
       'AR': 'ar',
-      'AR_REPLACEMENT': ar_replacement,
+      'AR_REPLACEMENT': 'ar', #ar_replacement,
       'AR_REAL': 'ar',
       'AR_FLAGS': 'r',
       'ARFLAGS': 'r',
@@ -62,3 +62,11 @@ class _toolchain_linux(_toolchain_base):
 
   def sysroot(self):
     return '/'
+
+  def sysroot(self):
+    return path.join(self.ndk_root, 'sysroot')
+  
+  def sysroot_flags(self):
+    'Return the sysroot flags.'
+    return [
+    ]
