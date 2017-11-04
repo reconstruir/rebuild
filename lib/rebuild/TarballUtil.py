@@ -10,14 +10,6 @@ from bes.archive import archiver
 class TarballUtil(object):
 
   @classmethod
-  def extract(clazz, tarballs, dest_dir, base_dir, strip_common_base):
-    tarballs = object_util.listify(tarballs)
-    for tarball in tarballs:
-      archiver.extract(tarball,
-                       dest_dir,
-                       base_dir = base_dir,
-                       strip_common_base = strip_common_base)
-  @classmethod
   def autoconf_help(clazz, tarball):
     'Return the output of configure --help for an autoconf archive.'
     tmp_dir = temp_file.make_temp_dir()

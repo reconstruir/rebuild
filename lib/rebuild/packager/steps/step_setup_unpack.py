@@ -5,7 +5,6 @@ import os.path as path
 
 from bes.archive import archiver
 from rebuild.step_manager import Step, step_result
-from rebuild import TarballUtil
 from rebuild.base import build_blurb
 from bes.common import object_util, dict_util
 from bes.fs import file_util
@@ -29,7 +28,7 @@ class step_setup_unpack(Step):
     
     for tarball in tarballs:
       self.blurb('Extracting %s' % (tarball))
-    TarballUtil.extract(tarballs, script.working_dir, 'source', True)
+    self._extract(tarballs, script.working_dir, 'source', True)
     return step_result(True, None, output = { 'tarballs': tarballs })
 
   def sources_keys(self):
@@ -81,3 +80,13 @@ class step_setup_unpack(Step):
       extra_tarballs_dict['extra_tarballs'] = caca
 
     return dict_util.combine(tarballs_dict, extra_tarballs_dict)
+
+  @classmethod
+  def _extract(clazz, tarballs, dest_dir, base_dir, strip_common_base):
+    tarballs = object_util.listify(tarballs)
+    for tarball in tarballs:
+      archiver.extract(tarball,
+                       dest_dir,
+                       base_dir = base_dir,
+                       strip_common_base = strip_common_base)
+  
