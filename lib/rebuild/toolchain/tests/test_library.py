@@ -223,10 +223,11 @@ class test_library(unit_test):
       'thin_fruits_x86_64.a',
       'thin_fruits_x86_64.so',
     ]
-    self.assertEqual( expected_libs, library.list_libraries(self.data_dir(platform_specific = True)) )
+    self.assertEqual( expected_libs, library.list_libraries(self.data_dir(platform_specific = True), relative = True) )
 
   @skip_if(not host.is_linux(), 'not linux')
   def test_list_libraries_macos(self):
+    self.maxDiff = None
     expected_libs = [
       'fat_32_fruits.a',
       'fat_32_fruits.so',

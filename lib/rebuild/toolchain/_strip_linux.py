@@ -3,7 +3,7 @@
 
 from ._strip_base import _strip_base
 
-from rebuild.toolchain import toolchain
+from .toolchain import toolchain
 from bes.common import Shell
 
 class _strip_linux(_strip_base):
