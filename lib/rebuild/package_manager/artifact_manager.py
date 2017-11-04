@@ -4,7 +4,8 @@
 import os.path as path
 from bes.common import string_util
 from bes.system import log
-from rebuild import build_blurb, package_descriptor, package_descriptor_list
+from rebuild import package_descriptor, package_descriptor_list
+from rebuild.base import build_blurb
 from bes.git import git
 from bes.fs import dir_util, file_util
 

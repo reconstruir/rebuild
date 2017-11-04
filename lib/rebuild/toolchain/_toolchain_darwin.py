@@ -3,7 +3,7 @@
 
 from ._toolchain_base import _toolchain_base
 
-from rebuild import build_type
+from rebuild.base import build_type
 from rebuild.toolchain.darwin.xcrun import xcrun
 from rebuild.toolchain.darwin import darwin_sdk
 import os.path as path
@@ -81,3 +81,8 @@ class _toolchain_darwin(_toolchain_base):
 #      '--sysroot %s' % (path.join(self._platforms_dir, self._api_dir, self._arch_dir)),
     ]
   
+  def autoconf_flags(self):
+    return [
+#      '--host=%s' % (self._triplet),
+#      '--sysroot %s' % (self._sysroot_platform_dir),
+    ]

@@ -3,7 +3,7 @@
 
 from ._strip_base import _strip_base
 
-from rebuild import binary_format_macho
+from rebuild.binary_format import binary_format_macho
 from rebuild.toolchain import toolchain
 from bes.common import Shell
 

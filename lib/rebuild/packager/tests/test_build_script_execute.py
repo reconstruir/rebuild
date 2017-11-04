@@ -6,7 +6,7 @@ import os.path as path, json
 from bes.testing.unit_test import unit_test
 from bes.system import host
 from bes.fs import file_util, temp_file
-from rebuild import build_target
+from rebuild.base import build_target
 from rebuild.packager import build_script, rebuild_config, rebuild_env
 from bes.archive import archiver
 from rebuild.packager.unit_test_packaging import unit_test_packaging

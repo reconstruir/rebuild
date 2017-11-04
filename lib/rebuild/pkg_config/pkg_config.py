@@ -5,7 +5,7 @@ import os.path as path
 from bes.common import algorithm, object_util, Shell, string_util
 from bes.system import log, os_env_var, host
 from bes.fs import file_find, file_match, file_util
-from rebuild import build_blurb, build_arch, System
+from rebuild.base import build_arch, build_blurb, build_system
 
 class pkg_config(object):
 

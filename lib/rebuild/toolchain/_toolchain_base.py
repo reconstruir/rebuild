@@ -30,6 +30,10 @@ class _toolchain_base(with_metaclass(ABCMeta, object)):
   def sysroot_flags(self):
     pass
   
+  @abstractmethod
+  def autoconf_flags(self):
+    pass
+  
   def compiler_flags_flat(self):
     compiler_flags = self.compiler_flags()
     result = {}

@@ -2,7 +2,8 @@
 #-*- coding:utf-8 -*-
 #
 from bes.testing.unit_test import unit_test
-from rebuild import build_target, package_descriptor, requirement, System
+from rebuild import package_descriptor
+from rebuild.base import build_system, build_target, requirement
 from bes.common import string_util
 
 class test_package_info(unit_test):
@@ -22,7 +23,7 @@ class test_package_info(unit_test):
     self.assertFalse( package_descriptor.name_is_valid(None) )
     self.assertFalse( package_descriptor.name_is_valid('') )
 
-  TEST_REQUIREMENTS = requirement.parse('d1 >= 1.2.3-1 d2 >= 6.6.6-1', default_system_mask = System.ALL)
+  TEST_REQUIREMENTS = requirement.parse('d1 >= 1.2.3-1 d2 >= 6.6.6-1', default_system_mask = build_system.ALL)
   TEST_PROPS = { 'a': 5, 'b': 66 }
 
   def test_to_json(self):
@@ -120,7 +121,7 @@ class test_package_info(unit_test):
 ###    expected_android_requirements = [
 ###      package_descriptor('foo', '1.2.3-1'),
 ###    ]
-###    android_build_target = build_target(System.ANDROID)
+###    android_build_target = build_target(build_system.ANDROID)
 ###    android_actual_requirements = package_descriptor.parse_requirements(requirements, build_target = android_build_target)
 ###    self.assertEqual( expected_android_requirements, android_actual_requirements )
 ###
@@ -128,7 +129,7 @@ class test_package_info(unit_test):
 ###    expected_ios_requirements = [
 ###      package_descriptor('bar', '6.6.6-6'),
 ###    ]
-###    ios_build_target = build_target(System.IOS)
+###    ios_build_target = build_target(build_system.IOS)
 ###    ios_actual_requirements = package_descriptor.parse_requirements(requirements, build_target = ios_build_target)
 ###    self.assertEqual( expected_ios_requirements, ios_actual_requirements )
     

@@ -4,7 +4,8 @@
 import os.path as path, unittest
 from bes.fs import temp_file
 from bes.system import host
-from rebuild import build_target, build_type, package_descriptor, System
+from rebuild import package_descriptor
+from rebuild.base import build_system, build_target, build_type
 from rebuild.pkg_config import pkg_config
 from rebuild.package_manager import artifact_manager, package_manager
 from rebuild.package_manager import PackageFilesConflictError, PackageAlreadyInstallededError, PackageMissingRequirementsError, ArtifactNotFoundError
@@ -13,7 +14,7 @@ from rebuild.package_manager.unit_test_packages import unit_test_packages
 
 class test_package_manager(unittest.TestCase):
 
-  TEST_BUILD_TARGET = build_target(System.LINUX, build_type.RELEASE)
+  TEST_BUILD_TARGET = build_target(build_system.LINUX, build_type.RELEASE)
 
   ZLIB_CONTENTS = [
     'include/zconf.h',
@@ -191,7 +192,7 @@ class test_package_manager(unittest.TestCase):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     tarball_path = self._make_package(tmp_dir,
                                       'foo', '1.2.3-1',
-                                      System.LINUX, build_type.RELEASE,
+                                      build_system.LINUX, build_type.RELEASE,
                                       [
                                         ( 'foo.txt', 'foo.txt\n' ),
                                         ( 'bar.txt', 'bar.txt\n' ),

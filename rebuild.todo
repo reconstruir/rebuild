@@ -292,7 +292,7 @@ fix need for this in build.py files .  add aliases
         'CFLAGS': '-I${REBUILD_REQUIREMENTS_DIR}/include ${REBUILD_COMPILE_CFLAGS}',
         'LDFLAGS': '-L${REBUILD_REQUIREMENTS_DIR}/lib',
 
-TarballUtil -> ArchiveUtil
+archive_util -> ArchiveUtil
 
 retire FileUtil.is_exe() and use binary detector instead
 
@@ -519,7 +519,14 @@ oct 31
 nov 2
 - find out why ~/.rebbe comes to exists when running unit tests
 - check that scripts in env dir of package manager installation dont clobber each other
-- rerite TarballUtil.find() to be more sane in its pattern matching
+- rerite archive_util.find() to be more sane in its pattern matching
 - extra tarball mess needs to deal with version
 - android platform tools are not versioned
 - had to hack bes_test.py to pass through REBUILD_ env variables
+
+nov 3
+- filenames duplicated in rebuild_env and rebuild_builder __init__
+- env duplicated in rebuild_builder __init__ as well as rebuild_builder.run_build_script()
+- s _run_result packager_result to script_result
+- move the binary_object test files to a common place
+- add a extra_code unit test in test_hook.py

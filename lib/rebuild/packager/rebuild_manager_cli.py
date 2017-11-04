@@ -9,7 +9,7 @@ from bes.archive import archiver
 from bes.key_value import key_value_parser
 from bes.system import host
 from bes.fs import file_util, temp_file
-from rebuild import build_blurb, build_target, build_type, System
+from rebuild.base import build_arch, build_blurb, build_system, build_target, build_type
 from rebuild.packager import rebuild_manager
 from rebuild.package_manager import artifact_manager, Package, package_tester
 from rebuild.tools_manager import tools_manager
@@ -252,8 +252,8 @@ class rebuild_manager_cli(object):
 
   @classmethod
   def _parse_build_target(clazz, args):
-    system = System.parse_system(args.system)
-    if not system in System.SYSTEMS:
+    system = build_system.parse_system(args.system)
+    if not system in build_system.SYSTEMS:
       return ( None, 'Invalid system: %s' % (args.system) )
     if not args.build_type in build_type.BUILD_TYPES:
       return ( None, 'Invalid build_type: %s' % (args.build_type) )

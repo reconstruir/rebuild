@@ -6,7 +6,9 @@
 import copy, os.path as path, platform
 from bes.common import dict_util, json_util, object_util, string_util, variable
 from bes.system import os_env_var
-from rebuild import instruction_list, package_descriptor, package_descriptor_list, requirement, System, SystemEnvironment
+from rebuild import package_descriptor, package_descriptor_list
+from rebuild.instruction import instruction_list
+from rebuild.base import build_os_env, build_system, requirement
 from rebuild.dependency import dependency_resolver
 from rebuild.pkg_config import pkg_config
 from bes.archive import archive, archiver
@@ -247,7 +249,7 @@ class package_manager(object):
     infos = [ self.info_for_name(package_name) for package_name in package_names ]
     result = {}
     for package_info in infos:
-      SystemEnvironment.update(result, self.__env_vars_for_one_package(package_info))
+      build_os_env.update(result, self.__env_vars_for_one_package(package_info))
     return result
 
   def __env_vars_for_one_package(self, package_info):
@@ -264,13 +266,13 @@ class package_manager(object):
 
   def shell_env(self, packages):
     env = {
-      SystemEnvironment.LD_LIBRARY_PATH_VAR_NAME: self.lib_dir,
+      build_os_env.LD_LIBRARY_PATH_VAR_NAME: self.lib_dir,
       'PATH': self.bin_dir,
       'PYTHONPATH': self._python_lib_dir,
       'PKG_CONFIG_PATH': pkg_config.make_pkg_config_path_for_unix_env(self._installation_dir)
     }
     all_env_vars = self.env_vars([ p.name for p in packages])
-    SystemEnvironment.update(env, all_env_vars)
+    build_os_env.update(env, all_env_vars)
     return env
   
   def export_variables_to_current_env(self, packages):

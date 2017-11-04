@@ -3,7 +3,8 @@
 
 import os.path as path
 from bes.common import dict_util
-from rebuild import build_blurb, requirement, package_descriptor
+from rebuild import package_descriptor
+from rebuild.base import build_blurb, requirement
 from rebuild.dependency import dependency_resolver, missing_dependency_error
 from .build_script import build_script
 

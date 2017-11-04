@@ -4,7 +4,8 @@
 import os.path as path
 
 from bes.fs import dir_util, file_util
-from rebuild import Category, library
+from rebuild.toolchain import library
+from rebuild.base import build_category
 from rebuild.darwin import Lipo
 from rebuild.step_manager import Step, step_result
 from rebuild.pkg_config import pkg_config, pkg_config_file
@@ -24,7 +25,7 @@ class step_check_darwin_archs(Step):
   def execute(self, script, env, args):
     if not env.config.build_target.is_darwin():
       return step_result(True, None)
-    if script.descriptor.category != Category.LIB:
+    if script.descriptor.category != build_category.LIB:
       return step_result(True, None)
     if path.isdir(script.stage_lib_dir):
       expected_archs = env.config.build_target.archs

@@ -2,7 +2,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.common import check_type
-from rebuild import TarballUtil
 
 from .source_finder import source_finder 
 

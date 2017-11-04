@@ -5,7 +5,7 @@ import sys
 #sys.dont_write_bytecode = True
 import argparse, copy, os, os.path as path
 
-from rebuild import build_arch, build_type, build_blurb, build_target, System
+from rebuild.base import build_arch, build_blurb, build_system, build_target, build_type
 from bes.key_value import key_value_parser
 from bes.fs import file_util
 
@@ -25,10 +25,10 @@ class rebuilder_cli(object):
   }
 
   def __init__(self):
-    all_archs = ','.join(build_arch.ARCHS[System.HOST])
-    default_archs = ','.join(build_arch.DEFAULT_ARCHS[System.HOST])
+    all_archs = ','.join(build_arch.ARCHS[build_system.HOST])
+    default_archs = ','.join(build_arch.DEFAULT_ARCHS[build_system.HOST])
     build_types = ','.join(build_type.BUILD_TYPES)
-    systems = ','.join(System.SYSTEMS)
+    systems = ','.join(build_system.SYSTEMS)
     self.parser = argparse.ArgumentParser(description = 'Build packages.')
     self.parser.add_argument('-o', '--opts', action = 'store', type = str, default = '')
     self.parser.add_argument('-f', '--rebuildstruct', action = 'store', type = str, default = 'rebuildstruct')
@@ -40,7 +40,7 @@ class rebuilder_cli(object):
     self.parser.add_argument('-t', '--tools-only', action = 'store_true')
     self.parser.add_argument('-u', '--users', action = 'store_true', help = 'Rebuild users of given packages [ None ]')
     self.parser.add_argument('-j', '--jobs', action = 'store', type = int, help = 'Number of threads to use [ 1 ]')
-    self.parser.add_argument('-s', '--system', action = 'store', type = str, default = build_target.DEFAULT, help = 'System.  One of (%s) [ %s ]' % (systems, System.DEFAULT))
+    self.parser.add_argument('-s', '--system', action = 'store', type = str, default = build_target.DEFAULT, help = 'build_system.  One of (%s) [ %s ]' % (systems, build_system.DEFAULT))
     self.parser.add_argument('-a', '--archs', action = 'store', type = str, default = build_target.DEFAULT, help = 'Architectures to build for.  One of (%s) [ %s ]' % (all_archs, default_archs))
     self.parser.add_argument('-b', '--build-type', action = 'store', type = str, default = build_target.DEFAULT, help = 'Build type.  One of (%s) [ %s ]' % (build_types, build_type.DEFAULT_BUILD_TYPE))
     self.parser.add_argument('--skip-to-step', action = 'store', type = str, help = 'Skip to the given step name. [ None ]')
@@ -87,7 +87,7 @@ class rebuilder_cli(object):
     if 'archs' in opts and args.archs == build_target.DEFAULT:
       args.archs == opts['archs']
   
-    args.system = System.parse_system(args.system)
+    args.system = build_system.parse_system(args.system)
     args.build_type = build_type.parse_build_type(args.build_type)
     args.archs = build_arch.parse_archs(args.system, args.archs)
 

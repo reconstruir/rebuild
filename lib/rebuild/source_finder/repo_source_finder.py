@@ -3,7 +3,7 @@
 
 from .source_finder import source_finder
 from bes.git import repo
-from rebuild import build_blurb
+from rebuild.base import build_blurb
 import os.path as path
 
 class repo_source_finder(source_finder):

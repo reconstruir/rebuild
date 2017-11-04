@@ -5,7 +5,7 @@ import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import file_util, temp_file
 from rebuild.packager.build_recipe_loader import build_recipe_loader
-from rebuild import build_target
+from rebuild.base import build_target
 
 class test_build_recipe_loader(unit_test):
 

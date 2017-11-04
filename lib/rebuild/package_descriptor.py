@@ -5,13 +5,7 @@ import json, os.path as path
 from bes.common import object_util, string_util
 from bes.compat import cmp
 from rebuild.dependency import dependency_resolver
-from .Category import Category
-from .System import System
-from .build_target import build_target
-from collections import namedtuple
-from .requirement import requirement
-from .version import version
-from .platform_specific_config import platform_specific_config as psc
+from rebuild.base import build_category, build_system, build_target, build_version, masked_config, requirement
 
 class package_descriptor(object):
 
@@ -32,7 +26,7 @@ class package_descriptor(object):
     if not self.name_is_valid(name):
       raise RuntimeError('Invalid name: \"%s\"' % (name))
     self._name = name
-    self._version = version.validate_version(ver)
+    self._version = build_version.validate_version(ver)
 
     self._requirements = self.parse_requirements(requirements)
     self._resolved_requirements = None
@@ -151,7 +145,7 @@ class package_descriptor(object):
     name_rv = cmp(self.name, other.name)
     if name_rv < 0:
       return True
-    version_rv = version.compare(self.version, other.version)
+    version_rv = build_version.compare(self.version, other.version)
     if version_rv < 0:
       return True
     requirements_rv = cmp(self.requirements, other.requirements)
@@ -214,7 +208,7 @@ class package_descriptor(object):
       if requirement.is_requirement(dep):
         result.append(dep)
       elif string_util.is_string(dep):
-        reqs = psc.parse_requirement(dep).data
+        reqs = masked_config.parse_requirement(dep).data
         result.extend(reqs)
       else:
         raise RuntimeError('Invalid requirement: %s - %s' % (str(dep), type(dep)))
@@ -238,7 +232,7 @@ class package_descriptor(object):
 
   def export_compilation_flags_requirements(self, system):
     config = self.properties.get('export_compilation_flags_requirements', [])
-    resolved = psc.resolve_list(config, system)
+    resolved = masked_config.resolve_list(config, system)
     deps_names = [ dep.name for dep in self.requirements ]
     export_names = resolved
     if export_names == dependency_resolver.ALL_DEPS:
@@ -250,7 +244,7 @@ class package_descriptor(object):
 
   def extra_cflags(self, system):
     config = self.properties.get('extra_cflags', [])
-    return psc.resolve_list(config, system)
+    return masked_config.resolve_list(config, system)
       
   @property
   def env_vars(self):
@@ -266,7 +260,7 @@ class package_descriptor(object):
     return object_util.listify(self.properties.get(self.PROPERTY_PKG_CONFIG_NAME, [ self.name ]))
 
   def is_tool(self):
-    return self.category == Category.TOOL
+    return self.category == build_category.TOOL
 
   @property
   def disabled(self):
@@ -280,7 +274,7 @@ class package_descriptor(object):
     name_cmp = cmp(pi1.name, pi2.name)
     if name_cmp != 0:
       return name_cmp
-    return version.compare(pi1.version, pi2.version)
+    return build_version.compare(pi1.version, pi2.version)
 
   @property
   def requirements_names(self):
@@ -299,13 +293,13 @@ class package_descriptor(object):
     return set([ req.name for req in self.resolved_build_requirements ])
   
   def requirements_for_system(self, system):
-    return [ req for req in self.requirements if System.mask_matches(req.system_mask, system) ]
+    return [ req for req in self.requirements if build_system.mask_matches(req.system_mask, system) ]
 
   def requirements_names_for_system(self, system):
     return set([ req.name for req in self.requirements_for_system(system) ])
   
   def build_requirements_for_system(self, system):
-    return [ req for req in self.build_requirements if System.mask_matches(req.system_mask, system) ]
+    return [ req for req in self.build_requirements if build_system.mask_matches(req.system_mask, system) ]
 
   def build_requirements_names_for_system(self, system):
     return set([ req.name for req in self.build_requirements_for_system(system) ])

@@ -3,11 +3,7 @@
 #
 
 import argparse, os, os.path as path, sys
-
 from bes.fs import file_util
-from bes.archive import archiver
-from rebuild import Patch, TarballUtil, package_descriptor
-
 from rebuild import binary_format_macho
 
 def main():

@@ -63,10 +63,13 @@ class _toolchain_linux(_toolchain_base):
   def sysroot(self):
     return '/'
 
-  def sysroot(self):
-    return path.join(self.ndk_root, 'sysroot')
-  
   def sysroot_flags(self):
     'Return the sysroot flags.'
     return [
+    ]
+
+  def autoconf_flags(self):
+    return [
+#      '--host=%s' % (self._triplet),
+#      '--sysroot %s' % (self._sysroot_platform_dir),
     ]

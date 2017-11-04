@@ -6,7 +6,8 @@ import os.path as path
 from bes.common import dict_util, json_util, string_util
 from bes.fs import file_util, temp_file, temp_item
 from bes.archive import archiver
-from rebuild import build_arch, build_target, Category, package_descriptor, requirement, System, version
+from rebuild import package_descriptor
+from rebuild.base import build_arch, build_category, build_system, build_target, requirement
 from collections import namedtuple
 
 class unit_test_packages(object):
@@ -124,10 +125,10 @@ class unit_test_packages(object):
   def make_test_package(clazz, name, version, requirements,
                         system, build_type, properties = None,
                         name_override = None, debug = False):
-    props = { 'category': Category.LIB } 
+    props = { 'category': build_category.LIB } 
     props.update(properties or {})
     pi = package_descriptor(name, version, requirements = requirements, properties = props)
-    assert System.system_is_valid(system)
+    assert build_system.system_is_valid(system)
     bt = build_target(system, build_type, build_arch.ARCHS[system])
     metadata_dict = dict_util.combine(pi.to_dict(), bt.to_dict())
     metadata = json_util.to_json(metadata_dict, indent = 2)
