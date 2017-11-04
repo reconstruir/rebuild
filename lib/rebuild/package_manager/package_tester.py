@@ -117,18 +117,6 @@ class package_tester(object):
   __test_setup = namedtuple('__test_setup','package_info,env,saved_env,test_dir,test_name,test_source_with_replacements,package_manager')
 
   @classmethod
-  def __resolve_and_order_dependencies(clazz, requirements, scripts, dependency_map):
-    names = [ dep.name for dep in requirements ]
-    resolved_names = dependency_resolver.resolve_deps(dependency_map, names)
-    resolved = [ scripts[name].package_info for name in resolved_names ]
-    resolved_map = dict_util.filter_with_keys(dependency_map, resolved_names)
-    build_order = dependency_resolver.build_order_flat(resolved_map)
-    resolved = [ scripts[name].package_info for name in build_order ]
-    return resolved
-
-  
-
-  @classmethod
   def __setup_test(clazz, config, test_source):
     test_name = path.splitext(path.basename(test_source))[0]
     test_root_dir = path.join(config.test_dir, test_name)

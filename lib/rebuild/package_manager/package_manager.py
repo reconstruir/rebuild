@@ -301,9 +301,9 @@ class package_manager(object):
     all_requirements = pdesc.requirements + pdesc.build_requirements
     all_requirements_system_resolved = requirement.resolve_requirements(all_requirements, build_target.system)
     all_requirements_system_resolved_names = [ req.name for req in all_requirements_system_resolved ]
-    all_requirements_dependencies_resolved = package_descriptor_list.resolve_and_order_dependencies(all_requirements_system_resolved_names,
-                                                                                                    descriptor_map,
-                                                                                                    dependency_map)
+    all_requirements_dependencies_resolved = dependency_resolver.resolve_and_order_deps(all_requirements_system_resolved_names,
+                                                                                        descriptor_map,
+                                                                                        dependency_map)
     resolved_requirements = [ req for req in all_requirements_dependencies_resolved if not req.is_tool() ]
     resolved_build_requirements = [ req for req in all_requirements_dependencies_resolved if req.is_tool() ]
     pdesc.resolved_requirements = resolved_requirements

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.common import object_util, string_util
+from bes.common import dict_util, object_util, string_util, string_list
 from .toposort import toposort, toposort_flatten
 
 class cyclic_dependency_error(Exception):
@@ -83,3 +83,16 @@ class dependency_resolver(object):
     for dep in deps:
       result |= clazz.__resolve_deps(dep_map, dep)
     return result
+
+  @classmethod
+  def resolve_and_order_deps(clazz, names, descriptor_map, dependency_map):
+    assert string_list.is_string_list(names)
+    assert isinstance(descriptor_map, dict)
+    assert isinstance(dependency_map, dict)
+    resolved_names = clazz.resolve_deps(dependency_map, names)
+    resolved = [ descriptor_map[name] for name in resolved_names ]
+    resolved_map = dict_util.filter_with_keys(dependency_map, resolved_names)
+    build_order = clazz.build_order_flat(resolved_map)
+    resolved = [ descriptor_map[name] for name in build_order ]
+    return resolved
+  

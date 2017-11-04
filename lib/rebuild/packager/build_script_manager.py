@@ -53,16 +53,14 @@ class build_script_manager(object):
 
   def __getitem__(self, name):
     return self.scripts[name]
-      
+
   @classmethod
   def _resolve_and_order_dependencies(clazz, requirements, scripts, dependency_map):
     names = [ dep.name for dep in requirements ]
-    resolved_names = dependency_resolver.resolve_deps(dependency_map, names)
-    resolved = [ scripts[name].descriptor for name in resolved_names ]
-    resolved_map = dict_util.filter_with_keys(dependency_map, resolved_names)
-    build_order = dependency_resolver.build_order_flat(resolved_map)
-    resolved = [ scripts[name].descriptor for name in build_order ]
-    return resolved
+    descriptor_map = {}
+    for name, script in scripts.items():
+      descriptor_map[name] = script.descriptor
+    return dependency_resolver.resolve_and_order_deps(names, descriptor_map, dependency_map)
 
   @classmethod
   def build_order_flat(clazz, scripts, system):
