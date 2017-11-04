@@ -2,8 +2,8 @@
 #-*- coding:utf-8 -*-
 #
 from bes.testing.unit_test import unit_test
-from rebuild import package_descriptor, requirement
-from rebuild.base import build_system, build_target
+from rebuild import package_descriptor
+from rebuild.base import build_system, build_target, requirement
 from bes.common import string_util
 
 class test_package_info(unit_test):
