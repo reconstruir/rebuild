@@ -11,7 +11,7 @@ from rebuild.pkg_config import pkg_config_file
 from bes.python import setup_tools
 from .package_descriptor import package_descriptor
 
-class Package(object):
+class package(object):
 
   METADATA_DIR = 'metadata'
   INFO_FILENAME = METADATA_DIR + '/' + 'info.json'
@@ -112,15 +112,15 @@ class Package(object):
   @classmethod
   def info_cmp(clazz, p1, p2):
     'Compare info and return an int either -1, 0, or 1'
-    assert isinstance(p1, Package)
-    assert isinstance(p2, Package)
+    assert isinstance(p1, package)
+    assert isinstance(p2, package)
     return package_descriptor.full_name_cmp(p1.info, p2.info)
 
   @classmethod
   def package_info(clazz, tarball):
-    return Package(tarball).info
+    return package(tarball).info
 
   @classmethod
   def package_files(clazz, tarball):
-    return Package(tarball).files
+    return package(tarball).files
 

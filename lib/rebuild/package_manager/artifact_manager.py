@@ -8,7 +8,7 @@ from rebuild.base import build_blurb
 from bes.git import git
 from bes.fs import dir_util, file_util
 
-from .Package import Package
+from .package import package
 from .package_list import package_list
 from .package_descriptor import package_descriptor
 from .package_descriptor_list import package_descriptor_list
@@ -49,12 +49,12 @@ class artifact_manager(object):
     return path.join(self.publish_dir, build_target.build_name, filename)
 
   def publish(self, tarball, build_target):
-    package = Package(tarball)
-    package_info = package.info
-    artifact_path = self.artifact_path(package_info, build_target)
+    pkg = package(tarball)
+    pkg_info = pkg.info
+    artifact_path = self.artifact_path(pkg_info, build_target)
     file_util.copy(tarball, artifact_path)
     if not self.no_git:
-      git.add(self.publish_dir, package_info.artifact_path(build_target))
+      git.add(self.publish_dir, pkg_info.artifact_path(build_target))
     return artifact_path
 
   def available_packages(self, build_target):
@@ -78,7 +78,7 @@ class artifact_manager(object):
       available_package = self.__find_package_by_name(package_name,
                                                       available_packages)
       if not available_package:
-        raise ArtifactNotFoundError('Package \"%s\" not found' % (package_name))
+        raise ArtifactNotFoundError('package \"%s\" not found' % (package_name))
 
       result.append(available_package)
 
@@ -95,7 +95,7 @@ class artifact_manager(object):
     if not candidates:
       return None
     if len(candidates) > 1:
-      candidates = sorted(candidates, cmp = Package.info_cmp)
+      candidates = sorted(candidates, cmp = package.info_cmp)
     return candidates[-1]
 
   @classmethod
@@ -115,7 +115,7 @@ class artifact_manager(object):
 
   def __load_package(self, tarball):
     if not tarball in self._package_cache:
-      self._package_cache[tarball] = Package(tarball)
+      self._package_cache[tarball] = package(tarball)
     return self._package_cache[tarball]
 
   def dependency_map(self, build_target):

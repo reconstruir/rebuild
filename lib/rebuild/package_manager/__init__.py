@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 
-from .Package import Package
+from .package import package
 from .artifact_manager import artifact_manager, ArtifactNotFoundError
 from .package_descriptor import package_descriptor
 from .package_descriptor_list import package_descriptor_list

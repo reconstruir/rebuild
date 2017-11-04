@@ -5,7 +5,7 @@ import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import file_util, temp_file
 from rebuild.base import build_target, build_version
-from rebuild.package_manager import Package
+from rebuild.package_manager import package
 from rebuild.packager.unit_test_packaging import unit_test_packaging
 from rebuild.packager import rebuild_builder, rebuild_config, rebuild_env
 
@@ -20,7 +20,7 @@ class test_builder_autoconf(unit_test):
     self._build_autoconf_package(self, 'water', '1.0.0', '1', self.data_dir())
 
   def test_mercury(self):
-    package = self._build_autoconf_package(self, 'mercury', '2.3.4', '0', self.data_dir())
+    pkg = self._build_autoconf_package(self, 'mercury', '2.3.4', '0', self.data_dir())
     expected_files = [
       'bin/mercury_program1',
       'bin/mercury_program2',
@@ -36,13 +36,13 @@ class test_builder_autoconf(unit_test):
       'lib/pkgconfig/rebbe_mercury.pc',
       'share/doc/mercury/README',
     ]
-    self.assertEqual( expected_files, package.files )
-    self.assertEqual( 'mercury', package.info.name )
-    self.assertEqual( build_version('2.3.4', 0, 0), package.info.version )
-    self.assertEqual( 'lib', package.info.properties['category'] )
+    self.assertEqual( expected_files, pkg.files )
+    self.assertEqual( 'mercury', pkg.info.name )
+    self.assertEqual( build_version('2.3.4', 0, 0), pkg.info.version )
+    self.assertEqual( 'lib', pkg.info.properties['category'] )
 
   def test_arsenic(self):
-    package = self._build_autoconf_package(self, 'arsenic', '1.2.9', '0', self.data_dir())
+    pkg = self._build_autoconf_package(self, 'arsenic', '1.2.9', '0', self.data_dir())
     expected_files = [
       'bin/arsenic_program1',
       'bin/arsenic_program2',
@@ -62,10 +62,10 @@ class test_builder_autoconf(unit_test):
       'lib/pkgconfig/rebbe_arsenic.pc',
       'share/doc/arsenic/README',
     ]
-    self.assertEqual( expected_files, package.files )
-    self.assertEqual( 'arsenic', package.info.name )
-    self.assertEqual( build_version('1.2.9', 0, 0), package.info.version )
-    self.assertEqual( 'lib', package.info.properties['category'] )
+    self.assertEqual( expected_files, pkg.files )
+    self.assertEqual( 'arsenic', pkg.info.name )
+    self.assertEqual( build_version('1.2.9', 0, 0), pkg.info.version )
+    self.assertEqual( 'lib', pkg.info.properties['category'] )
 
   @classmethod
   def _build_autoconf_package(clazz, asserter, name, version, revision, tarball_dir):
@@ -94,8 +94,8 @@ class test_builder_autoconf(unit_test):
       print(rv.status)
     asserter.assertEqual( rebuild_builder.SCRIPT_SUCCESS, rv.status )
     tarball = rv.packager_result.output['published_tarball']
-    package = Package(tarball)
-    return package
+    pkg = package(tarball)
+    return pkg
     
 if __name__ == '__main__':
   unit_test.main()

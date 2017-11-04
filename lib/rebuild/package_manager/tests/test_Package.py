@@ -6,7 +6,7 @@ import os.path as path, unittest
 from bes.fs import temp_file, temp_item
 from rebuild.package_manager import package_descriptor
 from rebuild.base import build_category, build_target, build_version, requirement
-from rebuild.package_manager.Package import Package
+from rebuild.package_manager.package import package
 from rebuild.package_manager.unit_test_packages import unit_test_packages
 
 class test_package(unittest.TestCase):
@@ -16,7 +16,7 @@ class test_package(unittest.TestCase):
 
   def test_package_info_water(self):
     tmp_tarball = unit_test_packages.make_water(debug = self.DEBUG)
-    p = Package(tmp_tarball)
+    p = package(tmp_tarball)
     self.assertEqual( 'water', p.info.name )
     self.assertEqual( build_version('1.0.0', '0', 0), p.info.version )
     self.assertEqual( [], p.info.requirements )
@@ -27,7 +27,7 @@ class test_package(unittest.TestCase):
 
   def test_package_info_with_requirements(self):
     tmp_tarball = unit_test_packages.make_orange(debug = self.DEBUG)
-    p = Package(tmp_tarball)
+    p = package(tmp_tarball)
     self.assertEqual( 'orange', p.info.name )
     self.assertEqual( build_version('6.5.4', '3', 0), p.info.version )
     self.assertEqual( requirement.parse('fructose(all) >= 3.4.5-6 fiber(all) >= 1.0.0-0'), p.info.requirements )
@@ -37,14 +37,14 @@ class test_package(unittest.TestCase):
 
   def test_package_files(self):
     tmp_tarball = unit_test_packages.make_orange(debug = self.DEBUG)
-    self.assertEqual( [ 'bin/orange_script.sh', 'docs/orange_bar.txt', 'docs/orange_foo.txt', 'lib/pkgconfig/orange.pc' ], Package.package_files(tmp_tarball) )
+    self.assertEqual( [ 'bin/orange_script.sh', 'docs/orange_bar.txt', 'docs/orange_foo.txt', 'lib/pkgconfig/orange.pc' ], package.package_files(tmp_tarball) )
 
   def test_package_info_orange(self):
     tmp_tarball = unit_test_packages.make_orange(debug = self.DEBUG)
     expected_pi = package_descriptor('orange', '6.5.4-3',
                               requirement.parse('fructose(all) >= 3.4.5-6 fiber(all) >= 1.0.0-0'),
                               properties = { 'category': 'lib' })
-    self.assertEqual( expected_pi, Package.package_info(tmp_tarball) )
+    self.assertEqual( expected_pi, package.package_info(tmp_tarball) )
 
 if __name__ == '__main__':
   unittest.main()

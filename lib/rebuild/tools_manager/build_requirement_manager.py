@@ -13,7 +13,7 @@ from rebuild.pkg_config import pkg_config
 from rebuild.base import build_target, build_system, build_type
 from bes.fs import dir_util, file_search, file_util, file_path, temp_file
 
-from rebuild.package_manager import artifact_manager, ArtifactNotFoundError, Package, package_descriptor
+from rebuild.package_manager import artifact_manager, ArtifactNotFoundError, package, package_descriptor
 
 class build_requirement_manager(object):
 
@@ -23,72 +23,72 @@ class build_requirement_manager(object):
     self.root_dir = root_dir
 
   def install_tarball(self, package_tarball):
-    package = Package(package_tarball)
-    if self.is_installed(package.info):
+    pkg = package(package_tarball)
+    if self.is_installed(pkg.info):
       return
-    package_dir = self.__package_dir(package.info)
-    package.extract_files(package_dir)
+    pkg_dir = self.__package_dir(pkg.info)
+    pkg.extract_files(pkg_dir)
     replacements = {
-      '@REBUILD_PACKAGE_PREFIX@': package_dir,
+      '@REBUILD_PACKAGE_PREFIX@': pkg_dir,
     }
-    file_search.search_replace(package_dir, replacements, backup = False)
+    file_search.search_replace(pkg_dir, replacements, backup = False)
 
-  def uninstall(self, package_info):
-    if not self.is_installed(package_info):
+  def uninstall(self, pkg_desc):
+    if not self.is_installed(pkg_desc):
       return
-    package_dir = self.__package_dir(package_info)
-    file_util.remove(package_dir)
+    pkg_dir = self.__package_dir(pkg_desc)
+    file_util.remove(pkg_dir)
 
-  def is_installed(self, package_info):
-    package_dir = self.__package_dir(package_info)
-    return path.isdir(package_dir)
+  def is_installed(self, pkg_desc):
+    pkg_dir = self.__package_dir(pkg_desc)
+    return path.isdir(pkg_dir)
 
-  def __package_dir(self, package_info):
-    return path.join(self.root_dir, package_info.full_name)
+  def __package_dir(self, pkg_desc):
+    return path.join(self.root_dir, pkg_desc.full_name)
 
-  def install_package(self, package_info, artifact_manager):
+  def install_package(self, pkg_desc, artifact_manager):
     assert artifact_manager.is_artifact_manager(artifact_manager)
-    if self.is_installed(package_info):
+    if self.is_installed(pkg_desc):
       return
-    package = artifact_manager.package(package_info, self.BUILD_TARGET)
+    package = artifact_manager.package(pkg_desc, self.BUILD_TARGET)
     self.install_tarball(package.tarball)
 
-  def bin_dir(self, package_info):
-    if not self.is_installed(package_info):
-      raise RuntimeError('Package not installed: %s' % (package_info))
-    return path.join(self.__package_dir(package_info), 'bin')
+  def bin_dir(self, pkg_desc):
+    if not self.is_installed(pkg_desc):
+      raise RuntimeError('package not installed: %s' % (pkg_desc))
+    return path.join(self.__package_dir(pkg_desc), 'bin')
 
-  def lib_dir(self, package_info):
-    if not self.is_installed(package_info):
-      raise RuntimeError('Package not installed: %s' % (package_info))
-    return path.join(self.__package_dir(package_info), 'lib')
+  def lib_dir(self, pkg_desc):
+    if not self.is_installed(pkg_desc):
+      raise RuntimeError('package not installed: %s' % (pkg_desc))
+    return path.join(self.__package_dir(pkg_desc), 'lib')
 
-  def env_vars(self, package_info):
-    if not self.is_installed(package_info):
+  def env_vars(self, pkg_desc):
+    if not self.is_installed(pkg_desc):
       assert False
       return None
-    env_vars = copy.deepcopy(package_info.env_vars)
+    env_vars = copy.deepcopy(pkg_desc.env_vars)
     variables = {
-      'REBUILD_PACKAGE_ROOT_DIR': self.__package_dir(package_info),
-      'REBUILD_PACKAGE_VERSION': str(package_info.version),
-      'REBUILD_PACKAGE_NAME': package_info.name,
+      'REBUILD_PACKAGE_ROOT_DIR': self.__package_dir(pkg_desc),
+      'REBUILD_PACKAGE_VERSION': str(pkg_desc.version),
+      'REBUILD_PACKAGE_NAME': pkg_desc.name,
     }
     for key, value in env_vars.items():
       env_vars[key] = variable.substitute(value, variables)
     return env_vars
 
-  def python_lib_dir(self, package_info):
-    if not self.is_installed(package_info):
+  def python_lib_dir(self, pkg_desc):
+    if not self.is_installed(pkg_desc):
       return None
-    return path.join(self.__package_dir(package_info), 'lib/python')
+    return path.join(self.__package_dir(pkg_desc), 'lib/python')
 
-  def tool_exe(self, package_info, tool_name):
-    if string_util.is_string(package_info):
-      found_package = self.find_package(package_info)
+  def tool_exe(self, pkg_desc, tool_name):
+    if string_util.is_string(pkg_desc):
+      found_package = self.find_package(pkg_desc)
       if not found_package:
-        raise RuntimeError('No package found for: %s' % (package_info))
-      package_info = found_package
-    bin_dir = self.bin_dir(package_info)
+        raise RuntimeError('No package found for: %s' % (pkg_desc))
+      pkg_desc = found_package
+    bin_dir = self.bin_dir(pkg_desc)
     if not bin_dir:
       return None
     exe = path.join(bin_dir, tool_name)
@@ -97,8 +97,8 @@ class build_requirement_manager(object):
     return exe
 
   def install_packages(self, packages, artifact_manager):
-    for package_info in packages:
-      self.install_package(package_info, artifact_manager)
+    for pkg_desc in packages:
+      self.install_package(pkg_desc, artifact_manager)
 
   def list_all(self):
     if not path.isdir(self.root_dir):
@@ -106,8 +106,8 @@ class build_requirement_manager(object):
     result = []
     package_dirs = dir_util.list(self.root_dir, relative = True)
     for package_dir in package_dirs:
-      package_info = package_descriptor.parse(package_dir)
-      result.append(package_info)
+      pkg_desc = package_descriptor.parse(package_dir)
+      result.append(pkg_desc)
     return result
 
   def find_package(self, package_name):

@@ -6,7 +6,7 @@ from bes.fs import file_util, temp_file
 from bes.common import string_util
 from rebuild.base import build_target
 from rebuild.packager import rebuild_builder, rebuild_config, rebuild_env
-from rebuild.package_manager import Package
+from rebuild.package_manager import package
 from rebuild.checksum import checksum_manager
 from bes.git import git, repo as git_repo
 
@@ -43,7 +43,7 @@ class unit_test_packaging(object):
       print(rv.status)
     asserter.assertEqual( rebuild_builder.SCRIPT_SUCCESS, rv.status )
     tarball = rv.packager_result.output['published_tarball']
-    package = Package(tarball)
+    package = package(tarball)
     return package
     
   @classmethod

@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-#from Package import Package
+#from package import package
 #from package_db import package_db
 
 import os, os.path as path
 from collections import namedtuple
 
 from rebuild.step_manager import Step, step_result
-from rebuild.package_manager import Package, package_manager
+from rebuild.package_manager import package, package_manager
 from rebuild.base import build_blurb, build_os_env, build_target
 from rebuild.toolchain import toolchain
 from rebuild.dependency import dependency_resolver

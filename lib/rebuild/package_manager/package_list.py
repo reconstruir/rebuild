@@ -2,13 +2,13 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.common import object_util
-from .Package import Package
+from .package import package
 
 class package_list(object):
 
   @classmethod
   def is_package_list(clazz, packages):
-    return object_util.is_homogeneous(packages, Package)
+    return object_util.is_homogeneous(packages, package)
 
   @classmethod
   def sort_by_descriptor(clazz, packages):

@@ -11,7 +11,7 @@ from bes.system import host
 from bes.fs import file_util, temp_file
 from rebuild.base import build_arch, build_blurb, build_system, build_target, build_type
 from rebuild.packager import rebuild_manager
-from rebuild.package_manager import artifact_manager, Package, package_tester
+from rebuild.package_manager import artifact_manager, package, package_tester
 from rebuild.tools_manager import tools_manager
 from .rebuild_manager_script import rebuild_manager_script
 
@@ -114,20 +114,20 @@ class rebuild_manager_cli(object):
                               help = 'Project name [ None ]')
 
     # package
-    self.package_parser = self.commands_subparser.add_parser('package', help = 'Package')
+    self.package_parser = self.commands_subparser.add_parser('package', help = 'package')
     self.package_subparsers = self.package_parser.add_subparsers(help = 'package_commands', dest = 'subcommand')
 
     # package.files
     package_files_parser = self.package_subparsers.add_parser('files', help = 'List files in package')
-    package_files_parser.add_argument('package', action = 'store', help = 'Package to list files for')
+    package_files_parser.add_argument('package', action = 'store', help = 'package to list files for')
 
     # package.info
     package_info_parser = self.package_subparsers.add_parser('info', help = 'List info in package')
-    package_info_parser.add_argument('package', action = 'store', help = 'Package to list info for')
+    package_info_parser.add_argument('package', action = 'store', help = 'package to list info for')
 
     # package.metadata
     package_metadata_parser = self.package_subparsers.add_parser('metadata', help = 'List metadata in package')
-    package_metadata_parser.add_argument('package', action = 'store', help = 'Package to list metadata for')
+    package_metadata_parser.add_argument('package', action = 'store', help = 'package to list metadata for')
     
     # config
     self.config_parser = self.commands_subparser.add_parser('config', help = 'Config')
@@ -339,13 +339,13 @@ rebuild_manager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir @ROOT_
      return 1
 
   def __command_package_files(self, tarball):
-    package = Package(tarball)
+    package = package(tarball)
     for f in package.files:
       print(f)
     return 0
 
   def __command_package_info(self, tarball):
-    package = Package(tarball)
+    package = package(tarball)
     package_info = package.info
     info = str(package_info)
     parts = info.split(';')
@@ -354,7 +354,7 @@ rebuild_manager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir @ROOT_
     return 0
 
   def __command_package_metadata(self, tarball):
-    content = archiver.extract_member_to_string(tarball, Package.INFO_FILENAME)
+    content = archiver.extract_member_to_string(tarball, package.INFO_FILENAME)
     print(content)
     return 0
 
@@ -402,7 +402,7 @@ rebuild_manager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir @ROOT_
     build_blurb.blurb('tester', '      tmp_dir: %s' % (tmp_dir))
     build_blurb.blurb('tester', 'artifacts_dir: %s' % (artifacts_dir))
 
-    if not Package.package_is_valid(package_tarball):
+    if not package.package_is_valid(package_tarball):
       raise RuntimeError('Not a valid package: %s' % (package_tarball))
   
     test_dir = path.join(tmp_dir, 'test')
