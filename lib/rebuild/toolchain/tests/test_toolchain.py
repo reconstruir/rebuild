@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
   def test_compile_cc_linux(self):
     tmp_dir = self._make_temp_dir()
     src = self._make_temp_source(tmp_dir, 'test.c', self.CC_SOURCE)
-    cc = self._make_compiler(System.LINUX)
+    cc = self._make_compiler(build_system.LINUX)
     targets = cc.compile_c(src)
     self.assertEqual( 1, len(targets) )
     self.assertTrue( path.exists(targets[0][1]) )

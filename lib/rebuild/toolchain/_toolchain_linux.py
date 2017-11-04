@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 
 from ._toolchain_base import _toolchain_base
-from rebuild import build_type
+from rebuild.base import build_type
 import os.path as path
 
 class _toolchain_linux(_toolchain_base):
