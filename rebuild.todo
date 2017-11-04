@@ -529,3 +529,4 @@ nov 3
 - env duplicated in rebuild_builder __init__ as well as rebuild_builder.run_build_script()
 - s _run_result packager_result to script_result
 - theres a dup of darwin_sdk.py -> sdk.py in toolchain
+- move the binary_object test files to a common place
