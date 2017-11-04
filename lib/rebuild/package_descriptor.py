@@ -7,7 +7,7 @@ from bes.compat import cmp
 from rebuild.dependency import dependency_resolver
 from collections import namedtuple
 from .requirement import requirement
-from .platform_specific_config import platform_specific_config as psc
+from .masked_config import masked_config as psc
 from rebuild.base import build_category, build_system, build_target, build_version
 
 class package_descriptor(object):

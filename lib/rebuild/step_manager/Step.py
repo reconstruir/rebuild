@@ -13,7 +13,7 @@ from bes.system.compat import with_metaclass
 from rebuild.base import build_blurb, build_os_env, build_target
 from rebuild.toolchain import toolchain
 from rebuild import hook, variable_manager
-from rebuild import platform_specific_config as psc
+from rebuild import masked_config as psc
 from rebuild.pkg_config import pkg_config
 from bes.fs import file_util
 from .step_result import step_result

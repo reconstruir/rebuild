@@ -4,10 +4,10 @@
 
 from bes.testing.unit_test import unit_test
 from bes.key_value import key_value
-from rebuild import platform_specific_config as psc
+from rebuild import masked_config as psc
 from rebuild.base import build_system
 
-class test_platform_specific_config(unit_test):
+class test_masked_config(unit_test):
 
   def test_simple(self):
     self.assertEqual( ( 'linux', 'foo bar baz' ), psc.parse('linux: foo bar baz') )
