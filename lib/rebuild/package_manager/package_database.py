@@ -7,7 +7,7 @@ from collections import namedtuple
 from bes.common import object_util
 from bes.fs import file_util
 
-from .DatabaseEntry import DatabaseEntry
+from .package_db_entry import package_db_entry
 
 class package_database(object):
 
@@ -35,7 +35,7 @@ class package_database(object):
   def add_package(self, package_info, files):
     if self.has_package(package_info.name):
       raise RuntimeError('Package database already has \"%s\"' % (package_info.name))
-    self.db[package_info.name] = DatabaseEntry(package_info, files)
+    self.db[package_info.name] = package_db_entry(package_info, files)
     self.__save()
 
   def remove_package(self, name):
@@ -48,7 +48,7 @@ class package_database(object):
     package = self.db.get(name, None)
     if not package:
       return None
-    assert isinstance(package, DatabaseEntry)
+    assert isinstance(package, package_db_entry)
     return package
 
   def packages_with_files(self, files):
@@ -68,13 +68,13 @@ class package_database(object):
     db = json.loads(content)
     for key, value in db.items():
       assert isinstance(value, dict)
-      db[key] = DatabaseEntry.parse_dict(value)
+      db[key] = package_db_entry.parse_dict(value)
     return db
 
   @classmethod
   def __db_save(clazz, db, filename):
     def default(o):
-      if isinstance(o, DatabaseEntry):
+      if isinstance(o, package_db_entry):
         return o.to_dict()
       return o.__dict__
     s = json.dumps(db, indent = 2, default = default, sort_keys = True)

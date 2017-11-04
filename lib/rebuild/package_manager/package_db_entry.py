@@ -5,7 +5,7 @@ import json
 from bes.common import object_util
 from .package_descriptor import package_descriptor
 
-class DatabaseEntry(object):
+class package_db_entry(object):
 
   def __init__(self, info, files):
     assert isinstance(info, package_descriptor)
@@ -36,7 +36,7 @@ class DatabaseEntry(object):
     info = package_descriptor.parse_dict(info)
     files = d['files']
     assert isinstance(files, list)
-    return DatabaseEntry(info, files)
+    return package_db_entry(info, files)
   
   def to_json(self):
     return json.dumps(self.to_dict(), indent = 2, sort_keys = True)

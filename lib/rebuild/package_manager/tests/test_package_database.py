@@ -5,7 +5,7 @@ import os.path as path, unittest
 from bes.fs import temp_file
 from rebuild.package_manager import package_descriptor
 from rebuild.package_manager.package_database import package_database
-from rebuild.package_manager.DatabaseEntry import DatabaseEntry
+from rebuild.package_manager.package_db_entry import package_db_entry
 
 class test_package_database(unittest.TestCase):
 
@@ -39,14 +39,14 @@ class test_package_database(unittest.TestCase):
     db.add_package(info, files)
     self.assertTrue( db.has_package('foo') )
     self.assertEqual( [ 'foo' ], db.list_all() )
-    self.assertEqual( DatabaseEntry(package_descriptor('foo', '1.2.3-1', reqs), files), db.find_package('foo') )
+    self.assertEqual( package_db_entry(package_descriptor('foo', '1.2.3-1', reqs), files), db.find_package('foo') )
 
     del db
     recreated_db = package_database(tmp_db)
     self.assertTrue( recreated_db.has_package('foo') )
     self.assertEqual( [ 'foo' ], recreated_db.list_all() )
     actual_package = recreated_db.find_package('foo')
-    expected_package = DatabaseEntry(package_descriptor('foo', '1.2.3-1', reqs), files)
+    expected_package = package_db_entry(package_descriptor('foo', '1.2.3-1', reqs), files)
     self.assertEqual( expected_package, actual_package )
 
   def test_db_remove(self):
@@ -59,7 +59,7 @@ class test_package_database(unittest.TestCase):
     db.add_package(info, files)
     self.assertTrue( db.has_package('foo') )
     self.assertEqual( [ 'foo' ], db.list_all() )
-    self.assertEqual( DatabaseEntry(package_descriptor('foo', '1.2.3', '1', reqs), files), db.find_package('foo') )
+    self.assertEqual( package_db_entry(package_descriptor('foo', '1.2.3', '1', reqs), files), db.find_package('foo') )
 
     db.remove_package('foo')
     self.assertFalse( db.has_package('foo') )
