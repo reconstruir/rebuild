@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 #
-import os.path as path, unittest
+from bes.testing.unit_test import unit_test
+import os.path as path
 from bes.system import host
 from rebuild import ar_replacement
 from rebuild.base import build_system
 from bes.fs import dir_util, temp_file
 from bes.testing.unit_test.unit_test_skip import skip_if
 
-class test_ar(unittest.TestCase):
+class test_ar(unit_test):
 
-  TEST_DATA_DIR = path.abspath(path.join(path.dirname(__file__), 'test_data/binary_objects', host.SYSTEM))
+  __unit_test_data_dir__ = '../test_data/binary_objects'
 
   IGNORED_CONTENTS = []
   if host.is_macos():
@@ -21,8 +22,8 @@ class test_ar(unittest.TestCase):
       'thin_cherry.o',
       'thin_kiwi.o',
     ]
-    actual_contents = ar_replacement.contents(self.__test_file('thin_fruits_x86_64.a'))
-    actual_contents = self.__filter_contents(actual_contents)
+    actual_contents = ar_replacement.contents(self._test_file('thin_fruits_x86_64.a'))
+    actual_contents = self._filter_contents(actual_contents)
     self.assertEqual( expected_contents, actual_contents )
 
   def test_contents_fat(self):
@@ -30,8 +31,8 @@ class test_ar(unittest.TestCase):
       'fat_64_cherry.o',
       'fat_64_kiwi.o',
     ]
-    actual_contents = ar_replacement.contents(self.__test_file('fat_64_fruits.a'))
-    actual_contents = self.__filter_contents(actual_contents)
+    actual_contents = ar_replacement.contents(self._test_file('fat_64_fruits.a'))
+    actual_contents = self._filter_contents(actual_contents)
     self.assertEqual( expected_contents, actual_contents )
 
   def test_extract_thin(self):
@@ -40,9 +41,9 @@ class test_ar(unittest.TestCase):
       'thin_kiwi.o',
     ]
     tmp_dir = temp_file.make_temp_dir()
-    ar_replacement.extract(self.__test_file('thin_fruits_x86_64.a'), tmp_dir)
+    ar_replacement.extract(self._test_file('thin_fruits_x86_64.a'), tmp_dir)
     actual_files = dir_util.list(tmp_dir, relative = True)
-    actual_files = self.__filter_contents(actual_files)
+    actual_files = self._filter_contents(actual_files)
     self.assertEqual( expected_files, actual_files )
 
   @skip_if(not host.is_macos(), 'Not osx')
@@ -58,9 +59,9 @@ class test_ar(unittest.TestCase):
       'x86_64_fat_kiwi.o',
     ]
     tmp_dir = temp_file.make_temp_dir()
-    ar_replacement.extract(self.__test_file('fat_fruits.a'), tmp_dir)
+    ar_replacement.extract(self._test_file('fat_fruits.a'), tmp_dir)
     actual_files = dir_util.list(tmp_dir, relative = True)
-    actual_files = self.__filter_contents(actual_files)
+    actual_files = self._filter_contents(actual_files)
     self.assertEqual( expected_files, actual_files )
 
   def test_replace_thin(self):
@@ -70,10 +71,10 @@ class test_ar(unittest.TestCase):
     ]
     tmp_dir = temp_file.make_temp_dir()
     tmp_archive = path.join(tmp_dir, 'thin_fruits.a')
-    objects = [ self.__test_file(o) for o in expected_objects ]
+    objects = [ self._test_file(o) for o in expected_objects ]
     ar_replacement.replace(tmp_archive, objects)
     actual_objects = ar_replacement.contents(tmp_archive)
-    actual_objects = self.__filter_contents(actual_objects)
+    actual_objects = self._filter_contents(actual_objects)
     self.assertEqual( expected_objects, actual_objects )
 
   def test_replace_fat(self):
@@ -83,10 +84,10 @@ class test_ar(unittest.TestCase):
     ]
     tmp_dir = temp_file.make_temp_dir()
     tmp_archive = path.join(tmp_dir, 'fat_fruits.a')
-    objects = [ self.__test_file(o) for o in expected_objects ]
+    objects = [ self._test_file(o) for o in expected_objects ]
     ar_replacement.replace(tmp_archive, objects)
     actual_objects = ar_replacement.contents(tmp_archive)
-    actual_objects = self.__filter_contents(actual_objects)
+    actual_objects = self._filter_contents(actual_objects)
     self.assertEqual( expected_objects, actual_objects )
 
   def test_replace_add_thin(self):
@@ -96,35 +97,33 @@ class test_ar(unittest.TestCase):
     ]
     tmp_dir = temp_file.make_temp_dir()
     tmp_archive = path.join(tmp_dir, 'thin_fruits.a')
-    objects = [ self.__test_file(o) for o in expected_objects ]
+    objects = [ self._test_file(o) for o in expected_objects ]
     ar_replacement.replace(tmp_archive, objects)
     actual_objects = ar_replacement.contents(tmp_archive)
-    actual_objects = self.__filter_contents(actual_objects)
+    actual_objects = self._filter_contents(actual_objects)
     self.assertEqual( expected_objects, actual_objects )
     expected_objects = [
       'thin_cherry.o',
       'thin_kiwi.o',
       'thin_x86_64_avocado.o',
     ]
-    objects = [ self.__test_file(o) for o in [ 'thin_x86_64_avocado.o' ] ]
+    objects = [ self._test_file(o) for o in [ 'thin_x86_64_avocado.o' ] ]
     ar_replacement.replace(tmp_archive, objects)
     actual_objects = ar_replacement.contents(tmp_archive)
-    actual_objects = self.__filter_contents(actual_objects)
+    actual_objects = self._filter_contents(actual_objects)
     self.assertEqual( expected_objects, actual_objects )
 
-  def __test_file(self, filename):
-    p = path.join(self.TEST_DATA_DIR, filename)
-    assert path.isfile(p)
-    return p
+  def _test_file(self, filename):
+    return self.platform_data_path(filename)
 
   @classmethod
-  def __filter_contents(clazz, contents):
-    def __include(c):
+  def _filter_contents(clazz, contents):
+    def _include(c):
       for ignored in clazz.IGNORED_CONTENTS:
         if c.find(ignored) >= 0:
           return False
       return True
-    return [ c for c in contents if __include(c) ]
+    return [ c for c in contents if _include(c) ]
     
 if __name__ == '__main__':
-  unittest.main()
+  unit_test.main()
