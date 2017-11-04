@@ -9,7 +9,7 @@ from bes.python import code
 
 from rebuild import package_descriptor
 from rebuild.instruction import instruction_list
-from rebuild.hook_extra_code import HOOK_EXTRA_CODE
+from rebuild.step_manager.hook_extra_code import HOOK_EXTRA_CODE
 from rebuild.step_manager import step_description
 
 from .build_recipe_env import build_recipe_env
