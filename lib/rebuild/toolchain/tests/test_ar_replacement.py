@@ -4,14 +4,14 @@
 from bes.testing.unit_test import unit_test
 import os.path as path
 from bes.system import host
-from rebuild import ar_replacement
+from rebuild.toolchain import ar_replacement
 from rebuild.base import build_system
 from bes.fs import dir_util, temp_file
 from bes.testing.unit_test.unit_test_skip import skip_if
 
-class test_ar(unit_test):
+class test_ar_replacement(unit_test):
 
-  __unit_test_data_dir__ = '../test_data/binary_objects'
+  __unit_test_data_dir__ = '../../test_data/binary_objects'
 
   IGNORED_CONTENTS = []
   if host.is_macos():

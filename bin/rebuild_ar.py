@@ -16,7 +16,7 @@ except:
 from bes.common import Shell
 from rebuild.toolchain.darwin import darwin_sdk
 from rebuild.toolchain.darwin import xcrun
-from rebuild import ar_replacement
+from rebuild.toolchain import ar_replacement
 
 AR_COMMAND_CONTENTS = 't'
 AR_COMMAND_EXTRACT = 'x'
