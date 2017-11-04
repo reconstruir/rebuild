@@ -3,7 +3,7 @@
 #
 
 from bes.testing.unit_test import unit_test
-from rebuild import requirement as R
+from rebuild.base import requirement as R
 
 class test_requirement(unit_test):
 

@@ -8,7 +8,7 @@ from bes.common import algorithm, object_util, string_util
 from bes.key_value import key_value
 from bes.fs import dir_util, file_util
 from .entry import entry
-from rebuild import requirement
+from rebuild.base import requirement
 
 class caca_pkg_config_file(object):
 

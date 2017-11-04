@@ -10,10 +10,9 @@ from collections import namedtuple
 from bes.common import dict_util, object_util, string_util, Shell, variable
 from bes.system import log
 from bes.system.compat import with_metaclass
-from rebuild.base import build_blurb, build_os_env, build_target
+from rebuild.base import build_blurb, build_os_env, build_target, masked_config
 from rebuild.toolchain import toolchain
 from rebuild import hook, variable_manager
-from rebuild import masked_config as psc
 from rebuild.pkg_config import pkg_config
 from bes.fs import file_util
 from .step_result import step_result
@@ -248,7 +247,7 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
     if not name or not name in args:
       return {}
     config = args[name]
-    resolved = psc.resolve_list(config, script.env.config.build_target.system)
+    resolved = masked_config.resolve_list(config, script.env.config.build_target.system)
     return { name: resolved }
       
   @classmethod
@@ -291,14 +290,14 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
     env_dict = {}
     if env_name and env_name in args:
       config = args[env_name]
-      resolved = psc.resolve_key_values_to_dict(config, script.env.config.build_target.system)
+      resolved = masked_config.resolve_key_values_to_dict(config, script.env.config.build_target.system)
       assert isinstance(resolved, dict)
       env_dict = { env_name: resolved }
 
     flags_dict = {}
     if flags_name and flags_name in args:
       config = args[flags_name]
-      resolved = psc.resolve_list(config, script.env.config.build_target.system)
+      resolved = masked_config.resolve_list(config, script.env.config.build_target.system)
       flags_dict = { flags_name: resolved }
 
     return dict_util.combine(env_dict, flags_dict)

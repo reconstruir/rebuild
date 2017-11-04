@@ -5,10 +5,7 @@ import json, os.path as path
 from bes.common import object_util, string_util
 from bes.compat import cmp
 from rebuild.dependency import dependency_resolver
-from collections import namedtuple
-from .requirement import requirement
-from .masked_config import masked_config as psc
-from rebuild.base import build_category, build_system, build_target, build_version
+from rebuild.base import build_category, build_system, build_target, build_version, masked_config, requirement
 
 class package_descriptor(object):
 
@@ -211,7 +208,7 @@ class package_descriptor(object):
       if requirement.is_requirement(dep):
         result.append(dep)
       elif string_util.is_string(dep):
-        reqs = psc.parse_requirement(dep).data
+        reqs = masked_config.parse_requirement(dep).data
         result.extend(reqs)
       else:
         raise RuntimeError('Invalid requirement: %s - %s' % (str(dep), type(dep)))
@@ -235,7 +232,7 @@ class package_descriptor(object):
 
   def export_compilation_flags_requirements(self, system):
     config = self.properties.get('export_compilation_flags_requirements', [])
-    resolved = psc.resolve_list(config, system)
+    resolved = masked_config.resolve_list(config, system)
     deps_names = [ dep.name for dep in self.requirements ]
     export_names = resolved
     if export_names == dependency_resolver.ALL_DEPS:
@@ -247,7 +244,7 @@ class package_descriptor(object):
 
   def extra_cflags(self, system):
     config = self.properties.get('extra_cflags', [])
-    return psc.resolve_list(config, system)
+    return masked_config.resolve_list(config, system)
       
   @property
   def env_vars(self):

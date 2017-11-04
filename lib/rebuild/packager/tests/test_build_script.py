@@ -3,8 +3,8 @@
 #
 import os.path as path, unittest
 from bes.fs import temp_file
-from rebuild import package_descriptor, requirement
-from rebuild.base import build_category, build_target
+from rebuild import package_descriptor
+from rebuild.base import build_category, build_target, requirement
 from rebuild.packager import build_script, rebuild_config, rebuild_env
 
 class test_build_script(unittest.TestCase):
