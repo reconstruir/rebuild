@@ -3,7 +3,7 @@
 
 from .Install import Install
 from .Patch import Patch
-from .TarballUtil import TarballUtil
+from .archive_util import archive_util
 from .ar_replacement import ar_replacement
 from .hook import hook
 from .package_descriptor import package_descriptor

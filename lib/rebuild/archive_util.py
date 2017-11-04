@@ -7,7 +7,7 @@ from bes.common import algorithm, object_util, Shell, string_util
 from bes.fs import dir_util, file_find, file_util, temp_file
 from bes.archive import archiver
 
-class TarballUtil(object):
+class archive_util(object):
 
   @classmethod
   def autoconf_help(clazz, tarball):

@@ -6,7 +6,7 @@ import argparse, os, os.path as path, sys
 
 from bes.fs import file_util
 from bes.archive import archiver
-from rebuild import Patch, TarballUtil, package_descriptor
+from rebuild import Patch, archive_util, package_descriptor
 
 def main():
 
@@ -206,21 +206,21 @@ def _command_cat(archive, members):
   return 0
 
 def _command_help(archive):
-  help = TarballUtil.autoconf_help(archive)
+  help = archive_util.autoconf_help(archive)
   print(help)
   return 0
 
 def _command_grep(archive, pattern):
-  result = TarballUtil.grep(archive, pattern)
+  result = archive_util.grep(archive, pattern)
   print(result)
   return 0
 
 def _command_patch_prepare(archive, dest_dir):
-  TarballUtil.patch_prepare(archive, dest_dir)
+  archive_util.patch_prepare(archive, dest_dir)
   return 0
 
 def _command_patch_make(working_dir):
-  patch = TarballUtil.patch_make(path.abspath(working_dir))
+  patch = archive_util.patch_make(path.abspath(working_dir))
   print(patch)
   return 0
 
@@ -272,7 +272,7 @@ def _command_patch(args):
   return exit_code
 
 def _command_find(root_dir, name, version):
-  tarball = TarballUtil.find(root_dir, name, version)
+  tarball = archive_util.find(root_dir, name, version)
   if len(tarball) != 1:
     print("Error: too many tarballs found: %s" % (tarball))
     return 1
@@ -292,7 +292,7 @@ def _command_download(name, url, tag):
   return 0
 
 def _command_diff(archive1, archive2):
-  diff = TarballUtil.diff(archive1, archive2, strip_common_base = True)
+  diff = archive_util.diff(archive1, archive2, strip_common_base = True)
   print(diff)
   return 0
 
