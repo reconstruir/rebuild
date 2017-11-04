@@ -3,7 +3,7 @@
 
 import json
 from bes.common import object_util
-from rebuild import package_descriptor
+from .package_descriptor import package_descriptor
 
 class DatabaseEntry(object):
 

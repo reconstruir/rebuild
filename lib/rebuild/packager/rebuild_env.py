@@ -7,8 +7,7 @@ from rebuild.packager import rebuild_manager
 from rebuild.package_manager import artifact_manager
 from rebuild.tools_manager import tools_manager
 from rebuild.checksum import checksum_manager
-from rebuild.package_manager import artifact_manager
-from rebuild import package_descriptor
+from rebuild.package_manager import artifact_manager, package_descriptor
 from bes.git import git_download_cache, git_util
 from rebuild.source_finder import repo_source_finder, local_source_finder, source_finder_chain
 from .build_script_manager import build_script_manager

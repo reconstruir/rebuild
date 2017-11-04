@@ -2,11 +2,11 @@
 #-*- coding:utf-8 -*-
 #
 from bes.testing.unit_test import unit_test
-from rebuild import package_descriptor
+from rebuild.package_manager import package_descriptor
 from rebuild.base import build_system, build_target, requirement
 from bes.common import string_util
 
-class test_package_info(unit_test):
+class test_package_descriptor(unit_test):
 
   def test_init(self):
     self.assertEqual( 'foo-1.2.3-1', package_descriptor('foo', '1.2.3-1', []).full_name )

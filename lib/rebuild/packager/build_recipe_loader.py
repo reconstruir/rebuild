@@ -7,7 +7,7 @@ from collections import namedtuple
 from bes.common import check_type
 from bes.python import code
 
-from rebuild import package_descriptor
+from rebuild.package_manager import package_descriptor
 from rebuild.instruction import instruction_list
 from rebuild.step_manager.hook_extra_code import HOOK_EXTRA_CODE
 from rebuild.step_manager import step_description

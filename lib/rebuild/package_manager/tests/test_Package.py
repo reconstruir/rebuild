@@ -4,7 +4,7 @@
 
 import os.path as path, unittest
 from bes.fs import temp_file, temp_item
-from rebuild import package_descriptor
+from rebuild.package_manager import package_descriptor
 from rebuild.base import build_category, build_target, build_version, requirement
 from rebuild.package_manager.Package import Package
 from rebuild.package_manager.unit_test_packages import unit_test_packages

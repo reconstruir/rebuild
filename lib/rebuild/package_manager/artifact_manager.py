@@ -4,13 +4,14 @@
 import os.path as path
 from bes.common import string_util
 from bes.system import log
-from rebuild import package_descriptor, package_descriptor_list
 from rebuild.base import build_blurb
 from bes.git import git
 from bes.fs import dir_util, file_util
 
 from .Package import Package
 from .package_list import package_list
+from .package_descriptor import package_descriptor
+from .package_descriptor_list import package_descriptor_list
 
 class ArtifactNotFoundError(Exception):
   pass

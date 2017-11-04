@@ -3,7 +3,7 @@
 #
 import os.path as path, unittest
 from bes.fs import temp_file
-from rebuild import package_descriptor
+from rebuild.package_manager import package_descriptor
 from rebuild.package_manager.package_database import package_database
 from rebuild.package_manager.DatabaseEntry import DatabaseEntry
 

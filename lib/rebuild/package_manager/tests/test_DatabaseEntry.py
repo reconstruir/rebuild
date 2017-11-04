@@ -4,7 +4,7 @@
 import os.path as path
 from bes.testing.unit_test import unit_test
 from rebuild.base import build_system, build_target, requirement
-from rebuild import package_descriptor
+from rebuild.package_manager import package_descriptor
 from rebuild.package_manager.DatabaseEntry import DatabaseEntry
 
 class test_database_entry(unit_test):

@@ -4,9 +4,8 @@
 import os.path as path, unittest
 from bes.fs import temp_file
 from bes.common import Shell
-from rebuild import package_descriptor
 from rebuild.base import build_target, build_system, build_type
-from rebuild.package_manager import artifact_manager
+from rebuild.package_manager import artifact_manager, package_descriptor
 from rebuild.tools_manager import tools_manager
 from rebuild.package_manager.unit_test_packages import unit_test_packages
 

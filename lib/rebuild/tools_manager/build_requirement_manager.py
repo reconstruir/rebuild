@@ -10,11 +10,10 @@ from bes.common import dict_util, json_util, string_util, variable
 from bes.system import host
 
 from rebuild.pkg_config import pkg_config
-from rebuild import package_descriptor
 from rebuild.base import build_target, build_system, build_type
 from bes.fs import dir_util, file_search, file_util, file_path, temp_file
 
-from rebuild.package_manager import artifact_manager, ArtifactNotFoundError, Package
+from rebuild.package_manager import artifact_manager, ArtifactNotFoundError, Package, package_descriptor
 
 class build_requirement_manager(object):
 

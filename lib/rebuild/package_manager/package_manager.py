@@ -6,7 +6,6 @@
 import copy, os.path as path, platform
 from bes.common import dict_util, json_util, object_util, string_util, variable
 from bes.system import os_env_var
-from rebuild import package_descriptor, package_descriptor_list
 from rebuild.instruction import instruction_list
 from rebuild.base import build_os_env, build_system, requirement
 from rebuild.dependency import dependency_resolver
@@ -16,6 +15,8 @@ from bes.fs import dir_util, file_util, temp_file
 from .artifact_manager import artifact_manager, ArtifactNotFoundError
 from .Package import Package
 from .package_database import package_database
+from .package_descriptor import package_descriptor
+from .package_descriptor_list import package_descriptor_list
 from .package_list import package_list
 
 class PackageFilesConflictError(Exception):
