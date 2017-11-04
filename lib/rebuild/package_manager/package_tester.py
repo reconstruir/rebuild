@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 #from Package import Package
-#from package_database import package_database
+#from package_db import package_db
 
 import os, os.path as path
 from collections import namedtuple

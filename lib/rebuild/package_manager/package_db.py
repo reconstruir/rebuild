@@ -9,7 +9,7 @@ from bes.fs import file_util
 
 from .package_db_entry import package_db_entry
 
-class package_database(object):
+class package_db(object):
 
   def __init__(self, filename):
     self.filename = filename

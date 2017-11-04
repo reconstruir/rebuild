@@ -14,7 +14,7 @@ from bes.archive import archive, archiver
 from bes.fs import dir_util, file_util, temp_file
 from .artifact_manager import artifact_manager, ArtifactNotFoundError
 from .Package import Package
-from .package_database import package_database
+from .package_db import package_db
 from .package_descriptor import package_descriptor
 from .package_descriptor_list import package_descriptor_list
 from .package_list import package_list
@@ -52,7 +52,7 @@ class package_manager(object):
   def __init__(self, root_dir):
     self.root_dir = root_dir
     self._database_path = path.join(self.root_dir, self.DATABASE_PATH)
-    self._db = package_database(self._database_path)
+    self._db = package_db(self._database_path)
     self._installation_dir = path.join(self.root_dir, self.INSTALLATION_DIR)
     self._env_dir = path.join(self.root_dir, self.ENV_DIR)
     self._lib_dir = path.join(self._installation_dir, 'lib')
