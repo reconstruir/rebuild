@@ -5,14 +5,14 @@
 import os.path as path
 from bes.fs import file_checksum, file_util, temp_file
 from bes.archive import archiver, archive_extension, temp_archive
-from rebuild.darwin import fat_archive, Lipo
+from rebuild.toolchain.darwin import fat_archive, lipo
 from bes.system import host
 from bes.testing.unit_test.unit_test_skip import raise_skip_if_not_platform
 from bes.testing.unit_test import unit_test
 
 class test_darwin_package_util(unit_test):
 
-  __unit_test_data_dir__ = '../../test_data/binary_objects'
+  __unit_test_data_dir__ = '../../../test_data/binary_objects'
 
   DEBUG = False
   #DEBUG = True
@@ -30,9 +30,9 @@ class test_darwin_package_util(unit_test):
     i386_archive = self.__make_test_archive('lib/libsomething.a', 'i386', other_items)
     x86_64_archive = self.__make_test_archive('lib/libsomething.a', 'x86_64', other_items)
     armv7_archive = self.__make_test_archive('lib/libsomething.a', 'armv7', other_items)
-    self.assertEqual( [ 'i386' ], Lipo.archs(self.__test_file('libi386.a') ) )
-    self.assertEqual( [ 'x86_64' ], Lipo.archs(self.__test_file('libx86_64.a') ) )
-    self.assertEqual( [ 'armv7' ], Lipo.archs(self.__test_file('libarmv7.a') ) )
+    self.assertEqual( [ 'i386' ], lipo.archs(self.__test_file('libi386.a') ) )
+    self.assertEqual( [ 'x86_64' ], lipo.archs(self.__test_file('libx86_64.a') ) )
+    self.assertEqual( [ 'armv7' ], lipo.archs(self.__test_file('libarmv7.a') ) )
 
     thin_packages = [
       i386_archive.filename,
@@ -52,7 +52,7 @@ class test_darwin_package_util(unit_test):
     self.assertTrue( path.isfile(path.join(tmp_extract_dir, 'bar.txt')) )
     
     self.assertTrue( path.isfile(fat_library) )
-    self.assertEqual( ['armv7', 'i386', 'x86_64'], Lipo.archs(fat_library) )
+    self.assertEqual( ['armv7', 'i386', 'x86_64'], lipo.archs(fat_library) )
     
   def test_thin_to_fat_bad_normals_checksums(self):
     i386_other_items = [

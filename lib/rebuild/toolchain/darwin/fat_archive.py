@@ -5,7 +5,7 @@ import os.path as path
 from collections import namedtuple
 from bes.fs import file_checksum, file_util, temp_file
 from bes.archive import archiver
-from .Lipo import Lipo
+from .lipo import lipo
 
 class fat_archive(object):
 
@@ -70,7 +70,7 @@ class fat_archive(object):
       fat_object_filename = path.join(tmp_repack_dir, arcname)
       thin_objects_filenames = [ obj.filename for obj in thin_objects ]
       file_util.mkdir(path.dirname(fat_object_filename))
-      Lipo.thin_to_fat(thin_objects_filenames, fat_object_filename, lipo_exe = lipo_exe)
+      lipo.thin_to_fat(thin_objects_filenames, fat_object_filename, lipo_exe = lipo_exe)
 
     # Extract the normal non object files
     for thin_package in thin_packages:
@@ -95,6 +95,6 @@ class fat_archive(object):
     archiver.extract(thin_package, dest_dir)
     members = archiver.members(thin_package)
     members_infos = [ clazz.MemberInfo(member, dest_dir) for member in members ]
-    object_members = [ info for info in members_infos if Lipo.is_valid_object(info.filename) ]
+    object_members = [ info for info in members_infos if lipo.is_valid_object(info.filename) ]
     normal_members = [ info for info in members_infos if info not in object_members ]
     return clazz.AnalyzeResult(object_members, normal_members)

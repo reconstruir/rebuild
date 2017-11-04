@@ -4,7 +4,7 @@
 import re
 from bes.common import object_util, Shell, string_util
 
-class Lipo(object):
+class lipo(object):
 
   LIPO_EXE = 'lipo'
   FAT_EXPRESSION = 'Architectures in the fat file: .+ are: (.*)\w*'

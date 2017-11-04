@@ -6,7 +6,7 @@ import os.path as path
 from bes.fs import dir_util, file_util
 from rebuild.toolchain import library
 from rebuild.base import build_category
-from rebuild.darwin import Lipo
+from rebuild.toolchain.darwin import lipo
 from rebuild.step_manager import Step, step_result
 from rebuild.pkg_config import pkg_config, pkg_config_file
 
@@ -30,7 +30,7 @@ class step_check_darwin_archs(Step):
     if path.isdir(script.stage_lib_dir):
       expected_archs = env.config.build_target.archs
       for lib in library.list_libraries(script.stage_lib_dir, relative = False):
-        actual_archs = Lipo.archs(lib)
+        actual_archs = lipo.archs(lib)
         if not self.__matches(expected_archs, actual_archs):
           expected_label = ','.join(expected_archs)
           if actual_archs:
