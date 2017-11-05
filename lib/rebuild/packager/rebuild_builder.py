@@ -82,7 +82,7 @@ class rebuild_builder(object):
   EXIT_CODE_FAILED = 1
   EXIT_CODE_ABORTED = 2
 
-  def _call_run_build_script(self, script, opts):
+  def _call_run_build_script(self, script):
     result = self.run_build_script(script, self._env)
     if result.status == self.SCRIPT_SUCCESS:
       self.blurb('%s - SUCCESS' % (script.descriptor.name))
@@ -127,7 +127,7 @@ class rebuild_builder(object):
     assert False, 'Not Reached'
     return self._run_result(self.SCRIPT_FAILED, None)
   
-  def build_many_scripts(self, package_names, opts):
+  def build_many_scripts(self, package_names):
 
 #    for name, script in self._env.script_manager.scripts.items():
 #      self._env.checksum_manager.set_sources(script.descriptor.full_name, script.sources)
@@ -144,8 +144,6 @@ class rebuild_builder(object):
       self.blurb('wiping build dirs for: %s' % (' '.join(package_names)), fit = True)
       self.wipe_build_dirs(package_names)
 
-    opts = copy.deepcopy(opts)
-    self.blurb_verbose('opts:\n%s' % (dict_util.dumps(opts)))
     if self._env.config.users:
       depends_on_packages = []
       for package_name in package_names:
@@ -178,7 +176,7 @@ class rebuild_builder(object):
       if script.disabled and not self._env.config.disabled:
         self.blurb('disabled: %s' % (filename))
         continue
-      exit_code = self._call_run_build_script(script, opts)
+      exit_code = self._call_run_build_script(script)
       if exit_code == self.EXIT_CODE_FAILED:
         failed_packages.append(name)
         if not self._env.config.keep_going:

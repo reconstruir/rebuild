@@ -134,7 +134,7 @@ class rebuilder_cli(object):
       build_blurb.blurb('build', ' '.join(builder.package_names()), fit = True)
       return 1
 
-    return builder.build_many_scripts(resolved_args.package_names, opts)
+    return builder.build_many_scripts(resolved_args.package_names)
 
   @classmethod
   def _filter_target_packages(clazz, target_packages, limit):
