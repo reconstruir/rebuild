@@ -7,7 +7,6 @@ from bes.archive import archiver
 from rebuild.step_manager import step, step_result
 from rebuild.base import build_blurb
 from bes.common import object_util, dict_util
-from bes.fs import file_util
 
 class step_setup_unpack(step):
   'Unpack.'
@@ -71,13 +70,13 @@ class step_setup_unpack(step):
       assert 'extra_tarballs' in extra_tarballs_dict
       assert 'tarballs' not in extra_tarballs_dict
       extra_tarballs = extra_tarballs_dict['extra_tarballs']
-      caca = []
+      extra_tarballs_result = []
       for extra_tarball in extra_tarballs:
         tp = env.source_finder.find_source(extra_tarball, '', env.config.build_target.system)
         if not tp:
           raise RuntimeError('%s: Failed to find extra tarball: %s' % (script.descriptor.full_name, extra_tarball))
-        caca.append(tp)
-      extra_tarballs_dict['extra_tarballs'] = caca
+        extra_tarballs_result.append(tp)
+      extra_tarballs_dict['extra_tarballs'] = extra_tarballs_result
 
     return dict_util.combine(tarballs_dict, extra_tarballs_dict)
 
