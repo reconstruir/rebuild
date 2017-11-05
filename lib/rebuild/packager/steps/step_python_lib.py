@@ -2,10 +2,10 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from rebuild.step_manager import multiple_steps, Step, step_result
+from rebuild.step_manager import multiple_steps, step, step_result
 from bes.python import setup_tools
 
-class step_python_lib_build(Step):
+class step_python_lib_build(step):
   'A step to do the "build" target of setuptools.'
 
   def __init__(self):
@@ -19,7 +19,7 @@ class step_python_lib_build(Step):
   def parse_step_args(clazz, script, env, args):
     return clazz.resolve_step_args_env_and_flags(script, args, 'python_lib_build_env', 'python_lib_build_flags')
 
-class step_python_lib_install(Step):
+class step_python_lib_install(step):
   'Install the dist produced by setuptools install.'
 
   def __init__(self):

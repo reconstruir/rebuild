@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from rebuild.step_manager import Step, step_result
+from rebuild.step_manager import step, step_result
 from bes.common import Shell
 from bes.fs import file_search, file_util, file_mime
 
-class step_check_hard_coded_paths(Step):
+class step_check_hard_coded_paths(step):
   'Check that no files in the stage directory have hard coded paths.'
 
   def __init__(self):

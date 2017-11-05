@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from rebuild.step_manager import Step, step_result
+from rebuild.step_manager import step, step_result
 from rebuild import Install
 
 from bes.fs import file_util
 import os.path as path
 
-class step_install_install_files(Step):
+class step_install_install_files(step):
   'Install files to the stage dir.'
 
   def __init__(self):

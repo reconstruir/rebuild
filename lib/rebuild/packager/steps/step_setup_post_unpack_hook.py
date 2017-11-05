@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from rebuild.step_manager import Step
+from rebuild.step_manager import step
 
-class step_setup_post_unpack_hook(Step):
+class step_setup_post_unpack_hook(step):
   'A step to run a hook right after the unpack step is done.'
 
   def __init__(self):

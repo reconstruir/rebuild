@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from rebuild.step_manager import Step, step_result
+from rebuild.step_manager import step, step_result
 from rebuild import Patch
 
-class step_setup_patch(Step):
+class step_setup_patch(step):
   'Patch.'
 
   DEFAULT_PATCH_STRIP_DEPTH = 1

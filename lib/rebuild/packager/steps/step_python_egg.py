@@ -2,10 +2,10 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from rebuild.step_manager import multiple_steps, Step, step_result
+from rebuild.step_manager import multiple_steps, step, step_result
 from bes.python import setup_tools
 
-class step_python_egg_build(Step):
+class step_python_egg_build(step):
   'A step to do the "bdist_egg" target of setuptools.'
 
   DEFAULT_SETUP_SCRIPT = 'setup.py'
@@ -25,7 +25,7 @@ class step_python_egg_build(Step):
   def parse_step_args(clazz, script, env, args):
     return clazz.resolve_step_args_env_and_flags(script, args, 'shell_env', None)
 
-class step_python_egg_install(Step):
+class step_python_egg_install(step):
   'Install the egg file produced by step_bdist_egg_build.'
 
   def __init__(self):
@@ -57,7 +57,7 @@ class step_python_egg_install(Step):
     cmd = ' && '.join(cmd_parts)
     return self.call_shell(cmd, script, env, args)
 
-class step_python_egg_check_downloaded_dependencies(Step):
+class step_python_egg_check_downloaded_dependencies(step):
   'Check that the egg build and install process does not Install the egg file produced by step_bdist_egg_build.'
 
   def __init__(self):

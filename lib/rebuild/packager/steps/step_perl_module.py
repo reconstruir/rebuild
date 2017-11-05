@@ -2,12 +2,12 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from rebuild.step_manager import multiple_steps, Step, step_result
+from rebuild.step_manager import multiple_steps, step, step_result
 from rebuild.base import build_system
 from bes.python import setup_tools
 from bes.common import Shell
 
-class step_perl_module_setup(Step):
+class step_perl_module_setup(step):
   'Setup a perl module for compilation.'
 
   def __init__(self):
@@ -26,7 +26,7 @@ class step_perl_module_setup(Step):
   def parse_step_args(clazz, script, env, args):
     return clazz.resolve_step_args_env_and_flags(script, args, 'perl_module_setup_env', 'perl_module_setup_flags')
 
-class step_perl_module_post_install_cleanup(Step):
+class step_perl_module_post_install_cleanup(step):
   'Cleanup some stuff about the perl module.'
 
   def __init__(self):

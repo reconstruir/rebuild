@@ -2,10 +2,10 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from rebuild.step_manager import Step, step_result
+from rebuild.step_manager import step, step_result
 from bes.fs import tar_util
 
-class step_setup_copy_source_to_build_dir(Step):
+class step_setup_copy_source_to_build_dir(step):
   'Some packages require extra setup in the build_dir.'
 
   def __init__(self):

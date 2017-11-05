@@ -2,9 +2,9 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.common import Shell
-from rebuild.step_manager import multiple_steps, Step, step_result
+from rebuild.step_manager import multiple_steps, step, step_result
 
-class step_make(Step):
+class step_make(step):
   'step to make something with make on unix (gnu or bsd).'
 
   DEFAULT_NUM_JOBS = 4
@@ -37,7 +37,7 @@ class step_make(Step):
   def parse_step_args(clazz, script, env, args):
     return clazz.resolve_step_args_env_and_flags(script, args, 'make_env', 'make_flags')
 
-class step_make_install(Step):
+class step_make_install(step):
   'make install phase of make.'
 
   def __init__(self):
@@ -66,7 +66,7 @@ class step_make_install(Step):
   def parse_step_args(clazz, script, env, args):
     return clazz.resolve_step_args_env_and_flags(script, args, 'make_install_env', 'make_install_flags')
 
-class step_make_test(Step):
+class step_make_test(step):
   'make test phase of make.'
 
   def __init__(self):

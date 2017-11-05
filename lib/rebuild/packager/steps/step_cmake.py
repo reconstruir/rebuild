@@ -3,11 +3,11 @@
 
 import os.path as path, sys
 from bes.common import Shell
-from rebuild.step_manager import multiple_steps, Step, step_result
+from rebuild.step_manager import multiple_steps, step, step_result
 from rebuild.pkg_config import pkg_config
 from .step_make import step_make
 
-class step_cmake_configure(Step):
+class step_cmake_configure(step):
   'Configure Setup.'
 
   def __init__(self):
@@ -42,7 +42,7 @@ class step_cmake_make(step_make):
   def extra_make_flags(self):
     return [ 'VERBOSE=1' ]
 
-class step_cmake_install(Step):
+class step_cmake_install(step):
   'Configure Install.'
 
   def __init__(self):

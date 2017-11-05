@@ -5,10 +5,10 @@ import os, os.path as path
 
 from bes.archive import archiver
 from bes.fs import file_util
-from rebuild.step_manager import multiple_steps, Step, step_result
+from rebuild.step_manager import multiple_steps, step, step_result
 from rebuild.package_manager import package_tester
 
-class step_artifact_create_make_package(Step):
+class step_artifact_create_make_package(step):
   'Make a package from the state_dir.'
 
   def __init__(self):
@@ -41,7 +41,7 @@ class step_artifact_create_make_package(Step):
       'output_artifact_path': output_artifact_path,
     }
 
-class step_artifact_create_check_package(Step):
+class step_artifact_create_check_package(step):
   'Check that the staged package is good.'
 
   def __init__(self):
@@ -61,7 +61,7 @@ class step_artifact_create_check_package(Step):
         return step_result(False, check_result.message)
     return step_result(True, None)
 
-class step_artifact_create_test_package(Step):
+class step_artifact_create_test_package(step):
   'Test an package with any tests give for it in its rebuildfile.'
 
   def __init__(self):
@@ -105,7 +105,7 @@ class step_artifact_create_test_package(Step):
   def parse_step_args(clazz, script, env, args):
     return clazz.resolve_step_args_files(script, args, 'tests')
 
-class step_artifact_create_publish_package(Step):
+class step_artifact_create_publish_package(step):
   'Publish the package created by step_artifact_create_make_package.'
 
   def __init__(self):

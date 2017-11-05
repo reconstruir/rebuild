@@ -2,12 +2,12 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from rebuild.step_manager import Step, step_result
+from rebuild.step_manager import step, step_result
 from rebuild.binary_format import binary_detector
 from rebuild.base import build_type
 from rebuild.toolchain import strip
 
-class step_cleanup_strip_binaries(Step):
+class step_cleanup_strip_binaries(step):
   'Strip binaries.'
 
   def __init__(self):

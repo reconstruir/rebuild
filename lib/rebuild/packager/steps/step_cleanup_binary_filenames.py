@@ -4,9 +4,9 @@
 import os.path as path
 
 from bes.fs import dir_util, file_util
-from rebuild.step_manager import Step, step_result
+from rebuild.step_manager import step, step_result
 
-class step_cleanup_binary_filenames(Step):
+class step_cleanup_binary_filenames(step):
   'Add a third party prefix to binaries.'
 
   def __init__(self):

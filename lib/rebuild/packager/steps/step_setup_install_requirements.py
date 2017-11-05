@@ -4,10 +4,10 @@
 import os, os.path as path
 
 from bes.common import object_util
-from rebuild.step_manager import Step, step_result
+from rebuild.step_manager import step, step_result
 from rebuild.base import build_blurb
 
-class step_setup_install_requirements(Step):
+class step_setup_install_requirements(step):
   'Install package dependencies.'
 
   def __init__(self):

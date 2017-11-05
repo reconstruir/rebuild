@@ -3,9 +3,9 @@
 
 import os.path as path
 from bes.common import Shell
-from rebuild.step_manager import multiple_steps, Step, step_call_hooks, step_result
+from rebuild.step_manager import multiple_steps, step, step_call_hooks, step_result
 
-class step_autoconf_configure(Step):
+class step_autoconf_configure(step):
   'Configure Setup.'
 
   def __init__(self):

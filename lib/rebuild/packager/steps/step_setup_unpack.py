@@ -4,12 +4,12 @@
 import os.path as path
 
 from bes.archive import archiver
-from rebuild.step_manager import Step, step_result
+from rebuild.step_manager import step, step_result
 from rebuild.base import build_blurb
 from bes.common import object_util, dict_util
 from bes.fs import file_util
 
-class step_setup_unpack(Step):
+class step_setup_unpack(step):
   'Unpack.'
 
   def __init__(self):

@@ -2,10 +2,10 @@
 #-*- coding:utf-8 -*-
 #
 
-from rebuild.step_manager import Step, step_result
+from rebuild.step_manager import step, step_result
 from bes.common import Shell, string_util
 
-class step_shell(Step):
+class step_shell(step):
   'A build step that is a shell command.'
 
   def __init__(self):

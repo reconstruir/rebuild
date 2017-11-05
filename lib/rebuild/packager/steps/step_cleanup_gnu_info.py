@@ -3,9 +3,9 @@
 
 import os.path as path
 from bes.fs import file_util
-from rebuild.step_manager import Step, step_result
+from rebuild.step_manager import step, step_result
 
-class step_cleanup_gnu_info(Step):
+class step_cleanup_gnu_info(step):
   'Cleanup gnu info droppings which tend to clash between packages.'
 
   def __init__(self):
