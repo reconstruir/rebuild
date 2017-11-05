@@ -29,10 +29,8 @@ class test_rebuild_builder(unit_test):
     config.verbose = True
     env = rebuild_env(config, filenames)
     builder = rebuild_builder(env, filenames)
-    opts = {}
     packages = [ 'amhello' ]
-    
-    rv = builder.build_many_scripts(packages, opts)
+    rv = builder.build_many_scripts(packages)
     self.assertEqual( rebuild_builder.EXIT_CODE_SUCCESS, rv )
 
   def test_libpng(self):
@@ -44,9 +42,8 @@ class test_rebuild_builder(unit_test):
     config.source_dir = self.data_dir()
     env = rebuild_env(config, filenames)
     builder = rebuild_builder(env, filenames)
-    opts = {}
     packages = [ 'zlib', 'libpng' ]
-    rv = builder.build_many_scripts(packages, opts)
+    rv = builder.build_many_scripts(packages)
     self.assertEqual( rebuild_builder.EXIT_CODE_SUCCESS, rv )
 
   def test_fructose(self):
@@ -69,9 +66,8 @@ class test_rebuild_builder(unit_test):
     config.source_dir = self.data_dir()
     env = rebuild_env(config, filenames)
     builder = rebuild_builder(env, filenames)
-    opts = {}
     packages_to_build = [ 'fructose' ]
-    rv = builder.build_many_scripts(packages_to_build, opts)
+    rv = builder.build_many_scripts(packages_to_build)
     self.assertEqual( rebuild_builder.EXIT_CODE_SUCCESS, rv )
     
   def xxxtest_orange(self):
@@ -109,9 +105,8 @@ class test_rebuild_builder(unit_test):
     config.source_dir = self.data_dir()
     env = rebuild_env(config, filenames)
     builder = rebuild_builder(env, filenames)
-    opts = {}
     packages_to_build = [ 'orange' ]
-    rv = builder.build_many_scripts(packages_to_build, opts)
+    rv = builder.build_many_scripts(packages_to_build)
     self.assertEqual( rebuild_builder.EXIT_CODE_SUCCESS, rv )
 
 if __name__ == '__main__':
