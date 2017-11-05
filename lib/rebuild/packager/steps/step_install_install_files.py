@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from rebuild.step_manager import step, step_result
-from rebuild import Install
+from rebuild.tools import install
 
 from bes.fs import file_util
 import os.path as path
@@ -32,7 +32,7 @@ class step_install_install_files(step):
         return step_result(False, 'File already exists: %s' % (dest_filename))
       dest_dir = path.dirname(dest_filename)
       mode = file_util.mode(install_file)
-      Install.install(install_file, dest_dir, mode)
+      install.install(install_file, dest_dir, mode)
       
     return step_result(True, None)
 

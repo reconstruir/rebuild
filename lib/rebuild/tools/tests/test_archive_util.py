@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 #
 from bes.testing.unit_test import unit_test
-from rebuild import archive_util
+from rebuild.tools import archive_util
 
 class test_tarball_util(unit_test):
 

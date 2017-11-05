@@ -536,3 +536,6 @@ nov 4
 - s/package_descriptor.is_package_info/package_descriptor.is_descriptor/
 - package.info -> package.desc
 - move test_data up one level
+
+
+- fix fact that rebuild/packager/__init__.py imports the world

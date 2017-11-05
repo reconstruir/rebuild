@@ -2,10 +2,10 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from rebuild.step_manager import step, step_result
-from rebuild import Patch
+from rebuild.tools import patch
 
 class step_setup_patch(step):
-  'Patch.'
+  'patch.'
 
   DEFAULT_PATCH_STRIP_DEPTH = 1
 
@@ -22,10 +22,10 @@ class step_setup_patch(step):
     patch_strip_depth = args.get('patch_strip_depth', self.DEFAULT_PATCH_STRIP_DEPTH)
     patch_program = args.get('patch_program', None)
     
-    for patch in patches:
-      self.blurb('Patching with %s at %s' % (patch, script.source_unpacked_dir))
+    for p in patches:
+      self.blurb('Patching with %s at %s' % (p, script.source_unpacked_dir))
 
-    exit_code, msg = Patch.patch(patches,
+    exit_code, msg = patch.patch(patches,
                                  script.source_unpacked_dir,
                                  strip = patch_strip_depth,
                                  backup = True,

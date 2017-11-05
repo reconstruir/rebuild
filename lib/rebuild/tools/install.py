@@ -6,7 +6,7 @@ from collections import namedtuple
 
 from bes.fs import file_util
 
-class Install(object):
+class install(object):
 
   item = namedtuple('item', 'filename,dest_dir,mode')
   
