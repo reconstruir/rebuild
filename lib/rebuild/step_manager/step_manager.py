@@ -4,6 +4,7 @@
 # TODO
 # add argument checking/validation
 
+import copy
 from abc import abstractmethod
 from bes.common import dict_util
 from bes.system import log
@@ -39,7 +40,7 @@ class step_manager(object):
     assert step_description.is_step_description(description)
     s = description.step_class()
     global_args = s.global_args()
-    parsed_args = description.step_class.parse_step_args(script, env, description.args)
+    parsed_args = description.step_class.parse_step_args(script, env, copy.deepcopy(description.args))
     if not isinstance(parsed_args, dict):
       raise RuntimeError('%s.parse_step_args() needs to return a dict instead of \"%s\"' % (description.step_class.__name__, type(parsed_args).__name__))
     s.args = dict_util.combine(global_args, parsed_args)
