@@ -24,7 +24,7 @@ class _toolchain_linux(_toolchain_base):
       'RANLIB': 'ranlib',
       'STRIP': 'strip',
       'AR': 'ar',
-      'AR_REPLACEMENT': 'ar', #ar_replacement,
+      'AR_REPLACEMENT': ar_replacement,
       'AR_REAL': 'ar',
       'AR_FLAGS': 'r',
       'ARFLAGS': 'r',
