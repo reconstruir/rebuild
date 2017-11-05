@@ -11,7 +11,7 @@ from bes.system import log
 from rebuild.base import build_blurb
 
 from .multiple_steps import multiple_steps
-from .step import Step
+from .step import step
 from .step_argument import step_argument
 from .step_description import step_description
 from .step_result import step_result
@@ -27,8 +27,8 @@ class step_manager(object):
     self._stop_step = None
 
   def _add_step(self, s):
-    if not isinstance(s, Step):
-      raise RuntimeError('step must be an instance of Step instead of %s' % (type(s)))
+    if not isinstance(s, step):
+      raise RuntimeError('step must be an instance of step instead of %s' % (type(s)))
     s.tag = self._tag
     self._steps.append(s)
     return s

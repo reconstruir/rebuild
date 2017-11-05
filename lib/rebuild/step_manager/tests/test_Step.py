@@ -2,11 +2,11 @@
 #-*- coding:utf-8 -*-
 #
 import unittest
-from rebuild.step_manager import Step, step_result
+from rebuild.step_manager import step, step_result
 
 class test_step(unittest.TestCase):
 
-  class TestStep(Step):
+  class TestStep(step):
     def execute(self, argument):
       'Execute the step.'
       return step_result(True, '')

@@ -20,7 +20,7 @@ from .hook_extra_code import HOOK_EXTRA_CODE
 from .hook  import hook
 from .step_registry import step_register
 
-class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, object)):
+class step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, object)):
 
   #@abstractmethod
   def execute(self, script, env, args):
@@ -34,16 +34,16 @@ class Step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
   
   def __init__(self):
     self._args = copy.deepcopy(getattr(self, '__step_global_args__', {}))
-#    self.log_d('%s: Step.__init__() args=%s' % (self, self._args))
+#    self.log_d('%s: step.__init__() args=%s' % (self, self._args))
     
   @classmethod
   def parse_step_args(clazz, script, env, args):
     result = copy.deepcopy(clazz.global_args())
-#    self.log_d('%s: Step.parse_step_args() global_args=%s' % (clazz, result))
+#    self.log_d('%s: step.parse_step_args() global_args=%s' % (clazz, result))
     if args:
       assert isinstance(args, dict)
       result.update(args)
-#    self.log_d('%s: Step.parse_step_args() result=%s' % (clazz, result))
+#    self.log_d('%s: step.parse_step_args() result=%s' % (clazz, result))
     return result
 
   @classmethod

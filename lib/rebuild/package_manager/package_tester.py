@@ -7,7 +7,7 @@
 import os, os.path as path
 from collections import namedtuple
 
-from rebuild.step_manager import Step, step_result
+from rebuild.step_manager import step_result
 from rebuild.package_manager import package, package_manager
 from rebuild.base import build_blurb, build_os_env, build_target
 from rebuild.toolchain import toolchain

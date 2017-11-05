@@ -18,4 +18,4 @@ from .rebuilder_cli import rebuilder_cli
 
 from rebuild.packager.checks import *
 from rebuild.packager.steps import *
-from rebuild.step_manager import Step, step_result
+from rebuild.step_manager import step, step_result

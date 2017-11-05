@@ -4,7 +4,7 @@
 import copy, unittest
 from bes.common import check_type, dict_util
 from test_steps import *
-from rebuild.step_manager import Step, multiple_steps, step_description, step_manager
+from rebuild.step_manager import step, multiple_steps, step_description, step_manager
 
 class test_step_manager(unittest.TestCase):
 
@@ -70,7 +70,7 @@ class test_step_manager(unittest.TestCase):
     self.assertEqual( 'step two_b failed', result.message )
     self.assertEqual( step_two_b, result.failed_step )
 
-  class SaveArgsStep(Step):
+  class SaveArgsStep(step):
     def __init__(self):
       super(test_step_manager.SaveArgsStep, self).__init__()
       self.saved_args = None
@@ -315,7 +315,7 @@ class test_step_manager(unittest.TestCase):
                        result_code = 'step_result(True, None)',
                        parse_step_args_code = '{}'):
     code = '''
-class %s(Step):
+class %s(step):
   def __init__(self):
     super(%s, self).__init__()
 
