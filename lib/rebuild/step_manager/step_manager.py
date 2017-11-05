@@ -26,24 +26,24 @@ class step_manager(object):
     self._tag = tag
     self._stop_step = None
 
-  def __add_step(self, step):
-    if not isinstance(step, Step):
-      raise RuntimeError('step must be an instance of Step instead of %s' % (type(step)))
-    step.tag = self._tag
-    self._steps.append(step)
-    return step
+  def _add_step(self, s):
+    if not isinstance(s, Step):
+      raise RuntimeError('step must be an instance of Step instead of %s' % (type(s)))
+    s.tag = self._tag
+    self._steps.append(s)
+    return s
 
   # FIXME: only allow description
   def add_step(self, description, script, env):
-    assert step_description.is_step_description(description)
-    step = description.step_class()
     assert isinstance(description.args, dict)
-    global_args = step.global_args()
+    assert step_description.is_step_description(description)
+    s = description.step_class()
+    global_args = s.global_args()
     parsed_args = description.step_class.parse_step_args(script, env, description.args)
     if not isinstance(parsed_args, dict):
       raise RuntimeError('%s.parse_step_args() needs to return a dict instead of \"%s\"' % (description.step_class.__name__, type(parsed_args).__name__))
-    step.args = dict_util.combine(global_args, parsed_args)
-    return self.__add_step(step)
+    s.args = dict_util.combine(global_args, parsed_args)
+    return self._add_step(s)
 
   def add_steps(self, descriptions, script, env):
     assert step_description.is_step_description_list(descriptions)
@@ -52,19 +52,19 @@ class step_manager(object):
 
   def execute(self, script, env, args):
     output = {}
-    for step in self._steps:
-      step_args = dict_util.combine(args, step.args, output)
-      result = step.execute(script, env, step_args)
+    for s in self._steps:
+      step_args = dict_util.combine(args, s.args, output)
+      result = s.execute(script, env, step_args)
       output.update(result.output or {})
       if not result.success:
-        return step_result(False, message = result.message, failed_step = step, output = output)
+        return step_result(False, message = result.message, failed_step = s, output = output)
     return step_result(True, output = output)
 
   def step_list(self, args):
     'Return a list of 2 tuples.  Each tuple has ( step, args )'
     result = []
-    for step in self._steps:
-      result.append((step, dict_util.combine(args, step.args)))
+    for s in self._steps:
+      result.append((s, dict_util.combine(args, s.args)))
     return result
 
   @property
