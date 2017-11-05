@@ -11,7 +11,7 @@ from bes.system import log
 from rebuild.base import build_blurb
 
 from .multiple_steps import multiple_steps
-from .Step import Step
+from .step import Step
 from .step_argument import step_argument
 from .step_description import step_description
 from .step_result import step_result

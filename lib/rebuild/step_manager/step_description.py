@@ -3,7 +3,6 @@
 
 import copy
 from bes.common import object_util, string_util
-from .Step import Step
 from .step_registry import step_register, step_registry
 
 class step_description(object):

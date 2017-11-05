@@ -3,7 +3,7 @@
 
 import copy
 from bes.common import dict_util
-from .Step import Step
+from .step import Step
 from .step_result import step_result
 from .step_argument import step_argument
 

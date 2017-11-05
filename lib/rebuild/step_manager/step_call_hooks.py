@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from .Step import Step
-from .Step import step_result
+from .step import Step, step_result
 
 class step_call_hooks(Step):
   'A superclass for steps that call hooks.'

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 
-from .Step import Step, step_result
+from .step import Step, step_result
 from .hook import hook
 from .multiple_steps import multiple_steps
 from .step_aborted import step_aborted
