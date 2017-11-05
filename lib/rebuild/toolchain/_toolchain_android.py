@@ -31,6 +31,7 @@ class _toolchain_android(_toolchain_base):
     self.ndk_root = os.environ.get('REBUILD_ANDROID_NDK_ROOT', None)
     if not self.ndk_root:
       build_blurb.blurb('build', '*** ERROR *** Trying to use android NDK but REBUILD_ANDROID_NDK_ROOT is not set.')
+      return
     self._triplet = self._REBUILD_ARCH_TO_TRIPLET[self.build_target.archs[0]]
     self._api = '26'
     self._api_dir = 'android-%s' % (self._api)
