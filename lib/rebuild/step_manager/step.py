@@ -304,6 +304,16 @@ class step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
     return dict_util.combine(env_dict, flags_dict)
   
   @classmethod
+  def resolve_step_args_key_values(clazz, script, args, key):
+    result = {}
+    if key and key in args:
+      config = args[key]
+      resolved = masked_config.resolve_key_values_to_dict(config, script.env.config.build_target.system)
+      assert isinstance(resolved, dict)
+      result = { key: resolved }
+    return result
+  
+  @classmethod
   def call_hooks(clazz, script, env, args, name):
     hooks = args.get(name, [])
     if not hooks:

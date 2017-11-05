@@ -3,7 +3,7 @@
 
 import os, os.path as path
 
-from bes.common import object_util, variable
+from bes.common import dict_util, object_util, string_util, variable
 from bes.fs import file_replace
 from rebuild.step_manager import step, step_result
 from rebuild.pkg_config import pkg_config_file
@@ -30,6 +30,7 @@ class step_pkg_config_make_pc(step):
     }
 
     pc_file_variables = args.get('pc_file_variables', {})
+    dict_util.unquote_strings(pc_file_variables)
     replacements.update(pc_file_variables)
     for src_pc in pc_files:
       dst_dir = path.join(script.stage_dir, 'lib/pkgconfig')
@@ -43,4 +44,9 @@ class step_pkg_config_make_pc(step):
 
   @classmethod
   def parse_step_args(clazz, script, env, args):
-    return clazz.resolve_step_args_files(script, args, 'pc_files')
+    pc_file_variables_dict = clazz.resolve_step_args_key_values(script, args, 'pc_file_variables')
+    pc_files_dict = clazz.resolve_step_args_files(script, args, 'pc_files')
+    dict_util.del_keys(args, 'pc_file_variables', 'pc_files')
+    args.update(pc_file_variables_dict)
+    args.update(pc_files_dict)
+    return args
