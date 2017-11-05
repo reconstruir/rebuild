@@ -3,7 +3,7 @@
 #
 import unittest
 from test_steps import *
-from rebuild.step_manager import multiple_steps, Step, step_argument
+from rebuild.step_manager import multiple_steps
 
 class test_multiple_steps(unittest.TestCase):
 

@@ -18,13 +18,13 @@ class test_step_manager(unittest.TestCase):
 
   def test_add_step(self):
     sm = step_manager('sm')
-    step = self._add_test_step(sm, 'one', True)
-    self.assertEqual( { 'fake_name': 'one', 'fake_success': True }, step.args )
+    s = self._add_test_step(sm, 'one', True)
+    self.assertEqual( { 'fake_name': 'one', 'fake_success': True }, s.args )
 
   def test_one_step(self):
     sm = step_manager('sm')
 
-    step = self._add_test_step(sm, 'one', True)
+    self._add_test_step(sm, 'one', True)
     result = sm.execute({}, {}, {})
     self.assertTrue( result.success )
     self.assertEqual( None, result.message )
@@ -175,7 +175,7 @@ class test_step_manager(unittest.TestCase):
     sm = step_manager('sm')
     script = {}
     env = {}
-    step = sm.add_step(step_description(sample_step_fake_output1), script, env)
+    s = sm.add_step(step_description(sample_step_fake_output1), script, env)
     expected_output = { 'foo': 6, 'bar': 'hi' }
     result = sm.execute(script, env, { 'fake_output': expected_output })
     self.assertTrue( result.success )
@@ -194,7 +194,7 @@ class test_step_manager(unittest.TestCase):
     sm = step_manager('sm')
     script = {}
     env = {}
-    step = sm.add_step(step_description(self.test_multi_step), script, env)
+    s = sm.add_step(step_description(self.test_multi_step), script, env)
     expected_output1 = { 'foo': 6, 'bar': 'hi' }
     expected_output2 = { 'fruit': 'kiwi', 'cheese': 'manchego' }
     expected_output3 = { 'wine': 'barolo', 'nut': 'almond' }
@@ -220,13 +220,13 @@ class test_step_manager(unittest.TestCase):
 
   def test_global_args(self):
     sm = step_manager('sm')
-    step = sm.add_step(step_description(self.test_step_with_global_args), {}, {})
+    s = sm.add_step(step_description(self.test_step_with_global_args), {}, {})
     result = sm.execute({}, {}, {})
     expected_saved_args = self.test_step_with_global_args.__step_global_args__
     self.assertTrue( result.success )
     self.assertEqual( None, result.message )
     self.assertEqual( None, result.failed_step )
-    self.assertEqual( expected_saved_args, step.saved_args )
+    self.assertEqual( expected_saved_args, s.saved_args )
 
   class test_multi_step_with_global_args(multiple_steps):
     step_classes = [ sample_step_save_args1, sample_step_save_args2, sample_step_save_args3 ]
@@ -239,15 +239,15 @@ class test_step_manager(unittest.TestCase):
 
   def test_multiple_steps_global_args(self):
     sm = step_manager('sm')
-    step = sm.add_step(step_description(self.test_multi_step_with_global_args), {}, {})
+    s = sm.add_step(step_description(self.test_multi_step_with_global_args), {}, {})
     result = sm.execute({}, {}, {})
     expected_saved_args = self.test_multi_step_with_global_args.__step_global_args__
     self.assertTrue( result.success )
     self.assertEqual( None, result.message )
     self.assertEqual( None, result.failed_step )
-    self.assertEqual( expected_saved_args, step.steps[0].saved_args )
-    self.assertEqual( expected_saved_args, step.steps[1].saved_args )
-    self.assertEqual( expected_saved_args, step.steps[2].saved_args )
+    self.assertEqual( expected_saved_args, s.steps[0].saved_args )
+    self.assertEqual( expected_saved_args, s.steps[1].saved_args )
+    self.assertEqual( expected_saved_args, s.steps[2].saved_args )
 
   class test_multi_step_with_global_args_and_steps_with_global_args(multiple_steps):
     step_classes = [ sample_step_save_args_with_global_args1, sample_step_save_args_with_global_args2, sample_step_save_args_with_global_args3 ]
@@ -261,7 +261,7 @@ class test_step_manager(unittest.TestCase):
   def xtest_multiple_steps_global_args_with_steps_with_global_args(self):
     self.maxDiff = None
     sm = step_manager('sm')
-    step = sm.add_step(step_description(self.test_multi_step_with_global_args_and_steps_with_global_args), {}, {})
+    s = sm.add_step(step_description(self.test_multi_step_with_global_args_and_steps_with_global_args), {}, {})
     result = sm.execute({}, {}, {})
     expected_saved_args1 = dict_util.combine(sample_step_save_args_with_global_args1.__step_global_args__, self.test_multi_step_with_global_args_and_steps_with_global_args.__step_global_args__)
     expected_saved_args2 = dict_util.combine(sample_step_save_args_with_global_args2.__step_global_args__, self.test_multi_step_with_global_args_and_steps_with_global_args.__step_global_args__)
@@ -269,7 +269,7 @@ class test_step_manager(unittest.TestCase):
     self.assertTrue( result.success )
     self.assertEqual( None, result.message )
     self.assertEqual( None, result.failed_step )
-    #self.assertEqual( expected_saved_args, step.saved_args )
+    #self.assertEqual( expected_saved_args, s.saved_args )
 
     for k, v in sorted(expected_saved_args1.items()):
       print("EXPECTED: %s=%s" % (k, v))

@@ -2,13 +2,13 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy
-from rebuild.step_manager import Step, step_result
+from rebuild.step_manager import step, step_result
 
 def _save_args(args):
   assert isinstance(args, dict)
   return copy.deepcopy(args)
 
-class sample_step_save_args1(Step):
+class sample_step_save_args1(step):
   def __init__(self):
     self.tag = 'sample_step_save_args1'
     super(sample_step_save_args1, self).__init__()
@@ -24,7 +24,7 @@ class sample_step_save_args1(Step):
     keys = [ key for key in args.keys() if key.startswith('desc1_') ]
     return { key: args[key] for key in keys }
 
-class sample_step_save_args2(Step):
+class sample_step_save_args2(step):
   def __init__(self):
     self.tag = 'sample_step_save_args2'
     super(sample_step_save_args2, self).__init__()
@@ -39,7 +39,7 @@ class sample_step_save_args2(Step):
     keys = [ key for key in args.keys() if key.startswith('desc2_') ]
     return { key: args[key] for key in keys }
 
-class sample_step_save_args3(Step):
+class sample_step_save_args3(step):
   def __init__(self):
     self.tag = 'sample_step_save_args3'
     super(sample_step_save_args3, self).__init__()
@@ -54,7 +54,7 @@ class sample_step_save_args3(Step):
     keys = [ key for key in args.keys() if key.startswith('desc3_') ]
     return { key: args[key] for key in keys }
 
-class sample_step_fake_success(Step):
+class sample_step_fake_success(step):
   def __init__(self):
     super(sample_step_fake_success, self).__init__()
 
@@ -66,7 +66,7 @@ class sample_step_fake_success(Step):
       fake_message = 'step %s failed' % (args['fake_name'])
     return step_result(fake_success, fake_message)
 
-class sample_step_fake_output1(Step):
+class sample_step_fake_output1(step):
   def __init__(self):
     super(sample_step_fake_output1, self).__init__()
 
@@ -74,7 +74,7 @@ class sample_step_fake_output1(Step):
     fake_output = args.get('fake_output', None)
     return step_result(True, output = fake_output)
 
-class sample_step_fake_output2(Step):
+class sample_step_fake_output2(step):
   def __init__(self):
     super(sample_step_fake_output2, self).__init__()
 
@@ -82,7 +82,7 @@ class sample_step_fake_output2(Step):
     fake_output = args.get('fake_output2', None)
     return step_result(True, output = fake_output)
 
-class sample_step_fake_output3(Step):
+class sample_step_fake_output3(step):
   def __init__(self):
     super(sample_step_fake_output3, self).__init__()
 
@@ -114,7 +114,7 @@ class sample_step_save_args_with_global_args3(sample_step_save_args3):
   def __init__(self):
     super(sample_step_save_args_with_global_args3, self).__init__()
 
-class step_with_output1(Step):
+class step_with_output1(step):
   def __init__(self):
     super(step_with_output1, self).__init__()
 
@@ -122,7 +122,7 @@ class step_with_output1(Step):
     self.saved_args = copy.deepcopy(args)
     return step_result(True, message = None, output = { 'foo': '5', 'bar': 6 })
 
-class step_with_output2(Step):
+class step_with_output2(step):
   def __init__(self):
     super(step_with_output2, self).__init__()
 
@@ -130,7 +130,7 @@ class step_with_output2(Step):
     self.saved_args = copy.deepcopy(args)
     return step_result(True, None, output = { 'fruit': 'kiwi' })
 
-class step_with_output3(Step):
+class step_with_output3(step):
   def __init__(self):
     super(step_with_output3, self).__init__()
 
@@ -138,7 +138,7 @@ class step_with_output3(Step):
     self.saved_args = copy.deepcopy(args)
     return step_result(True, None, output = { 'cheese': 'blue' })
 
-class step_with_output4(Step):
+class step_with_output4(step):
   def __init__(self):
     super(step_with_output4, self).__init__()
 

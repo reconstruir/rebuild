@@ -2,6 +2,7 @@
 #-*- coding:utf-8 -*-
 
 from .step import Step, step_result
+from .step import Step as step
 from .hook import hook
 from .multiple_steps import multiple_steps
 from .step_aborted import step_aborted
