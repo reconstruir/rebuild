@@ -530,3 +530,9 @@ nov 3
 - s _run_result packager_result to script_result
 - move the binary_object test files to a common place
 - add a extra_code unit test in test_hook.py
+
+nov 4
+- step_check_hard_coded_paths should be step_fix_hard_coded_paths
+- s/package_descriptor.is_package_info/package_descriptor.is_descriptor/
+- package.info -> package.desc
+- move test_data up one level
