@@ -3,7 +3,7 @@
 
 from abc import abstractmethod
 
-class Check(object):
+class check(object):
 
   @abstractmethod
   def check(self, stage_dir, env):

@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from rebuild.packager import Check, check_result
+from rebuild.packager import check, check_result
 from bes.fs import file_find
 
-class check_python_eggs(Check):
+class check_python_eggs(check):
   'Check that only 1 egg is present.'
 
   def __init__(self):
