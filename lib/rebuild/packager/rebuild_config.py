@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from collections import namedtuple
-from rebuild.base import build_target
+from rebuild.base import build_system, build_target, build_type
 
 class rebuild_config(object):
 
@@ -12,6 +12,7 @@ class rebuild_config(object):
   def __init__(self):
     self.build_root = None
     self.build_target = build_target()
+    self.host_build_target = build_target(system = build_system.HOST, build_type = build_type.RELEASE)
     self.root_dir = None
     self.deps_only = False
     self.disabled = False
