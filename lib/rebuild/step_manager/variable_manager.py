@@ -10,7 +10,9 @@ class variable_manager(object):
   @classmethod
   def add_variable(clazz, key, value):
     if key in clazz._variables:
-      raise RuntimeError('variable already registered: %s' % (key))
+      old_value = clazz._variables[key]
+      if old_value != value:
+        raise RuntimeError('Variable already registered with different value: %s; old=%s; new=%s' % (key, old_value, value))
     clazz._variables[key] = value
 
   @classmethod
