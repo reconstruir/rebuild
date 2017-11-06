@@ -47,6 +47,7 @@ class _toolchain_android(_toolchain_base):
     env = {
       'CC': self._find_tool('gcc'),
       'CXX': self._find_tool('g++'),
+      'CPP': self._find_tool('cpp'),
       'RANLIB': self._find_tool('ranlib'),
       'STRIP': self._find_tool('strip'),
       'AR': 'ar', #ar_replacement,
@@ -120,5 +121,5 @@ class _toolchain_android(_toolchain_base):
   def autoconf_flags(self):
     return [
       '--host=%s' % (self._triplet),
-      '--sysroot %s' % (self._sysroot_platform_dir),
+#      '--sysroot %s' % (self._sysroot_platform_dir),
     ]
