@@ -5,6 +5,7 @@ from abc import abstractmethod, ABCMeta
 from bes.system.compat import with_metaclass
 from bes.archive import archiver
 from bes.common import check_type
+from rebuild.base import build_system
 from .tarball_finder import tarball_finder
 
 class source_finder(with_metaclass(ABCMeta, object)):
@@ -18,29 +19,45 @@ class source_finder(with_metaclass(ABCMeta, object)):
     check_type.check_string(name, 'name')
     check_type.check_string(version, 'version')
     check_type.check_string(system, 'system')
-
-    tarball = tarball_finder.find(where, name, version)
-
-    # If we find more than one tarball it could be because there are 1 for each platform so
-    # filter out only the ones that match the current build system target
-    if len(tarball) > 1:
-      pattern = '/%s/' % (system)
-      system_specific_tarball = [ t for t in tarball if pattern in t ]
-      if system_specific_tarball:
-        tarball = system_specific_tarball
-      
-    if len(tarball) > 1:
-      raise RuntimeError('Too many tarballs found for %s-%s: %s' % (name, version, ' '.join(tarball)))
-    if len(tarball) == 0:
+    tarballs = tarball_finder.find(where, name, version)
+    tarball = clazz._determine_tarball(tarballs, name, version, system)
+    if not tarball:
       return None
-
-    tarball = tarball[0]
-
     clazz._check_archive_valid(tarball)
-
     return tarball
 
+  @classmethod
+  def _determine_tarball(clazz, tarballs, name, version, system):
+    if not tarballs:
+      return None
+    if len(tarballs) == 1:
+      return tarballs[0]
+    too_many_tarballs = []
+    for tarball in tarballs:
+      if clazz._tarball_is_platform_specific(tarball):
+        if clazz._tarball_matches_system(tarball, system):
+          return tarball
+      else:
+        too_many_tarballs.append(tarball)
+
+    if len(too_many_tarballs) > 1:
+      raise RuntimeError('Too many tarballs found for %s-%s: %s' % (name, version, ' '.join(too_many_tarballs)))
+
+    return None
+  
   @classmethod
   def _check_archive_valid(clazz, filename):
     if not archiver.is_valid(filename):
       raise RuntimeError('Invalid archive type: %s' % (filename))
+
+  @classmethod
+  def _tarball_is_platform_specific(clazz, tarball):
+    for system in build_system.SYSTEMS:
+      if clazz._tarball_matches_system(tarball, system):
+        return True
+    return False
+    
+  @classmethod
+  def _tarball_matches_system(clazz, tarball, system):
+    pattern = '/%s/' % (system)
+    return pattern in tarball
