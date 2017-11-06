@@ -122,7 +122,7 @@ class rebuilder_cli(object):
     config.third_party_prefix = args.third_party_prefix
     env = rebuild_env(config, filenames)
     
-    build_blurb.blurb('build', 'build_target: %s' % (str(config.build_target)))
+    build_blurb.blurb('build', 'target=%s; host=%s' % (config.build_target.build_path, config.host_build_target.build_path))
 
     builder = rebuild_builder(env, filenames)
 
