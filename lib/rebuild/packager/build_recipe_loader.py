@@ -11,12 +11,11 @@ from rebuild.package_manager import package_descriptor
 from rebuild.instruction import instruction_list
 from rebuild.step_manager.hook_extra_code import HOOK_EXTRA_CODE
 from rebuild.step_manager import step_description
+from rebuild.recipe import recipe
 
 from .build_recipe_env import build_recipe_env
 
 class build_recipe_loader(object):
-
-  _recipe = namedtuple('_recipe', 'filename,recipe,properties,requirements,build_requirements,descriptor,instructions,steps')
 
   @classmethod
   def load(clazz, filename, build_target):
@@ -30,8 +29,8 @@ class build_recipe_loader(object):
     return scripts
 
   @classmethod
-  def _load_from_dict(clazz, recipe, filename):
-    properties = clazz._load_properties(recipe)
+  def _load_from_dict(clazz, recipe_dict, filename):
+    properties = clazz._load_properties(recipe_dict)
     name = properties.get('name', None)
     if not name:
       raise RuntimeError('No name given in %s.' % (filename))
@@ -40,8 +39,8 @@ class build_recipe_loader(object):
       raise RuntimeError('No version given in %s.' % (filename))
     del properties['name']
     del properties['version']
-    requirements = clazz._load_requirements(recipe, 'requirements')
-    build_requirements = clazz._load_requirements(recipe, 'build_requirements')
+    requirements = clazz._load_requirements(recipe_dict, 'requirements')
+    build_requirements = clazz._load_requirements(recipe_dict, 'build_requirements')
     
     # Check that some important properties are given
     if not package_descriptor.PROPERTY_CATEGORY in properties:
@@ -50,12 +49,13 @@ class build_recipe_loader(object):
                                     requirements = requirements,
                                     build_requirements = build_requirements,
                                     properties = properties)
-    instructions = clazz._load_instructions(recipe, 'instructions')
-    steps = clazz._load_steps(recipe)
-    if recipe:
-      raise RuntimeError('Unknown recipe: %s' % (recipe))
-    return clazz._recipe(filename, recipe, properties, requirements,
-                         build_requirements, descriptor, instructions, steps)
+    instructions = clazz._load_instructions(recipe_dict, 'instructions')
+    steps = clazz._load_steps(recipe_dict)
+    # recipe_dict should be empty now
+    if recipe_dict:
+      raise RuntimeError('Unknown recipe values: %s' % (recipe_dict))
+    return recipe(filename, properties, requirements, build_requirements,
+                  descriptor, instructions, steps)
 
   @classmethod
   def _load_requirements(clazz, args, key):

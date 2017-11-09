@@ -546,3 +546,10 @@ nov 5
 - fix build_target.build_name usage might not be needed now that build_path exists
 - get rid of build_script.env
 - deal with dup classes in step_registry
+- fix remove checksums to be script based cause of build_target change
+
+nov 6
+- verify that compilation follows opt and debug flags
+
+nov 8
+- add support for build variables in command line

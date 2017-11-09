@@ -53,7 +53,7 @@ class step_setup_unpack(step):
 
       tarball = env.source_finder.find_source(tarball_name,
                                               script.descriptor.version.upstream_version,
-                                              env.config.build_target.system)
+                                              script.build_target.system)
       if tarball:
         tarballs_dict = { 'tarballs': [ tarball ] }
       else:
@@ -72,7 +72,7 @@ class step_setup_unpack(step):
       extra_tarballs = extra_tarballs_dict['extra_tarballs']
       extra_tarballs_result = []
       for extra_tarball in extra_tarballs:
-        tp = env.source_finder.find_source(extra_tarball, '', env.config.build_target.system)
+        tp = env.source_finder.find_source(extra_tarball, '', script.build_target.system)
         if not tp:
           raise RuntimeError('%s: Failed to find extra tarball: %s' % (script.descriptor.full_name, extra_tarball))
         extra_tarballs_result.append(tp)

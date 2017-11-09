@@ -4,6 +4,7 @@
 import os.path as path
 from bes.common import Shell
 from rebuild.step_manager import multiple_steps, step, step_call_hooks, step_result
+from rebuild.toolchain import toolchain
 
 class step_autoconf_configure(step):
   'Configure Setup.'
@@ -26,12 +27,16 @@ class step_autoconf_configure(step):
       autoreconf_cmd = [ 'autoreconf', '-i' ]
     else:
       autoreconf_cmd = None
+
+      tc = toolchain.get_toolchain(script.build_target)
       
     configure_script_path = path.join(script.source_unpacked_dir, configure_script)
     configure_cmd = [
       configure_script_path,
       '--prefix=%s' % (script.stage_dir),
-    ] + configure_flags
+    ] + configure_flags + tc.autoconf_flags()
+
+    
 
     if autoreconf_cmd:
       cmd = autoreconf_cmd + [ '&&' ] + configure_cmd

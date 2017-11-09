@@ -23,12 +23,12 @@ class step_check_darwin_archs(step):
     return True
 
   def execute(self, script, env, args):
-    if not env.config.build_target.is_darwin():
+    if not script.build_target.is_darwin():
       return step_result(True, None)
     if script.descriptor.category != build_category.LIB:
       return step_result(True, None)
     if path.isdir(script.stage_lib_dir):
-      expected_archs = env.config.build_target.archs
+      expected_archs = script.build_target.archs
       for lib in library.list_libraries(script.stage_lib_dir, relative = False):
         actual_archs = lipo.archs(lib)
         if not self.__matches(expected_archs, actual_archs):

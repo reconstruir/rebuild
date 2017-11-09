@@ -7,13 +7,21 @@ from .toposort import toposort, toposort_flatten
 class cyclic_dependency_error(Exception):
   def __init__(self, message, cyclic_deps):
     super(cyclic_dependency_error, self).__init__(message)
+    self.message = message
     self.cyclic_deps = cyclic_deps
 
+  def __str__(self):
+    return self.message
+  
 class missing_dependency_error(Exception):
   def __init__(self, message, missing_deps):
-    super(missing_dependency_error, self).__init__(message)
+    super(missing_dependency_error, self).__init__()
+    self.message = message
     self.missing_deps = missing_deps
 
+  def __str__(self):
+    return self.message
+  
 class dependency_resolver(object):
 
   ALL_DEPS = [ 'ALL_DEPS' ]
@@ -67,11 +75,11 @@ class dependency_resolver(object):
     names = object_util.listify(names)
     result = set(names)
     for name in names:
-      result |= clazz.__resolve_deps(dep_map, name)
+      result |= clazz._resolve_deps(dep_map, name)
     return sorted(list(result))
 
   @classmethod
-  def __resolve_deps(clazz, dep_map, name):
+  def _resolve_deps(clazz, dep_map, name):
     'Return a set of resolved dependencies for the given name.  Not in build order.'
     assert string_util.is_string(name)
     if name not in dep_map:
@@ -81,7 +89,7 @@ class dependency_resolver(object):
     assert isinstance(deps, set)
     result |= deps
     for dep in deps:
-      result |= clazz.__resolve_deps(dep_map, dep)
+      result |= clazz._resolve_deps(dep_map, dep)
     return result
 
   @classmethod

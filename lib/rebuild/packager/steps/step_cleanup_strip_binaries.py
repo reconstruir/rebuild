@@ -14,7 +14,7 @@ class step_cleanup_strip_binaries(step):
     super(step_cleanup_strip_binaries, self).__init__()
 
   def execute(self, script, env, args):
-    is_release = env.config.build_target.build_type == build_type.RELEASE
+    is_release = script.build_target.build_type == build_type.RELEASE
     if is_release:
       if args.get('dont_strip_binaries', False):
         return step_result(True, None)
@@ -23,12 +23,12 @@ class step_cleanup_strip_binaries(step):
         return step_result(True, None)
     if not path.isdir(script.stage_dir):
       return step_result(True, None)
-    binary_format = env.config.build_target.binary_format
+    binary_format = script.build_target.binary_format
     if not binary_format:
       return step_result(True, 'Unknown binary format: %s' % (binary_format))
     binaries = binary_detector.find_strippable_binaries(script.stage_dir, format_name = binary_format)
     for b in binaries:
       self.blurb('stripping binary: %s' % (path.relpath(b)))
-      if not strip.strip(env.config.build_target, b):
+      if not strip.strip(script.build_target, b):
         step_result(False, 'Failed to strip: %s' % (b))
     return step_result(True, None)

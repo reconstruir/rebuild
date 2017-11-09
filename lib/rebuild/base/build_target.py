@@ -2,6 +2,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
+from bes.system.compat import with_metaclass
+from bes.common import check_type
 
 from .build_arch import build_arch
 from .build_type import build_type as BT
@@ -80,3 +82,4 @@ class build_target(object):
       return 'macho'
     else:
       return None
+check_type.add_check(build_target)

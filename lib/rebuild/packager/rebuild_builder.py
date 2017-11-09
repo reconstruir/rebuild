@@ -72,11 +72,14 @@ class rebuild_builder(object):
     self._env.checksum_manager.remove_checksums(descriptors, self._env.config.build_target)
 
   def wipe_build_dirs(self, package_names):
-    patterns = [ '*%s-*' % (name) for name in package_names ]
-    if path.isdir(self._env.config.builds_dir):
-      self.blurb('cleaning temporary build directories in %s' % (path.relpath(self._env.config.builds_dir)))
-      tmp_dirs = dir_util.list(self._env.config.builds_dir, patterns = patterns)
-      file_util.remove(tmp_dirs)
+    for package_name in package_names:
+      script = self._env.script_manager.scripts[package_name]
+      builds_dir = self._env.config.builds_dir(script.build_target)
+      if path.isdir(builds_dir):
+        patterns = '*%s-*' % (package_name)
+        self.blurb('cleaning temporary build directories in %s' % (path.relpath(builds_dir)))
+        tmp_dirs = dir_util.list(builds_dir, patterns = patterns)
+        file_util.remove(tmp_dirs)
 
   EXIT_CODE_SUCCESS = 0
   EXIT_CODE_FAILED = 1
@@ -155,22 +158,38 @@ class rebuild_builder(object):
 #      if self._env.config.tools_only and not script.descriptor.is_tool():
 #        self.blurb('skipping non tool: %s' % (filename))
 #        continue
-    
+
+    # If no package names are given we want them all
+    package_names = package_names or self.package_names()
+    print('package_names: %s' % (' '.join(package_names)))
     resolved_package_names = self._resolve_package_names(package_names)
+    print('resolved_package_names: %s' % (' '.join(resolved_package_names)))
+    partitioned = self._env.script_manager.partition_libs_and_tools(resolved_package_names)
+    print('part  libs: %s' % (' '.join(partitioned.libs)))
+    print('part tools: %s' % (' '.join(partitioned.tools)))
 
+    resolved_tool_names = self._resolve_package_names(partitioned.tools)
+    print('resolved_tool_names: %s' % (' '.join(resolved_tool_names)))
+
+    raise SystemExit()
+    
     resolved_scripts = dict_util.filter_with_keys(self._env.script_manager.scripts, resolved_package_names)
-    build_order_flat = self._env.script_manager.build_order_flat(resolved_scripts, self._env.config.build_target.system)
-
+    packages_to_build = self._env.script_manager.build_order_flat(resolved_scripts, self._env.config.build_target.system)
+    
     if self._env.config.deps_only:
       for package_name in package_names:
-        build_order_flat.remove(package_name)
-    
-    self.blurb('building packages: %s' % (' '.join(build_order_flat)), fit = True)
-    
-    exit_code = self.EXIT_CODE_SUCCESS
+        packages_to_build.remove(package_name)
 
+    exit_code = self._build_packages(packages_to_build)
+    if exit_code != self.EXIT_CODE_SUCCESS:
+      pass
+    return exit_code
+
+  def _build_packages(self, packages_to_build):
+    self.blurb('building packages: %s' % (' '.join(packages_to_build)), fit = True)
+    exit_code = self.EXIT_CODE_SUCCESS
     failed_packages = []
-    for name in  build_order_flat:
+    for name in  packages_to_build:
       script = self._env.script_manager.scripts[name]
       filename = file_util.remove_head(script.filename, os.getcwd())
       if script.disabled and not self._env.config.disabled:
@@ -191,10 +210,10 @@ class rebuild_builder(object):
     return exit_code
 
   def _resolve_package_names(self, package_names):
-    if not package_names:
-      package_names = self.package_names()
-    return self._env.script_manager.resolve_requirements(self._env.script_manager.scripts,
-                                                         package_names,
+    assert package_names
+#    if not package_names:
+#      package_names = self.package_names()
+    return self._env.script_manager.resolve_requirements(package_names,
                                                          self._env.config.build_target.system)
 
   def package_names(self):
@@ -209,7 +228,7 @@ class rebuild_builder(object):
         result.append(script.descriptor.name)
     return result
 
-  def package_info(self, package_name):
-    'Return the package info for a package.'
-    return self._env.script_manager.scripts[package_name].package_info
+#  def package_info(self, package_name):
+#    'Return the package info for a package.'
+#    return self._env.script_manager.scripts[package_name].package_info
 

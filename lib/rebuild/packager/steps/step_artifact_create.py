@@ -18,7 +18,7 @@ class step_artifact_create_make_package(step):
     assert 'output_tarball_path' in args
     staged_tarball = script.requirements_manager.create_package(args['output_tarball_path'],
                                                                 script.descriptor,
-                                                                env.config.build_target,
+                                                                script.build_target,
                                                                 script.stage_dir,
                                                                 script.env_dir)
     self.blurb('staged tarball: %s' % (staged_tarball))
@@ -35,7 +35,7 @@ class step_artifact_create_make_package(step):
     output_tarball_path = args.get('output_tarball_path', None)
     if not output_tarball_path:
       output_tarball_path = clazz._default_output_tarball_path(script, args)
-    output_artifact_path = env.artifact_manager.artifact_path(script.descriptor, env.config.build_target)
+    output_artifact_path = env.artifact_manager.artifact_path(script.descriptor, script.build_target)
     return { 
       'output_tarball_path': output_tarball_path,
       'output_artifact_path': output_artifact_path,
@@ -91,7 +91,7 @@ class step_artifact_create_test_package(step):
                                           script.test_dir,
                                           env.artifact_manager,
                                           env.tools_manager,
-                                          env.config.build_target)
+                                          script.build_target)
       tester = package_tester(config, test)
       result =  tester.run() #self.__run_test(config, test)
       if not result.success:
@@ -115,7 +115,7 @@ class step_artifact_create_publish_package(step):
     staged_tarball = args.get('staged_tarball', None)
     assert staged_tarball
     assert archiver.is_valid(staged_tarball)
-    published_tarball = env.artifact_manager.publish(staged_tarball, env.config.build_target)
+    published_tarball = env.artifact_manager.publish(staged_tarball, script.build_target)
     self.blurb('published tarball: %s' % (published_tarball))
     return step_result(True, None, output = { 'published_tarball': published_tarball })
 

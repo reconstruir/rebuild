@@ -7,31 +7,29 @@ from collections import namedtuple
 from bes.common import algorithm, time_util
 from bes.fs import file_checksum, file_util
 from bes.system import log
-from rebuild.base import build_blurb
+from rebuild.base import build_blurb, build_target
 from rebuild.dependency import dependency_provider
 from rebuild.step_manager import step_description, step_manager
 from rebuild.package_manager import package_manager
 
-from .build_recipe_loader import build_recipe_loader
-
 class build_script(object):
 
-  def __init__(self, recipe, env):
+  def __init__(self, recipe, build_target, env):
     log.add_logging(self, 'build')
     build_blurb.add_blurb(self, 'build')
     self.env = env
+    self.descriptor = recipe.descriptor
+    self.build_target = build_target
     self.filename = recipe.filename
     self.properties = recipe.properties
     self.requirements = recipe.requirements
     self.build_requirements = recipe.build_requirements
-    self.descriptor = recipe.descriptor
     self.instructions = recipe.instructions
     self.steps = recipe.steps
 
     self.source_dir = path.dirname(self.filename)
     self._step_manager = step_manager('build')
-
-    self.working_dir = self._make_working_dir(env.config.builds_dir)
+    self.working_dir = self._make_working_dir(self.env.config.builds_dir(self.build_target))
     self.source_unpacked_dir = path.join(self.working_dir, 'source')
     self.build_dir = path.join(self.working_dir, 'build')
     self.stage_dir = path.join(self.working_dir, 'stage')
@@ -65,7 +63,7 @@ class build_script(object):
     if result.success:
       self.env.checksum_manager.save_checksums(self._current_checksums(self.env.script_manager.scripts),
                                                self.descriptor,
-                                               self.env.config.build_target)
+                                               self.build_target)
     return result
         
   @property
@@ -122,7 +120,7 @@ class build_script(object):
   def needs_rebuilding(self):
     try:
       loaded_checksums = self.env.checksum_manager.load_checksums(self.descriptor,
-                                                                  self.env.config.build_target)
+                                                                  self.build_target)
       
       # If the stored checksums don't match the current checksums, then we 
       if loaded_checksums:
@@ -145,8 +143,3 @@ class build_script(object):
       return False
     except IOError as ex:
       return True
-
-  @classmethod
-  def load_build_scripts(clazz, filename, env):
-    recipes = build_recipe_loader.load(filename, env.config.build_target)
-    return [ build_script(recipe, env) for recipe in recipes ]

@@ -124,6 +124,8 @@ class package_tester(object):
 
     pm = package_manager(pm_root_dir)
 
+    print('FUCK: package_tarball: %s' % (config.package_tarball))
+    print('FUCK:    build_target: %s' % (config.build_target.build_path))
     package = pm.load_tarball(config.package_tarball, config.build_target, config.artifact_manager)
     pd = package.info
     

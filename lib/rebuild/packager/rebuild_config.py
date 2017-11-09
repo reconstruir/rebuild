@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+import os.path as path
 from collections import namedtuple
 from rebuild.base import build_system, build_target, build_type
 
@@ -29,3 +30,7 @@ class rebuild_config(object):
     self.verbose = False
     self.wipe = False
     self.third_party_prefix = self.DEFAULT_THIRD_PARTY_PREFIX
+
+  def builds_dir(self, build_target):
+    return path.join(self.build_root, 'builds', build_target.build_path)
+    

@@ -6,6 +6,8 @@ from bes.common import dict_util
 from rebuild.package_manager import package_descriptor
 from rebuild.base import build_blurb, requirement
 from rebuild.dependency import dependency_resolver, missing_dependency_error
+from collections import namedtuple
+from .build_recipe_loader import build_recipe_loader
 from .build_script import build_script
 
 class build_script_manager(object):
@@ -15,7 +17,7 @@ class build_script_manager(object):
     self.scripts = {}
     for filename in filenames:
       build_blurb.blurb_verbose('build', 'loading %s' % (filename))
-      build_scripts = build_script.load_build_scripts(filename, env)
+      build_scripts = self._load_scripts(filename, env)
       for script in build_scripts:
         self.scripts[script.descriptor.name] = script
         #print "filename: %s" % (script.filename)
@@ -72,14 +74,13 @@ class build_script_manager(object):
     'Return the build order for the given map of scripts.'
     return dependency_resolver.build_order(clazz._dependency_map(scripts, system))
 
-  @classmethod
-  def resolve_requirements(clazz, scripts, names, system):
+  def resolve_requirements(self, names, system):
     '''
     Return a set of resolved dependencies for the given name or names.
     Sorted alphabetically, not in build order.
     '''
-    dependency_map = clazz._dependency_map(scripts, system)
-    return dependency_resolver.resolve_deps(dependency_map, names)
+    dep_map = self._dependency_map(self.scripts, system)
+    return dependency_resolver.resolve_deps(dep_map, names)
 
   @classmethod
   def _dependency_map(clazz, scripts, system):
@@ -93,8 +94,40 @@ class build_script_manager(object):
       dep_map[name] = requirements_names | build_requirements_names
     return dep_map
 
-  def subset(self, names):
-    return dict_util.filter_with_keys(self.scripts, names)
+  def subset(self, package_names):
+    'Return a subset of all scripts for package_names.'
+    return dict_util.filter_with_keys(self.scripts, package_names)
 
   def package_names(self):
+    'Return all the package names.'
     return sorted(self.scripts.keys())
+
+  def package_is_tool(self, package_name):
+    'Return True if package_name is a tool.'
+    return self.scripts[package_name].descriptor.is_tool()
+
+  _partitioned = namedtuple('_partitioned', 'libs,tools')
+  def partition_libs_and_tools(self, package_names):
+    'Return a subset of all scripts for package_names.'
+    libs = []
+    tools = []
+    for package_name in package_names:
+      script = self.scripts[package_name]
+      if script.descriptor.is_tool():
+        tools.append(package_name)
+      else:
+        libs.append(package_name)
+    return self._partitioned(libs, tools)
+        
+  @classmethod
+  def _load_scripts(clazz, filename, env):
+    scripts = []
+    recipes = build_recipe_loader.load(filename, env.config.build_target)
+    host_recipes = build_recipe_loader.load(filename, env.config.host_build_target)
+    for recipe, host_recipe in zip(recipes, host_recipes):
+      if recipe.descriptor.is_tool():
+        script = build_script(host_recipe, env.config.host_build_target, env)
+      else:
+        script = build_script(recipe, env.config.build_target, env)
+      scripts.append(script)
+    return scripts

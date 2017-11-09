@@ -94,7 +94,7 @@ class step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
 
     STATIC = True
     assert script.descriptor.resolved_requirements != None
-    export_compilation_flags_requirements = script.descriptor.export_compilation_flags_requirements(script.env.config.build_target.system)
+    export_compilation_flags_requirements = script.descriptor.export_compilation_flags_requirements(script.build_target.system)
     if STATIC:
       env['REBBE_PKG_CONFIG_STATIC'] = '1'
       
@@ -104,7 +104,7 @@ class step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
       cflags = []
       libs = []
 
-    cflags += script.descriptor.extra_cflags(script.env.config.build_target.system)
+    cflags += script.descriptor.extra_cflags(script.build_target.system)
 
     env['REBUILD_REQUIREMENTS_CFLAGS'] = ' '.join(cflags)
     env['REBUILD_REQUIREMENTS_CXXFLAGS'] = ' '.join(cflags)
@@ -130,13 +130,13 @@ class step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
 
     env['REBUILD_PYTHON_VERSION'] = '2.7'
     env['PYTHON'] = 'python%s' % (env['REBUILD_PYTHON_VERSION'])
-    env['REBUILD_PYTHON_PLATFORM_NAME'] =  script.env.config.build_target.system
+    env['REBUILD_PYTHON_PLATFORM_NAME'] =  script.build_target.system
 
     env['REBUILD_PACKAGE_NAME'] = script.descriptor.name
     env['REBUILD_PACKAGE_DESCRIPTION'] = script.descriptor.name
     env['REBUILD_PACKAGE_VERSION'] = str(script.descriptor.version)
 
-    tc = toolchain.get_toolchain(script.env.config.build_target)
+    tc = toolchain.get_toolchain(script.build_target)
     compiler_flags = tc.compiler_flags()
     env['REBUILD_COMPILE_CFLAGS'] = ' '.join(compiler_flags.get('CFLAGS', []))
     env['REBUILD_COMPILE_LDFLAGS'] = ' '.join(compiler_flags.get('LDFLAGS', []))
@@ -248,7 +248,7 @@ class step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
     if not name or not name in args:
       return {}
     config = args[name]
-    resolved = masked_config.resolve_list(config, script.env.config.build_target.system)
+    resolved = masked_config.resolve_list(config, script.build_target.system)
     return { name: resolved }
       
   @classmethod
@@ -291,14 +291,14 @@ class step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
     env_dict = {}
     if env_name and env_name in args:
       config = args[env_name]
-      resolved = masked_config.resolve_key_values_to_dict(config, script.env.config.build_target.system)
+      resolved = masked_config.resolve_key_values_to_dict(config, script.build_target.system)
       assert isinstance(resolved, dict)
       env_dict = { env_name: resolved }
 
     flags_dict = {}
     if flags_name and flags_name in args:
       config = args[flags_name]
-      resolved = masked_config.resolve_list(config, script.env.config.build_target.system)
+      resolved = masked_config.resolve_list(config, script.build_target.system)
       flags_dict = { flags_name: resolved }
 
     return dict_util.combine(env_dict, flags_dict)
@@ -308,7 +308,7 @@ class step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
     result = {}
     if key and key in args:
       config = args[key]
-      resolved = masked_config.resolve_key_values_to_dict(config, script.env.config.build_target.system)
+      resolved = masked_config.resolve_key_values_to_dict(config, script.build_target.system)
       assert isinstance(resolved, dict)
       result = { key: resolved }
     return result

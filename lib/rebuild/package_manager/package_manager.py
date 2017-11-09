@@ -130,6 +130,7 @@ class package_manager(object):
 
     missing_requirements = self._missing_requirements(pkg, pkg.system)
     if missing_requirements:
+      print('FUCK: package %s missing requirements: %s' % (pkg.info.name, ', '.join(missing_requirements)))
       raise PackageMissingRequirementsError('package %s missing requirements: %s' % (pkg.info.name, ', '.join(missing_requirements)))
       
     conflicts = self._find_conflicts(pkg.files)
@@ -292,14 +293,14 @@ class package_manager(object):
     all_descriptors = all_available_descriptors + [ pkg.info ]
     dependency_map = package_descriptor_list.dependency_map(all_descriptors)
     descriptor_map = package_descriptor_list.descriptor_map(all_descriptors)
-    self.__resolve_requirements(pkg.info, descriptor_map, dependency_map, build_target)
+    self._resolve_requirements(pkg.info, descriptor_map, dependency_map, build_target)
     return pkg
 
   @classmethod
-  def __resolve_requirements(clazz, pdesc, descriptor_map, dependency_map, build_target):
+  def _resolve_requirements(clazz, pkg_desc, descriptor_map, dependency_map, build_target):
     'resolve requirements for one pkg.'
-    assert pdesc
-    all_requirements = pdesc.requirements + pdesc.build_requirements
+    assert pkg_desc
+    all_requirements = pkg_desc.requirements + pkg_desc.build_requirements
     all_requirements_system_resolved = requirement.resolve_requirements(all_requirements, build_target.system)
     all_requirements_system_resolved_names = [ req.name for req in all_requirements_system_resolved ]
     all_requirements_dependencies_resolved = dependency_resolver.resolve_and_order_deps(all_requirements_system_resolved_names,
@@ -307,5 +308,5 @@ class package_manager(object):
                                                                                         dependency_map)
     resolved_requirements = [ req for req in all_requirements_dependencies_resolved if not req.is_tool() ]
     resolved_build_requirements = [ req for req in all_requirements_dependencies_resolved if req.is_tool() ]
-    pdesc.resolved_requirements = resolved_requirements
-    pdesc.resolved_build_requirements = resolved_build_requirements
+    pkg_desc.resolved_requirements = resolved_requirements
+    pkg_desc.resolved_build_requirements = resolved_build_requirements
