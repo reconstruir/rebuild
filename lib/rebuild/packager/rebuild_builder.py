@@ -171,7 +171,7 @@ class rebuild_builder(object):
     resolved_tool_names = self._resolve_package_names(partitioned.tools)
     print('resolved_tool_names: %s' % (' '.join(resolved_tool_names)))
 
-    raise SystemExit()
+#    raise SystemExit()
     
     resolved_scripts = dict_util.filter_with_keys(self._env.script_manager.scripts, resolved_package_names)
     packages_to_build = self._env.script_manager.build_order_flat(resolved_scripts, self._env.config.build_target.system)

@@ -553,3 +553,6 @@ nov 6
 
 nov 8
 - add support for build variables in command line
+
+nov 9
+- package_descriptor depends on dependency_resolver for a really dumb reason

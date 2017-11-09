@@ -5,7 +5,7 @@ import os.path as path, unittest
 from bes.fs import temp_file
 from rebuild.package_manager import package_descriptor
 from rebuild.base import build_category, build_target, requirement
-from rebuild.packager import build_script, rebuild_config, rebuild_env
+from rebuild.packager import build_script, build_script_manager, rebuild_config, rebuild_env
 
 class test_build_script(unittest.TestCase):
 
@@ -69,9 +69,9 @@ class test_build_script(unittest.TestCase):
     config.source_dir = path.dirname(filename)
     config.verbose = True
     env = rebuild_env(config, [ filename ])
-    scripts = build_script.load_build_scripts(filename, env)
-    self.assertEqual( 1, len(scripts) )
-    return scripts[0]
+    sm = build_script_manager([ filename ], env)
+    self.assertEqual( 1, len(sm.scripts) )
+    return sm.scripts.values()[0]
     
 if __name__ == '__main__':
   unittest.main()
