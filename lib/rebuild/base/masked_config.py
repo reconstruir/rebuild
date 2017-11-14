@@ -32,14 +32,14 @@ class masked_config(namedtuple('masked_config', 'system_mask,data')):
         system_mask = left
     else:
       system_mask = None
-    parse_func = parse_func or clazz.__parse_string
+    parse_func = parse_func or clazz.parse_func_string
     data = parse_func(right.strip())
     return masked_config(system_mask, data)
 
   @classmethod
   def parse_key_values(clazz, text):
     try:
-      return clazz.parse(text, parse_func = clazz.__parse_key_values)
+      return clazz.parse(text, parse_func = clazz.parse_func_key_values)
     except Exception as ex:
       print(('Caught exceptions parsing: %s' % (str(text))))
       raise
@@ -50,11 +50,11 @@ class masked_config(namedtuple('masked_config', 'system_mask,data')):
 
   @classmethod
   def parse_list(clazz, text):
-    return clazz.parse(text, parse_func = clazz.__parse_list)
+    return clazz.parse(text, parse_func = clazz.parse_func_string_list)
 
   @classmethod
   def parse_requirement(clazz, text):
-    parsed = clazz.parse(text, parse_func = clazz.__parse_requirement)
+    parsed = clazz.parse(text, parse_func = clazz.parse_func_requirement)
     data = []
     for req in parsed.data:
       name = req.name
@@ -70,19 +70,19 @@ class masked_config(namedtuple('masked_config', 'system_mask,data')):
     return clazz(parsed.system_mask, data)
     
   @classmethod
-  def __parse_string(clazz, text):
+  def parse_func_string(clazz, text):
     return text
 
   @classmethod
-  def __parse_key_values(clazz, text):
+  def parse_func_key_values(clazz, text):
     return [ kv for kv in key_value_parser.parse(text, options = key_value_parser.KEEP_QUOTES) ]
 
   @classmethod
-  def __parse_list(clazz, text):
+  def parse_func_string_list(clazz, text):
     return [ str(s) for s in string_list_parser.parse(text, options = key_value_parser.KEEP_QUOTES) ]
 
   @classmethod
-  def __parse_requirement(clazz, text):
+  def parse_func_requirement(clazz, text):
     assert ':' not in text
     return [ req for req in requirement.parse(text) ]
 
