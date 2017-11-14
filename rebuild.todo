@@ -556,3 +556,4 @@ nov 8
 
 nov 9
 - package_descriptor depends on dependency_resolver for a really dumb reason
+- for python recipes name and version should be toplevel not in properties
