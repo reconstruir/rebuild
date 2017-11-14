@@ -3,12 +3,13 @@
 
 from collections import namedtuple
 from bes.common import bool_util, check_type
+from bes.key_value import key_value
 from rebuild.step_manager import step_argspec
 
-class recipe_step_value_key(namedtuple('recipe_step_value_key', 'key,value')):
+class recipe_step_value(namedtuple('recipe_step_value', 'system_mask,key,value')):
 
-  def __new__(clazz, key, value):
-    return clazz.__bases__[0].__new__(clazz, key, value)
+  def __new__(clazz, system_mask, key, value):
+    return clazz.__bases__[0].__new__(clazz, system_mask, key, value)
 
   @classmethod
   def parse(clazz, text, argspec):
@@ -20,12 +21,12 @@ class recipe_step_value_key(namedtuple('recipe_step_value_key', 'key,value')):
     if not key:
       raise ValueError('Invalid step value key: \"%s\"' % (text))
     if not delimiter:
-      return clazz(key, None)
+      return clazz(None, key, None)
     value = value.strip() or None
     if not value:
-      return clazz(key, value)
+      return clazz(None, key, value)
     value = clazz._parse_value(value, argspec)
-    return clazz(key, value)
+    return clazz(None, key, value)
   
   @classmethod
   def _parse_value(clazz, value, argspec):
@@ -47,3 +48,18 @@ class recipe_step_value_key(namedtuple('recipe_step_value_key', 'key,value')):
     if i >= 0:
       return s[0:i]
     return s
+
+  @classmethod
+  def parse_key(clazz, text):
+    'Parse only the key'
+    check_type.check_string(text, 'text')
+    key, _, _ = clazz._strip_comment(text).partition(':')
+    return key.strip()
+
+  @classmethod
+  def parse_system_mask(clazz, text):
+    system_mask, delimiter, _ = text.partition(':')
+    if delimiter == ':' and system_mask:
+      return system_mask
+    return None
+check_type.register_class(recipe_step_value)
