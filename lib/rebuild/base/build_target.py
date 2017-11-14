@@ -82,4 +82,4 @@ class build_target(object):
       return 'macho'
     else:
       return None
-check_type.add_check(build_target)
+check_type.register_class(build_target)
