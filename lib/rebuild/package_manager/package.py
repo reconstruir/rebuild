@@ -9,7 +9,7 @@ from bes.common import string_util
 from bes.match import matcher_filename
 from rebuild.pkg_config import pkg_config_file
 from bes.python import setup_tools
-from .package_descriptor import package_descriptor
+from rebuild.base import package_descriptor
 
 class package(object):
 

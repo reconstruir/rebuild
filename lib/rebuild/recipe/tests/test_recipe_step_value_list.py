@@ -8,7 +8,7 @@ class test_recipe_step_value_list(unit_test):
 
   def test_foo(self):
     r = recipe_step_value_list()
-    r.add_value(recipe_step_value(None, 'foo', 666))
+    r.add(recipe_step_value(None, 'foo', 666))
     
 if __name__ == '__main__':
   unit_test.main()

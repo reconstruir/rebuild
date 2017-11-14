@@ -5,8 +5,8 @@
 import os.path as path, unittest
 from bes.fs import temp_file
 from bes.git import git
-from rebuild.base import build_arch, build_blurb, build_system, build_target, build_type
-from rebuild.package_manager import artifact_manager, package_descriptor
+from rebuild.base import build_arch, build_blurb, build_system, build_target, build_type, package_descriptor
+from rebuild.package_manager import artifact_manager
 from rebuild.package_manager.unit_test_packages import unit_test_packages
 
 class test_artifact_manager(unittest.TestCase):

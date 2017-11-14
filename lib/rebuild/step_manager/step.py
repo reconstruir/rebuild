@@ -19,6 +19,7 @@ from .hook_extra_code import HOOK_EXTRA_CODE
 from .hook  import hook
 from .step_registry import step_register
 from .variable_manager import variable_manager
+from rebuild.dependency import dependency_resolver
 
 class step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, object)):
 

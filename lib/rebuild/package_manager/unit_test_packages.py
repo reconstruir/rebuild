@@ -6,8 +6,7 @@ import os.path as path
 from bes.common import dict_util, json_util, string_util
 from bes.fs import file_util, temp_file, temp_item
 from bes.archive import archiver
-from rebuild.package_manager import package_descriptor
-from rebuild.base import build_arch, build_category, build_system, build_target, requirement
+from rebuild.base import build_arch, build_category, build_system, build_target, package_descriptor, requirement
 from collections import namedtuple
 
 class unit_test_packages(object):

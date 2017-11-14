@@ -9,8 +9,7 @@ from bes.key_value import key_value_parser
 from bes.system import log
 from bes.text import tree_text_parser
 
-from rebuild.base import build_version, masked_config, requirement
-from rebuild.package_manager import package_descriptor
+from rebuild.base import build_version, masked_config, requirement, package_descriptor
 from rebuild.step_manager import step_description
 from .recipe_step_value import recipe_step_value
 
@@ -129,6 +128,7 @@ class recipe_parser(object):
 
   _data = namedtuple('_data', 'clazz,argspec')
   def _parse_step_section_config(self, description, node):
+    return None
     arg_name = recipe_step_value.parse_key(node.data.text)
     if not arg_name in description.argspec:
       self._error('invalid config \"%s\" instead of: %s' % (arg_name), node, ' '.join(description.argspec.keys()))
@@ -136,8 +136,6 @@ class recipe_parser(object):
     configs = []
     if vk.value:
       mc = masked_config.parse(args_text)
-
-    
     for child in node.children:
       args_text = self._node_text_recursive(child)
       mc = masked_config.parse(args_text)

@@ -3,8 +3,7 @@
 
 import os.path as path
 from bes.common import dict_util
-from rebuild.package_manager import package_descriptor
-from rebuild.base import build_blurb, requirement
+from rebuild.base import build_blurb, package_descriptor, requirement
 from rebuild.dependency import dependency_resolver, missing_dependency_error
 from collections import namedtuple
 from .build_recipe_loader import build_recipe_loader

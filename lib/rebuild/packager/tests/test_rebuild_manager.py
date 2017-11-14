@@ -5,9 +5,9 @@ import os.path as path, unittest
 from bes.fs import tar_util, temp_file
 from bes.common import Shell
 from bes.git import git
-from rebuild.base import build_target
+from rebuild.base import build_target, package_descriptor
 from rebuild.packager import rebuild_manager
-from rebuild.package_manager import artifact_manager, package_descriptor
+from rebuild.package_manager import artifact_manager
 from rebuild.package_manager.unit_test_packages import unit_test_packages
 
 class test_rebuild_manager(unittest.TestCase):

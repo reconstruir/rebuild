@@ -10,8 +10,7 @@ from bes.fs import dir_util, file_util
 
 from .package import package
 from .package_list import package_list
-from .package_descriptor import package_descriptor
-from .package_descriptor_list import package_descriptor_list
+from rebuild.base import package_descriptor, package_descriptor_list
 
 class ArtifactNotFoundError(Exception):
   pass

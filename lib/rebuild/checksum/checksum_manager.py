@@ -4,8 +4,7 @@
 import os.path as path
 from bes.common import check_type, object_util
 from bes.fs import file_checksum, file_util
-from rebuild.package_manager import package_descriptor
-from rebuild.base import build_blurb, build_target
+from rebuild.base import build_blurb, build_target, package_descriptor
 from collections import namedtuple
 
 class checksum_manager(object):

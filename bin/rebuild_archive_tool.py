@@ -6,7 +6,8 @@ import argparse, os, os.path as path, sys
 
 from bes.fs import file_util
 from bes.archive import archiver
-from rebuild import Patch, archive_util, package_descriptor
+from rebuild.tools import patch, archive_util
+from rebuild.base import package_descriptor
 
 def main():
 
@@ -264,7 +265,7 @@ def _command_patch(args):
   for patch in args.patches:
     patches.append(path.abspath(patch))
 
-  exit_code, msg = Patch.patch(patches,
+  exit_code, msg = patch.patch(patches,
                                args.cwd,
                                strip = args.strip,
                                backup = args.backup,

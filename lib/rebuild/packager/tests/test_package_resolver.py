@@ -4,8 +4,7 @@
 from bes.testing.unit_test import unit_test
 #import os.path as path
 #from bes.fs import temp_file
-#from rebuild.package_manager import package_descriptor
-#from rebuild.base import build_category, build_target, requirement
+#from rebuild.base import build_category, build_target, package_descriptor, requirement
 from rebuild.packager import package_resolver
 
 class test_package_resolver(unit_test):

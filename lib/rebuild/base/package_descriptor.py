@@ -4,7 +4,13 @@
 import json, os.path as path
 from bes.common import object_util, string_util
 from bes.compat import cmp
-from rebuild.base import build_category, build_system, build_target, build_version, masked_config, requirement
+
+from .build_category import build_category
+from .build_system import build_system
+from .build_target import build_target
+from .build_version import build_version
+from .masked_config import masked_config
+from .requirement import requirement
 
 class package_descriptor(object):
 

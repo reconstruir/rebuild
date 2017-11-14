@@ -210,9 +210,8 @@ class rebuild_builder(object):
     return exit_code
 
   def _resolve_package_names(self, package_names):
-    assert package_names
-#    if not package_names:
-#      package_names = self.package_names()
+    if not package_names:
+      return []
     return self._env.script_manager.resolve_requirements(package_names,
                                                          self._env.config.build_target.system)
 

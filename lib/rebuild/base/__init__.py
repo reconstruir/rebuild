@@ -10,4 +10,6 @@ from .build_target import build_target
 from .build_type import build_type
 from .build_version import build_version
 from .masked_config import masked_config
+from .package_descriptor import package_descriptor
+from .package_descriptor_list import package_descriptor_list
 from .requirement import requirement

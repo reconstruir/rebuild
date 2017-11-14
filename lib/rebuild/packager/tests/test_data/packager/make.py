@@ -7,8 +7,7 @@ from bes.archive import archiver
 from bes.fs import file_replace, file_util
 from refactor import files as refactor_files
 from rebuild.package_manager.unit_test_packages import unit_test_packages
-from rebuild.package_manager import package_descriptor
-from rebuild.base import build_os_env, requirement
+from rebuild.base import build_os_env, package_descriptor, requirement
 from bes.fs import temp_file
 from bes.common import Shell
 
