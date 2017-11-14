@@ -5,7 +5,7 @@ from .hook import hook
 from .multiple_steps import multiple_steps
 from .step import step, step_result
 from .step_aborted import step_aborted
-from .step_argument import step_argument
+from .step_argspec import step_argspec
 from .step_call_hooks import step_call_hooks
 from .step_description import step_description
 from .step_hook import step_hook
