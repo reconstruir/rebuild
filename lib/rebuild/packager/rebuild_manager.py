@@ -123,7 +123,7 @@ class rebuild_manager(object):
   export @LIBRARY_PATH@=${_prefix}/lib:${@LIBRARY_PATH@}
   export MANPATH=${_prefix}/man:${_prefix}/share/man:${MANPATH}
   local _env_dir=$_prefix/../env
-  if [ -d $_env_dir ]; then
+  if [ -d $_env_dir -a -n "$(ls -A $_env_dir)" ]; then
     for f in $_env_dir/*; do
       source "$f"
     done
