@@ -4,7 +4,6 @@
 import json, os.path as path
 from bes.common import object_util, string_util
 from bes.compat import cmp
-from rebuild.dependency import dependency_resolver
 from rebuild.base import build_category, build_system, build_target, build_version, masked_config, requirement
 
 class package_descriptor(object):
@@ -229,18 +228,6 @@ class package_descriptor(object):
   @classmethod
   def is_package_info_list(clazz, o):
     return object_util.is_homogeneous(o, package_descriptor)
-
-  def export_compilation_flags_requirements(self, system):
-    config = self.properties.get('export_compilation_flags_requirements', [])
-    resolved = masked_config.resolve_list(config, system)
-    deps_names = [ dep.name for dep in self.requirements ]
-    export_names = resolved
-    if export_names == dependency_resolver.ALL_DEPS:
-      export_names = deps_names
-    delta = (set(export_names) - set(deps_names))
-    if delta:
-      raise RuntimeError('Trying to export deps that are not specified by %s: %s' % (self.name, ' '.join(delta)))
-    return export_names
 
   def extra_cflags(self, system):
     config = self.properties.get('extra_cflags', [])
