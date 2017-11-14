@@ -167,5 +167,19 @@ class test_requirement(unit_test):
       ( 'lychee', None, None, 'all' ),
     ], R.resolve_requirements(requirements, 'android') )
 
+  def test_parse_global_system_mask(self):
+    text = 'all: foo >= 1.2.3'
+    requirements = R.parse(text)
+    self.assertEqual( [
+      ( 'foo', '>=', '1.2.3', 'all' ),
+    ], requirements )
+
+  def test_parse_global_system_mask_and_override(self):
+    text = 'all: foo(linux) >= 1.2.3'
+    requirements = R.parse(text)
+    self.assertEqual( [
+      ( 'foo', '>=', '1.2.3', 'linux' ),
+    ], requirements )
+    
 if __name__ == "__main__":
   unit_test.main()
