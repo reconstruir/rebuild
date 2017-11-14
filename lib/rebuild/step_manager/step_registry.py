@@ -2,9 +2,14 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import inspect
+from abc import ABCMeta
+from bes.common import string_util
+from collections import namedtuple
 
 class step_registry(object):
 
+  _data = namedtuple('_data', 'clazz,argspec')
+  
   _registry = {}
   
   @classmethod
@@ -13,21 +18,19 @@ class step_registry(object):
     existing = clazz._registry.get(name, None)
     if existing:
       return
-#      old_filename = inspect.getfile(existing)
-#      new_filename = inspect.getfile(registree)
-#      print('current: %s - %s' % (clazz._registry[name], old_filename))
-#      print('    new: %s - %s' % (registree, new_filename))
-#      raise RuntimeError('a class named \"%s\" is already registered: %s' % (name, registree))
-    clazz._registry[name] = registree
+    data = clazz._data(registree, registree.argspec())
+    clazz._registry[name] = data
+    if name.startswith('step_'):
+      name_no_step = string_util.remove_head(name, 'step_')
+      clazz._registry[name_no_step] = data
     
   @classmethod
   def get(clazz, class_name):
     return clazz._registry.get(class_name, None)
 
-class step_register(type):
+class step_register(ABCMeta):
 
   def __new__(meta, name, bases, class_dict):
-    clazz = type.__new__(meta, name, bases, class_dict)
-#    print('register: %s' % (inspect.getfile(clazz)))
+    clazz = ABCMeta.__new__(meta, name, bases, class_dict)
     step_registry.register_step_class(clazz)
     return clazz
