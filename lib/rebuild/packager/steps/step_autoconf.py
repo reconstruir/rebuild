@@ -3,8 +3,9 @@
 
 import os.path as path
 from bes.common import Shell
-from rebuild.step_manager import multiple_steps, step, step_call_hooks, step_result
+from rebuild.step_manager import multiple_steps, step, step_argspec, step_call_hooks, step_result
 from rebuild.toolchain import toolchain
+
 
 class step_autoconf_configure(step):
   'Configure Setup.'
@@ -12,6 +13,15 @@ class step_autoconf_configure(step):
   def __init__(self):
     super(step_autoconf_configure, self).__init__()
 
+  @classmethod
+  def argspec(self):
+    return {
+      'configure_flags': step_argspec.MASKED_KEY_VALUES,
+      'configure_env': step_argspec.MASKED_STRING_LIST,
+      'configure_script': step_argspec.STRING,
+      'need_autoreconf': step_argspec.BOOL,
+    }
+    
   def execute(self, script, env, args):
 
     configure_flags = args.get('configure_flags', [])
@@ -35,8 +45,6 @@ class step_autoconf_configure(step):
       configure_script_path,
       '--prefix=%s' % (script.stage_dir),
     ] + configure_flags + tc.autoconf_flags()
-
-    
 
     if autoreconf_cmd:
       cmd = autoreconf_cmd + [ '&&' ] + configure_cmd
