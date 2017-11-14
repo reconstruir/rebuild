@@ -22,7 +22,7 @@ from .variable_manager import variable_manager
 
 class step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, object)):
 
-  #@abstractmethod
+  @abstractmethod
   def execute(self, script, env, args):
     'Execute the step.'
     assert False
@@ -31,6 +31,12 @@ class step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
   def on_tag_changed(self):
     'Called when the tag changes.'
     pass
+
+  @classmethod
+#  @abstractmethod
+  def argspec(self):
+    'Return an args spec.'
+    return None
   
   def __init__(self):
     self._args = copy.deepcopy(getattr(self, '__step_global_args__', {}))
@@ -94,7 +100,7 @@ class step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
 
     STATIC = True
     assert script.descriptor.resolved_requirements != None
-    export_compilation_flags_requirements = script.descriptor.export_compilation_flags_requirements(script.build_target.system)
+    export_compilation_flags_requirements = clazz.export_compilation_flags_requirements(script.descriptor, script.build_target.system)
     if STATIC:
       env['REBBE_PKG_CONFIG_STATIC'] = '1'
       
@@ -334,3 +340,17 @@ class step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
       dst = path.join(env.logs_dir, path.basename(src))
       if path.isfile(src):
         file_util.copy(src, dst)
+
+  @classmethod
+  def export_compilation_flags_requirements(clazz, descriptor, system):
+    config = descriptor.properties.get('export_compilation_flags_requirements', [])
+    resolved = masked_config.resolve_list(config, system)
+    deps_names = [ dep.name for dep in descriptor.requirements ]
+    export_names = resolved
+    if export_names == dependency_resolver.ALL_DEPS:
+      export_names = deps_names
+    delta = (set(export_names) - set(deps_names))
+    if delta:
+      raise RuntimeError('Trying to export deps that are not specified by %s: %s' % (descriptor.name, ' '.join(delta)))
+    return export_names
+        
