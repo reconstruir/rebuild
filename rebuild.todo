@@ -560,3 +560,4 @@ nov 9
 
 nov 14
 - test_build_script.py and test_build_script_execute.py are broken
+- replace build_level with an enum

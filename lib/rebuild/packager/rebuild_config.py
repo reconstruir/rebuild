@@ -3,7 +3,7 @@
 
 import os.path as path
 from collections import namedtuple
-from rebuild.base import build_system, build_target, build_level
+from rebuild.base import build_arch, build_level, build_system, build_target
 
 class rebuild_config(object):
 
@@ -13,7 +13,9 @@ class rebuild_config(object):
   def __init__(self):
     self.build_root = None
     self.build_target = build_target()
-    self.host_build_target = build_target(system = build_system.HOST, level = build_level.RELEASE)
+    self.host_build_target = build_target(system = build_system.HOST,
+                                          level = build_level.RELEASE,
+                                          archs = build_arch.HOST_ARCH)
     self.root_dir = None
     self.deps_only = False
     self.disabled = False
