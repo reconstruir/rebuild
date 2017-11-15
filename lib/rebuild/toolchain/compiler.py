@@ -42,7 +42,7 @@ class compiler(object):
       objects = [ clazz._make_object_filename(s) for s in sources ]
     sources = [ path.abspath(s) for s in sources ]
     objects = [ path.abspath(o) for o in objects ]
-    return zip(sources, objects)
+    return [ x for x in zip(sources, objects) ]
     
   @classmethod
   def _make_object_filename(clazz, source):
