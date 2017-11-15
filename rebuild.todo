@@ -561,3 +561,8 @@ nov 9
 nov 14
 - test_build_script.py and test_build_script_execute.py are broken
 - replace build_level with an enum
+
+nov 15
+- test case when tool depends on lib
+- build_script_manager._load_scripts() tool vs not recipes mess
+
