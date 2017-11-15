@@ -5,18 +5,18 @@ class build_level(object):
 
   DEBUG = 'debug'
   RELEASE = 'release'
-  DEFAULT_BUILD_TYPE = RELEASE
-  BUILD_TYPES = [ DEBUG, RELEASE ]
+  DEFAULT_LEVEL = RELEASE
+  LEVELS = [ DEBUG, RELEASE ]
 
   @classmethod
   def build_level_is_valid(clazz, build_level):
-    return build_level in clazz.BUILD_TYPES
+    return build_level in clazz.LEVELS
 
   @classmethod
   def parse_build_level(clazz, s):
     slower = s.lower()
     if slower == 'default':
-      return clazz.DEFAULT_BUILD_TYPE
+      return clazz.DEFAULT_LEVEL
     elif slower == clazz.RELEASE:
       return clazz.RELEASE
     elif slower == clazz.DEBUG:

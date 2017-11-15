@@ -25,8 +25,8 @@ class build_target(namedtuple('build_target', 'system,build_level,archs,build_pa
   @classmethod
   def _determine_build_level(clazz, tentative_build_level):
     if tentative_build_level == clazz.DEFAULT:
-      return rebuild_build_level.DEFAULT_BUILD_TYPE
-    if not tentative_build_level in rebuild_build_level.BUILD_TYPES:
+      return rebuild_build_level.DEFAULT_LEVEL
+    if not tentative_build_level in rebuild_build_level.LEVELS:
       raise RuntimeError('Invalid build_level: %s' % (tentative_build_level))
     return tentative_build_level
 

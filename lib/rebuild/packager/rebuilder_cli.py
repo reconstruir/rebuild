@@ -27,7 +27,7 @@ class rebuilder_cli(object):
   def __init__(self):
     all_archs = ','.join(build_arch.ARCHS[build_system.HOST])
     default_archs = ','.join(build_arch.DEFAULT_ARCHS[build_system.HOST])
-    build_levels = ','.join(build_level.BUILD_TYPES)
+    build_levels = ','.join(build_level.LEVELS)
     systems = ','.join(build_system.SYSTEMS)
     self.parser = argparse.ArgumentParser(description = 'Build packages.')
     self.parser.add_argument('-o', '--opts', action = 'store', type = str, default = '')
@@ -42,7 +42,7 @@ class rebuilder_cli(object):
     self.parser.add_argument('-j', '--jobs', action = 'store', type = int, help = 'Number of threads to use [ 1 ]')
     self.parser.add_argument('-s', '--system', action = 'store', type = str, default = build_target.DEFAULT, help = 'build_system.  One of (%s) [ %s ]' % (systems, build_system.DEFAULT))
     self.parser.add_argument('-a', '--archs', action = 'store', type = str, default = build_target.DEFAULT, help = 'Architectures to build for.  One of (%s) [ %s ]' % (all_archs, default_archs))
-    self.parser.add_argument('-b', '--level', action = 'store', type = str, default = build_target.DEFAULT, help = 'Build level.  One of (%s) [ %s ]' % (build_levels, build_level.DEFAULT_BUILD_TYPE))
+    self.parser.add_argument('-b', '--level', action = 'store', type = str, default = build_target.DEFAULT, help = 'Build level.  One of (%s) [ %s ]' % (build_levels, build_level.DEFAULT_LEVEL))
     self.parser.add_argument('--skip-to-step', action = 'store', type = str, help = 'Skip to the given step name. [ None ]')
     self.parser.add_argument('--deps-only', action = 'store_true', help = 'Only build dependencies')
     self.parser.add_argument('--no-network', action = 'store_true', help = 'Down go to the network.')

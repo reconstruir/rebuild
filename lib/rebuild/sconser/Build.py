@@ -40,7 +40,7 @@ class Build(object):
       'build_level',
       'The build type',
       build_target.DEBUG,
-      allowed_values = set(build_target.BUILD_TYPES)))
+      allowed_values = set(build_target.LEVELS)))
 
     PRINT_CMD_LINE_FUNC = self.print_cmd_line
     #PRINT_CMD_LINE_FUNC = None
