@@ -18,7 +18,6 @@ class package_descriptor(object):
   STR_PROPERTIES_DELIMITER = '; '
 
   PROPERTY_CATEGORY = 'category'
-  PROPERTY_DISABLED = 'disabled'
   PROPERTY_ENV_VARS = 'env_vars'
   PROPERTY_PKG_CONFIG_NAME = 'pkg_config_name'
   
@@ -253,10 +252,6 @@ class package_descriptor(object):
 
   def is_tool(self):
     return self.category == build_category.TOOL
-
-  @property
-  def disabled(self):
-    return self.properties.get(self.PROPERTY_DISABLED, False)
 
   @classmethod
   def full_name_cmp(clazz, pi1, pi2):

@@ -31,6 +31,7 @@ class build_recipe_loader(object):
   @classmethod
   def _load_from_dict(clazz, recipe_dict, filename):
     properties = clazz._load_properties(recipe_dict)
+    enabled = clazz._load_enabled(recipe_dict)
     name = properties.get('name', None)
     if not name:
       raise RuntimeError('No name given in %s.' % (filename))
@@ -53,8 +54,8 @@ class build_recipe_loader(object):
     steps = clazz._load_steps(recipe_dict)
     # recipe_dict should be empty now
     if recipe_dict:
-      raise RuntimeError('Unknown recipe values: %s' % (recipe_dict))
-    return recipe(filename, properties, requirements, build_requirements,
+      raise RuntimeError('Unknown recipe values for %s: %s' % (filename, recipe_dict))
+    return recipe(filename, enabled, properties, requirements, build_requirements,
                   descriptor, instructions, steps)
 
   @classmethod
@@ -88,6 +89,15 @@ class build_recipe_loader(object):
     properties = args['properties']
     del args['properties']
     return properties
+
+  @classmethod
+  def _load_enabled(clazz, args):
+    if 'enabled' in args:
+      enabled = args['enabled']
+      del args['enabled']
+    else:
+      enabled = 'True'
+    return enabled
 
   _recipes = namedtuple('_recipes', 'filename,recipes')
   @classmethod

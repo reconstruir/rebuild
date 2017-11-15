@@ -192,7 +192,7 @@ class rebuild_builder(object):
     for name in  packages_to_build:
       script = self._env.script_manager.scripts[name]
       filename = file_util.remove_head(script.filename, os.getcwd())
-      if script.disabled and not self._env.config.disabled:
+      if not script.enabled and not self._env.config.disabled:
         self.blurb('disabled: %s' % (filename))
         continue
       exit_code = self._call_run_build_script(script)
