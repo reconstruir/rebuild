@@ -121,8 +121,8 @@ class build_script_manager(object):
   @classmethod
   def _load_scripts(clazz, filename, env):
     scripts = []
-    recipes = build_recipe_loader.load(filename, env.config.build_target)
-    host_recipes = build_recipe_loader.load(filename, env.config.host_build_target)
+    recipes = build_recipe_loader.load(filename)
+    host_recipes = build_recipe_loader.load(filename)
     for recipe, host_recipe in zip(recipes, host_recipes):
       if recipe.descriptor.is_tool():
         script = build_script(host_recipe, env.config.host_build_target, env)

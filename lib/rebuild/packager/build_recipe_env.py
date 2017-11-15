@@ -3,30 +3,12 @@
 
 import copy
 
-from bes.system import host
-from rebuild.base import build_system, build_level
 from rebuild.step_manager import variable_manager
 
 class build_recipe_env(object):
 
-  def __init__(self, build_target):
-    self.build_target = build_target
-
-    self.system = self.build_target.system
-    self.level = self.build_target.level
-
-    self.ANDROID = build_system.ANDROID
-    self.IOS = build_system.IOS
-    self.IOS_SIM = build_system.IOS_SIM
-    self.LINUX = build_system.LINUX
-    self.MACOS = build_system.MACOS
-
-    self.DEBUG = build_level.DEBUG
-    self.RELEASE = build_level.RELEASE
-
-    self.DISTRO = host.DISTRO
-    self.RASPBIAN = host.RASPBIAN
-    self.UBUNTU = host.UBUNTU
+  def __init__(self):
+    pass
 
   @classmethod
   def args(clazz, **kargs):
@@ -50,12 +32,3 @@ class build_recipe_env(object):
   @classmethod
   def add_variable(clazz, key, value):
     variable_manager.add_variable(key, value)
-
-  def target_is_darwin(self):
-    return self.build_target.is_darwin()
-
-  def target_is_macos(self):
-    return self.build_target.is_macos()
-
-  def target_is_linux(self):
-    return self.build_target.is_linux()

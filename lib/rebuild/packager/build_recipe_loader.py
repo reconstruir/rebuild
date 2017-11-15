@@ -18,8 +18,8 @@ from .build_recipe_env import build_recipe_env
 class build_recipe_loader(object):
 
   @classmethod
-  def load(clazz, filename, build_target):
-    load_env = build_recipe_env(build_target)
+  def load(clazz, filename):
+    load_env = build_recipe_env()
     recipes = clazz._load_recipes(filename, load_env)
     scripts = []
     for recipe in recipes.recipes:
