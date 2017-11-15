@@ -9,13 +9,15 @@ from bes.common import Shell
 
 class test_rebuilder_script(unit_test):
 
-  __unit_test_data_dir__ = 'test_data/rebuilder'
+  __unit_test_data_dir__ = '../../lib/rebuild/test_data/rebuilder'
 
   DEBUG = False
   DEBUG = True
 
-  REBUILDER_SCRIPT = path.abspath(path.join(path.dirname(__file__), '../../../../bin/rebuilder.py'))
+  REBUILDER_SCRIPT = path.abspath(path.join(path.dirname(__file__), '../rebuilder.py'))
   BUILD_TYPE = 'release'
+
+#  artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_TYPE)
   
   def test_fructose(self):
     tmp_dir = self._make_temp_dir()

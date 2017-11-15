@@ -11,7 +11,7 @@ from rebuild.packager import rebuild_builder, rebuild_config, rebuild_env
 
 class test_builder_autoconf(unit_test):
 
-  __unit_test_data_dir__ = 'test_data/packager'
+  __unit_test_data_dir__ = '../../test_data/packager'
   
   def test_amhello(self):
     self._build_autoconf_package(self, 'amhello', '1.0', '1', self.data_dir())

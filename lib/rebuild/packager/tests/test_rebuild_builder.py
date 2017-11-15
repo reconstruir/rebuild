@@ -12,7 +12,7 @@ from rebuild.checksum import checksum_manager
 
 class test_rebuild_builder(unit_test):
 
-  __unit_test_data_dir__ = 'test_data/packager'
+  __unit_test_data_dir__ = '../../test_data/packager'
 
   DEBUG = False
 #  DEBUG = True
