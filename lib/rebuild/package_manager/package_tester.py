@@ -52,7 +52,6 @@ class package_tester(object):
     setup = clazz.__setup_test(config, test_source)
     build_blurb.blurb_verbose('tester', '%s: running c test %s with %s' % (setup.package_info.name, test_source, compiler))
     package_names_for_pkg_config = [ setup.package_info.name ]
-    #print "FUCK: package_names_for_pkg_config=", package_names_for_pkg_config
 
     # FIXME: static is hardcoded here (depends on global static mode)
     cflags, libs = setup.package_manager.compilation_flags(package_names_for_pkg_config, static = True)
@@ -124,8 +123,6 @@ class package_tester(object):
 
     pm = package_manager(pm_root_dir)
 
-    print('FUCK: package_tarball: %s' % (config.package_tarball))
-    print('FUCK:    build_target: %s' % (config.build_target.build_path))
     package = pm.load_tarball(config.package_tarball, config.build_target, config.artifact_manager)
     pd = package.info
     
