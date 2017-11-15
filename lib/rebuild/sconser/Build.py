@@ -56,7 +56,7 @@ class Build(object):
     self.build_target = build_target()
 
     self.source_dir = os.getcwd()
-    self.target_dir = path.abspath(self.build_target.target_dir)
+    self.target_dir = path.abspath(path.join(self.build_target.build_path, 'BUILD'))
     self.obj_dir = path.join(self.target_dir, 'obj')
     self.bin_dir = path.join(self.target_dir, 'bin')
     self.unit_test_dir = path.join(self.target_dir, 'unit_tests')

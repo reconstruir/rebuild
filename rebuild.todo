@@ -543,7 +543,6 @@ nov 5
 - fix all parse_step_args to pass through the untouched args like step_pkg_config_make_pc.py does
 - change all parse_step_args to not do copy. since step_manager does
 - more tarball finder tests with platform speific tarballs that match and miss different platforms
-- fix build_target.build_name usage might not be needed now that build_path exists
 - get rid of build_script.env
 - deal with dup classes in step_registry
 - fix remove checksums to be script based cause of build_target change

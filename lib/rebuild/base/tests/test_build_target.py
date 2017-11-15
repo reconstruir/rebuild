@@ -6,13 +6,13 @@ from rebuild.base import build_arch, build_system, build_target, build_type
 
 class test_build_target(unit_test):
 
-  def test_target_dir(self):
-    self.assertEqual( 'BUILD/macos/release', build_target(build_system.MACOS).target_dir )
-    self.assertEqual( 'BUILD/macos/debug', build_target(build_system.MACOS, build_type.DEBUG).target_dir )
-    self.assertEqual( 'BUILD/macos/release', build_target(build_system.MACOS, build_target.DEFAULT).target_dir )
-    self.assertEqual( 'BUILD/linux/release', build_target(build_system.LINUX).target_dir )
-    self.assertEqual( 'BUILD/ios/release', build_target(build_system.IOS).target_dir )
-    self.assertEqual( 'BUILD/ios/release', build_target(build_system.IOS, archs = [ build_arch.ARM64 ]).target_dir )
+  def test_build_path(self):
+    self.assertEqual( 'macos/x86_64/release', build_target(build_system.MACOS).build_path )
+    self.assertEqual( 'macos/x86_64/debug', build_target(build_system.MACOS, build_type.DEBUG).build_path )
+    self.assertEqual( 'macos/x86_64/release', build_target(build_system.MACOS, build_target.DEFAULT).build_path )
+    self.assertEqual( 'linux/x86_64/release', build_target(build_system.LINUX).build_path )
+    self.assertEqual( 'ios/arm64-armv7/release', build_target(build_system.IOS).build_path )
+    self.assertEqual( 'ios/arm64/release', build_target(build_system.IOS, archs = [ build_arch.ARM64 ]).build_path )
 
   def test_clone(self):
     bi = build_target(build_system.MACOS)

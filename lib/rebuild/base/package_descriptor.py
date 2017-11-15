@@ -7,7 +7,6 @@ from bes.compat import cmp
 
 from .build_category import build_category
 from .build_system import build_system
-from .build_target import build_target
 from .build_version import build_version
 from .masked_config import masked_config
 from .requirement import requirement
@@ -115,7 +114,7 @@ class package_descriptor(object):
 
   def artifact_path(self, build_target):
     'Return the full path for an artifact made with this package info and the given build_target.'
-    return path.join(build_target.build_name, self.tarball_filename)
+    return path.join(build_target.build_path, self.tarball_filename)
   
   @classmethod
   def make_full_name_str(clazz, name, version):

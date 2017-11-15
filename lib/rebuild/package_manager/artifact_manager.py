@@ -45,7 +45,7 @@ class artifact_manager(object):
 
   def artifact_path(self, package_info, build_target):
     filename = '%s.tar.gz' % (package_info.full_name)
-    return path.join(self.publish_dir, build_target.build_name, filename)
+    return path.join(self.publish_dir, build_target.build_path, filename)
 
   def publish(self, tarball, build_target):
     pkg = package(tarball)
@@ -57,7 +57,7 @@ class artifact_manager(object):
     return artifact_path
 
   def available_packages(self, build_target):
-    d = path.join(self.publish_dir, build_target.system, build_target.build_type)
+    d = path.join(self.publish_dir, build_target.build_path)
     if not path.exists(d):
       return []
     if not path.isdir(d):

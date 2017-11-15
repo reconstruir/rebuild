@@ -12,26 +12,15 @@ from .build_system import build_system
 class build_target(object):
 
   DEFAULT = 'default'
-  BUILD_DIR = 'BUILD'
 
   def __init__(self, system = DEFAULT, build_type = DEFAULT, archs = DEFAULT):
     # Defaults
     self.system = build_system.parse_system(system)
     self.archs = build_arch.determine_archs(self.system, archs)
-    self.build_type = self.__determine_build_type(build_type)
-
+    self.build_type = self._determine_build_type(build_type)
+    self.build_path = path.join(self.system, build_arch.archs_to_string(self.archs, delimiter = '-'), self.build_type)
     assert self.build_type in BT.BUILD_TYPES
-
-    if False:
-      self.build_name = path.join(self.system,
-                                  build_arch.archs_to_string(self.archs, delimiter = '-'),
-                                  self.build_type)
-    else:
-      self.build_name = path.join(self.system,
-                                  self.build_type)
-
-    self.target_dir = path.join(self.BUILD_DIR, self.build_name)
-
+    
   def clone(self, system = None, build_type = None, archs = None):
     'Clone ourselves but override with args that are not None'
     return build_target(system or self.system,
@@ -42,12 +31,12 @@ class build_target(object):
     return self.system == other.system and self.archs == other.archs and self.build_type == other.build_type
     
   def __str__(self):
-    return 'system=%s; archs=%s; build_type=%s; build_name=%s' % (self.system,
+    return 'system=%s; archs=%s; build_type=%s; build_path=%s' % (self.system,
                                                                   build_arch.archs_to_string(self.archs),
                                                                   self.build_type,
-                                                                  self.build_name)
+                                                                  self.build_path)
   
-  def __determine_build_type(self, tentative_build_type):
+  def _determine_build_type(self, tentative_build_type):
     if tentative_build_type == self.DEFAULT:
       return BT.DEFAULT_BUILD_TYPE
     if not tentative_build_type in BT.BUILD_TYPES:
@@ -69,10 +58,6 @@ class build_target(object):
       'archs': self.archs,
       'build_type': self.build_type,
     }
-
-  @property
-  def build_path(self):
-    return path.join(self.system, build_arch.archs_to_string(self.archs, delimiter = '-'), self.build_type)
 
   @property
   def binary_format(self):
