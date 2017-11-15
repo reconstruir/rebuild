@@ -13,7 +13,7 @@ class build_recipe_env(object):
     self.build_target = build_target
 
     self.system = self.build_target.system
-    self.build_level = self.build_target.build_level
+    self.level = self.build_target.level
 
     self.ANDROID = build_system.ANDROID
     self.IOS = build_system.IOS

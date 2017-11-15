@@ -42,7 +42,7 @@ class rebuilder_cli(object):
     self.parser.add_argument('-j', '--jobs', action = 'store', type = int, help = 'Number of threads to use [ 1 ]')
     self.parser.add_argument('-s', '--system', action = 'store', type = str, default = build_target.DEFAULT, help = 'build_system.  One of (%s) [ %s ]' % (systems, build_system.DEFAULT))
     self.parser.add_argument('-a', '--archs', action = 'store', type = str, default = build_target.DEFAULT, help = 'Architectures to build for.  One of (%s) [ %s ]' % (all_archs, default_archs))
-    self.parser.add_argument('-b', '--level', action = 'store', type = str, default = build_target.DEFAULT, help = 'Build level.  One of (%s) [ %s ]' % (build_levels, build_level.DEFAULT_LEVEL))
+    self.parser.add_argument('-l', '--level', action = 'store', type = str, default = build_target.DEFAULT, help = 'Build level.  One of (%s) [ %s ]' % (build_levels, build_level.DEFAULT_LEVEL))
     self.parser.add_argument('--skip-to-step', action = 'store', type = str, help = 'Skip to the given step name. [ None ]')
     self.parser.add_argument('--deps-only', action = 'store_true', help = 'Only build dependencies')
     self.parser.add_argument('--no-network', action = 'store_true', help = 'Down go to the network.')
@@ -81,18 +81,18 @@ class rebuilder_cli(object):
     if 'system' in opts and args.system == build_target.DEFAULT:
       args.system == opts['system']
 
-    if 'build_level' in opts and args.build_level == build_target.DEFAULT:
-      args.build_level == opts['build_level']
+    if 'build_level' in opts and args.level == build_target.DEFAULT:
+      args.level == opts['build_level']
 
     if 'archs' in opts and args.archs == build_target.DEFAULT:
       args.archs == opts['archs']
   
     args.system = build_system.parse_system(args.system)
-    args.build_level = build_level.parse_build_level(args.level)
+    args.level = build_level.parse_level(args.level)
     args.archs = build_arch.parse_archs(args.system, args.archs)
 
     opts['system'] = args.system
-    opts['build_level'] = args.build_level
+    opts['level'] = args.level
     opts['archs'] = args.archs
 
     build_blurb.set_process_name('build')

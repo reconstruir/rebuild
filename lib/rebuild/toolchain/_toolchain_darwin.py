@@ -42,7 +42,7 @@ class _toolchain_darwin(_toolchain_base):
     sysroot_flags = self.sysroot_flags()
     arch_flags = self._make_arch_flags(self.build_target.archs)
 
-    if self.build_target.build_level == build_level.RELEASE:
+    if self.build_target.level == build_level.RELEASE:
       opt_flags = [ '-O2' ]
     else:
       opt_flags = [ '-g' ]

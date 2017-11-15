@@ -14,7 +14,7 @@ class step_cleanup_strip_binaries(step):
     super(step_cleanup_strip_binaries, self).__init__()
 
   def execute(self, script, env, args):
-    is_release = script.build_target.build_level == build_level.RELEASE
+    is_release = script.build_target.level == build_level.RELEASE
     if is_release:
       if args.get('dont_strip_binaries', False):
         return step_result(True, None)

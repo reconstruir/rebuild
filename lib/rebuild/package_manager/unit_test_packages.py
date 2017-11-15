@@ -93,13 +93,13 @@ class unit_test_packages(object):
     template['package_info'] = pi
   
   def __init__(self, desc, requirements = None,
-               system = 'macos', build_level = 'linux',
+               system = 'macos', level = 'release',
                properties = {}, name_override = None,
                debug = False):
     self.desc = desc
     self.requirements = requirements
     self.system = system
-    self.build_level = build_level
+    self.level = level
     self.properties = properties
     self.name_override = name_override
     self.debug = debug
@@ -108,7 +108,7 @@ class unit_test_packages(object):
     pi = package_descriptor.parse(self.desc)
     reqs = requirement.parse(self.requirements)
     package = self.make_test_package(pi.name, pi.version, reqs,
-                                     self.system, self.build_level,
+                                     self.system, self.level,
                                      name_override = self.name_override,
                                      debug = self.debug)
     artifact_path = package.package_info.artifact_path(package.build_target)
@@ -182,7 +182,7 @@ Cflags: -I${includedir}
     tmp_dir = temp_file.make_temp_dir(delete = not debug)
     name_override = templates[desc].get('name_override', None)
     tp = clazz(desc, requirements = templates[desc]['requirements'],
-               system = 'macos', build_level = 'release',
+               system = 'macos', level = 'release',
                name_override = name_override,
                debug = debug)
     return tp.create_tarball(tmp_dir)

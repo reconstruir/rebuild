@@ -9,11 +9,11 @@ class build_level(object):
   LEVELS = [ DEBUG, RELEASE ]
 
   @classmethod
-  def build_level_is_valid(clazz, build_level):
+  def level_is_valid(clazz, build_level):
     return build_level in clazz.LEVELS
 
   @classmethod
-  def parse_build_level(clazz, s):
+  def parse_level(clazz, s):
     slower = s.lower()
     if slower == 'default':
       return clazz.DEFAULT_LEVEL

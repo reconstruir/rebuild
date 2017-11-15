@@ -23,14 +23,14 @@ class CompileFlags(object):
     },
   }
 
-  def __init__(self, build_level, system,
+  def __init__(self, level, system,
                cflags = [],
                ldflags = []):
-    self.build_level = build_level
+    self.level = level
     self.system = system
 
-    self.cflags = self.__default_cflags(build_level, system) + cflags
-    self.ldflags = self.__default_ldflags(build_level, system) + ldflags
+    self.cflags = self.__default_cflags(level, system) + cflags
+    self.ldflags = self.__default_ldflags(level, system) + ldflags
 
   def cflags_append(self, cflags):
     assert isinstance(cflags, list)
@@ -49,11 +49,11 @@ class CompileFlags(object):
     self.ldflags = ldflags + self.ldflags
 
   @classmethod
-  def __default_cflags(clazz, build_level, system):
-    return clazz.DEFAULT_OPTIMIZATION_FLAGS[build_level][system]
+  def __default_cflags(clazz, level, system):
+    return clazz.DEFAULT_OPTIMIZATION_FLAGS[level][system]
 
   @classmethod
-  def __default_ldflags(clazz, build_level, system):
+  def __default_ldflags(clazz, level, system):
     return []
 
   @classmethod
@@ -85,7 +85,7 @@ class CompileFlags(object):
       if not isinstance(n, CompileFlags):
         raise RuntimeError('Argument %d is not CompileFlags' % (i + 1))
       if not result:
-        result = CompileFlags(n.build_level, n.system,
+        result = CompileFlags(n.level, n.system,
                               cflags = n.cflags,
                               ldflags = n.ldflags)
       else:

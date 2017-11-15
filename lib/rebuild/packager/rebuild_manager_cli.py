@@ -147,7 +147,7 @@ class rebuild_manager_cli(object):
     self.test_parser = self.commands_subparser.add_parser('test', help = 'Test')
     self.test_parser.add_argument('-o', '--opts', action = 'store', type = str, default = '')
     self.test_parser.add_argument('-v', '--verbose', action = 'store_true')
-    self.test_parser.add_argument('-b', '--build-type', action = 'store', type = str, default = build_target.DEFAULT, help = 'Build type.  One of (%s) [ %s ]' % (','.join(build_level.LEVELS), build_level.DEFAULT_LEVEL))
+    self.test_parser.add_argument('-l', '--level', action = 'store', type = str, default = build_target.DEFAULT, help = 'Build type.  One of (%s) [ %s ]' % (','.join(build_level.LEVELS), build_level.DEFAULT_LEVEL))
     self.test_parser.add_argument('--tmp-dir', action = 'store', default = None,
                                   help = 'Temporary directory to use or a random one if not given. [ None ]')
     self.test_parser.add_argument('artifacts_dir', action = 'store', default = None, type = str,
@@ -243,7 +243,7 @@ class rebuild_manager_cli(object):
     elif command == 'package:metadata':
       return self.__command_package_metadata(args.package)
     elif command == 'test':
-      return self.__command_test(args.build_level, args.package_tarball, args.test,
+      return self.__command_test(args.level, args.package_tarball, args.test,
                                  args.artifacts_dir, args.tools_dir,
                                  args.tmp_dir, args.opts, args.verbose)
     else:
@@ -255,9 +255,9 @@ class rebuild_manager_cli(object):
     system = build_system.parse_system(args.system)
     if not system in build_system.SYSTEMS:
       return ( None, 'Invalid system: %s' % (args.system) )
-    if not args.build_level in build_level.LEVELS:
-      return ( None, 'Invalid build_level: %s' % (args.build_level) )
-    return ( build_target(system, args.build_level), None )
+    if not args.level in build_level.LEVELS:
+      return ( None, 'Invalid build_level: %s' % (args.level) )
+    return ( build_target(system, args.level), None )
 
   @classmethod
   def _validate_build_target(clazz, args):
@@ -368,7 +368,7 @@ rebuild_manager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir @ROOT_
     if 'build_level' in opts and bt == build_target.DEFAULT:
       bt == opts['build_level']
   
-    bt = build_level.parse_build_level(bt)
+    bt = build_level.parse_level(bt)
 
     opts['build_level'] = bt
 

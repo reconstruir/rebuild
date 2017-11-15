@@ -41,7 +41,7 @@ class _toolchain_linux(_toolchain_base):
     arch_flags = []
     pic_flags = [ '-fPIC' ]
 
-    if self.build_target.build_level == build_level.RELEASE:
+    if self.build_target.level == build_level.RELEASE:
       opt_flags = [ '-O2' ]
     else:
       opt_flags = [ '-g' ]
