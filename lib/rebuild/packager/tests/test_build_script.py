@@ -15,7 +15,7 @@ class test_build_script(unittest.TestCase):
     script = self._load_build_script(filename)
     expected_requirements = []
     expected_properties = { package_descriptor.PROPERTY_CATEGORY: build_category.LIB }
-    self.assertEqual( package_descriptor('zlib', '1.2.8-1', requirements = expected_requirements, properties = expected_properties), script.descriptor )
+    self.assertEqual( package_descriptor('zlib', '1.2.8-1', requirements = expected_requirements, properties = expected_properties).__dict__, script.descriptor.__dict__ )
     self.assertEqual( [], script.descriptor.requirements )
     self.assertEqual( [], script.descriptor.build_requirements )
 

@@ -6,40 +6,27 @@ from bes.system.compat import with_metaclass
 from bes.common import check_type
 
 from .build_arch import build_arch
-from .build_type import build_type as BT
+from .build_type import build_type as rebuild_build_type
 from .build_system import build_system
 
-class build_target(object):
+from collections import namedtuple
+
+class build_target(namedtuple('build_target', 'system,build_type,archs,build_path')):
 
   DEFAULT = 'default'
-
-  def __init__(self, system = DEFAULT, build_type = DEFAULT, archs = DEFAULT):
-    # Defaults
-    self.system = build_system.parse_system(system)
-    self.archs = build_arch.determine_archs(self.system, archs)
-    self.build_type = self._determine_build_type(build_type)
-    self.build_path = path.join(self.system, build_arch.archs_to_string(self.archs, delimiter = '-'), self.build_type)
-    assert self.build_type in BT.BUILD_TYPES
-    
-  def clone(self, system = None, build_type = None, archs = None):
-    'Clone ourselves but override with args that are not None'
-    return build_target(system or self.system,
-                        build_type or self.build_type,
-                        archs or self.archs)
-
-  def __eq__(self, other):
-    return self.system == other.system and self.archs == other.archs and self.build_type == other.build_type
-    
-  def __str__(self):
-    return 'system=%s; archs=%s; build_type=%s; build_path=%s' % (self.system,
-                                                                  build_arch.archs_to_string(self.archs),
-                                                                  self.build_type,
-                                                                  self.build_path)
   
-  def _determine_build_type(self, tentative_build_type):
-    if tentative_build_type == self.DEFAULT:
-      return BT.DEFAULT_BUILD_TYPE
-    if not tentative_build_type in BT.BUILD_TYPES:
+  def __new__(clazz, system = DEFAULT, build_type = DEFAULT, archs = DEFAULT):
+    system = build_system.parse_system(system)
+    build_type = clazz._determine_build_type(build_type)
+    archs = build_arch.determine_archs(system, archs)
+    build_path = path.join(system, build_arch.archs_to_string(archs, delimiter = '-'), build_type)
+    return clazz.__bases__[0].__new__(clazz, system, build_type, archs, build_path)
+
+  @classmethod
+  def _determine_build_type(clazz, tentative_build_type):
+    if tentative_build_type == clazz.DEFAULT:
+      return rebuild_build_type.DEFAULT_BUILD_TYPE
+    if not tentative_build_type in rebuild_build_type.BUILD_TYPES:
       raise RuntimeError('Invalid build_type: %s' % (tentative_build_type))
     return tentative_build_type
 
