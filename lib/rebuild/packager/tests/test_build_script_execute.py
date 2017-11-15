@@ -7,7 +7,7 @@ from bes.testing.unit_test import unit_test
 from bes.system import host
 from bes.fs import file_util, temp_file
 from rebuild.base import build_target
-from rebuild.packager import build_script, rebuild_config, rebuild_env
+from rebuild.packager import build_script, build_script_manager, rebuild_config, rebuild_env
 from bes.archive import archiver
 from rebuild.packager.unit_test_packaging import unit_test_packaging
 from rebuild.source_finder import local_source_finder, source_finder_chain
@@ -32,7 +32,7 @@ class test_build_script_execute(unit_test):
     config.no_network = True
     config.source_dir = self.data_dir()
     env = rebuild_env(config, [ rebuildfile ])
-    script = build_script.load_build_scripts(rebuildfile, env)[0]
+    script = self._load_build_script(rebuildfile)
     result = script.execute({})
     self.assertTrue( result.success )
     output = result.output
@@ -54,6 +54,21 @@ class test_build_script_execute(unit_test):
       u'system': u''+host.SYSTEM,
       u'version': u'1.0'
     }, json.loads(archiver.extract_member_to_string(artifact_path, 'metadata/info.json')) )
+
+  def _load_build_script(self, filename):
+    bt = build_target()
+    config = rebuild_config()
+    config.build_root = temp_file.make_temp_dir()
+    config.no_network = True
+    config.no_checksums = True
+    config.source_dir = path.dirname(filename)
+    config.verbose = True
+    env = rebuild_env(config, [ filename ])
+    sm = build_script_manager([ filename ], env)
+    self.assertEqual( 1, len(sm.scripts) )
+    return sm.scripts.values()[0]
     
 if __name__ == '__main__':
   unit_test.main()
+
+  

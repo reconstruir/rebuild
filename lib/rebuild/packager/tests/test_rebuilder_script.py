@@ -33,7 +33,7 @@ class test_rebuilder_script(unit_test):
     if rv.exit_code != 0:
       print((rv.stdout))
     self.assertEqual( 0, rv.exit_code )
-    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, self.BUILD_TYPE)
+    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_TYPE)
     self.assertTrue( path.exists(path.join(artifacts_dir, 'fructose-3.4.5-6.tar.gz')) )
     self.assertFalse( path.exists(path.join(artifacts_dir, 'fiber-1.0.0.tar.gz')) )
     
@@ -54,7 +54,7 @@ class test_rebuilder_script(unit_test):
     if rv.exit_code != 0:
       print((rv.stdout))
     self.assertEqual( 0, rv.exit_code )
-    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, self.BUILD_TYPE)
+    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_TYPE)
     self.assertTrue( path.exists(path.join(artifacts_dir, 'fructose-3.4.5-6.tar.gz')) )
     self.assertTrue( path.exists(path.join(artifacts_dir, 'fiber-1.0.0.tar.gz')) )
     
@@ -74,7 +74,7 @@ class test_rebuilder_script(unit_test):
     if rv.exit_code != 0:
       print((rv.stdout))
     self.assertEqual( 0, rv.exit_code )
-    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, self.BUILD_TYPE)
+    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_TYPE)
     self.assertTrue( path.exists(path.join(artifacts_dir, 'fructose-3.4.5-6.tar.gz')) )
     self.assertTrue( path.exists(path.join(artifacts_dir, 'fiber-1.0.0.tar.gz')) )
     self.assertTrue( path.exists(path.join(artifacts_dir, 'fiber-orange-6.5.4-3.tar.gz')) )
