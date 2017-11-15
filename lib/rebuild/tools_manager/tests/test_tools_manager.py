@@ -4,7 +4,7 @@
 import os.path as path, unittest
 from bes.fs import temp_file
 from bes.common import Shell
-from rebuild.base import build_target, build_system, build_type, package_descriptor
+from rebuild.base import build_target, build_system, build_level, package_descriptor
 from rebuild.package_manager import artifact_manager
 from rebuild.tools_manager import tools_manager
 from rebuild.package_manager.unit_test_packages import unit_test_packages
@@ -14,7 +14,7 @@ class test_tools_manager(unittest.TestCase):
   DEBUG = False
 #  DEBUG = True
 
-  TEST_BUILD_TARGET = build_target(build_system.LINUX, build_type.RELEASE)
+  TEST_BUILD_TARGET = build_target(build_system.LINUX, build_level.RELEASE)
 
   def __make_test_tm(self):
     root_dir = temp_file.make_temp_dir(delete = not self.DEBUG)

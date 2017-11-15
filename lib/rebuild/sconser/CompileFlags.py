@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from rebuild.base import build_system, build_type
+from rebuild.base import build_system, build_level
 
 class CompileFlags(object):
 
@@ -9,13 +9,13 @@ class CompileFlags(object):
   COMMON_OPTIMIZATION_FLAGS_DEBUG = [ '-g' ]
 
   DEFAULT_OPTIMIZATION_FLAGS = {
-    build_type.DEBUG: {
+    build_level.DEBUG: {
       build_system.ANDROID: COMMON_OPTIMIZATION_FLAGS_DEBUG,
       build_system.MACOS: COMMON_OPTIMIZATION_FLAGS_DEBUG,
       build_system.IOS: COMMON_OPTIMIZATION_FLAGS_DEBUG,
       build_system.LINUX: COMMON_OPTIMIZATION_FLAGS_DEBUG,
     },
-    build_type.RELEASE: {
+    build_level.RELEASE: {
       build_system.ANDROID: COMMON_OPTIMIZATION_FLAGS_RELEASE,
       build_system.MACOS: COMMON_OPTIMIZATION_FLAGS_RELEASE,
       build_system.IOS: COMMON_OPTIMIZATION_FLAGS_RELEASE,
@@ -23,14 +23,14 @@ class CompileFlags(object):
     },
   }
 
-  def __init__(self, build_type, system,
+  def __init__(self, build_level, system,
                cflags = [],
                ldflags = []):
-    self.build_type = build_type
+    self.build_level = build_level
     self.system = system
 
-    self.cflags = self.__default_cflags(build_type, system) + cflags
-    self.ldflags = self.__default_ldflags(build_type, system) + ldflags
+    self.cflags = self.__default_cflags(build_level, system) + cflags
+    self.ldflags = self.__default_ldflags(build_level, system) + ldflags
 
   def cflags_append(self, cflags):
     assert isinstance(cflags, list)
@@ -49,11 +49,11 @@ class CompileFlags(object):
     self.ldflags = ldflags + self.ldflags
 
   @classmethod
-  def __default_cflags(clazz, build_type, system):
-    return clazz.DEFAULT_OPTIMIZATION_FLAGS[build_type][system]
+  def __default_cflags(clazz, build_level, system):
+    return clazz.DEFAULT_OPTIMIZATION_FLAGS[build_level][system]
 
   @classmethod
-  def __default_ldflags(clazz, build_type, system):
+  def __default_ldflags(clazz, build_level, system):
     return []
 
   @classmethod
@@ -85,7 +85,7 @@ class CompileFlags(object):
       if not isinstance(n, CompileFlags):
         raise RuntimeError('Argument %d is not CompileFlags' % (i + 1))
       if not result:
-        result = CompileFlags(n.build_type, n.system,
+        result = CompileFlags(n.build_level, n.system,
                               cflags = n.cflags,
                               ldflags = n.ldflags)
       else:

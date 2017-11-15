@@ -41,7 +41,7 @@ jan 1
 jan 2
 - add __load_package() persistent cache for ArtifactManager
 - Rebbe.update_packages() needs options for machine and arch and
-  build_type
+  build_level
 - write routines for comparison of versions and revisions by splitting
 by punctuation and then comparing the separate parts individually
 

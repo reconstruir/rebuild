@@ -37,7 +37,7 @@ class Build(object):
       allowed_values = set(build_target.SYSTEMS)))
 
     scons_vars.Add(self._scons_locals.Enumvariable(
-      'build_type',
+      'build_level',
       'The build type',
       build_target.DEBUG,
       allowed_values = set(build_target.BUILD_TYPES)))

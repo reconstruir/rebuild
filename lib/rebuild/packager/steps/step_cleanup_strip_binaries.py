@@ -4,7 +4,7 @@
 import os.path as path
 from rebuild.step_manager import step, step_result
 from rebuild.binary_format import binary_detector
-from rebuild.base import build_type
+from rebuild.base import build_level
 from rebuild.toolchain import strip
 
 class step_cleanup_strip_binaries(step):
@@ -14,7 +14,7 @@ class step_cleanup_strip_binaries(step):
     super(step_cleanup_strip_binaries, self).__init__()
 
   def execute(self, script, env, args):
-    is_release = script.build_target.build_type == build_type.RELEASE
+    is_release = script.build_target.build_level == build_level.RELEASE
     if is_release:
       if args.get('dont_strip_binaries', False):
         return step_result(True, None)

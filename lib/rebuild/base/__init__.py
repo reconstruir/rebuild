@@ -7,7 +7,7 @@ from .build_category import build_category
 from .build_os_env import build_os_env
 from .build_system import build_system
 from .build_target import build_target
-from .build_type import build_type
+from .build_level import build_level
 from .build_version import build_version
 from .masked_config import masked_config
 from .package_descriptor import package_descriptor

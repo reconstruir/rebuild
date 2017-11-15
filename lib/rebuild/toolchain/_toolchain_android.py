@@ -3,7 +3,7 @@
 
 from ._toolchain_base import _toolchain_base
 from bes.system import host
-from rebuild.base import build_arch, build_blurb, build_system, build_type
+from rebuild.base import build_arch, build_blurb, build_system, build_level
 import os, os.path as path
 
 class _toolchain_android(_toolchain_base):
@@ -67,7 +67,7 @@ class _toolchain_android(_toolchain_base):
     arch_flags = []
     pic_flags = [ '-fPIC' ]
 
-    if self.build_target.build_type == build_type.RELEASE:
+    if self.build_target.build_level == build_level.RELEASE:
       opt_flags = [ '-O2' ]
     else:
       opt_flags = [ '-g' ]

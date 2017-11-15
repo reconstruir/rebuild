@@ -9,7 +9,7 @@ from bes.archive import archiver
 from bes.key_value import key_value_parser
 from bes.system import host
 from bes.fs import file_util, temp_file
-from rebuild.base import build_arch, build_blurb, build_system, build_target, build_type
+from rebuild.base import build_arch, build_blurb, build_system, build_target, build_level
 from rebuild.packager import rebuild_manager
 from rebuild.package_manager import artifact_manager, package, package_tester
 from rebuild.tools_manager import tools_manager
@@ -147,7 +147,7 @@ class rebuild_manager_cli(object):
     self.test_parser = self.commands_subparser.add_parser('test', help = 'Test')
     self.test_parser.add_argument('-o', '--opts', action = 'store', type = str, default = '')
     self.test_parser.add_argument('-v', '--verbose', action = 'store_true')
-    self.test_parser.add_argument('-b', '--build-type', action = 'store', type = str, default = build_target.DEFAULT, help = 'Build type.  One of (%s) [ %s ]' % (','.join(build_type.BUILD_TYPES), build_type.DEFAULT_BUILD_TYPE))
+    self.test_parser.add_argument('-b', '--build-type', action = 'store', type = str, default = build_target.DEFAULT, help = 'Build type.  One of (%s) [ %s ]' % (','.join(build_level.BUILD_TYPES), build_level.DEFAULT_BUILD_TYPE))
     self.test_parser.add_argument('--tmp-dir', action = 'store', default = None,
                                   help = 'Temporary directory to use or a random one if not given. [ None ]')
     self.test_parser.add_argument('artifacts_dir', action = 'store', default = None, type = str,
@@ -174,8 +174,8 @@ class rebuild_manager_cli(object):
     parser.add_argument('--build-type',
                         '-b',
                         action = 'store',
-                        default = build_type.RELEASE,
-                        help = 'The system [ %s ]' % (build_type.RELEASE))
+                        default = build_level.RELEASE,
+                        help = 'The system [ %s ]' % (build_level.RELEASE))
     parser.add_argument('--artifacts',
                         '-a',
                         action = 'store',
@@ -243,7 +243,7 @@ class rebuild_manager_cli(object):
     elif command == 'package:metadata':
       return self.__command_package_metadata(args.package)
     elif command == 'test':
-      return self.__command_test(args.build_type, args.package_tarball, args.test,
+      return self.__command_test(args.build_level, args.package_tarball, args.test,
                                  args.artifacts_dir, args.tools_dir,
                                  args.tmp_dir, args.opts, args.verbose)
     else:
@@ -255,9 +255,9 @@ class rebuild_manager_cli(object):
     system = build_system.parse_system(args.system)
     if not system in build_system.SYSTEMS:
       return ( None, 'Invalid system: %s' % (args.system) )
-    if not args.build_type in build_type.BUILD_TYPES:
-      return ( None, 'Invalid build_type: %s' % (args.build_type) )
-    return ( build_target(system, args.build_type), None )
+    if not args.build_level in build_level.BUILD_TYPES:
+      return ( None, 'Invalid build_level: %s' % (args.build_level) )
+    return ( build_target(system, args.build_level), None )
 
   @classmethod
   def _validate_build_target(clazz, args):
@@ -365,12 +365,12 @@ rebuild_manager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir @ROOT_
     #opts.update(parsed_opts)
     opts = parsed_opts
 
-    if 'build_type' in opts and bt == build_target.DEFAULT:
-      bt == opts['build_type']
+    if 'build_level' in opts and bt == build_target.DEFAULT:
+      bt == opts['build_level']
   
-    bt = build_type.parse_build_type(bt)
+    bt = build_level.parse_build_level(bt)
 
-    opts['build_type'] = bt
+    opts['build_level'] = bt
 
     build_blurb.set_process_name('package_tester')
     build_blurb.set_verbose(bool(verbose))

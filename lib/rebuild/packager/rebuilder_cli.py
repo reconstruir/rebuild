@@ -5,7 +5,7 @@ import sys
 #sys.dont_write_bytecode = True
 import argparse, copy, os, os.path as path
 
-from rebuild.base import build_arch, build_blurb, build_system, build_target, build_type
+from rebuild.base import build_arch, build_blurb, build_system, build_target, build_level
 from bes.key_value import key_value_parser
 from bes.fs import file_util
 
@@ -27,7 +27,7 @@ class rebuilder_cli(object):
   def __init__(self):
     all_archs = ','.join(build_arch.ARCHS[build_system.HOST])
     default_archs = ','.join(build_arch.DEFAULT_ARCHS[build_system.HOST])
-    build_types = ','.join(build_type.BUILD_TYPES)
+    build_levels = ','.join(build_level.BUILD_TYPES)
     systems = ','.join(build_system.SYSTEMS)
     self.parser = argparse.ArgumentParser(description = 'Build packages.')
     self.parser.add_argument('-o', '--opts', action = 'store', type = str, default = '')
@@ -42,7 +42,7 @@ class rebuilder_cli(object):
     self.parser.add_argument('-j', '--jobs', action = 'store', type = int, help = 'Number of threads to use [ 1 ]')
     self.parser.add_argument('-s', '--system', action = 'store', type = str, default = build_target.DEFAULT, help = 'build_system.  One of (%s) [ %s ]' % (systems, build_system.DEFAULT))
     self.parser.add_argument('-a', '--archs', action = 'store', type = str, default = build_target.DEFAULT, help = 'Architectures to build for.  One of (%s) [ %s ]' % (all_archs, default_archs))
-    self.parser.add_argument('-b', '--build-type', action = 'store', type = str, default = build_target.DEFAULT, help = 'Build type.  One of (%s) [ %s ]' % (build_types, build_type.DEFAULT_BUILD_TYPE))
+    self.parser.add_argument('-b', '--level', action = 'store', type = str, default = build_target.DEFAULT, help = 'Build level.  One of (%s) [ %s ]' % (build_levels, build_level.DEFAULT_BUILD_TYPE))
     self.parser.add_argument('--skip-to-step', action = 'store', type = str, help = 'Skip to the given step name. [ None ]')
     self.parser.add_argument('--deps-only', action = 'store_true', help = 'Only build dependencies')
     self.parser.add_argument('--no-network', action = 'store_true', help = 'Down go to the network.')
@@ -81,18 +81,18 @@ class rebuilder_cli(object):
     if 'system' in opts and args.system == build_target.DEFAULT:
       args.system == opts['system']
 
-    if 'build_type' in opts and args.build_type == build_target.DEFAULT:
-      args.build_type == opts['build_type']
+    if 'build_level' in opts and args.build_level == build_target.DEFAULT:
+      args.build_level == opts['build_level']
 
     if 'archs' in opts and args.archs == build_target.DEFAULT:
       args.archs == opts['archs']
   
     args.system = build_system.parse_system(args.system)
-    args.build_type = build_type.parse_build_type(args.build_type)
+    args.build_level = build_level.parse_build_level(args.level)
     args.archs = build_arch.parse_archs(args.system, args.archs)
 
     opts['system'] = args.system
-    opts['build_type'] = args.build_type
+    opts['build_level'] = args.build_level
     opts['archs'] = args.archs
 
     build_blurb.set_process_name('build')
@@ -104,7 +104,7 @@ class rebuilder_cli(object):
     config = rebuild_config()
     config.build_root = path.abspath(args.root)
     config.build_target = build_target(opts.get('system', build_target.DEFAULT),
-                                       opts.get('build_type', build_target.DEFAULT),
+                                       opts.get('build_level', build_target.DEFAULT),
                                        opts.get('archs', build_target.DEFAULT))
     config.deps_only = args.deps_only
     config.disabled = args.disabled

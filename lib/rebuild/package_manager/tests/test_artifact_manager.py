@@ -5,7 +5,7 @@
 import os.path as path, unittest
 from bes.fs import temp_file
 from bes.git import git
-from rebuild.base import build_arch, build_blurb, build_system, build_target, build_type, package_descriptor
+from rebuild.base import build_arch, build_blurb, build_system, build_target, build_level, package_descriptor
 from rebuild.package_manager import artifact_manager
 from rebuild.package_manager.unit_test_packages import unit_test_packages
 
@@ -27,19 +27,19 @@ class test_artifact_manager(unittest.TestCase):
   def test_artifact_path(self):
     manager = self.__make_test_artifact_manager()
     pi = package_descriptor('foo', '1.2.34-1')
-    bt = build_target(build_system.LINUX, build_type.RELEASE)
+    bt = build_target(build_system.LINUX, build_level.RELEASE)
     self.assertEqual( path.join(manager.publish_dir, pi.artifact_path(bt)), manager.artifact_path(pi, bt) )
 
   def test_publish(self):
     manager = self.__make_test_artifact_manager()
-    bt = build_target(build_system.LINUX, build_type.RELEASE)
+    bt = build_target(build_system.LINUX, build_level.RELEASE)
     tmp_tarball = unit_test_packages.make_apple()
     filename = manager.publish(tmp_tarball, bt)
     self.assertTrue( path.exists(filename) )
 
   def test_publish_again(self):
     manager = self.__make_test_artifact_manager()
-    bt = build_target(build_system.LINUX, build_type.RELEASE)
+    bt = build_target(build_system.LINUX, build_level.RELEASE)
     tmp_tarball = unit_test_packages.make_apple()
     filename = manager.publish(tmp_tarball, bt)
     self.assertTrue( path.exists(filename) )
@@ -59,8 +59,8 @@ class test_artifact_manager(unittest.TestCase):
   def test_artifact_from_git(self):
     manager = self.__make_test_artifacts_git_repo()
 
-    linux = build_target(build_system.LINUX, build_type.RELEASE)
-    darwin = build_target(build_system.MACOS, build_type.RELEASE)
+    linux = build_target(build_system.LINUX, build_level.RELEASE)
+    darwin = build_target(build_system.MACOS, build_level.RELEASE)
 
     self.assertEqual( 'water-1.0.0', manager.package(package_descriptor('water', '1.0.0'), darwin).info.full_name )
     self.assertEqual( 'water-1.0.0-1', manager.package(package_descriptor('water', '1.0.0-1'), darwin).info.full_name )

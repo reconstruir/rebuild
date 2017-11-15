@@ -4,7 +4,7 @@
 import os.path as path, unittest
 from bes.fs import temp_file
 from bes.system import host
-from rebuild.base import build_system, build_target, build_type, package_descriptor
+from rebuild.base import build_system, build_target, build_level, package_descriptor
 from rebuild.pkg_config import pkg_config
 from rebuild.package_manager import artifact_manager, package_manager
 from rebuild.package_manager import PackageFilesConflictError, PackageAlreadyInstallededError, PackageMissingRequirementsError, ArtifactNotFoundError
@@ -13,7 +13,7 @@ from rebuild.package_manager.unit_test_packages import unit_test_packages
 
 class test_package_manager(unittest.TestCase):
 
-  TEST_BUILD_TARGET = build_target(build_system.LINUX, build_type.RELEASE)
+  TEST_BUILD_TARGET = build_target(build_system.LINUX, build_level.RELEASE)
 
   ZLIB_CONTENTS = [
     'include/zconf.h',
@@ -191,7 +191,7 @@ class test_package_manager(unittest.TestCase):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     tarball_path = self._make_package(tmp_dir,
                                       'foo', '1.2.3-1',
-                                      build_system.LINUX, build_type.RELEASE,
+                                      build_system.LINUX, build_level.RELEASE,
                                       [
                                         ( 'foo.txt', 'foo.txt\n' ),
                                         ( 'bar.txt', 'bar.txt\n' ),
@@ -210,10 +210,10 @@ class test_package_manager(unittest.TestCase):
     ]
     self.assertEqual( expected_members, archiver.members(tarball_path) )
 
-  def _make_package(self, dest_dir, name, version, system, build_type, items, env_items):
+  def _make_package(self, dest_dir, name, version, system, build_level, items, env_items):
     pi = package_descriptor(name, version)
     tarball_path = path.join(dest_dir, pi.tarball_filename)
-    bi = build_target(system, build_type)
+    bi = build_target(system, build_level)
     items = temp_archive.make_temp_item_list(items)
     tmp_stage_dir = temp_archive.write_temp_items(items)
     env_items = temp_archive.make_temp_item_list(env_items)

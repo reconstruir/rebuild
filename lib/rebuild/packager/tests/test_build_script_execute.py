@@ -51,7 +51,7 @@ class test_build_script_execute(unit_test):
     self.assertEqual( {
       u'archs': [u'x86_64'],
       u'build_requirements': [],
-      u'build_type': u'release',
+      u'build_level': u'release',
       u'name': u'amhello',
       u'properties': {u'category': u'lib'},
       u'requirements': [],

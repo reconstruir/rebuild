@@ -93,13 +93,13 @@ class unit_test_packages(object):
     template['package_info'] = pi
   
   def __init__(self, desc, requirements = None,
-               system = 'macos', build_type = 'linux',
+               system = 'macos', build_level = 'linux',
                properties = {}, name_override = None,
                debug = False):
     self.desc = desc
     self.requirements = requirements
     self.system = system
-    self.build_type = build_type
+    self.build_level = build_level
     self.properties = properties
     self.name_override = name_override
     self.debug = debug
@@ -108,7 +108,7 @@ class unit_test_packages(object):
     pi = package_descriptor.parse(self.desc)
     reqs = requirement.parse(self.requirements)
     package = self.make_test_package(pi.name, pi.version, reqs,
-                                     self.system, self.build_type,
+                                     self.system, self.build_level,
                                      name_override = self.name_override,
                                      debug = self.debug)
     artifact_path = package.package_info.artifact_path(package.build_target)
@@ -122,13 +122,13 @@ class unit_test_packages(object):
 
   @classmethod
   def make_test_package(clazz, name, version, requirements,
-                        system, build_type, properties = None,
+                        system, build_level, properties = None,
                         name_override = None, debug = False):
     props = { 'category': build_category.LIB } 
     props.update(properties or {})
     pi = package_descriptor(name, version, requirements = requirements, properties = props)
     assert build_system.system_is_valid(system)
-    bt = build_target(system, build_type, build_arch.ARCHS[system])
+    bt = build_target(system, build_level, build_arch.ARCHS[system])
     metadata_dict = dict_util.combine(pi.to_dict(), bt.to_dict())
     metadata = json_util.to_json(metadata_dict, indent = 2)
     pkg_config_pc_contnet = clazz.make_pkg_config_pc_content(name, version)
@@ -182,7 +182,7 @@ Cflags: -I${includedir}
     tmp_dir = temp_file.make_temp_dir(delete = not debug)
     name_override = templates[desc].get('name_override', None)
     tp = clazz(desc, requirements = templates[desc]['requirements'],
-               system = 'macos', build_type = 'release',
+               system = 'macos', build_level = 'release',
                name_override = name_override,
                debug = debug)
     return tp.create_tarball(tmp_dir)

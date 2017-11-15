@@ -3,7 +3,7 @@
 
 from ._toolchain_base import _toolchain_base
 
-from rebuild.base import build_type
+from rebuild.base import build_level
 from rebuild.toolchain.darwin.xcrun import xcrun
 from rebuild.toolchain.darwin import darwin_sdk
 import os.path as path
@@ -42,7 +42,7 @@ class _toolchain_darwin(_toolchain_base):
     sysroot_flags = self.sysroot_flags()
     arch_flags = self._make_arch_flags(self.build_target.archs)
 
-    if self.build_target.build_type == build_type.RELEASE:
+    if self.build_target.build_level == build_level.RELEASE:
       opt_flags = [ '-O2' ]
     else:
       opt_flags = [ '-g' ]

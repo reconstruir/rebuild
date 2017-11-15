@@ -4,7 +4,7 @@
 import copy
 
 from bes.system import host
-from rebuild.base import build_system, build_type
+from rebuild.base import build_system, build_level
 from rebuild.step_manager import variable_manager
 
 class build_recipe_env(object):
@@ -13,7 +13,7 @@ class build_recipe_env(object):
     self.build_target = build_target
 
     self.system = self.build_target.system
-    self.build_type = self.build_target.build_type
+    self.build_level = self.build_target.build_level
 
     self.ANDROID = build_system.ANDROID
     self.IOS = build_system.IOS
@@ -21,8 +21,8 @@ class build_recipe_env(object):
     self.LINUX = build_system.LINUX
     self.MACOS = build_system.MACOS
 
-    self.DEBUG = build_type.DEBUG
-    self.RELEASE = build_type.RELEASE
+    self.DEBUG = build_level.DEBUG
+    self.RELEASE = build_level.RELEASE
 
     self.DISTRO = host.DISTRO
     self.RASPBIAN = host.RASPBIAN

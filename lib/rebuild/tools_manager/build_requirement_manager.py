@@ -10,14 +10,14 @@ from bes.common import dict_util, json_util, string_util, variable
 from bes.system import host
 
 from rebuild.pkg_config import pkg_config
-from rebuild.base import build_target, build_system, build_type, package_descriptor
+from rebuild.base import build_target, build_system, build_level, package_descriptor
 from bes.fs import dir_util, file_search, file_util, file_path, temp_file
 
 from rebuild.package_manager import artifact_manager, ArtifactNotFoundError, package
 
 class build_requirement_manager(object):
 
-  BUILD_TARGET = build_target(host.SYSTEM, build_type.RELEASE)
+  BUILD_TARGET = build_target(host.SYSTEM, build_level.RELEASE)
 
   def __init__(self, root_dir):
     self.root_dir = root_dir
