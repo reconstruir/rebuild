@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.system import host
-from bes.common import algorithm, string_util
+from bes.common import algorithm, check_type, string_util
 
 class build_system(object):
 
@@ -26,6 +26,8 @@ class build_system(object):
 
   SYSTEMS = [ ANDROID, IOS, IOS_SIM, LINUX, MACOS ]
 
+  RASPBIAN = host.RASPBIAN
+  
   ALIASES = {
     'none': NONE,
     'all': ALL,
@@ -83,11 +85,10 @@ class build_system(object):
 
   @classmethod
   def parse_system(clazz, s):
-    if not string_util.is_string(s):
-      raise RuntimeError('Not a string: %s' % (str(s)))
+    check_type.check_string(s, 'system')
     systems = clazz.mask_split(clazz.resolve_mask(s))
     if len(systems) != 1:
-      raise RuntimeError('Invalid system: %s' % (str(s)))
+      raise ValueError('Invalid system: %s' % (str(s)))
     return systems[0]
   
   @classmethod

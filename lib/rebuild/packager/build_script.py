@@ -21,6 +21,7 @@ class build_script(object):
     self.descriptor = recipe.descriptor
     self.build_target = build_target
     self.filename = recipe.filename
+    self.enabled = self.build_target.parse_expression(recipe.enabled)
     self.properties = recipe.properties
     self.requirements = recipe.requirements
     self.build_requirements = recipe.build_requirements
@@ -66,9 +67,9 @@ class build_script(object):
                                                self.build_target)
     return result
         
-  @property
-  def disabled(self):
-    return self.descriptor.disabled
+#  @property
+#  def disabled(self):
+#    return self.descriptor.disabled
 
   @property
   def sources(self):

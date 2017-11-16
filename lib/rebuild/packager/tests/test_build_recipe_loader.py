@@ -5,7 +5,6 @@ import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import file_util, temp_file
 from rebuild.packager.build_recipe_loader import build_recipe_loader
-from rebuild.base import build_target
 
 class test_build_recipe_loader(unit_test):
 
@@ -13,16 +12,14 @@ class test_build_recipe_loader(unit_test):
 
   def test_load_libjpeg(self):
     filenames = [ self.data_path('build_libjpeg.py') ]
-    bt = build_target()
-    recipes = build_recipe_loader.load(filenames[0], bt)
+    recipes = build_recipe_loader.load(filenames[0])
     self.assertEqual( 1, len(recipes) )
     self.assertEqual( 'libjpeg', recipes[0].descriptor.name )
     self.assertEqual( ( '9a', 1, 0), recipes[0].descriptor.version )
 
   def test_multiple_recipes(self):
     filenames = [ self.data_path('build_multiple_recipes.py') ]
-    bt = build_target()
-    recipes = build_recipe_loader.load(filenames[0], bt)
+    recipes = build_recipe_loader.load(filenames[0])
     self.assertEqual( 4, len(recipes) )
 
     self.assertEqual( 'libsdl2', recipes[0].descriptor.name )

@@ -3,9 +3,9 @@
 
 from collections import namedtuple
 
-class recipe(namedtuple('recipe', 'filename,properties,requirements,build_requirements,descriptor,instructions,steps')):
+class recipe(namedtuple('recipe', 'filename,enabled,properties,requirements,build_requirements,descriptor,instructions,steps')):
 
-  def __new__(clazz, filename, properties, requirements, build_requirements,
+  def __new__(clazz, filename, enabled, properties, requirements, build_requirements,
               descriptor, instructions, steps):
-    return clazz.__bases__[0].__new__(clazz, filename, properties, requirements,
+    return clazz.__bases__[0].__new__(clazz, filename, enabled, properties, requirements,
                                       build_requirements, descriptor, instructions, steps)

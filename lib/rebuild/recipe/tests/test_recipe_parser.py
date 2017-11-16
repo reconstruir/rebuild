@@ -35,7 +35,8 @@ class test_recipe_parser(unit_test):
 
   @classmethod
   def setUpClass(clazz):
-    unit_test.raise_skip('broken')
+    #unit_test.raise_skip('broken')
+    pass
   
   def test_simple(self):
     text = '''#!rebuildrecipe
@@ -98,6 +99,7 @@ package foo-1.2.3-4
       bool_value: True
 '''
     r = self._parse(text)
+    print('recipe: %s' % (r))
     
   def test_invalid_magic(self):
     with self.assertRaises(ERR) as context:
