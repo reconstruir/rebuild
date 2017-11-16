@@ -35,7 +35,7 @@ class build_target(namedtuple('build_target', 'system,distro,level,archs,build_p
   @classmethod
   def _determine_distro(clazz, system):
     'Distro only gets set when the host platform is linux.'
-    if system in [ build_system.LINUX ] and host.SYSTEM == system:
+    if system in [ build_system.LINUX ] and host.DISTRO in [ host.RASPBIAN ]:
       return host.DISTRO
     return None
 
