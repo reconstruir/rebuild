@@ -107,40 +107,44 @@ class recipe_parser(object):
     return reqs
 
   def _parse_steps(self, node):
+    print('_parse_steps(node=%s)' % (node.data.text))
     steps = []
     for child in node.children:
       description = step_description.parse_description(child.data.text)
-      self._parse_step_section(description, child)
+      self._parse_step(description, child)
       #req_text = self._node_text_recursive(child)
       #next_reqs = requirement.parse(req_text)
       #reqs.extend(next_reqs)
     return steps
 
-  def _parse_step_section(self, description, node):
+  def _parse_step(self, description, node):
     args = []
-    print('_parse_step_section(node=%s)' % (node.data.text))
+    print('_parse_step(node=%s)' % (node.data.text))
     for child in node.children:
       section_name = child.data.text
-      self._parse_step_section_config(description, child)
+      self._parse_step_value(description, child)
       #next_reqs = requirement.parse(req_text)
       #reqs.extend(next_reqs)
     return args
 
   _data = namedtuple('_data', 'clazz,argspec')
-  def _parse_step_section_config(self, description, node):
-    return None
+  def _parse_step_value(self, description, node):
+    print('_parse_step_value(node=%s)' % (node.data.text))
     arg_name = recipe_step_value.parse_key(node.data.text)
+    print('_parse_step_value(node=%s) arg_name=%s' % (node.data.text, arg_name))
     if not arg_name in description.argspec:
       self._error('invalid config \"%s\" instead of: %s' % (arg_name), node, ' '.join(description.argspec.keys()))
-    vk = recipe_step_value.parse(node.data.text, description.argspec[arg_name])
-    configs = []
-    if vk.value:
-      mc = masked_config.parse(args_text)
-    for child in node.children:
+    value = recipe_step_value.parse(node.data.text, description.argspec[arg_name])
+    print('_parse_step_value(node=%s) value=%s' % (node.data.text, value))
+    values = []
+    if value.value:
+      values.append(value)
+    else:
+      assert not node.children
       args_text = self._node_text_recursive(child)
       mc = masked_config.parse(args_text)
-      configs.append(mc)
-    return configs
+      values.append(mc)
+    return values
 
   @classmethod
   def _node_is_comment(clazz, node):
