@@ -12,12 +12,12 @@ class _step_foo(step):
   @classmethod
   def argspec(self):
     return {
-      'foo_flags': step_argspec.MASKED_KEY_VALUES,
-      'foo_env': step_argspec.MASKED_STRING_LIST,
+      'foo_flags': step_argspec.KEY_VALUES,
+      'foo_env': step_argspec.STRING_LIST,
       'foo_script': step_argspec.STRING,
       'need_something': step_argspec.BOOL,
-      'patches': step_argspec.MASKED_FILE_LIST,
-      'tests': step_argspec.MASKED_FILE_LIST,
+      'patches': step_argspec.STRING_LIST,
+      'tests': step_argspec.STRING_LIST,
     }
     
   def execute(self, script, env, args):

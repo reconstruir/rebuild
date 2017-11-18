@@ -4,6 +4,7 @@
 from collections import namedtuple
 from bes.common import bool_util, check_type
 from bes.key_value import key_value
+from bes.text import string_list_parser
 from rebuild.step_manager import step_argspec
 
 class recipe_step_value(namedtuple('recipe_step_value', 'system_mask,key,value')):
@@ -34,10 +35,10 @@ class recipe_step_value(namedtuple('recipe_step_value', 'system_mask,key,value')
       return bool_util.parse_bool(value)
     elif argspec == step_argspec.INT:
       return int(value)
-    elif argspec == step_argspec.MASKED_KEY_VALUES:
+    elif argspec == step_argspec.KEY_VALUES:
       assert False
-    elif argspec == step_argspec.MASKED_STRING_LIST:
-      assert False
+    elif argspec == step_argspec.STRING_LIST:
+      return string_list_parser.parse_to_list(value, options = string_list_parser.KEEP_QUOTES)
     elif argspec == step_argspec.STRING:
       return value
     assert False

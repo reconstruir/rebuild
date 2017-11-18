@@ -6,9 +6,9 @@ from bes.enum import enum
 class step_argspec(enum):
   BOOL = 1
   INT = 2
-  MASKED_KEY_VALUES = 3
-  MASKED_FILE_LIST = 4
-  MASKED_STRING_LIST = 5
-  STRING = 6
+  KEY_VALUES = 3
+#  MASKED_FILE_LIST = 4
+  STRING_LIST = 4
+  STRING = 5
     
   DEFAULT = STRING

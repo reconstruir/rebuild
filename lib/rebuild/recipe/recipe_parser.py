@@ -12,6 +12,7 @@ from bes.text import tree_text_parser
 from rebuild.base import build_version, masked_config, requirement, package_descriptor
 from rebuild.step_manager import step_description
 from .recipe_step_value import recipe_step_value
+from .recipe_step import recipe_step
 
 class recipe_parser_error(Exception):
   def __init__(self, message, filename, line_number):
@@ -111,21 +112,17 @@ class recipe_parser(object):
     steps = []
     for child in node.children:
       description = step_description.parse_description(child.data.text)
-      self._parse_step(description, child)
-      #req_text = self._node_text_recursive(child)
-      #next_reqs = requirement.parse(req_text)
-      #reqs.extend(next_reqs)
+      step = self._parse_step(description, child)
+      steps.append(step)
     return steps
 
   def _parse_step(self, description, node):
-    args = []
-    print('_parse_step(node=%s)' % (node.data.text))
+    name = node.data.text
+    values = []
     for child in node.children:
-      section_name = child.data.text
-      self._parse_step_value(description, child)
-      #next_reqs = requirement.parse(req_text)
-      #reqs.extend(next_reqs)
-    return args
+      value = self._parse_step_value(description, child)
+      values.append(value)
+    return recipe_step(name, description, values)
 
   _data = namedtuple('_data', 'clazz,argspec')
   def _parse_step_value(self, description, node):

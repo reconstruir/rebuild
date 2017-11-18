@@ -16,8 +16,8 @@ class step_autoconf_configure(step):
   @classmethod
   def argspec(self):
     return {
-      'configure_flags': step_argspec.MASKED_KEY_VALUES,
-      'configure_env': step_argspec.MASKED_STRING_LIST,
+      'configure_flags': step_argspec.KEY_VALUES,
+      'configure_env': step_argspec.STRING_LIST,
       'configure_script': step_argspec.STRING,
       'need_autoreconf': step_argspec.BOOL,
     }
