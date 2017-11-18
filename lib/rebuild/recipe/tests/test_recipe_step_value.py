@@ -36,6 +36,11 @@ class test_recipe_step_value(unit_test):
     self.assertEqual( ( None, 'key', [ 'bar' ] ), recipe_step_value.parse('key:bar', step_argspec.STRING_LIST) )
     self.assertEqual( ( None, 'key', [ 'foo', 'bar' ] ), recipe_step_value.parse('key:foo bar', step_argspec.STRING_LIST) )
 
+  def test_value_key_values(self):
+    self.assertEqual( ( None, 'key', None ), recipe_step_value.parse('key', step_argspec.KEY_VALUES) )
+    self.assertEqual( ( None, 'key', None ), recipe_step_value.parse('key:', step_argspec.KEY_VALUES) )
+    self.assertEqual( ( None, 'key', [ ( 'foo', '5' ) ] ), recipe_step_value.parse('key:foo=5', step_argspec.KEY_VALUES) )
+
   def test_value_bool(self):
     self.assertEqual( ( None, 'key', None ), recipe_step_value.parse('key', step_argspec.BOOL) )
     self.assertEqual( ( None, 'key', None ), recipe_step_value.parse('key:', step_argspec.BOOL) )
