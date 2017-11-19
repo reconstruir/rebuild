@@ -75,12 +75,12 @@ class test_recipe_step_value(unit_test):
     self.assertEqual( 'f', recipe_step_value.parse_key('f') )
     self.assertEqual( 'key', recipe_step_value.parse_key('key#') )
     
-  def test_parse_system_mask(self):
-    self.assertEqual( None, recipe_step_value.parse_system_mask('') )
-    self.assertEqual( 'all', recipe_step_value.parse_system_mask('all:') )
-    self.assertEqual( None, recipe_step_value.parse_system_mask('all') )
-    self.assertEqual( 'linux', recipe_step_value.parse_system_mask('linux:key') )
-    self.assertEqual( 'linux', recipe_step_value.parse_system_mask('linux:#') )
+  def test_parse_mask(self):
+    self.assertEqual( None, recipe_step_value.parse_mask('') )
+    self.assertEqual( 'all', recipe_step_value.parse_mask('all:') )
+    self.assertEqual( None, recipe_step_value.parse_mask('all') )
+    self.assertEqual( 'linux', recipe_step_value.parse_mask('linux:key') )
+    self.assertEqual( 'linux', recipe_step_value.parse_mask('linux:#') )
     
 if __name__ == '__main__':
   unit_test.main()

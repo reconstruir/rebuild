@@ -13,6 +13,7 @@ from rebuild.base import build_version, masked_config, requirement, package_desc
 from rebuild.step_manager import step_description
 from .recipe_step_value import recipe_step_value
 from .recipe_step import recipe_step
+from .recipe import recipe
 
 class recipe_parser_error(Exception):
   def __init__(self, message, filename, line_number):
@@ -55,15 +56,17 @@ class recipe_parser(object):
         continue
       recipe = self._parse_package(pkg_node)
       recipes.append(recipe)
-    return recipe
+    return recipes
   
   def _parse_package(self, node):
     name, version = self._parse_package_header(node)
+    enabled = True
     properties = {}
     requirements = []
     build_requirements = []
     build_requirements = []
     steps = []
+    instructions = []
     for child in node.children:
       text = child.data.text
       if text.startswith('properties'):
@@ -80,7 +83,11 @@ class recipe_parser(object):
     print('      requirements: %s' % (requirements))
     print('build_requirements: %s' % (build_requirements))
     print('             steps: %s' % (steps))
-    return None
+    desc = package_descriptor(name, version, requirements = requirements,
+                              build_requirements = build_requirements,
+                              properties = properties)
+    return recipe(self.filename, True, properties, requirements, build_requirements, 
+                  desc, instructions, steps)
 
   def _parse_package_header(self, node):
     parts = string_util.split_by_white_space(node.data.text, strip = True)
@@ -122,25 +129,21 @@ class recipe_parser(object):
     for child in node.children:
       value = self._parse_step_value(description, child)
       values.append(value)
-    return recipe_step(name, description, values)
+    return recipe_step(name, values)
 
   _data = namedtuple('_data', 'clazz,argspec')
   def _parse_step_value(self, description, node):
     print('_parse_step_value(node=%s)' % (node.data.text))
     arg_name = recipe_step_value.parse_key(node.data.text)
-    print('_parse_step_value(node=%s) arg_name=%s' % (node.data.text, arg_name))
     if not arg_name in description.argspec:
       self._error('invalid config \"%s\" instead of: %s' % (arg_name), node, ' '.join(description.argspec.keys()))
     value = recipe_step_value.parse(node.data.text, description.argspec[arg_name])
-    print('_parse_step_value(node=%s) value=%s' % (node.data.text, value))
-    values = []
     if value.value:
-      values.append(value)
+      return value
     else:
-      assert not node.children
-      args_text = self._node_text_recursive(child)
-      mc = masked_config.parse(args_text)
-      values.append(mc)
+      assert node.children
+      text = self._node_text_recursive(node.children[0])
+      return recipe_step_value.parse_mask_and_value(arg_name, text, description.argspec[arg_name])
     return values
 
   @classmethod

@@ -3,7 +3,7 @@
 
 from collections import namedtuple
 
-class recipe_step(namedtuple('recipe_step', 'name,description,values')):
+class recipe_step(namedtuple('recipe_step', 'name,values')):
 
-  def __new__(clazz, name, description, values):
-    return clazz.__bases__[0].__new__(clazz, name, description, values)
+  def __new__(clazz, name, values):
+    return clazz.__bases__[0].__new__(clazz, name, values)

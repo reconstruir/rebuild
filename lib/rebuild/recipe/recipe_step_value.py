@@ -58,9 +58,15 @@ class recipe_step_value(namedtuple('recipe_step_value', 'system_mask,key,value')
     return key.strip()
 
   @classmethod
-  def parse_system_mask(clazz, text):
+  def parse_mask(clazz, text):
     system_mask, delimiter, _ = text.partition(':')
     if delimiter == ':' and system_mask:
       return system_mask
     return None
+  
+  @classmethod
+  def parse_mask_and_value(clazz, key, text, argspec):
+    system_mask, delimiter, value = text.partition(':')
+    value = clazz._parse_value(value.strip(), argspec)
+    return clazz(system_mask, key, value)
 check_type.register_class(recipe_step_value)

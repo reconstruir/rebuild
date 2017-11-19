@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from rebuild.recipe import recipe_parser as P, recipe_parser_error as ERR
+from rebuild.recipe import recipe_parser as P, recipe_parser_error as ERR, recipe_step as RS
 from rebuild.step_manager import step, step_argspec, step_result
 
 class _step_foo(step):
@@ -85,12 +85,13 @@ package foo-1.2.3-4
 '''
     r = self._parse(text)
 
+  class _step_takes_bool(step):
+    def __init__(self): super(_step_takes_bool, self).__init__()
+    @classmethod
+    def argspec(self): return { 'bool_value': step_argspec.BOOL }
+    def execute(self, script, env, args): return step_result(True)
+    
   def test_step_value_bool(self):
-    class _step_takes_bool(step):
-      def __init__(self): super(_step_takes_bool, self).__init__()
-      @classmethod
-      def argspec(self): return { 'bool_value': step_argspec.BOOL }
-      def execute(self, script, env, args): return step_result(True)
 
     text = '''#!rebuildrecipe
 package foo-1.2.3-4
@@ -99,7 +100,31 @@ package foo-1.2.3-4
       bool_value: True
 '''
     r = self._parse(text)
-    print('recipe: %s' % (r))
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 'foo', r[0].descriptor.name )
+    self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
+    self.assertEqual( 1, len(r[0].steps) )
+    self.assertEqual( '_step_takes_bool', r[0].steps[0].name )
+    self.assertEqual( 1, len(r[0].steps[0].values) )
+    self.assertEqual( [ ( None, 'bool_value', True ) ], r[0].steps[0].values )
+
+  def test_step_value_bool_new_line(self):
+
+    text = '''#!rebuildrecipe
+package foo-1.2.3-4
+  steps
+    _step_takes_bool
+      bool_value:
+        all: True
+'''
+    r = self._parse(text)
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 'foo', r[0].descriptor.name )
+    self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
+    self.assertEqual( 1, len(r[0].steps) )
+    self.assertEqual( '_step_takes_bool', r[0].steps[0].name )
+    self.assertEqual( 1, len(r[0].steps[0].values) )
+    self.assertEqual( [ ( 'all', 'bool_value', True ) ], r[0].steps[0].values )
     
   def test_invalid_magic(self):
     with self.assertRaises(ERR) as context:
