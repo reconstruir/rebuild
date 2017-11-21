@@ -4,6 +4,7 @@
 from bes.testing.unit_test import unit_test
 from rebuild.recipe import recipe_step_value
 from rebuild.step_manager import step_argspec
+from bes.key_value import key_value as KV, key_value_list as KVL
 
 class test_recipe_step_value(unit_test):
 
@@ -82,5 +83,35 @@ class test_recipe_step_value(unit_test):
     self.assertEqual( 'linux', recipe_step_value.parse_mask('linux:key') )
     self.assertEqual( 'linux', recipe_step_value.parse_mask('linux:#') )
     
+  def test__str__no_mask_int(self):
+    self.assertEqual( 'key: 666', str(recipe_step_value(None, 'key', 666)) )
+
+  def test__str__no_mask_bool(self):
+    self.assertEqual( 'key: True', str(recipe_step_value(None, 'key', True)) )
+
+  def test__str__no_mask_string(self):
+    self.assertEqual( 'key: foo', str(recipe_step_value(None, 'key', 'foo')) )
+
+  def test__str__no_mask_string_list(self):
+    self.assertEqual( 'key: foo bar "x y"', str(recipe_step_value(None, 'key', [ 'foo', 'bar', 'x y' ])) )
+
+  def test__str__no_mask_key_values(self):
+    self.assertEqual( 'key: foo=5 bar=6 baz="x y"', str(recipe_step_value(None, 'key', KVL([KV('foo', 5), KV('bar', 6), KV('baz', 'x y')]))) )
+
+  def test__str__with_mask_int(self):
+    self.assertEqual( 'key\n  all: 666', str(recipe_step_value('all', 'key', 666)) )
+
+  def test__str__with_mask_bool(self):
+    self.assertEqual( 'key\n  all: True', str(recipe_step_value('all', 'key', True)) )
+
+  def test__str__with_mask_string(self):
+    self.assertEqual( 'key\n  all: foo', str(recipe_step_value('all', 'key', 'foo')) )
+
+  def test__str__with_mask_string_list(self):
+    self.assertEqual( 'key\n  all: foo bar "x y"', str(recipe_step_value('all', 'key', [ 'foo', 'bar', 'x y' ])) )
+
+  def test__str__with_mask_key_values(self):
+    self.assertEqual( 'key\n  all: foo=5 bar=6 baz="x y"', str(recipe_step_value('all', 'key', KVL([KV('foo', 5), KV('bar', 6), KV('baz', 'x y')]))) )
+  
 if __name__ == '__main__':
   unit_test.main()
