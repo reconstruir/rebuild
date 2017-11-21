@@ -190,6 +190,40 @@ package foo-1.2.3-4
     self.assertEqual( 1, len(r[0].steps[0].values) )
     self.assertEqual( ( 'all', 'key_values_value', KVL([KV('a', '5'), KV('b', '6'), KV('c', '"x y"')]) ), r[0].steps[0].values[0] )
     
+  def test_step_value_string_list(self):
+
+    text = '''#!rebuildrecipe
+package foo-1.2.3-4
+  steps
+    _step_takes_string_list
+      string_list_value: a b "x y"
+'''
+    r = self._parse(text)
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 'foo', r[0].descriptor.name )
+    self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
+    self.assertEqual( 1, len(r[0].steps) )
+    self.assertEqual( '_step_takes_string_list', r[0].steps[0].name )
+    self.assertEqual( 1, len(r[0].steps[0].values) )
+    self.assertEqual( ( None, 'string_list_value', [ 'a', 'b', '"x y"' ] ), r[0].steps[0].values[0] )
+
+  def test_step_value_string_list_with_mask(self):
+
+    text = '''#!rebuildrecipe
+package foo-1.2.3-4
+  steps
+    _step_takes_string_list
+      string_list_value
+        all: a b "x y"
+'''
+    r = self._parse(text)
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 'foo', r[0].descriptor.name )
+    self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
+    self.assertEqual( 1, len(r[0].steps) )
+    self.assertEqual( '_step_takes_string_list', r[0].steps[0].name )
+    self.assertEqual( 1, len(r[0].steps[0].values) )
+    self.assertEqual( ( 'all', 'string_list_value', [ 'a', 'b', '"x y"' ] ), r[0].steps[0].values[0] )
     
   @classmethod
   def _parse(self, text):
