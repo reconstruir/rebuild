@@ -38,7 +38,7 @@ class test_recipe_parser(unit_test):
     #unit_test.raise_skip('broken')
     pass
   
-  def test_simple(self):
+  def xtest_simple(self):
     text = '''#!rebuildrecipe
 #comment
 
@@ -90,6 +90,18 @@ package foo-1.2.3-4
     @classmethod
     def argspec(self): return { 'bool_value': step_argspec.BOOL }
     def execute(self, script, env, args): return step_result(True)
+
+  class _step_takes_int(step):
+    def __init__(self): super(_step_takes_int, self).__init__()
+    @classmethod
+    def argspec(self): return { 'int_value': step_argspec.INT }
+    def execute(self, script, env, args): return step_result(True)
+    
+  class _step_takes_string(step):
+    def __init__(self): super(_step_takes_string, self).__init__()
+    @classmethod
+    def argspec(self): return { 'string_value': step_argspec.STRING }
+    def execute(self, script, env, args): return step_result(True)
     
   def test_step_value_bool(self):
 
@@ -108,7 +120,7 @@ package foo-1.2.3-4
     self.assertEqual( 1, len(r[0].steps[0].values) )
     self.assertEqual( [ ( None, 'bool_value', True ) ], r[0].steps[0].values )
 
-  def test_step_value_bool_new_line(self):
+  def test_step_value_bool_with_mask(self):
 
     text = '''#!rebuildrecipe
 package foo-1.2.3-4
