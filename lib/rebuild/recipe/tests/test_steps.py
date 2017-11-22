@@ -30,31 +30,66 @@ class step_foo(step):
     return clazz.resolve_step_args_env_and_flags(script, args, 'foo_env', 'foo_flags')
 
 class step_takes_bool(step):
-  def __init__(self): super(step_takes_bool, self).__init__()
+  def __init__(self):
+    super(step_takes_bool, self).__init__()
+    
   @classmethod
-  def argspec(self): return { 'bool_value': step_argspec.BOOL }
-  def execute(self, script, env, args): return step_result(True)
+  def argspec(self):
+    return {
+      'bool_value': step_argspec.BOOL
+    }
+  
+  def execute(self, script, env, args):
+    return step_result(True)
 
 class step_takes_int(step):
-  def __init__(self): super(step_takes_int, self).__init__()
+  def __init__(self):
+    super(step_takes_int, self).__init__()
+    
   @classmethod
-  def argspec(self): return { 'int_value': step_argspec.INT }
-  def execute(self, script, env, args): return step_result(True)
+  def argspec(self):
+    return {
+      'int_value': step_argspec.INT
+    }
+  
+  def execute(self, script, env, args):
+    return step_result(True)
     
 class step_takes_string(step):
-  def __init__(self): super(step_takes_string, self).__init__()
+  def __init__(self):
+    super(step_takes_string, self).__init__()
+    
   @classmethod
-  def argspec(self): return { 'string_value': step_argspec.STRING }
-  def execute(self, script, env, args): return step_result(True)
+  def argspec(self):
+    return {
+      'string_value': step_argspec.STRING
+    }
+  
+  def execute(self, script, env, args):
+    return step_result(True)
     
 class step_takes_string_list(step):
-  def __init__(self): super(step_takes_string_list, self).__init__()
+  def __init__(self):
+    super(step_takes_string_list, self).__init__()
+    
   @classmethod
-  def argspec(self): return { 'string_list_value': step_argspec.STRING_LIST }
-  def execute(self, script, env, args): return step_result(True)
+  def argspec(self):
+    return {
+      'string_list_value': step_argspec.STRING_LIST
+    }
+  
+  def execute(self, script, env, args):
+    return step_result(True)
     
 class step_takes_key_values(step):
-  def __init__(self): super(step_takes_key_values, self).__init__()
+  def __init__(self):
+    super(step_takes_key_values, self).__init__()
+    
   @classmethod
-  def argspec(self): return { 'key_values_value': step_argspec.KEY_VALUES }
-  def execute(self, script, env, args): return step_result(True)
+  def argspec(self):
+    return {
+      'key_values_value': step_argspec.KEY_VALUES
+    }
+  
+  def execute(self, script, env, args):
+    return step_result(True)
