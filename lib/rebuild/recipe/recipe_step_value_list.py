@@ -5,7 +5,7 @@ from bes.common import algorithm, check_type
 from bes.system import compat
 from rebuild.base import build_system
 from bes.common import string_list
-from bes.key_value import key_value_list
+from bes.key_value import key_value, key_value_list
 
 class recipe_step_value_list(object):
 
@@ -82,8 +82,13 @@ class recipe_step_value_list(object):
 
   def _resolve_key_values(self, values):
     result = key_value_list()
-    for value in values:
+    seen = set()
+    for value in reversed(values):
       assert isinstance(value, key_value_list)
-      result.extend(value)
-    return result
+      for x in value:
+        assert isinstance(x, key_value)
+        if not x.key in seen:
+          result.append(x)
+          seen.add(x.key)
+    return [ x for x in reversed(result) ]
   

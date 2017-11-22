@@ -28,6 +28,14 @@ class test_recipe_step_value_list(unit_test):
     r.append(self._string_list('linux: --linux'))
     self.assertEqual( [ '--all', '--linux' ], r.resolve(build_system.LINUX) )
 
+  def test_resolve_key_values(self):
+    r = VL()
+    r.append(self._key_values('all: a=5'))
+    r.append(self._key_values('linux: l=6'))
+    r.append(self._key_values('macos: m=7'))
+    r.append(self._key_values('linux: l=7'))
+    self.assertEqual( [ ( 'a', '5' ), ( 'l', '7' ) ], r.resolve(build_system.LINUX) )
+
   @classmethod
   def _int(clazz, s):
     return V.parse(s, SPEC.INT)
