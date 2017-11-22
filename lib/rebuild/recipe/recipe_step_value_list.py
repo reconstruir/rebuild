@@ -82,13 +82,16 @@ class recipe_step_value_list(object):
 
   def _resolve_key_values(self, values):
     result = key_value_list()
-    seen = set()
-    for value in reversed(values):
+    seen = {}
+    for value in values:
       assert isinstance(value, key_value_list)
-      for x in value:
-        assert isinstance(x, key_value)
-        if not x.key in seen:
-          result.append(x)
-          seen.add(x.key)
-    return [ x for x in reversed(result) ]
-  
+      for next_value in value:
+        i = len(result)
+        assert isinstance(next_value, key_value)
+        seen_i = seen.get(next_value.key, None)
+        if seen_i is not None:
+          result[seen_i] = next_value
+        else:
+          result.append(next_value)
+          seen[next_value.key] = i
+    return result
