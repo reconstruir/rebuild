@@ -2,6 +2,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.common import check_type
+from bes.system import compat
+from rebuild.base import build_system
 
 class recipe_step_value_list(object):
 
@@ -41,3 +43,27 @@ class recipe_step_value_list(object):
 
   def __len__(self):
     return len(self._values)
+
+  def resolve(self, system):
+    if not self._values:
+      raise IndexError('list is empty')
+    first_value = self._values[0].value
+    if compat.is_int(first_value):
+      return self._resolve_int(system)
+    elif compat.is_string(first_value):
+      return self._resolve_string(system)
+    elif isinstance(first_value, bool):
+      return self._resolve_bool(system)
+    elif isinstance(first_value, key_value_list):
+      return self._resolve_key_values(system)
+    elif string_list.is_string_list(first_value):
+      return self._resolve_string_list(system)
+    else:
+      assert False
+
+  def _resolve_int(self, system):
+    result = None
+    for value in self._values:
+      if build_system.mask_matches(value.system_mask, system):
+        result = value.value
+    return result

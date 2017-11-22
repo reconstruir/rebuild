@@ -12,6 +12,8 @@ from rebuild.step_manager import step_argspec
 class recipe_step_value(namedtuple('recipe_step_value', 'system_mask,key,value')):
 
   def __new__(clazz, system_mask, key, value):
+    if system_mask is None:
+      system_mask = 'all'
     return clazz.__bases__[0].__new__(clazz, system_mask, key, value)
 
   @classmethod
