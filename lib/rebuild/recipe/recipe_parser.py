@@ -139,7 +139,7 @@ class recipe_parser(object):
     #print('_parse_step_value(text=%s)' % (node.data.text))
     arg_name = recipe_step_value.parse_key(node.data.text)
     if not arg_name in description.argspec:
-      self._error('invalid config \"%s\" instead of: %s' % (arg_name), node, ' '.join(description.argspec.keys()))
+      self._error('invalid config \"%s\" instead of: %s' % (arg_name, ' '.join(description.argspec.keys())))
     value = recipe_step_value.parse(node.data.text, description.argspec[arg_name])
     if value.value:
       assert not node.children

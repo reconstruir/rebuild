@@ -3,34 +3,9 @@
 
 from bes.testing.unit_test import unit_test
 from rebuild.recipe import recipe_parser as P, recipe_parser_error as ERR, recipe_step as RS
-from rebuild.step_manager import step, step_argspec, step_result
+from rebuild.step_manager import multiple_steps, step, step_argspec, step_result
 from bes.key_value import key_value as KV, key_value_list as KVL
-
-class _step_foo(step):
-  def __init__(self):
-    super(_step_foo, self).__init__()
-
-  @classmethod
-  def argspec(self):
-    return {
-      'foo_flags': step_argspec.KEY_VALUES,
-      'foo_env': step_argspec.STRING_LIST,
-      'foo_script': step_argspec.STRING,
-      'need_something': step_argspec.BOOL,
-      'patches': step_argspec.STRING_LIST,
-      'tests': step_argspec.STRING_LIST,
-    }
-    
-  def execute(self, script, env, args):
-    foo_flags = args.get('foo_flags', [])
-    assert isinstance(foo_flags, list)
-    foo_env = args.get('foo_env', {})
-    assert isinstance(configure_env, dict)
-    return step_result(True)
-
-  @classmethod
-  def parse_step_args(clazz, script, env, args):
-    return clazz.resolve_step_args_env_and_flags(script, args, 'foo_env', 'foo_flags')
+from test_steps import *
 
 class test_recipe_parser(unit_test):
 
@@ -69,7 +44,7 @@ package foo-1.2.3-4
         all: True
         linux: False
 
-    _step_foo
+    step_foo
 
       need_something: True
 
@@ -90,41 +65,11 @@ package foo-1.2.3-4
 '''
     r = self._parse(text)
 
-  class _step_takes_bool(step):
-    def __init__(self): super(_step_takes_bool, self).__init__()
-    @classmethod
-    def argspec(self): return { 'bool_value': step_argspec.BOOL }
-    def execute(self, script, env, args): return step_result(True)
-
-  class _step_takes_int(step):
-    def __init__(self): super(_step_takes_int, self).__init__()
-    @classmethod
-    def argspec(self): return { 'int_value': step_argspec.INT }
-    def execute(self, script, env, args): return step_result(True)
-    
-  class _step_takes_string(step):
-    def __init__(self): super(_step_takes_string, self).__init__()
-    @classmethod
-    def argspec(self): return { 'string_value': step_argspec.STRING }
-    def execute(self, script, env, args): return step_result(True)
-    
-  class _step_takes_string_list(step):
-    def __init__(self): super(_step_takes_string_list, self).__init__()
-    @classmethod
-    def argspec(self): return { 'string_list_value': step_argspec.STRING_LIST }
-    def execute(self, script, env, args): return step_result(True)
-    
-  class _step_takes_key_values(step):
-    def __init__(self): super(_step_takes_key_values, self).__init__()
-    @classmethod
-    def argspec(self): return { 'key_values_value': step_argspec.KEY_VALUES }
-    def execute(self, script, env, args): return step_result(True)
-    
   def test_step_value_bool(self):
     text = '''#!rebuildrecipe
 package foo-1.2.3-4
   steps
-    _step_takes_bool
+    step_takes_bool
       bool_value: True
 '''
     r = self._parse(text)
@@ -132,7 +77,7 @@ package foo-1.2.3-4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( '_step_takes_bool', r[0].steps[0].name )
+    self.assertEqual( 'step_takes_bool', r[0].steps[0].name )
     self.assertEqual( 1, len(r[0].steps[0].values) )
     self.assertEqual( [ ( None, 'bool_value', True ) ], r[0].steps[0].values )
 
@@ -140,7 +85,7 @@ package foo-1.2.3-4
     text = '''#!rebuildrecipe
 package foo-1.2.3-4
   steps
-    _step_takes_bool
+    step_takes_bool
       bool_value:
         all: True
 '''
@@ -149,7 +94,7 @@ package foo-1.2.3-4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( '_step_takes_bool', r[0].steps[0].name )
+    self.assertEqual( 'step_takes_bool', r[0].steps[0].name )
     self.assertEqual( 1, len(r[0].steps[0].values) )
     self.assertEqual( [ ( 'all', 'bool_value', True ) ], r[0].steps[0].values )
 
@@ -157,7 +102,7 @@ package foo-1.2.3-4
     text = '''#!rebuildrecipe
 package foo-1.2.3-4
   steps
-    _step_takes_key_values
+    step_takes_key_values
       key_values_value: a=5 b=6 c="x y"
 '''
     r = self._parse(text)
@@ -165,7 +110,7 @@ package foo-1.2.3-4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( '_step_takes_key_values', r[0].steps[0].name )
+    self.assertEqual( 'step_takes_key_values', r[0].steps[0].name )
     self.assertEqual( 1, len(r[0].steps[0].values) )
     self.assertEqual( ( None, 'key_values_value', KVL([KV('a', '5'), KV('b', '6'), KV('c', '"x y"')]) ), r[0].steps[0].values[0] )
 
@@ -173,7 +118,7 @@ package foo-1.2.3-4
     text = '''#!rebuildrecipe
 package foo-1.2.3-4
   steps
-    _step_takes_key_values
+    step_takes_key_values
       key_values_value
         all: a=5 b=6 c="x y"
 '''
@@ -182,7 +127,7 @@ package foo-1.2.3-4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( '_step_takes_key_values', r[0].steps[0].name )
+    self.assertEqual( 'step_takes_key_values', r[0].steps[0].name )
     self.assertEqual( 1, len(r[0].steps[0].values) )
     self.assertEqual( ( 'all', 'key_values_value', KVL([KV('a', '5'), KV('b', '6'), KV('c', '"x y"')]) ), r[0].steps[0].values[0] )
     
@@ -190,7 +135,7 @@ package foo-1.2.3-4
     text = '''#!rebuildrecipe
 package foo-1.2.3-4
   steps
-    _step_takes_string_list
+    step_takes_string_list
       string_list_value: a b "x y"
 '''
     r = self._parse(text)
@@ -198,7 +143,7 @@ package foo-1.2.3-4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( '_step_takes_string_list', r[0].steps[0].name )
+    self.assertEqual( 'step_takes_string_list', r[0].steps[0].name )
     self.assertEqual( 1, len(r[0].steps[0].values) )
     self.assertEqual( ( None, 'string_list_value', [ 'a', 'b', '"x y"' ] ), r[0].steps[0].values[0] )
 
@@ -206,7 +151,7 @@ package foo-1.2.3-4
     text = '''#!rebuildrecipe
 package foo-1.2.3-4
   steps
-    _step_takes_string_list
+    step_takes_string_list
       string_list_value
         all: a b "x y"
 '''
@@ -215,7 +160,7 @@ package foo-1.2.3-4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( '_step_takes_string_list', r[0].steps[0].name )
+    self.assertEqual( 'step_takes_string_list', r[0].steps[0].name )
     self.assertEqual( 1, len(r[0].steps[0].values) )
     self.assertEqual( ( 'all', 'string_list_value', [ 'a', 'b', '"x y"' ] ), r[0].steps[0].values[0] )
 
@@ -223,7 +168,7 @@ package foo-1.2.3-4
     text = '''#!rebuildrecipe
 package foo-1.2.3-4
   steps
-    _step_takes_key_values
+    step_takes_key_values
       key_values_value
         all: a=5 b=6 c="x y"
              d=7 e=8
@@ -234,7 +179,7 @@ package foo-1.2.3-4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( '_step_takes_key_values', r[0].steps[0].name )
+    self.assertEqual( 'step_takes_key_values', r[0].steps[0].name )
     self.assertEqual( 1, len(r[0].steps[0].values) )
     self.assertEqual( ( 'all', 'key_values_value', KVL.parse('a=5 b=6 c="x y" d=7 e=8 f="kiwi apple"', KVL.KEEP_QUOTES) ), r[0].steps[0].values[0] )
     
@@ -242,7 +187,7 @@ package foo-1.2.3-4
     text = '''#!rebuildrecipe
 package foo-1.2.3-4
   steps
-    _step_takes_key_values
+    step_takes_key_values
       key_values_value
         all: a=5 b=6 c="x y"
              d=7 e=8
@@ -255,7 +200,31 @@ package foo-1.2.3-4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( '_step_takes_key_values', r[0].steps[0].name )
+    self.assertEqual( 'step_takes_key_values', r[0].steps[0].name )
+    print('VALUES: %s' % (r[0].steps[0].values))
+    self.assertEqual( 3, len(r[0].steps[0].values) )
+    self.assertEqual( ( 'all', 'key_values_value', KVL.parse('a=5 b=6 c="x y" d=7 e=8 f="kiwi apple"', KVL.KEEP_QUOTES) ), r[0].steps[0].values[0] )
+    self.assertEqual( ( 'linux', 'key_values_value', KVL.parse('a=linux', KVL.KEEP_QUOTES) ), r[0].steps[0].values[1] )
+    self.assertEqual( ( 'macos', 'key_values_value', KVL.parse('a=macos', KVL.KEEP_QUOTES) ), r[0].steps[0].values[2] )
+
+  def test_multiple_steps(self):
+    text = '''#!rebuildrecipe
+package foo-1.2.3-4
+  steps
+    step_takes_key_values
+      key_values_value
+        all: a=5 b=6 c="x y"
+             d=7 e=8
+             f="kiwi apple"
+        linux: a=linux
+        macos: a=macos
+'''
+    r = self._parse(text)
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 'foo', r[0].descriptor.name )
+    self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
+    self.assertEqual( 1, len(r[0].steps) )
+    self.assertEqual( 'step_takes_key_values', r[0].steps[0].name )
 #    print('VALUES: %s' % (r[0].steps[0].values))
     self.assertEqual( 3, len(r[0].steps[0].values) )
     self.assertEqual( ( 'all', 'key_values_value', KVL.parse('a=5 b=6 c="x y" d=7 e=8 f="kiwi apple"', KVL.KEEP_QUOTES) ), r[0].steps[0].values[0] )
