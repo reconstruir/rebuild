@@ -4,6 +4,7 @@
 from bes.testing.unit_test import unit_test
 from rebuild.recipe import recipe_step_value as V, recipe_step_value_list as VL
 from rebuild.base import build_system
+from rebuild.step_manager import step_argspec as SPEC
 
 class test_recipe_step_value_list(unit_test):
 
@@ -13,11 +14,38 @@ class test_recipe_step_value_list(unit_test):
     r.append(V(None, 'bar', 667))
     self.assertEqual( 2, len(r) )
     
-  def test_resolve_int(self):
+  def xtest_resolve_int(self):
     r = VL()
-    r.append(V(None, 'foo', 666))
-    r.append(V(None, 'bar', 667))
+    r.append(self._int('key: 666'))
+    r.append(self._int('key: 667'))
     self.assertEqual( 667, r.resolve(build_system.LINUX) )
+
+  def xtest_resolve_string_list(self):
+    r = VL()
+    r.append(self._string_list('all: key: --all'))
+    r.append(self._string_list('linux: key: --linux'))
+    r.append(self._string_list('macos: key: --macos'))
+    self.assertEqual( [ '--all', '--linux' ], r.resolve(build_system.LINUX) )
+
+  @classmethod
+  def _int(clazz, s):
+    return V.parse(s, SPEC.INT)
+    
+  @classmethod
+  def _string(clazz, s):
+    return V.parse(s, SPEC.STRING)
+    
+  @classmethod
+  def _bool(clazz, s):
+    return V.parse(s, SPEC.BOOL)
+    
+  @classmethod
+  def _string_list(clazz, s):
+    return V.parse(s, SPEC.STRING_LIST)
+    
+  @classmethod
+  def _key_values(clazz, s):
+    return V.parse(s, SPEC.KEY_VALUES)
     
 if __name__ == '__main__':
   unit_test.main()

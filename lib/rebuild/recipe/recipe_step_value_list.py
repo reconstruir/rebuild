@@ -4,6 +4,8 @@
 from bes.common import check_type
 from bes.system import compat
 from rebuild.base import build_system
+from bes.common import string_list
+from bes.key_value import key_value_list
 
 class recipe_step_value_list(object):
 
@@ -48,22 +50,40 @@ class recipe_step_value_list(object):
     if not self._values:
       raise IndexError('list is empty')
     first_value = self._values[0].value
-    if compat.is_int(first_value):
-      return self._resolve_int(system)
-    elif compat.is_string(first_value):
-      return self._resolve_string(system)
-    elif isinstance(first_value, bool):
-      return self._resolve_bool(system)
-    elif isinstance(first_value, key_value_list):
-      return self._resolve_key_values(system)
-    elif string_list.is_string_list(first_value):
-      return self._resolve_string_list(system)
+    values = self._resolve_values(system)
+    if not values:
+      return None
+    if compat.is_int(values[0]):
+      return values[-1]
+    elif compat.is_string(values[0]):
+      return values[-1]
+    elif isinstance(values[0], bool):
+      return values[-1]
+    elif isinstance(values[0], key_value_list):
+      return self._resolve_key_values(values)
+    elif string_list.is_string_list(values[0]):
+      return self._resolve_string_list(values)
     else:
       assert False
 
-  def _resolve_int(self, system):
-    result = None
+  def _resolve_values(self, system):
+    result = []
     for value in self._values:
-      if build_system.mask_matches(value.system_mask, system):
-        result = value.value
+      if build_system.mask_matches(value.system_mask or 'all', system):
+        result.append(value.value)
     return result
+
+  def _resolve_string_list(self, values):
+    result = []
+    for value in values:
+      assert isinstance(value, list)
+      result.extend(values)
+    return result
+
+  def _resolve_key_values(self, values):
+    result = key_value_list()
+    for value in values:
+      assert isinstance(value, key_value_list)
+      result.extend(values)
+    return result
+  
