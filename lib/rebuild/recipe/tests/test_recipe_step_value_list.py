@@ -14,17 +14,18 @@ class test_recipe_step_value_list(unit_test):
     r.append(V(None, 'bar', 667))
     self.assertEqual( 2, len(r) )
     
-  def xtest_resolve_int(self):
+  def test_resolve_int(self):
     r = VL()
     r.append(self._int('key: 666'))
     r.append(self._int('key: 667'))
     self.assertEqual( 667, r.resolve(build_system.LINUX) )
 
-  def xtest_resolve_string_list(self):
+  def test_resolve_string_list(self):
     r = VL()
-    r.append(self._string_list('all: key: --all'))
-    r.append(self._string_list('linux: key: --linux'))
-    r.append(self._string_list('macos: key: --macos'))
+    r.append(self._string_list('all: --all'))
+    r.append(self._string_list('linux: --linux'))
+    r.append(self._string_list('macos: --macos'))
+    r.append(self._string_list('linux: --linux'))
     self.assertEqual( [ '--all', '--linux' ], r.resolve(build_system.LINUX) )
 
   @classmethod
@@ -41,11 +42,11 @@ class test_recipe_step_value_list(unit_test):
     
   @classmethod
   def _string_list(clazz, s):
-    return V.parse(s, SPEC.STRING_LIST)
+    return V.parse_mask_and_value('key', s, SPEC.STRING_LIST)
     
   @classmethod
   def _key_values(clazz, s):
-    return V.parse(s, SPEC.KEY_VALUES)
+    return V.parse_mask_and_value('key', s, SPEC.KEY_VALUES)
     
 if __name__ == '__main__':
   unit_test.main()

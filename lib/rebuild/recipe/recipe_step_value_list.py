@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.common import check_type
+from bes.common import algorithm, check_type
 from bes.system import compat
 from rebuild.base import build_system
 from bes.common import string_list
@@ -77,13 +77,13 @@ class recipe_step_value_list(object):
     result = []
     for value in values:
       assert isinstance(value, list)
-      result.extend(values)
-    return result
+      result.extend(value)
+    return algorithm.unique(result)
 
   def _resolve_key_values(self, values):
     result = key_value_list()
     for value in values:
       assert isinstance(value, key_value_list)
-      result.extend(values)
+      result.extend(value)
     return result
   
