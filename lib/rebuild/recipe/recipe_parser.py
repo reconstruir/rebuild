@@ -12,6 +12,7 @@ from bes.text import tree_text_parser
 from rebuild.base import build_version, masked_config, requirement, package_descriptor
 from rebuild.step_manager import step_description
 from .recipe_step_value import recipe_step_value
+from .recipe_step_value_list import recipe_step_value_list
 from .recipe_step import recipe_step
 from .recipe import recipe
 
@@ -125,16 +126,16 @@ class recipe_parser(object):
 
   def _parse_step(self, description, node):
     name = node.data.text
-    values = []
+    values = recipe_step_value_list()
     for child in node.children:
       more_values = self._parse_step_value(description, child)
-      assert isinstance(more_values, list)
+      assert isinstance(more_values, recipe_step_value_list)
       values.extend(more_values)
     return recipe_step(name, values)
 
   _data = namedtuple('_data', 'clazz,argspec')
   def _parse_step_value(self, description, node):
-    result = []
+    result = recipe_step_value_list()
     #print('_parse_step_value(text=%s)' % (node.data.text))
     arg_name = recipe_step_value.parse_key(node.data.text)
     if not arg_name in description.argspec:
