@@ -6,9 +6,11 @@ from rebuild.recipe import recipe_step_value, recipe_step_value_list
 
 class test_recipe_step_value_list(unit_test):
 
-  def test_foo(self):
+  def test_append(self):
     r = recipe_step_value_list()
-    r.add(recipe_step_value(None, 'foo', 666))
+    r.append(recipe_step_value(None, 'foo', 666))
+    r.append(recipe_step_value(None, 'bar', 667))
+    self.assertEqual( 2, len(r) )
     
 if __name__ == '__main__':
   unit_test.main()
