@@ -127,24 +127,29 @@ class recipe_parser(object):
     name = node.data.text
     values = []
     for child in node.children:
-      value = self._parse_step_value(description, child)
-      values.append(value)
+      more_values = self._parse_step_value(description, child)
+      assert isinstance(more_values, list)
+      values.extend(more_values)
     return recipe_step(name, values)
 
   _data = namedtuple('_data', 'clazz,argspec')
   def _parse_step_value(self, description, node):
-    print('_parse_step_value(node=%s)' % (node.data.text))
+    result = []
+    #print('_parse_step_value(text=%s)' % (node.data.text))
     arg_name = recipe_step_value.parse_key(node.data.text)
     if not arg_name in description.argspec:
       self._error('invalid config \"%s\" instead of: %s' % (arg_name), node, ' '.join(description.argspec.keys()))
     value = recipe_step_value.parse(node.data.text, description.argspec[arg_name])
     if value.value:
-      return value
+      assert not node.children
+      result.append(value)
     else:
       assert node.children
-      text = self._node_text_recursive(node.children[0])
-      return recipe_step_value.parse_mask_and_value(arg_name, text, description.argspec[arg_name])
-    return values
+      for child in node.children:
+        text = self._node_text_recursive(child)
+        value = recipe_step_value.parse_mask_and_value(arg_name, text, description.argspec[arg_name])
+        result.append(value)
+    return result
 
   @classmethod
   def _node_is_comment(clazz, node):

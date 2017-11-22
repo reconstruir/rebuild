@@ -121,7 +121,6 @@ package foo-1.2.3-4
     def execute(self, script, env, args): return step_result(True)
     
   def test_step_value_bool(self):
-
     text = '''#!rebuildrecipe
 package foo-1.2.3-4
   steps
@@ -138,7 +137,6 @@ package foo-1.2.3-4
     self.assertEqual( [ ( None, 'bool_value', True ) ], r[0].steps[0].values )
 
   def test_step_value_bool_with_mask(self):
-
     text = '''#!rebuildrecipe
 package foo-1.2.3-4
   steps
@@ -156,7 +154,6 @@ package foo-1.2.3-4
     self.assertEqual( [ ( 'all', 'bool_value', True ) ], r[0].steps[0].values )
 
   def test_step_value_key_values(self):
-
     text = '''#!rebuildrecipe
 package foo-1.2.3-4
   steps
@@ -173,7 +170,6 @@ package foo-1.2.3-4
     self.assertEqual( ( None, 'key_values_value', KVL([KV('a', '5'), KV('b', '6'), KV('c', '"x y"')]) ), r[0].steps[0].values[0] )
 
   def test_step_value_key_values_with_mask(self):
-
     text = '''#!rebuildrecipe
 package foo-1.2.3-4
   steps
@@ -191,7 +187,6 @@ package foo-1.2.3-4
     self.assertEqual( ( 'all', 'key_values_value', KVL([KV('a', '5'), KV('b', '6'), KV('c', '"x y"')]) ), r[0].steps[0].values[0] )
     
   def test_step_value_string_list(self):
-
     text = '''#!rebuildrecipe
 package foo-1.2.3-4
   steps
@@ -208,7 +203,6 @@ package foo-1.2.3-4
     self.assertEqual( ( None, 'string_list_value', [ 'a', 'b', '"x y"' ] ), r[0].steps[0].values[0] )
 
   def test_step_value_string_list_with_mask(self):
-
     text = '''#!rebuildrecipe
 package foo-1.2.3-4
   steps
@@ -224,6 +218,49 @@ package foo-1.2.3-4
     self.assertEqual( '_step_takes_string_list', r[0].steps[0].name )
     self.assertEqual( 1, len(r[0].steps[0].values) )
     self.assertEqual( ( 'all', 'string_list_value', [ 'a', 'b', '"x y"' ] ), r[0].steps[0].values[0] )
+
+  def test_step_value_key_values_multi_line(self):
+    text = '''#!rebuildrecipe
+package foo-1.2.3-4
+  steps
+    _step_takes_key_values
+      key_values_value
+        all: a=5 b=6 c="x y"
+             d=7 e=8
+             f="kiwi apple"
+'''
+    r = self._parse(text)
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 'foo', r[0].descriptor.name )
+    self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
+    self.assertEqual( 1, len(r[0].steps) )
+    self.assertEqual( '_step_takes_key_values', r[0].steps[0].name )
+    self.assertEqual( 1, len(r[0].steps[0].values) )
+    self.assertEqual( ( 'all', 'key_values_value', KVL.parse('a=5 b=6 c="x y" d=7 e=8 f="kiwi apple"', KVL.KEEP_QUOTES) ), r[0].steps[0].values[0] )
+    
+  def test_step_value_key_values_many_masks(self):
+    text = '''#!rebuildrecipe
+package foo-1.2.3-4
+  steps
+    _step_takes_key_values
+      key_values_value
+        all: a=5 b=6 c="x y"
+             d=7 e=8
+             f="kiwi apple"
+        linux: a=linux
+        macos: a=macos
+'''
+    r = self._parse(text)
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 'foo', r[0].descriptor.name )
+    self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
+    self.assertEqual( 1, len(r[0].steps) )
+    self.assertEqual( '_step_takes_key_values', r[0].steps[0].name )
+#    print('VALUES: %s' % (r[0].steps[0].values))
+    self.assertEqual( 3, len(r[0].steps[0].values) )
+    self.assertEqual( ( 'all', 'key_values_value', KVL.parse('a=5 b=6 c="x y" d=7 e=8 f="kiwi apple"', KVL.KEEP_QUOTES) ), r[0].steps[0].values[0] )
+    self.assertEqual( ( 'linux', 'key_values_value', KVL.parse('a=linux', KVL.KEEP_QUOTES) ), r[0].steps[0].values[1] )
+    self.assertEqual( ( 'macos', 'key_values_value', KVL.parse('a=macos', KVL.KEEP_QUOTES) ), r[0].steps[0].values[2] )
     
   @classmethod
   def _parse(self, text):
