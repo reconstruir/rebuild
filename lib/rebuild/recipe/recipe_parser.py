@@ -3,7 +3,7 @@
 
 from collections import namedtuple
 
-from bes.common import string_util
+from bes.common import check_type, string_util
 from bes.compat import StringIO
 from bes.key_value import key_value_parser
 from bes.system import log
@@ -11,10 +11,11 @@ from bes.text import tree_text_parser
 
 from rebuild.base import build_version, masked_config, requirement, package_descriptor
 from rebuild.step_manager import step_description
+from .recipe import recipe
+from .recipe_parser_util import recipe_parser_util
+from .recipe_step import recipe_step
 from .recipe_step_value import recipe_step_value
 from .recipe_step_value_list import recipe_step_value_list
-from .recipe_step import recipe_step
-from .recipe import recipe
 
 class recipe_parser_error(Exception):
   def __init__(self, message, filename, line_number):
@@ -130,7 +131,7 @@ class recipe_parser(object):
   _data = namedtuple('_data', 'clazz,argspec')
   def _parse_step_value(self, description, node):
     result = recipe_step_value_list()
-    arg_name = recipe_step_value.parse_key(node.data.text)
+    arg_name = recipe_parser_util.parse_key(node.data.text)
     if not arg_name in description.argspec:
       self._error('invalid config \"%s\" instead of: %s' % (arg_name, ' '.join(description.argspec.keys())))
     value = recipe_step_value.parse(node.data.text, description.argspec[arg_name])

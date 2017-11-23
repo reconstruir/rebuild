@@ -67,15 +67,6 @@ class test_recipe_step_value(unit_test):
     self.assertEqual( ( None, 'key', 0 ), recipe_step_value.parse('key: 0', step_argspec.INT) )
     self.assertEqual( ( None, 'key', 666 ), recipe_step_value.parse('key:666', step_argspec.INT) )
     
-  def test_parse_key(self):
-    self.assertEqual( '', recipe_step_value.parse_key('') )
-    self.assertEqual( 'key', recipe_step_value.parse_key('key:True') )
-    self.assertEqual( 'key', recipe_step_value.parse_key('key') )
-    self.assertEqual( 'key', recipe_step_value.parse_key('key:') )
-    self.assertEqual( 'f', recipe_step_value.parse_key('f:') )
-    self.assertEqual( 'f', recipe_step_value.parse_key('f') )
-    self.assertEqual( 'key', recipe_step_value.parse_key('key#') )
-    
   def test_parse_mask(self):
     self.assertEqual( None, recipe_step_value.parse_mask('') )
     self.assertEqual( 'all', recipe_step_value.parse_mask('all:') )

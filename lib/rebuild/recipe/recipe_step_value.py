@@ -8,6 +8,7 @@ from bes.compat import StringIO
 from bes.key_value import key_value, key_value_list
 from bes.text import string_list_parser
 from rebuild.step_manager import step_argspec
+from .recipe_parser_util import recipe_parser_util
 
 class recipe_step_value(namedtuple('recipe_step_value', 'system_mask,key,value')):
 
@@ -18,7 +19,7 @@ class recipe_step_value(namedtuple('recipe_step_value', 'system_mask,key,value')
   def parse(clazz, text, argspec):
     check_type.check_string(text, 'text')
     check_type.check_step_argspec(argspec, 'argspec')
-    text = clazz._strip_comment(text)
+    text = recipe_parser_util.strip_comment(text)
     key, delimiter, value = text.partition(':')
     key = key.strip()
     if not key:
@@ -87,20 +88,6 @@ class recipe_step_value(namedtuple('recipe_step_value', 'system_mask,key,value')
       return value
     assert False
     
-  @classmethod
-  def _strip_comment(clazz, s):
-    i = s.find('#')
-    if i >= 0:
-      return s[0:i]
-    return s
-
-  @classmethod
-  def parse_key(clazz, text):
-    'Parse only the key'
-    check_type.check_string(text, 'text')
-    key, _, _ = clazz._strip_comment(text).partition(':')
-    return key.strip()
-
   @classmethod
   def parse_mask(clazz, text):
     system_mask, delimiter, _ = text.partition(':')
