@@ -67,13 +67,6 @@ class test_recipe_step_value(unit_test):
     self.assertEqual( ( None, 'key', 0 ), recipe_step_value.parse('key: 0', step_argspec.INT) )
     self.assertEqual( ( None, 'key', 666 ), recipe_step_value.parse('key:666', step_argspec.INT) )
     
-  def test_parse_mask(self):
-    self.assertEqual( None, recipe_step_value.parse_mask('') )
-    self.assertEqual( 'all', recipe_step_value.parse_mask('all:') )
-    self.assertEqual( None, recipe_step_value.parse_mask('all') )
-    self.assertEqual( 'linux', recipe_step_value.parse_mask('linux:key') )
-    self.assertEqual( 'linux', recipe_step_value.parse_mask('linux:#') )
-    
   def test__str__no_mask_int(self):
     self.assertEqual( 'key: 666', str(recipe_step_value(None, 'key', 666)) )
 

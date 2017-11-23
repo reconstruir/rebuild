@@ -90,13 +90,6 @@ class recipe_step_value(namedtuple('recipe_step_value', 'mask,key,value')):
     assert False
     
   @classmethod
-  def parse_mask(clazz, text):
-    mask, delimiter, _ = text.partition(':')
-    if delimiter == ':' and mask:
-      return mask
-    return None
-  
-  @classmethod
   def parse_mask_and_value(clazz, key, text, argspec):
     mask, delimiter, value = text.partition(':')
     value = clazz._parse_value(value.strip(), argspec)
