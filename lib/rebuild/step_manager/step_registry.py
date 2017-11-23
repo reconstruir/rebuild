@@ -18,6 +18,7 @@ class step_registry(object):
     existing = clazz._registry.get(name, None)
     if existing:
       return
+    print('registree: %s' % (str(registree)))
     data = clazz._data(registree, registree.argspec())
     clazz._registry[name] = data
     if name.startswith('step_'):

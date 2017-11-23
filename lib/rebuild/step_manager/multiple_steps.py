@@ -28,6 +28,13 @@ class multiple_steps(step):
     return args
 
   @classmethod
+  def argspec(clazz):
+    result = {}
+    for step_class in clazz._get_step_classes():
+      result.update(step_class.argspec() or {})
+    return result
+
+  @classmethod
   def global_args(clazz):
     args = copy.deepcopy(super(multiple_steps, clazz).global_args())
     for step_class in clazz.step_classes:
@@ -61,3 +68,7 @@ class multiple_steps(step):
     for step in self.steps:
       keys.extend(step.sources_keys())
     return sorted(list(set(keys)))
+
+  @classmethod
+  def _get_step_classes(clazz):
+    return getattr(clazz, 'step_classes', [])

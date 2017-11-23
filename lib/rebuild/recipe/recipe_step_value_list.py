@@ -3,6 +3,7 @@
 
 from bes.common import algorithm, check_type
 from bes.system import compat
+from bes.compat import StringIO
 from rebuild.base import build_system
 from bes.common import string_list
 from bes.key_value import key_value, key_value_list
@@ -29,6 +30,13 @@ class recipe_step_value_list(object):
       return self._values == other
     else:
       raise TypeError('other should be of recipe_step_value_list type instead of %s' % (type(other)))
+    
+  def __str__(self):
+    buf = StringIO()
+    for value in self._values:
+      buf.write(str(value))
+      buf.write(';')
+    return buf.getvalue()
     
   def append(self, value):
     check_type.check_recipe_step_value(value, 'value')

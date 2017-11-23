@@ -78,12 +78,6 @@ class recipe_parser(object):
         build_requirements = self._parse_requirements(child)
       elif text.startswith('steps'):
         steps = self._parse_steps(child)
-    print('              name: %s' % (name))
-    print('           version: %s' % (str(version)))
-    print('        properties: %s' % (properties))
-    print('      requirements: %s' % (requirements))
-    print('build_requirements: %s' % (build_requirements))
-    print('             steps: %s' % (steps))
     desc = package_descriptor(name, version, requirements = requirements,
                               build_requirements = build_requirements,
                               properties = properties)
@@ -116,7 +110,6 @@ class recipe_parser(object):
     return reqs
 
   def _parse_steps(self, node):
-    print('_parse_steps(node=%s)' % (node.data.text))
     steps = []
     for child in node.children:
       description = step_description.parse_description(child.data.text)
@@ -129,6 +122,7 @@ class recipe_parser(object):
     values = recipe_step_value_list()
     for child in node.children:
       more_values = self._parse_step_value(description, child)
+      print('MORE_VALUES: %s - %d - %s' % (more_values, len(more_values), type(more_values)))
       assert isinstance(more_values, recipe_step_value_list)
       values.extend(more_values)
     return recipe_step(name, values)
@@ -136,7 +130,6 @@ class recipe_parser(object):
   _data = namedtuple('_data', 'clazz,argspec')
   def _parse_step_value(self, description, node):
     result = recipe_step_value_list()
-    #print('_parse_step_value(text=%s)' % (node.data.text))
     arg_name = recipe_step_value.parse_key(node.data.text)
     if not arg_name in description.argspec:
       self._error('invalid config \"%s\" instead of: %s' % (arg_name, ' '.join(description.argspec.keys())))
