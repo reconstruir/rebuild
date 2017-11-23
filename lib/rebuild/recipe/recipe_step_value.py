@@ -17,7 +17,7 @@ class recipe_step_value(namedtuple('recipe_step_value', 'mask,key,value')):
     return clazz.__bases__[0].__new__(clazz, mask, key, value)
 
   @classmethod
-  def parse(clazz, text, argspec):
+  def parse_key_and_value(clazz, text, argspec):
     check_type.check_string(text, 'text')
     check_type.check_step_argspec(argspec, 'argspec')
     text = recipe_parser_util.strip_comment(text)
@@ -30,7 +30,7 @@ class recipe_step_value(namedtuple('recipe_step_value', 'mask,key,value')):
     value = value.strip() or None
     if not value:
       return clazz(None, key, value)
-    value = clazz._parse_value(value, argspec)
+    value = clazz.parse_value(value, argspec)
     return clazz(None, key, value)
 
   def __str__(self):
@@ -76,7 +76,7 @@ class recipe_step_value(namedtuple('recipe_step_value', 'mask,key,value')):
       assert False
       
   @classmethod
-  def _parse_value(clazz, value, argspec):
+  def parse_value(clazz, value, argspec):
     if argspec == step_argspec.BOOL:
       return bool_util.parse_bool(value)
     elif argspec == step_argspec.INT:
@@ -92,7 +92,7 @@ class recipe_step_value(namedtuple('recipe_step_value', 'mask,key,value')):
   @classmethod
   def parse_mask_and_value(clazz, key, text, argspec):
     mask, delimiter, value = text.partition(':')
-    value = clazz._parse_value(value.strip(), argspec)
+    value = clazz.parse_value(value.strip(), argspec)
     return clazz(mask, key, value)
 
   def mask_matches(self, system):

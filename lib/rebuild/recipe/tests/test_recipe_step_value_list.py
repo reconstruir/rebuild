@@ -39,15 +39,15 @@ class test_recipe_step_value_list(unit_test):
 
   @classmethod
   def _int(clazz, s):
-    return V.parse(s, SPEC.INT)
+    return V.parse_key_and_value(s, SPEC.INT)
     
   @classmethod
   def _string(clazz, s):
-    return V.parse(s, SPEC.STRING)
+    return V.parse_key_and_value(s, SPEC.STRING)
     
   @classmethod
   def _bool(clazz, s):
-    return V.parse(s, SPEC.BOOL)
+    return V.parse_key_and_value(s, SPEC.BOOL)
     
   @classmethod
   def _string_list(clazz, s):
