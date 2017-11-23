@@ -14,8 +14,8 @@ from rebuild.step_manager import step_description
 from .recipe import recipe
 from .recipe_parser_util import recipe_parser_util
 from .recipe_step import recipe_step
-from .recipe_step_value import recipe_step_value
-from .recipe_step_value_list import recipe_step_value_list
+from .masked_value import masked_value
+from .masked_value_list import masked_value_list
 
 class recipe_parser_error(Exception):
   def __init__(self, message, filename, line_number):
@@ -120,17 +120,17 @@ class recipe_parser(object):
 
   def _parse_step(self, description, node):
     name = node.data.text
-    values = recipe_step_value_list()
+    values = masked_value_list()
     for child in node.children:
       more_values = self._parse_step_value(description, child)
       print('MORE_VALUES: %s - %d - %s' % (more_values, len(more_values), type(more_values)))
-      assert isinstance(more_values, recipe_step_value_list)
+      assert isinstance(more_values, masked_value_list)
       values.extend(more_values)
     return recipe_step(name, values)
 
   _data = namedtuple('_data', 'clazz,argspec')
   def _parse_step_value(self, description, node):
-    result = recipe_step_value_list()
+    result = masked_value_list()
     arg_name = recipe_parser_util.parse_key(node.data.text)
     if not arg_name in description.argspec:
       self._error('invalid config \"%s\" instead of: %s' % (arg_name, ' '.join(description.argspec.keys())))
@@ -142,7 +142,7 @@ class recipe_parser(object):
       assert node.children
       for child in node.children:
         text = self._node_text_recursive(child)
-        value = recipe_step_value.parse_mask_and_value(arg_name, text, description.argspec[arg_name])
+        value = masked_value.parse_mask_and_value(arg_name, text, description.argspec[arg_name])
         result.append(value)
     return result
 

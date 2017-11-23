@@ -2,11 +2,11 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from rebuild.recipe import recipe_step_value as RSV
+from rebuild.recipe import masked_value as RSV
 from rebuild.step_manager import step_argspec
 from bes.key_value import key_value as KV, key_value_list as KVL
 
-class test_recipe_step_value(unit_test):
+class test_masked_value(unit_test):
 
   def test__str__no_mask_int(self):
     self.assertEqual( '666', str(RSV(None, 666)) )

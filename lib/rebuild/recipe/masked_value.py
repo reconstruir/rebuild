@@ -11,7 +11,7 @@ from rebuild.base import build_system
 from rebuild.step_manager import step_argspec
 from .recipe_parser_util import recipe_parser_util
 
-class recipe_step_value(namedtuple('recipe_step_value', 'mask,value')):
+class masked_value(namedtuple('masked_value', 'mask,value')):
 
   def __new__(clazz, mask, value):
     return clazz.__bases__[0].__new__(clazz, mask, value)
@@ -64,4 +64,4 @@ class recipe_step_value(namedtuple('recipe_step_value', 'mask,value')):
   def mask_matches(self, system):
     return build_system.mask_matches(self.mask or 'all', system)
   
-check_type.register_class(recipe_step_value)
+check_type.register_class(masked_value)
