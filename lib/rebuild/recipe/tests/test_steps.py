@@ -8,7 +8,7 @@ class step_foo(step):
     super(step_foo, self).__init__()
 
   @classmethod
-  def argspec(self):
+  def argspec(clazz):
     return {
       'foo_flags': step_argspec.KEY_VALUES,
       'foo_env': step_argspec.STRING_LIST,
@@ -34,7 +34,7 @@ class step_takes_bool(step):
     super(step_takes_bool, self).__init__()
     
   @classmethod
-  def argspec(self):
+  def argspec(clazz):
     return {
       'bool_value': step_argspec.BOOL
     }
@@ -47,7 +47,7 @@ class step_takes_int(step):
     super(step_takes_int, self).__init__()
     
   @classmethod
-  def argspec(self):
+  def argspec(clazz):
     return {
       'int_value': step_argspec.INT
     }
@@ -60,7 +60,7 @@ class step_takes_string(step):
     super(step_takes_string, self).__init__()
     
   @classmethod
-  def argspec(self):
+  def argspec(clazz):
     return {
       'string_value': step_argspec.STRING
     }
@@ -73,7 +73,7 @@ class step_takes_string_list(step):
     super(step_takes_string_list, self).__init__()
     
   @classmethod
-  def argspec(self):
+  def argspec(clazz):
     return {
       'string_list_value': step_argspec.STRING_LIST
     }
@@ -86,10 +86,37 @@ class step_takes_key_values(step):
     super(step_takes_key_values, self).__init__()
     
   @classmethod
-  def argspec(self):
+  def argspec(clazz):
     return {
       'key_values_value': step_argspec.KEY_VALUES
     }
   
   def execute(self, script, env, args):
     return step_result(True)
+
+class step_takes_all(step):
+  def __init__(self):
+    super(step_takes_all, self).__init__()
+    
+  @classmethod
+  def argspec(clazz):
+    return {
+      'bool_value': step_argspec.BOOL,
+      'int_value': step_argspec.INT,
+      'string_value': step_argspec.STRING,
+      'string_list_value': step_argspec.STRING_LIST,
+      'key_values_value': step_argspec.KEY_VALUES,
+    }
+  
+  def execute(self, script, env, args):
+    return step_result(True)
+
+  
+class step_multiple(multiple_steps):
+  step_classes = [
+    step_takes_bool,
+    step_takes_int,
+    step_takes_string,
+    step_takes_string_list,
+    step_takes_key_values
+  ]
