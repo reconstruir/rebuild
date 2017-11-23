@@ -22,7 +22,7 @@ from .variable_manager import variable_manager
 from rebuild.dependency import dependency_resolver
 
 class step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, object)):
-
+  
   @abstractmethod
   def execute(self, script, env, args):
     'Execute the step.'
@@ -35,7 +35,7 @@ class step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
 
   @classmethod
 #  @abstractmethod
-  def argspec(self):
+  def argspec(clazz):
     'Return an args spec.'
     return None
   
