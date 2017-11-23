@@ -275,6 +275,6 @@ package foo-1.2.3-4
   @classmethod
   def _parse(self, text):
     return P(text, '<test>').parse()
-      
+  
 if __name__ == '__main__':
   unit_test.main()

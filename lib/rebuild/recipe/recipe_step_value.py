@@ -11,50 +11,30 @@ from rebuild.base import build_system
 from rebuild.step_manager import step_argspec
 from .recipe_parser_util import recipe_parser_util
 
-class recipe_step_value(namedtuple('recipe_step_value', 'mask,key,value')):
+class recipe_step_value(namedtuple('recipe_step_value', 'mask,value')):
 
-  def __new__(clazz, mask, key, value):
-    return clazz.__bases__[0].__new__(clazz, mask, key, value)
-
-  @classmethod
-  def parse_key_and_value(clazz, text, argspec):
-    check_type.check_string(text, 'text')
-    check_type.check_step_argspec(argspec, 'argspec')
-    text = recipe_parser_util.strip_comment(text)
-    key, delimiter, value = text.partition(':')
-    key = key.strip()
-    if not key:
-      raise ValueError('Invalid step value key: \"%s\"' % (text))
-    if not delimiter:
-      return clazz(None, key, None)
-    value = value.strip() or None
-    if not value:
-      return clazz(None, key, value)
-    value = clazz.parse_value(value, argspec)
-    return clazz(None, key, value)
+  def __new__(clazz, mask, value):
+    return clazz.__bases__[0].__new__(clazz, mask, value)
 
   def __str__(self):
-    return self.to_string(indent = 2)
+    return self.to_string(indent = 0)
   
-  def to_string(self, depth = 0, indent = 2):
+  def to_string(self, depth = 0, indent = 0):
     if self.mask:
       return self._to_string_with_mask(depth, indent)
     else:
       return self._to_string_no_mask(depth, indent)
   
   def _to_string_no_mask(self, depth, indent):
+    spaces = indent * ' '
     buf = StringIO()
-    buf.write(self.key)
-    buf.write(':')
-    buf.write(' ')
+    buf.write(spaces)
     self._write_value_to_buf(buf)
     return buf.getvalue()
       
   def _to_string_with_mask(self, depth, indent):
     spaces = indent * ' '
     buf = StringIO()
-    buf.write(self.key)
-    buf.write('\n')
     buf.write(spaces)
     buf.write(self.mask)
     buf.write(': ')
@@ -74,26 +54,12 @@ class recipe_step_value(namedtuple('recipe_step_value', 'mask,key,value')):
       buf.write(string_list.to_string(self.value, delimiter = ' ', quote = True))
     else:
       assert False
-      
-  @classmethod
-  def parse_value(clazz, value, argspec):
-    if argspec == step_argspec.BOOL:
-      return bool_util.parse_bool(value)
-    elif argspec == step_argspec.INT:
-      return int(value)
-    elif argspec == step_argspec.KEY_VALUES:
-      return key_value_list.parse(value, options = key_value_list.KEEP_QUOTES)
-    elif argspec == step_argspec.STRING_LIST:
-      return string_list_parser.parse_to_list(value, options = string_list_parser.KEEP_QUOTES)
-    elif argspec == step_argspec.STRING:
-      return value
-    assert False
     
   @classmethod
-  def parse_mask_and_value(clazz, key, text, argspec):
+  def parse_mask_and_value(clazz, text, argspec):
     mask, delimiter, value = text.partition(':')
-    value = clazz.parse_value(value.strip(), argspec)
-    return clazz(mask, key, value)
+    value = recipe_parser_util.parse_value(value.strip(), argspec)
+    return clazz(mask, value)
 
   def mask_matches(self, system):
     return build_system.mask_matches(self.mask or 'all', system)

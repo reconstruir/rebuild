@@ -10,14 +10,14 @@ class test_recipe_step_value_list(unit_test):
 
   def test_append(self):
     r = VL()
-    r.append(V(None, 'foo', 666))
-    r.append(V(None, 'bar', 667))
+    r.append(V(None, 666))
+    r.append(V(None, 667))
     self.assertEqual( 2, len(r) )
     
   def test_resolve_int(self):
     r = VL()
-    r.append(self._int('key: 666'))
-    r.append(self._int('key: 667'))
+    r.append(self._int('all: 666'))
+    r.append(self._int('all: 667'))
     self.assertEqual( 667, r.resolve(build_system.LINUX) )
 
   def test_resolve_string_list(self):
@@ -39,23 +39,23 @@ class test_recipe_step_value_list(unit_test):
 
   @classmethod
   def _int(clazz, s):
-    return V.parse_key_and_value(s, SPEC.INT)
+    return V.parse_mask_and_value(s, SPEC.INT)
     
   @classmethod
   def _string(clazz, s):
-    return V.parse_key_and_value(s, SPEC.STRING)
+    return V.parse_mask_and_value(s, SPEC.STRING)
     
   @classmethod
   def _bool(clazz, s):
-    return V.parse_key_and_value(s, SPEC.BOOL)
+    return V.parse_mask_and_value(s, SPEC.BOOL)
     
   @classmethod
   def _string_list(clazz, s):
-    return V.parse_mask_and_value('key', s, SPEC.STRING_LIST)
+    return V.parse_mask_and_value(s, SPEC.STRING_LIST)
     
   @classmethod
   def _key_values(clazz, s):
-    return V.parse_mask_and_value('key', s, SPEC.KEY_VALUES)
+    return V.parse_mask_and_value(s, SPEC.KEY_VALUES)
     
 if __name__ == '__main__':
   unit_test.main()

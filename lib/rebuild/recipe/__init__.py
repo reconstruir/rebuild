@@ -9,5 +9,4 @@ from .recipe_section_parser import recipe_section_parser
 from .recipe_step import recipe_step
 from .recipe_step_value import recipe_step_value
 from .recipe_step_value_list import recipe_step_value_list
-from .recipe_step_value_resolver import recipe_step_value_resolver
 from .recipe_values_parser import recipe_values_parser
