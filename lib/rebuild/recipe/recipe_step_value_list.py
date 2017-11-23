@@ -77,7 +77,7 @@ class recipe_step_value_list(object):
   def _resolve_values(self, system):
     result = []
     for value in self._values:
-      if build_system.mask_matches(value.system_mask or 'all', system):
+      if value.mask_matches(system):
         result.append(value.value)
     return result
 
