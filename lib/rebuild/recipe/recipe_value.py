@@ -16,9 +16,9 @@ class recipe_value(namedtuple('recipe_value', 'key,values')):
     return clazz.__bases__[0].__new__(clazz, key, values)
 
   def __str__(self):
-    return self.to_string(depth = 0, indent = 0)
+    return self.to_string(depth = 0, indent = 2)
   
-  def to_string(self, depth = 0, indent = 0):
+  def to_string(self, depth = 0, indent = 2):
     if not self.values:
       return self._to_string_empty(depth, indent)
     elif len(self.values) == 1 and self.values[0].mask == None:
@@ -28,7 +28,7 @@ class recipe_value(namedtuple('recipe_value', 'key,values')):
 
   def _to_string_empty(self, depth, indent):
     assert len(self.values) == 0
-    spaces = indent * ' '
+    spaces = depth * indent * ' '
     buf = StringIO()
     buf.write(spaces)
     buf.write(self.key)
@@ -38,7 +38,7 @@ class recipe_value(namedtuple('recipe_value', 'key,values')):
   def _to_string_one_line(self, depth, indent):
     assert len(self.values) == 1
     assert self.values[0].mask == None
-    spaces = indent * ' '
+    spaces = depth * indent * ' '
     buf = StringIO()
     buf.write(spaces)
     buf.write(self.key)
@@ -48,14 +48,20 @@ class recipe_value(namedtuple('recipe_value', 'key,values')):
     return buf.getvalue()
       
   def _to_string_multi_line(self, depth, indent):
-    assert len(self.values) > 1
-    spaces = indent * ' '
+    assert len(self.values) > 0
+    spaces = depth * indent * ' '
     buf = StringIO()
     buf.write(spaces)
     buf.write(self.key)
+    buf.write('\n')
     for value in self.values:
       buf.write(spaces)
+      buf.write(indent * ' ')
       buf.write(str(value))
-    return buf.getvalue()
-      
+      buf.write('\n')
+    return buf.getvalue().strip()
+
+  def resolve(self, system):
+    return self.values.resolve(system)
+  
 check_type.register_class(recipe_value)

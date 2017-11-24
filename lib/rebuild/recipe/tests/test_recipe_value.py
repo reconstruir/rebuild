@@ -24,6 +24,27 @@ class test_recipe_value(unit_test):
     
   def test__str__one_line_key_values(self):
     self.assertEqual( 'key: a=5 b=6 c="x y"', str(V('key', [ MV(None, KVL([ ( 'a', 5 ), ( 'b', 6 ), ( 'c', 'x y' ) ])) ])) )
+
+  def test__str__multi_line_bool(self):
+    self.assertEqual( 'key\n  all: True', str(V('key', [ MV('all', True) ])) )
+    
+  def test__str__multi_line_many(self):
+    values = [
+      MV('all', [ 'all' ]),
+      MV('linux', [ 'linux' ]),
+      MV('macos', [ 'macos' ]),
+    ]
+    self.assertEqual( 'key\n  all: all\n  linux: linux\n  macos: macos', str(V('key', values)) )
+    
+  def test_resolve(self):
+    values = [
+      MV('all', [ 'all' ]),
+      MV('linux', [ 'linux' ]),
+      MV('macos', [ 'macos' ]),
+    ]
+    self.assertEqual( [ 'all', 'linux' ], V('key', values).resolve('linux') )
+    self.assertEqual( [ 'all', 'macos' ], V('key', values).resolve('macos') )
+    self.assertEqual( [ 'all' ], V('key', values).resolve('android') )
     
 if __name__ == '__main__':
   unit_test.main()
