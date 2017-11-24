@@ -10,8 +10,9 @@ from bes.key_value import key_value, key_value_list
 
 class masked_value_list(object):
 
-  def __init__(self):
-    self._values = []
+  def __init__(self, values = None):
+    values = values or []
+    self._values = [ v for v in values ]
 
   def __iter__(self):
     return iter(self._values)

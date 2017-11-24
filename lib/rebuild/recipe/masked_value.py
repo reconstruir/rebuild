@@ -14,22 +14,42 @@ from .recipe_parser_util import recipe_parser_util
 class masked_value(namedtuple('masked_value', 'mask,value')):
 
   def __new__(clazz, mask, value):
+    if not clazz.value_type_is_valid(value):
+      raise TypeError('invalid value type: %s - %s' % (str(value), type(value)))
     return clazz.__bases__[0].__new__(clazz, mask, value)
 
   def __str__(self):
-    return self.to_string(indent = 0)
+    return self.to_string(depth = 0, indent = 0)
   
   def to_string(self, depth = 0, indent = 0):
     if self.mask:
       return self._to_string_with_mask(depth, indent)
     else:
       return self._to_string_no_mask(depth, indent)
-  
+
+  def value_to_string(self):
+    if compat.is_int(self.value):
+      return str(self.value)
+    elif compat.is_string(self.value):
+      return self.value
+    elif isinstance(self.value, bool):
+      return str(self.value)
+    elif isinstance(self.value, key_value_list):
+      return self.value.to_string(delimiter = '=', value_delimiter = ' ', quote = True)
+    elif string_list.is_string_list(self.value):
+      return string_list.to_string(self.value, delimiter = ' ', quote = True)
+    else:
+      assert False
+
+  @classmethod
+  def value_type_is_valid(clazz, v):
+    return compat.is_int(v) or compat.is_string(v) or isinstance(v, ( bool, key_value_list )) or string_list.is_string_list(v)
+    
   def _to_string_no_mask(self, depth, indent):
     spaces = indent * ' '
     buf = StringIO()
     buf.write(spaces)
-    self._write_value_to_buf(buf)
+    buf.write(self.value_to_string())
     return buf.getvalue()
       
   def _to_string_with_mask(self, depth, indent):
@@ -38,23 +58,9 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
     buf.write(spaces)
     buf.write(self.mask)
     buf.write(': ')
-    self._write_value_to_buf(buf)
+    buf.write(self.value_to_string())
     return buf.getvalue()
       
-  def _write_value_to_buf(self, buf):
-    if compat.is_int(self.value):
-      buf.write(str(self.value))
-    elif compat.is_string(self.value):
-      buf.write(self.value)
-    elif isinstance(self.value, bool):
-      buf.write(str(self.value))
-    elif isinstance(self.value, key_value_list):
-      buf.write(self.value.to_string(delimiter = '=', value_delimiter = ' ', quote = True))
-    elif string_list.is_string_list(self.value):
-      buf.write(string_list.to_string(self.value, delimiter = ' ', quote = True))
-    else:
-      assert False
-    
   @classmethod
   def parse_mask_and_value(clazz, text, argspec):
     mask, delimiter, value = text.partition(':')

@@ -16,6 +16,7 @@ from .recipe_parser_util import recipe_parser_util
 from .recipe_step import recipe_step
 from .masked_value import masked_value
 from .masked_value_list import masked_value_list
+from .recipe_value import recipe_value
 
 class recipe_parser_error(Exception):
   def __init__(self, message, filename, line_number):
@@ -120,31 +121,30 @@ class recipe_parser(object):
 
   def _parse_step(self, description, node):
     name = node.data.text
-    values = masked_value_list()
+    values = []
     for child in node.children:
       more_values = self._parse_step_value(description, child)
-      print('MORE_VALUES: %s - %d - %s' % (more_values, len(more_values), type(more_values)))
-      assert isinstance(more_values, masked_value_list)
-      values.extend(more_values)
+      assert isinstance(more_values, recipe_value)
+      values.append(more_values)
     return recipe_step(name, values)
 
   _data = namedtuple('_data', 'clazz,argspec')
   def _parse_step_value(self, description, node):
-    result = masked_value_list()
-    arg_name = recipe_parser_util.parse_key(node.data.text)
-    if not arg_name in description.argspec:
-      self._error('invalid config \"%s\" instead of: %s' % (arg_name, ' '.join(description.argspec.keys())))
-    value = recipe_parser_util.parse_key_and_value(node.data.text, description.argspec[arg_name])
+    values = masked_value_list()
+    key = recipe_parser_util.parse_key(node.data.text)
+    if not key in description.argspec:
+      self._error('invalid config \"%s\" instead of: %s' % (key, ' '.join(description.argspec.keys())))
+    value = recipe_parser_util.parse_key_and_value(node.data.text, description.argspec[key])
     if value.value:
       assert not node.children
-      result.append(value)
+      values.append(value)
     else:
       assert node.children
       for child in node.children:
         text = self._node_text_recursive(child)
-        value = masked_value.parse_mask_and_value(arg_name, text, description.argspec[arg_name])
-        result.append(value)
-    return result
+        value = masked_value.parse_mask_and_value(text, description.argspec[key])
+        values.append(value)
+    return recipe_value(key, values)
 
   @classmethod
   def _node_is_comment(clazz, node):
