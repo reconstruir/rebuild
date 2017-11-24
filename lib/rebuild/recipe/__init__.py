@@ -10,3 +10,5 @@ from .recipe_step import recipe_step
 from .masked_value import masked_value
 from .masked_value_list import masked_value_list
 from .recipe_values_parser import recipe_values_parser
+from .recipe_value import recipe_value
+
