@@ -229,7 +229,7 @@ step_takes_all
     macos: a=macos'''
     self.assertEqual( expected, str(r[0].steps[0]) )
     
-  def test_compound_steps(self):
+  def test_compound_step(self):
     text = '''#!rebuildrecipe
 package foo-1.2.3-4
   steps
@@ -263,6 +263,49 @@ step_compound
     linux: a=linux
     macos: a=macos'''
     self.assertEqual( expected, str(r[0].steps[0]) )
+    
+  def test_multiple_steps(self):
+    text = '''#!rebuildrecipe
+package foo-1.2.3-4
+  steps
+    step_takes_bool
+      bool_value:
+        all: True
+
+    step_takes_string_list
+      string_list_value
+        all: a b "x y"
+
+    step_takes_key_values
+      key_values_value
+        all: a=5 b=6 c="x y"
+             d=7 e=8
+             f="kiwi apple"
+        linux: a=linux
+        macos: a=macos
+'''
+    r = self._parse(text)
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 'foo', r[0].descriptor.name )
+    self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
+    self.assertEqual( 3, len(r[0].steps) )
+    expected = '''\
+step_takes_bool
+  bool_value
+    all: True'''
+    self.assertEqual( expected, str(r[0].steps[0]) )
+    expected = '''\
+step_takes_string_list
+  string_list_value
+    all: a b "x y"'''
+    self.assertEqual( expected, str(r[0].steps[1]) )
+    expected = '''\
+step_takes_key_values
+  key_values_value
+    all: a=5 b=6 c="x y" d=7 e=8 f="kiwi apple"
+    linux: a=linux
+    macos: a=macos'''
+    self.assertEqual( expected, str(r[0].steps[2]) )
     
   @classmethod
   def _parse(self, text):
