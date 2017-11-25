@@ -15,7 +15,7 @@ class build_target(namedtuple('build_target', 'system,distro,level,archs,build_p
 
   DEFAULT = 'default'
 
-  def __new__(clazz, system = DEFAULT, level = DEFAULT, archs = DEFAULT, distro = DEFAULT):
+  def __new__(clazz, system = DEFAULT, level = DEFAULT, archs = DEFAULT, distro = None):
     system = build_system.parse_system(system)
     level = clazz._determine_level(level)
     archs = build_arch.determine_archs(system, archs)
