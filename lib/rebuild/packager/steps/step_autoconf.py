@@ -3,9 +3,8 @@
 
 import os.path as path
 from bes.common import Shell
-from rebuild.step_manager import multiple_steps, step, step_argspec, step_call_hooks, step_result
+from rebuild.step_manager import compound_step, step, step_call_hooks, step_result
 from rebuild.toolchain import toolchain
-
 
 class step_autoconf_configure(step):
   'Configure Setup.'
@@ -14,12 +13,12 @@ class step_autoconf_configure(step):
     super(step_autoconf_configure, self).__init__()
 
   @classmethod
-  def argspec(self):
+  def argspec(clazz):
     return {
-      'configure_flags': step_argspec.MASKED_KEY_VALUES,
-      'configure_env': step_argspec.MASKED_STRING_LIST,
-      'configure_script': step_argspec.STRING,
-      'need_autoreconf': step_argspec.BOOL,
+      'configure_flags': clazz.STRING_LIST,
+      'configure_env': clazz.KEY_VALUES,
+      'configure_script': clazz.STRING,
+      'need_autoreconf': clazz.BOOL,
     }
     
   def execute(self, script, env, args):
@@ -71,13 +70,13 @@ class step_autoconf_post_configure_hooks(step_call_hooks):
   def __init__(self):
     super(step_autoconf_post_configure_hooks, self).__init__()
 
-class step_autoconf(multiple_steps):
+class step_autoconf(compound_step):
   'A simple uber step for autoconf projects.'
   from .step_make import step_make, step_make_install
   from .step_setup import step_setup
   from .step_post_install import step_post_install
   
-  step_classes = [
+  __steps__ = [
     step_setup,
     step_autoconf_pre_configure_hooks,
     step_autoconf_configure,

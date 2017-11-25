@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from rebuild.step_manager import multiple_steps
+from rebuild.step_manager import compound_step
 
 from .step_setup_copy_source_to_build_dir import step_setup_copy_source_to_build_dir
 from .step_setup_install_build_requirements import step_setup_install_build_requirements
@@ -13,9 +13,9 @@ from .step_setup_prepare_environment import step_setup_prepare_environment
 from .step_setup_tarball_download import step_setup_tarball_download
 from .step_setup_unpack import step_setup_unpack
 
-class step_setup(multiple_steps):
+class step_setup(compound_step):
   'A collection of multiple setup steps.'
-  step_classes = [
+  __steps__ = [
     step_setup_prepare_environment,
     step_setup_install_build_requirements,
     step_setup_tarball_download,

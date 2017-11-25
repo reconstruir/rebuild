@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.common import Shell
-from rebuild.step_manager import multiple_steps, step, step_result
+from rebuild.step_manager import compound_step, step, step_result
 
 class step_make(step):
   'step to make something with make on unix (gnu or bsd).'
@@ -93,12 +93,12 @@ class step_make_test(step):
   def parse_step_args(clazz, script, env, args):
     return clazz.resolve_step_args_env_and_flags(script, args, 'make_test_env', 'make_test_flags')
 
-class step_make_caca(multiple_steps):
+class step_make_caca(compound_step):
   'A simple uber step for autoconf projects.'
   from .step_setup import step_setup
   from .step_post_install import step_post_install
   
-  step_classes = [
+  __steps__ = [
     step_setup,
     step_make,
     step_make_install,

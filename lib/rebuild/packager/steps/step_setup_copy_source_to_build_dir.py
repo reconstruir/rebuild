@@ -11,7 +11,14 @@ class step_setup_copy_source_to_build_dir(step):
   def __init__(self):
     super(step_setup_copy_source_to_build_dir, self).__init__()
 
+  @classmethod
+  def argspec(clazz):
+    return {
+      'copy_source_to_build_dir': clazz.BOOL,
+    }
+  
   def execute(self, script, env, args):
     if args.get('copy_source_to_build_dir', False):
       tar_util.copy_tree_with_tar(script.source_unpacked_dir, script.build_dir)
     return step_result(True, None)
+

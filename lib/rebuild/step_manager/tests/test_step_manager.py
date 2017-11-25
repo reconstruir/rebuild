@@ -4,7 +4,7 @@
 import copy, unittest
 from bes.common import check_type, dict_util
 from test_steps import *
-from rebuild.step_manager import step, multiple_steps, step_description, step_manager
+from rebuild.step_manager import step, compound_step, step_description, step_manager
 
 class test_step_manager(unittest.TestCase):
 
@@ -131,8 +131,8 @@ class test_step_manager(unittest.TestCase):
 
     self.assertEqual( final_args, bar_step.saved_args )
 
-  class test_multi_steps(multiple_steps):
-    step_classes = [ sample_step_save_args1, sample_step_save_args2, sample_step_save_args3 ]
+  class test_multi_steps(compound_step):
+    __steps__ = [ sample_step_save_args1, sample_step_save_args2, sample_step_save_args3 ]
     def __init__(self):
       super(test_step_manager.test_multi_steps, self).__init__()
 
@@ -183,8 +183,8 @@ class test_step_manager(unittest.TestCase):
     self.assertEqual( None, result.failed_step )
     self.assertEqual( expected_output, result.output )
 
-  class test_multi_step(multiple_steps):
-    step_classes = [ sample_step_fake_output1, sample_step_fake_output2, sample_step_fake_output3 ]
+  class test_multi_step(compound_step):
+    __steps__ = [ sample_step_fake_output1, sample_step_fake_output2, sample_step_fake_output3 ]
     def __init__(self):
       super(test_step_manager.test_multi_step, self).__init__()
 
@@ -228,8 +228,8 @@ class test_step_manager(unittest.TestCase):
     self.assertEqual( None, result.failed_step )
     self.assertEqual( expected_saved_args, s.saved_args )
 
-  class test_multi_step_with_global_args(multiple_steps):
-    step_classes = [ sample_step_save_args1, sample_step_save_args2, sample_step_save_args3 ]
+  class test_multi_step_with_global_args(compound_step):
+    __steps__ = [ sample_step_save_args1, sample_step_save_args2, sample_step_save_args3 ]
     __step_global_args__ = {
       'global_arg3': 'hi',
       'global_arg4': 42,
@@ -237,7 +237,7 @@ class test_step_manager(unittest.TestCase):
     def __init__(self):
       super(test_step_manager.test_multi_step_with_global_args, self).__init__()
 
-  def test_multiple_steps_global_args(self):
+  def test_compound_step_global_args(self):
     sm = step_manager('sm')
     s = sm.add_step(step_description(self.test_multi_step_with_global_args), {}, {})
     result = sm.execute({}, {}, {})
@@ -249,8 +249,8 @@ class test_step_manager(unittest.TestCase):
     self.assertEqual( expected_saved_args, s.steps[1].saved_args )
     self.assertEqual( expected_saved_args, s.steps[2].saved_args )
 
-  class test_multi_step_with_global_args_and_steps_with_global_args(multiple_steps):
-    step_classes = [ sample_step_save_args_with_global_args1, sample_step_save_args_with_global_args2, sample_step_save_args_with_global_args3 ]
+  class test_multi_step_with_global_args_and_steps_with_global_args(compound_step):
+    __steps__ = [ sample_step_save_args_with_global_args1, sample_step_save_args_with_global_args2, sample_step_save_args_with_global_args3 ]
     __step_global_args__ = {
       'global_arg1000': '1000',
       'global_arg1001': '1001',
@@ -258,7 +258,7 @@ class test_step_manager(unittest.TestCase):
     def __init__(self):
       super(test_step_manager.test_multi_step_with_global_args_and_steps_with_global_args, self).__init__()
 
-  def xtest_multiple_steps_global_args_with_steps_with_global_args(self):
+  def xtest_compound_step_global_args_with_steps_with_global_args(self):
     self.maxDiff = None
     sm = step_manager('sm')
     s = sm.add_step(step_description(self.test_multi_step_with_global_args_and_steps_with_global_args), {}, {})
@@ -295,8 +295,8 @@ class test_step_manager(unittest.TestCase):
     self.assertEqual( { 'cheese': 'blue', 'foo': '5', 'bar': 6, 'fruit': 'kiwi' }, s4.saved_args )
     self.assertEqual( { 'drink': 'bourbon', 'cheese': 'blue', 'foo': '5', 'bar': 6, 'fruit': 'kiwi' }, result.output)
 
-  class multi_step_with_steps_that_output(multiple_steps):
-    step_classes = [ step_with_output1, step_with_output2, step_with_output3, step_with_output4 ]
+  class multi_step_with_steps_that_output(compound_step):
+    __steps__ = [ step_with_output1, step_with_output2, step_with_output3, step_with_output4 ]
     def __init__(self):
       super(test_step_manager.multi_step_with_steps_that_output, self).__init__()
     

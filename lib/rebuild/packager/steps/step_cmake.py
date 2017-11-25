@@ -3,7 +3,7 @@
 
 import os.path as path, sys
 from bes.common import Shell
-from rebuild.step_manager import multiple_steps, step, step_result
+from rebuild.step_manager import compound_step, step, step_result
 from rebuild.pkg_config import pkg_config
 from .step_make import step_make
 
@@ -52,13 +52,13 @@ class step_cmake_install(step):
     cmd = 'make install prefix=$REBUILD_STAGE_PREFIX_DIR'
     return self.call_shell(cmd, script, env, args)
 
-class step_cmake(multiple_steps):
+class step_cmake(compound_step):
   'A complete step to build cmake projects.'
   from .step_make import step_make
   from .step_setup import step_setup
   from .step_post_install import step_post_install
   
-  step_classes = [
+  __steps__ = [
     step_setup,
     step_cmake_configure,
     step_cmake_make,

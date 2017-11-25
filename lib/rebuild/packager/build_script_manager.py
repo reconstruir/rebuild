@@ -124,6 +124,15 @@ class build_script_manager(object):
     recipes = build_recipe_loader.load(filename)
     host_recipes = build_recipe_loader.load(filename)
     for recipe, host_recipe in zip(recipes, host_recipes):
+#      if not recipe == host_recipe:
+#        import os
+#        with open('/tmp/a', 'w') as x:
+#          x.write(str(recipe))
+#        with open('/tmp/b', 'w') as x:
+#          x.write(str(host_recipe))
+#        os.system('diff %s %s' % ('/tmp/a', '/tmp/b'))
+#      assert recipe == host_recipe
+#      print('GOOD')
       if recipe.descriptor.is_tool():
         script = build_script(host_recipe, env.config.host_build_target, env)
       else:
