@@ -76,27 +76,23 @@ package foo-1.2.3-4
     self.assertEqual( 1, len(r) )
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
-    self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( 'step_takes_bool', r[0].steps[0].name )
-    self.assertEqual( 1, len(r[0].steps[0].values) )
-    self.assertEqual( [ ( None, 'bool_value', True ) ], r[0].steps[0].values )
+    self.assertEqual( 'step_takes_bool\n    bool_value: True', str(r[0].steps[0]) )
 
   def test_step_value_bool_with_mask(self):
+    self.maxDiff = None
+    
     text = '''#!rebuildrecipe
 package foo-1.2.3-4
   steps
     step_takes_bool
-      bool_value:
+      bool_value
         all: True
 '''
     r = self._parse(text)
     self.assertEqual( 1, len(r) )
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
-    self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( 'step_takes_bool', r[0].steps[0].name )
-    self.assertEqual( 1, len(r[0].steps[0].values) )
-    self.assertEqual( [ ( 'all', 'bool_value', True ) ], r[0].steps[0].values )
+    self.assertEqual( 'step_takes_bool\n  bool_value\n    all: True', str(r[0].steps[0]) )
 
   def test_step_value_key_values(self):
     text = '''#!rebuildrecipe
@@ -110,9 +106,7 @@ package foo-1.2.3-4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( 'step_takes_key_values', r[0].steps[0].name )
-    self.assertEqual( 1, len(r[0].steps[0].values) )
-    self.assertEqual( ( None, 'key_values_value', KVL([KV('a', '5'), KV('b', '6'), KV('c', '"x y"')]) ), r[0].steps[0].values[0] )
+    self.assertEqual( 'step_takes_key_values\n    key_values_value: a=5 b=6 c="x y"', str(r[0].steps[0]) )
 
   def test_step_value_key_values_with_mask(self):
     text = '''#!rebuildrecipe
@@ -127,9 +121,7 @@ package foo-1.2.3-4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( 'step_takes_key_values', r[0].steps[0].name )
-    self.assertEqual( 1, len(r[0].steps[0].values) )
-    self.assertEqual( ( 'all', 'key_values_value', KVL([KV('a', '5'), KV('b', '6'), KV('c', '"x y"')]) ), r[0].steps[0].values[0] )
+    self.assertEqual( 'step_takes_key_values\n  key_values_value\n    all: a=5 b=6 c="x y"', str(r[0].steps[0]) )
     
   def test_step_value_string_list(self):
     text = '''#!rebuildrecipe
@@ -143,9 +135,7 @@ package foo-1.2.3-4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( 'step_takes_string_list', r[0].steps[0].name )
-    self.assertEqual( 1, len(r[0].steps[0].values) )
-    self.assertEqual( ( None, 'string_list_value', [ 'a', 'b', '"x y"' ] ), r[0].steps[0].values[0] )
+    self.assertEqual( 'step_takes_string_list\n    string_list_value: a b "x y"', str(r[0].steps[0]) )
 
   def test_step_value_string_list_with_mask(self):
     text = '''#!rebuildrecipe
@@ -160,9 +150,7 @@ package foo-1.2.3-4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( 'step_takes_string_list', r[0].steps[0].name )
-    self.assertEqual( 1, len(r[0].steps[0].values) )
-    self.assertEqual( ( 'all', 'string_list_value', [ 'a', 'b', '"x y"' ] ), r[0].steps[0].values[0] )
+    self.assertEqual( 'step_takes_string_list\n  string_list_value\n    all: a b "x y"', str(r[0].steps[0]) )
 
   def test_step_value_key_values_multi_line(self):
     text = '''#!rebuildrecipe
@@ -179,13 +167,7 @@ package foo-1.2.3-4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( 'step_takes_key_values', r[0].steps[0].name )
-    self.assertEqual( 'key_values_value', r[0].steps[0].values[0].key )
-    self.assertEqual( 3, len(r[0].steps[0].values[0].values) )
-    self.assertEqual( ( 'all', KVL.parse('a=5 b=6 c="x y" d=7 e=8 f="kiwi apple"', KVL.KEEP_QUOTES) ), r[0].steps[0].values[0].values[0] )
-    self.assertEqual( ( 'linux', KVL.parse('a=linux', KVL.KEEP_QUOTES) ), r[0].steps[0].values[0].values[1] )
-    self.assertEqual( ( 'macos', KVL.parse('a=macos', KVL.KEEP_QUOTES) ), r[0].steps[0].values[0].values[2] )
-
+    self.assertEqual( 'step_takes_key_values\n  key_values_value\n    all: a=5 b=6 c="x y" d=7 e=8 f="kiwi apple"', str(r[0].steps[0]) )
     
   def test_step_value_key_values_many_masks(self):
     text = '''#!rebuildrecipe
@@ -204,18 +186,7 @@ package foo-1.2.3-4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( 'step_takes_key_values', r[0].steps[0].name )
-#    print('VALUES: %s' % (r[0].steps[0].values))
-    self.assertEqual( 1, len(r[0].steps[0].values) )
-
-    self.assertEqual( 'key_values_value', r[0].steps[0].values[0].key )
-    self.assertEqual( 3, len(r[0].steps[0].values[0].values) )
-
-    print('CACA: %s - %s' % (str(r[0].steps[0].values[0].values[0]), type(r[0].steps[0].values[0].values[0])))
-    
-#    self.assertEqual( ( 'all', 'key_values_value', KVL.parse('a=5 b=6 c="x y" d=7 e=8 f="kiwi apple"', KVL.KEEP_QUOTES) ), r[0].steps[0].values[0].values[0] )] )
-#    self.assertEqual( ( 'linux', 'key_values_value', KVL.parse('a=linux', KVL.KEEP_QUOTES) ), r[0].steps[0].values[1] )
-#    self.assertEqual( ( 'macos', 'key_values_value', KVL.parse('a=macos', KVL.KEEP_QUOTES) ), r[0].steps[0].values[2] )
+    self.assertEqual( 'step_takes_key_values\n  key_values_value\n    all: a=5 b=6 c="x y" d=7 e=8 f="kiwi apple"\n    linux: a=linux\n    macos: a=macos', str(r[0].steps[0]) )
 
   def test_takes_all(self):
     text = '''#!rebuildrecipe

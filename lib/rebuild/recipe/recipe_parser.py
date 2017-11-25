@@ -137,7 +137,7 @@ class recipe_parser(object):
     value = recipe_parser_util.parse_key_and_value(node.data.text, description.argspec[key])
     if value.value:
       assert not node.children
-      values.append(value)
+      values.append(masked_value(None, value.value))
     else:
       assert node.children
       for child in node.children:
