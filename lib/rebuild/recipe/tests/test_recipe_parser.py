@@ -186,7 +186,13 @@ package foo-1.2.3-4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( 'step_takes_key_values\n  key_values_value\n    all: a=5 b=6 c="x y" d=7 e=8 f="kiwi apple"\n    linux: a=linux\n    macos: a=macos', str(r[0].steps[0]) )
+    expected = '''\
+step_takes_key_values
+  key_values_value
+    all: a=5 b=6 c="x y" d=7 e=8 f="kiwi apple"
+    linux: a=linux
+    macos: a=macos'''
+    self.assertEqual( expected, str(r[0].steps[0]) )
 
   def test_takes_all(self):
     text = '''#!rebuildrecipe
@@ -211,22 +217,17 @@ package foo-1.2.3-4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( 'step_takes_all', r[0].steps[0].name )
-    self.assertEqual( 3, len(r[0].steps[0].values) )
-
-    self.assertEqual( 'bool_value', r[0].steps[0].values[0].key )
-    self.assertEqual( 1, len(r[0].steps[0].values[0].values) )
-    self.assertEqual( ( 'all', True ), r[0].steps[0].values[0].values[0] )
-
-    self.assertEqual( 'string_list_value', r[0].steps[0].values[1].key )
-    self.assertEqual( 1, len(r[0].steps[0].values[1].values) )
-    self.assertEqual( ( 'all', ['a', 'b', '"x y"'] ), r[0].steps[0].values[1].values[0] )
-    
-    self.assertEqual( 'key_values_value', r[0].steps[0].values[2].key )
-    self.assertEqual( 3, len(r[0].steps[0].values[2].values) )
-    self.assertEqual( ( 'all', KVL.parse('a=5 b=6 c="x y" d=7 e=8 f="kiwi apple"', KVL.KEEP_QUOTES) ), r[0].steps[0].values[2].values[0] )
-    self.assertEqual( ( 'linux', KVL.parse('a=linux', KVL.KEEP_QUOTES) ), r[0].steps[0].values[2].values[1] )
-    self.assertEqual( ( 'macos', KVL.parse('a=macos', KVL.KEEP_QUOTES) ), r[0].steps[0].values[2].values[2] )
+    expected = '''\
+step_takes_all
+  bool_value
+    all: True
+  string_list_value
+    all: a b "x y"
+  key_values_value
+    all: a=5 b=6 c="x y" d=7 e=8 f="kiwi apple"
+    linux: a=linux
+    macos: a=macos'''
+    self.assertEqual( expected, str(r[0].steps[0]) )
     
   def test_compound_steps(self):
     text = '''#!rebuildrecipe
@@ -251,22 +252,17 @@ package foo-1.2.3-4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( 'step_compound', r[0].steps[0].name )
-    self.assertEqual( 3, len(r[0].steps[0].values) )
-
-    self.assertEqual( 'bool_value', r[0].steps[0].values[0].key )
-    self.assertEqual( 1, len(r[0].steps[0].values[0].values) )
-    self.assertEqual( ( 'all', True ), r[0].steps[0].values[0].values[0] )
-
-    self.assertEqual( 'string_list_value', r[0].steps[0].values[1].key )
-    self.assertEqual( 1, len(r[0].steps[0].values[1].values) )
-    self.assertEqual( ( 'all', ['a', 'b', '"x y"'] ), r[0].steps[0].values[1].values[0] )
-    
-    self.assertEqual( 'key_values_value', r[0].steps[0].values[2].key )
-    self.assertEqual( 3, len(r[0].steps[0].values[2].values) )
-    self.assertEqual( ( 'all', KVL.parse('a=5 b=6 c="x y" d=7 e=8 f="kiwi apple"', KVL.KEEP_QUOTES) ), r[0].steps[0].values[2].values[0] )
-    self.assertEqual( ( 'linux', KVL.parse('a=linux', KVL.KEEP_QUOTES) ), r[0].steps[0].values[2].values[1] )
-    self.assertEqual( ( 'macos', KVL.parse('a=macos', KVL.KEEP_QUOTES) ), r[0].steps[0].values[2].values[2] )
+    expected = '''\
+step_compound
+  bool_value
+    all: True
+  string_list_value
+    all: a b "x y"
+  key_values_value
+    all: a=5 b=6 c="x y" d=7 e=8 f="kiwi apple"
+    linux: a=linux
+    macos: a=macos'''
+    self.assertEqual( expected, str(r[0].steps[0]) )
     
   @classmethod
   def _parse(self, text):

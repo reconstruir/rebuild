@@ -19,7 +19,6 @@ class recipe_value(namedtuple('recipe_value', 'key,values')):
     return self.to_string(depth = 0, indent = 2)
   
   def to_string(self, depth = 0, indent = 2):
-    print('recipe_value._to_string(depth=%d, indent=%d)' % (depth, indent))
     if not self.values:
       return self._to_string_empty(depth, indent)
     elif len(self.values) == 1 and self.values[0].mask == None:

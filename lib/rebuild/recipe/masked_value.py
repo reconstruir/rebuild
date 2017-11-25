@@ -46,7 +46,6 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
     return compat.is_int(v) or compat.is_string(v) or isinstance(v, ( bool, key_value_list )) or string_list.is_string_list(v)
     
   def _to_string_no_mask(self, depth, indent):
-    print('_to_string_no_mask(depth=%d, indent=%d)' % (depth, indent))
     spaces = depth * indent * ' '
     buf = StringIO()
     buf.write(spaces)
@@ -54,7 +53,6 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
     return buf.getvalue()
       
   def _to_string_with_mask(self, depth, indent):
-    print('_to_string_with_mask(depth=%d, indent=%d)' % (depth, indent))
     spaces = depth * indent * ' '
     buf = StringIO()
     buf.write(spaces)
