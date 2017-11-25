@@ -11,11 +11,13 @@ from bes.text import tree_text_parser
 
 from rebuild.base import build_version, masked_config, requirement, package_descriptor
 from rebuild.step_manager import step_description
+
+from .masked_value import masked_value
+from .masked_value_list import masked_value_list
 from .recipe import recipe
 from .recipe_parser_util import recipe_parser_util
 from .recipe_step import recipe_step
-from .masked_value import masked_value
-from .masked_value_list import masked_value_list
+from .recipe_step_list import recipe_step_list
 from .recipe_value import recipe_value
 
 class recipe_parser_error(Exception):
@@ -112,7 +114,7 @@ class recipe_parser(object):
     return reqs
 
   def _parse_steps(self, node):
-    steps = []
+    steps = recipe_step_list()
     for child in node.children:
       description = step_description.parse_description(child.data.text)
       step = self._parse_step(description, child)

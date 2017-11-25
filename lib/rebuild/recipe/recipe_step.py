@@ -3,6 +3,7 @@
 
 from collections import namedtuple
 from bes.compat import StringIO
+from bes.common import check_type
 
 class recipe_step(namedtuple('recipe_step', 'name,values')):
 
@@ -24,3 +25,6 @@ class recipe_step(namedtuple('recipe_step', 'name,values')):
       buf.write(value.to_string(depth = depth + 1))
       buf.write('\n')
     return buf.getvalue().strip()
+
+check_type.register_class(recipe_step)
+  

@@ -292,20 +292,16 @@ package foo-1.2.3-4
     expected = '''\
 step_takes_bool
   bool_value
-    all: True'''
-    self.assertEqual( expected, str(r[0].steps[0]) )
-    expected = '''\
+    all: True
 step_takes_string_list
   string_list_value
-    all: a b "x y"'''
-    self.assertEqual( expected, str(r[0].steps[1]) )
-    expected = '''\
+    all: a b "x y"
 step_takes_key_values
   key_values_value
     all: a=5 b=6 c="x y" d=7 e=8 f="kiwi apple"
     linux: a=linux
     macos: a=macos'''
-    self.assertEqual( expected, str(r[0].steps[2]) )
+    self.assertMultiLineEqual( expected, str(r[0].steps) )
     
   @classmethod
   def _parse(self, text):
