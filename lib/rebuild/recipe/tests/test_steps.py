@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from rebuild.step_manager import compound_step, step, step_argspec, step_result
+from rebuild.step_manager import compound_step, step, step_result
 
 class step_foo(step):
   def __init__(self):
@@ -10,12 +10,12 @@ class step_foo(step):
   @classmethod
   def argspec(clazz):
     return {
-      'foo_flags': step_argspec.KEY_VALUES,
-      'foo_env': step_argspec.STRING_LIST,
-      'foo_script': step_argspec.STRING,
-      'need_something': step_argspec.BOOL,
-      'patches': step_argspec.STRING_LIST,
-      'tests': step_argspec.STRING_LIST,
+      'foo_flags': clazz.KEY_VALUES,
+      'foo_env': clazz.STRING_LIST,
+      'foo_script': clazz.STRING,
+      'need_something': clazz.BOOL,
+      'patches': clazz.STRING_LIST,
+      'tests': clazz.STRING_LIST,
     }
     
   def execute(self, script, env, args):
@@ -36,7 +36,7 @@ class step_takes_bool(step):
   @classmethod
   def argspec(clazz):
     return {
-      'bool_value': step_argspec.BOOL
+      'bool_value': clazz.BOOL
     }
   
   def execute(self, script, env, args):
@@ -49,7 +49,7 @@ class step_takes_int(step):
   @classmethod
   def argspec(clazz):
     return {
-      'int_value': step_argspec.INT
+      'int_value': clazz.INT
     }
   
   def execute(self, script, env, args):
@@ -62,7 +62,7 @@ class step_takes_string(step):
   @classmethod
   def argspec(clazz):
     return {
-      'string_value': step_argspec.STRING
+      'string_value': clazz.STRING
     }
   
   def execute(self, script, env, args):
@@ -75,7 +75,7 @@ class step_takes_string_list(step):
   @classmethod
   def argspec(clazz):
     return {
-      'string_list_value': step_argspec.STRING_LIST
+      'string_list_value': clazz.STRING_LIST
     }
   
   def execute(self, script, env, args):
@@ -88,7 +88,7 @@ class step_takes_key_values(step):
   @classmethod
   def argspec(clazz):
     return {
-      'key_values_value': step_argspec.KEY_VALUES
+      'key_values_value': clazz.KEY_VALUES
     }
   
   def execute(self, script, env, args):
@@ -101,11 +101,11 @@ class step_takes_all(step):
   @classmethod
   def argspec(clazz):
     return {
-      'bool_value': step_argspec.BOOL,
-      'int_value': step_argspec.INT,
-      'string_value': step_argspec.STRING,
-      'string_list_value': step_argspec.STRING_LIST,
-      'key_values_value': step_argspec.KEY_VALUES,
+      'bool_value': clazz.BOOL,
+      'int_value': clazz.INT,
+      'string_value': clazz.STRING,
+      'string_list_value': clazz.STRING_LIST,
+      'key_values_value': clazz.KEY_VALUES,
     }
   
   def execute(self, script, env, args):

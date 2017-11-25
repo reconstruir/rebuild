@@ -40,9 +40,7 @@ package foo-1.2.3-4
 
   steps
     step_setup
-      copy_source_to_build_dir all:True linux:False #CFLAGS="$REBUILD_REQUIREMENTS_CFLAGS ${REBUILD_COMPILE_CFLAGS}" LDFLAGS=$REBUILD_REQUIREMENTS_LDFLAGS
-        all: True
-        linux: False
+      copy_source_to_build_dir: True
 
     step_foo
 
