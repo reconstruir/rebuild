@@ -113,7 +113,7 @@ class step_takes_all(step):
 
   
 class step_compound(compound_step):
-  step_classes = [
+  __steps__ = [
     step_takes_bool,
     step_takes_int,
     step_takes_string,

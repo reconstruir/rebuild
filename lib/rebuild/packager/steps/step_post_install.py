@@ -17,7 +17,7 @@ class step_post_install(compound_step):
   from .step_pkg_config_make_pc import step_pkg_config_make_pc
   from .step_install_env_files import step_install_env_files
 
-  step_classes = [
+  __steps__ = [
     step_install_delete_files,
     step_install_install_files,
     step_install_post_install_hooks,

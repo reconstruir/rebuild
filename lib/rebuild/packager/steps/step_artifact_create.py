@@ -121,7 +121,7 @@ class step_artifact_create_publish_package(step):
 
 class step_artifact_create(compound_step):
   'A collection of multiple cleanup steps.'
-  step_classes = [
+  __steps__ = [
     step_artifact_create_make_package,
     step_artifact_create_check_package,
     step_artifact_create_test_package,

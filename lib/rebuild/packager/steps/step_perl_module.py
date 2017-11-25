@@ -49,7 +49,7 @@ class step_perl_module(compound_step):
   from .step_post_install import step_post_install
   from .step_make import step_make_install
 
-  step_classes = [
+  __steps__ = [
     step_setup,
     step_perl_module_setup,
     step_make_install,

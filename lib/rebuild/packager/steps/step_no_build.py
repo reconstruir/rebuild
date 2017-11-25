@@ -8,7 +8,7 @@ class step_no_build(compound_step):
   'A simple uber step for autoconf projects.'
   from .step_artifact_create import step_artifact_create
 
-  step_classes = [
+  __steps__ = [
     step_artifact_create,
   ]
   def __init__(self):

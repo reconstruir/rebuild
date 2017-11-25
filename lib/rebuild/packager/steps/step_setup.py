@@ -15,7 +15,7 @@ from .step_setup_unpack import step_setup_unpack
 
 class step_setup(compound_step):
   'A collection of multiple setup steps.'
-  step_classes = [
+  __steps__ = [
     step_setup_prepare_environment,
     step_setup_install_build_requirements,
     step_setup_tarball_download,

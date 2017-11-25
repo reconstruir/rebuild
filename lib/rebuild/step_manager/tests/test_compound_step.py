@@ -10,10 +10,10 @@ class test_compound_step(unittest.TestCase):
   def test_multi_step(self):
 
     class ThreeSteps(compound_step):
-      step_classes = [ sample_step_save_args1, sample_step_save_args2, sample_step_save_args3 ]
+      __steps__ = [ sample_step_save_args1, sample_step_save_args2, sample_step_save_args3 ]
 
     class TwoSteps(compound_step):
-      step_classes = [ sample_step_save_args1, sample_step_save_args2 ]
+      __steps__ = [ sample_step_save_args1, sample_step_save_args2 ]
 
     three_steps = ThreeSteps()
 

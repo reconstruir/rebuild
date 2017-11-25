@@ -77,7 +77,7 @@ class step_autoconf(compound_step):
   from .step_setup import step_setup
   from .step_post_install import step_post_install
   
-  step_classes = [
+  __steps__ = [
     step_setup,
     step_autoconf_pre_configure_hooks,
     step_autoconf_configure,

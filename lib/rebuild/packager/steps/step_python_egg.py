@@ -87,7 +87,7 @@ class step_python_egg(compound_step):
     #'copy_source_to_build_dir': True,
   }
   
-  step_classes = [
+  __steps__ = [
     step_setup,
     step_python_egg_build,
     step_python_egg_install,

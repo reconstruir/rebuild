@@ -42,7 +42,7 @@ class step_python_lib(compound_step):
     'copy_source_to_build_dir': True,
   }
 
-  step_classes = [
+  __steps__ = [
     step_setup,
     step_python_lib_build,
     step_python_lib_install,

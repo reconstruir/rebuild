@@ -98,7 +98,7 @@ class step_make_caca(compound_step):
   from .step_setup import step_setup
   from .step_post_install import step_post_install
   
-  step_classes = [
+  __steps__ = [
     step_setup,
     step_make,
     step_make_install,

@@ -15,7 +15,7 @@ from .step_cleanup_strip_binaries import step_cleanup_strip_binaries
 
 class step_cleanup(compound_step):
   'A collection of multiple cleanup steps.'
-  step_classes = [
+  __steps__ = [
     step_cleanup_droppings,
     step_cleanup_gnu_info,
     step_cleanup_library_filenames,
