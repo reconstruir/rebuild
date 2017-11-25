@@ -14,12 +14,12 @@ from rebuild.package_manager import package_manager
 
 class build_script(object):
 
-  def __init__(self, recipe, build_target, env):
+  def __init__(self, recipe, env):
     log.add_logging(self, 'build')
     build_blurb.add_blurb(self, 'build')
     self.env = env
     self.descriptor = recipe.descriptor
-    self.build_target = build_target
+    self.build_target = env.config.build_target
     self.filename = recipe.filename
     self.enabled = self.build_target.parse_expression(recipe.enabled)
     self.properties = recipe.properties

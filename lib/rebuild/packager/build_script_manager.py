@@ -122,5 +122,5 @@ class build_script_manager(object):
   def _load_scripts(clazz, filename, env):
     scripts = []
     recipes = build_recipe_loader.load(filename)
-    scripts = [ build_script(recipe, env.config.build_target, env) for recipe in recipes ]
+    scripts = [ build_script(recipe, env) for recipe in recipes ]
     return scripts
