@@ -67,6 +67,12 @@ class step_artifact_create_test_package(step):
   def __init__(self):
     super(step_artifact_create_test_package, self).__init__()
 
+  @classmethod
+  def argspec(clazz):
+    return {
+      'tests': clazz.STRING_LIST,
+    }
+    
   def execute(self, script, env, args):
     if env.config.skip_tests:
       message = '%s: Skipping tests because of --skip-tests' % (script.descriptor.full_name)
@@ -93,7 +99,7 @@ class step_artifact_create_test_package(step):
                                           env.tools_manager,
                                           script.build_target)
       tester = package_tester(config, test)
-      result =  tester.run() #self.__run_test(config, test)
+      result =  tester.run()
       if not result.success:
         return result
     return step_result(True, None)

@@ -14,12 +14,14 @@ from rebuild.base import build_blurb, build_os_env, build_target, masked_config
 from rebuild.toolchain import toolchain
 from rebuild.pkg_config import pkg_config
 from bes.fs import file_util
-from .step_result import step_result
-from .hook_extra_code import HOOK_EXTRA_CODE
-from .hook  import hook
-from .step_registry import step_register
-from .variable_manager import variable_manager
 from rebuild.dependency import dependency_resolver
+
+from .hook  import hook
+from .hook_extra_code import HOOK_EXTRA_CODE
+from .step_argspec import step_argspec
+from .step_registry import step_register
+from .step_result import step_result
+from .variable_manager import variable_manager
 
 class step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, object)):
   
