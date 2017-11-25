@@ -232,7 +232,7 @@ package foo-1.2.3-4
     text = '''#!rebuildrecipe
 package foo-1.2.3-4
   steps
-    step_multiple
+    step_compound
       bool_value:
         all: True
 
@@ -251,7 +251,7 @@ package foo-1.2.3-4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( 'step_multiple', r[0].steps[0].name )
+    self.assertEqual( 'step_compound', r[0].steps[0].name )
     self.assertEqual( 3, len(r[0].steps[0].values) )
 
     self.assertEqual( 'bool_value', r[0].steps[0].values[0].key )

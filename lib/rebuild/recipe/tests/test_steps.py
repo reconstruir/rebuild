@@ -112,7 +112,7 @@ class step_takes_all(step):
     return step_result(True)
 
   
-class step_multiple(compound_step):
+class step_compound(compound_step):
   step_classes = [
     step_takes_bool,
     step_takes_int,
