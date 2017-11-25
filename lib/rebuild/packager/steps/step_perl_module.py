@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from rebuild.step_manager import multiple_steps, step, step_result
+from rebuild.step_manager import compound_step, step, step_result
 from rebuild.base import build_system
 from bes.python import setup_tools
 from bes.common import Shell
@@ -43,7 +43,7 @@ class step_perl_module_post_install_cleanup(step):
       Shell.execute(cmd, cwd = script.stage_lib_dir, shell = True)
     return step_result(True)
 
-class step_perl_module(multiple_steps):
+class step_perl_module(compound_step):
   'A complete step to make python libs using the "build" target of setuptools.'
   from .step_setup import step_setup
   from .step_post_install import step_post_install

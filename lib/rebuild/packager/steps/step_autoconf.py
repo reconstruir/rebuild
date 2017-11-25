@@ -3,7 +3,7 @@
 
 import os.path as path
 from bes.common import Shell
-from rebuild.step_manager import multiple_steps, step, step_argspec, step_call_hooks, step_result
+from rebuild.step_manager import compound_step, step, step_argspec, step_call_hooks, step_result
 from rebuild.toolchain import toolchain
 
 
@@ -71,7 +71,7 @@ class step_autoconf_post_configure_hooks(step_call_hooks):
   def __init__(self):
     super(step_autoconf_post_configure_hooks, self).__init__()
 
-class step_autoconf(multiple_steps):
+class step_autoconf(compound_step):
   'A simple uber step for autoconf projects.'
   from .step_make import step_make, step_make_install
   from .step_setup import step_setup

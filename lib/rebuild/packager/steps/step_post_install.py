@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from rebuild.step_manager import multiple_steps
+from rebuild.step_manager import compound_step
 
-class step_post_install(multiple_steps):
+class step_post_install(compound_step):
   'Everything that needs to happen after the install step.'
 
   from .step_artifact_create import step_artifact_create

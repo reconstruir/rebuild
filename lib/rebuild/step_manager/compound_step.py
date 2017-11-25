@@ -6,15 +6,15 @@ from bes.common import dict_util
 from .step import step
 from .step_result import step_result
 
-class multiple_steps(step):
+class compound_step(step):
 
   def __init__(self):
-    super(multiple_steps, self).__init__()
+    super(compound_step, self).__init__()
     self.steps = []
     for step_class in self.step_classes:
       step = step_class()
-#      self.log_d('%s: multiple_steps.__init__() created %s' % (self, step))
-#      step.update_args(copy.deepcopy(super(multiple_steps, self).global_args()))
+#      self.log_d('%s: compound_step.__init__() created %s' % (self, step))
+#      step.update_args(copy.deepcopy(super(compound_step, self).global_args()))
       step.update_args(step.global_args())
       step.update_args(self.args)
       self.steps.append(step)
@@ -36,7 +36,7 @@ class multiple_steps(step):
 
   @classmethod
   def global_args(clazz):
-    args = copy.deepcopy(super(multiple_steps, clazz).global_args())
+    args = copy.deepcopy(super(compound_step, clazz).global_args())
     for step_class in clazz.step_classes:
       args.update(step_class.global_args())
     return args
@@ -55,7 +55,7 @@ class multiple_steps(step):
     return step_result(True, output = output)
   
   def update_args(self, args):
-    super(multiple_steps, self).update_args(args)
+    super(compound_step, self).update_args(args)
     for step in self.steps:
       step.update_args(args)
 

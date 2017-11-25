@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from rebuild.step_manager import multiple_steps, step, step_argspec, step_result
+from rebuild.step_manager import compound_step, step, step_argspec, step_result
 
 class step_foo(step):
   def __init__(self):
@@ -112,7 +112,7 @@ class step_takes_all(step):
     return step_result(True)
 
   
-class step_multiple(multiple_steps):
+class step_multiple(compound_step):
   step_classes = [
     step_takes_bool,
     step_takes_int,

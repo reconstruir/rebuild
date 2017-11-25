@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from rebuild.step_manager import multiple_steps, step, step_result
+from rebuild.step_manager import compound_step, step, step_result
 from bes.python import setup_tools
 
 class step_python_lib_build(step):
@@ -33,7 +33,7 @@ class step_python_lib_install(step):
   def parse_step_args(clazz, script, env, args):
     return clazz.resolve_step_args_env_and_flags(script, args, 'python_lib_install_env', 'python_lib_install_flags')
 
-class step_python_lib(multiple_steps):
+class step_python_lib(compound_step):
   'A complete step to make python libs using the "build" target of setuptools.'
   from .step_setup import step_setup
   from .step_post_install import step_post_install

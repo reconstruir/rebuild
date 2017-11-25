@@ -3,16 +3,16 @@
 #
 import unittest
 from test_steps import *
-from rebuild.step_manager import multiple_steps
+from rebuild.step_manager import compound_step
 
-class test_multiple_steps(unittest.TestCase):
+class test_compound_step(unittest.TestCase):
 
   def test_multi_step(self):
 
-    class ThreeSteps(multiple_steps):
+    class ThreeSteps(compound_step):
       step_classes = [ sample_step_save_args1, sample_step_save_args2, sample_step_save_args3 ]
 
-    class TwoSteps(multiple_steps):
+    class TwoSteps(compound_step):
       step_classes = [ sample_step_save_args1, sample_step_save_args2 ]
 
     three_steps = ThreeSteps()

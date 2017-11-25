@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from rebuild.step_manager import multiple_steps, step, step_result
+from rebuild.step_manager import compound_step, step, step_result
 from bes.python import setup_tools
 
 class step_python_egg_build(step):
@@ -77,7 +77,7 @@ class step_python_egg_check_downloaded_dependencies(step):
     egg_names = [ path.basename(egg) for egg in eggs ]
     return step_result(False, 'Python downloaded dependency eggs: %s' % (' '.join(egg_names)))
 
-class step_python_egg(multiple_steps):
+class step_python_egg(compound_step):
   'A complete step to make python eggs using the "bdist_egg" target of setuptools.'
   from .step_setup import step_setup
   from .step_post_install import step_post_install

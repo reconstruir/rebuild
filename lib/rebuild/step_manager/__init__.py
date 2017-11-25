@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 
 from .hook import hook
-from .multiple_steps import multiple_steps
+from .compound_step import compound_step
 from .step import step, step_result
 from .step_aborted import step_aborted
 from .step_argspec import step_argspec

@@ -5,7 +5,7 @@ import os, os.path as path
 
 from bes.archive import archiver
 from bes.fs import file_util
-from rebuild.step_manager import multiple_steps, step, step_result
+from rebuild.step_manager import compound_step, step, step_result
 from rebuild.package_manager import package_tester
 
 class step_artifact_create_make_package(step):
@@ -119,7 +119,7 @@ class step_artifact_create_publish_package(step):
     self.blurb('published tarball: %s' % (published_tarball))
     return step_result(True, None, output = { 'published_tarball': published_tarball })
 
-class step_artifact_create(multiple_steps):
+class step_artifact_create(compound_step):
   'A collection of multiple cleanup steps.'
   step_classes = [
     step_artifact_create_make_package,
