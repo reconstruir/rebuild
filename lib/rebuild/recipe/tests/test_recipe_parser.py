@@ -228,7 +228,7 @@ package foo-1.2.3-4
     self.assertEqual( ( 'linux', KVL.parse('a=linux', KVL.KEEP_QUOTES) ), r[0].steps[0].values[2].values[1] )
     self.assertEqual( ( 'macos', KVL.parse('a=macos', KVL.KEEP_QUOTES) ), r[0].steps[0].values[2].values[2] )
     
-  def test_multiple_steps(self):
+  def test_compound_steps(self):
     text = '''#!rebuildrecipe
 package foo-1.2.3-4
   steps
