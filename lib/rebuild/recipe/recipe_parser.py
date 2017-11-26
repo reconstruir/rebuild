@@ -5,7 +5,7 @@ from collections import namedtuple
 
 from bes.common import check_type, string_util
 from bes.compat import StringIO
-from bes.key_value import key_value_parser
+from bes.key_value import key_value, key_value_parser
 from bes.system import log
 from bes.text import tree_text_parser
 
@@ -72,6 +72,7 @@ class recipe_parser(object):
     build_requirements = []
     steps = []
     instructions = []
+    enabled = ''
     for child in node.children:
       text = child.data.text
       if text.startswith('properties'):
@@ -82,10 +83,12 @@ class recipe_parser(object):
         build_requirements = self._parse_requirements(child)
       elif text.startswith('steps'):
         steps = self._parse_steps(child)
+      elif text.startswith('enabled'):
+        enabled = self._parse_enabled(child)
     desc = package_descriptor(name, version, requirements = requirements,
                               build_requirements = build_requirements,
                               properties = properties)
-    return recipe(self.filename, True, properties, requirements, build_requirements, 
+    return recipe(self.filename, enabled, properties, requirements, build_requirements, 
                   desc, instructions, steps)
 
   def _parse_package_header(self, node):
@@ -96,6 +99,13 @@ class recipe_parser(object):
       self._error('package section should begin with \"package $name-$ver-$rev\"', node)
     desc = package_descriptor.parse(parts[1])
     return desc.name, desc.version
+
+  def _parse_enabled(self, node):
+    enabled_text = self._node_text_recursive(node)
+    kv = key_value.parse(enabled_text, delimiter = '=')
+    if kv.key != 'enabled':
+      self._error('invalid "enabled" expression: %s' % (enabled_text))
+    return kv.value
   
   def _parse_properties(self, node):
     properties = {}

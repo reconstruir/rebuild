@@ -111,7 +111,6 @@ class step_takes_all(step):
   def execute(self, script, env, args):
     return step_result(True)
 
-  
 class step_compound(compound_step):
   __steps__ = [
     step_takes_bool,
@@ -120,3 +119,56 @@ class step_compound(compound_step):
     step_takes_string_list,
     step_takes_key_values
   ]
+
+class step_apple(step):
+  def __init__(self):
+    super(step_apple, self).__init__()
+    
+  @classmethod
+  def argspec(clazz):
+    return {
+      'apple_bool_value': clazz.BOOL,
+      'apple_int_value': clazz.INT,
+      'apple_string_value': clazz.STRING,
+      'apple_string_list_value': clazz.STRING_LIST,
+      'apple_key_values_value': clazz.KEY_VALUES,
+    }
+  
+  def execute(self, script, env, args):
+    return step_result(True)
+  
+class step_kiwi(step):
+  def __init__(self):
+    super(step_kiwi, self).__init__()
+    
+  @classmethod
+  def argspec(clazz):
+    return {
+      'kiwi_bool_value': clazz.BOOL,
+      'kiwi_int_value': clazz.INT,
+      'kiwi_string_value': clazz.STRING,
+      'kiwi_string_list_value': clazz.STRING_LIST,
+      'kiwi_key_values_value': clazz.KEY_VALUES,
+    }
+  
+  def execute(self, script, env, args):
+    return step_result(True)
+
+class step_pear(step):
+  def __init__(self):
+    super(step_pear, self).__init__()
+    
+  @classmethod
+  def argspec(clazz):
+    return {
+      'pear_bool_value': clazz.BOOL,
+      'pear_int_value': clazz.INT,
+      'pear_string_value': clazz.STRING,
+      'pear_string_list_value': clazz.STRING_LIST,
+      'pear_key_values_value': clazz.KEY_VALUES,
+    }
+  
+  def execute(self, script, env, args):
+    return step_result(True)
+  
+  
