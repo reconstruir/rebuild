@@ -2,7 +2,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from collections import namedtuple
-from bes.compat import StringIO
 from bes.common import node
 
 class recipe(namedtuple('recipe', 'filename,enabled,properties,requirements,build_requirements,descriptor,instructions,steps')):
@@ -16,6 +15,7 @@ class recipe(namedtuple('recipe', 'filename,enabled,properties,requirements,buil
     return str(self._to_node()).strip()
   
   def _to_node(self):
+    'A convenient way to make a recipe string is to build a graph first.'
     root = node('package %s' % (self.descriptor.full_name))
     root.add_child('')
     root.add_child('enabled=%s' % (self.enabled))
