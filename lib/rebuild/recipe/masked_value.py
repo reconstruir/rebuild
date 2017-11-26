@@ -35,9 +35,9 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
     elif isinstance(self.value, bool):
       return str(self.value)
     elif isinstance(self.value, key_value_list):
-      return self.value.to_string(delimiter = '=', value_delimiter = ' ', quote = True)
+      return self.value.to_string(delimiter = '=', value_delimiter = ' ', quote = False)
     elif string_list.is_string_list(self.value):
-      return string_list.to_string(self.value, delimiter = ' ', quote = True)
+      return string_list.to_string(self.value, delimiter = ' ', quote = False)
     else:
       assert False
 

@@ -303,9 +303,41 @@ package foo-1.2.3-4
         all: --foo --bar --baz="x y z"
 '''
     r = self._parse(text)
-    print("RECIPE: --------------------")
-    print(str(r[0]))
-    print("-----------------")
+    expected='''\
+package foo-1.2.3-4
+  enabled=$system is MACOS
+
+  properties
+    bar="b a r"
+    baz="b a z"
+    category=lib
+    foo="f o o"
+
+  requirements
+    all: cheese >= 1.2
+    linux: wine >= 2.0
+    all: grape >= 3.0
+
+  build_requirements
+    all: kiwi >= 2.4.6
+
+  steps
+    step_apple
+      apple_bool_value: True
+
+    step_kiwi
+      kiwi_key_values_value
+        all: CFLAGS="$REBUILD_REQUIREMENTS_CFLAGS ${REBUILD_COMPILE_CFLAGS}" LDFLAGS=$REBUILD_REQUIREMENTS_LDFLAGS
+      kiwi_string_list_value
+        all: --enable-static --disable-shared
+        linux: --with-pic
+
+    step_pear
+      pear_key_values_value
+        all: a=5 b=6 c="x y"
+      pear_string_list_value
+        all: --foo --bar --baz="x y z"'''
+    self.assert_string_equal_ws( expected, str(r[0]) )
     
 if __name__ == '__main__':
   unit_test.main()

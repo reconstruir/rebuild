@@ -3,6 +3,7 @@
 
 from collections import namedtuple
 from bes.compat import StringIO
+from bes.common import node
 
 class recipe(namedtuple('recipe', 'filename,enabled,properties,requirements,build_requirements,descriptor,instructions,steps')):
 
@@ -12,44 +13,47 @@ class recipe(namedtuple('recipe', 'filename,enabled,properties,requirements,buil
                                       build_requirements, descriptor, instructions, steps)
 
   def __str__(self):
-    return self.to_string(depth = 0, indent = 2)
+    return str(self._to_node()).strip()
   
-  def to_string(self, depth = 0, indent = 2):
-    spaces = depth * indent * ' '
-    buf = StringIO()
-    buf.write('enabled=')
-    buf.write(self.enabled)
-    buf.write('\n')
-    buf.write('\nproperties\n')
-    buf.write(self._properties_to_string(self.properties, depth = depth + 1, indent = indent))
-    buf.write('\n')
-    buf.write('\nrequirements\n')
-    buf.write(self._requirements_to_string(self.requirements, depth = depth + 1, indent = indent))
-    buf.write('\n')
-    buf.write('\nbuild_requirements\n')
-    buf.write(self._requirements_to_string(self.build_requirements, depth = depth + 1, indent = indent))
-    buf.write('\n')
-    return buf.getvalue()
+  def _to_node(self):
+    root = node('package %s' % (self.descriptor.full_name))
+    root.add_child('')
+    root.add_child('enabled=%s' % (self.enabled))
+    root.add_child('')
+    root.children.append(self._properties_to_node(self.properties))
+    root.add_child('')
+    root.children.append(self._requirements_to_node('requirements', self.requirements))
+    root.add_child('')
+    root.children.append(self._requirements_to_node('build_requirements', self.build_requirements))
+    root.add_child('')
+    root.children.append(self._steps_to_node(self.steps))
+    return root
 
   @classmethod
-  def _properties_to_string(clazz, properties, depth = 0, indent = 2):
-    spaces = depth * indent * ' '
-    buf = StringIO()
+  def _properties_to_node(clazz, properties):
+    result = node('properties')
     for key, value in sorted(properties.items()):
-      buf.write(spaces)
-      buf.write(key)
-      buf.write('=')
-      buf.write(value)
-      buf.write('\n')
-    return buf.getvalue().rstrip()
+      result.add_child('%s=%s' % (key, value))
+    return result
 
   @classmethod
-  def _requirements_to_string(clazz, requirements, depth = 0, indent = 2):
-    spaces = depth * indent * ' '
-    buf = StringIO()
+  def _requirements_to_node(clazz, label, requirements):
+    result = node(label)
     for req in requirements:
-      buf.write(spaces)
-      buf.write(req.to_string_colon_format())
-      buf.write('\n')
-    return buf.getvalue().rstrip()
-  
+      result.add_child(req.to_string_colon_format())
+    return result
+
+  @classmethod
+  def _steps_to_node(clazz, steps):
+    result = node('steps')
+    for step in steps:
+      step_node = result.add_child(step.name)
+      for value in step.values:
+        if len(value.values) == 1 and value.values[0].mask is None:
+          step_node.add_child(str(value))
+        else:
+          value_node = step_node.add_child(value.key)
+          for masked_value in value.values:
+            masked_value_node = value_node.add_child(str(masked_value))
+      result.add_child('')
+    return result
