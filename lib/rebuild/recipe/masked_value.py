@@ -19,9 +19,9 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
     return clazz.__bases__[0].__new__(clazz, mask, value)
 
   def __str__(self):
-    return self.to_string(depth = 0, indent = 0)
+    return self.to_string(depth = 0, indent = 2)
   
-  def to_string(self, depth = 0, indent = 0):
+  def to_string(self, depth = 0, indent = 2):
     if self.mask:
       return self._to_string_with_mask(depth, indent)
     else:
