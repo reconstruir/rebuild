@@ -3,10 +3,10 @@
 
 import os.path as path
 
-from rebuild.package_manager import artifact_manager
+from rebuild.package import artifact_manager
 from rebuild.tools_manager import tools_manager
 from rebuild.checksum import checksum_manager
-from rebuild.package_manager import artifact_manager
+from rebuild.package import artifact_manager
 from rebuild.base import package_descriptor
 from bes.git import git_download_cache, git_util
 from rebuild.source_finder import repo_source_finder, local_source_finder, source_finder_chain

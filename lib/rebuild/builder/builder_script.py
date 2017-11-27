@@ -10,7 +10,7 @@ from bes.system import log
 from rebuild.base import build_blurb, build_target
 from rebuild.dependency import dependency_provider
 from rebuild.step import step_description, step_manager
-from rebuild.package_manager import package_manager
+from rebuild.package import package_manager
 
 class builder_script(object):
 

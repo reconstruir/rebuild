@@ -6,10 +6,10 @@ from bes.fs import temp_file
 from bes.system import host
 from rebuild.base import build_system, build_target, build_level, package_descriptor
 from rebuild.pkg_config import pkg_config
-from rebuild.package_manager import artifact_manager, package_manager
-from rebuild.package_manager import PackageFilesConflictError, PackageAlreadyInstallededError, PackageMissingRequirementsError, ArtifactNotFoundError
+from rebuild.package import artifact_manager, package_manager
+from rebuild.package import PackageFilesConflictError, PackageAlreadyInstallededError, PackageMissingRequirementsError, ArtifactNotFoundError
 from bes.archive import archiver, temp_archive
-from rebuild.package_manager.unit_test_packages import unit_test_packages
+from rebuild.package.unit_test_packages import unit_test_packages
 
 class test_package_manager(unittest.TestCase):
 

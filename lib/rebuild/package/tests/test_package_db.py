@@ -4,8 +4,8 @@
 import os.path as path, unittest
 from bes.fs import temp_file
 from rebuild.base import package_descriptor
-from rebuild.package_manager.package_db import package_db
-from rebuild.package_manager.package_db_entry import package_db_entry
+from rebuild.package.package_db import package_db
+from rebuild.package.package_db_entry import package_db_entry
 
 class test_package_db(unittest.TestCase):
 

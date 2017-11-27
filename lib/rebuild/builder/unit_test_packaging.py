@@ -6,7 +6,7 @@ from bes.fs import file_util, temp_file
 from bes.common import string_util
 from rebuild.base import build_target
 from rebuild.builder import builder, builder_config, builder_env
-from rebuild.package_manager import package
+from rebuild.package import package
 from rebuild.checksum import checksum_manager
 from bes.git import git, repo as git_repo
 

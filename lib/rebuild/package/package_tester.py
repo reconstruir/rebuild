@@ -8,12 +8,14 @@ import os, os.path as path
 from collections import namedtuple
 
 from rebuild.step import step_result
-from rebuild.package_manager import package, package_manager
 from rebuild.base import build_blurb, build_os_env, build_target
 from rebuild.toolchain import toolchain
 from rebuild.dependency import dependency_resolver
 from bes.common import Shell
 from bes.fs import file_replace
+
+from .package import package
+from .package_manager import package_manager
 
 class package_tester(object):
 
