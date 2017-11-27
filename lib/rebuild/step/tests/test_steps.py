@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy
-from rebuild.step_manager import step, step_result
+from rebuild.step import step, step_result
 
 def _save_args(args):
   assert isinstance(args, dict)

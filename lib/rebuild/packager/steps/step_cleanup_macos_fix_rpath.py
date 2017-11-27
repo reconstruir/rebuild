@@ -3,7 +3,7 @@
 
 import os.path as path
 from bes.common import Shell
-from rebuild.step_manager import step, step_result
+from rebuild.step import step, step_result
 from rebuild.binary_format import binary_detector
 from rebuild.toolchain import library
 from rebuild.base import build_level

@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from rebuild.step_manager import compound_step, step, step_result
+from rebuild.step import compound_step, step, step_result
 from rebuild.base import build_system
 from bes.python import setup_tools
 from bes.common import Shell

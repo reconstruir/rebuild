@@ -3,7 +3,7 @@
 
 from bes.common import bool_util, check_type, string_list
 from bes.key_value import key_value, key_value_list
-from rebuild.step_manager import step_argspec
+from rebuild.step import step_argspec
 from bes.text import string_list_parser
 
 class recipe_parser_util(object):

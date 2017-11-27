@@ -3,7 +3,7 @@
 #
 import unittest
 from test_steps import *
-from rebuild.step_manager import compound_step
+from rebuild.step import compound_step
 
 class test_compound_step(unittest.TestCase):
 

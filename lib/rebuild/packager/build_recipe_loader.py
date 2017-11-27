@@ -9,8 +9,8 @@ from bes.python import code
 
 from rebuild.base import package_descriptor
 from rebuild.instruction import instruction_list
-from rebuild.step_manager.hook_extra_code import HOOK_EXTRA_CODE
-from rebuild.step_manager import step_description
+from rebuild.step.hook_extra_code import HOOK_EXTRA_CODE
+from rebuild.step import step_description
 from rebuild.recipe import recipe
 
 from .build_recipe_env import build_recipe_env

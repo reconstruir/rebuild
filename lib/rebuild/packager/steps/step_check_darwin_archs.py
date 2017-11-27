@@ -7,7 +7,7 @@ from bes.fs import dir_util, file_util
 from rebuild.toolchain import library
 from rebuild.base import build_category
 from rebuild.toolchain.darwin import lipo
-from rebuild.step_manager import step, step_result
+from rebuild.step import step, step_result
 from rebuild.pkg_config import pkg_config, pkg_config_file
 
 class step_check_darwin_archs(step):

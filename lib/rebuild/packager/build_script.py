@@ -9,7 +9,7 @@ from bes.fs import file_checksum, file_util
 from bes.system import log
 from rebuild.base import build_blurb, build_target
 from rebuild.dependency import dependency_provider
-from rebuild.step_manager import step_description, step_manager
+from rebuild.step import step_description, step_manager
 from rebuild.package_manager import package_manager
 
 class build_script(object):

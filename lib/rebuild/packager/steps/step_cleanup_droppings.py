@@ -3,7 +3,7 @@
 
 import os.path as path
 from bes.fs import file_find, file_util
-from rebuild.step_manager import step, step_result
+from rebuild.step import step, step_result
 
 class step_cleanup_droppings(step):
   'Cleanup libtool droppings.'

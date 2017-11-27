@@ -3,7 +3,7 @@
 
 from bes.testing.unit_test import unit_test
 from rebuild.recipe import recipe_parser_util as RPU
-from rebuild.step_manager import step_argspec
+from rebuild.step import step_argspec
 
 class test_recipe_parser_util(unit_test):
 

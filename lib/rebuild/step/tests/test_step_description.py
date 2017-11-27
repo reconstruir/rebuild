@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 #
 import unittest
-from rebuild.step_manager import step, step_description
+from rebuild.step import step, step_description
 
 class Teststep_description(unittest.TestCase):
 

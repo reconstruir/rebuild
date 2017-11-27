@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from rebuild.step_manager import compound_step, step, step_call_hooks, step_result
+from rebuild.step import compound_step, step, step_call_hooks, step_result
 
 class step_no_build(compound_step):
   'A simple uber step for autoconf projects.'

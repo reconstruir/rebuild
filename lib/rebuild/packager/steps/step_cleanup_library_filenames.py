@@ -6,7 +6,7 @@ import os.path as path
 from bes.fs import file_util
 from bes.common import string_util
 from rebuild.toolchain import library
-from rebuild.step_manager import step, step_result
+from rebuild.step import step, step_result
 from rebuild.pkg_config import pkg_config, pkg_config_file
 
 class step_cleanup_library_filenames(step):

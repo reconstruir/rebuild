@@ -4,7 +4,7 @@
 import copy, unittest
 from bes.common import check_type, dict_util
 from test_steps import *
-from rebuild.step_manager import step, compound_step, step_description, step_manager
+from rebuild.step import step, compound_step, step_description, step_manager
 
 class test_step_manager(unittest.TestCase):
 

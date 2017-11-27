@@ -3,7 +3,7 @@
 #
 
 import unittest
-from rebuild.step_manager import step_result
+from rebuild.step import step_result
 
 class Teststep_result(unittest.TestCase):
 

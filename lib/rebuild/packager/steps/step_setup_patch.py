@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from rebuild.step_manager import step, step_result
+from rebuild.step import step, step_result
 from rebuild.tools import patch
 
 class step_setup_patch(step):

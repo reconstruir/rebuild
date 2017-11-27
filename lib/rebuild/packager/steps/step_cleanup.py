@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from rebuild.step_manager import compound_step
+from rebuild.step import compound_step
 
 from .step_cleanup_binary_filenames import step_cleanup_binary_filenames
 from .step_cleanup_droppings import step_cleanup_droppings

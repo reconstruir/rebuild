@@ -5,7 +5,7 @@ import os, os.path as path
 
 from bes.common import dict_util, object_util, string_util, variable
 from bes.fs import file_replace
-from rebuild.step_manager import step, step_result
+from rebuild.step import step, step_result
 from rebuild.pkg_config import pkg_config_file
 
 # FIXME: unify the replacements here with those in step

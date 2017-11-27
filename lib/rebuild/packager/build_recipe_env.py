@@ -3,7 +3,7 @@
 
 import copy
 
-from rebuild.step_manager import variable_manager
+from rebuild.step import variable_manager
 
 class build_recipe_env(object):
 

@@ -4,7 +4,7 @@
 from bes.testing.unit_test import unit_test
 from rebuild.recipe import masked_value as V, masked_value_list as VL
 from rebuild.base import build_system
-from rebuild.step_manager import step_argspec as SPEC
+from rebuild.step import step_argspec as SPEC
 
 class test_masked_value_list(unit_test):
 

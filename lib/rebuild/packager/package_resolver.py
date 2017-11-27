@@ -6,7 +6,7 @@
 #from bes.thread import thread_pool
 #from bes.fs import dir_util, file_util
 #from collections import namedtuple
-#from rebuild.step_manager import step_aborted
+#from rebuild.step import step_aborted
 #
 #from rebuild.base import build_target
 

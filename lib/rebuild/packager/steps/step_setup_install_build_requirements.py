@@ -3,7 +3,7 @@
 
 import copy, os, os.path as path
 
-from rebuild.step_manager import step, step_result
+from rebuild.step import step, step_result
 from rebuild.base import build_blurb
 
 class step_setup_install_build_requirements(step):

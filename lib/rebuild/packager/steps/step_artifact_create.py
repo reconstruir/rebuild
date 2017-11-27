@@ -5,7 +5,7 @@ import os, os.path as path
 
 from bes.archive import archiver
 from bes.fs import file_util
-from rebuild.step_manager import compound_step, step, step_result
+from rebuild.step import compound_step, step, step_result
 from rebuild.package_manager import package_tester
 
 class step_artifact_create_make_package(step):

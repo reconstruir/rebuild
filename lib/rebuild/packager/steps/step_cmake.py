@@ -3,7 +3,7 @@
 
 import os.path as path, sys
 from bes.common import Shell
-from rebuild.step_manager import compound_step, step, step_result
+from rebuild.step import compound_step, step, step_result
 from rebuild.pkg_config import pkg_config
 from .step_make import step_make
 

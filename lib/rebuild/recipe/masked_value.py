@@ -8,7 +8,7 @@ from bes.compat import StringIO
 from bes.key_value import key_value, key_value_list
 from bes.text import string_list_parser
 from rebuild.base import build_system
-from rebuild.step_manager import step_argspec
+from rebuild.step import step_argspec
 from .recipe_parser_util import recipe_parser_util
 
 class masked_value(namedtuple('masked_value', 'mask,value')):
@@ -35,9 +35,9 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
     elif isinstance(self.value, bool):
       return str(self.value)
     elif isinstance(self.value, key_value_list):
-      return self.value.to_string(delimiter = '=', value_delimiter = ' ', quote = False)
+      return self.value.to_string(delimiter = '=', value_delimiter = ' ', quote = True)
     elif string_list.is_string_list(self.value):
-      return string_list.to_string(self.value, delimiter = ' ', quote = False)
+      return string_list.to_string(self.value, delimiter = ' ', quote = True)
     else:
       assert False
 

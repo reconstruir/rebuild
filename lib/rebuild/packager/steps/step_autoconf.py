@@ -3,7 +3,7 @@
 
 import os.path as path
 from bes.common import Shell
-from rebuild.step_manager import compound_step, step, step_call_hooks, step_result
+from rebuild.step import compound_step, step, step_call_hooks, step_result
 from rebuild.toolchain import toolchain
 
 class step_autoconf_configure(step):

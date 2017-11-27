@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.common import Shell
-from rebuild.step_manager import compound_step, step, step_result
+from rebuild.step import compound_step, step, step_result
 
 class step_make(step):
   'step to make something with make on unix (gnu or bsd).'

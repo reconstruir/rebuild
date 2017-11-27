@@ -3,7 +3,7 @@
 
 from bes.testing.unit_test import unit_test
 from rebuild.recipe import masked_value as RSV
-from rebuild.step_manager import step_argspec
+from rebuild.step import step_argspec
 from bes.key_value import key_value as KV, key_value_list as KVL
 
 class test_masked_value(unit_test):

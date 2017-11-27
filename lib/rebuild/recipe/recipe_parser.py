@@ -10,7 +10,7 @@ from bes.system import log
 from bes.text import tree_text_parser
 
 from rebuild.base import build_version, masked_config, requirement, package_descriptor
-from rebuild.step_manager import step_description
+from rebuild.step import step_description
 
 from .masked_value import masked_value
 from .masked_value_list import masked_value_list

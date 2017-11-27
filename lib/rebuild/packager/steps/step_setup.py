@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from rebuild.step_manager import compound_step
+from rebuild.step import compound_step
 
 from .step_setup_copy_source_to_build_dir import step_setup_copy_source_to_build_dir
 from .step_setup_install_build_requirements import step_setup_install_build_requirements
