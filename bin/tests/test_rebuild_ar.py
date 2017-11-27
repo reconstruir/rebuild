@@ -10,7 +10,7 @@ class test_rebuild_ar(script_unit_test):
   __script__ = __file__, '../rebuild_ar.py'
 
   def test_contents(self):
-    rv = self.run_script('t', self.platform_data_path('libarm64.a'))
+    rv = self.run_script([ 't', self.platform_data_path('libarm64.a') ])
     if host.SYSTEM == host.MACOS:
       expected = '''
 __.SYMDEF SORTED
