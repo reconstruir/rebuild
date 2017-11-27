@@ -21,13 +21,13 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
   def __str__(self):
     return self.to_string(depth = 0, indent = 2)
   
-  def to_string(self, depth = 0, indent = 2):
+  def to_string(self, depth = 0, indent = 2, quote = True):
     if self.mask:
-      return self._to_string_with_mask(depth, indent)
+      return self._to_string_with_mask(depth, indent, quote)
     else:
-      return self._to_string_no_mask(depth, indent)
+      return self._to_string_no_mask(depth, indent, quote)
 
-  def value_to_string(self):
+  def value_to_string(self, quote = True):
     if compat.is_int(self.value):
       return str(self.value)
     elif compat.is_string(self.value):
@@ -35,9 +35,9 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
     elif isinstance(self.value, bool):
       return str(self.value)
     elif isinstance(self.value, key_value_list):
-      return self.value.to_string(delimiter = '=', value_delimiter = ' ', quote = True)
+      return self.value.to_string(delimiter = '=', value_delimiter = ' ', quote = quote)
     elif string_list.is_string_list(self.value):
-      return string_list.to_string(self.value, delimiter = ' ', quote = True)
+      return string_list.to_string(self.value, delimiter = ' ', quote = quote)
     else:
       assert False
 
@@ -45,20 +45,20 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
   def value_type_is_valid(clazz, v):
     return compat.is_int(v) or compat.is_string(v) or isinstance(v, ( bool, key_value_list )) or string_list.is_string_list(v)
     
-  def _to_string_no_mask(self, depth, indent):
+  def _to_string_no_mask(self, depth, indent, quote):
     spaces = depth * indent * ' '
     buf = StringIO()
     buf.write(spaces)
-    buf.write(self.value_to_string())
+    buf.write(self.value_to_string(quote = quote))
     return buf.getvalue()
       
-  def _to_string_with_mask(self, depth, indent):
+  def _to_string_with_mask(self, depth, indent, quote):
     spaces = depth * indent * ' '
     buf = StringIO()
     buf.write(spaces)
     buf.write(self.mask)
     buf.write(': ')
-    buf.write(self.value_to_string())
+    buf.write(self.value_to_string(quote = quote))
     return buf.getvalue()
       
   @classmethod

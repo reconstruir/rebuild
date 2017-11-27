@@ -54,6 +54,6 @@ class recipe(namedtuple('recipe', 'filename,enabled,properties,requirements,buil
         else:
           value_node = step_node.add_child(value.key)
           for masked_value in value.values:
-            masked_value_node = value_node.add_child(str(masked_value))
+            masked_value_node = value_node.add_child(masked_value.to_string(quote = False))
       result.add_child('')
     return result
