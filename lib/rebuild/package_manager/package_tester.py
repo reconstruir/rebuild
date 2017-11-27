@@ -145,9 +145,9 @@ class package_tester(object):
 
     test_source_with_replacements = path.join(test_root_dir, path.basename(test_source))
     replacements = {
-      'REBUILD_PACKAGER_SOURCE_DIR': config.source_dir,
-      'REBUILD_PACKAGER_TEST_DIR': config.test_dir,
-      'REBUILD_PACKAGER_TEST_NAME': test_name,
+      'REBUILDER_SOURCE_DIR': config.source_dir,
+      'REBUILDER_TEST_DIR': config.test_dir,
+      'REBUILDER_TEST_NAME': test_name,
     }
     file_replace.copy_with_substitute(test_source, test_source_with_replacements,
                                       replacements, backup = False)

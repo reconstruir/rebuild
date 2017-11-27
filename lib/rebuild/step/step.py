@@ -125,9 +125,9 @@ class step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, o
     env['REBUILD_REQUIREMENTS_LIB_DIR'] = script.requirements_manager.lib_dir
     env['REBUILD_REQUIREMENTS_SHARE_DIR'] = script.requirements_manager.share_dir
 
-    env['REBUILD_PACKAGER_BUILD_DIR'] = script.build_dir
-    env['REBUILD_PACKAGER_SOURCE_DIR'] = script.source_dir
-    env['REBUILD_PACKAGER_TEST_DIR'] = script.test_dir
+    env['REBUILDER_BUILD_DIR'] = script.build_dir
+    env['REBUILDER_SOURCE_DIR'] = script.source_dir
+    env['REBUILDER_TEST_DIR'] = script.test_dir
 
     env['REBUILD_STAGE_PREFIX_DIR'] = script.stage_dir
     env['REBUILD_STAGE_PYTHON_LIB_DIR'] = path.join(script.stage_dir, 'lib/python')
