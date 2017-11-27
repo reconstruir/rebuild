@@ -12,3 +12,10 @@ class step_argspec(enum):
   STRING = 5
     
   DEFAULT = STRING
+
+class step_arg_interpret(enum):
+  NONE = 1
+  DIR = 2
+  FILE = 3
+  FILE_LIST = 4
+  DEFAULT = NONE
