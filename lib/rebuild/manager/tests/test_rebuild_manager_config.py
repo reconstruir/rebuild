@@ -5,7 +5,7 @@
 import unittest
 from bes.fs import tar_util, temp_file
 from rebuild.base import build_system, build_target
-from rebuild.packager import rebuild_manager_config
+from rebuild.manager import rebuild_manager_config
 
 class test_rebuild_manager_config(unittest.TestCase):
 

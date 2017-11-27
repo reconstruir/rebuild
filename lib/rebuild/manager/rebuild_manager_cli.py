@@ -10,7 +10,7 @@ from bes.key_value import key_value_parser
 from bes.system import host
 from bes.fs import file_util, temp_file
 from rebuild.base import build_arch, build_blurb, build_system, build_target, build_level
-from rebuild.packager import rebuild_manager
+from rebuild.manager import rebuild_manager
 from rebuild.package_manager import artifact_manager, package, package_tester
 from rebuild.tools_manager import tools_manager
 from .rebuild_manager_script import rebuild_manager_script

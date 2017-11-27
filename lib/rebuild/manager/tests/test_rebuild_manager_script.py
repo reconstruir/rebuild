@@ -5,7 +5,7 @@ import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import file_util, temp_file
 
-from rebuild.packager import rebuild_manager_script
+from rebuild.manager import rebuild_manager_script
 
 class test_rebuild_manager_script(unit_test):
 

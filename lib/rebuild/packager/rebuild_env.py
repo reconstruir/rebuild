@@ -3,7 +3,6 @@
 
 import os.path as path
 
-from rebuild.packager import rebuild_manager
 from rebuild.package_manager import artifact_manager
 from rebuild.tools_manager import tools_manager
 from rebuild.checksum import checksum_manager
