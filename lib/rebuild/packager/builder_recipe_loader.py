@@ -13,13 +13,13 @@ from rebuild.step.hook_extra_code import HOOK_EXTRA_CODE
 from rebuild.step import step_description
 from rebuild.recipe import recipe
 
-from .build_recipe_env import build_recipe_env
+from .builder_recipe_env import builder_recipe_env
 
-class build_recipe_loader(object):
+class builder_recipe_loader(object):
 
   @classmethod
   def load(clazz, filename):
-    load_env = build_recipe_env()
+    load_env = builder_recipe_env()
     recipes = clazz._load_recipes(filename, load_env)
     scripts = []
     for recipe in recipes.recipes:

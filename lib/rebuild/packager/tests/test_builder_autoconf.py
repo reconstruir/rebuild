@@ -7,7 +7,7 @@ from bes.fs import file_util, temp_file
 from rebuild.base import build_target, build_version
 from rebuild.package_manager import package
 from rebuild.packager.unit_test_packaging import unit_test_packaging
-from rebuild.packager import rebuild_builder, rebuild_config, rebuild_env
+from rebuild.packager import builder, builder_config, builder_env
 
 class test_builder_autoconf(unit_test):
 
@@ -70,29 +70,29 @@ class test_builder_autoconf(unit_test):
   @classmethod
   def _build_autoconf_package(clazz, asserter, name, version, revision, tarball_dir):
     tmp_dir = temp_file.make_temp_dir()
-    build_script_content = unit_test_packaging.make_build_script_content(name, version, revision)
-    build_script = file_util.save(path.join(tmp_dir, 'build.py'), content = build_script_content)
+    builder_script_content = unit_test_packaging.make_builder_script_content(name, version, revision)
+    builder_script = file_util.save(path.join(tmp_dir, 'build.py'), content = builder_script_content)
     tarball_filename = '%s-%s.tar.gz' % (name, version)
     tarball_path = path.join(tarball_dir, tarball_filename)
     file_util.copy(path.join(tarball_dir, tarball_filename), tmp_dir)
-    filenames = [ build_script ]
+    filenames = [ builder_script ]
     bt = build_target()
-    config = rebuild_config()
+    config = builder_config()
     # FIXME change this to the tarball_dir see if it works remove need for tmp_dir
     config.build_root = path.join(tmp_dir, 'BUILD')
     config.source_dir = tmp_dir
     config.no_network = True
     config.no_checksums = True
     config.verbose = True
-    env = rebuild_env(config, filenames)
-    builder = rebuild_builder(env, filenames)
+    env = builder_env(config, filenames)
+    bldr = builder(env, filenames)
     script = env.script_manager.scripts[ name ]
     env.checksum_manager.ignore(script.descriptor.full_name)
-    rv = builder.run_build_script(script, env)
-    #runner.run_build_script(script, env)
-    if not rv.status == rebuild_builder.SCRIPT_SUCCESS:
+    rv = bldr.build_script(script, env)
+    #runner.build_script(script, env)
+    if not rv.status == bldr.SCRIPT_SUCCESS:
       print(rv.status)
-    asserter.assertEqual( rebuild_builder.SCRIPT_SUCCESS, rv.status )
+    asserter.assertEqual( bldr.SCRIPT_SUCCESS, rv.status )
     tarball = rv.packager_result.output['published_tarball']
     pkg = package(tarball)
     return pkg

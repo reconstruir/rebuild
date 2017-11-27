@@ -7,12 +7,12 @@ from bes.testing.unit_test import unit_test
 from bes.system import host
 from bes.fs import file_util, temp_file
 from rebuild.base import build_target
-from rebuild.packager import build_script, build_script_manager, rebuild_config, rebuild_env
+from rebuild.packager import builder_script, builder_script_manager, builder_config, builder_env
 from bes.archive import archiver
 from rebuild.packager.unit_test_packaging import unit_test_packaging
 from rebuild.source_finder import local_source_finder, source_finder_chain
 
-class test_build_script_execute(unit_test):
+class test_builder_script_execute(unit_test):
 
   __unit_test_data_dir__ = '../../test_data/packager'
 
@@ -27,16 +27,16 @@ class test_build_script_execute(unit_test):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     tmp_source_dir = path.join(tmp_dir, 'source')
     rebuildfile = path.join(tmp_source_dir, 'build_amhello.py')
-    script_content = unit_test_packaging.make_build_script_content('amhello', '1.0', 0)
+    script_content = unit_test_packaging.make_builder_script_content('amhello', '1.0', 0)
     file_util.save(rebuildfile, content = script_content)
     bt = build_target()
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
-    config = rebuild_config()
+    config = builder_config()
     config.build_root = path.join(tmp_dir, 'BUILD')
     config.no_network = True
     config.source_dir = self.data_dir()
-    env = rebuild_env(config, [ rebuildfile ])
-    script = self._load_build_script(rebuildfile)
+    env = builder_env(config, [ rebuildfile ])
+    script = self._load_builder_script(rebuildfile)
     result = script.execute({})
     self.assertTrue( result.success )
     output = result.output
@@ -59,16 +59,16 @@ class test_build_script_execute(unit_test):
       u'version': u'1.0'
     }, json.loads(archiver.extract_member_to_string(artifact_path, 'metadata/info.json')) )
 
-  def _load_build_script(self, filename):
+  def _load_builder_script(self, filename):
     bt = build_target()
-    config = rebuild_config()
+    config = builder_config()
     config.build_root = temp_file.make_temp_dir()
     config.no_network = True
     config.no_checksums = True
     config.source_dir = path.dirname(filename)
     config.verbose = True
-    env = rebuild_env(config, [ filename ])
-    sm = build_script_manager([ filename ], env)
+    env = builder_env(config, [ filename ])
+    sm = builder_script_manager([ filename ], env)
     self.assertEqual( 1, len(sm.scripts) )
     return sm.scripts.values()[0]
     

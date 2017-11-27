@@ -12,7 +12,7 @@
 
 from bes.common import check_type
 
-class package_resolver(object):
+class builder_resolver(object):
 
   def __init__(self, script_manager):
     self.script_manager = script_manager

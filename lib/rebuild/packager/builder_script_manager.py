@@ -6,18 +6,18 @@ from bes.common import dict_util
 from rebuild.base import build_blurb, package_descriptor, requirement
 from rebuild.dependency import dependency_resolver, missing_dependency_error
 from collections import namedtuple
-from .build_recipe_loader import build_recipe_loader
-from .build_script import build_script
+from .builder_recipe_loader import builder_recipe_loader
+from .builder_script import builder_script
 
-class build_script_manager(object):
+class builder_script_manager(object):
 
   def __init__(self, filenames, env):
     # Load all the scripts
     self.scripts = {}
     for filename in filenames:
       build_blurb.blurb_verbose('build', 'loading %s' % (filename))
-      build_scripts = self._load_scripts(filename, env)
-      for script in build_scripts:
+      builder_scripts = self._load_scripts(filename, env)
+      for script in builder_scripts:
         self.scripts[script.descriptor.name] = script
         #print "filename: %s" % (script.filename)
         #print "    name: %s" % (script.name)
@@ -121,6 +121,6 @@ class build_script_manager(object):
   @classmethod
   def _load_scripts(clazz, filename, env):
     scripts = []
-    recipes = build_recipe_loader.load(filename)
-    scripts = [ build_script(recipe, env) for recipe in recipes ]
+    recipes = builder_recipe_loader.load(filename)
+    scripts = [ builder_script(recipe, env) for recipe in recipes ]
     return scripts

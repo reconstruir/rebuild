@@ -5,9 +5,9 @@ from bes.testing.unit_test import unit_test
 #import os.path as path
 #from bes.fs import temp_file
 #from rebuild.base import build_category, build_target, package_descriptor, requirement
-from rebuild.packager import package_resolver
+from rebuild.packager import builder_resolver
 
-class test_package_resolver(unit_test):
+class test_builder_resolver(unit_test):
 
   def test_caca(self):
     pass

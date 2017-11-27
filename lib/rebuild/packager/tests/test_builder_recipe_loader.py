@@ -4,22 +4,22 @@
 import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import file_util, temp_file
-from rebuild.packager.build_recipe_loader import build_recipe_loader
+from rebuild.packager.builder_recipe_loader import builder_recipe_loader
 
-class test_build_recipe_loader(unit_test):
+class test_builder_recipe_loader(unit_test):
 
-  __unit_test_data_dir__ = '../../test_data/build_script'
+  __unit_test_data_dir__ = '../../test_data/builder_script'
 
   def test_load_libjpeg(self):
     filenames = [ self.data_path('build_libjpeg.py') ]
-    recipes = build_recipe_loader.load(filenames[0])
+    recipes = builder_recipe_loader.load(filenames[0])
     self.assertEqual( 1, len(recipes) )
     self.assertEqual( 'libjpeg', recipes[0].descriptor.name )
     self.assertEqual( ( '9a', 1, 0), recipes[0].descriptor.version )
 
   def test_multiple_recipes(self):
     filenames = [ self.data_path('build_multiple_recipes.py') ]
-    recipes = build_recipe_loader.load(filenames[0])
+    recipes = builder_recipe_loader.load(filenames[0])
     self.assertEqual( 4, len(recipes) )
 
     self.assertEqual( 'libsdl2', recipes[0].descriptor.name )

@@ -10,9 +10,9 @@ from rebuild.package_manager import artifact_manager
 from rebuild.base import package_descriptor
 from bes.git import git_download_cache, git_util
 from rebuild.source_finder import repo_source_finder, local_source_finder, source_finder_chain
-from .build_script_manager import build_script_manager
+from .builder_script_manager import builder_script_manager
 
-class rebuild_env(object):
+class builder_env(object):
 
   def __init__(self, config, filenames):
     self.config = config
@@ -21,7 +21,7 @@ class rebuild_env(object):
     self.tools_manager = self._make_tools_manager(config.build_root)
     self.downloads_manager = self._make_downloads_manager(config.build_root)
     self.artifact_manager = self._make_artifact_manager(config.build_root)
-    self.script_manager = build_script_manager(filenames, self)
+    self.script_manager = builder_script_manager(filenames, self)
     
   @classmethod
   def _make_source_finder(clazz, build_dir, source_dir, address, no_network):

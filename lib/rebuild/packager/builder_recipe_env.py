@@ -5,7 +5,7 @@ import copy
 
 from rebuild.step import variable_manager
 
-class build_recipe_env(object):
+class builder_recipe_env(object):
 
   def __init__(self):
     pass

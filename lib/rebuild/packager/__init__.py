@@ -3,14 +3,14 @@
 
 from rebuild.base import build_target
 
-from .build_script import build_script
-from .build_script_manager import build_script_manager
+from .builder import builder
+from .builder_cli import builder_cli
+from .builder_resolver import builder_resolver
+from .builder_script import builder_script
+from .builder_script_manager import builder_script_manager
 from .check import check, check_result
-from .package_resolver import package_resolver
-from .rebuild_builder import rebuild_builder
-from .rebuild_config import rebuild_config
-from .rebuild_env import rebuild_env
-from .rebuilder_cli import rebuilder_cli
+from .builder_config import builder_config
+from .builder_env import builder_env
 
 from rebuild.packager.checks import *
 from rebuild.packager.steps import *

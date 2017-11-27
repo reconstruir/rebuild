@@ -12,13 +12,13 @@ from bes.fs import file_util
 from bes.system import host
 from bes.python import code
 
-from .rebuild_builder import rebuild_builder
-from .rebuild_config import rebuild_config
-from .rebuild_env import rebuild_env
+from .builder import builder
+from .builder_config import builder_config
+from .builder_env import builder_env
 
 from bes.git import git_download_cache
 
-class rebuilder_cli(object):
+class builder_cli(object):
 
   DEFAULT_OPTIONS = {
     'build_python': False,
@@ -50,14 +50,14 @@ class rebuilder_cli(object):
     self.parser.add_argument('--filter', nargs = '+', default = None, help = 'filter the list of build files to the given list.')
     self.parser.add_argument('-r', '--root', action = 'store', type = str, default = path.abspath('BUILD'), help = 'Root dir where to store the build.')
     self.parser.add_argument('target_packages', action = 'append', nargs = '*', type = str)
-    self.parser.add_argument('--tps-address', default = rebuild_config.DEFAULT_THIRD_PARTY_ADDRESS,
+    self.parser.add_argument('--tps-address', default = builder_config.DEFAULT_THIRD_PARTY_ADDRESS,
                              action = 'store', type = str,
-                             help = 'Third party sources address. [ %s ]' % (rebuild_config.DEFAULT_THIRD_PARTY_ADDRESS))
+                             help = 'Third party sources address. [ %s ]' % (builder_config.DEFAULT_THIRD_PARTY_ADDRESS))
     self.parser.add_argument('--source-dir', default = None, action = 'store', type = str,
                              help = 'Local source directory to use instead of tps address. [ None]')
-    self.parser.add_argument('--third-party-prefix', default = rebuild_config.DEFAULT_THIRD_PARTY_PREFIX,
+    self.parser.add_argument('--third-party-prefix', default = builder_config.DEFAULT_THIRD_PARTY_PREFIX,
                              action = 'store', type = str,
-                             help = 'Prefix for third party source binaries. [ %s _]' % (rebuild_config.DEFAULT_THIRD_PARTY_PREFIX))
+                             help = 'Prefix for third party source binaries. [ %s _]' % (builder_config.DEFAULT_THIRD_PARTY_PREFIX))
     
   def main(self):
     args = self.parser.parse_args()
@@ -101,7 +101,7 @@ class rebuilder_cli(object):
 
     filenames = [ path.join(p, 'build.py') for p in available_packages ]
 
-    config = rebuild_config()
+    config = builder_config()
     config.build_root = path.abspath(args.root)
     config.build_target = build_target(opts.get('system', build_target.DEFAULT),
                                        opts.get('build_level', build_target.DEFAULT),
@@ -120,21 +120,21 @@ class rebuilder_cli(object):
     config.verbose = args.verbose
     config.wipe = args.wipe
     config.third_party_prefix = args.third_party_prefix
-    env = rebuild_env(config, filenames)
+    env = builder_env(config, filenames)
     
     build_blurb.blurb('build', 'target=%s; host=%s' % (config.build_target.build_path, config.host_build_target.build_path))
 
-    builder = rebuild_builder(env, filenames)
+    bldr = builder(env, filenames)
 
-    resolved_args = builder.check_and_resolve_cmd_line_args(target_packages)
+    resolved_args = bldr.check_and_resolve_cmd_line_args(target_packages)
       
     if resolved_args.invalid_args:
       build_blurb.blurb('build', 'Invalid targets: %s' % (' '.join(resolved_args.invalid_args)))
       build_blurb.blurb('build', 'possible targets:')
-      build_blurb.blurb('build', ' '.join(builder.package_names()), fit = True)
+      build_blurb.blurb('build', ' '.join(bldr.package_names()), fit = True)
       return 1
 
-    return builder.build_many_scripts(resolved_args.package_names)
+    return bldr.build_many_scripts(resolved_args.package_names)
 
   @classmethod
   def _filter_target_packages(clazz, target_packages, limit):
@@ -149,7 +149,7 @@ class rebuilder_cli(object):
   
   @classmethod
   def run(clazz):
-    raise SystemExit(rebuilder_cli().main())
+    raise SystemExit(builder_cli().main())
 
   @classmethod
   def load_structure_file(clazz, filename):

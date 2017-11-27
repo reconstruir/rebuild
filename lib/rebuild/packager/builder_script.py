@@ -12,7 +12,7 @@ from rebuild.dependency import dependency_provider
 from rebuild.step import step_description, step_manager
 from rebuild.package_manager import package_manager
 
-class build_script(object):
+class builder_script(object):
 
   def __init__(self, recipe, env):
     log.add_logging(self, 'build')

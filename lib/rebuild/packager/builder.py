@@ -10,11 +10,11 @@ from rebuild.step import step_aborted
 
 from rebuild.base import build_blurb
 
-class rebuild_builder(object):
+class builder(object):
 
   REBUILD_FILENAME = 'build.py'
   
-  def __init__(self, env, build_script_filenames):
+  def __init__(self, env, builder_script_filenames):
     build_blurb.add_blurb(self, label = 'build')
     self._env = env
     self.thread_pool = thread_pool(1)
@@ -85,8 +85,8 @@ class rebuild_builder(object):
   EXIT_CODE_FAILED = 1
   EXIT_CODE_ABORTED = 2
 
-  def _call_run_build_script(self, script):
-    result = self.run_build_script(script, self._env)
+  def _call_build_script(self, script):
+    result = self.build_script(script, self._env)
     if result.status == self.SCRIPT_SUCCESS:
       self.blurb('%s - SUCCESS' % (script.descriptor.name))
       return self.EXIT_CODE_SUCCESS
@@ -108,7 +108,7 @@ class rebuild_builder(object):
   SCRIPT_ABORTED = 'aborted'
   _run_result = namedtuple('_run_result', 'status,packager_result')
   
-  def run_build_script(self, script, env):
+  def build_script(self, script, env):
     try:
       checksum_ignored = env.checksum_manager.is_ignored(script.descriptor.full_name)
       needs_rebuilding = checksum_ignored or script.needs_rebuilding()
@@ -195,7 +195,7 @@ class rebuild_builder(object):
       if not script.enabled and not self._env.config.disabled:
         self.blurb('disabled: %s' % (filename))
         continue
-      exit_code = self._call_run_build_script(script)
+      exit_code = self._call_build_script(script)
       if exit_code == self.EXIT_CODE_FAILED:
         failed_packages.append(name)
         if not self._env.config.keep_going:

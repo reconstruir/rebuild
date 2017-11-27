@@ -4,7 +4,7 @@
 
 import sys
 sys.dont_write_bytecode = True
-from rebuild.packager import rebuilder_cli
+from rebuild.packager import builder_cli
 
 if __name__ == '__main__':
-  rebuilder_cli.run()
+  builder_cli.run()

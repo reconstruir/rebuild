@@ -5,7 +5,7 @@ import os.path as path
 from collections import namedtuple
 from rebuild.base import build_arch, build_level, build_system, build_target
 
-class rebuild_config(object):
+class builder_config(object):
 
   DEFAULT_THIRD_PARTY_ADDRESS = 'git@git:third_party_sources.git'
   DEFAULT_THIRD_PARTY_PREFIX = 'rebbe_'

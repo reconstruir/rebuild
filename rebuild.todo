@@ -35,7 +35,7 @@ dec 24
 
 jan 1
 - mv ~/software/build.py to ~/projects/bin
-- finish adding proper return codes for ScriptRunner.run_build_script
+- finish adding proper return codes for ScriptRunner.build_script
 - finish moving checksuming to BuildScript
 
 jan 2
@@ -390,9 +390,9 @@ get rid of export_compilation_flags_requirements
 
 
 mar 18
-- the notion of tools depending on non tools is a bit weird.  see build_script_runner.__init__
+- the notion of tools depending on non tools is a bit weird.  see builder_script_runner.__init__
 s /is_package_info_list/is_package_descriptor_list/
-- unify dependency code in build_script_runner and PackageManager
+- unify dependency code in builder_script_runner and PackageManager
 
 mar 19
 - all python projects should automagically have set 'copy_source_to_build_dir': True,
@@ -474,13 +474,13 @@ oct 13
 figute out the goofy test_fat_archive __make_test_archive that returns a tgz where it looks like a .a is expected.
 
 oct 17
-- remove the need for build_script to have all_scripts
-- in rebuilder_config rename users to dependents or somesuch
+- remove the need for builder_script to have all_scripts
+- in builder_config rename users to dependents or somesuch
 - better errors when source not found
-- move dep sources out of build_script.py into its own
+- move dep sources out of builder_script.py into its own
 
 oct 18
-- only tools appears to be broken in rebuilder_cli.  need to fix dependencies for that case
+- only tools appears to be broken in builder_cli.  need to fix dependencies for that case
 - rebuild_ar.py script frailness when shit moves around is ridiculous fix it
 
 oct 23
@@ -494,17 +494,17 @@ oct 24
 - some unit test is crapping in ~/.rebbe for checksum chit
 - add cmake rebuild unit test
 - add a progress meter or feedback to third party sources downloader
-- change DEFAULT_THIRD_PARTY_PREFIX = 'rebbe_' to 'rebuild_' in rebuild_config.py and test
+- change DEFAULT_THIRD_PARTY_PREFIX = 'rebbe_' to 'rebuild_' in builder_config.py and test
 - add unit test that patches
 - add unit test with all kinds of hoooks and checks
 
 oct 25
-- improve rebuild_env - add defaults notion at __getitem__ to check for invalid entries etc.  add check that values are valid etc
+- improve builder_env - add defaults notion at __getitem__ to check for invalid entries etc.  add check that values are valid etc
 - python errors in build.py files are impossible to debug
 
 - version compare is fucked when finding latest version of an artifact 1.1.1.1 might match improperly with 1.1.2
   fix this shit to break the version into compoentns and compare that way
-- figure out if rebuild_builder.exclude() is really needed
+- figure out if builder.exclude() is really needed
 - get rid of the hook_extra_code shit or at least move it to hook not
 - add a timing stats cache per project and use it for a progress bar
 
@@ -525,8 +525,8 @@ nov 2
 - had to hack bes_test.py to pass through REBUILD_ env variables
 
 nov 3
-- filenames duplicated in rebuild_env and rebuild_builder __init__
-- env duplicated in rebuild_builder __init__ as well as rebuild_builder.run_build_script()
+- filenames duplicated in builder_env and builder __init__
+- env duplicated in builder __init__ as well as builder.build_script()
 - s _run_result packager_result to script_result
 - move the binary_object test files to a common place
 - add a extra_code unit test in test_hook.py
@@ -543,7 +543,7 @@ nov 5
 - fix all parse_step_args to pass through the untouched args like step_pkg_config_make_pc.py does
 - change all parse_step_args to not do copy. since step_manager does
 - more tarball finder tests with platform speific tarballs that match and miss different platforms
-- get rid of build_script.env
+- get rid of builder_script.env
 - deal with dup classes in step_registry
 - fix remove checksums to be script based cause of build_target change
 
@@ -558,12 +558,12 @@ nov 9
 - for python recipes name and version should be toplevel not in properties
 
 nov 14
-- test_build_script.py and test_build_script_execute.py are broken
+- test_builder_script.py and test_builder_script_execute.py are broken
 - replace build_level with an enum
 
 nov 15
 - test case when tool depends on lib
-- build_script_manager._load_scripts() tool vs not recipes mess
+- builder_script_manager._load_scripts() tool vs not recipes mess
 
 nov 23
 - consider using yaml for recipe parsing
