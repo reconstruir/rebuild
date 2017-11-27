@@ -4,7 +4,7 @@
 
 import os
 from bes.fs import file_util
-from rebuild.packager import *
+from rebuild.builder import *
 
 publish_dir = '_artifacts'
 

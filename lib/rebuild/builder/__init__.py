@@ -12,6 +12,6 @@ from .check import check, check_result
 from .builder_config import builder_config
 from .builder_env import builder_env
 
-from rebuild.packager.checks import *
-from rebuild.packager.steps import *
+from rebuild.builder.checks import *
+from rebuild.builder.steps import *
 from rebuild.step import step, step_result

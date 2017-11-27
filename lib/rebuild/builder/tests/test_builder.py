@@ -4,8 +4,8 @@
 import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import file_util, temp_file
-from rebuild.packager import builder, builder_config, builder_env
-from rebuild.packager.unit_test_packaging import unit_test_packaging
+from rebuild.builder import builder, builder_config, builder_env
+from rebuild.builder.unit_test_packaging import unit_test_packaging
 from rebuild.source_finder import local_source_finder, source_finder_chain
 from bes.git import git_download_cache
 from rebuild.checksum import checksum_manager

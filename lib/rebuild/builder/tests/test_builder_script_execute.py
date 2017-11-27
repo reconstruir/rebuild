@@ -7,9 +7,9 @@ from bes.testing.unit_test import unit_test
 from bes.system import host
 from bes.fs import file_util, temp_file
 from rebuild.base import build_target
-from rebuild.packager import builder_script, builder_script_manager, builder_config, builder_env
+from rebuild.builder import builder_script, builder_script_manager, builder_config, builder_env
 from bes.archive import archiver
-from rebuild.packager.unit_test_packaging import unit_test_packaging
+from rebuild.builder.unit_test_packaging import unit_test_packaging
 from rebuild.source_finder import local_source_finder, source_finder_chain
 
 class test_builder_script_execute(unit_test):

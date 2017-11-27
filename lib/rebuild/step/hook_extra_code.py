@@ -3,7 +3,7 @@
 
 HOOK_EXTRA_CODE = '''\
 from rebuild.step import step, step_aborted, step_result, step_register, step_registry
-from rebuild.packager.steps import *
-from rebuild.packager import check, check_result
-from rebuild.packager.checks import *
+from rebuild.builder.steps import *
+from rebuild.builder import check, check_result
+from rebuild.builder.checks import *
 '''

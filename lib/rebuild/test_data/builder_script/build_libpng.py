@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 #
 
-from rebuild.packager import *
+from rebuild.builder import *
 
 def rebuild_recipes(env):
   configure_env = [

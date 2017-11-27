@@ -536,7 +536,7 @@ nov 4
 - s/package_descriptor.is_package_info/package_descriptor.is_descriptor/
 - package.info -> package.desc
 - move test_data up one level
-- fix fact that rebuild/packager/__init__.py imports the world
+- fix fact that rebuild.builder/__init__.py imports the world
 
 nov 5
 - pc_file_variables should use the masked config resolve strategy

@@ -5,7 +5,7 @@ from bes.testing.unit_test import unit_test
 import os.path as path
 from bes.fs import temp_file
 from rebuild.base import build_category, build_target, package_descriptor, requirement
-from rebuild.packager import builder_script, builder_script_manager, builder_config, builder_env
+from rebuild.builder import builder_script, builder_script_manager, builder_config, builder_env
 
 class test_builder_script(unit_test):
 
