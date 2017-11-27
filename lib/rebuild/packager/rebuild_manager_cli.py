@@ -147,7 +147,7 @@ class rebuild_manager_cli(object):
     self.test_parser = self.commands_subparser.add_parser('test', help = 'Test')
     self.test_parser.add_argument('-o', '--opts', action = 'store', type = str, default = '')
     self.test_parser.add_argument('-v', '--verbose', action = 'store_true')
-    self.test_parser.add_argument('-l', '--level', action = 'store', type = str, default = build_target.DEFAULT, help = 'Build type.  One of (%s) [ %s ]' % (','.join(build_level.LEVELS), build_level.DEFAULT_LEVEL))
+    self.test_parser.add_argument('-l', '--level', action = 'store', type = str, default = build_target.DEFAULT, help = 'Build level.  One of (%s) [ %s ]' % (','.join(build_level.LEVELS), build_level.DEFAULT_LEVEL))
     self.test_parser.add_argument('--tmp-dir', action = 'store', default = None,
                                   help = 'Temporary directory to use or a random one if not given. [ None ]')
     self.test_parser.add_argument('artifacts_dir', action = 'store', default = None, type = str,
@@ -171,11 +171,11 @@ class rebuild_manager_cli(object):
                         action = 'store',
                         default = host.SYSTEM,
                         help = 'The system [ %s ]' % (host.SYSTEM))
-    parser.add_argument('--build-type',
-                        '-b',
+    parser.add_argument('--level',
+                        '-l',
                         action = 'store',
                         default = build_level.RELEASE,
-                        help = 'The system [ %s ]' % (build_level.RELEASE))
+                        help = 'The build level [ %s ]' % (build_level.RELEASE))
     parser.add_argument('--artifacts',
                         '-a',
                         action = 'store',

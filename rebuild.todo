@@ -557,7 +557,6 @@ nov 9
 - package_descriptor depends on dependency_resolver for a really dumb reason
 - for python recipes name and version should be toplevel not in properties
 
-
 nov 14
 - test_build_script.py and test_build_script_execute.py are broken
 - replace build_level with an enum
@@ -568,3 +567,6 @@ nov 15
 
 nov 23
 - consider using yaml for recipe parsing
+
+nov 26
+- write a unit test rebuild_manager.py
