@@ -14,7 +14,7 @@ from rebuild.source_finder import local_source_finder, source_finder_chain
 
 class test_builder_script_execute(unit_test):
 
-  __unit_test_data_dir__ = '../../test_data/packager'
+  __unit_test_data_dir__ = '../../test_data/builder'
 
   DEBUG = False
 #  DEBUG = True
