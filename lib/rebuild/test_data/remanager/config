@@ -1,0 +1,10 @@
+[common]
+artifacts_dir: /somewhere/not/there
+
+[test1]
+description: test1
+packages: foo bar
+
+[test2]
+description: test2
+packages: apple kiwi
