@@ -3,6 +3,7 @@
 
 import os.path as path
 from bes.testing.unit_test import script_unit_test
+from bes.common import Shell
 from bes.fs import file_util, temp_file
 from rebuild.package import artifact_manager
 from rebuild.package.unit_test_packages import unit_test_packages
@@ -92,6 +93,60 @@ packages: orange_juice pear_juice
       'test1'
     ]
     rv = self.run_script(args)
+    self.assertEqual( 0, rv.exit_code )
+    args = [
+      'packages',
+      'print',
+      '--root-dir', tmp_dir,
+      'test1'
+    ]
+    rv = self.run_script(args)
+    self.assertEqual( [ 'fiber', 'fructose', 'orange', 'orange_juice', 'pear', 'pear_juice' ], rv.stdout.split('\n') )
+
+  def test_update_script(self):
+    tmp_dir = self._make_temp_dir()
+    am = self._make_test_artifact_manager()
+    config = '''
+[common]
+artifacts_dir: /somewhere/not/there
+[test1]
+description: test1
+packages: orange_juice
+'''
+    file_util.save(path.join(tmp_dir, 'config'), content = config)
+    args = [
+      'packages',
+      'update',
+      '--artifacts', am.publish_dir,
+      '--root-dir', tmp_dir,
+      'test1'
+    ]
+    rv = self.run_script(args)
+    self.assertEqual( 0, rv.exit_code )
+    args = [
+      'packages',
+      'print',
+      '--root-dir', tmp_dir,
+      'test1'
+    ]
+    rv = self.run_script(args)
+    self.assertEqual( [ 'fiber', 'fructose', 'orange', 'orange_juice' ], rv.stdout.split('\n') )
+    config = '''
+[common]
+artifacts_dir: /somewhere/not/there
+[test1]
+description: test1
+packages: orange_juice pear_juice
+'''
+    file_util.save(path.join(tmp_dir, 'config'), content = config)
+    cmd = [
+      path.join(tmp_dir, 'update.sh'),
+      'test1'
+    ]
+    import copy, os
+    env = copy.deepcopy(os.environ)
+    env['PATH'] = env['PATH'] + ':' + path.dirname(self.script)
+    rv = Shell.execute(cmd, raise_error = False, env = env)
     self.assertEqual( 0, rv.exit_code )
     args = [
       'packages',
