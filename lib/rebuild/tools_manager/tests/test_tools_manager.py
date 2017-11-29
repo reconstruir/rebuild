@@ -16,7 +16,7 @@ class test_tools_manager(unittest.TestCase):
 
   TEST_BUILD_TARGET = build_target(build_system.LINUX, build_level.RELEASE)
 
-  def __make_test_tm(self):
+  def _make_test_tm(self):
     root_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     tools_dir = path.join(root_dir, 'tools')
     if self.DEBUG:
@@ -24,7 +24,7 @@ class test_tools_manager(unittest.TestCase):
     return tools_manager(tools_dir)
 
   @classmethod
-  def __make_test_artifact_manager(clazz):
+  def _make_test_artifact_manager(clazz):
     publish_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
     if clazz.DEBUG:
       print("publish_dir:\n%s\n" % (publish_dir))
@@ -33,8 +33,8 @@ class test_tools_manager(unittest.TestCase):
     return am
   
   def test_update(self):
-    tm = self.__make_test_tm()
-    am = self.__make_test_artifact_manager()
+    tm = self._make_test_tm()
+    am = self._make_test_artifact_manager()
     packages = [
       package_descriptor.parse('water-1.0.0-0'),
       package_descriptor.parse('mercury-1.2.8-0'),
@@ -43,8 +43,8 @@ class test_tools_manager(unittest.TestCase):
     tm.update(packages, am)
 
   def test_install_and_use_a_tool(self):
-    tm = self.__make_test_tm()
-    am = self.__make_test_artifact_manager()
+    tm = self._make_test_tm()
+    am = self._make_test_artifact_manager()
     water_desc = package_descriptor.parse('water-1.0.0-0')
     packages = [
       water_desc

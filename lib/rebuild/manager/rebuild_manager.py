@@ -80,6 +80,7 @@ class rebuild_manager(object):
 
   def update_from_config(self, build_target, project_name = None, allow_downgrade = False):
     config = self.__load_config(build_target)
+
     want_specific_project = project_name is not None
     if want_specific_project and project_name not in config.keys():
       raise RuntimeError('Unknown project: %s' % (project_name))

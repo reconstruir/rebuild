@@ -85,9 +85,5 @@ class test_rebuilder_script(script_unit_test):
       print("tmp_dir: ", tmp_dir)
     return tmp_dir
 
-  def _call_shell(self, cmd):
-    return Shell.execute(cmd, non_blocking = True, raise_error = False,
-                         cwd = self.data_dir(), stderr_to_stdout = True)
-    
 if __name__ == '__main__':
   script_unit_test.main()

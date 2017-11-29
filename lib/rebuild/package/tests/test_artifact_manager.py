@@ -15,7 +15,7 @@ class test_artifact_manager(unittest.TestCase):
   #DEBUG = True
 
   @classmethod
-  def __make_test_artifact_manager(clazz, address = None, items = None):
+  def _make_test_artifact_manager(clazz, address = None, items = None):
     publish_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
     if clazz.DEBUG:
       print("publish_dir:\n%s\n" % (publish_dir))
@@ -25,27 +25,27 @@ class test_artifact_manager(unittest.TestCase):
     return am
 
   def test_artifact_path(self):
-    manager = self.__make_test_artifact_manager()
+    manager = self._make_test_artifact_manager()
     pi = package_descriptor('foo', '1.2.34-1')
     bt = build_target(build_system.LINUX, build_level.RELEASE)
     self.assertEqual( path.join(manager.publish_dir, pi.artifact_path(bt)), manager.artifact_path(pi, bt) )
 
   def test_publish(self):
-    manager = self.__make_test_artifact_manager()
+    manager = self._make_test_artifact_manager()
     bt = build_target(build_system.LINUX, build_level.RELEASE)
     tmp_tarball = unit_test_packages.make_apple()
     filename = manager.publish(tmp_tarball, bt)
     self.assertTrue( path.exists(filename) )
 
   def test_publish_again(self):
-    manager = self.__make_test_artifact_manager()
+    manager = self._make_test_artifact_manager()
     bt = build_target(build_system.LINUX, build_level.RELEASE)
     tmp_tarball = unit_test_packages.make_apple()
     filename = manager.publish(tmp_tarball, bt)
     self.assertTrue( path.exists(filename) )
     filename = manager.publish(tmp_tarball, bt)
 
-  def __make_test_artifacts_git_repo(self):
+  def _make_test_artifacts_git_repo(self):
     tmp_repo = temp_file.make_temp_dir(delete = not self.DEBUG)
     if self.DEBUG:
       print("tmp_repo:\n%s\n" % (tmp_repo))
@@ -54,10 +54,10 @@ class test_artifact_manager(unittest.TestCase):
     git.init(tmp_repo)
     git.add(tmp_repo, '.')
     git.commit(tmp_repo, 'unittest', '.')
-    return self.__make_test_artifact_manager(address = tmp_repo)
+    return self._make_test_artifact_manager(address = tmp_repo)
 
   def test_artifact_from_git(self):
-    manager = self.__make_test_artifacts_git_repo()
+    manager = self._make_test_artifacts_git_repo()
 
     linux = build_target(build_system.LINUX, build_level.RELEASE)
     darwin = build_target(build_system.MACOS, build_level.RELEASE)

@@ -17,6 +17,7 @@ class rebuild_manager_config(OrderedDict):
 
   def load_file(self, filename, build_target):
     parser = ConfigParser()
+    print("reading: %s" % (filename))
     with open(filename, 'r') as fp:
       parser.readfp(fp)
       self.update(self.__load(parser, build_target))

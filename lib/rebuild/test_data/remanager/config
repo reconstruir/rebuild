@@ -3,8 +3,8 @@ artifacts_dir: /somewhere/not/there
 
 [test1]
 description: test1
-packages: foo bar
+packages: orange_juice
 
 [test2]
 description: test2
-packages: apple kiwi
+packages: apple pear_juice
