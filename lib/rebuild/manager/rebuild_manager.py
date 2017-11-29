@@ -25,21 +25,21 @@ class rebuild_manager(object):
     self.package_managers = {}
     self.config_filename = path.join(self.root_dir, self.CONFIG_FILENAME)
     
-  def __package_manager(self, project_name):
+  def _package_manager(self, project_name):
     if project_name not in self.package_managers:
       root_dir = path.join(self.root_dir, project_name)
       self.package_managers[project_name] = package_manager(root_dir)
     return self.package_managers[project_name]
 
   def update_packages(self, project_name, packages, build_target, allow_downgrade = False):
-    pm = self.__package_manager(project_name)
+    pm = self._package_manager(project_name)
     pm.install_packages(packages, build_target, self.artifact_manager, allow_downgrade = allow_downgrade)
 
   def project_root_dir(self, project_name):
-    return self.__package_manager(project_name).root_dir
+    return self._package_manager(project_name).root_dir
 
   def installed_packages(self, project_name, build_target):
-    pm = self.__package_manager(project_name)
+    pm = self._package_manager(project_name)
     return pm.list_all()
 
   ResolveResult = namedtuple('ResolveResult', 'available,missing,resolved')
@@ -67,11 +67,11 @@ class rebuild_manager(object):
 
   def uninstall_packages(self, project_name, packages, build_target):
     # FIXME: no dependents handling
-    pm = self.__package_manager(project_name)
+    pm = self._package_manager(project_name)
     pm.uninstall_packages(packages) #, build_target)
     return True
 
-  def __load_config(self, build_target):
+  def _load_config(self, build_target):
     if not path.exists(self.config_filename):
       raise RuntimeError('config file does not exist: %s' % (self.config_filename))
     config = rebuild_manager_config()
@@ -79,21 +79,21 @@ class rebuild_manager(object):
     return config
 
   def update_from_config(self, build_target, project_name = None, allow_downgrade = False):
-    config = self.__load_config(build_target)
+    config = self._load_config(build_target)
 
     want_specific_project = project_name is not None
     if want_specific_project and project_name not in config.keys():
       raise RuntimeError('Unknown project: %s' % (project_name))
 
     if want_specific_project:
-      return self.__update_project_from_config(build_target, config[project_name], project_name, allow_downgrade)
+      return self._update_project_from_config(build_target, config[project_name], project_name, allow_downgrade)
     else:
       for project_name, values in config.items():
-        if not self.__update_project_from_config(build_target, values, project_name, allow_downgrade):
+        if not self._update_project_from_config(build_target, values, project_name, allow_downgrade):
           return False
       return True
   
-  def __update_project_from_config(self, build_target, values, project_name, allow_downgrade):
+  def _update_project_from_config(self, build_target, values, project_name, allow_downgrade):
     resolved_packages = self.resolve_and_update_packages(project_name,
                                                          values['packages'],
                                                          build_target,
@@ -141,7 +141,7 @@ exec ${1+"$@"}
   def _save_setup_scripts(self, project_name):
     setup_script = rebuild_manager_script(self.SETUP_SCRIPT_TEMPLATE, 'setup.sh')
     run_script = rebuild_manager_script(self.RUN_SCRIPT_TEMPLATE, 'run.sh')
-    pm = self.__package_manager(project_name)
+    pm = self._package_manager(project_name)
     variables = {
       '@PREFIX@': pm.installation_dir,
       '@LIBRARY_PATH@': build_os_env.LD_LIBRARY_PATH_VAR_NAME,
@@ -151,7 +151,7 @@ exec ${1+"$@"}
     run_script.save(pm.root_dir, variables)
   
   def config(self, build_target):
-    return self.__load_config(build_target)
+    return self._load_config(build_target)
 
   def wipe_project_dir(self, project_name):
     project_root_dir = self.project_root_dir(project_name)

@@ -312,7 +312,7 @@ class rebuild_manager_cli(object):
     return 0
   
   UPDATE_SCRIPT_TEMPLATE = '''#!/bin/bash
-rebuild_manager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir @ROOT_DIR@ ${1+"$@"}
+remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir @ROOT_DIR@ ${1+"$@"}
 '''
 
   def __command_packages_update(self, artifact_manager, root_dir, wipe, project_name, allow_downgrade, bt):

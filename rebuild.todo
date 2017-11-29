@@ -405,7 +405,7 @@ mar 21
 - step logging setup is fucked up
 - populate ~/third-party-sources/
 - s / package_managers  / requirement_managers in rebuild_tool
-- rebuild_manager.py:_command_test() fix opts parsing issue and test it make sure it works
+- remanager.py:_command_test() fix opts parsing issue and test it make sure it works
 
 old attic notes:
 ffmpeg configure_flags='--disable-securetransport'
@@ -567,6 +567,3 @@ nov 15
 
 nov 23
 - consider using yaml for recipe parsing
-
-nov 26
-- write a unit test rebuild_manager.py
