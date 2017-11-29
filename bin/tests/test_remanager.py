@@ -15,23 +15,19 @@ class test_remanager(script_unit_test):
   DEBUG = False
 #  DEBUG = True
   
-  def test_update(self):
+  def test_update_first_time(self):
     tmp_dir = self._make_temp_dir()
     am = self._make_test_artifact_manager()
-
     config = '''
 [common]
 artifacts_dir: /somewhere/not/there
-
 [test1]
 description: test1
 packages: orange_juice
-
 [test2]
 description: test2
 packages: apple pear_juice
 '''
-
     file_util.save(path.join(tmp_dir, 'config'), content = config)
     args = [
       'packages',
@@ -51,6 +47,60 @@ packages: apple pear_juice
     ]
     rv = self.run_script(args)
     self.assertEqual( [ 'fiber', 'fructose', 'orange', 'orange_juice' ], rv.stdout.split('\n') )
+
+  def test_update_two_times(self):
+    tmp_dir = self._make_temp_dir()
+    am = self._make_test_artifact_manager()
+    config = '''
+[common]
+artifacts_dir: /somewhere/not/there
+[test1]
+description: test1
+packages: orange_juice
+'''
+    file_util.save(path.join(tmp_dir, 'config'), content = config)
+    args = [
+      'packages',
+      'update',
+      '--artifacts', am.publish_dir,
+      '--root-dir', tmp_dir,
+      'test1'
+    ]
+    rv = self.run_script(args)
+    self.assertEqual( 0, rv.exit_code )
+    args = [
+      'packages',
+      'print',
+      '--root-dir', tmp_dir,
+      'test1'
+    ]
+    rv = self.run_script(args)
+    self.assertEqual( [ 'fiber', 'fructose', 'orange', 'orange_juice' ], rv.stdout.split('\n') )
+    config = '''
+[common]
+artifacts_dir: /somewhere/not/there
+[test1]
+description: test1
+packages: orange_juice pear_juice
+'''
+    file_util.save(path.join(tmp_dir, 'config'), content = config)
+    args = [
+      'packages',
+      'update',
+      '--artifacts', am.publish_dir,
+      '--root-dir', tmp_dir,
+      'test1'
+    ]
+    rv = self.run_script(args)
+    self.assertEqual( 0, rv.exit_code )
+    args = [
+      'packages',
+      'print',
+      '--root-dir', tmp_dir,
+      'test1'
+    ]
+    rv = self.run_script(args)
+    self.assertEqual( [ 'fiber', 'fructose', 'orange', 'orange_juice', 'pear', 'pear_juice' ], rv.stdout.split('\n') )
 
   def _make_temp_dir(self):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
