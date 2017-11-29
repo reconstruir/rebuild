@@ -25,7 +25,7 @@ class build_os_env(object):
 
   LD_LIBRARY_PATH_VAR_NAME = LOADER_PATH_MAP[host.SYSTEM]
 
-  __CLEAN_PATH = CLEAN_PATH_MAP[host.SYSTEM]
+  _CLEAN_PATH = CLEAN_PATH_MAP[host.SYSTEM]
   
   PATH = os_env_var('PATH')
 
@@ -65,7 +65,7 @@ class build_os_env(object):
     'Return a clean environment suitable for deterministic build related tasks.'
     keep_keys = keep_keys or []
     env = dict_util.filter_with_keys(os.environ, clazz.CLEAN_ENV_VARS)
-    env['PATH'] = os.pathsep.join(clazz.__CLEAN_PATH)
+    env['PATH'] = os.pathsep.join(clazz._CLEAN_PATH)
     for key in keep_keys:
       if key in os.environ:
         env[key] = os.environ[key]
@@ -93,7 +93,7 @@ class build_os_env(object):
     'Update env with d taking into account paths that needed to be appended.'
     for key, value in d.items():
       if clazz.key_is_path(key):
-        clazz.__env_path_update(env, d, key, prepend = prepend)
+        clazz._env_path_update(env, d, key, prepend = prepend)
       else:
         # Dont allow silent override of an existing key if the value changes
         if key in env and env[key] != d[key]:
@@ -112,7 +112,7 @@ class build_os_env(object):
     return copy.deepcopy(os.environ)
   
   @classmethod
-  def __env_path_update(clazz, env, d, key, prepend = False):
+  def _env_path_update(clazz, env, d, key, prepend = False):
     current_value = os_env_var.path_split(env.get(key, ''))
     additional_value = os_env_var.path_split(d[key])
     if prepend:

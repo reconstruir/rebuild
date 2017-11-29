@@ -5,6 +5,7 @@ import os.path as path
 from bes.testing.unit_test import script_unit_test
 from bes.common import Shell
 from bes.fs import file_util, temp_file
+from rebuild.base import build_os_env
 from rebuild.package import artifact_manager
 from rebuild.package.unit_test_packages import unit_test_packages
 
@@ -14,7 +15,7 @@ class test_remanager(script_unit_test):
   __script__ = __file__, '../remanager.py'
 
   DEBUG = False
-#  DEBUG = True
+#g  DEBUG = True
   
   def test_update_first_time(self):
     tmp_dir = self._make_temp_dir()
@@ -143,9 +144,8 @@ packages: orange_juice pear_juice
       path.join(tmp_dir, 'update.sh'),
       'test1'
     ]
-    import copy, os
-    env = copy.deepcopy(os.environ)
-    env['PATH'] = env['PATH'] + ':' + path.dirname(self.script)
+    env = build_os_env.make_clean_env(keep_keys = [ 'PYTHONPATH' ])
+    build_os_env.update(env, { 'PATH': path.dirname(self.script) })
     rv = Shell.execute(cmd, raise_error = False, env = env)
     self.assertEqual( 0, rv.exit_code )
     args = [
