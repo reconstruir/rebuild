@@ -1,12 +1,22 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+from abc import ABCMeta
 import os.path as path
+from bes.system.compat import with_metaclass
 from bes.common import object_util, string_list, string_util
 from bes.python import code
 from rebuild.dependency import dependency_provider
+from .hook_registry import hook_registry
 
-class hook(dependency_provider):
+class hook_register_meta(ABCMeta):
+
+  def __new__(meta, name, bases, class_dict):
+    clazz = ABCMeta.__new__(meta, name, bases, class_dict)
+    hook_registry.register_hook_class(clazz)
+    return clazz
+
+class hook(with_metaclass(hook_register_meta, dependency_provider)):
 
   def __init__(self, filename, function_name):
     'Create a new hook.'

@@ -129,7 +129,6 @@ class package_manager(object):
 
     missing_requirements = self._missing_requirements(pkg, pkg.system)
     if missing_requirements:
-      print('FUCK: package %s missing requirements: %s' % (pkg.info.name, ', '.join(missing_requirements)))
       raise PackageMissingRequirementsError('package %s missing requirements: %s' % (pkg.info.name, ', '.join(missing_requirements)))
       
     conflicts = self._find_conflicts(pkg.files)

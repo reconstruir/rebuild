@@ -1,11 +1,8 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import inspect
-from abc import ABCMeta
 from bes.common import string_util
 from collections import namedtuple
-from .step_argspec import step_argspec
 
 class step_registry(object):
 
@@ -28,10 +25,3 @@ class step_registry(object):
   @classmethod
   def get(clazz, class_name):
     return clazz._registry.get(class_name, None)
-
-class step_register_meta(ABCMeta, step_argspec.CONSTANTS):
-
-  def __new__(meta, name, bases, class_dict):
-    clazz = ABCMeta.__new__(meta, name, bases, class_dict)
-    step_registry.register_step_class(clazz)
-    return clazz
