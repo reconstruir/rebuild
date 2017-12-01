@@ -33,7 +33,7 @@ requires: liborange2 liborange1
     build_requirements = [
     ],
     steps = [
-      step_autoconf, {
+      'step_autoconf', {
         'tests': tests,
         'configure_env': configure_env,
       },

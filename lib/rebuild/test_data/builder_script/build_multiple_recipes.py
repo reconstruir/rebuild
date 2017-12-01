@@ -49,7 +49,7 @@ def rebuild_recipes(env):
       build_requirements = [
       ],
       steps = [
-        step_autoconf, {
+        'step_autoconf', {
           'configure_env': configure_env,
           'configure_flags': configure_flags,
           'tests': tests,
@@ -94,7 +94,7 @@ def rebuild_recipes(env):
 #        'all: libwebp >= 0.4.3',
       ],
       steps = [
-        step_autoconf, {
+        'step_autoconf', {
           'configure_env': configure_env,
           'configure_flags': configure_flags,
           'patches': patches,
@@ -122,7 +122,7 @@ def rebuild_recipes(env):
         'all: libsdl2 >= 2.0.5',
       ],
       steps = [
-        step_autoconf, {
+        'step_autoconf', {
           'configure_env': configure_env,
           'configure_flags': configure_flags,
         },
@@ -155,7 +155,7 @@ def rebuild_recipes(env):
         'all: libsdl2 >= 2.0.5',
       ],
       steps = [
-        step_autoconf, {
+        'step_autoconf', {
           'configure_env': configure_env,
           'configure_flags': configure_flags,
           'patches': patches,

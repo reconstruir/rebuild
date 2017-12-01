@@ -17,7 +17,7 @@ def rebuild_recipes(env):
       category = 'lib',
     ),
     steps = [
-      step_autoconf, {
+      'step_autoconf', {
         'copy_source_to_build_dir': True,
         'configure_env': configure_env,
         'configure_flags': configure_flags,

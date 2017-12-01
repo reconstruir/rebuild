@@ -26,7 +26,7 @@ def rebuild_recipes(env):
       'all: zlib >= 1.2.8',
     ],
     steps = [
-      step_autoconf, {
+      'step_autoconf', {
         'patches': patches,
         'configure_env': configure_env,
         'configure_flags': configure_flags,

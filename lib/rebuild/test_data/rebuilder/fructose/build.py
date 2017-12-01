@@ -42,6 +42,6 @@ requires: libfructose2 libfructose1
     requirements = [
     ],
     steps = [
-      step_autoconf, { 'tests': tests },
+      'step_autoconf', { 'tests': tests },
     ],
   )

@@ -4,7 +4,6 @@
 import copy
 from bes.common import check_type, object_util, string_util
 from .step_registry import step_registry
-from .step_registry import step_register_meta
 
 class step_description(object):
 
@@ -25,10 +24,7 @@ class step_description(object):
     result = []
     current_desc = None
     for item in items:
-      if isinstance(item, step_register_meta):
-        current_desc = step_description(item, {})
-        result.append(current_desc)
-      elif string_util.is_string(item):
+      if string_util.is_string(item):
         step_class = step_registry.get(item)
         if not step_class:
           raise RuntimeError('no such step class: %s' % (item))

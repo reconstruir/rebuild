@@ -20,13 +20,13 @@ class step_make_echo_script(Step):
     return step_result(True, None)
 
 steps = [
-  step_shell, 'mkdir -p $REBUILD_STAGE_PREFIX_DIR',
-  step_shell, 'cd $REBUILD_STAGE_PREFIX_DIR && mkdir -p bin lib include',
-  step_shell, 'cd $REBUILD_STAGE_PREFIX_DIR && touch lib/libbar-$VERSION.a include/bar-$VERSION.h',
-  step_make_echo_script,
-  step_pkg_config_make_pc, [ '$NAME.pc' ],
-  step_cleanup,
-  step_artifact_create,
+  'step_shell', 'mkdir -p $REBUILD_STAGE_PREFIX_DIR',
+  'step_shell', 'cd $REBUILD_STAGE_PREFIX_DIR && mkdir -p bin lib include',
+  'step_shell', 'cd $REBUILD_STAGE_PREFIX_DIR && touch lib/libbar-$VERSION.a include/bar-$VERSION.h',
+  'step_make_echo_script',
+  'step_pkg_config_make_pc', [ '$NAME.pc' ],
+  'step_cleanup',
+  'step_artifact_create',
 ]
 
 foo_123_1 = Script.args(name = 'foo', version = '1.2.3', revision = '1')

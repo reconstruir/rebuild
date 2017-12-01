@@ -2,8 +2,6 @@
 #-*- coding:utf-8 -*-
 #
 
-from rebuild.builder import *
-
 def rebuild_recipes(env):
   configure_env = [
     'all: CFLAGS=$REBUILD_REQUIREMENTS_CFLAGS LDFLAGS=$REBUILD_REQUIREMENTS_LDFLAGS PNG_COPTS=$REBUILD_REQUIREMENTS_CFLAGS',
@@ -19,15 +17,12 @@ def rebuild_recipes(env):
  #     'all: zlib >= 1.2.8-1',
     ],
     steps = [
-      step_setup,
-#      step_setup_patch, { 'patches': [ 'all: reb-libpng-zlib.patch' ] },
-      step_autoconf_configure, { 'configure_env': configure_env },
-      step_make,
-      step_make_install,
-      step_cleanup,
-      step_artifact_create,
+      'step_setup',
+#      'step_setup_patch', { 'patches': [ 'all: reb-libpng-zlib.patch' ] },
+      'step_autoconf_configure', { 'configure_env': configure_env },
+      'step_make',
+      'step_make_install',
+      'step_cleanup',
+      'step_artifact_create',
     ],
   )
-
-if __name__ == '__main__':
-  Script.main(rebuild_recipes)

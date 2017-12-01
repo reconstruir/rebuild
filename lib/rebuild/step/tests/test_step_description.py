@@ -40,10 +40,10 @@ class Teststep_description(unittest.TestCase):
 
   def test_parse_descriptions(self):
     items = [
-      self.sample_step_save_args1,
-      self.sample_step_save_args2, { 'num': 666, 's': 'foo' },
-      self.sample_step_save_args3,
-      self.test_step4, { 'num': 500, 's': 'hi' },
+      'sample_step_save_args1',
+      'sample_step_save_args2', { 'num': 666, 's': 'foo' },
+      'sample_step_save_args3',
+      'test_step4', { 'num': 500, 's': 'hi' },
     ]
 
     descriptions = step_description.parse_descriptions(items)

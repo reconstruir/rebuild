@@ -571,3 +571,8 @@ nov 23
 nov 30
 - use class registry and parsing scheme for hooks and checks
 - remove step_register usage from step_description probably once new text recipe lives
+- REBUILD_PACKAGE_VERSION insconsisent maybe should be REBUILDER_PACKAGE_VERSION
+- write unit tests for features used in
+  proj/third_party/python/python_setuptools/build.py
+  python/python_pillow/reb-python_pillow-test.py
+  lib/libpng/reb-libpng-test-process.c

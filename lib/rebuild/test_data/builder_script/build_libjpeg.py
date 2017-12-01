@@ -23,7 +23,7 @@ def rebuild_recipes(env):
       category = 'lib',
     ),
     steps = [
-      step_autoconf, {
+      'step_autoconf', {
         'configure_env': configure_env,
         'configure_flags': configure_flags,
         'pc_files': pc_files,

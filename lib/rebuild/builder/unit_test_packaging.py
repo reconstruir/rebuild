@@ -72,7 +72,7 @@ def rebuild_recipes(env):
       %s
     ],
     steps = [
-      step_autoconf, {
+      'step_autoconf', {
         'configure_env': configure_env,
         'tests': tests,
       }
