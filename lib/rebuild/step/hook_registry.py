@@ -3,21 +3,21 @@
 
 from bes.common import string_util
 
-class hook_caca_loader_registry(object):
+class hook_registry(object):
 
   _registry = {}
   
   @classmethod
-  def register_hook_caca_loader_class(clazz, registree):
+  def register_hook_class(clazz, registree):
     name = registree.__name__
     existing = clazz._registry.get(name, None)
     if existing:
       assert False
       return
     clazz._registry[name] = registree
-    if name.startswith('hook_caca_loader_'):
-      name_no_hook_caca_loader = string_util.remove_head(name, 'hook_caca_loader_')
-      clazz._registry[name_no_hook_caca_loader] = registree
+    if name.startswith('hook_'):
+      name_no_hook = string_util.remove_head(name, 'hook_')
+      clazz._registry[name_no_hook] = registree
     
   @classmethod
   def get(clazz, class_name):
