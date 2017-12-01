@@ -36,7 +36,6 @@ class step(with_metaclass(step_register_meta, object)):
   def execute(self, script, env, args):
     'Execute the step.'
     assert False
-    return step_result(False, 'not implemented')
  
   def on_tag_changed(self):
     'Called when the tag changes.'
@@ -268,14 +267,6 @@ class step(with_metaclass(step_register_meta, object)):
     return { name: resolved }
       
   @classmethod
-  def resolve_step_args_hooks(clazz, script, args, name):
-    d = clazz.resolve_step_args_list(script, args, name)
-    hooks = hook.parse_list(d.get(name, []))
-    for h in hooks:
-      h.root_dir = script.source_dir
-    return { name: hooks }
-  
-  @classmethod
   def resolve_step_args_files(clazz, script, args, name):
     d = clazz.resolve_step_args_list(script, args, name)
     filenames = d.get(name, [])
@@ -328,6 +319,14 @@ class step(with_metaclass(step_register_meta, object)):
       assert isinstance(resolved, dict)
       result = { key: resolved }
     return result
+
+  @classmethod
+  def resolve_step_args_hooks(clazz, script, args, name):
+    d = clazz.resolve_step_args_list(script, args, name)
+    hooks = hook.parse_list(d.get(name, []))
+    for h in hooks:
+      h.root_dir = script.source_dir
+    return { name: hooks }
   
   @classmethod
   def call_hooks(clazz, script, env, args, name):
