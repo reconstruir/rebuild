@@ -16,7 +16,7 @@ from rebuild.pkg_config import pkg_config
 from bes.fs import file_util
 from rebuild.dependency import dependency_resolver
 
-from .hook  import hook
+from .hook_poto import hook_poto
 from .hook_extra_code import HOOK_EXTRA_CODE
 from .step_argspec import step_argspec
 from .step_registry import step_registry
@@ -323,7 +323,7 @@ class step(with_metaclass(step_register_meta, object)):
   @classmethod
   def resolve_step_args_hooks(clazz, script, args, name):
     d = clazz.resolve_step_args_list(script, args, name)
-    hooks = hook.parse_list(d.get(name, []))
+    hooks = hook_poto.parse_list(d.get(name, []))
     for h in hooks:
       h.root_dir = script.source_dir
     return { name: hooks }

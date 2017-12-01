@@ -3,6 +3,7 @@
 
 from .compound_step import compound_step
 from .hook import hook
+from .hook_poto import hook_poto
 from .hook_registry import hook_registry
 from .step import step, step_result
 from .step_aborted import step_aborted
