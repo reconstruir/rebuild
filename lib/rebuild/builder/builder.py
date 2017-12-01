@@ -75,12 +75,23 @@ class builder(object):
     for package_name in package_names:
       script = self._env.script_manager.scripts[package_name]
       builds_dir = self._env.config.builds_dir(script.build_target)
+      print('FUCK: builds_dir=%s' % (builds_dir))
       if path.isdir(builds_dir):
         patterns = '*%s-*' % (package_name)
         tmp_dirs = dir_util.list(builds_dir, patterns = patterns)
         for tmp_dir in tmp_dirs:
           self.blurb('wiping temporary build directory: %s' % (path.relpath(tmp_dir)))
         file_util.remove(tmp_dirs)
+
+  def wipe_old_build_dirs(self, package_names):
+    for package_name in package_names:
+      script = self._env.script_manager.scripts[package_name]
+      builds_dir = self._env.config.builds_dir(script.build_target)
+      if path.isdir(builds_dir):
+        tmp_dirs = dir_util.older_dirs(dir_util.list(builds_dir), hours = 24)
+        for tmp_dir in tmp_dirs:
+          self.blurb('wiping old temporary build directory: %s' % (path.relpath(tmp_dir)))
+          file_util.remove(tmp_dir)
 
   EXIT_CODE_SUCCESS = 0
   EXIT_CODE_FAILED = 1
@@ -148,6 +159,9 @@ class builder(object):
       self.blurb('wiping build dirs for: %s' % (' '.join(package_names)), fit = True)
       self.wipe_build_dirs(package_names)
 
+    # Wipe build dirs older than 24 hours to prevent the tmp dir usage to grow unbounded
+    self.wipe_old_build_dirs(self.package_names())
+      
     if self._env.config.users:
       depends_on_packages = []
       for package_name in package_names:
