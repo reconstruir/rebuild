@@ -77,8 +77,9 @@ class builder(object):
       builds_dir = self._env.config.builds_dir(script.build_target)
       if path.isdir(builds_dir):
         patterns = '*%s-*' % (package_name)
-        self.blurb('cleaning temporary build directories in %s' % (path.relpath(builds_dir)))
         tmp_dirs = dir_util.list(builds_dir, patterns = patterns)
+        for tmp_dir in tmp_dirs:
+          self.blurb('wiping temporary build directory: %s' % (path.relpath(tmp_dir)))
         file_util.remove(tmp_dirs)
 
   EXIT_CODE_SUCCESS = 0
