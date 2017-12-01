@@ -567,3 +567,7 @@ nov 15
 
 nov 23
 - consider using yaml for recipe parsing
+
+nov 30
+- use class registry and parsing scheme for hooks and checks
+- remove step_register usage from step_description probably once new text recipe lives

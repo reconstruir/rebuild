@@ -19,11 +19,11 @@ from rebuild.dependency import dependency_resolver
 from .hook  import hook
 from .hook_extra_code import HOOK_EXTRA_CODE
 from .step_argspec import step_argspec
-from .step_registry import step_register
+from .step_registry import step_register_meta
 from .step_result import step_result
 from .variable_manager import variable_manager
 
-class step(with_metaclass(step_register, object)): #), with_metaclass(ABCMeta, object)):
+class step(with_metaclass(step_register_meta, object)): #), with_metaclass(ABCMeta, object)):
   
   @abstractmethod
   def execute(self, script, env, args):

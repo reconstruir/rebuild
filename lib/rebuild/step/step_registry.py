@@ -29,7 +29,7 @@ class step_registry(object):
   def get(clazz, class_name):
     return clazz._registry.get(class_name, None)
 
-class step_register(ABCMeta, step_argspec.CONSTANTS):
+class step_register_meta(ABCMeta, step_argspec.CONSTANTS):
 
   def __new__(meta, name, bases, class_dict):
     clazz = ABCMeta.__new__(meta, name, bases, class_dict)

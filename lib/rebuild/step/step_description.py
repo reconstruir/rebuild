@@ -3,7 +3,8 @@
 
 import copy
 from bes.common import check_type, object_util, string_util
-from .step_registry import step_register, step_registry
+from .step_registry import step_registry
+from .step_registry import step_register_meta
 
 class step_description(object):
 
@@ -24,7 +25,7 @@ class step_description(object):
     result = []
     current_desc = None
     for item in items:
-      if isinstance(item, step_register):
+      if isinstance(item, step_register_meta):
         current_desc = step_description(item, {})
         result.append(current_desc)
       elif string_util.is_string(item):
