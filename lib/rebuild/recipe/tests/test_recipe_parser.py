@@ -1,19 +1,18 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+import os.path as path
 from bes.testing.unit_test import unit_test
 from rebuild.recipe import recipe_parser as P, recipe_parser_error as ERR, recipe_step as RS
 from rebuild.step import compound_step, step, step_argspec, step_result
 from bes.key_value import key_value as KV, key_value_list as KVL
+from bes.fs import file_util, temp_file
 from test_steps import *
 
 class test_recipe_parser(unit_test):
 
-  @classmethod
-  def setUpClass(clazz):
-    #unit_test.raise_skip('broken')
-    pass
-
+  __unit_test_data_dir__ = '../../test_data/recipe_parser'
+  
   @classmethod
   def _parse(self, text):
     return P(text, '<test>').parse()
@@ -338,6 +337,27 @@ package foo-1.2.3-4
       pear_string_list_value
         all: --foo --bar --baz="x y z"'''
     self.assert_string_equal_ws( expected, str(r[0]) )
+
+  def test_step_load(self):
+    text = '''#!rebuildrecipe
+package foo-1.2.3-4
+  load
+    test_loaded_step1.py
+
+  steps
+    test_loaded_step1
+      bool_value: True
+'''
+
+    tmp_dir = temp_file.make_temp_dir()
+    recipe_filename = file_util.save(path.join(tmp_dir, 'recipe.rrecipe'), content = text)
+    load_filename = path.join(tmp_dir, 'test_loaded_step1.py')
+    file_util.copy(self.data_path('test_loaded_step1.py'), load_filename)
+    r = P(text, recipe_filename).parse()
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 'foo', r[0].descriptor.name )
+    self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
+    self.assertEqual( 'test_loaded_step1\n    bool_value: True', str(r[0].steps[0]) )
     
 if __name__ == '__main__':
   unit_test.main()

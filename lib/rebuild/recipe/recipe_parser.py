@@ -3,11 +3,13 @@
 
 from collections import namedtuple
 
+import os.path as path
 from bes.common import check_type, string_util
 from bes.compat import StringIO
 from bes.key_value import key_value, key_value_parser
 from bes.system import log
-from bes.text import tree_text_parser
+from bes.text import string_list_parser, tree_text_parser
+from bes.python import code
 
 from rebuild.base import build_version, masked_config, requirement, package_descriptor
 from rebuild.step import step_description
@@ -69,10 +71,10 @@ class recipe_parser(object):
     properties = {}
     requirements = []
     build_requirements = []
-    build_requirements = []
     steps = []
     instructions = []
     enabled = ''
+    load = []
     for child in node.children:
       text = child.data.text
       if text.startswith('properties'):
@@ -85,11 +87,14 @@ class recipe_parser(object):
         steps = self._parse_steps(child)
       elif text.startswith('enabled'):
         enabled = self._parse_enabled(child)
+      elif text.startswith('load'):
+        load = self._parse_load(child)
+        self._load_code(load)
     desc = package_descriptor(name, version, requirements = requirements,
                               build_requirements = build_requirements,
                               properties = properties)
     return recipe(self.filename, enabled, properties, requirements, build_requirements, 
-                  desc, instructions, steps)
+                  desc, instructions, steps, load)
 
   def _parse_package_header(self, node):
     parts = string_util.split_by_white_space(node.data.text, strip = True)
@@ -176,3 +181,18 @@ class recipe_parser(object):
     for i, child in enumerate(node.children):
       clazz._node_text_collect(child, delimiter, buf)
       buf.write(delimiter)
+
+  def _parse_load(self, node):
+    loads = []
+    for child in node.children:
+      load_text = self._node_text_recursive(child)
+      next_loads = string_list_parser.parse_to_list(load_text)
+      loads.extend(next_loads)
+    return loads
+
+  def _load_code(self, loads):
+    for l in loads:
+      filename = path.join(path.dirname(self.filename), l)
+      tmp_globals = {}
+      tmp_locals = {}
+      code.execfile(filename, tmp_globals, tmp_locals)

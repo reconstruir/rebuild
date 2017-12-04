@@ -35,7 +35,7 @@ class step(with_metaclass(step_register_meta, object)):
   @abstractmethod
   def execute(self, script, env, args):
     'Execute the step.'
-    assert False
+    pass
  
   def on_tag_changed(self):
     'Called when the tag changes.'

@@ -4,12 +4,13 @@
 from collections import namedtuple
 from bes.common import node
 
-class recipe(namedtuple('recipe', 'filename,enabled,properties,requirements,build_requirements,descriptor,instructions,steps')):
+class recipe(namedtuple('recipe', 'filename,enabled,properties,requirements,build_requirements,descriptor,instructions,steps,load')):
 
   def __new__(clazz, filename, enabled, properties, requirements, build_requirements,
-              descriptor, instructions, steps):
+              descriptor, instructions, steps, load):
     return clazz.__bases__[0].__new__(clazz, filename, enabled, properties, requirements,
-                                      build_requirements, descriptor, instructions, steps)
+                                      build_requirements, descriptor, instructions, steps,
+                                      load)
 
   def __str__(self):
     return str(self._to_node()).strip()
@@ -27,6 +28,9 @@ class recipe(namedtuple('recipe', 'filename,enabled,properties,requirements,buil
     root.children.append(self._requirements_to_node('build_requirements', self.build_requirements))
     root.add_child('')
     root.children.append(self._steps_to_node(self.steps))
+    if self.load:
+      root.add_child('')
+      root.children.append(self._load_to_node(self.load))
     return root
 
   @classmethod
@@ -57,3 +61,11 @@ class recipe(namedtuple('recipe', 'filename,enabled,properties,requirements,buil
             masked_value_node = value_node.add_child(masked_value.to_string(quote = False))
       result.add_child('')
     return result
+
+  @classmethod
+  def _load_to_node(clazz, load):
+    result = node('load')
+    for l in load:
+      result.add_child(l)
+    return result
+  

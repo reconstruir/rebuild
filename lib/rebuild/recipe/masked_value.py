@@ -67,6 +67,10 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
     value = recipe_parser_util.parse_value(value.strip(), argspec)
     return clazz(mask, value)
 
+  @classmethod
+  def parse_mask_and_string_list(clazz, text):
+    return clazz.parse_mask_and_value(text, step_argspec.STRING_LIST)
+
   def mask_matches(self, system):
     return build_system.mask_matches(self.mask or 'all', system)
   

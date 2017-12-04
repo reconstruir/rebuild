@@ -56,7 +56,7 @@ class builder_recipe_loader(object):
     if recipe_dict:
       raise RuntimeError('Unknown recipe values for %s: %s' % (filename, recipe_dict))
     return recipe(filename, enabled, properties, requirements, build_requirements,
-                  descriptor, instructions, steps)
+                  descriptor, instructions, steps, None)
 
   @classmethod
   def _load_requirements(clazz, args, key):

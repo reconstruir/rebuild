@@ -576,3 +576,6 @@ nov 30
   proj/third_party/python/python_setuptools/build.py
   python/python_pillow/reb-python_pillow-test.py
   lib/libpng/reb-libpng-test-process.c
+
+dec 3
+- write unit tests for recipe_parser that include comments in each of the supported elements.
