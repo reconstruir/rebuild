@@ -39,23 +39,23 @@ class test_masked_value_list(unit_test):
 
   @classmethod
   def _int(clazz, s):
-    return V.parse_mask_and_value(s, SPEC.INT)
+    return V.parse_mask_and_value(s, '<none>', SPEC.INT)
     
   @classmethod
   def _string(clazz, s):
-    return V.parse_mask_and_value(s, SPEC.STRING)
+    return V.parse_mask_and_value(s, '<none>', SPEC.STRING)
     
   @classmethod
   def _bool(clazz, s):
-    return V.parse_mask_and_value(s, SPEC.BOOL)
+    return V.parse_mask_and_value(s, '<none>', SPEC.BOOL)
     
   @classmethod
   def _string_list(clazz, s):
-    return V.parse_mask_and_value(s, SPEC.STRING_LIST)
+    return V.parse_mask_and_value(s, '<none>', SPEC.STRING_LIST)
     
   @classmethod
   def _key_values(clazz, s):
-    return V.parse_mask_and_value(s, SPEC.KEY_VALUES)
+    return V.parse_mask_and_value(s, '<none>', SPEC.KEY_VALUES)
     
 if __name__ == '__main__':
   unit_test.main()

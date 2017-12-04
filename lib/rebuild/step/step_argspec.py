@@ -10,5 +10,6 @@ class step_argspec(enum):
   STRING_LIST = 4
   STRING = 5
   HOOK_LIST = 6
+  FILE_LIST = 7
     
   DEFAULT = STRING

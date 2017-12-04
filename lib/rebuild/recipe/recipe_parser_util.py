@@ -5,6 +5,7 @@ from bes.common import bool_util, check_type, string_list
 from bes.key_value import key_value, key_value_list
 from rebuild.step import hook_registry, step_argspec
 from bes.text import string_list_parser
+from .recipe_file import recipe_file
 
 class recipe_parser_util(object):
 
@@ -23,7 +24,7 @@ class recipe_parser_util(object):
     return key.strip()
 
   @classmethod
-  def parse_key_and_value(clazz, text, argspec):
+  def parse_key_and_value(clazz, text, filename, argspec):
     check_type.check_string(text, 'text')
     check_type.check_step_argspec(argspec, 'argspec')
     text = recipe_parser_util.strip_comment(text)
@@ -36,11 +37,11 @@ class recipe_parser_util(object):
     value = value.strip() or None
     if not value:
       return key_value(key, value)
-    value = clazz.parse_value(value, argspec)
+    value = clazz.parse_value(value, filename, argspec)
     return key_value(key, value)
 
   @classmethod
-  def parse_value(clazz, value, argspec):
+  def parse_value(clazz, value, filename, argspec):
     if argspec == step_argspec.BOOL:
       return bool_util.parse_bool(value)
     elif argspec == step_argspec.INT:
@@ -53,6 +54,8 @@ class recipe_parser_util(object):
       return value
     elif argspec == step_argspec.HOOK_LIST:
       return clazz._parse_hook_list(value)
+    elif argspec == step_argspec.FILE_LIST:
+      return clazz._parse_file_list(value, path.dirname(filename))
     assert False
 
   @classmethod
@@ -66,7 +69,18 @@ class recipe_parser_util(object):
     for name in names:
       hook_class = hook_registry.get(name)
       if not hook_class:
-        raise RuntimeError('fuck')
+        raise RuntimeError('hook class not found: %s' % (name))
       hook = hook_class()
       hooks.append(hook)
     return hooks
+
+  @classmethod
+  def _parse_file_list(clazz, value, base):
+    files = []
+    filenames = clazz._parse_string_list(value)
+    for filename in filename:
+      filename_abs = path.join(base, filename)
+      if not path.isfile(filename_abs):
+        raise RuntimeError('not found: %s' % (filename_abs))
+      files.append(recipe_file(filename_abs))
+    return files

@@ -151,7 +151,7 @@ class recipe_parser(object):
     key = recipe_parser_util.parse_key(node.data.text)
     if not key in description.argspec:
       self._error('invalid config \"%s\" instead of: %s' % (key, ' '.join(description.argspec.keys())))
-    value = recipe_parser_util.parse_key_and_value(node.data.text, description.argspec[key])
+    value = recipe_parser_util.parse_key_and_value(node.data.text, self.filename, description.argspec[key])
     if value.value:
       assert not node.children
       values.append(masked_value(None, value.value))
@@ -159,7 +159,7 @@ class recipe_parser(object):
       assert node.children
       for child in node.children:
         text = self._node_text_recursive(child)
-        value = masked_value.parse_mask_and_value(text, description.argspec[key])
+        value = masked_value.parse_mask_and_value(text, self.filename, description.argspec[key])
         values.append(value)
     return recipe_value(key, values)
 
