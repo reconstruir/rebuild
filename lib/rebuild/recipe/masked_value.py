@@ -39,18 +39,28 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
     elif string_list.is_string_list(self.value):
       return string_list.to_string(self.value, delimiter = ' ', quote = quote)
     elif check_type.is_hook_seq(self.value):
-      hook_names = [ h.name for h in self.value ]
-      return ' '.join(hook_names)
+      return ' '.join([ h.name for h in self.value ])
+    elif check_type.is_recipe_file_seq(self.value):
+      return ' '.join([ h.name for h in self.value ])
     else:
       assert False
 
+  _VALUE_TYPE_CHECKERS = [
+    compat.is_int,
+    compat.is_string,
+    check_type.is_bool,
+    check_type.is_key_value_list,
+    string_list.is_string_list,
+    check_type.is_hook_seq,
+    check_type.is_recipe_file_seq,
+  ]
+      
   @classmethod
   def value_type_is_valid(clazz, v):
-    return compat.is_int(v) \
-      or compat.is_string(v) \
-      or isinstance(v, ( bool, key_value_list )) \
-      or string_list.is_string_list(v) \
-      or check_type.is_hook_seq(v)
+    for checker in clazz._VALUE_TYPE_CHECKERS:
+      if checker(v):
+        return True
+    return False
     
   def _to_string_no_mask(self, depth, indent, quote):
     spaces = depth * indent * ' '

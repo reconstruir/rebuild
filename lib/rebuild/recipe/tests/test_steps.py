@@ -107,6 +107,19 @@ class step_takes_hook_list(step):
   def execute(self, script, env, args):
     return step_result(True)
   
+class step_takes_file_list(step):
+  def __init__(self):
+    super(step_takes_file_list, self).__init__()
+    
+  @classmethod
+  def argspec(clazz):
+    return {
+      'file_list_value': clazz.FILE_LIST
+    }
+  
+  def execute(self, script, env, args):
+    return step_result(True)
+  
 class step_takes_all(step):
   def __init__(self):
     super(step_takes_all, self).__init__()

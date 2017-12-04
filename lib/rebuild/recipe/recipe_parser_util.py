@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+import os.path as path
 from bes.common import bool_util, check_type, string_list
 from bes.key_value import key_value, key_value_list
 from rebuild.step import hook_registry, step_argspec
@@ -78,7 +79,7 @@ class recipe_parser_util(object):
   def _parse_file_list(clazz, value, base):
     files = []
     filenames = clazz._parse_string_list(value)
-    for filename in filename:
+    for filename in filenames:
       filename_abs = path.join(base, filename)
       if not path.isfile(filename_abs):
         raise RuntimeError('not found: %s' % (filename_abs))
