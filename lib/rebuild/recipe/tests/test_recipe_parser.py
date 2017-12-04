@@ -390,12 +390,19 @@ package foo-1.2.3-4
       hook_list_value
         linux: test_loaded_hook1 test_loaded_hook2
 '''
-    r = P(text, self.data_path('test_loaded_hook1.py')).parse()
+    hook1_filename = self.data_path('test_loaded_hook1.py')
+    hook2_filename = self.data_path('test_loaded_hook2.py')
+    
+    r = P(text, hook1_filename).parse()
     self.assertEqual( 1, len(r) )
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_hook_list\n  hook_list_value\n    linux: test_loaded_hook1 test_loaded_hook2', str(r[0].steps[0]) )
+    hooks = r[0].steps[0].values[0].values
+    self.assertEqual( 2, len(hooks[0].value) )
+    self.assertEqual( hook1_filename, hooks[0].value[0].filename )
+    self.assertEqual( hook2_filename, hooks[0].value[1].filename )
     
 if __name__ == '__main__':
   unit_test.main()

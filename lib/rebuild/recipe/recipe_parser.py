@@ -196,3 +196,6 @@ class recipe_parser(object):
       tmp_globals = {}
       tmp_locals = {}
       code.execfile(filename, tmp_globals, tmp_locals)
+      for key, value in tmp_locals.items():
+        if check_type.is_class(value):
+          setattr(value, '__load_file__', filename)

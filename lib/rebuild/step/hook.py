@@ -16,9 +16,9 @@ class hook_register_meta(ABCMeta):
 
 class hook(with_metaclass(hook_register_meta, dependency_provider)):
 
-  def __init__(self): #, filename):
+  def __init__(self):
     'Create a new hook.'
-    self._filename = None
+    pass
 
   @property
   def name(self):
@@ -26,16 +26,11 @@ class hook(with_metaclass(hook_register_meta, dependency_provider)):
     
   @property
   def filename(self):
-    if not self._filename:
+    filename = getattr(self, '__load_file__', None)
+    if not filename:
       raise RuntimeError('filename not set')
-    return self._filename
+    return filename
 
-  @filename.setter
-  def filename(self, filename):
-    if self._filename:
-      raise RuntimeError('filename can only be set once')
-    self._filename = filename
-    
   def provided(self):
     'Return a list of dependencies provided by this provider.'
     return [ self.filename ]
