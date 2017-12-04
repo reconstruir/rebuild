@@ -18,15 +18,17 @@ class recipe(namedtuple('recipe', 'filename,enabled,properties,requirements,buil
   def _to_node(self):
     'A convenient way to make a recipe string is to build a graph first.'
     root = node('package %s' % (self.descriptor.full_name))
-    root.add_child('')
-    root.add_child('enabled=%s' % (self.enabled))
-    root.add_child('')
+    if self.enabled != '':
+      root.add_child('enabled=%s' % (self.enabled))
+      root.add_child('')
     root.children.append(self._properties_to_node(self.properties))
     root.add_child('')
-    root.children.append(self._requirements_to_node('requirements', self.requirements))
-    root.add_child('')
-    root.children.append(self._requirements_to_node('build_requirements', self.build_requirements))
-    root.add_child('')
+    if self.requirements:
+      root.children.append(self._requirements_to_node('requirements', self.requirements))
+      root.add_child('')
+    if self.build_requirements:
+      root.children.append(self._requirements_to_node('build_requirements', self.build_requirements))
+      root.add_child('')
     root.children.append(self._steps_to_node(self.steps))
     if self.load:
       root.add_child('')
