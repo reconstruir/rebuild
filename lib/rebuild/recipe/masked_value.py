@@ -38,12 +38,19 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
       return self.value.to_string(delimiter = '=', value_delimiter = ' ', quote = quote)
     elif string_list.is_string_list(self.value):
       return string_list.to_string(self.value, delimiter = ' ', quote = quote)
+    elif check_type.is_hook_seq(self.value):
+      hook_names = [ h.name for h in self.value ]
+      return ' '.join(hook_names)
     else:
       assert False
 
   @classmethod
   def value_type_is_valid(clazz, v):
-    return compat.is_int(v) or compat.is_string(v) or isinstance(v, ( bool, key_value_list )) or string_list.is_string_list(v)
+    return compat.is_int(v) \
+      or compat.is_string(v) \
+      or isinstance(v, ( bool, key_value_list )) \
+      or string_list.is_string_list(v) \
+      or check_type.is_hook_seq(v)
     
   def _to_string_no_mask(self, depth, indent, quote):
     spaces = depth * indent * ' '
@@ -66,10 +73,6 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
     mask, delimiter, value = text.partition(':')
     value = recipe_parser_util.parse_value(value.strip(), argspec)
     return clazz(mask, value)
-
-  @classmethod
-  def parse_mask_and_string_list(clazz, text):
-    return clazz.parse_mask_and_value(text, step_argspec.STRING_LIST)
 
   def mask_matches(self, system):
     return build_system.mask_matches(self.mask or 'all', system)

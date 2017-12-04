@@ -12,7 +12,6 @@ class hook_registry(object):
     name = registree.__name__
     existing = clazz._registry.get(name, None)
     if existing:
-      assert False
       return
     clazz._registry[name] = registree
     if name.startswith('hook_'):

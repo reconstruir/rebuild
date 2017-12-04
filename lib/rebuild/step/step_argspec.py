@@ -7,15 +7,8 @@ class step_argspec(enum):
   BOOL = 1
   INT = 2
   KEY_VALUES = 3
-#  MASKED_FILE_LIST = 4
   STRING_LIST = 4
   STRING = 5
+  HOOK_LIST = 6
     
   DEFAULT = STRING
-
-class step_arg_interpret(enum):
-  NONE = 1
-  DIR = 2
-  FILE = 3
-  FILE_LIST = 4
-  DEFAULT = NONE

@@ -343,21 +343,59 @@ package foo-1.2.3-4
 package foo-1.2.3-4
   load
     test_loaded_step1.py
+    test_loaded_step2.py
 
   steps
     test_loaded_step1
       bool_value: True
+
+    test_loaded_step2
+      bool_value: True
 '''
 
-    tmp_dir = temp_file.make_temp_dir()
-    recipe_filename = file_util.save(path.join(tmp_dir, 'recipe.rrecipe'), content = text)
-    load_filename = path.join(tmp_dir, 'test_loaded_step1.py')
-    file_util.copy(self.data_path('test_loaded_step1.py'), load_filename)
-    r = P(text, recipe_filename).parse()
+    r = P(text, self.data_path('test_loaded_step1.py')).parse()
     self.assertEqual( 1, len(r) )
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 'test_loaded_step1\n    bool_value: True', str(r[0].steps[0]) )
+    self.assertEqual( 'test_loaded_step2\n    bool_value: True', str(r[0].steps[1]) )
+
+  def test_step_value_hook_list(self):
+    text = '''#!rebuildrecipe
+package foo-1.2.3-4
+  load
+    test_loaded_hook1.py
+    test_loaded_hook2.py
+
+  steps
+    step_takes_hook_list
+      hook_list_value: test_loaded_hook1 test_loaded_hook2
+'''
+    r = P(text, self.data_path('test_loaded_hook1.py')).parse()
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 'foo', r[0].descriptor.name )
+    self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
+    self.assertEqual( 1, len(r[0].steps) )
+    self.assertEqual( 'step_takes_hook_list\n    hook_list_value: test_loaded_hook1 test_loaded_hook2', str(r[0].steps[0]) )
+    
+  def test_step_value_hook_list_with_mask(self):
+    text = '''#!rebuildrecipe
+package foo-1.2.3-4
+  load
+    test_loaded_hook1.py
+    test_loaded_hook2.py
+
+  steps
+    step_takes_hook_list
+      hook_list_value
+        linux: test_loaded_hook1 test_loaded_hook2
+'''
+    r = P(text, self.data_path('test_loaded_hook1.py')).parse()
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 'foo', r[0].descriptor.name )
+    self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
+    self.assertEqual( 1, len(r[0].steps) )
+    self.assertMultiLineEqual( 'step_takes_hook_list\n  hook_list_value\n    linux: test_loaded_hook1 test_loaded_hook2', str(r[0].steps[0]) )
     
 if __name__ == '__main__':
   unit_test.main()

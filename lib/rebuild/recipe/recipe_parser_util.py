@@ -3,7 +3,7 @@
 
 from bes.common import bool_util, check_type, string_list
 from bes.key_value import key_value, key_value_list
-from rebuild.step import step_argspec
+from rebuild.step import hook_registry, step_argspec
 from bes.text import string_list_parser
 
 class recipe_parser_util(object):
@@ -48,7 +48,25 @@ class recipe_parser_util(object):
     elif argspec == step_argspec.KEY_VALUES:
       return key_value_list.parse(value, options = key_value_list.KEEP_QUOTES)
     elif argspec == step_argspec.STRING_LIST:
-      return string_list_parser.parse_to_list(value, options = string_list_parser.KEEP_QUOTES)
+      return clazz._parse_string_list(value)
     elif argspec == step_argspec.STRING:
       return value
+    elif argspec == step_argspec.HOOK_LIST:
+      return clazz._parse_hook_list(value)
     assert False
+
+  @classmethod
+  def _parse_string_list(clazz, value):
+    return string_list_parser.parse_to_list(value, options = string_list_parser.KEEP_QUOTES)
+
+  @classmethod
+  def _parse_hook_list(clazz, value):
+    hooks = []
+    names = clazz._parse_string_list(value)
+    for name in names:
+      hook_class = hook_registry.get(name)
+      if not hook_class:
+        raise RuntimeError('fuck')
+      hook = hook_class()
+      hooks.append(hook)
+    return hooks
