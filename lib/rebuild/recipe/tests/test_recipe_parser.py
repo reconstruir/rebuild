@@ -22,7 +22,7 @@ class test_recipe_parser(unit_test):
       self._parse('nomagic')
 
   def test_step_value_bool(self):
-    text = '''#!rebuildrecipe
+    text = '''!rebuildrecipe!
 package foo-1.2.3-4
   steps
     step_takes_bool
@@ -37,7 +37,7 @@ package foo-1.2.3-4
   def test_step_value_bool_with_mask(self):
     self.maxDiff = None
     
-    text = '''#!rebuildrecipe
+    text = '''!rebuildrecipe!
 package foo-1.2.3-4
   steps
     step_takes_bool
@@ -51,7 +51,7 @@ package foo-1.2.3-4
     self.assertEqual( 'step_takes_bool\n  bool_value\n    all: True', str(r[0].steps[0]) )
 
   def test_step_value_key_values(self):
-    text = '''#!rebuildrecipe
+    text = '''!rebuildrecipe!
 package foo-1.2.3-4
   steps
     step_takes_key_values
@@ -65,7 +65,7 @@ package foo-1.2.3-4
     self.assertEqual( 'step_takes_key_values\n    key_values_value: a=5 b=6 c="x y"', str(r[0].steps[0]) )
 
   def test_step_value_key_values_with_mask(self):
-    text = '''#!rebuildrecipe
+    text = '''!rebuildrecipe!
 package foo-1.2.3-4
   steps
     step_takes_key_values
@@ -80,7 +80,7 @@ package foo-1.2.3-4
     self.assertEqual( 'step_takes_key_values\n  key_values_value\n    all: a=5 b=6 c="x y"', str(r[0].steps[0]) )
     
   def test_step_value_string_list(self):
-    text = '''#!rebuildrecipe
+    text = '''!rebuildrecipe!
 package foo-1.2.3-4
   steps
     step_takes_string_list
@@ -94,7 +94,7 @@ package foo-1.2.3-4
     self.assertEqual( 'step_takes_string_list\n    string_list_value: a b "x y"', str(r[0].steps[0]) )
 
   def test_step_value_string_list_with_mask(self):
-    text = '''#!rebuildrecipe
+    text = '''!rebuildrecipe!
 package foo-1.2.3-4
   steps
     step_takes_string_list
@@ -109,7 +109,7 @@ package foo-1.2.3-4
     self.assertEqual( 'step_takes_string_list\n  string_list_value\n    all: a b "x y"', str(r[0].steps[0]) )
 
   def test_step_value_key_values_multi_line(self):
-    text = '''#!rebuildrecipe
+    text = '''!rebuildrecipe!
 package foo-1.2.3-4
   steps
     step_takes_key_values
@@ -126,7 +126,7 @@ package foo-1.2.3-4
     self.assertEqual( 'step_takes_key_values\n  key_values_value\n    all: a=5 b=6 c="x y" d=7 e=8 f="kiwi apple"', str(r[0].steps[0]) )
     
   def test_step_value_key_values_many_masks(self):
-    text = '''#!rebuildrecipe
+    text = '''!rebuildrecipe!
 package foo-1.2.3-4
   steps
     step_takes_key_values
@@ -151,7 +151,7 @@ step_takes_key_values
     self.assertEqual( expected, str(r[0].steps[0]) )
 
   def test_takes_all(self):
-    text = '''#!rebuildrecipe
+    text = '''!rebuildrecipe!
 package foo-1.2.3-4
   steps
     step_takes_all
@@ -186,7 +186,7 @@ step_takes_all
     self.assertEqual( expected, str(r[0].steps[0]) )
     
   def test_compound_step(self):
-    text = '''#!rebuildrecipe
+    text = '''!rebuildrecipe!
 package foo-1.2.3-4
   steps
     step_compound
@@ -221,7 +221,7 @@ step_compound
     self.assertEqual( expected, str(r[0].steps[0]) )
     
   def test_multiple_steps(self):
-    text = '''#!rebuildrecipe
+    text = '''!rebuildrecipe!
 package foo-1.2.3-4
   steps
     step_takes_bool
@@ -260,7 +260,7 @@ step_takes_key_values
     self.assertMultiLineEqual( expected, str(r[0].steps) )
     
   def test_complete(self):
-    text = '''#!rebuildrecipe
+    text = '''!rebuildrecipe!
 #comment
 
 package foo-1.2.3-4
@@ -339,7 +339,7 @@ package foo-1.2.3-4
     self.assert_string_equal_ws( expected, str(r[0]) )
 
   def test_step_load(self):
-    text = '''#!rebuildrecipe
+    text = '''!rebuildrecipe!
 package foo-1.2.3-4
   load
     test_loaded_step1.py
@@ -361,7 +361,7 @@ package foo-1.2.3-4
     self.assertEqual( 'test_loaded_step2\n    bool_value: True', str(r[0].steps[1]) )
 
   def test_step_value_hook_list(self):
-    text = '''#!rebuildrecipe
+    text = '''!rebuildrecipe!
 package foo-1.2.3-4
   load
     test_loaded_hook1.py
@@ -379,7 +379,7 @@ package foo-1.2.3-4
     self.assertEqual( 'step_takes_hook_list\n    hook_list_value: test_loaded_hook1 test_loaded_hook2', str(r[0].steps[0]) )
     
   def test_step_value_hook_list_with_mask(self):
-    text = '''#!rebuildrecipe
+    text = '''!rebuildrecipe!
 package foo-1.2.3-4
   load
     test_loaded_hook1.py
@@ -405,7 +405,7 @@ package foo-1.2.3-4
     self.assertEqual( hook2_filename, hooks[0].value[1].filename )
 
   def test_step_value_file_list(self):
-    text = '''#!rebuildrecipe
+    text = '''!rebuildrecipe!
 package foo-1.2.3-4
 
   steps
@@ -418,6 +418,29 @@ package foo-1.2.3-4
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
     self.assertEqual( 'step_takes_file_list\n    file_list_value: test_file1.txt test_file2.txt', str(r[0].steps[0]) )
+
+  def test_step_comments(self):
+    text = '''!rebuildrecipe!
+# comment
+package foo-1.2.3-4 # comment
+# comment
+  # comment
+  steps # comment
+    # comment
+# comment
+    step_takes_bool # comment
+      # comment
+# comment
+      bool_value: True # comment
+      # comment
+# comment
+'''
+    r = self._parse(text)
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 'foo', r[0].descriptor.name )
+    self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
+    self.assertEqual( 'step_takes_bool\n    bool_value: True', str(r[0].steps[0]) )
+
     
 if __name__ == '__main__':
   unit_test.main()

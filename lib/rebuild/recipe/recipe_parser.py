@@ -37,7 +37,7 @@ class recipe_parser_error(Exception):
     
 class recipe_parser(object):
 
-  MAGIC = '#!rebuildrecipe'
+  MAGIC = '!rebuildrecipe!'
 
   def __init__(self, text, filename):
     self.text = text
@@ -53,14 +53,16 @@ class recipe_parser(object):
   def parse(self):
     if not self.text.startswith(self.MAGIC):
       self._error('text should start with recipe magic \"%s\"' % (self.MAGIC))
-    tree = tree_text_parser.parse(self.text)
+    tree = tree_text_parser.parse(self.text, strip_comments = True)
     return self._parse_tree(tree)
 
   def _parse_tree(self, root):
     recipes = []
-    for pkg_node in root.children:
-      if self._node_is_comment(pkg_node):
-        continue
+    if not root.children:
+      self._error('invalid recipe', root)
+    if root.children[0].data.text != self.MAGIC:
+      self._error('invalid magic', root)
+    for pkg_node in root.children[1:]:
       recipe = self._parse_package(pkg_node)
       recipes.append(recipe)
     return recipes
@@ -99,9 +101,9 @@ class recipe_parser(object):
   def _parse_package_header(self, node):
     parts = string_util.split_by_white_space(node.data.text, strip = True)
     if len(parts) != 2:
-      self._error('package section should begin with \"package $name-$ver-$rev\"', node)
+      self._error('package section should begin with \"package $name-$ver-$rev\" instead of \"%s\"' % (node.data.text), node)
     if parts[0] != 'package':
-      self._error('package section should begin with \"package $name-$ver-$rev\"', node)
+      self._error('package section should begin with \"package $name-$ver-$rev\" instead of \"%s\"' % (node.data.text), node)
     desc = package_descriptor.parse(parts[1])
     return desc.name, desc.version
 
@@ -162,10 +164,6 @@ class recipe_parser(object):
         value = masked_value.parse_mask_and_value(text, self.filename, description.argspec[key])
         values.append(value)
     return recipe_value(key, values)
-
-  @classmethod
-  def _node_is_comment(clazz, node):
-    return node.data.text.startswith('#')
 
   @classmethod
   def _node_text_recursive(clazz, node):
