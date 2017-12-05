@@ -69,7 +69,7 @@ class builder_cli(object):
     opts.update(parsed_opts)
 
     available_packages = self.load_structure_file(args.rebuildstruct)
-    
+
     if args.filter:
       if path.isfile(args.filter[0]):
         target_packages_filter = file_util.read(args.filter[0]).split('\n')
@@ -98,9 +98,6 @@ class builder_cli(object):
     build_blurb.set_process_name('build')
     build_blurb.set_verbose(args.verbose)
 
-
-    filenames = [ path.join(p, 'build.py') for p in available_packages ]
-
     config = builder_config()
     config.build_root = path.abspath(args.root)
     config.build_target = build_target(opts.get('system', build_target.DEFAULT),
@@ -120,11 +117,11 @@ class builder_cli(object):
     config.verbose = args.verbose
     config.wipe = args.wipe
     config.third_party_prefix = args.third_party_prefix
-    env = builder_env(config, filenames)
+    env = builder_env(config, available_packages)
     
     build_blurb.blurb('build', 'target=%s; host=%s' % (config.build_target.build_path, config.host_build_target.build_path))
 
-    bldr = builder(env, filenames)
+    bldr = builder(env, available_packages)
 
     resolved_args = bldr.check_and_resolve_cmd_line_args(target_packages)
       
