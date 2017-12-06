@@ -19,7 +19,7 @@ class test_builder(unit_test):
   
   def test_amhello(self):
     tmp_dir = temp_file.make_temp_dir()
-    amhello_builder_script = unit_test_packaging.make_builder_script(tmp_dir, 'build_amhello.py', 'amhello', '1.0', 0)
+    amhello_builder_script = unit_test_packaging.make_recipe_v1(tmp_dir, 'build_amhello.py', 'amhello', '1.0', 0)
     file_util.copy(self.data_path('amhello-1.0.tar.gz'), tmp_dir)
     filenames = [ amhello_builder_script ]
     config = builder_config()
@@ -78,12 +78,12 @@ class test_builder(unit_test):
       'all: fructose >= 3.4.5-6',
       'all: fiber >= 1.0.0-0',
     ]
-    orange_builder_script = unit_test_packaging.make_builder_script(tmp_dir, 'build_orange.py', 'orange', '6.5.4', 3,
+    orange_builder_script = unit_test_packaging.make_recipe_v1(tmp_dir, 'build_orange.py', 'orange', '6.5.4', 3,
                                                                 requirements = orange_requirements,
                                                                 tests = [ 'all: orange-test.c' ])
-    fructose_builder_script = unit_test_packaging.make_builder_script(tmp_dir, 'build_fructose.py', 'fructose', '3.4.5', 6,
+    fructose_builder_script = unit_test_packaging.make_recipe_v1(tmp_dir, 'build_fructose.py', 'fructose', '3.4.5', 6,
                                                                   tests = [ 'all: fructose-test.c' ])
-    fiber_builder_script = unit_test_packaging.make_builder_script(tmp_dir, 'build_fiber.py', 'fiber', '1.0.0', 0,
+    fiber_builder_script = unit_test_packaging.make_recipe_v1(tmp_dir, 'build_fiber.py', 'fiber', '1.0.0', 0,
                                                                tests = [ 'all: fiber-test.c' ])
 
     data_files = [

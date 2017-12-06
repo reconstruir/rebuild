@@ -27,7 +27,7 @@ class test_builder_script_execute(unit_test):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     tmp_source_dir = path.join(tmp_dir, 'source')
     rebuildfile = path.join(tmp_source_dir, 'build_amhello.py')
-    script_content = unit_test_packaging.make_builder_script_content('amhello', '1.0', 0)
+    script_content = unit_test_packaging.make_recipe_v1_content('amhello', '1.0', 0)
     file_util.save(rebuildfile, content = script_content)
     bt = build_target()
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)

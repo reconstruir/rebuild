@@ -70,7 +70,7 @@ class test_builder_autoconf(unit_test):
   @classmethod
   def _build_autoconf_package(clazz, asserter, name, version, revision, tarball_dir):
     tmp_dir = temp_file.make_temp_dir()
-    builder_script_content = unit_test_packaging.make_builder_script_content(name, version, revision)
+    builder_script_content = unit_test_packaging.make_recipe_v1_content(name, version, revision)
     builder_script = file_util.save(path.join(tmp_dir, 'build.py'), content = builder_script_content)
     tarball_filename = '%s-%s.tar.gz' % (name, version)
     tarball_path = path.join(tarball_dir, tarball_filename)

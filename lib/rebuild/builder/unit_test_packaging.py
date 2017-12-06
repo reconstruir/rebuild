@@ -19,7 +19,7 @@ class unit_test_packaging(object):
   @classmethod
   def build_autoconf_package(clazz, asserter, name, version, revision, tarball_dir):
     tmp_dir = temp_file.make_temp_dir()
-    builder_script_content = clazz.make_builder_script_content(name, version, revision)
+    builder_script_content = clazz.make_recipe_v1_content(name, version, revision)
     builder_script = file_util.save(path.join(tmp_dir, 'build.py'), content = builder_script_content)
     tarball_filename = '%s-%s.tar.gz' % (name, version)
     tarball_path = path.join(tarball_dir, tarball_filename)
@@ -47,7 +47,7 @@ class unit_test_packaging(object):
     return package
     
   @classmethod
-  def make_builder_script_content(clazz, name, version, revision, requirements = None, tests = None):
+  def make_recipe_v1_content(clazz, name, version, revision, requirements = None, tests = None):
     requirements = requirements or []
     assert isinstance(requirements, list)
     requirements = [ string_util.quote(req) for req in requirements ]
@@ -81,8 +81,8 @@ def rebuild_recipes(env):
 ''' % ('\n,'.join(tests), name, version, revision, '\n,'.join(requirements))
     
   @classmethod
-  def make_builder_script(clazz, tmp_dir, filename, name, version, revision, requirements = None, tests = None):
-    content = clazz.make_builder_script_content(name, version, revision,
+  def make_recipe_v1(clazz, tmp_dir, filename, name, version, revision, requirements = None, tests = None):
+    content = clazz.make_recipe_v1_content(name, version, revision,
                                               requirements = requirements,
                                               tests = tests)
     filepath = path.join(tmp_dir, filename)
