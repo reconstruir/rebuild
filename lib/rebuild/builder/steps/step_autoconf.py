@@ -60,18 +60,18 @@ class step_autoconf_configure(step):
 
 class step_autoconf_pre_configure_hooks(step_call_hooks):
   'Run hooks before configure.'
-  HOOKS_NAMES = 'pre_configure_hooks'
+  __hook_names__ = 'pre_configure_hooks'
   def __init__(self):
     super(step_autoconf_pre_configure_hooks, self).__init__()
 
 class step_autoconf_post_configure_hooks(step_call_hooks):
   'Run hooks before configure.'
-  HOOKS_NAMES = 'post_configure_hooks'
+  __hook_names__ = 'post_configure_hooks'
   def __init__(self):
     super(step_autoconf_post_configure_hooks, self).__init__()
 
 class step_autoconf(compound_step):
-  'A simple uber step for autoconf projects.'
+  'A compound step for autoconf projects.'
   from .step_make import step_make, step_make_install
   from .step_setup import step_setup
   from .step_post_install import step_post_install

@@ -43,6 +43,7 @@ class step_description(object):
     if not step_class:
       raise RuntimeError('no such step class: %s' % (text))
     desc = step_description(step_class.clazz, args = {}, argspec = step_class.argspec)
+    print('step_class=%s; argspec=%s' % (step_class.clazz, step_class.argspec))
     return desc
 
   @classmethod

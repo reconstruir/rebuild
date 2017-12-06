@@ -17,9 +17,9 @@ class unit_test_packaging(object):
   __test__ = False
 
   @classmethod
-  def build_autoconf_package(clazz, asserter, name, version, revision, tarball_dir):
+  def build_autoconf_package(clazz, recipe_version, asserter, name, version, revision, tarball_dir):
     tmp_dir = temp_file.make_temp_dir()
-    builder_script_content = clazz.make_recipe_v1_content(name, version, revision)
+    builder_script_content = clazz.make_recipe_content(recipe_version, name, version, revision)
     builder_script = file_util.save(path.join(tmp_dir, 'build.py'), content = builder_script_content)
     tarball_filename = '%s-%s.tar.gz' % (name, version)
     tarball_path = path.join(tarball_dir, tarball_filename)
@@ -81,10 +81,8 @@ def rebuild_recipes(env):
 ''' % ('\n,'.join(tests), name, version, revision, '\n,'.join(requirements))
     
   @classmethod
-  def make_recipe_v1(clazz, tmp_dir, filename, name, version, revision, requirements = None, tests = None):
-    content = clazz.make_recipe_v1_content(name, version, revision,
-                                              requirements = requirements,
-                                              tests = tests)
+  def make_recipe(clazz, recipe_version, tmp_dir, filename, name, version, revision, requirements = None, tests = None):
+    content = clazz.make_recipe_content(recipe_version, name, version, revision, requirements = requirements, tests = tests)
     filepath = path.join(tmp_dir, filename)
     file_util.save(filepath, content = content)
     return filepath
@@ -112,6 +110,12 @@ package %s-%s-%s
       tests
         %s
 ''' % (name, version, revision, '\n,'.join(requirements), '\n,'.join(tests))
+
+  @classmethod
+  def make_recipe_content(clazz, recipe_version, name, version, revision, requirements = None, tests = None):
+    if recipe_version == 1:
+      return clazz.make_recipe_v1_content(name, version, revision, requirements = requirements, tests = tests)
+    return clazz.make_recipe_v2_content(name, version, revision, requirements = requirements, tests = tests)
   
 if __name__ == '__main__':
   unittest.main()

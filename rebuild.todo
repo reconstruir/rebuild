@@ -576,3 +576,7 @@ nov 30
   proj/third_party/python/python_setuptools/build.py
   python/python_pillow/reb-python_pillow-test.py
   lib/libpng/reb-libpng-test-process.c
+
+dec 7
+- make sure all steps define argspec.  make it abstract.  change step_registry 'registree.argspec() or {}' to just registree.argspec()
+- add unit test for step_call_hooks

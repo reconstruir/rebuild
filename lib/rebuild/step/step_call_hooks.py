@@ -10,8 +10,8 @@ class step_call_hooks(step):
     super(step_call_hooks, self).__init__()
 
   def execute(self, script, env, args):
-    return self.call_hooks(script, env, args, self.HOOKS_NAMES)
+    return self.call_hooks(script, env, args, self.__hook_names__)
 
   @classmethod
   def parse_step_args(clazz, script, env, args):
-    return clazz.resolve_step_args_list(script, args, clazz.HOOKS_NAMES)
+    return clazz.resolve_step_args_list(script, args, clazz.__hook_names__)
