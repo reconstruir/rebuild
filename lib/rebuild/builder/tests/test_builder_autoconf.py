@@ -85,7 +85,7 @@ class test_builder_autoconf(unit_test):
     config.no_checksums = True
     config.verbose = True
     env = builder_env(config, filenames)
-    bldr = builder(env, filenames)
+    bldr = builder(env)
     script = env.script_manager.scripts[ name ]
     env.checksum_manager.ignore(script.descriptor.full_name)
     rv = bldr.build_script(script, env)

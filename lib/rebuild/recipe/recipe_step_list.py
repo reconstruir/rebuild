@@ -46,4 +46,4 @@ class recipe_step_list(object):
   def __len__(self):
     return len(self._steps)
   
-check_type.register_class(recipe_step_list)
+check_type.register_class(recipe_step_list, include_seq = False)

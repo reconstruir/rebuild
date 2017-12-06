@@ -14,7 +14,7 @@ class builder(object):
 
   REBUILD_FILENAME = 'build.py'
   
-  def __init__(self, env, builder_script_filenames):
+  def __init__(self, env):
     build_blurb.add_blurb(self, label = 'build')
     self._env = env
     self.thread_pool = thread_pool(1)

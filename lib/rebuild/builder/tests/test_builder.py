@@ -28,7 +28,7 @@ class test_builder(unit_test):
     config.no_network = True
     config.verbose = True
     env = builder_env(config, filenames)
-    bldr = builder(env, filenames)
+    bldr = builder(env)
     packages = [ 'amhello' ]
     rv = bldr.build_many_scripts(packages)
     self.assertEqual( bldr.EXIT_CODE_SUCCESS, rv )
@@ -41,7 +41,7 @@ class test_builder(unit_test):
     config.no_network = True
     config.source_dir = self.data_dir()
     env = builder_env(config, filenames)
-    bldr = builder(env, filenames)
+    bldr = builder(env)
     packages = [ 'zlib', 'libpng' ]
     rv = bldr.build_many_scripts(packages)
     self.assertEqual( bldr.EXIT_CODE_SUCCESS, rv )
@@ -65,7 +65,7 @@ class test_builder(unit_test):
     config.no_network = True
     config.source_dir = self.data_dir()
     env = builder_env(config, filenames)
-    bldr = builder(env, filenames)
+    bldr = builder(env)
     packages_to_build = [ 'fructose' ]
     rv = bldr.build_many_scripts(packages_to_build)
     self.assertEqual( bldr.EXIT_CODE_SUCCESS, rv )
@@ -104,7 +104,7 @@ class test_builder(unit_test):
     config.no_network = True
     config.source_dir = self.data_dir()
     env = builder_env(config, filenames)
-    bldr = builder(env, filenames)
+    bldr = builder(env)
     packages_to_build = [ 'orange' ]
     rv = bldr.build_many_scripts(packages_to_build)
     self.assertEqual( bldr.EXIT_CODE_SUCCESS, rv )

@@ -21,6 +21,7 @@ class builder_script(object):
     self.descriptor = recipe.descriptor
     self.build_target = env.config.build_target
     self.filename = recipe.filename
+    print('ENABLED FUCK: %s' % (recipe.enabled))
     self.enabled = self.build_target.parse_expression(recipe.enabled)
     self.properties = recipe.properties
     self.requirements = recipe.requirements

@@ -6,12 +6,13 @@ from collections import namedtuple
 
 from bes.common import check_type
 from bes.python import code
+from bes.fs import file_util
 
 from rebuild.base import package_descriptor
 from rebuild.instruction import instruction_list
 from rebuild.step.hook_extra_code import HOOK_EXTRA_CODE
 from rebuild.step import step_description
-from rebuild.recipe import recipe
+from rebuild.recipe import recipe, recipe_parser
 
 from .builder_recipe_env import builder_recipe_env
 
@@ -21,12 +22,14 @@ class builder_recipe_loader(object):
   def load(clazz, filename):
     load_env = builder_recipe_env()
     recipes = clazz._load_recipes(filename, load_env)
-    scripts = []
+    if clazz._recipe_version(filename) == 2:
+      return recipes.recipes
+    result = []
     for recipe in recipes.recipes:
       check_type.check_dict(recipe, 'recipe')
-      script = clazz._load_from_dict(recipe, filename)
-      scripts.append(script)
-    return scripts
+      next_recipe = clazz._load_from_dict(recipe, filename)
+      result.append(next_recipe)
+    return result
 
   @classmethod
   def _load_from_dict(clazz, recipe_dict, filename):
@@ -55,7 +58,7 @@ class builder_recipe_loader(object):
     # recipe_dict should be empty now
     if recipe_dict:
       raise RuntimeError('Unknown recipe values for %s: %s' % (filename, recipe_dict))
-    return recipe(filename, enabled, properties, requirements, build_requirements,
+    return recipe(1, filename, enabled, properties, requirements, build_requirements,
                   descriptor, instructions, steps, None)
 
   @classmethod
@@ -101,7 +104,7 @@ class builder_recipe_loader(object):
 
   _recipes = namedtuple('_recipes', 'filename,recipes')
   @classmethod
-  def _load_recipes(clazz, filename, load_env):
+  def _load_recipes_v1(clazz, filename, load_env):
     filename = path.abspath(path.normpath(filename))
     if not path.isfile(filename):
       raise RuntimeError('Build script file not found: %s' % (filename))
@@ -123,3 +126,26 @@ class builder_recipe_loader(object):
       check_type.check_dict(recipe, 'recipe')
       result.append(recipe)
     return clazz._recipes(filename, result)
+
+  @classmethod
+  def _load_recipes_v2(clazz, filename):
+    parser = recipe_parser(file_util.read(filename), filename)
+    recipes = parser.parse()
+    return clazz._recipes(filename, recipes)
+  
+  @classmethod
+  def _load_recipes(clazz, filename, load_env):
+    version =  clazz._recipe_version(filename)
+    assert version in [ 1, 2]
+    if version == 1:
+      return clazz._load_recipes_v1(filename, load_env)
+    else:
+      return clazz._load_recipes_v2(filename)
+  
+  @classmethod
+  def _recipe_version(clazz, filename):
+    with open(filename, 'r') as fin:
+      magic = fin.read(len(recipe_parser.MAGIC))
+      if magic == recipe_parser.MAGIC:
+        return 2
+    return 1

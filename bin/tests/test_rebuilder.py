@@ -15,7 +15,6 @@ class test_rebuilder_script(script_unit_test):
   DEBUG = False
 #  DEBUG = True
 
-#  REBUILDER_SCRIPT = path.abspath(path.join(path.dirname(__file__), '../rebuilder.py'))
   BUILD_LEVEL = 'release'
 
 #  artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)

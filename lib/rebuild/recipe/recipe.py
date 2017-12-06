@@ -4,13 +4,12 @@
 from collections import namedtuple
 from bes.common import node
 
-class recipe(namedtuple('recipe', 'filename,enabled,properties,requirements,build_requirements,descriptor,instructions,steps,load')):
+class recipe(namedtuple('recipe', 'version,filename,enabled,properties,requirements,build_requirements,descriptor,instructions,steps,load')):
 
-  def __new__(clazz, filename, enabled, properties, requirements, build_requirements,
-              descriptor, instructions, steps, load):
-    return clazz.__bases__[0].__new__(clazz, filename, enabled, properties, requirements,
-                                      build_requirements, descriptor, instructions, steps,
-                                      load)
+  def __new__(clazz, version, filename, enabled, properties, requirements,
+              build_requirements, descriptor, instructions, steps, load):
+    return clazz.__bases__[0].__new__(clazz, version, filename, enabled, properties, requirements,
+                                      build_requirements, descriptor, instructions, steps, load)
 
   def __str__(self):
     return str(self._to_node()).strip()

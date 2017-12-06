@@ -46,6 +46,7 @@ class step_manager(object):
     return self._add_step(s)
 
   def add_steps(self, descriptions, script, env):
+    print('FUCK: descriptions: %s' % (type(descriptions)))
     assert step_description.is_step_description_list(descriptions)
     for description in descriptions:
       self.add_step(description, script, env)

@@ -121,7 +121,7 @@ class builder_cli(object):
     
     build_blurb.blurb('build', 'target=%s; host=%s' % (config.build_target.build_path, config.host_build_target.build_path))
 
-    bldr = builder(env, available_packages)
+    bldr = builder(env)
 
     resolved_args = bldr.check_and_resolve_cmd_line_args(target_packages)
       

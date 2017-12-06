@@ -75,7 +75,7 @@ class recipe_parser(object):
     build_requirements = []
     steps = []
     instructions = []
-    enabled = ''
+    enabled = 'True'
     load = []
     for child in node.children:
       text = child.data.text
@@ -95,7 +95,7 @@ class recipe_parser(object):
     desc = package_descriptor(name, version, requirements = requirements,
                               build_requirements = build_requirements,
                               properties = properties)
-    return recipe(self.filename, enabled, properties, requirements, build_requirements, 
+    return recipe(2, self.filename, enabled, properties, requirements, build_requirements, 
                   desc, instructions, steps, load)
 
   def _parse_package_header(self, node):
