@@ -88,6 +88,30 @@ def rebuild_recipes(env):
     filepath = path.join(tmp_dir, filename)
     file_util.save(filepath, content = content)
     return filepath
+
+  @classmethod
+  def make_recipe_v2_content(clazz, name, version, revision, requirements = None, tests = None):
+    requirements = requirements or []
+    assert isinstance(requirements, list)
+    requirements = [ string_util.quote(req) for req in requirements ]
+    tests = tests or []
+    assert isinstance(tests, list)
+    tests = [ string_util.quote(test) for test in tests ]
+    return '''
+!rebuildrecipe!
+
+package %s-%s-%s
+  properties
+    category=lib
+  build_requirements
+    %s
+  steps
+    step_autoconf
+      configure_env
+        all: CFLAGS=-I${REBUILD_REQUIREMENTS_INCLUDE_DIR} LDFLAGS=\"-L${REBUILD_REQUIREMENTS_LIB_DIR}\"
+      tests
+        %s
+''' % (name, version, revision, '\n,'.join(requirements), '\n,'.join(tests))
   
 if __name__ == '__main__':
   unittest.main()

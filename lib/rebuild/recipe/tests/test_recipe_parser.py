@@ -441,6 +441,18 @@ package foo-1.2.3-4 # comment
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 'step_takes_bool\n    bool_value: True', str(r[0].steps[0]) )
 
+  def test_step_empty_value(self):
+    text = '''!rebuildrecipe!
+package foo-1.2.3-4
+  steps
+    step_takes_bool
+'''
+    r = self._parse(text)
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 'foo', r[0].descriptor.name )
+    self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
+    self.assertEqual( 'step_takes_bool', str(r[0].steps[0]) )
+
     
 if __name__ == '__main__':
   unit_test.main()
