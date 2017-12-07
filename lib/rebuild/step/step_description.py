@@ -4,15 +4,16 @@
 import copy
 from bes.common import check_type, object_util, string_util
 from .step_registry import step_registry
+from collections import namedtuple
 
-class step_description(object):
+class step_description(namedtuple('step_description', 'step_class,args,argspec')):
 
-  def __init__(self, step_class, args = {}, argspec = None):
+  def __new__(clazz, step_class, args = None, argspec = None):
+    args = args or {}
+    argspec = argspec or {}
     assert isinstance(args, dict)
-    self.step_class = step_class
-    self.args = args
-    self.argspec = argspec or {}
-
+    return clazz.__bases__[0].__new__(clazz, step_class, args, argspec)
+  
   def __str__(self):
     return '%s:%s:%s' % (str(self.step_class), str(self.args), self.argspec)
 

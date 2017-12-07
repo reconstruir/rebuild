@@ -38,7 +38,7 @@ class test_rebuilder_script(script_unit_test):
     self.assertTrue( path.exists(path.join(artifacts_dir, 'fructose-3.4.5-6.tar.gz')) )
     self.assertFalse( path.exists(path.join(artifacts_dir, 'fiber-1.0.0.tar.gz')) )
 
-  def test_fructose_recipe_v2(self):
+  def xtest_fructose_recipe_v2(self):
     tmp_dir = self._make_temp_dir()
     cmd = [
       '--source-dir',
