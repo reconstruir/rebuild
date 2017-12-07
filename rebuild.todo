@@ -580,3 +580,4 @@ nov 30
 dec 7
 - make sure all steps define argspec.  make it abstract.  change step_registry 'registree.argspec() or {}' to just registree.argspec()
 - add unit test for step_call_hooks
+- fix symlinks in /Users/ramiro/proj/rebuild/lib/rebuild/test_data/rebuilder/fructose

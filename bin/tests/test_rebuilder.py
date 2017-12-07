@@ -37,6 +37,25 @@ class test_rebuilder_script(script_unit_test):
     artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
     self.assertTrue( path.exists(path.join(artifacts_dir, 'fructose-3.4.5-6.tar.gz')) )
     self.assertFalse( path.exists(path.join(artifacts_dir, 'fiber-1.0.0.tar.gz')) )
+
+  def test_fructose_recipe_v2(self):
+    tmp_dir = self._make_temp_dir()
+    cmd = [
+      '--source-dir',
+      path.join(self.data_dir(), '../packager'),
+      '--no-network',
+      '-v',
+      '--root', tmp_dir,
+      '--level', self.BUILD_LEVEL,
+      'fructose',
+    ]
+    rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'recipe_v2'))
+    if rv.exit_code != 0:
+      print((rv.stdout))
+    self.assertEqual( 0, rv.exit_code )
+    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
+    self.assertTrue( path.exists(path.join(artifacts_dir, 'fructose-3.4.5-6.tar.gz')) )
+    self.assertFalse( path.exists(path.join(artifacts_dir, 'fiber-1.0.0.tar.gz')) )
     
   def test_fructose_fiber(self):
     tmp_dir = self._make_temp_dir()
