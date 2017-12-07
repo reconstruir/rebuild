@@ -48,6 +48,9 @@ class recipe_value_list(object):
     return len(self._values)
 
   def resolve(self, system):
-    assert False
+    result = {}
+    for value in self._values:
+      result[value.key] = value.resolve(system)
+    return result
   
 check_type.register_class(recipe_value_list, include_seq = False)

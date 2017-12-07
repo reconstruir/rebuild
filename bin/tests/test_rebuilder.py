@@ -50,7 +50,10 @@ class test_rebuilder_script(script_unit_test):
       'fructose',
     ]
     rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'recipe_v2'))
-    if rv.exit_code != 0:
+    if True: #rv.exit_code != 0:
+      print('FAILED stderr:')
+      print((rv.stderr))
+      print('FAILED stdout:')
       print((rv.stdout))
     self.assertEqual( 0, rv.exit_code )
     artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)

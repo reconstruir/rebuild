@@ -38,13 +38,13 @@ class test_recipe_value(unit_test):
     
   def test_resolve(self):
     values = [
-      MV('all', [ 'all' ]),
-      MV('linux', [ 'linux' ]),
-      MV('macos', [ 'macos' ]),
+      MV('all', [ 'forall' ]),
+      MV('linux', [ 'forlinux' ]),
+      MV('macos', [ 'formacos' ]),
     ]
-    self.assertEqual( [ 'all', 'linux' ], V('key', values).resolve('linux') )
-    self.assertEqual( [ 'all', 'macos' ], V('key', values).resolve('macos') )
-    self.assertEqual( [ 'all' ], V('key', values).resolve('android') )
+    self.assertEqual( [ 'forall', 'forlinux' ], V('key', values).resolve('linux') )
+    self.assertEqual( [ 'forall', 'formacos' ], V('key', values).resolve('macos') )
+    self.assertEqual( [ 'forall' ], V('key', values).resolve('android') )
     
 if __name__ == '__main__':
   unit_test.main()

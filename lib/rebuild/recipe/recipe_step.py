@@ -33,6 +33,12 @@ class recipe_step(namedtuple('recipe_step', 'name,description,values')):
     return buf.getvalue().strip()
 
   def resolve_values(self, system):
-    return self.values.resolve(system)
+    result = {}
+    for value in self.values:
+      print('CACA value: %s' % (str(value)))
+      resolved = value.resolve(system)
+      print('CACA resolved: %s' % (resolved))
+      result.update(value.resolve(system))
+    return result
   
 check_type.register_class(recipe_step, include_seq = False)
