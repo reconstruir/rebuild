@@ -104,4 +104,4 @@ class masked_value_list(object):
           result.append(next_value)
           seen[next_value.key] = i
     return result
-check_type.register_class(masked_value_list)
+check_type.register_class(masked_value_list, include_seq = False)

@@ -64,4 +64,4 @@ class recipe_value(namedtuple('recipe_value', 'key,values')):
   def resolve(self, system):
     return self.values.resolve(system)
   
-check_type.register_class(recipe_value)
+check_type.register_class(recipe_value, include_seq = False)

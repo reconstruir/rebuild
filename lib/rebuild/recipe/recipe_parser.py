@@ -145,7 +145,7 @@ class recipe_parser(object):
       more_values = self._parse_step_value(description, child)
       assert isinstance(more_values, recipe_value)
       values.append(more_values)
-    return recipe_step(name, values)
+    return recipe_step(name, description, values)
 
   _data = namedtuple('_data', 'clazz,argspec')
   def _parse_step_value(self, description, node):

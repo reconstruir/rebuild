@@ -43,7 +43,7 @@ class step_description(namedtuple('step_description', 'step_class,args,argspec')
     step_class = step_registry.get(text)
     if not step_class:
       raise RuntimeError('no such step class: %s' % (text))
-    desc = step_description(step_class.clazz, args = {}, argspec = step_class.argspec)
+    desc = step_description(step_class.clazz, argspec = step_class.argspec)
     print('step_class=%s; argspec=%s' % (step_class.clazz, step_class.argspec))
     return desc
 
@@ -54,3 +54,4 @@ class step_description(namedtuple('step_description', 'step_class,args,argspec')
   @classmethod
   def is_step_description_list(clazz, o):
     return object_util.is_homogeneous(o, step_description)
+check_type.register_class(step_description, include_seq = False)

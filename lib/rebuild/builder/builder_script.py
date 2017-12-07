@@ -18,17 +18,9 @@ class builder_script(object):
     log.add_logging(self, 'build')
     build_blurb.add_blurb(self, 'build')
     self.env = env
-    self.descriptor = recipe.descriptor
+    self.recipe = recipe
     self.build_target = env.config.build_target
-    self.filename = recipe.filename
-    print('ENABLED FUCK: %s' % (recipe.enabled))
     self.enabled = self.build_target.parse_expression(recipe.enabled)
-    self.properties = recipe.properties
-    self.requirements = recipe.requirements
-    self.build_requirements = recipe.build_requirements
-    self.instructions = recipe.instructions
-    self.steps = recipe.steps
-
     self.source_dir = path.dirname(self.filename)
     self._step_manager = step_manager('build')
     self.working_dir = self._make_working_dir(self.env.config.builds_dir(self.build_target))
@@ -44,15 +36,53 @@ class builder_script(object):
     self.stage_lib_dir = path.join(self.stage_dir, 'lib')
     self.stage_bin_dir = path.join(self.stage_dir, 'bin')
     self.stage_compile_instructions_dir = path.join(self.stage_lib_dir, 'rebuild_instructions')
-    self._add_steps()
+    if self.recipe.format_version == 1:
+      self._add_steps_v1()
+    else:
+      self._add_steps_v2()
+
+  @property
+  def descriptor(self):
+    return self.recipe.descriptor
     
+  @property
+  def filename(self):
+    return self.recipe.filename
+    
+  @property
+  def properties(self):
+    return self.recipe.properties
+    
+  @property
+  def requirements(self):
+    return self.recipe.requirements
+    
+  @property
+  def build_requirements(self):
+    return self.recipe.build_requirements
+    
+  @property
+  def instructions(self):
+    return self.recipe.instructions
+    
+  @property
+  def steps(self):
+    return self.recipe.steps
+
   def _make_working_dir(self, build_dir):
     base_dir = '%s_%s' % (self.descriptor.full_name, time_util.timestamp())
     return path.join(build_dir, base_dir)
     
-  def _add_steps(self):
+  def _add_steps_v1(self):
     try:
       self._step_manager.add_steps(self.steps, self, self.env)
+    except Exception as ex:
+      print(('Caught exception loading script: %s' % (self.filename)))
+      raise
+
+  def _add_steps_v2(self):
+    try:
+      self._step_manager.add_steps_v2(self.steps, self, self.env)
     except Exception as ex:
       print(('Caught exception loading script: %s' % (self.filename)))
       raise
@@ -67,10 +97,6 @@ class builder_script(object):
                                                self.descriptor,
                                                self.build_target)
     return result
-        
-#  @property
-#  def disabled(self):
-#    return self.descriptor.disabled
 
   @property
   def sources(self):

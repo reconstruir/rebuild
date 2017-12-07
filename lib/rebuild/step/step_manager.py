@@ -7,6 +7,7 @@
 import copy
 from abc import abstractmethod
 from bes.common import dict_util
+from bes.common import check_type
 from bes.system import log
 
 from rebuild.base import build_blurb
@@ -33,7 +34,6 @@ class step_manager(object):
     self._steps.append(s)
     return s
 
-  # FIXME: only allow description
   def add_step(self, description, script, env):
     assert isinstance(description.args, dict)
     assert step_description.is_step_description(description)
@@ -46,10 +46,25 @@ class step_manager(object):
     return self._add_step(s)
 
   def add_steps(self, descriptions, script, env):
-    print('FUCK: descriptions: %s' % (type(descriptions)))
     assert step_description.is_step_description_list(descriptions)
     for description in descriptions:
       self.add_step(description, script, env)
+
+  def add_step_v2(self, description, script, env):
+    assert isinstance(description.args, dict)
+    assert step_description.is_step_description(description)
+    s = description.step_class()
+    global_args = s.global_args()
+    parsed_args = description.step_class.parse_step_args(script, env, copy.deepcopy(description.args))
+    if not isinstance(parsed_args, dict):
+      raise RuntimeError('%s.parse_step_args() needs to return a dict instead of \"%s\"' % (description.step_class.__name__, type(parsed_args).__name__))
+    s.args = dict_util.combine(global_args, parsed_args)
+    return self._add_step(s)
+
+  def add_steps_v2(self, descriptions, script, env):
+    check_type.check_recipe_step_list(descriptions, 'descriptions')
+    for description in descriptions:
+      self.add_step_v2(description, script, env)
 
   def execute(self, script, env, args):
     output = {}

@@ -87,4 +87,4 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
   def mask_matches(self, system):
     return build_system.mask_matches(self.mask or 'all', system)
   
-check_type.register_class(masked_value)
+check_type.register_class(masked_value, include_seq = False)

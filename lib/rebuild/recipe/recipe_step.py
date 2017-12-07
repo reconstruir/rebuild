@@ -4,11 +4,17 @@
 from collections import namedtuple
 from bes.compat import StringIO
 from bes.common import check_type
+from .recipe_value_list import recipe_value_list
 
-class recipe_step(namedtuple('recipe_step', 'name,values')):
+class recipe_step(namedtuple('recipe_step', 'name,description,values')):
 
-  def __new__(clazz, name, values):
-    return clazz.__bases__[0].__new__(clazz, name, values)
+  def __new__(clazz, name, description, values):
+    check_type.check_string(name, 'name')
+    check_type.check_step_description(description, 'description')
+    if not check_type.is_recipe_value_list(values):
+      values = recipe_value_list(values)
+    check_type.check_recipe_value_list(values, 'values')
+    return clazz.__bases__[0].__new__(clazz, name, description, values)
 
   def __str__(self):
     return self.to_string(depth = 0, indent = 2)
@@ -26,5 +32,7 @@ class recipe_step(namedtuple('recipe_step', 'name,values')):
       buf.write('\n')
     return buf.getvalue().strip()
 
-check_type.register_class(recipe_step)
+  def resolve_values(self, system):
+    return self.values.resolve(system)
   
+check_type.register_class(recipe_step, include_seq = False)
