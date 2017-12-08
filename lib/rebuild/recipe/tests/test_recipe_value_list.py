@@ -36,8 +36,6 @@ key_values_value
                         'string_list_value': ['a', 'b', '"x y"'],
                         'bool_value': True }, r )
 
-#    print('FUCK: %s - %s' % (str(caca), type(caca)))
-
   @classmethod
   def _parse(clazz, s):
     recipe_template = '''!rebuildrecipe!

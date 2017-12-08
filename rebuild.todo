@@ -582,3 +582,7 @@ dec 7
 - add unit test for step_call_hooks
 - fix symlinks in /Users/ramiro/proj/rebuild/lib/rebuild/test_data/rebuilder/fructose
 - retire test_step_manager._make_step_class doesnt appear to be used
+
+dec 8
+- step_check_hard_coded_paths maybe needs to be in a uber step check step same with step_check_darwin_archs
+

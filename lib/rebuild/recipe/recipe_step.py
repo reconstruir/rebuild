@@ -35,10 +35,7 @@ class recipe_step(namedtuple('recipe_step', 'name,description,values')):
   def resolve_values(self, system):
     result = {}
     for value in self.values:
-      print('CACA value: %s' % (str(value)))
-      resolved = value.resolve(system)
-      print('CACA resolved: %s' % (resolved))
-      result.update(value.resolve(system))
+      result.update({ value.key: value.resolve(system) })
     return result
   
 check_type.register_class(recipe_step, include_seq = False)

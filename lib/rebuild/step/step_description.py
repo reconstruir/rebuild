@@ -44,7 +44,6 @@ class step_description(namedtuple('step_description', 'step_class,args,argspec')
     if not step_class:
       raise RuntimeError('no such step class: %s' % (text))
     desc = step_description(step_class.clazz, argspec = step_class.argspec)
-    print('step_class=%s; argspec=%s' % (step_class.clazz, step_class.argspec))
     return desc
 
   @classmethod
