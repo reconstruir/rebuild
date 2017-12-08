@@ -135,11 +135,7 @@ class builder_script(object):
     return self._script_sources() + self._dep_sources(all_scripts)
 
   def _targets(self):
-    targets = []
-    for step, args in self.step_list({}):
-      if 'output_artifact_path' in args:
-        targets.append(args['output_artifact_path'])
-    return targets
+    return [ self.env.artifact_manager.artifact_path(self.descriptor, self.build_target) ]
 
   def _current_checksums(self, all_scripts):
     return self.file_checksums(file_checksum.checksums(self._sources(all_scripts)),

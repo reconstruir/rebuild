@@ -26,13 +26,6 @@ class step_artifact_create_make_package(step):
     self.blurb('staged tarball: %s' % (staged_tarball))
     return step_result(True, None, output = { 'staged_tarball': staged_tarball })
   
-  @classmethod
-  def parse_step_args(clazz, script, env, args):
-    output_artifact_path = env.artifact_manager.artifact_path(script.descriptor, script.build_target)
-    return { 
-      'output_artifact_path': output_artifact_path,
-    }
-
 class step_artifact_create_check_package(step):
   'Check that the staged package is good.'
 
