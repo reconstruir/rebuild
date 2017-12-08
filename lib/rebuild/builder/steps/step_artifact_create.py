@@ -15,8 +15,10 @@ class step_artifact_create_make_package(step):
     super(step_artifact_create_make_package, self).__init__()
 
   def execute(self, script, env, args):
-    assert 'output_tarball_path' in args
-    staged_tarball = script.requirements_manager.create_package(args['output_tarball_path'],
+    tarball_name = '%s.tar.gz' % (script.descriptor.full_name)
+    assert tarball_name == script.descriptor.tarball_filename
+    output_tarball_path = path.join(script.artifact_stage_dir, script.descriptor.tarball_filename)
+    staged_tarball = script.requirements_manager.create_package(output_tarball_path,
                                                                 script.descriptor,
                                                                 script.build_target,
                                                                 script.stage_dir,
@@ -25,19 +27,9 @@ class step_artifact_create_make_package(step):
     return step_result(True, None, output = { 'staged_tarball': staged_tarball })
   
   @classmethod
-  def _default_output_tarball_path(clazz, script):
-    tarball_name = '%s.tar.gz' % (script.descriptor.full_name)
-    assert tarball_name == script.descriptor.tarball_filename
-    return path.join(script.artifact_stage_dir, script.descriptor.tarball_filename)
-
-  @classmethod
   def parse_step_args(clazz, script, env, args):
-    output_tarball_path = args.get('output_tarball_path', None)
-    if not output_tarball_path:
-      output_tarball_path = clazz._default_output_tarball_path(script)
     output_artifact_path = env.artifact_manager.artifact_path(script.descriptor, script.build_target)
     return { 
-      'output_tarball_path': output_tarball_path,
       'output_artifact_path': output_artifact_path,
     }
 
