@@ -3,7 +3,6 @@
 
 import os.path as path
 from bes.common import check_type, Shell
-from bes.key_value import key_value_list
 from rebuild.step import compound_step, step, step_call_hooks, step_result
 from rebuild.toolchain import toolchain
 
@@ -23,11 +22,8 @@ class step_autoconf_configure(step):
     }
     
   def execute(self, script, env, args):
-    configure_flags = args.get('configure_flags', [])
-    check_type.check_list(configure_flags, 'configure_flags')
-
-    configure_env = args.get('configure_env', key_value_list())
-    check_type.check_key_value_list(configure_env, 'configure_env')
+    configure_flags = self.args_get_list(args, 'configure_flags')
+    configure_env = self.args_get_key_value_list(args, 'configure_env')
 
     configure_script = args.get('configure_script', 'configure')
 
@@ -51,13 +47,11 @@ class step_autoconf_configure(step):
       cmd = configure_cmd
 
     return self.call_shell(cmd, script, env, args,
-                           extra_env = configure_env.to_dict(),
+                           extra_env = configure_env,
                            save_logs = [ 'config.log', 'config.status' ])
 
   @classmethod
   def parse_step_args(clazz, script, env, args):
-    x =  clazz.resolve_step_args_env_and_flags(script, args, 'configure_env', 'configure_flags')
-    print("clazz=%s; POOOOTOT: x=%s" % (clazz, str(x)))
     return clazz.resolve_step_args_env_and_flags(script, args, 'configure_env', 'configure_flags')
 
 class step_autoconf_pre_configure_hooks(step_call_hooks):

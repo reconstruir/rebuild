@@ -13,7 +13,7 @@ class step_python_lib_build(step):
 
   def execute(self, script, env, args):
     cmd = '${PYTHON} setup.py build %s' % (args.get('python_lib_build_flags', ''))
-    return self.call_shell(cmd, script, env, args, extra_env = args.get('python_lib_builder_env'))
+    return self.call_shell(cmd, script, env, args, extra_env = self.args_get_key_value_list(args, 'python_lib_builder_env'))
 
   @classmethod
   def parse_step_args(clazz, script, env, args):
@@ -27,7 +27,7 @@ class step_python_lib_install(step):
 
   def execute(self, script, env, args):
     cmd = 'mkdir -p ${REBUILD_STAGE_PYTHON_LIB_DIR} && ${PYTHON} setup.py install --home=${REBUILD_STAGE_PREFIX_DIR} --install-lib=${REBUILD_STAGE_PYTHON_LIB_DIR} %s' % (args.get('python_lib_install_flags', ''))
-    return self.call_shell(cmd, script, env, args, extra_env = args.get('python_lib_install_env'))
+    return self.call_shell(cmd, script, env, args, extra_env = self.args_get_key_value_list(args, 'python_lib_install_env'))
 
   @classmethod
   def parse_step_args(clazz, script, env, args):

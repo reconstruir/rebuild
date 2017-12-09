@@ -18,7 +18,7 @@ class step_python_egg_build(step):
     setup_dir = args.get('setup_dir', None)
     cmd = '${PYTHON} %s bdist_egg --plat-name=${REBUILD_PYTHON_PLATFORM_NAME}' % (setup_script)
     return self.call_shell(cmd, script, env, args,
-                           extra_env = args.get('shell_env', {}),
+                           extra_env = self.args_get_key_value_list(args, 'shell_env'),
                            execution_dir = setup_dir)
 
   @classmethod

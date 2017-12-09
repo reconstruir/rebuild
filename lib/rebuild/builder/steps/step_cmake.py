@@ -14,11 +14,8 @@ class step_cmake_configure(step):
     super(step_cmake_configure, self).__init__()
 
   def execute(self, script, env, args):
-    cmake_flags = args.get('cmake_flags', [])
-    assert isinstance(cmake_flags, list)
-
-    cmake_env = args.get('cmake_env', {})
-    assert isinstance(cmake_env, dict)
+    cmake_flags = self.args_get_list(args, 'cmake_flags')
+    cmake_env = self.args_get_key_value_list(args, 'cmake_env')
 
     cmd = [ 'cmake' ]
     if env.config.verbose:

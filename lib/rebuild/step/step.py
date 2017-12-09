@@ -10,6 +10,7 @@ from collections import namedtuple
 from bes.common import check_type, dict_util, object_util, string_util, Shell, variable
 from bes.system import log
 from bes.system.compat import with_metaclass
+from bes.key_value import key_value_list
 from rebuild.base import build_blurb, build_os_env, build_target, masked_config
 from rebuild.toolchain import toolchain
 from rebuild.pkg_config import pkg_config
@@ -176,9 +177,10 @@ class step(with_metaclass(step_register_meta, object)):
   def call_shell(clazz, command, script, env, args, extra_env = None, save_logs = None, execution_dir = None):
     command = Shell.listify_command(command)
     command = [ part for part in command if part ]
-    extra_env = extra_env or {}
+    extra_env = extra_env or key_value_list()
     save_logs = save_logs or []
-    assert isinstance(extra_env, dict)
+    check_type.check_key_value_list(extra_env, 'extra_env')
+    
     log.log_i('build', 'call_shell(cmd=%s, args=%s)' % (command, args))
     build_blurb.blurb_verbose('build', 'call_shell(cmd=%s, args=%s, extra_env=%s)' % (command, args, extra_env))
 
@@ -364,3 +366,16 @@ class step(with_metaclass(step_register_meta, object)):
       raise RuntimeError('Trying to export deps that are not specified by %s: %s' % (descriptor.name, ' '.join(delta)))
     return export_names
         
+  @classmethod
+  def args_get_list(clazz, args, key):
+    check_type.check_dict(args, 'args')
+    result = args.get(key, [])
+    check_type.check_list(result, 'result')
+    return result
+
+  @classmethod
+  def args_get_key_value_list(clazz, args, key):
+    check_type.check_dict(args, 'args')
+    result = args.get(key, key_value_list())
+    check_type.check_key_value_list(result, 'result')
+    return result
