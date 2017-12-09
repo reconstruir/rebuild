@@ -46,6 +46,7 @@ class compound_step(step):
     output = {}
     for step in self.steps:
       result = step.execute(script, env, dict_util.combine(args, output))
+      print('COMPOUND: step=%s; args = %s; result = %s' % (step, args, result))
       output.update(result.output or {})
       if not result.success:
         return step_result(False,

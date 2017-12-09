@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.common import string_util
-from bes.key_value import key_value_parser
+from bes.key_value import key_value_list, key_value_parser
 from bes.text import string_list_parser
 from collections import namedtuple
 from bes.compat import StringIO
@@ -75,7 +75,7 @@ class masked_config(namedtuple('masked_config', 'system_mask,data')):
 
   @classmethod
   def parse_func_key_values(clazz, text):
-    return [ kv for kv in key_value_parser.parse(text, options = key_value_parser.KEEP_QUOTES) ]
+    return key_value_list([ kv for kv in key_value_parser.parse(text, options = key_value_parser.KEEP_QUOTES) ])
 
   @classmethod
   def parse_func_string_list(clazz, text):
@@ -90,7 +90,7 @@ class masked_config(namedtuple('masked_config', 'system_mask,data')):
   def resolve_key_values(clazz, config, system):
     if not build_system.system_is_valid(system):
       raise RuntimeError('Invalid system: %s' % (str(system)))
-    result = []
+    result = key_value_list()
     for line in config:
       psc = clazz.parse_key_values(line)
       if build_system.mask_matches(psc.system_mask, system):

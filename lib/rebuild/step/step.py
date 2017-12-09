@@ -7,7 +7,7 @@ import copy, os, os.path as path
 
 from abc import abstractmethod, ABCMeta
 from collections import namedtuple
-from bes.common import dict_util, object_util, string_util, Shell, variable
+from bes.common import check_type, dict_util, object_util, string_util, Shell, variable
 from bes.system import log
 from bes.system.compat import with_metaclass
 from rebuild.base import build_blurb, build_os_env, build_target, masked_config
@@ -298,14 +298,15 @@ class step(with_metaclass(step_register_meta, object)):
     env_dict = {}
     if env_name and env_name in args:
       config = args[env_name]
-      resolved = masked_config.resolve_key_values_to_dict(config, script.build_target.system)
-      assert isinstance(resolved, dict)
+      resolved = masked_config.resolve_key_values(config, script.build_target.system)
+      check_type.check_key_value_list(resolved, 'resolved')
       env_dict = { env_name: resolved }
 
     flags_dict = {}
     if flags_name and flags_name in args:
       config = args[flags_name]
       resolved = masked_config.resolve_list(config, script.build_target.system)
+      check_type.check_list(resolved, 'resolved')
       flags_dict = { flags_name: resolved }
 
     return dict_util.combine(env_dict, flags_dict)
@@ -315,8 +316,8 @@ class step(with_metaclass(step_register_meta, object)):
     result = {}
     if key and key in args:
       config = args[key]
-      resolved = masked_config.resolve_key_values_to_dict(config, script.build_target.system)
-      assert isinstance(resolved, dict)
+      resolved = masked_config.resolve_key_values(config, script.build_target.system)
+      check_type.check_key_value_list(resolved, 'resolved')
       result = { key: resolved }
     return result
 
