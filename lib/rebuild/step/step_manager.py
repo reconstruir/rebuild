@@ -52,17 +52,19 @@ class step_manager(object):
 
   def add_step_v2(self, recipe_step, script, env):
     check_type.check_recipe_step(recipe_step, 'recipe_step')
-    print('FUCK: %s' % (str(recipe_step)))
+#    print('FUCK: %s' % (str(recipe_step)))
 #    assert isinstance(description.args, dict)
 #    assert step_description.is_step_description(description)
     s = recipe_step.description.step_class()
     global_args = s.global_args()
-    parsed_args = recipe_step.resolve_values(script.build_target.system)
-    print('FUCK: parsed_args=%s' % (parsed_args))
-    check_type.check_dict(parsed_args, 'parsed_args')
-#    if not isinstance(parsed_args, dict):
-#      raise RuntimeError('%s.parse_step_args() needs to return a dict instead of \"%s\"' % (description.step_class.__name__, type(parsed_args).__#name__))
-    s.args = dict_util.combine(global_args, parsed_args)
+    resolved_args = recipe_step.resolve_values(script.build_target.system)
+    parsed_args = recipe_step.description.step_class.parse_step_args(script, env, copy.deepcopy(recipe_step.description.args))
+    print('FUCK2: resolved_args=%s' % (resolved_args))
+    print('FUCK2: parsed_args=%s' % (parsed_args))
+    check_type.check_dict(resolved_args, 'resolved_args')
+#    if not isinstance(resolved_args, dict):
+#      raise RuntimeError('%s.parse_step_args() needs to return a dict instead of \"%s\"' % (description.step_class.__name__, type(resolved_args).__#name__))
+    s.args = dict_util.combine(global_args, resolved_args, parsed_args)
     return self._add_step(s)
 
   def add_steps_v2(self, steps, script, env):

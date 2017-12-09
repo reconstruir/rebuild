@@ -18,6 +18,7 @@ class step_setup_unpack(step):
 
     downloaded_tarballs = args.get('downloaded_tarballs', [])
     extra_tarballs = args.get('extra_tarballs', [])
+    print('FUCK: tarballs: %s' % ' '.join(args.get('tarballs', [])))
     tarballs = args.get('tarballs', []) + extra_tarballs + downloaded_tarballs
     if not tarballs:
       return step_result(False, 'No tarballs found for %s.' % (script.descriptor.full_name))

@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common import Shell
+from bes.common import check_type, Shell
 from rebuild.step import compound_step, step, step_call_hooks, step_result
 from rebuild.toolchain import toolchain
 
@@ -24,10 +24,10 @@ class step_autoconf_configure(step):
   def execute(self, script, env, args):
 
     configure_flags = args.get('configure_flags', [])
-    assert isinstance(configure_flags, list)
+    check_type.check_list(configure_flags, 'configure_flags')
 
     configure_env = args.get('configure_env', {})
-    assert isinstance(configure_env, dict)
+#    check_type.check_dict(configure_env, 'configure_env')
 
     configure_script = args.get('configure_script', 'configure')
 
