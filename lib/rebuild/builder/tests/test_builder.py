@@ -70,6 +70,30 @@ class test_builder(unit_test):
     rv = bldr.build_many_scripts(packages_to_build)
     self.assertEqual( bldr.EXIT_CODE_SUCCESS, rv )
     
+  def test_fructose_recipe_v2(self):
+    tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
+    if self.DEBUG:
+      print("tmp_dir: ", tmp_dir)
+    data_files = [
+      'build_fructose.rrecipe',
+      'fructose-3.4.5.tar.gz',
+      'fructose-test.c',
+    ]
+
+    for f in data_files:
+      file_util.copy(self.data_path(f), tmp_dir)
+
+    filenames = [ path.join(tmp_dir, 'build_fructose.rrecipe') ]
+    config = builder_config()
+    config.build_root = path.join(tmp_dir, 'BUILD')
+    config.no_network = True
+    config.source_dir = self.data_dir()
+    env = builder_env(config, filenames)
+    bldr = builder(env)
+    packages_to_build = [ 'fructose' ]
+    rv = bldr.build_many_scripts(packages_to_build)
+    self.assertEqual( bldr.EXIT_CODE_SUCCESS, rv )
+    
   def xxxtest_orange(self):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     if self.DEBUG:

@@ -586,3 +586,10 @@ dec 7
 dec 8
 - step_check_hard_coded_paths maybe needs to be in a uber step check step same with step_check_darwin_archs
 
+dec 12
+- parse_step_args that are complex
+
+lib/rebuild/builder/steps/step_pkg_config_make_pc.py
+lib/rebuild/builder/steps/step_setup_tarball_download.py
+lib/rebuild/builder/steps/step_shell.py
+lib/rebuild/builder/steps/step_setup_unpack.py
