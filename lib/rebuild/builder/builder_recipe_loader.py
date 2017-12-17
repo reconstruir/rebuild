@@ -129,7 +129,7 @@ class builder_recipe_loader(object):
 
   @classmethod
   def _load_recipes_v2(clazz, filename):
-    parser = recipe_parser(file_util.read(filename), filename)
+    parser = recipe_parser(file_util.read(filename, codec = 'utf8'), filename)
     recipes = parser.parse()
     return clazz._recipes(filename, recipes)
   
