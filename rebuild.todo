@@ -589,7 +589,8 @@ dec 8
 dec 12
 - parse_step_args that are complex
 
-lib/rebuild/builder/steps/step_pkg_config_make_pc.py
+lib/rebuild/builder/steps/step_pkg_config_make_pc.py - easy
+lib/rebuild/builder/steps/step_shell.py - easy
+
 lib/rebuild/builder/steps/step_setup_tarball_download.py
-lib/rebuild/builder/steps/step_shell.py
 lib/rebuild/builder/steps/step_setup_unpack.py

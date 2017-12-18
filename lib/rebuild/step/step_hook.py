@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+'''
 from bes.common import object_util
 from .step_result import step_result
 
@@ -36,3 +37,4 @@ class step_hook(object):
       if not hook_result.success:
         return hook_result
     return step_result(True)
+'''
