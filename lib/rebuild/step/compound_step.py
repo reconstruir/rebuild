@@ -41,6 +41,18 @@ class compound_step(step):
       args.update(step_class.global_args())
     return args
 
+  def prepare(self, script, env, args):
+    assert self.steps
+    for step in self.steps:
+      step.prepare(script, env, dict_util.combine(args, output))
+  
+  def sources(self):
+    sources = []
+    assert self.steps
+    for step in self.steps:
+      sources.append(step.sources())
+    return sources
+  
   def execute(self, script, env, args):
     assert self.steps
     output = {}

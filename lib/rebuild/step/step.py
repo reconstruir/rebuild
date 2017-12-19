@@ -32,11 +32,20 @@ class step_register_meta(ABCMeta, step_argspec.CONSTANTS):
     return clazz
 
 class step(with_metaclass(step_register_meta, object)):
-  
+
+#  @abstractmethod
+  def prepare(self, script, env, args):
+    'Prepare the step.'
+    pass
+ 
   @abstractmethod
   def execute(self, script, env, args):
     'Execute the step.'
     pass
+ 
+  def sources(self):
+    'Return a list of sources for this step.'
+    return []
  
   def on_tag_changed(self):
     'Called when the tag changes.'

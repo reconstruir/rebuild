@@ -58,7 +58,7 @@ class build_version(namedtuple('build_version', 'upstream_version,revision,epoch
     
   @classmethod
   def epoch_is_valid(clazz, epoch):
-    return number_util.is_int(epoch)
+    return number_util.string_is_int(epoch)
   
   @classmethod
   def validate_epoch(clazz, epoch):
@@ -66,7 +66,7 @@ class build_version(namedtuple('build_version', 'upstream_version,revision,epoch
   
   @classmethod
   def revision_is_valid(clazz, revision):
-    return number_util.is_int(revision)
+    return number_util.string_is_int(revision)
   
   @classmethod
   def validate_revision(clazz, revision):
@@ -74,7 +74,7 @@ class build_version(namedtuple('build_version', 'upstream_version,revision,epoch
 
   @classmethod
   def _validate_epoch_revision(clazz, n, label):
-    if not number_util.is_int(n):
+    if not number_util.string_is_int(n):
       raise RuntimeError('invalid %s of type %s - should be int: \"%s\"' % (label, type(n), str(n)))
     return int(n)
   
