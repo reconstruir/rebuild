@@ -4,7 +4,6 @@
 from bes.enum import enum
 from bes.common import string_util
 from bes.text import comments
-from bes.key_value import key_value_list
 from collections import namedtuple
 
 class step_argspec(enum):
@@ -18,16 +17,6 @@ class step_argspec(enum):
     
   DEFAULT = STRING
 
-  _DEFAULT_VALUES = {
-    BOOL: False,
-    INT: 0,
-    KEY_VALUES: key_value_list(),
-    STRING_LIST: [],
-    STRING: None,
-    HOOK_LIST: [],
-    FILE_LIST: [],
-  }
-  
   @classmethod
   def parse(clazz, text):
     result = []
