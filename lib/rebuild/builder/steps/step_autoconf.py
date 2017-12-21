@@ -7,13 +7,25 @@ from rebuild.step import compound_step, step, step_call_hooks, step_result
 from rebuild.toolchain import toolchain
 
 class step_autoconf_configure(step):
-  'Configure Setup.'
+  '''
+  # autoconf configure
+  configure_flags   string_list
+  configure_env     key_values
+  configure_script  string      configure
+  need_autoreconf   bool        False
+  '''
 
   def __init__(self):
     super(step_autoconf_configure, self).__init__()
 
   @classmethod
   def argspec(clazz):
+#    return '''
+#    configure_flags   string_list
+#    configure_env     key_values
+#    configure_script  string      configure
+#    need_autoreconf   bool        False
+#    '''
     return {
       'configure_flags': clazz.STRING_LIST,
       'configure_env': clazz.KEY_VALUES,
@@ -22,8 +34,20 @@ class step_autoconf_configure(step):
     }
     
   def execute(self, script, env, args):
+    '''
+    if False and script.recipe.format_version == 2:
+      print('CACA: RECIPE VERSION: %s' % (script.recipe.format_version))
+      print('CACA: build_target: %s' % (str(script.build_target)))
+      print('CACA: step recipe: %s' % (str(self.recipe.name)))
+      caca_values = self.recipe.resolve_values(script.build_target.system)
+      print('CACA: values: %s' % (str(caca_values)))
+      #caca_configure_env = self.recipe.resolve_values(script.build_target)
+    '''
     configure_flags = self.args_get_list(args, 'configure_flags')
     configure_env = self.args_get_key_value_list(args, 'configure_env')
+
+#    print('CACA: configure_flags: %s' % (str(configure_flags)))
+#    print('CACA: configure_env: %s' % (type(configure_env)))
 
     configure_script = args.get('configure_script', 'configure')
 

@@ -594,3 +594,7 @@ lib/rebuild/builder/steps/step_shell.py - easy
 
 lib/rebuild/builder/steps/step_setup_tarball_download.py
 lib/rebuild/builder/steps/step_setup_unpack.py
+
+dec 19
+- __step_global_args__ is not really used and needs to be converted to be platform specific
+

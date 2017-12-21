@@ -65,7 +65,17 @@ class compound_step(step):
                            failed_step = step,
                            output = output)
     return step_result(True, output = output)
+
+  @property
+  def recipe(self):
+    return super(compound_step, self).recipe()
   
+  @recipe.setter
+  def recipe(self, recipe):
+    assert recipe != None
+    for step in self.steps:
+      step.recipe = recipe
+      
   def update_args(self, args):
     super(compound_step, self).update_args(args)
     for step in self.steps:
