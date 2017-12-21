@@ -7,7 +7,7 @@ from .hook_poto import hook_poto
 from .hook_registry import hook_registry
 from .step import step, step_result
 from .step_aborted import step_aborted
-from .step_argspec import step_argspec
+from .step_arg_type import step_arg_type
 from .step_call_hooks import step_call_hooks
 from .step_description import step_description
 #from .step_hook import step_hook

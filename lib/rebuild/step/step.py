@@ -19,12 +19,12 @@ from rebuild.dependency import dependency_resolver
 
 from .hook_poto import hook_poto
 from .hook_extra_code import HOOK_EXTRA_CODE
-from .step_argspec import step_argspec
+from .step_arg_type import step_arg_type
 from .step_registry import step_registry
 from .step_result import step_result
 from .variable_manager import variable_manager
 
-class step_register_meta(ABCMeta, step_argspec.CONSTANTS):
+class step_register_meta(ABCMeta, step_arg_type.CONSTANTS):
 
   def __new__(meta, name, bases, class_dict):
     clazz = ABCMeta.__new__(meta, name, bases, class_dict)

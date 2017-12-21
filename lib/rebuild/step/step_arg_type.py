@@ -6,7 +6,7 @@ from bes.common import string_util
 from bes.text import comments
 from collections import namedtuple
 
-class step_argspec(enum):
+class step_arg_type(enum):
   BOOL = 1
   INT = 2
   KEY_VALUES = 3

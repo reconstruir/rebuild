@@ -6,7 +6,7 @@ from bes.compat import StringIO
 from bes.common import check_type
 from .recipe_value_list import recipe_value_list
 from rebuild.base import build_system
-from rebuild.step import step_argspec
+from rebuild.step import step_arg_type
 from bes.key_value import key_value_list
 
 class recipe_step(namedtuple('recipe_step', 'name,description,values')):
@@ -47,13 +47,13 @@ class recipe_step(namedtuple('recipe_step', 'name,description,values')):
     return result
 
   _DEFAULT_VALUES = {
-    step_argspec.BOOL: False,
-    step_argspec.INT: 0,
-    step_argspec.KEY_VALUES: key_value_list(),
-    step_argspec.STRING_LIST: [],
-    step_argspec.STRING: None,
-    step_argspec.HOOK_LIST: [],
-    step_argspec.FILE_LIST: [],
+    step_arg_type.BOOL: False,
+    step_arg_type.INT: 0,
+    step_arg_type.KEY_VALUES: key_value_list(),
+    step_arg_type.STRING_LIST: [],
+    step_arg_type.STRING: None,
+    step_arg_type.HOOK_LIST: [],
+    step_arg_type.FILE_LIST: [],
   }
   
 check_type.register_class(recipe_step, include_seq = False)
