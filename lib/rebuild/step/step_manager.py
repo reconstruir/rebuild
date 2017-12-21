@@ -51,7 +51,9 @@ class step_manager(object):
 
   def add_step_v2(self, recipe_step, script, env):
     check_type.check_recipe_step(recipe_step, 'recipe_step')
-    s = recipe_step.description.step_class()
+    step_class = recipe_step.description.step_class
+    s = step_class()
+    s.recipe = recipe_step
     global_args = s.global_args()
     resolved_args = recipe_step.resolve_values(script.build_target.system)
     check_type.check_dict(resolved_args, 'resolved_args')

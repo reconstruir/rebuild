@@ -58,6 +58,7 @@ class step(with_metaclass(step_register_meta, object)):
     return None
   
   def __init__(self):
+    self._recipe = None
     self._args = copy.deepcopy(getattr(self, '__step_global_args__', {}))
 #    self.log_d('%s: step.__init__() args=%s' % (self, self._args))
     
@@ -80,6 +81,17 @@ class step(with_metaclass(step_register_meta, object)):
 
   def update_args(self, args):
     dict_util.update(self.args, args)
+
+  @property
+  def recipe(self):
+    assert self._recipe != None
+    return self._recipe
+
+  @recipe.setter
+  def recipe(self, recipe):
+    assert recipe != None
+    assert self._recipe == None
+    self._recipe = recipe
 
   @property
   def tag(self):
