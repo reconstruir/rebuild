@@ -23,15 +23,36 @@ from .step_arg_type import step_arg_type
 from .step_registry import step_registry
 from .step_result import step_result
 from .variable_manager import variable_manager
+from .step_arg_spec import step_arg_spec
 
 class step_register_meta(ABCMeta, step_arg_type.CONSTANTS):
 
   def __new__(meta, name, bases, class_dict):
     clazz = ABCMeta.__new__(meta, name, bases, class_dict)
     step_registry.register_step_class(clazz)
+#    clazz._determine_args_definition()
     return clazz
 
 class step(with_metaclass(step_register_meta, object)):
+
+  def __init__(self):
+    self._recipe = None
+    self._args = copy.deepcopy(getattr(self, '__step_global_args__', {}))
+#    self.log_d('%s: step.__init__() args=%s' % (self, self._args))
+
+  @classmethod
+  def args_definition(clazz):
+    if not hasattr(clazz, '_args_definition'):
+      setattr(clazz, '_args_definition', clazz._determine_args_definition())
+    return getattr(clazz, '_args_definition')
+
+  @classmethod
+  def _determine_args_definition(clazz):
+    defs = clazz.define_args()
+    if check_type.is_string(defs):
+      defs = step_arg_spec.parse_many(defs)
+    check_type.check_dict(defs, 'defs')
+    return defs
 
 #  @abstractmethod
   def prepare(self, script, env, args):
@@ -53,15 +74,10 @@ class step(with_metaclass(step_register_meta, object)):
 
   @classmethod
 #  @abstractmethod
-  def argspec(clazz):
-    'Return an args spec.'
-    return None
+  def define_args(clazz):
+    'Return a list of arg specs.'
+    return {}
   
-  def __init__(self):
-    self._recipe = None
-    self._args = copy.deepcopy(getattr(self, '__step_global_args__', {}))
-#    self.log_d('%s: step.__init__() args=%s' % (self, self._args))
-    
   @classmethod
   def parse_step_args(clazz, script, env, args):
     result = copy.deepcopy(clazz.global_args())

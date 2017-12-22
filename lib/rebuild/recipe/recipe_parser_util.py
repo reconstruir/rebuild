@@ -57,7 +57,7 @@ class recipe_parser_util(object):
       return clazz._parse_hook_list(value)
     elif argspec == step_arg_type.FILE_LIST:
       return clazz._parse_file_list(value, path.dirname(filename))
-    assert False
+    raise ValueError('unknown argspec: %s' % (str(argspec)))
 
   @classmethod
   def _parse_string_list(clazz, value):

@@ -1,14 +1,11 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import copy
-from bes.common import read_only_dict, string_util
+from bes.common import string_util
 from collections import namedtuple
 
 class step_registry(object):
 
-  _data = namedtuple('_data', 'clazz,argspec')
-  
   _registry = {}
   
   @classmethod
@@ -17,11 +14,10 @@ class step_registry(object):
     existing = clazz._registry.get(name, None)
     if existing:
       return
-    data = clazz._data(registree, read_only_dict(copy.deepcopy(registree.argspec() or {})))
-    clazz._registry[name] = data
+    clazz._registry[name] = registree
     if name.startswith('step_'):
       name_no_step = string_util.remove_head(name, 'step_')
-      clazz._registry[name_no_step] = data
+      clazz._registry[name_no_step] = registree
     
   @classmethod
   def get(clazz, class_name):

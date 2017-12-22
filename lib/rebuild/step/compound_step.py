@@ -28,10 +28,11 @@ class compound_step(step):
     return args
 
   @classmethod
-  def argspec(clazz):
+  def define_args(clazz):
     result = {}
     for step_class in clazz._get_compound_classes():
-      result.update(step_class.argspec() or {})
+      defs = step_class.args_definition()
+      result.update(defs)
     return result
 
   @classmethod

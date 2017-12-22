@@ -7,31 +7,18 @@ from rebuild.step import compound_step, step, step_call_hooks, step_result
 from rebuild.toolchain import toolchain
 
 class step_autoconf_configure(step):
-  '''
-  # autoconf configure
-  configure_flags   string_list
-  configure_env     key_values
-  configure_script  string      configure
-  need_autoreconf   bool        False
-  '''
 
   def __init__(self):
     super(step_autoconf_configure, self).__init__()
 
   @classmethod
-  def argspec(clazz):
-#    return '''
-#    configure_flags   string_list
-#    configure_env     key_values
-#    configure_script  string      configure
-#    need_autoreconf   bool        False
-#    '''
-    return {
-      'configure_flags': clazz.STRING_LIST,
-      'configure_env': clazz.KEY_VALUES,
-      'configure_script': clazz.STRING,
-      'need_autoreconf': clazz.BOOL,
-    }
+  def define_args(clazz):
+    return '''
+    configure_flags   string_list
+    configure_env     key_values
+    configure_script  string      configure
+    need_autoreconf   bool        False
+    '''
     
   def execute(self, script, env, args):
     '''
@@ -50,14 +37,15 @@ class step_autoconf_configure(step):
 #    print('CACA: configure_env: %s' % (type(configure_env)))
 
     configure_script = args.get('configure_script', 'configure')
-
+    
     need_autoreconf = args.get('need_autoreconf', False)
+    
     if need_autoreconf:
       autoreconf_cmd = [ 'autoreconf', '-i' ]
     else:
       autoreconf_cmd = None
 
-      tc = toolchain.get_toolchain(script.build_target)
+    tc = toolchain.get_toolchain(script.build_target)
       
     configure_script_path = path.join(script.source_unpacked_dir, configure_script)
     configure_cmd = [
@@ -65,6 +53,8 @@ class step_autoconf_configure(step):
       '--prefix=%s' % (script.stage_dir),
     ] + configure_flags + tc.autoconf_flags()
 
+    print('CACA: need_autoreconf: %s' % (need_autoreconf))
+    print('CACA: autoreconf_cmd: %s' % (autoreconf_cmd))
     if autoreconf_cmd:
       cmd = autoreconf_cmd + [ '&&' ] + configure_cmd
     else:

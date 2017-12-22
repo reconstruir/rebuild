@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
-#
-import unittest
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
+
+from bes.testing.unit_test import unit_test
 from rebuild.step import step, step_result
 
-class test_step(unittest.TestCase):
+class test_step(unit_test):
 
   class TestStep(step):
     def execute(self, argument):
@@ -18,5 +18,8 @@ class test_step(unittest.TestCase):
   def test_test_step(self):
     s = self.TestStep()
 
+  def test_test_arg_spec(self):
+    s = self.TestStep()
+
 if __name__ == '__main__':
-  unittest.main()
+  unit_test.main()

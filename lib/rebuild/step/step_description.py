@@ -6,16 +6,15 @@ from bes.common import check_type, object_util, string_util
 from .step_registry import step_registry
 from collections import namedtuple
 
-class step_description(namedtuple('step_description', 'step_class,args,argspec')):
+class step_description(namedtuple('step_description', 'step_class,args')):
 
-  def __new__(clazz, step_class, args = None, argspec = None):
+  def __new__(clazz, step_class, args = None):
     args = args or {}
-    argspec = argspec or {}
     assert isinstance(args, dict)
-    return clazz.__bases__[0].__new__(clazz, step_class, args, argspec)
+    return clazz.__bases__[0].__new__(clazz, step_class, args)
   
   def __str__(self):
-    return '%s:%s:%s' % (str(self.step_class), str(self.args), self.argspec)
+    return '%s:%s' % (str(self.step_class), str(self.args))
 
   def __eq__(self, other):
     return self.__dict__ == other.__dict__
@@ -29,7 +28,7 @@ class step_description(namedtuple('step_description', 'step_class,args,argspec')
         step_class = step_registry.get(item)
         if not step_class:
           raise RuntimeError('no such step class: %s' % (item))
-        current_desc = step_description(step_class.clazz, args = {}, argspec = step_class.argspec)
+        current_desc = step_description(step_class, args = {})
         result.append(current_desc)
       else:
         assert current_desc
@@ -43,7 +42,7 @@ class step_description(namedtuple('step_description', 'step_class,args,argspec')
     step_class = step_registry.get(text)
     if not step_class:
       raise RuntimeError('no such step class: %s' % (text))
-    desc = step_description(step_class.clazz, argspec = step_class.argspec)
+    desc = step_description(step_class)
     return desc
 
   @classmethod

@@ -8,15 +8,15 @@ class step_foo(step):
     super(step_foo, self).__init__()
 
   @classmethod
-  def argspec(clazz):
-    return {
-      'foo_flags': clazz.KEY_VALUES,
-      'foo_env': clazz.STRING_LIST,
-      'foo_script': clazz.STRING,
-      'need_something': clazz.BOOL,
-      'patches': clazz.STRING_LIST,
-      'tests': clazz.STRING_LIST,
-    }
+  def define_args(clazz):
+    return '''
+    foo_flags key_values
+    foo_env string_list
+    foo_script string
+    need_something bool
+    patches string_list
+    tests string_list
+    '''
     
   def execute(self, script, env, args):
     foo_flags = args.get('foo_flags', [])
@@ -34,10 +34,8 @@ class step_takes_bool(step):
     super(step_takes_bool, self).__init__()
     
   @classmethod
-  def argspec(clazz):
-    return {
-      'bool_value': clazz.BOOL
-    }
+  def define_args(clazz):
+    return 'bool_value bool'
   
   def execute(self, script, env, args):
     return step_result(True)
@@ -47,10 +45,8 @@ class step_takes_int(step):
     super(step_takes_int, self).__init__()
     
   @classmethod
-  def argspec(clazz):
-    return {
-      'int_value': clazz.INT
-    }
+  def define_args(clazz):
+    return 'int_value int'
   
   def execute(self, script, env, args):
     return step_result(True)
@@ -60,10 +56,8 @@ class step_takes_string(step):
     super(step_takes_string, self).__init__()
     
   @classmethod
-  def argspec(clazz):
-    return {
-      'string_value': clazz.STRING
-    }
+  def define_args(clazz):
+    return 'string_value string'
   
   def execute(self, script, env, args):
     return step_result(True)
@@ -73,10 +67,8 @@ class step_takes_string_list(step):
     super(step_takes_string_list, self).__init__()
     
   @classmethod
-  def argspec(clazz):
-    return {
-      'string_list_value': clazz.STRING_LIST
-    }
+  def define_args(clazz):
+    return 'string_list_value string_list'
   
   def execute(self, script, env, args):
     return step_result(True)
@@ -86,10 +78,8 @@ class step_takes_key_values(step):
     super(step_takes_key_values, self).__init__()
     
   @classmethod
-  def argspec(clazz):
-    return {
-      'key_values_value': clazz.KEY_VALUES
-    }
+  def define_args(clazz):
+    return 'key_values_value key_values'
   
   def execute(self, script, env, args):
     return step_result(True)
@@ -99,10 +89,8 @@ class step_takes_hook_list(step):
     super(step_takes_hook_list, self).__init__()
     
   @classmethod
-  def argspec(clazz):
-    return {
-      'hook_list_value': clazz.HOOK_LIST
-    }
+  def define_args(clazz):
+    return 'hook_list_value hook_list'
   
   def execute(self, script, env, args):
     return step_result(True)
@@ -112,10 +100,8 @@ class step_takes_file_list(step):
     super(step_takes_file_list, self).__init__()
     
   @classmethod
-  def argspec(clazz):
-    return {
-      'file_list_value': clazz.FILE_LIST
-    }
+  def define_args(clazz):
+    return 'file_list_value file_list'
   
   def execute(self, script, env, args):
     return step_result(True)
@@ -125,14 +111,14 @@ class step_takes_all(step):
     super(step_takes_all, self).__init__()
     
   @classmethod
-  def argspec(clazz):
-    return {
-      'bool_value': clazz.BOOL,
-      'int_value': clazz.INT,
-      'string_value': clazz.STRING,
-      'string_list_value': clazz.STRING_LIST,
-      'key_values_value': clazz.KEY_VALUES,
-    }
+  def define_args(clazz):
+    return '''
+      bool_value bool
+      int_value int
+      string_value string
+      string_list_value string_list
+      key_values_value key_values
+    '''
   
   def execute(self, script, env, args):
     return step_result(True)
@@ -151,14 +137,14 @@ class step_apple(step):
     super(step_apple, self).__init__()
     
   @classmethod
-  def argspec(clazz):
-    return {
-      'apple_bool_value': clazz.BOOL,
-      'apple_int_value': clazz.INT,
-      'apple_string_value': clazz.STRING,
-      'apple_string_list_value': clazz.STRING_LIST,
-      'apple_key_values_value': clazz.KEY_VALUES,
-    }
+  def define_args(clazz):
+    return '''
+    apple_bool_value bool
+    apple_int_value int
+    apple_string_value string
+    apple_string_list_value string_list
+    apple_key_values_value key_values
+    '''
   
   def execute(self, script, env, args):
     return step_result(True)
@@ -168,14 +154,14 @@ class step_kiwi(step):
     super(step_kiwi, self).__init__()
     
   @classmethod
-  def argspec(clazz):
-    return {
-      'kiwi_bool_value': clazz.BOOL,
-      'kiwi_int_value': clazz.INT,
-      'kiwi_string_value': clazz.STRING,
-      'kiwi_string_list_value': clazz.STRING_LIST,
-      'kiwi_key_values_value': clazz.KEY_VALUES,
-    }
+  def define_args(clazz):
+    return '''
+    kiwi_bool_value bool
+    kiwi_int_value int
+    kiwi_string_value string
+    kiwi_string_list_value string_list
+    kiwi_key_values_value key_values
+    '''
   
   def execute(self, script, env, args):
     return step_result(True)
@@ -185,14 +171,14 @@ class step_pear(step):
     super(step_pear, self).__init__()
     
   @classmethod
-  def argspec(clazz):
-    return {
-      'pear_bool_value': clazz.BOOL,
-      'pear_int_value': clazz.INT,
-      'pear_string_value': clazz.STRING,
-      'pear_string_list_value': clazz.STRING_LIST,
-      'pear_key_values_value': clazz.KEY_VALUES,
-    }
+  def define_args(clazz):
+    return '''
+    pear_bool_value bool
+    pear_int_value int
+    pear_string_value string
+    pear_string_list_value string_list
+    pear_key_values_value key_values
+    '''
   
   def execute(self, script, env, args):
     return step_result(True)

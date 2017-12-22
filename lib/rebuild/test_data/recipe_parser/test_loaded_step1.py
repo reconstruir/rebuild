@@ -8,10 +8,8 @@ class test_loaded_step1(step):
     super(test_loaded_step1, self).__init__()
     
   @classmethod
-  def argspec(clazz):
-    return {
-      'bool_value': clazz.BOOL
-    }
+  def define_args(clazz):
+    return 'bool_value bool'
   
   def execute(self, script, env, args):
     return step_result(True)

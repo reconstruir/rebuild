@@ -24,18 +24,32 @@ key_values_value
 '''
     step = self._parse(text)
     r = step.resolve_values('linux')
-    self.assertEqual( { 'key_values_value': KVL([ ( 'a', 'forlinux' ), ( 'b', '6' ) ]),
-                        'string_list_value': ['a', 'b', '"x y"'],
-                        'bool_value': True }, r )
-    return
+    expected = {
+      'key_values_value': KVL([ ( 'a', 'forlinux' ), ( 'b', '6' ) ]),
+      'string_list_value': ['a', 'b', '"x y"'],
+      'bool_value': True,
+      'int_value': None,
+      'string_value': None,
+    }
+    self.assertEqual( expected, r )
     r = step.resolve_values('macos')
-    self.assertEqual( { 'key_values_value': KVL([ ( 'a', 'formacos' ), ( 'b', '6' ) ]),
-                        'string_list_value': ['a', 'b', '"x y"'],
-                        'bool_value': True }, r )
+    expected = {
+      'key_values_value': KVL([ ( 'a', 'formacos' ), ( 'b', '6' ) ]),
+      'string_list_value': ['a', 'b', '"x y"'],
+      'bool_value': True,
+      'int_value': None,
+      'string_value': None,
+    }
+    self.assertEqual( expected, r )
     r = step.resolve_values('android')
-    self.assertEqual( { 'key_values_value': KVL([ ( 'a', 'forandroid' ), ( 'b', '6' ) ]),
-                        'string_list_value': ['a', 'b', '"x y"'],
-                        'bool_value': True }, r )
+    expected = {
+      'key_values_value': KVL([ ( 'a', 'forandroid' ), ( 'b', '6' ) ]),
+      'string_list_value': ['a', 'b', '"x y"'],
+      'bool_value': True,
+      'int_value': None,
+      'string_value': None,
+    }
+    self.assertEqual( expected, r )
 
   @classmethod
   def _parse(clazz, s):

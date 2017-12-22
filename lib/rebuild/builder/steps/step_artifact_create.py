@@ -53,10 +53,8 @@ class step_artifact_create_test_package(step):
     super(step_artifact_create_test_package, self).__init__()
 
   @classmethod
-  def argspec(clazz):
-    return {
-      'tests': clazz.STRING_LIST,
-    }
+  def define_args(clazz):
+    return 'tests string_list'
     
   def execute(self, script, env, args):
     if env.config.skip_tests:

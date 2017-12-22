@@ -147,13 +147,13 @@ class recipe_parser(object):
       values.append(more_values)
     return recipe_step(name, description, values)
 
-  _data = namedtuple('_data', 'clazz,argspec')
   def _parse_step_value(self, description, node):
     values = masked_value_list()
     key = recipe_parser_util.parse_key(node.data.text)
-    if not key in description.argspec:
-      self._error('invalid config \"%s\" instead of: %s' % (key, ' '.join(description.argspec.keys())))
-    value = recipe_parser_util.parse_key_and_value(node.data.text, self.filename, description.argspec[key])
+    args_definition = description.step_class.args_definition()
+    if not key in args_definition:
+      self._error('invalid config \"%s\" instead of: %s' % (key, ' '.join(args_definition.keys())))
+    value = recipe_parser_util.parse_key_and_value(node.data.text, self.filename, args_definition[key].atype)
     if value.value:
       assert not node.children
       values.append(masked_value(None, value.value))
@@ -161,7 +161,7 @@ class recipe_parser(object):
       assert node.children
       for child in node.children:
         text = self._node_text_recursive(child)
-        value = masked_value.parse_mask_and_value(text, self.filename, description.argspec[key])
+        value = masked_value.parse_mask_and_value(text, self.filename, args_definition[key].atype)
         values.append(value)
     return recipe_value(key, values)
 

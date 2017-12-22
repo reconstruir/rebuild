@@ -12,10 +12,8 @@ class step_setup_copy_source_to_build_dir(step):
     super(step_setup_copy_source_to_build_dir, self).__init__()
 
   @classmethod
-  def argspec(clazz):
-    return {
-      'copy_source_to_build_dir': clazz.BOOL,
-    }
+  def define_args(clazz):
+    return 'copy_source_to_build_dir bool False'
   
   def execute(self, script, env, args):
     if args.get('copy_source_to_build_dir', False):
