@@ -44,7 +44,10 @@ class recipe_step(namedtuple('recipe_step', 'name,description,values')):
     args_definition = self.description.step_class.args_definition()
     for name, argspec in args_definition.items():
       if name not in result:
-        result[name] = recipe_parser_util.parse_value(argspec.default, '<default>', argspec.atype)
+        if argspec.default != None:
+          result[name] = recipe_parser_util.parse_value(argspec.default, '<default>', argspec.atype)
+        else:
+          result[name] = None
     return result
 
 check_type.register_class(recipe_step, include_seq = False)

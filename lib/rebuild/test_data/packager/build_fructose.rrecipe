@@ -13,6 +13,6 @@ package fructose-3.4.5-6
       configure_flags
         all: --enable-static --disable-shared
       tests
-        all: fructose1-test.c
-        all: fructose2-test.c
-        all: fructose-1and2-test.c
+        all: fructose-test.c
+#        all: fructose2-test.c
+#        all: fructose-1and2-test.c

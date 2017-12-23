@@ -75,7 +75,6 @@ class builder(object):
     for package_name in package_names:
       script = self._env.script_manager.scripts[package_name]
       builds_dir = self._env.config.builds_dir(script.build_target)
-      print('FUCK: builds_dir=%s' % (builds_dir))
       if path.isdir(builds_dir):
         patterns = '*%s-*' % (package_name)
         tmp_dirs = dir_util.list(builds_dir, patterns = patterns)

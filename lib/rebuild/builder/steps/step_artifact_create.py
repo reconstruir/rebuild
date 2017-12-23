@@ -54,7 +54,7 @@ class step_artifact_create_test_package(step):
 
   @classmethod
   def define_args(clazz):
-    return 'tests string_list'
+    return 'tests file_list'
     
   def execute(self, script, env, args):
     if env.config.skip_tests:

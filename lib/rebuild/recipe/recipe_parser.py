@@ -91,7 +91,7 @@ class recipe_parser(object):
         enabled = self._parse_enabled(child)
       elif text.startswith('load'):
         load = self._parse_load(child)
-        self._load_code(load)
+        self._load_code(load, child)
     desc = package_descriptor(name, version, requirements = requirements,
                               build_requirements = build_requirements,
                               properties = properties)
@@ -158,7 +158,7 @@ class recipe_parser(object):
       assert not node.children
       values.append(masked_value(None, value.value))
     else:
-      assert node.children
+#      assert node.children
       for child in node.children:
         text = self._node_text_recursive(child)
         value = masked_value.parse_mask_and_value(text, self.filename, args_definition[key].atype)
@@ -188,9 +188,11 @@ class recipe_parser(object):
       loads.extend(next_loads)
     return loads
 
-  def _load_code(self, loads):
+  def _load_code(self, loads, node):
     for l in loads:
       filename = path.join(path.dirname(self.filename), l)
+      if not path.isfile(filename):
+        self._error('file not found: %s' % (filename), node)
       tmp_globals = {}
       tmp_locals = {}
       code.execfile(filename, tmp_globals, tmp_locals)

@@ -33,9 +33,6 @@ class step_autoconf_configure(step):
     configure_flags = self.args_get_list(args, 'configure_flags')
     configure_env = self.args_get_key_value_list(args, 'configure_env')
 
-#    print('CACA: configure_flags: %s' % (str(configure_flags)))
-#    print('CACA: configure_env: %s' % (type(configure_env)))
-
     configure_script = args.get('configure_script', 'configure')
     
     need_autoreconf = args.get('need_autoreconf', False)
@@ -53,8 +50,6 @@ class step_autoconf_configure(step):
       '--prefix=%s' % (script.stage_dir),
     ] + configure_flags + tc.autoconf_flags()
 
-    print('CACA: need_autoreconf: %s' % (need_autoreconf))
-    print('CACA: autoreconf_cmd: %s' % (autoreconf_cmd))
     if autoreconf_cmd:
       cmd = autoreconf_cmd + [ '&&' ] + configure_cmd
     else:

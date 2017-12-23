@@ -71,9 +71,10 @@ class masked_value_list(object):
     elif isinstance(values[0], key_value_list):
       return self._resolve_key_values(values)
     elif string_list.is_string_list(values[0]):
-      return self._resolve_string_list(values)
-    else:
-      assert False
+      return self._resolve_list(values)
+    elif check_type.is_recipe_file_seq(values[0]):
+      return self._resolve_list(values)
+    raise TypeError('unknown value type: %s - %s' % (str(values[0]), type(values[0])))
 
   def _resolve_values(self, system):
     result = []
@@ -82,7 +83,7 @@ class masked_value_list(object):
         result.append(value.value)
     return result
 
-  def _resolve_string_list(self, values):
+  def _resolve_list(self, values):
     result = []
     for value in values:
       assert isinstance(value, list)

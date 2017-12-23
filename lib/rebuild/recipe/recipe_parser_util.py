@@ -61,6 +61,8 @@ class recipe_parser_util(object):
 
   @classmethod
   def _parse_string_list(clazz, value):
+    if not value:
+      return []
     return string_list_parser.parse_to_list(value, options = string_list_parser.KEEP_QUOTES)
 
   @classmethod

@@ -56,8 +56,6 @@ class step_manager(object):
     s.recipe = recipe_step
     global_args = s.global_args()
     resolved_args = recipe_step.resolve_values(script.build_target.system)
-    for k, v in sorted(resolved_args.items()):
-      print('FUCKFUCK: %s: %s' % (k, str(v)))
     check_type.check_dict(resolved_args, 'resolved_args')
     parsed_args = recipe_step.description.step_class.parse_step_args(script, env, copy.deepcopy(recipe_step.description.args))
     check_type.check_dict(parsed_args, 'parsed_args')

@@ -12,6 +12,10 @@ class step_setup_patch(step):
   def __init__(self):
     super(step_setup_patch, self).__init__()
 
+  @classmethod
+  def define_args(clazz):
+    return 'patches file_list'
+    
   def execute(self, script, env, args):
     patches = args.get('patches', None)
     if not patches:
