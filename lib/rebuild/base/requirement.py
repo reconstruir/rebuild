@@ -3,6 +3,7 @@
 
 import re
 from bes.common import algorithm, object_util, string_util
+from bes.text import comments
 from collections import namedtuple
 from bes.compat import StringIO
 from .build_system import build_system
@@ -46,6 +47,8 @@ class requirement(namedtuple('requirement', 'name,operator,version,system_mask')
   @classmethod
   def parse(clazz, text, default_system_mask = None):
 
+    text = comments.strip_line(text)
+    
     STATE_NAME = 'name'
     STATE_SYSTEM_MASK = 'system_mask'
     STATE_OPERATOR = 'operator'

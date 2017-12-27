@@ -181,5 +181,10 @@ class test_requirement(unit_test):
       ( 'foo', '>=', '1.2.3', 'linux' ),
     ], requirements )
     
+  def test_parse_with_comment(self):
+    text = 'all: #foo >= 1.2.3'
+    requirements = R.parse(text)
+    self.assertEqual( [], requirements )
+
 if __name__ == "__main__":
   unit_test.main()
