@@ -45,11 +45,4 @@ class step_description(namedtuple('step_description', 'step_class,args')):
     desc = step_description(step_class)
     return desc
 
-  @classmethod
-  def is_step_description(clazz, o):
-    return isinstance(o, step_description)
-
-  @classmethod
-  def is_step_description_list(clazz, o):
-    return object_util.is_homogeneous(o, step_description)
-check_type.register_class(step_description, include_seq = False)
+check_type.register_class(step_description)

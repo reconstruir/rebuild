@@ -6,8 +6,7 @@
 
 import copy
 from abc import abstractmethod
-from bes.common import dict_util
-from bes.common import check_type
+from bes.common import check_type, dict_util
 from bes.system import log
 
 from rebuild.base import build_blurb
@@ -35,8 +34,8 @@ class step_manager(object):
     return s
 
   def add_step(self, description, script, env):
-    assert isinstance(description.args, dict)
-    assert step_description.is_step_description(description)
+    check_type.check_dict(description.args, 'description.args')
+    check_type.check_step_description(description, 'description')
     s = description.step_class()
     global_args = s.global_args()
     parsed_args = description.step_class.parse_step_args(script, env, copy.deepcopy(description.args))
@@ -45,7 +44,7 @@ class step_manager(object):
     return self._add_step(s)
 
   def add_steps(self, descriptions, script, env):
-    assert step_description.is_step_description_list(descriptions)
+    check_type.check_step_description_seq(descriptions, 'descriptions')
     for description in descriptions:
       self.add_step(description, script, env)
 
