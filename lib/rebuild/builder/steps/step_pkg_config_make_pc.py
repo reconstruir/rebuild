@@ -29,9 +29,10 @@ class step_pkg_config_make_pc(step):
       'REBUILD_PACKAGE_VERSION': str(script.descriptor.version),
     }
 
-    pc_file_variables = args.get('pc_file_variables', {})
-    dict_util.unquote_strings(pc_file_variables)
-    replacements.update(pc_file_variables)
+    pc_file_variables = args.get('pc_file_variables', None)
+    if pc_file_variables:
+      pc_file_variables.unquote_strings()
+      replacements.update(pc_file_variables.to_dict())
     for src_pc in pc_files:
       dst_dir = path.join(script.stage_dir, 'lib/pkgconfig')
       dst_pc = path.join(dst_dir, path.basename(src_pc))
