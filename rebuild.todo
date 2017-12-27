@@ -603,3 +603,6 @@ dec 21
 - get rid of is_step_description and is_step_description_list and replace with check_type
 - fix enabled parsing for build.py<python_pyspotify>
 - add a unit test of pc_files and pc_file_variables
+
+dec 27
+- fix env_vars in build scripts to be platform specific
