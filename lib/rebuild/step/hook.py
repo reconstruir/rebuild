@@ -3,7 +3,7 @@
 
 from abc import ABCMeta, abstractmethod
 from bes.system.compat import with_metaclass
-from bes.common import check_type
+from bes.common import check
 from rebuild.dependency import dependency_provider
 from .hook_registry import hook_registry
 
@@ -39,4 +39,4 @@ class hook(with_metaclass(hook_register_meta, dependency_provider)):
   def execute(self, script, env, args):
     'Execute the hook.  Same semantics as step.execute.'
     pass
-check_type.register_class(hook)
+check.register_class(hook)

@@ -2,17 +2,17 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from collections import namedtuple
-from bes.common import check_type
+from bes.common import check
 from bes.compat import StringIO
 from .masked_value_list import masked_value_list
 
 class recipe_value(namedtuple('recipe_value', 'key,values')):
 
   def __new__(clazz, key, values):
-    check_type.check_string(key, 'key')
+    check.check_string(key, 'key')
     if not isinstance(values, masked_value_list):
       values = masked_value_list(values)
-    check_type.check_masked_value_list(values, 'values')
+    check.check_masked_value_list(values, 'values')
     return clazz.__bases__[0].__new__(clazz, key, values)
 
   def __str__(self):
@@ -64,4 +64,4 @@ class recipe_value(namedtuple('recipe_value', 'key,values')):
   def resolve(self, system):
     return self.values.resolve(system)
   
-check_type.register_class(recipe_value, include_seq = False)
+check.register_class(recipe_value, include_seq = False)

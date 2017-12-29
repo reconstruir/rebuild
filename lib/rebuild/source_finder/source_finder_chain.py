@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.common import check_type
+from bes.common import check
 
 from .source_finder import source_finder 
 
@@ -11,7 +11,7 @@ class source_finder_chain(object):
     self._finders = []
 
   def add_finder(self, finder):
-    check_type.check(finder, source_finder, 'finder')
+    check.check(finder, source_finder, 'finder')
     assert finder not in self._finders
     self._finders.append(finder)
     

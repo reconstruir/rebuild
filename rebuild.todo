@@ -597,7 +597,7 @@ lib/rebuild/builder/steps/step_setup_unpack.py
 
 dec 19
 - __step_global_args__ is not really used and needs to be converted to be platform specific
-- step_arg_spec check_type does not work with lower case
+- step_arg_spec check does not work with lower case
 
 dec 21
 - fix enabled parsing for build.py<python_pyspotify>

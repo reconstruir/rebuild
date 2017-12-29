@@ -4,7 +4,7 @@
 import copy, os.path as path
 from collections import namedtuple
 
-from bes.common import check_type
+from bes.common import check
 from bes.python import code
 from bes.fs import file_util
 
@@ -26,7 +26,7 @@ class builder_recipe_loader(object):
       return recipes.recipes
     result = []
     for recipe in recipes.recipes:
-      check_type.check_dict(recipe, 'recipe')
+      check.check_dict(recipe, 'recipe')
       next_recipe = clazz._load_from_dict(recipe, filename)
       result.append(next_recipe)
     return result
@@ -123,7 +123,7 @@ class builder_recipe_loader(object):
     for recipe in recipes:
       if callable(recipe):
         recipe = recipe(load_env)
-      check_type.check_dict(recipe, 'recipe')
+      check.check_dict(recipe, 'recipe')
       result.append(recipe)
     return clazz._recipes(filename, result)
 

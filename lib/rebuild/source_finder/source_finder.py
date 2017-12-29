@@ -4,7 +4,7 @@
 from abc import abstractmethod, ABCMeta
 from bes.system.compat import with_metaclass
 from bes.archive import archiver
-from bes.common import check_type
+from bes.common import check
 from rebuild.base import build_system
 from .tarball_finder import tarball_finder
 
@@ -16,9 +16,9 @@ class source_finder(with_metaclass(ABCMeta, object)):
 
   @classmethod
   def _find_tarball(clazz, where, name, version, system):
-    check_type.check_string(name, 'name')
-    check_type.check_string(version, 'version')
-    check_type.check_string(system, 'system')
+    check.check_string(name, 'name')
+    check.check_string(version, 'version')
+    check.check_string(system, 'system')
     tarballs = tarball_finder.find(where, name, version)
     tarball = clazz._determine_tarball(tarballs, name, version, system)
     if not tarball:

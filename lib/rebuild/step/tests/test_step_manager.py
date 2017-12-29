@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy, unittest
-from bes.common import check_type, dict_util
+from bes.common import check, dict_util
 from test_steps import *
 from rebuild.step import step, compound_step, step_description, step_manager
 
@@ -332,7 +332,7 @@ class %s(step):
     exec(code, globals(), tmp_locals)
     assert name in tmp_locals
     result_class = tmp_locals[name]
-    check_type.check_class(result_class, 'result_class')
+    check.check_class(result_class, 'result_class')
     globals()[name] = result_class
     return result_class
     

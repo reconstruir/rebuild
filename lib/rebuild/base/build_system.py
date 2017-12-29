@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.system import host
-from bes.common import algorithm, check_type, string_util
+from bes.common import algorithm, check, string_util
 
 class build_system(object):
 
@@ -85,7 +85,7 @@ class build_system(object):
 
   @classmethod
   def parse_system(clazz, s):
-    check_type.check_string(s, 'system')
+    check.check_string(s, 'system')
     systems = clazz.mask_split(clazz.resolve_mask(s))
     if len(systems) != 1:
       raise ValueError('Invalid system: %s' % (str(s)))

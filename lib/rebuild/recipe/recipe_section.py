@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.common import algorithm, dict_util
-from bes.common import check_type
+from bes.common import check
 from bes.key_value import key_value, key_value_list
 from bes.system import compat
 from bes.compat import StringIO
@@ -10,7 +10,7 @@ from bes.compat import StringIO
 class recipe_section(object):
 
   def __init__(self, header, values):
-    check_type.check(header, key_value, 'header')
+    check.check(header, key_value, 'header')
     if not header.key:
       raise TypeError('header key should not be empty: %s' % (header.key))
     if not header.value:

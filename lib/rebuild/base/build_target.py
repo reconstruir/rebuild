@@ -3,7 +3,7 @@
 
 from bes.system.compat import with_metaclass
 from bes.system import host
-from bes.common import check_type, dict_util, variable, string_util
+from bes.common import check, dict_util, variable, string_util
 
 from .build_arch import build_arch
 from .build_level import build_level
@@ -112,4 +112,4 @@ class build_target(namedtuple('build_target', 'system,distro,level,archs,build_p
       archs = archs.split('-')
     return clazz(system = system, level = level, archs = archs, distro = distro)
     
-check_type.register_class(build_target)
+check.register_class(build_target)

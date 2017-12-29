@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.common import check_type
+from bes.common import check
 from bes.compat import StringIO
 
 class recipe_step_list(object):
@@ -17,7 +17,7 @@ class recipe_step_list(object):
     return self._steps[i]
   
   def __setitem__(self, i, step):
-    check_type.check_recipe_step(step, 'step')
+    check.check_recipe_step(step, 'step')
     self._steps[i] = step
 
   def __eq__(self, other):
@@ -36,7 +36,7 @@ class recipe_step_list(object):
     return buf.getvalue().strip()
     
   def append(self, step):
-    check_type.check_recipe_step(step, 'step')
+    check.check_recipe_step(step, 'step')
     self._steps.append(step)
 
   def extend(self, steps):
@@ -46,4 +46,4 @@ class recipe_step_list(object):
   def __len__(self):
     return len(self._steps)
   
-check_type.register_class(recipe_step_list, include_seq = False)
+check.register_class(recipe_step_list, include_seq = False)

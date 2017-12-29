@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.common import algorithm, check_type
+from bes.common import algorithm, check
 from bes.system import compat
 from bes.compat import StringIO
 from rebuild.base import build_system
@@ -21,7 +21,7 @@ class masked_value_list(object):
     return self._values[i]
   
   def __setitem__(self, i, value):
-    check_type.check_masked_value(value, 'value')
+    check.check_masked_value(value, 'value')
     self._values[i] = value
 
   def __eq__(self, other):
@@ -40,7 +40,7 @@ class masked_value_list(object):
     return buf.getvalue()
     
   def append(self, value):
-    check_type.check_masked_value(value, 'value')
+    check.check_masked_value(value, 'value')
     if self._values:
       expected_type = type(self._values[-1])
       actual_type = type(value)
@@ -72,7 +72,7 @@ class masked_value_list(object):
       return self._resolve_key_values(values)
     elif string_list.is_string_list(values[0]):
       return self._resolve_list(values)
-    elif check_type.is_recipe_file_seq(values[0]):
+    elif check.is_recipe_file_seq(values[0]):
       return self._resolve_list(values)
     raise TypeError('unknown value type: %s - %s' % (str(values[0]), type(values[0])))
 
@@ -105,4 +105,4 @@ class masked_value_list(object):
           result.append(next_value)
           seen[next_value.key] = i
     return result
-check_type.register_class(masked_value_list, include_seq = False)
+check.register_class(masked_value_list, include_seq = False)
