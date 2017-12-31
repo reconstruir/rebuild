@@ -55,11 +55,20 @@ class builder_recipe_loader(object):
                                     properties = properties)
     instructions = clazz._load_instructions(recipe_dict, 'instructions')
     steps = clazz._load_steps(recipe_dict)
+    env_vars = clazz._load_env_vars(recipe_dict, 'env_vars')
     # recipe_dict should be empty now
     if recipe_dict:
       raise RuntimeError('Unknown recipe values for %s: %s' % (filename, recipe_dict))
     return recipe(1, filename, enabled, properties, requirements, build_requirements,
                   descriptor, instructions, steps, None)
+
+  @classmethod
+  def _load_env_vars(clazz, args, key):
+    if not key in args:
+      return []
+    env_vars = args[key]
+    del args[key]
+    return env_vars
 
   @classmethod
   def _load_requirements(clazz, args, key):
