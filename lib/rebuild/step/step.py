@@ -7,7 +7,7 @@ import copy, os, os.path as path
 
 from abc import abstractmethod, ABCMeta
 from collections import namedtuple
-from bes.common import check_type, dict_util, object_util, string_util, Shell, variable
+from bes.common import check, dict_util, object_util, string_util, Shell, variable
 from bes.system import log
 from bes.system.compat import with_metaclass
 from bes.key_value import key_value_list
@@ -49,9 +49,9 @@ class step(with_metaclass(step_register_meta, object)):
   @classmethod
   def _determine_args_definition(clazz):
     defs = clazz.define_args()
-    if check_type.is_string(defs):
+    if check.is_string(defs):
       defs = step_arg_spec.parse_many(defs)
-    check_type.check_dict(defs, 'defs')
+    check.check_dict(defs, 'defs')
     return defs
 
 #  @abstractmethod
@@ -216,7 +216,7 @@ class step(with_metaclass(step_register_meta, object)):
     command = [ part for part in command if part ]
     extra_env = extra_env or key_value_list()
     save_logs = save_logs or []
-    check_type.check_key_value_list(extra_env, 'extra_env')
+    check.check_key_value_list(extra_env, 'extra_env')
     
     log.log_i('build', 'call_shell(cmd=%s, args=%s)' % (command, args))
     build_blurb.blurb_verbose('build', 'call_shell(cmd=%s, args=%s, extra_env=%s)' % (command, args, extra_env))
@@ -338,14 +338,14 @@ class step(with_metaclass(step_register_meta, object)):
     if env_name and env_name in args:
       config = args[env_name]
       resolved = masked_config.resolve_key_values(config, script.build_target.system)
-      check_type.check_key_value_list(resolved, 'resolved')
+      check.check_key_value_list(resolved, 'resolved')
       env_dict = { env_name: resolved }
 
     flags_dict = {}
     if flags_name and flags_name in args:
       config = args[flags_name]
       resolved = masked_config.resolve_list(config, script.build_target.system)
-      check_type.check_list(resolved, 'resolved')
+      check.check_list(resolved, 'resolved')
       flags_dict = { flags_name: resolved }
 
     return dict_util.combine(env_dict, flags_dict)
@@ -356,7 +356,7 @@ class step(with_metaclass(step_register_meta, object)):
     if key and key in args:
       config = args[key]
       resolved = masked_config.resolve_key_values(config, script.build_target.system)
-      check_type.check_key_value_list(resolved, 'resolved')
+      check.check_key_value_list(resolved, 'resolved')
       result = { key: resolved }
     return result
 
@@ -405,14 +405,14 @@ class step(with_metaclass(step_register_meta, object)):
         
   @classmethod
   def args_get_list(clazz, args, key):
-    check_type.check_dict(args, 'args')
+    check.check_dict(args, 'args')
     result = args.get(key, [])
-    check_type.check_list(result, 'result')
+    check.check_list(result, 'result')
     return result
 
   @classmethod
   def args_get_key_value_list(clazz, args, key):
-    check_type.check_dict(args, 'args')
+    check.check_dict(args, 'args')
     result = args.get(key, key_value_list())
-    check_type.check_key_value_list(result, 'result')
+    check.check_key_value_list(result, 'result')
     return result

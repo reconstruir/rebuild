@@ -3,7 +3,7 @@
 
 from collections import namedtuple
 from bes.system import compat
-from bes.common import bool_util, check_type, string_list, string_util
+from bes.common import bool_util, check, string_list, string_util
 from bes.compat import StringIO
 from bes.key_value import key_value, key_value_list
 from bes.text import string_list_parser
@@ -38,9 +38,9 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
       return self.value.to_string(delimiter = '=', value_delimiter = ' ', quote = quote)
     elif string_list.is_string_list(self.value):
       return string_list.to_string(self.value, delimiter = ' ', quote = quote)
-    elif check_type.is_hook_seq(self.value):
+    elif check.is_hook_seq(self.value):
       return ' '.join([ h.name for h in self.value ])
-    elif check_type.is_recipe_file_seq(self.value):
+    elif check.is_recipe_file_seq(self.value):
       return ' '.join([ h.name for h in self.value ])
     else:
       assert False
@@ -48,11 +48,11 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
   _VALUE_TYPE_CHECKERS = [
     compat.is_int,
     compat.is_string,
-    check_type.is_bool,
-    check_type.is_key_value_list,
+    check.is_bool,
+    check.is_key_value_list,
     string_list.is_string_list,
-    check_type.is_hook_seq,
-    check_type.is_recipe_file_seq,
+    check.is_hook_seq,
+    check.is_recipe_file_seq,
   ]
       
   @classmethod
@@ -87,4 +87,4 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
   def mask_matches(self, system):
     return build_system.mask_matches(self.mask or 'all', system)
   
-check_type.register_class(masked_value, include_seq = False)
+check.register_class(masked_value, include_seq = False)

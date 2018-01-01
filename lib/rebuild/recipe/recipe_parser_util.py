@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common import bool_util, check_type, string_list
+from bes.common import bool_util, check, string_list
 from bes.key_value import key_value, key_value_list
 from rebuild.step import hook_registry, step_arg_type
 from bes.text import string_list_parser
@@ -20,14 +20,14 @@ class recipe_parser_util(object):
   @classmethod
   def parse_key(clazz, text):
     'Parse only the key'
-    check_type.check_string(text, 'text')
+    check.check_string(text, 'text')
     key, _, _ = clazz.strip_comment(text).partition(':')
     return key.strip()
 
   @classmethod
   def parse_key_and_value(clazz, text, filename, argspec):
-    check_type.check_string(text, 'text')
-    check_type.check_step_arg_type(argspec, 'argspec')
+    check.check_string(text, 'text')
+    check.check_step_arg_type(argspec, 'argspec')
     text = recipe_parser_util.strip_comment(text)
     key, delimiter, value = text.partition(':')
     key = key.strip()

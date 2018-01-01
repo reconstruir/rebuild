@@ -3,7 +3,7 @@
 
 import os.path as path
 from bes.testing.unit_test import unit_test
-from rebuild.recipe import recipe_parser as P, recipe_parser_error as ERR, recipe_step as RS
+from rebuild.recipe import recipe, recipe_parser as P, recipe_parser_error as ERR, recipe_step as RS
 from rebuild.step import compound_step, step, step_arg_type, step_result
 from bes.key_value import key_value as KV, key_value_list as KVL
 from bes.fs import file_util, temp_file
@@ -17,6 +17,15 @@ class test_recipe_parser(unit_test):
   def _parse(self, text):
     return P(text, '<test>').parse()
 
+  @classmethod
+  def setUpClass(clazz):
+    clazz.SAVE_CHECK_UNKNOWN_PROPERTIES = recipe.CHECK_UNKNOWN_PROPERTIES
+    recipe.CHECK_UNKNOWN_PROPERTIES = False
+
+  @classmethod
+  def tearDownClass(clazz):
+    recipe.CHECK_UNKNOWN_PROPERTIES = clazz.SAVE_CHECK_UNKNOWN_PROPERTIES
+  
   def test_invalid_magic(self):
     with self.assertRaises(ERR) as context:
       self._parse('nomagic')
@@ -260,6 +269,7 @@ step_takes_key_values
     self.assertMultiLineEqual( expected, str(r[0].steps) )
     
   def test_complete(self):
+    self.maxDiff = None
     text = '''!rebuildrecipe!
 #comment
 
@@ -336,7 +346,8 @@ package foo-1.2.3-4
         all: a=5 b=6 c="x y"
       pear_string_list_value
         all: --foo --bar --baz="x y z"'''
-    self.assert_string_equal_ws( expected, str(r[0]) )
+    actual = r[0].to_string(indent = 2)
+    self.assertMultiLineEqual( expected, actual )
 
   def test_step_load(self):
     text = '''!rebuildrecipe!

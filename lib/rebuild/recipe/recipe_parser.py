@@ -4,7 +4,7 @@
 from collections import namedtuple
 
 import os.path as path
-from bes.common import check_type, string_util
+from bes.common import check, string_util
 from bes.compat import StringIO
 from bes.key_value import key_value, key_value_parser
 from bes.system import log
@@ -197,5 +197,5 @@ class recipe_parser(object):
       tmp_locals = {}
       code.execfile(filename, tmp_globals, tmp_locals)
       for key, value in tmp_locals.items():
-        if check_type.is_class(value):
+        if check.is_class(value):
           setattr(value, '__load_file__', filename)

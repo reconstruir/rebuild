@@ -4,7 +4,7 @@
 import copy, re, glob, os.path as path
 from bes.fs import file_util
 from bes.common import algorithm, dict_util, string_util
-from bes.common import check_type
+from bes.common import check
 from bes.text import string_list_parser
 from bes.compat import StringIO
 from .instruction_list_parser import instruction_list_parser
@@ -44,14 +44,14 @@ class instruction_list(object):
     return name in self._instructions
     
   def __add__(self, other):
-    check_type.check(other, instruction_list, 'other')
+    check.check(other, instruction_list, 'other')
     result = instruction_list()
     result.update(self)
     result.update(other)
     return result
     
   def update(self, what):
-    check_type.check(what, ( instruction, instruction_list ), 'what')
+    check.check(what, ( instruction, instruction_list ), 'what')
     if isinstance(what, instruction):
       self[what.name] = what
     elif isinstance(what, instruction_list):
@@ -98,7 +98,7 @@ class instruction_list(object):
     return clazz.parse(file_util.read(filename, codec = 'utf-8'))
 
   def dependencies(self, target):
-    check_type.check_string(target, 'target')
+    check.check_string(target, 'target')
     dependency_map = self._dependency_map()
     if not target in dependency_map:
       raise KeyError('target not found: \"%s\"' % (target))

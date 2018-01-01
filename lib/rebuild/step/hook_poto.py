@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common import check_type, object_util, string_util
+from bes.common import check, object_util, string_util
 from bes.python import code
 from rebuild.dependency import dependency_provider
 
@@ -58,7 +58,7 @@ class hook_poto(dependency_provider):
   @classmethod
   def parse(clazz, s):
     'Parse a hook from a string.'
-    if not check_type.is_string(s):
+    if not check.is_string(s):
       raise RuntimeError('Invalid hook: \"%s\"' % (s))
     v = s.partition(':')
     if not v[1] == ':':
@@ -70,7 +70,7 @@ class hook_poto(dependency_provider):
   @classmethod
   def parse_list(clazz, l):
     'Parse a list of hooks from a list of strings.'
-    if not check_type.is_string_list(l):
+    if not check.is_string_list(l):
       raise RuntimeError('Not a string list: \"%s\"' % (str(l)))
     return [ clazz.parse(s) for s in l ]
     

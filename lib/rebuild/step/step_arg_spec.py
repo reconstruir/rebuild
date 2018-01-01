@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.common import check_type, string_util
+from bes.common import check, string_util
 from bes.text import comments
 from collections import namedtuple
 from .step_arg_type import step_arg_type
@@ -9,13 +9,13 @@ from .step_arg_type import step_arg_type
 class step_arg_spec(namedtuple('step_arg_spec', 'name,atype,default,line_number')):
   
   def __new__(clazz, name, atype, default, line_number):
-    check_type.check_string(name, 'name')
-    check_type.check_step_arg_type(atype, 'atype')
-    if check_type.is_string(atype):
+    check.check_string(name, 'name')
+    check.check_step_arg_type(atype, 'atype')
+    if check.is_string(atype):
       atype = step_arg_type.name_to_value(atype)
     if default != None:
-      check_type.check_string(default, 'default')
-    check_type.check_int(line_number, 'line_number')
+      check.check_string(default, 'default')
+    check.check_int(line_number, 'line_number')
     return clazz.__bases__[0].__new__(clazz, name, atype, default, line_number)
 
   @classmethod

@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common import check_type, object_util
+from bes.common import check, object_util
 from bes.fs import file_checksum, file_util
 from rebuild.base import build_blurb, build_target, package_descriptor
 from collections import namedtuple
@@ -16,7 +16,7 @@ class checksum_manager(object):
   CHECKSUMS_TARGETS_FILENAME = 'targets.checksums'
   
   def __init__(self, root_dir):
-    check_type.check_string(root_dir, 'root_dir')
+    check.check_string(root_dir, 'root_dir')
     build_blurb.add_blurb(self, label = 'build')
     self._root_dir = root_dir
     self._build_target = build_target
@@ -61,8 +61,8 @@ class checksum_manager(object):
     file_util.remove(checksum_dirs)
 
   def _checksum_dir(self, pd, level):
-    check_type.check(pd, package_descriptor, 'package_descriptor')
-    check_type.check(level, build_target, 'build_target')
+    check.check(pd, package_descriptor, 'package_descriptor')
+    check.check(level, build_target, 'build_target')
     return path.join(self._root_dir, level.build_path, pd.full_name)
 
   def load_checksums(self, pd, level):

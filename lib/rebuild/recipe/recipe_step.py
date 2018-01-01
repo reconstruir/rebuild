@@ -3,7 +3,7 @@
 
 from collections import namedtuple
 from bes.compat import StringIO
-from bes.common import check_type
+from bes.common import check
 from rebuild.base import build_system
 from rebuild.step import step_arg_type
 from bes.key_value import key_value_list
@@ -13,11 +13,11 @@ from .recipe_parser_util import recipe_parser_util
 class recipe_step(namedtuple('recipe_step', 'name,description,values')):
 
   def __new__(clazz, name, description, values):
-    check_type.check_string(name, 'name')
-    check_type.check_step_description(description, 'description')
-    if not check_type.is_recipe_value_list(values):
+    check.check_string(name, 'name')
+    check.check_step_description(description, 'description')
+    if not check.is_recipe_value_list(values):
       values = recipe_value_list(values)
-    check_type.check_recipe_value_list(values, 'values')
+    check.check_recipe_value_list(values, 'values')
     return clazz.__bases__[0].__new__(clazz, name, description, values)
 
   def __str__(self):
@@ -50,4 +50,4 @@ class recipe_step(namedtuple('recipe_step', 'name,description,values')):
           result[name] = None
     return result
 
-check_type.register_class(recipe_step, include_seq = False)
+check.register_class(recipe_step, include_seq = False)

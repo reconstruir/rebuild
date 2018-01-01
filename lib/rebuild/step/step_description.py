@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy
-from bes.common import check_type, object_util, string_util
+from bes.common import check, object_util, string_util
 from .step_registry import step_registry
 from collections import namedtuple
 
@@ -38,18 +38,11 @@ class step_description(namedtuple('step_description', 'step_class,args')):
 
   @classmethod
   def parse_description(self, text):
-    check_type.check_string(text, 'text')
+    check.check_string(text, 'text')
     step_class = step_registry.get(text)
     if not step_class:
       raise RuntimeError('no such step class: %s' % (text))
     desc = step_description(step_class)
     return desc
 
-  @classmethod
-  def is_step_description(clazz, o):
-    return isinstance(o, step_description)
-
-  @classmethod
-  def is_step_description_list(clazz, o):
-    return object_util.is_homogeneous(o, step_description)
-check_type.register_class(step_description, include_seq = False)
+check.register_class(step_description)

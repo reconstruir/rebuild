@@ -1,15 +1,17 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.common import check_type
+from bes.common import check
 from bes.compat import StringIO
 from .recipe_value import recipe_value
 
 class recipe_value_list(object):
 
   def __init__(self, values = None):
-    values = values or []
-    self._values = [ v for v in values ]
+    self._values = []
+    for value in values or []:
+      check.check_recipe_value(value, 'value')
+      self._values.append(value)
 
   def __iter__(self):
     return iter(self._values)
@@ -18,7 +20,7 @@ class recipe_value_list(object):
     return self._values[i]
   
   def __setitem__(self, i, value):
-    check_type.check_recipe_value(value, 'value')
+    check.check_recipe_value(value, 'value')
     self._values[i] = value
 
   def __eq__(self, other):
@@ -37,7 +39,7 @@ class recipe_value_list(object):
     return buf.getvalue()
     
   def append(self, value):
-    check_type.check_recipe_value(value, 'value')
+    check.check_recipe_value(value, 'value')
     self._values.append(value)
 
   def extend(self, values):
@@ -53,4 +55,4 @@ class recipe_value_list(object):
       result[value.key] = value.resolve(system)
     return result
   
-check_type.register_class(recipe_value_list, include_seq = False)
+check.register_class(recipe_value_list, include_seq = False)
