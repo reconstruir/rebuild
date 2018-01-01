@@ -55,6 +55,36 @@ package foo-1.2.3-4
     lines = s.split('\n')
     lines = [ '%s%s' % (indent, x) for x in lines ]
     return '\n'.join(lines)
-    
+
+  def test_resolve(self):
+
+    text = '''\
+bool_value:
+  all: True
+
+string_list_value
+  all: a b "x y"
+
+key_values_value
+  all: a=forall b=6
+  linux: a=forlinux
+  macos: a=formacos
+  android: a=forandroid
+'''
+    values = self._parse(text)
+    r = values.resolve('linux')
+    self.assertEqual( { 'key_values_value': KVL([ ( 'a', 'forlinux' ), ( 'b', '6' ) ]),
+                        'string_list_value': ['a', 'b', '"x y"'],
+                        'bool_value': True }, r )
+    r = values.resolve('macos')
+    self.assertEqual( { 'key_values_value': KVL([ ( 'a', 'formacos' ), ( 'b', '6' ) ]),
+                        'string_list_value': ['a', 'b', '"x y"'],
+                        'bool_value': True }, r )
+    r = values.resolve('android')
+    self.assertEqual( { 'key_values_value': KVL([ ( 'a', 'forandroid' ), ( 'b', '6' ) ]),
+                        'string_list_value': ['a', 'b', '"x y"'],
+                        'bool_value': True }, r )
+
+  
 if __name__ == '__main__':
   unit_test.main()

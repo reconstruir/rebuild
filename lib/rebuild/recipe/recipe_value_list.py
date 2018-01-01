@@ -8,8 +8,10 @@ from .recipe_value import recipe_value
 class recipe_value_list(object):
 
   def __init__(self, values = None):
-    values = values or []
-    self._values = [ v for v in values ]
+    self._values = []
+    for value in values or []:
+      check.check_recipe_value(value, 'value')
+      self._values.append(value)
 
   def __iter__(self):
     return iter(self._values)

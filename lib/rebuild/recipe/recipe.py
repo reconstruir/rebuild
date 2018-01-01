@@ -5,14 +5,14 @@ import re
 from collections import namedtuple
 from bes.common import node
 
-class recipe(namedtuple('recipe', 'format_version,filename,enabled,properties,requirements,build_requirements,descriptor,instructions,steps,load')):
+class recipe(namedtuple('recipe', 'format_version,filename,enabled,properties,requirements,build_requirements,descriptor,instructions,steps,load')):#,env_vars')):
 
   CHECK_UNKNOWN_PROPERTIES = True
   
   def __new__(clazz, format_version, filename, enabled, properties, requirements,
-              build_requirements, descriptor, instructions, steps, load):
+              build_requirements, descriptor, instructions, steps, load):#, env_vars):
     return clazz.__bases__[0].__new__(clazz, format_version, filename, enabled, properties, requirements,
-                                      build_requirements, descriptor, instructions, steps, load)
+                                      build_requirements, descriptor, instructions, steps, load)#, env_vars)
 
   def __str__(self):
     return self.to_string()
@@ -64,9 +64,9 @@ class recipe(namedtuple('recipe', 'format_version,filename,enabled,properties,re
     assert isinstance(properties_node, node)
     assert key in properties
     value = properties[key]
-    if key == 'export_compilation_flags_requirements':
-      properties_node.children.append(clazz._export_compilation_flags_requirements_to_node(properties))
-    elif key in [ 'category' ]:
+    if key in [ 'export_compilation_flags_requirements', 'extra_cflags' ]:#, 'env_vars']:
+      properties_node.children.append(clazz._system_specific_property_to_node(key, properties))
+    elif key in [ 'category', 'download_url', 'pkg_config_name' ]:
       properties_node.children.append(node('%s=%s' % (key, value)))
     else:
       if clazz.CHECK_UNKNOWN_PROPERTIES:
@@ -76,11 +76,11 @@ class recipe(namedtuple('recipe', 'format_version,filename,enabled,properties,re
     del properties[key]
 
   @classmethod
-  def _export_compilation_flags_requirements_to_node(clazz, properties):
-    assert 'export_compilation_flags_requirements' in properties
-    value = properties['export_compilation_flags_requirements']
+  def _system_specific_property_to_node(clazz, key, properties):
+    assert key in properties
+    value = properties[key]
     assert isinstance(value, list)
-    child = node('export_compilation_flags_requirements')
+    child = node(key)
     for i in value:
       child.add_child(i)
     return child
