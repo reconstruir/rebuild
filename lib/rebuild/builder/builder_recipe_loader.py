@@ -12,7 +12,7 @@ from rebuild.base import package_descriptor
 from rebuild.instruction import instruction_list
 from rebuild.step.hook_extra_code import HOOK_EXTRA_CODE
 from rebuild.step import step_description, step_arg_type
-from rebuild.recipe import masked_value_list, recipe, recipe_parser
+from rebuild.recipe import masked_value, masked_value_list, recipe, recipe_parser
 
 from .builder_recipe_env import builder_recipe_env
 
@@ -68,10 +68,9 @@ class builder_recipe_loader(object):
       return []
     data = args[key]
     del args[key]
-    assert isinstance(list, data)
+    assert isinstance(data, list)
     env_vars = []
     for text in data:
-      text = self._node_text_recursive(child)
       value = masked_value.parse_mask_and_value(text, filename, step_arg_type.KEY_VALUES)
       env_vars.append(value)
     return masked_value_list(env_vars)
