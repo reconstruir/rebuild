@@ -267,6 +267,25 @@ step_takes_key_values
     linux: a=linux
     macos: a=macos'''
     self.assertMultiLineEqual( expected, str(r[0].steps) )
+
+  def test_env_vars(self):
+    text = '''!rebuildrecipe!
+package foo-1.2.3-4
+  steps
+    step_takes_bool
+      bool_value: True
+
+  env_vars
+    all: foo=5 bar=6
+    linux: baz=forlinux
+    macos: baz=formacos
+
+'''
+    r = self._parse(text)
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 'foo', r[0].descriptor.name )
+    self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
+    self.assertEqual( 'step_takes_bool\n    bool_value: True', str(r[0].steps[0]) )
     
   def test_complete(self):
     self.maxDiff = None

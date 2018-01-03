@@ -64,7 +64,7 @@ class recipe(namedtuple('recipe', 'format_version,filename,enabled,properties,re
     assert isinstance(properties_node, node)
     assert key in properties
     value = properties[key]
-    if key in [ 'export_compilation_flags_requirements', 'extra_cflags' ]:#, 'env_vars']:
+    if key in [ 'export_compilation_flags_requirements', 'extra_cflags', 'env_vars']:
       properties_node.children.append(clazz._system_specific_property_to_node(key, properties))
     elif key in [ 'category', 'download_url', 'pkg_config_name' ]:
       properties_node.children.append(node('%s=%s' % (key, value)))

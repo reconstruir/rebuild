@@ -12,7 +12,7 @@ from bes.text import string_list_parser, tree_text_parser
 from bes.python import code
 
 from rebuild.base import build_version, masked_config, requirement, package_descriptor
-from rebuild.step import step_description
+from rebuild.step import step_description, step_arg_type
 
 from .masked_value import masked_value
 from .masked_value_list import masked_value_list
@@ -77,6 +77,7 @@ class recipe_parser(object):
     instructions = []
     enabled = 'True'
     load = []
+    env_vars = None
     for child in node.children:
       text = child.data.text
       if text.startswith('properties'):
@@ -92,6 +93,8 @@ class recipe_parser(object):
       elif text.startswith('load'):
         load = self._parse_load(child)
         self._load_code(load, child)
+      elif text.startswith('env_vars'):
+        env_vars = self._parse_env_vars(child)
     desc = package_descriptor(name, version, requirements = requirements,
                               build_requirements = build_requirements,
                               properties = properties)
@@ -129,6 +132,14 @@ class recipe_parser(object):
       next_reqs = requirement.parse(req_text)
       reqs.extend(next_reqs)
     return reqs
+
+  def _parse_env_vars(self, node):
+    env_vars = []
+    for child in node.children:
+      text = self._node_text_recursive(child)
+      value = masked_value.parse_mask_and_value(text, self.filename, step_arg_type.KEY_VALUES)
+      env_vars.append(value)
+    return masked_value_list(env_vars)
 
   def _parse_steps(self, node):
     steps = recipe_step_list()
