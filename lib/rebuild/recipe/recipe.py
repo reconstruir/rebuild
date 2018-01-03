@@ -5,14 +5,14 @@ import re
 from collections import namedtuple
 from bes.common import node
 
-class recipe(namedtuple('recipe', 'format_version,filename,enabled,properties,requirements,build_requirements,descriptor,instructions,steps,load')):#,env_vars')):
+class recipe(namedtuple('recipe', 'format_version,filename,enabled,properties,requirements,build_requirements,descriptor,instructions,steps,load,env_vars')):
 
   CHECK_UNKNOWN_PROPERTIES = True
   
   def __new__(clazz, format_version, filename, enabled, properties, requirements,
-              build_requirements, descriptor, instructions, steps, load):#, env_vars):
+              build_requirements, descriptor, instructions, steps, load, env_vars):
     return clazz.__bases__[0].__new__(clazz, format_version, filename, enabled, properties, requirements,
-                                      build_requirements, descriptor, instructions, steps, load)#, env_vars)
+                                      build_requirements, descriptor, instructions, steps, load, env_vars)
 
   def __str__(self):
     return self.to_string()

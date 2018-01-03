@@ -11,8 +11,8 @@ from bes.fs import file_util
 from rebuild.base import package_descriptor
 from rebuild.instruction import instruction_list
 from rebuild.step.hook_extra_code import HOOK_EXTRA_CODE
-from rebuild.step import step_description
-from rebuild.recipe import recipe, recipe_parser
+from rebuild.step import step_description, step_arg_type
+from rebuild.recipe import masked_value_list, recipe, recipe_parser
 
 from .builder_recipe_env import builder_recipe_env
 
@@ -55,20 +55,26 @@ class builder_recipe_loader(object):
                                     properties = properties)
     instructions = clazz._load_instructions(recipe_dict, 'instructions')
     steps = clazz._load_steps(recipe_dict)
-    env_vars = clazz._load_env_vars(recipe_dict, 'env_vars')
+    env_vars = clazz._load_env_vars(filename, recipe_dict, 'env_vars')
     # recipe_dict should be empty now
     if recipe_dict:
       raise RuntimeError('Unknown recipe values for %s: %s' % (filename, recipe_dict))
     return recipe(1, filename, enabled, properties, requirements, build_requirements,
-                  descriptor, instructions, steps, None)
+                  descriptor, instructions, steps, None, env_vars)
 
   @classmethod
-  def _load_env_vars(clazz, args, key):
+  def _load_env_vars(clazz, filename, args, key):
     if not key in args:
       return []
-    env_vars = args[key]
+    data = args[key]
     del args[key]
-    return env_vars
+    assert isinstance(list, data)
+    env_vars = []
+    for text in data:
+      text = self._node_text_recursive(child)
+      value = masked_value.parse_mask_and_value(text, filename, step_arg_type.KEY_VALUES)
+      env_vars.append(value)
+    return masked_value_list(env_vars)
 
   @classmethod
   def _load_requirements(clazz, args, key):

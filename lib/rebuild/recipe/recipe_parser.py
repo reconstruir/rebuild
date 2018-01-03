@@ -99,7 +99,7 @@ class recipe_parser(object):
                               build_requirements = build_requirements,
                               properties = properties)
     return recipe(2, self.filename, enabled, properties, requirements, build_requirements, 
-                  desc, instructions, steps, load)
+                  desc, instructions, steps, load, env_vars)
 
   def _parse_package_header(self, node):
     parts = string_util.split_by_white_space(node.data.text, strip = True)
