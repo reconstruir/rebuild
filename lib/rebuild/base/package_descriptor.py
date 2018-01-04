@@ -18,7 +18,6 @@ class package_descriptor(object):
   STR_PROPERTIES_DELIMITER = '; '
 
   PROPERTY_CATEGORY = 'category'
-  PROPERTY_ENV_VARS = 'env_vars'
   PROPERTY_PKG_CONFIG_NAME = 'pkg_config_name'
   
   def __init__(self, name, ver, requirements = None, build_requirements = None, properties = None):
@@ -239,7 +238,7 @@ class package_descriptor(object):
       
   @property
   def env_vars(self):
-    return self.properties.get(self.PROPERTY_ENV_VARS, {})
+    return self.properties.get('env_vars', {})
 
   @property
   def category(self):
