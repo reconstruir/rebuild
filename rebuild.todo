@@ -602,3 +602,6 @@ dec 21
 
 dec 27
 - fix env_vars in build scripts to be platform specific
+
+jan 5
+- full unit test for package_descriptor_list

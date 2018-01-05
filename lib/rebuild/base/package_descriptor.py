@@ -136,12 +136,11 @@ class package_descriptor(object):
     return '; '.join([ '%s=%s' % (item[0], item[1]) for item in items ])
 
   def __eq__(self, other):
-    if not package_descriptor.is_package_info(other):
-      raise RuntimeError('Got %s instead of package' % (type(other)))
+    check.check_package_descriptor(other, 'other')
     return self.__dict__ == other.__dict__
 
   def __lt__(self, other):
-    assert package_descriptor.is_package_info(other)
+    check.check_package_descriptor(other, 'other')
     name_rv = cmp(self.name, other.name)
     if name_rv < 0:
       return True
@@ -222,10 +221,6 @@ class package_descriptor(object):
       return False
     return True
 
-  @classmethod
-  def is_package_info(clazz, o):
-    return isinstance(o, package_descriptor)
-
   def extra_cflags(self, system):
     config = self.properties.get('extra_cflags', [])
     return masked_config.resolve_list(config, system)
@@ -249,8 +244,8 @@ class package_descriptor(object):
   @classmethod
   def full_name_cmp(clazz, pi1, pi2):
     'Compare name, version and revision and return an int either -1, 0, or 1'
-    assert clazz.is_package_info(pi1)
-    assert clazz.is_package_info(pi2)
+    check.check_package_descriptor(pi1, 'pi1')
+    check.check_package_descriptor(pi2, 'pi2')
     name_cmp = cmp(pi1.name, pi2.name)
     if name_cmp != 0:
       return name_cmp

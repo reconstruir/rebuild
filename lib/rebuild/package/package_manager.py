@@ -207,7 +207,7 @@ class package_manager(object):
 
   def install_package(self, pkg_desc, build_target, artifact_manager, allow_downgrade = False):
     assert artifact_manager.is_artifact_manager(artifact_manager)
-    assert package_descriptor.is_package_info(pkg_desc)
+    check.check_package_descriptor(pkg_desc, 'pkg_desc')
     pkg = artifact_manager.package(pkg_desc, build_target)
 
     if self.is_installed(pkg.info.name):

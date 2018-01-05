@@ -5,7 +5,7 @@ import json, os.path as path, re
 
 from bes.archive import archiver
 from bes.fs import file_replace, file_search, file_mime, file_util
-from bes.common import string_util
+from bes.common import check, string_util
 from bes.match import matcher_filename
 from rebuild.pkg_config import pkg_config_file
 from bes.python import setup_tools
@@ -124,3 +124,4 @@ class package(object):
   def package_files(clazz, tarball):
     return package(tarball).files
 
+check.register_class(package)
