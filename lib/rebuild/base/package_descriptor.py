@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import json, os.path as path
-from bes.common import object_util, string_util
+from bes.common import check, object_util, string_util
 from bes.compat import cmp
 
 from .build_category import build_category
@@ -207,7 +207,7 @@ class package_descriptor(object):
     requirements = requirements or []
     result = []
     for dep in requirements:
-      if requirement.is_requirement(dep):
+      if check.is_requirement(dep):
         result.append(dep)
       elif string_util.is_string(dep):
         reqs = masked_config.parse_requirement(dep).data

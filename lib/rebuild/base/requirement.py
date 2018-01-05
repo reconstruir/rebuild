@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import re
-from bes.common import algorithm, object_util, string_util
+from bes.common import check, algorithm, object_util, string_util
 from bes.text import comments
 from collections import namedtuple
 from bes.compat import StringIO
@@ -41,7 +41,7 @@ class requirement(namedtuple('requirement', 'name,operator,version,system_mask')
 
   @classmethod
   def requirement_list_to_string(clazz, reqs):
-    assert clazz.is_requirement_list(reqs)
+    check.check_requirement_seq(reqs, 'reqs')
     return ' '.join(str(req) for req in reqs)
 
   @classmethod
@@ -163,14 +163,6 @@ class requirement(namedtuple('requirement', 'name,operator,version,system_mask')
         return False
     return True
   
-  @classmethod
-  def is_requirement_list(clazz, o):
-    return object_util.is_homogeneous(o, requirement)
-
-  @classmethod
-  def is_requirement(clazz, o):
-    return isinstance(o, requirement)
-    
   def to_string_colon_format(self):
     req_no_system_mask = requirement(self.name, self.operator, self.version, None)
     return '%s: %s' % (self.system_mask or 'all', str(req_no_system_mask))
@@ -180,6 +172,7 @@ class requirement(namedtuple('requirement', 'name,operator,version,system_mask')
     'Resolve requirements for the given system.'
     if not build_system.system_is_valid(system):
       raise RuntimeError('Invalid system: %s' % (system))
-    if not clazz.is_requirement_list(requirements):
-      raise RuntimeError('requirements should be a list of requirement objects: %s' % (str(requirements)))
+    check.check_requirement_seq(requirements, 'requirements')
     return [ req for req in requirements if req.system_mask == None or build_system.mask_matches(req.system_mask, system) ]
+
+check.register_class(requirement)
