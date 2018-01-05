@@ -86,8 +86,7 @@ class package_descriptor(object):
   def resolved_requirements(self, value):
     if self._resolved_requirements != None:
       raise RuntimeError('resolved_requirements can only be set once')
-    if not self.is_package_info_list(value):
-      raise RuntimeError('resolved_requirements should be a list of package_descriptor objects: %s' % (str(value)))
+    check.check_package_descriptor_seq(value, 'value')
     self._resolved_requirements = value
 
   @property
@@ -98,8 +97,7 @@ class package_descriptor(object):
   def resolved_build_requirements(self, value):
     if self._resolved_build_requirements != None:
       raise RuntimeError('resolved_build_requirements can only be set once')
-    if not self.is_package_info_list(value):
-      raise RuntimeError('resolved_build_requirements should be a list of package_descriptor objects: %s' % (str(value)))
+    check.check_package_descriptor_seq(value, 'value')
     self._resolved_build_requirements = value
 
   @property
@@ -228,10 +226,6 @@ class package_descriptor(object):
   def is_package_info(clazz, o):
     return isinstance(o, package_descriptor)
 
-  @classmethod
-  def is_package_info_list(clazz, o):
-    return object_util.is_homogeneous(o, package_descriptor)
-
   def extra_cflags(self, system):
     config = self.properties.get('extra_cflags', [])
     return masked_config.resolve_list(config, system)
@@ -289,5 +283,5 @@ class package_descriptor(object):
 
   def build_requirements_names_for_system(self, system):
     return set([ req.name for req in self.build_requirements_for_system(system) ])
-  
-  
+
+check.register_class(package_descriptor)

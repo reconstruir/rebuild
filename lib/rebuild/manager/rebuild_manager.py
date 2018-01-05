@@ -3,7 +3,7 @@
 
 import os.path as path
 from bes.fs import file_util
-from bes.common import dict_util, object_util
+from bes.common import check, dict_util, object_util
 from rebuild.base import build_blurb, build_os_env, build_target, package_descriptor
 from rebuild.dependency import dependency_resolver
 from rebuild.package import artifact_manager, package, package_manager, package_list
@@ -161,7 +161,7 @@ exec ${1+"$@"}
   def remove_checksums(self, packages, build_target):
     assert False
     packages = object_util.listify(packages)
-    assert package_descriptor.is_package_info_list(packages)
+    check.check_package_descriptor_seq(packages, 'packages')
     checksum_dirs = [ self.checksum_dir(package_info, build_target) for package_info in packages ]
     file_util.remove(checksum_dirs)
 

@@ -3,6 +3,7 @@
 
 import os.path as path
 
+from bes.common import check
 from rebuild.package import artifact_manager
 from rebuild.tools_manager import tools_manager
 from rebuild.checksum import checksum_manager
@@ -50,7 +51,7 @@ class builder_env(object):
     return tools_manager(path.join(build_dir, 'tools'))
 
   def update_tools(self, packages):
-    assert package_descriptor.is_package_info_list(packages)
+    check.check_package_descriptor_seq(packages, 'packages')
     self.tools_manager.update(packages, self.artifact_manager)
 
   def tool_exe(self, package_info, tool_name):

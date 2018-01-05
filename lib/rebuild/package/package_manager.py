@@ -4,7 +4,7 @@
 # FIXME: theres no notion of transactions or anything else robust in this nice code
 
 import copy, os.path as path, platform
-from bes.common import dict_util, json_util, object_util, string_util, variable
+from bes.common import check, dict_util, json_util, object_util, string_util, variable
 from bes.system import os_env_var
 from rebuild.instruction import instruction_list
 from rebuild.base import build_os_env, build_system, requirement
@@ -232,14 +232,14 @@ class package_manager(object):
       return True
 
   def install_packages(self, packages, build_target, artifact_manager, allow_downgrade = False):
-    assert package_descriptor.is_package_info_list(packages)
+    check.check_package_descriptor_seq(packages, 'packages')
     assert artifact_manager.is_artifact_manager(artifact_manager)
     for pkg_desc in packages:
       self.install_package(pkg_desc, build_target, artifact_manager, allow_downgrade = allow_downgrade)
 
   def uninstall_packages(self, packages): #, build_target):
     # FIXME: nothing happens with build_target
-#    assert package_descriptor.is_package_info_list(packages)
+    #check.check_package_descriptor_seq(packages, 'packages')
     for pkg_name in packages:
       self.uninstall_package(pkg_name) #, build_target)
 

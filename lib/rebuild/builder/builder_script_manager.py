@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common import dict_util
+from bes.common import check, dict_util
 from rebuild.base import build_blurb, package_descriptor, requirement
 from rebuild.dependency import dependency_resolver, missing_dependency_error
 from collections import namedtuple
@@ -40,8 +40,8 @@ class builder_script_manager(object):
         resolved_requirements = [ req for req in all_requirements_dependencies_resolved if not req.is_tool() ]
         resolved_build_requirements = [ req for req in all_requirements_dependencies_resolved if req.is_tool() ]
 
-        assert package_descriptor.is_package_info_list(resolved_requirements)
-        assert package_descriptor.is_package_info_list(resolved_build_requirements)
+        check.check_package_descriptor_seq(resolved_requirements, 'resolved_requirements')
+        check.check_package_descriptor_seq(resolved_build_requirements, 'resolved_build_requirements')
 
         script.descriptor.resolved_requirements = resolved_requirements
         script.descriptor.resolved_build_requirements = resolved_build_requirements

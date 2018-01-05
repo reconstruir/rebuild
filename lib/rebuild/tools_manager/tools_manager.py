@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common import object_util
+from bes.common import check
 from bes.system import host, os_env_var
 from bes.fs import file_util
 from rebuild.base import build_os_env, build_target, build_system, package_descriptor
@@ -18,15 +18,15 @@ class tools_manager(object):
     self.package_manager = build_requirement_manager(self.tools_dir)
 
   def update(self, packages, am):
-    assert package_descriptor.is_package_info_list(packages)
+    check.check_package_descriptor_seq(packages, 'packages')
     assert isinstance(am, artifact_manager)
     self.package_manager.install_packages(packages, am)
     bin_dirs = self.all_bin_dirs(packages)
     build_os_env.PATH.prepend(bin_dirs)
 
   def uninstall(self, package_name):
-    assert package_descriptor.is_package_info_list(packages)
-
+    assert False
+    
   def tool_exe(self, package_info, tool_name):
     'Return an abs path to the given tool.'
     return self.package_manager.tool_exe(package_info, tool_name)
