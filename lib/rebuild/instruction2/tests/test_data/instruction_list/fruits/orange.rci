@@ -1,0 +1,15 @@
+name: liborange1
+CFLAGS: -I${REBUILD_PACKAGE_PREFIX}/include
+LDFLAGS: -L${REBUILD_PACKAGE_PREFIX}/lib
+LIBS: -lorange1
+requires: libfructose1
+
+name: liborange2
+CFLAGS: -I${REBUILD_PACKAGE_PREFIX}/include
+        -I${REBUILD_PACKAGE_PREFIX}/include/caca
+LDFLAGS: -L${REBUILD_PACKAGE_PREFIX}/lib
+LIBS: -lorange2
+requires: libfiber1
+
+name: orange
+requires: liborange1 liborange2
