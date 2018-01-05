@@ -3,7 +3,7 @@
 
 from abc import abstractmethod, ABCMeta
 from bes.system.compat import with_metaclass
-from bes.common import object_util
+from bes.common import check, object_util
 
 class dependency_provider(with_metaclass(ABCMeta, object)):
   
@@ -16,22 +16,16 @@ class dependency_provider(with_metaclass(ABCMeta, object)):
     pass
 
   @classmethod
-  def is_dependency_provider(clazz, o):
-    return isinstance(o, dependency_provider)
-
-  @classmethod
-  def is_dependency_provider_list(clazz, l):
-    return object_util.is_homogeneous(l, dependency_provider)
-
-  @classmethod
   def determine_provided(clazz, o):
     'Determine the list of dependencies provided by o if it is a single or list of dependency provider(s).'
-    if clazz.is_dependency_provider(o):
+    if check.is_dependency_provider(o):
       return o.provided()
-    elif clazz.is_dependency_provider_list(o):
+    elif check.is_dependency_provider_seq(o):
       result = []
       for item in o:
         result.extend(item.provided())
       return result
     else:
       return []
+
+check.register_class(dependency_provider)

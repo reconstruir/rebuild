@@ -4,7 +4,7 @@
 # FIXME: maintain integrity of original pc whitespace and comments
 
 import copy, glob, os.path as path
-from bes.common import algorithm, object_util, string_util
+from bes.common import algorithm, string_util
 from bes.key_value import key_value
 from bes.fs import dir_util, file_util
 from .entry import entry
@@ -84,7 +84,7 @@ class pkg_config_file(object):
 #        variable.value = value
 
 #  def set_variables(self, variables):
-#    assert object_util.is_homogeneous(variables, key_value)
+#    check.check_key_value_list(variables, 'variables')
 #    for kv in variables:
 #      self.set_variable(kv.key, kv.value)
 
