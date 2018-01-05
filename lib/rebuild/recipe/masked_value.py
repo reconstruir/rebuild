@@ -36,7 +36,7 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
       return str(self.value)
     elif isinstance(self.value, key_value_list):
       return self.value.to_string(delimiter = '=', value_delimiter = ' ', quote = quote)
-    elif string_list.is_string_list(self.value):
+    elif check.is_string_seq(self.value):
       return string_list.to_string(self.value, delimiter = ' ', quote = quote)
     elif check.is_hook_seq(self.value):
       return ' '.join([ h.name for h in self.value ])
@@ -50,7 +50,7 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
     compat.is_string,
     check.is_bool,
     check.is_key_value_list,
-    string_list.is_string_list,
+    check.is_string_seq,
     check.is_hook_seq,
     check.is_recipe_file_seq,
   ]

@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.common import algorithm, check
+from bes.common import algorithm, check, string_list
 from bes.system import compat
 from bes.compat import StringIO
 from rebuild.base import build_system
-from bes.common import string_list
 from bes.key_value import key_value, key_value_list
 
 class masked_value_list(object):
@@ -72,7 +71,7 @@ class masked_value_list(object):
       return values[-1]
     elif isinstance(values[0], key_value_list):
       return self._resolve_key_values(values)
-    elif string_list.is_string_list(values[0]):
+    elif check.is_string_seq(values[0]):
       return self._resolve_list(values)
     elif check.is_recipe_file_seq(values[0]):
       return self._resolve_list(values)

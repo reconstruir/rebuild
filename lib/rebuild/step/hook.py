@@ -39,4 +39,5 @@ class hook(with_metaclass(hook_register_meta, dependency_provider)):
   def execute(self, script, env, args):
     'Execute the hook.  Same semantics as step.execute.'
     pass
+  
 check.register_class(hook)

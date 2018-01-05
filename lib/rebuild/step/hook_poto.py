@@ -70,8 +70,7 @@ class hook_poto(dependency_provider):
   @classmethod
   def parse_list(clazz, l):
     'Parse a list of hooks from a list of strings.'
-    if not check.is_string_list(l):
-      raise RuntimeError('Not a string list: \"%s\"' % (str(l)))
+    check.check_string_seq(l, 'l')
     return [ clazz.parse(s) for s in l ]
     
   def _load(self, extra_code = None):
@@ -96,14 +95,9 @@ class hook_poto(dependency_provider):
     return self._function(script, env, args)
 
   @classmethod
-  def is_hook(clazz, o):
-    return isinstance(o, hook_poto)
+  def hook_list_filenames(clazz, hooks):
+    check.check_hook_poto_seq(hooks, 'hooks')
+    return [ hook.filename for hook in hooks ]
 
-  @classmethod
-  def is_hook_list(clazz, l):
-    return object_util.is_homogeneous(l, hook_poto)
+check.register_class(hook_poto)
 
-  @classmethod
-  def hook_list_filenames(clazz, l):
-    assert clazz.is_hook_list(l)
-    return [ h.filename for h in l ]

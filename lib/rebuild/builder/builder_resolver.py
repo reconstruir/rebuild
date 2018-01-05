@@ -18,7 +18,7 @@ class builder_resolver(object):
     self.script_manager = script_manager
     
   def resolve_packages(self, names, build_target):
-    check.check_string_list(names)
+    check.check_string_seq(names)
     check.build_target(build_target)
     return self.script_manager.resolve_requirements(names, build_target.system)
 
