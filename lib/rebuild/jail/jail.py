@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import glob, os, os.path as path
-from bes.common import algorithm, Shell, string_list
+from bes.common import algorithm, Shell, string_list_util
 from bes.fs import dir_util, file_util
 from rebuild.native_package_manager import native_package_manager as npm
 from bes.match import matcher_util
@@ -82,5 +82,5 @@ class jail(object):
         files.add(dep)
         for p in dir_util.all_parents(dep):
           files.add(p)
-    string_list.remove_if(files, '/')
+    string_list_util.remove_if(files, '/')
     return sorted(algorithm.unique(list(files)))

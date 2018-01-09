@@ -5,7 +5,7 @@ from .native_package_manager_base import native_package_manager_base
 
 import os.path as path
 from bes.compat.plistlib import plistlib_loads
-from bes.common import algorithm, Shell, string_list
+from bes.common import algorithm, Shell, string_list_util
 
 class native_package_manager_macos(native_package_manager_base):
     
@@ -44,7 +44,7 @@ class native_package_manager_macos(native_package_manager_base):
     if rv.exit_code != 0:
       raise RuntimeError('Failed to execute: %s' % (cmd))
     files = sorted(algorithm.unique(rv.stdout.strip().split('\n')))
-    files = string_list.remove_if(files, clazz.__CONTENTS_BLACKLIST)
+    files = string_list_util.remove_if(files, clazz.__CONTENTS_BLACKLIST)
     info = clazz.package_info(package_name)
     package_home = info['volume'] + info['install_location']
     package_home = package_home.replace('//', '/')

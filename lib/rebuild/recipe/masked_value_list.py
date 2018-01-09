@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.common import algorithm, check, string_list
+from bes.common import algorithm, check
 from bes.system import compat
 from bes.compat import StringIO
 from rebuild.base import build_system

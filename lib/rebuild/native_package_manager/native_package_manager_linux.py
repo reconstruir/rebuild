@@ -3,7 +3,7 @@
 
 import os.path as path
 from .native_package_manager_base import native_package_manager_base
-from bes.common import Shell, string_util, string_list
+from bes.common import Shell, string_util, string_list_util
 
 class native_package_manager_linux(native_package_manager_base):
 
@@ -31,7 +31,7 @@ class native_package_manager_linux(native_package_manager_base):
     if rv.exit_code != 0:
       raise RuntimeError('Failed to execute: %s' % (cmd))
     contents = rv.stdout.strip().split('\n')
-    contents = string_list.remove_if(contents, clazz.__CONTENTS_BLACKLIST)
+    contents = string_list_util.remove_if(contents, clazz.__CONTENTS_BLACKLIST)
     return sorted(contents)
 
   @classmethod

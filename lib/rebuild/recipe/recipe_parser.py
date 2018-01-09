@@ -111,7 +111,7 @@ class recipe_parser(object):
     return desc.name, desc.version
 
   def _parse_enabled(self, node):
-    enabled_text = self._node_text_recursive(node)
+    enabled_text = tree_text_parser.node_text_recursive(node)
     kv = key_value.parse(enabled_text, delimiter = '=')
     if kv.key != 'enabled':
       self._error('invalid "enabled" expression: %s' % (enabled_text))
@@ -120,7 +120,7 @@ class recipe_parser(object):
   def _parse_properties(self, node):
     properties = {}
     for child in node.children:
-      property_text = self._node_text_recursive(child)
+      property_text = tree_text_parser.node_text_recursive(child)
       values = key_value_parser.parse_to_dict(property_text, options = key_value_parser.KEEP_QUOTES)
       properties.update(values)
     return properties
@@ -128,7 +128,7 @@ class recipe_parser(object):
   def _parse_requirements(self, node):
     reqs = []
     for child in node.children:
-      req_text = self._node_text_recursive(child)
+      req_text = tree_text_parser.node_text_recursive(child)
       next_reqs = requirement.parse(req_text)
       reqs.extend(next_reqs)
     return reqs
@@ -136,7 +136,7 @@ class recipe_parser(object):
   def _parse_env_vars(self, node):
     env_vars = []
     for child in node.children:
-      text = self._node_text_recursive(child)
+      text = tree_text_parser.node_text_recursive(child)
       value = masked_value.parse_mask_and_value(text, self.filename, step_arg_type.KEY_VALUES)
       env_vars.append(value)
     return masked_value_list(env_vars)
@@ -171,30 +171,15 @@ class recipe_parser(object):
     else:
 #      assert node.children
       for child in node.children:
-        text = self._node_text_recursive(child)
+        text = tree_text_parser.node_text_recursive(child)
         value = masked_value.parse_mask_and_value(text, self.filename, args_definition[key].atype)
         values.append(value)
     return recipe_value(key, values)
 
-  @classmethod
-  def _node_text_recursive(clazz, node):
-    buf = StringIO()
-    clazz._node_text_collect(node, ' ', buf)
-    return buf.getvalue()
-
-  @classmethod
-  def _node_text_collect(clazz, node, delimiter, buf):
-    buf.write(node.data.text)
-    if node.children:
-      buf.write(delimiter)
-    for i, child in enumerate(node.children):
-      clazz._node_text_collect(child, delimiter, buf)
-      buf.write(delimiter)
-
   def _parse_load(self, node):
     loads = []
     for child in node.children:
-      load_text = self._node_text_recursive(child)
+      load_text = tree_text_parser.node_text_recursive(child)
       next_loads = string_list_parser.parse_to_list(load_text)
       loads.extend(next_loads)
     return loads

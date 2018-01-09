@@ -1,6 +1,38 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+from bes.common import check, node
+from bes.text import white_space
+from collections import namedtuple
+
+class instruction2(namedtuple('instruction2', 'name,flags,requires')):
+
+  def __new__(clazz, name, flags, requires):
+    flags = flags or {}
+    requires = requires or set()
+    check.check_string(name, 'name')
+    check.check_dict(flags, 'flags', key_type = check.STRING_TYPES, value_type = check.STRING_TYPES)
+    check.check_set(requires, 'requires', entry_type = check.STRING_TYPES)
+    return clazz.__bases__[0].__new__(clazz, name, flags, requires)
+
+  def __str__(self):
+    return self.to_string()
+
+  def to_string(self, depth = 0, indent = 2):
+    s = self._to_node().to_string(depth = depth, indent = indent).strip()
+    return white_space.shorten_multi_line_spaces(s)
+  
+  def _to_node(self):
+    'A convenient way to make a recipe string is to build a graph first.'
+    root = node(self.name)
+    for key, value in sorted(self.flags.items()):
+      root.add_child(key).add_child(value)
+    requires_node = root.add_child('requires')
+    for req in sorted(self.requires):
+      requires_node.add_child(req)
+    return root
+  
+'''
 import re
 from bes.common import algorithm, dict_util, object_util, string_util
 from bes.system import compat
@@ -37,3 +69,4 @@ class instruction2(object):
 
   def __eq__(self, other):
     return self.__dict__ == other.__dict__
+'''

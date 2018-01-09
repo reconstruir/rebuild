@@ -3,7 +3,7 @@
 
 from collections import namedtuple
 from bes.system import compat
-from bes.common import bool_util, check, string_list, string_util
+from bes.common import bool_util, check, string_list_util, string_util
 from bes.compat import StringIO
 from bes.key_value import key_value, key_value_list
 from bes.text import string_list_parser
@@ -37,7 +37,7 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
     elif isinstance(self.value, key_value_list):
       return self.value.to_string(delimiter = '=', value_delimiter = ' ', quote = quote)
     elif check.is_string_seq(self.value):
-      return string_list.to_string(self.value, delimiter = ' ', quote = quote)
+      return string_list_util.to_string(self.value, delimiter = ' ', quote = quote)
     elif check.is_hook_seq(self.value):
       return ' '.join([ h.name for h in self.value ])
     elif check.is_recipe_file_seq(self.value):

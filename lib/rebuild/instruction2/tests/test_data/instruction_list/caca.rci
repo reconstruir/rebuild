@@ -1,6 +1,7 @@
 liborange1
   CFLAGS
     -I${REBUILD_PACKAGE_PREFIX}/include
+    -Dfoo="something in quotes"
   LDFLAGS
     -L${REBUILD_PACKAGE_PREFIX}/lib
   LIBS

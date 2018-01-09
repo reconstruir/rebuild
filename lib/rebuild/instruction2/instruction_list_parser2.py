@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.system import log
 from .instruction2 import instruction2
-from rebuild.recipe import recipe_section_parser
+from bes.text import string_list_parser, tree_text_parser
 
 class instruction_list_parser2(object):
 
@@ -13,24 +12,44 @@ class instruction_list_parser2(object):
   def __init__(self):
     pass
   
-  def run(self, text):
-    sections = recipe_section_parser.parse_to_list(text, self.NAME_IDENTIFIER)
-    for section in sections:
-      inst = self._parse_section(section)
-      yield inst
-
   @classmethod
   def parse(clazz, text):
-    return clazz().run(text)
+    tree = tree_text_parser.parse(text, strip_comments = True)
+    return clazz._parse_tree(tree)
 
   @classmethod
-  def _parse_section(clazz, section):
-    assert section.header.key == clazz.NAME_IDENTIFIER
-    name = section.header.value
-    requires_value = section.values.find_all_key(clazz.REQUIRES_IDENTIFIER)
-    section.values.remove_key(clazz.REQUIRES_IDENTIFIER)
-    requires = set()
-    if requires_value:
-      requires = set(requires_value[-1].value.split(' '))
-    flags = section.values.to_dict()
+  def _parse_tree(clazz, root):
+    instructions = []
+    for instruction_node in root.children[1:]:
+      instruction = clazz._parse_instruction(instruction_node)
+      instructions.append(instruction)
+    return instructions
+
+  @classmethod
+  def _parse_instruction(clazz, node):
+    name = node.data.text
+    requires = None
+    flags = {}
+    for child in node.children:
+      text = child.data.text
+      if text == 'requires':
+        requires = clazz._parse_requires(child)
+      else:
+        flag = clazz._parse_flag(child)
+        flags.update(flag)
     return instruction2(name, flags, requires)
+
+  @classmethod
+  def _parse_requires(clazz, node):
+    text = tree_text_parser.node_text_recursive(node)
+    return set(string_list_parser.parse_to_list(text))
+
+  @classmethod
+  def _parse_flag(clazz, node):
+    key = node.data.text
+    texts = []
+    for child in node.children:
+      texts.append(tree_text_parser.node_text_recursive(child))
+    value_text = ' '.join(texts)
+    value = string_list_parser.parse_to_list(value_text)
+    return { key: value }

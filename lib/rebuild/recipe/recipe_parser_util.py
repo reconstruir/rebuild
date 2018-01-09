@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common import bool_util, check, string_list
+from bes.common import bool_util, check
 from bes.key_value import key_value, key_value_list
 from rebuild.step import hook_registry, step_arg_type
 from bes.text import string_list_parser

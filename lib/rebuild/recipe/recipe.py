@@ -4,6 +4,7 @@
 import re
 from collections import namedtuple
 from bes.common import check, node
+from bes.text import white_space
 
 class recipe(namedtuple('recipe', 'format_version,filename,enabled,properties,requirements,build_requirements,descriptor,instructions,steps,load,env_vars')):
 
@@ -21,11 +22,7 @@ class recipe(namedtuple('recipe', 'format_version,filename,enabled,properties,re
 
   def to_string(self, depth = 0, indent = 2):
     s = self._to_node().to_string(depth = depth, indent = indent).strip()
-    lines = s.split('\n')
-    for i, line in enumerate(lines):
-      if line.isspace():
-        lines[i] = ''
-    return '\n'.join(lines)
+    return white_space.shorten_multi_line_spaces(s)
   
   def _to_node(self):
     'A convenient way to make a recipe string is to build a graph first.'
