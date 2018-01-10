@@ -2,7 +2,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from collections import namedtuple
-from bes.system import compat
 from bes.common import bool_util, check, string_list_util, string_util
 from bes.compat import StringIO
 from bes.key_value import key_value, key_value_list
@@ -28,13 +27,13 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
       return self._to_string_no_mask(depth, indent, quote)
 
   def value_to_string(self, quote = True):
-    if compat.is_int(self.value):
+    if check.is_int(self.value):
       return str(self.value)
-    elif compat.is_string(self.value):
+    elif check.is_string(self.value):
       return self.value
-    elif isinstance(self.value, bool):
+    elif check.is_bool(self.value):
       return str(self.value)
-    elif isinstance(self.value, key_value_list):
+    elif check.is_key_value_list(self.value):
       return self.value.to_string(delimiter = '=', value_delimiter = ' ', quote = quote)
     elif check.is_string_seq(self.value):
       return string_list_util.to_string(self.value, delimiter = ' ', quote = quote)
@@ -46,8 +45,8 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
       assert False
 
   _VALUE_TYPE_CHECKERS = [
-    compat.is_int,
-    compat.is_string,
+    check.is_int,
+    check.is_string,
     check.is_bool,
     check.is_key_value_list,
     check.is_string_seq,

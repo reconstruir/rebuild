@@ -2,7 +2,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.common import algorithm, check
-from bes.system import compat
 from bes.compat import StringIO
 from rebuild.base import build_system
 from bes.key_value import key_value, key_value_list
@@ -63,13 +62,13 @@ class masked_value_list(object):
     values = self._resolve_values(system)
     if not values:
       return None
-    if compat.is_int(values[0]):
+    if check.is_int(values[0]):
       return values[-1]
-    elif compat.is_string(values[0]):
+    elif check.is_string(values[0]):
       return values[-1]
-    elif isinstance(values[0], bool):
+    elif check.is_bool(values[0]):
       return values[-1]
-    elif isinstance(values[0], key_value_list):
+    elif check.is_key_value_list(values[0]):
       return self._resolve_key_values(values)
     elif check.is_string_seq(values[0]):
       return self._resolve_list(values)
