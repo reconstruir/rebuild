@@ -1,2 +1,2 @@
-name: quoted
-CFLAGS: -DNAME="foo bar"
+quoted
+  CFLAGS: -DNAME="foo bar"
