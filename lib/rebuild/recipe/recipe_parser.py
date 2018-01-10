@@ -8,7 +8,7 @@ from bes.common import check, string_util
 from bes.compat import StringIO
 from bes.key_value import key_value, key_value_parser
 from bes.system import log
-from bes.text import string_list_parser, tree_text_parser
+from bes.text import string_list, tree_text_parser
 from bes.python import code
 
 from rebuild.base import build_version, masked_config, requirement, package_descriptor
@@ -180,7 +180,7 @@ class recipe_parser(object):
     loads = []
     for child in node.children:
       load_text = tree_text_parser.node_text_recursive(child)
-      next_loads = string_list_parser.parse_to_list(load_text)
+      next_loads = string_list.parse(load_text)
       loads.extend(next_loads)
     return loads
 

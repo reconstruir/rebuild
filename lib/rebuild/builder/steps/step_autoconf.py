@@ -30,7 +30,10 @@ class step_autoconf_configure(step):
       print('CACA: values: %s' % (str(caca_values)))
       #caca_configure_env = self.recipe.resolve_values(script.build_target)
     '''
-    configure_flags = self.args_get_list(args, 'configure_flags')
+    configure_flags = self.args_get_string_list(args, 'configure_flags')
+    print('CACACACA: configure_flags=%s - %s' % (configure_flags, type(configure_flags)))
+    check.check_string_list(configure_flags, 'configure_flags')
+    configure_flags = configure_flags.to_list()
     configure_env = self.args_get_key_value_list(args, 'configure_env')
 
     configure_script = args.get('configure_script', 'configure')

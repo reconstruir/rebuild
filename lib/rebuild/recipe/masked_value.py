@@ -2,10 +2,10 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from collections import namedtuple
-from bes.common import bool_util, check, string_list_util, string_util
+from bes.common import check
+from bes.text import string_list
 from bes.compat import StringIO
 from bes.key_value import key_value, key_value_list
-from bes.text import string_list_parser
 from rebuild.base import build_system
 from rebuild.step import step_arg_type
 from .recipe_parser_util import recipe_parser_util
@@ -13,6 +13,8 @@ from .recipe_parser_util import recipe_parser_util
 class masked_value(namedtuple('masked_value', 'mask,value')):
 
   def __new__(clazz, mask, value):
+    if (not check.is_string(value) and not check.is_string_list(value)) and check.is_string_seq(value):
+      value = string_list(value)
     if not clazz.value_type_is_valid(value):
       raise TypeError('invalid value type: %s - %s' % (str(value), type(value)))
     return clazz.__bases__[0].__new__(clazz, mask, value)
@@ -35,8 +37,8 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
       return str(self.value)
     elif check.is_key_value_list(self.value):
       return self.value.to_string(delimiter = '=', value_delimiter = ' ', quote = quote)
-    elif check.is_string_seq(self.value):
-      return string_list_util.to_string(self.value, delimiter = ' ', quote = quote)
+    elif check.is_string_list(self.value):
+      return self.value.to_string(delimiter = ' ', quote = quote)
     elif check.is_hook_seq(self.value):
       return ' '.join([ h.name for h in self.value ])
     elif check.is_recipe_file_seq(self.value):
@@ -49,7 +51,7 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
     check.is_string,
     check.is_bool,
     check.is_key_value_list,
-    check.is_string_seq,
+    check.is_string_list,
     check.is_hook_seq,
     check.is_recipe_file_seq,
   ]

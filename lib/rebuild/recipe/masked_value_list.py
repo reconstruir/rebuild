@@ -5,6 +5,7 @@ from bes.common import algorithm, check
 from bes.compat import StringIO
 from rebuild.base import build_system
 from bes.key_value import key_value, key_value_list
+from bes.text import string_list
 
 class masked_value_list(object):
 
@@ -70,8 +71,8 @@ class masked_value_list(object):
       return values[-1]
     elif check.is_key_value_list(values[0]):
       return self._resolve_key_values(values)
-    elif check.is_string_seq(values[0]):
-      return self._resolve_list(values)
+    elif check.is_string_list(values[0]):
+      return self._resolve_string_list(values)
     elif check.is_recipe_file_seq(values[0]):
       return self._resolve_list(values)
     raise TypeError('unknown value type: %s - %s' % (str(values[0]), type(values[0])))
@@ -89,6 +90,14 @@ class masked_value_list(object):
       assert isinstance(value, list)
       result.extend(value)
     return algorithm.unique(result)
+
+  def _resolve_string_list(self, values):
+    result = string_list()
+    for value in values:
+      check.check_string_list(value, 'value')
+      result.extend(value)
+    result.remove_dups()
+    return result
 
   def _resolve_key_values(self, values):
     result = key_value_list()

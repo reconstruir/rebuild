@@ -5,7 +5,7 @@ import os.path as path
 from bes.common import bool_util, check
 from bes.key_value import key_value, key_value_list
 from rebuild.step import hook_registry, step_arg_type
-from bes.text import string_list_parser
+from bes.text import string_list
 from .recipe_file import recipe_file
 
 class recipe_parser_util(object):
@@ -63,7 +63,7 @@ class recipe_parser_util(object):
   def _parse_string_list(clazz, value):
     if not value:
       return []
-    return string_list_parser.parse_to_list(value, options = string_list_parser.KEEP_QUOTES)
+    return string_list.parse(value, options = string_list.KEEP_QUOTES)
 
   @classmethod
   def _parse_hook_list(clazz, value):
