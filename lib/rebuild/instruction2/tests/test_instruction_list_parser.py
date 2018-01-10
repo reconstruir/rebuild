@@ -3,19 +3,35 @@
 
 from bes.testing.unit_test import unit_test
 from rebuild.instruction2.instruction_list_parser2 import instruction_list_parser2 as P
-from rebuild.instruction2 import instruction2 as C
-from bes.key_value import key_value as kv
+from rebuild.instruction2 import instruction2 as I
+from bes.text import string_list as SL
 
 class test_instruction_list_parser(unit_test):
 
-  def test_complegte(self):
+  def test_basic(self):
     text='''
 liborange1
   CFLAGS
-    -I${REBUILD_PACKAGE_PREFIX}/include
-    -Dfoo="something in quotes"
+    -I${VAR}/dir
   LDFLAGS
-    -L${REBUILD_PACKAGE_PREFIX}/lib
+    -L${VAR}/lib
+  requires
+    libfructose1
+'''
+
+    expected = [
+      I('liborange1', { 'CFLAGS': SL(['-I${VAR}/dir']), 'LDFLAGS': SL(['-L${VAR}/lib'])  }, set(['libfructose1'])),
+    ]
+    self.assertEqual( expected, P.parse(text) )
+
+  def test_complete(self):
+    text='''
+liborange1
+  CFLAGS
+    -I${VAR}/dir
+    -Dfoo="in quotes" -Dbar=666
+  LDFLAGS
+    -L${VAR}/lib
   LIBS
     -lorange1
   requires
@@ -23,10 +39,10 @@ liborange1
 
 liborange2
   CFLAGS
-    -I${REBUILD_PACKAGE_PREFIX}/include
-    -I${REBUILD_PACKAGE_PREFIX}/include/caca
+    -I${VAR}/dir
+    -I${VAR}/dir/caca
   LDFLAGS
-    -L${REBUILD_PACKAGE_PREFIX}/lib
+    -L${VAR}/lib
   LIBS
     -lorange2
   requires
@@ -34,10 +50,15 @@ liborange2
 
 orange
   requires
-    liborange2 liborange1
+    liborange2
+    liborange1
 '''
 
-    expected = []
+    expected = [
+      I('liborange1', { 'CFLAGS': SL(['-I${VAR}/dir', '-Dfoo="in quotes"', '-Dbar=666']), 'LDFLAGS': SL(['-L${VAR}/lib']), 'LIBS': SL(['-lorange1']) }, set(['libfructose1'])),
+      I('liborange2', { 'CFLAGS': SL(['-I${VAR}/dir', '-I${VAR}/dir/caca']), 'LDFLAGS': SL(['-L${VAR}/lib']), 'LIBS': SL(['-lorange2']) }, set(['libfiber1'])),
+      I('orange', {}, set(['liborange2', 'liborange1'])),
+    ]
     self.assertEqual( expected, P.parse(text) )
     
   def xtest_empty(self):

@@ -3,53 +3,37 @@
 
 import copy, re, glob, os.path as path
 from bes.fs import file_util
-from bes.common import algorithm, dict_util, string_util
-from bes.common import check
+from bes.common import algorithm, check, dict_util, string_util, type_checked_list
 from bes.text import string_list_parser
 from bes.compat import StringIO
 from .instruction_list_parser2 import instruction_list_parser2
 from .instruction2 import instruction2
 from rebuild.dependency import dependency_resolver
 
-class instruction_list2(object):
+class instruction_list2(type_checked_list):
 
-  def __init__(self):
-    self._instructions = {}
-    
+  def __init__(self, values = None):
+    super(instruction_list2, self).__init__(instruction2, values = values)
+
+  def __contains__(self, v):
+    if check.is_string(v):
+      return self.contains_name(v)
+    return super(instruction2, self).__contains__(v)
+  
+  def contains_name(self, name):
+    for v in self._values:
+      if v.name == name:
+        return True
+    return False
+
   def __str__(self):
     buf = StringIO()
-    for instruction in iter(self):
-      buf.write(instruction)
+    for inst in self._values:
+      buf.write(inst)
       buf.write('\n\n')
-    return buf.getvalue()
+    return buf.getvalue().strip()
 
-  def __eq__(self, other):
-    return self._instructions == other._instructions
-
-  def __len__(self):
-    return len(self._instructions)
-
-  def __iter__(self):
-    return iter(self.values())
-
-  def __getitem__(self, name):
-    return self._instructions[name]
-  
-  def __setitem__(self, name, instruction):
-    if name in self._instructions:
-      raise RuntimeError('duplicate instruction \"%s\"' % (name))
-    self._instructions[name] = instruction
-
-  def __contains__(self, name):
-    return name in self._instructions
-    
-  def __add__(self, other):
-    check.check(other, instruction_list2, 'other')
-    result = instruction_list2()
-    result.update(self)
-    result.update(other)
-    return result
-    
+  '''
   def update(self, what):
     check.check(what, ( instruction2, instruction_list2 ), 'what')
     if isinstance(what, instruction2):
@@ -57,25 +41,23 @@ class instruction_list2(object):
     elif isinstance(what, instruction_list2):
       for inst in what:
         self[inst.name] = inst
-
+  '''
+  
   def values(self):
     'Return all instructions as a list ordered by name.'
-    return sorted(self._instructions.values(), key = lambda x: x.name)
+    return sorted(self._values(), key = lambda inst: inst.name)
     
   @classmethod
   def parse(clazz, text):
-    result = clazz()
-    for instruction in instruction_list_parser2.parse(text):
-      result[instruction.name] = instruction
-    return result
+    return clazz(instruction_list_parser2.parse(text))
 
   def save(self, where):
-    for instruction in iter(self):
-      filename = '%s.rci' % (instruction.name)
+    for inst in iter(self):
+      filename = '%s.rci' % (inst.name)
       filepath = path.join(where, filename)
       if path.exists(filepath):
         return False, 'Instruction already exists: %s' % (filepath)
-      file_util.save(filepath, content = str(instruction), mode = 0o644)
+      file_util.save(filepath, content = str(inst), mode = 0o644)
     return True, None
 
   @classmethod

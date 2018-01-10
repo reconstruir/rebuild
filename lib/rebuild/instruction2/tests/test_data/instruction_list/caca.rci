@@ -22,4 +22,5 @@ liborange2
 
 orange
   requires
-    liborange2 liborange1
+    liborange1
+    liborange2

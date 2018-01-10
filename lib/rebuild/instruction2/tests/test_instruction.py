@@ -3,11 +3,12 @@
 
 from bes.testing.unit_test import unit_test
 from rebuild.instruction2 import instruction2 as I
+from bes.text import string_list as SL
 
 class test_instruction(unit_test):
 
   def test___str__(self):
-    i = I('orange', { 'x': '5', 'y': 'hi' }, set([ 'fructose', 'fiber' ]))
+    i = I('orange', { 'x': SL([ '5' ]), 'y': SL([ 'hi' ]) }, set([ 'fructose', 'fiber' ]))
     expected = '''\
 orange
   x
@@ -19,6 +20,36 @@ orange
     fructose\
 '''
     self.assertMultiLineEqual( expected, str(i) )
+
+  def test_parse(self):
+    text = '''
+liborange1
+  CFLAGS
+    -I${REBUILD_PACKAGE_PREFIX}/include
+    -Dfoo="something in quotes"
+  LDFLAGS
+    -L${REBUILD_PACKAGE_PREFIX}/lib
+  LIBS
+    -lorange1
+  requires
+    libfructose1
+
+liborange2
+  CFLAGS
+    -I${REBUILD_PACKAGE_PREFIX}/include
+    -I${REBUILD_PACKAGE_PREFIX}/include/caca
+  LDFLAGS
+    -L${REBUILD_PACKAGE_PREFIX}/lib
+  LIBS
+    -lorange2
+  requires
+    libfiber1
+
+orange
+  requires
+    liborange1
+    liborange2
+'''
 
 if __name__ == '__main__':
   unit_test.main()

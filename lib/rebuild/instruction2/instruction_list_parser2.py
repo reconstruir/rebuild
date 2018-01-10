@@ -2,12 +2,11 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from .instruction2 import instruction2
-from bes.text import string_list_parser, tree_text_parser
+from bes.text import string_list, tree_text_parser
 
 class instruction_list_parser2(object):
 
-  NAME_IDENTIFIER = 'name'
-  REQUIRES_IDENTIFIER = 'requires'
+  REQUIRES = 'requires'
   
   def __init__(self):
     pass
@@ -20,7 +19,7 @@ class instruction_list_parser2(object):
   @classmethod
   def _parse_tree(clazz, root):
     instructions = []
-    for instruction_node in root.children[1:]:
+    for instruction_node in root.children:
       instruction = clazz._parse_instruction(instruction_node)
       instructions.append(instruction)
     return instructions
@@ -32,7 +31,7 @@ class instruction_list_parser2(object):
     flags = {}
     for child in node.children:
       text = child.data.text
-      if text == 'requires':
+      if text == clazz.REQUIRES:
         requires = clazz._parse_requires(child)
       else:
         flag = clazz._parse_flag(child)
@@ -41,8 +40,9 @@ class instruction_list_parser2(object):
 
   @classmethod
   def _parse_requires(clazz, node):
-    text = tree_text_parser.node_text_recursive(node)
-    return set(string_list_parser.parse_to_list(text))
+    assert node.data.text == clazz.REQUIRES
+    text = tree_text_parser.node_children_text_recursive(node)
+    return string_list.parse(text).to_set()
 
   @classmethod
   def _parse_flag(clazz, node):
@@ -51,5 +51,5 @@ class instruction_list_parser2(object):
     for child in node.children:
       texts.append(tree_text_parser.node_text_recursive(child))
     value_text = ' '.join(texts)
-    value = string_list_parser.parse_to_list(value_text)
+    value = string_list.parse(value_text, options = string_list.KEEP_QUOTES)
     return { key: value }
