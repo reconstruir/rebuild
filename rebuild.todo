@@ -612,3 +612,4 @@ jan 5
 jan 9
 - rename step_make_instructions to step_instructions_write or something
 - fix instruction loading unit tests (test_instruction_list.py)
+- need a unit test of writing instructions when a build script has them
