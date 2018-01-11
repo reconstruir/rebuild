@@ -54,7 +54,6 @@ class builder_recipe_loader(object):
                                     build_requirements = build_requirements,
                                     properties = properties)
     instructions = clazz._load_instructions(recipe_dict, 'instructions')
-    print('FUCK: loaded instructions:\n%s' % (str(instructions)))
     steps = clazz._load_steps(recipe_dict)
     env_vars = clazz._load_env_vars(filename, recipe_dict, 'env_vars')
     # recipe_dict should be empty now

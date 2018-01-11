@@ -16,3 +16,25 @@ package fructose-3.4.5-6
         all: fructose-test.c
 #        all: fructose2-test.c
 #        all: fructose-1and2-test.c
+  instructions
+    libfructose1
+      CFLAGS
+        -I${REBUILD_PACKAGE_PREFIX}/include
+      LDFLAGS
+        -L${REBUILD_PACKAGE_PREFIX}/lib
+      LIBS
+        -lfructose1
+
+    libfructose2
+      CFLAGS
+        -I${REBUILD_PACKAGE_PREFIX}/include
+        -I${REBUILD_PACKAGE_PREFIX}/include/caca
+      LDFLAGS
+        -L${REBUILD_PACKAGE_PREFIX}/lib
+      LIBS
+        -lfructose2
+
+    fructose
+      requires
+        libfructose2 libfructose1
+  
