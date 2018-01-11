@@ -5,30 +5,23 @@ import os.path as path
 from bes.common import bool_util, check
 from bes.key_value import key_value, key_value_list
 from rebuild.step import hook_registry, step_arg_type
-from bes.text import string_list
+from bes.text import comments, string_list
 from .recipe_file import recipe_file
 
 class recipe_parser_util(object):
 
   @classmethod
-  def strip_comment(clazz, s):
-    i = s.find('#')
-    if i >= 0:
-      return s[0:i]
-    return s
-
-  @classmethod
   def parse_key(clazz, text):
     'Parse only the key'
     check.check_string(text, 'text')
-    key, _, _ = clazz.strip_comment(text).partition(':')
+    key, _, _ = comments.strip_line(text).partition(':')
     return key.strip()
 
   @classmethod
   def parse_key_and_value(clazz, text, filename, argspec):
     check.check_string(text, 'text')
     check.check_step_arg_type(argspec, 'argspec')
-    text = recipe_parser_util.strip_comment(text)
+    text = comments.strip_line(text)
     key, delimiter, value = text.partition(':')
     key = key.strip()
     if not key:

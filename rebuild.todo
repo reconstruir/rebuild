@@ -613,3 +613,10 @@ jan 9
 - rename step_make_instructions to step_instructions_write or something
 - fix instruction loading unit tests (test_instruction_list.py)
 - need a unit test of writing instructions when a build script has them
+- finish refactoring vars
+x lib/rebuild/base/build_os_env.py
+x lib/rebuild/base/package_descriptor.py
+x lib/rebuild/package/package_manager.py
+lib/rebuild/recipe/recipe.py
+x lib/rebuild/tools_manager/build_requirement_manager.py
+x lib/rebuild/tools_manager/tools_manager.py

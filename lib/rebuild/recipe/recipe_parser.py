@@ -11,7 +11,7 @@ from bes.system import log
 from bes.text import string_list, tree_text_parser
 from bes.python import code
 
-from rebuild.base import build_version, masked_config, requirement, package_descriptor
+from rebuild.base import build_version, requirement, package_descriptor
 from rebuild.step import step_description, step_arg_type
 from rebuild.instruction import instruction_list
 

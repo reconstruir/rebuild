@@ -63,6 +63,38 @@ orange
     
   def test_empty(self):
     self.assertEqual( [ ], P.parse('') )
+
+  def xtest_inline(self):
+    text='''
+liborange1
+  CFLAGS: -I${VAR}/dir
+  LDFLAGS: -L${VAR}/lib
+  requires: libfructose1
+'''
+
+    expected = [
+      I('liborange1', { 'CFLAGS': SL(['-I${VAR}/dir']), 'LDFLAGS': SL(['-L${VAR}/lib'])  }, set(['libfructose1'])),
+    ]
+    self.assertEqual( expected, P.parse(text) )
+
+  def xtest_masked(self):
+    text='''
+liborange1
+  CFLAGS
+    linux: -I${VAR}/linux
+    macos: -I${VAR}/macos
+  LDFLAGS
+    linux: -L${VAR}/linux/lib
+    macos: -L${VAR}/macos/lib
+  requires
+    linux: libfiber_linux
+    macos: libfiber_macos
+'''
+
+    expected = [
+      I('liborange1', { 'CFLAGS': SL(['-I${VAR}/dir']), 'LDFLAGS': SL(['-L${VAR}/lib'])  }, set(['libfructose1'])),
+    ]
+    self.assertEqual( expected, P.parse(text) )
     
 if __name__ == '__main__':
   unit_test.main()
