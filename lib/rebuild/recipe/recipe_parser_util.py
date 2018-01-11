@@ -18,9 +18,9 @@ class recipe_parser_util(object):
     return key.strip()
 
   @classmethod
-  def parse_key_and_value(clazz, text, filename, argspec):
+  def parse_key_and_value(clazz, text, filename, arg_type):
     check.check_string(text, 'text')
-    check.check_step_arg_type(argspec, 'argspec')
+    check.check_step_arg_type(arg_type, 'arg_type')
     text = comments.strip_line(text)
     key, delimiter, value = text.partition(':')
     key = key.strip()
@@ -31,26 +31,26 @@ class recipe_parser_util(object):
     value = value.strip() or None
     if not value:
       return key_value(key, value)
-    value = clazz.parse_value(value, filename, argspec)
+    value = clazz.parse_value(value, filename, arg_type)
     return key_value(key, value)
 
   @classmethod
-  def parse_value(clazz, value, filename, argspec):
-    if argspec == step_arg_type.BOOL:
+  def parse_value(clazz, value, filename, arg_type):
+    if arg_type == step_arg_type.BOOL:
       return bool_util.parse_bool(value)
-    elif argspec == step_arg_type.INT:
+    elif arg_type == step_arg_type.INT:
       return int(value)
-    elif argspec == step_arg_type.KEY_VALUES:
+    elif arg_type == step_arg_type.KEY_VALUES:
       return key_value_list.parse(value, options = key_value_list.KEEP_QUOTES)
-    elif argspec == step_arg_type.STRING_LIST:
+    elif arg_type == step_arg_type.STRING_LIST:
       return clazz._parse_string_list(value)
-    elif argspec == step_arg_type.STRING:
+    elif arg_type == step_arg_type.STRING:
       return value
-    elif argspec == step_arg_type.HOOK_LIST:
+    elif arg_type == step_arg_type.HOOK_LIST:
       return clazz._parse_hook_list(value)
-    elif argspec == step_arg_type.FILE_LIST:
+    elif arg_type == step_arg_type.FILE_LIST:
       return clazz._parse_file_list(value, path.dirname(filename))
-    raise ValueError('unknown argspec: %s' % (str(argspec)))
+    raise ValueError('unknown arg_type: %s' % (str(arg_type)))
 
   @classmethod
   def _parse_string_list(clazz, value):
