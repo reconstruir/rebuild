@@ -1,2 +1,0 @@
-quoted
-  CFLAGS: -DNAME="foo bar"

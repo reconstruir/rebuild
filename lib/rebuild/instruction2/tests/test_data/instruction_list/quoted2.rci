@@ -1,3 +1,0 @@
-name: quoted2
-CFLAGS: -DNAME2="bar baz"
-
