@@ -9,7 +9,7 @@ from .build_system import build_system
 from .build_target import build_target
 from .build_level import build_level
 from .build_version import build_version
-from .masked_config import masked_config
+from .reitred_masked_config import reitred_masked_config
 from .package_descriptor import package_descriptor
 from .package_descriptor_list import package_descriptor_list
 from .requirement import requirement

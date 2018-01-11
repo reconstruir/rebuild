@@ -9,7 +9,7 @@ from bes.compat import StringIO
 from rebuild.base import build_system
 from .requirement import requirement
 
-class masked_config(namedtuple('masked_config', 'system_mask,data')):
+class reitred_masked_config(namedtuple('reitred_masked_config', 'system_mask,data')):
 
   def __new__(clazz, system_mask, data):
     return clazz.__bases__[0].__new__(clazz, system_mask, data)
@@ -34,7 +34,7 @@ class masked_config(namedtuple('masked_config', 'system_mask,data')):
       system_mask = None
     parse_func = parse_func or clazz.parse_func_string
     data = parse_func(right.strip())
-    return masked_config(system_mask, data)
+    return reitred_masked_config(system_mask, data)
 
   @classmethod
   def parse_key_values(clazz, text):

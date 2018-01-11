@@ -4,10 +4,10 @@
 
 from bes.testing.unit_test import unit_test
 from bes.key_value import key_value
-from rebuild.base import masked_config as MC
+from rebuild.base import reitred_masked_config as MC
 from rebuild.base import build_system
 
-class test_masked_config(unit_test):
+class test_reitred_masked_config(unit_test):
 
   def test_simple(self):
     self.assertEqual( ( 'linux', 'foo bar baz' ), MC.parse('linux: foo bar baz') )

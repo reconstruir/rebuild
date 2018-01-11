@@ -8,7 +8,7 @@ from bes.compat import cmp
 from .build_category import build_category
 from .build_system import build_system
 from .build_version import build_version
-from .masked_config import masked_config
+from .reitred_masked_config import reitred_masked_config
 from .requirement import requirement
 
 class package_descriptor(object):
@@ -207,7 +207,7 @@ class package_descriptor(object):
       if check.is_requirement(dep):
         result.append(dep)
       elif string_util.is_string(dep):
-        reqs = masked_config.parse_requirement(dep).data
+        reqs = reitred_masked_config.parse_requirement(dep).data
         result.extend(reqs)
       else:
         raise RuntimeError('Invalid requirement: %s - %s' % (str(dep), type(dep)))
@@ -223,7 +223,7 @@ class package_descriptor(object):
 
   def extra_cflags(self, system):
     config = self.properties.get('extra_cflags', [])
-    return masked_config.resolve_list(config, system)
+    return reitred_masked_config.resolve_list(config, system)
       
   @property
   def env_vars(self):

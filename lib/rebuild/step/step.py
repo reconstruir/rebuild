@@ -12,7 +12,7 @@ from bes.system import log
 from bes.system.compat import with_metaclass
 from bes.key_value import key_value_list
 from bes.text import string_list
-from rebuild.base import build_blurb, build_os_env, build_target, masked_config
+from rebuild.base import build_blurb, build_os_env, build_target, reitred_masked_config
 from rebuild.toolchain import toolchain
 from rebuild.pkg_config import pkg_config
 from bes.fs import file_util
@@ -303,7 +303,7 @@ class step(with_metaclass(step_register_meta, object)):
     if not name or not name in args:
       return {}
     config = args[name]
-    resolved = masked_config.resolve_list(config, script.build_target.system)
+    resolved = reitred_masked_config.resolve_list(config, script.build_target.system)
     return { name: resolved }
       
   @classmethod
@@ -338,14 +338,14 @@ class step(with_metaclass(step_register_meta, object)):
     env_dict = {}
     if env_name and env_name in args:
       config = args[env_name]
-      resolved = masked_config.resolve_key_values(config, script.build_target.system)
+      resolved = reitred_masked_config.resolve_key_values(config, script.build_target.system)
       check.check_key_value_list(resolved, 'resolved')
       env_dict = { env_name: resolved }
 
     flags_dict = {}
     if flags_name and flags_name in args:
       config = args[flags_name]
-      resolved = masked_config.resolve_list(config, script.build_target.system)
+      resolved = reitred_masked_config.resolve_list(config, script.build_target.system)
       check.check_list(resolved, 'resolved')
       flags_dict = { flags_name: resolved }
 
@@ -356,7 +356,7 @@ class step(with_metaclass(step_register_meta, object)):
     result = {}
     if key and key in args:
       config = args[key]
-      resolved = masked_config.resolve_key_values(config, script.build_target.system)
+      resolved = reitred_masked_config.resolve_key_values(config, script.build_target.system)
       check.check_key_value_list(resolved, 'resolved')
       result = { key: resolved }
     return result
@@ -394,7 +394,7 @@ class step(with_metaclass(step_register_meta, object)):
   @classmethod
   def export_compilation_flags_requirements(clazz, descriptor, system):
     config = descriptor.properties.get('export_compilation_flags_requirements', [])
-    resolved = masked_config.resolve_list(config, system)
+    resolved = reitred_masked_config.resolve_list(config, system)
     deps_names = [ dep.name for dep in descriptor.requirements ]
     export_names = resolved
     if export_names == dependency_resolver.ALL_DEPS:
