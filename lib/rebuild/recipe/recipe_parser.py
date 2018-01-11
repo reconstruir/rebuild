@@ -114,7 +114,7 @@ class recipe_parser(object):
     return desc.name, desc.version
 
   def _parse_enabled(self, node):
-    enabled_text = tree_text_parser.node_text_recursive(node)
+    enabled_text = tree_text_parser.node_text_flat(node)
     kv = key_value.parse(enabled_text, delimiter = '=')
     if kv.key != 'enabled':
       self._error('invalid "enabled" expression: %s' % (enabled_text))
@@ -123,7 +123,7 @@ class recipe_parser(object):
   def _parse_properties(self, node):
     properties = {}
     for child in node.children:
-      property_text = tree_text_parser.node_text_recursive(child)
+      property_text = tree_text_parser.node_text_flat(child)
       values = key_value_parser.parse_to_dict(property_text, options = key_value_parser.KEEP_QUOTES)
       properties.update(values)
     return properties
@@ -131,7 +131,7 @@ class recipe_parser(object):
   def _parse_requirements(self, node):
     reqs = []
     for child in node.children:
-      req_text = tree_text_parser.node_text_recursive(child)
+      req_text = tree_text_parser.node_text_flat(child)
       next_reqs = requirement.parse(req_text)
       reqs.extend(next_reqs)
     return reqs
@@ -139,13 +139,13 @@ class recipe_parser(object):
   def _parse_env_vars(self, node):
     env_vars = []
     for child in node.children:
-      text = tree_text_parser.node_text_recursive(child)
+      text = tree_text_parser.node_text_flat(child)
       value = masked_value.parse_mask_and_value(text, self.filename, step_arg_type.KEY_VALUES)
       env_vars.append(value)
     return masked_value_list(env_vars)
 
   def _parse_instructions(self, node):
-    text = '\n'.join([ child.to_string(data_func = lambda item: item.text) for child in node.children ])
+    text = tree_text_parser.node_text(node, include_root = False)
     return instruction_list.parse(text)
 
   def _parse_steps(self, node):
@@ -178,7 +178,7 @@ class recipe_parser(object):
     else:
 #      assert node.children
       for child in node.children:
-        text = tree_text_parser.node_text_recursive(child)
+        text = tree_text_parser.node_text_flat(child)
         value = masked_value.parse_mask_and_value(text, self.filename, args_definition[key].atype)
         values.append(value)
     return recipe_value(key, values)
@@ -186,7 +186,7 @@ class recipe_parser(object):
   def _parse_load(self, node):
     loads = []
     for child in node.children:
-      load_text = tree_text_parser.node_text_recursive(child)
+      load_text = tree_text_parser.node_text_flat(child)
       next_loads = string_list.parse(load_text)
       loads.extend(next_loads)
     return loads
