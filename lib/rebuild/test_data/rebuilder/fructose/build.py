@@ -25,19 +25,26 @@ system: all
       category = 'lib',
     ),
     instructions = '''
-name: libfructose1
-CFLAGS: -I${REBUILD_PACKAGE_PREFIX}/include
-LDFLAGS: -L${REBUILD_PACKAGE_PREFIX}/lib
-LIBS: -lfructose1
+libfructose1
+  CFLAGS
+    -I${REBUILD_PACKAGE_PREFIX}/include
+  LDFLAGS
+    -L${REBUILD_PACKAGE_PREFIX}/lib
+  LIBS
+    -lfructose1
 
-name: libfructose2
-CFLAGS: -I${REBUILD_PACKAGE_PREFIX}/include
-        -I${REBUILD_PACKAGE_PREFIX}/include/caca
-LDFLAGS: -L${REBUILD_PACKAGE_PREFIX}/lib
-LIBS: -lfructose2
+libfructose2
+  CFLAGS
+    -I${REBUILD_PACKAGE_PREFIX}/include
+    -I${REBUILD_PACKAGE_PREFIX}/include/caca
+  LDFLAGS
+    -L${REBUILD_PACKAGE_PREFIX}/lib
+  LIBS
+    -lfructose2
 
-name: fructose
-requires: libfructose2 libfructose1
+fructose
+  requires
+    libfructose2 libfructose1
     ''',
     requirements = [
     ],

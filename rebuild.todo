@@ -608,3 +608,6 @@ dec 27
 
 jan 5
 - full unit test for package_descriptor_list
+
+jan 9
+- rename step_make_instructions to step_instructions_write or something

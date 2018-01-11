@@ -29,7 +29,7 @@ class instruction_list(type_checked_list):
   def __str__(self):
     buf = StringIO()
     for inst in self._values:
-      buf.write(inst)
+      buf.write(inst.to_string(depth = 2))
       buf.write('\n\n')
     return buf.getvalue().strip()
 
