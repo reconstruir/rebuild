@@ -1,10 +1,9 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
-#
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os, os.path as path
 from bes.archive import archiver
-from bes.fs import file_replace, file_util
+from bes.fs import file_replace, file_util, tar_util
 from bes.refactor import files as refactor_files
 from rebuild.package.unit_test_packages import unit_test_packages
 from rebuild.base import build_os_env, package_descriptor, requirement
@@ -13,12 +12,15 @@ from bes.common import Shell
 
 def main():
   root = os.getcwd()
- 
+  template_name = 'template'
+  template_version = '1.0.0'
+  template_dir = '%s-%s' % (template_name, template_version)
+  make_template_tarball(root, template_name, template_version)
   PACKAGES = [
-    ( 'fructose-3.4.5-6', 'water', '1.0.0' ),
-    ( 'mercury-1.2.8-0', 'water', '1.0.0' ),
-    ( 'arsenic-1.2.9-0', 'water', '1.0.0' ),
-    ( 'fiber-1.0.0-0', 'water', '1.0.0' ),
+    ( 'fructose-3.4.5-6', template_name, template_version ),
+    ( 'mercury-1.2.8-0', template_name, template_version ),
+    ( 'arsenic-1.2.9-0', template_name, template_version ),
+    ( 'fiber-1.0.0-0', template_name, template_version ),
     ( 'pear-1.2.3-1', 'apple', '1.2.3' ),
     ( 'orange-6.5.4-3', 'apple', '1.2.3' ),
    ]
@@ -51,6 +53,25 @@ def main():
     env['GZIP'] = '-n'
     Shell.execute(' && '.join(command), shell = True, non_blocking = True, env = env)
 
+def make_template_tarball(root, template_name, template_version):
+  tmp_dir = temp_file.make_temp_dir(delete = False)
+  full_name = '%s-%s' % (template_name, template_version)
+  template_dir = path.join(root, 'template')
+  tar_util.copy_tree_with_tar(template_dir, tmp_dir)
+  working_dir = path.join(tmp_dir, full_name)
+  tarball_filename = '%s.tar.gz' % (full_name)
+  command = [
+    'cd %s' % (working_dir),
+    'automake -a',
+    'autoconf',
+    './configure',
+    'make dist',
+    'cp %s %s' % (tarball_filename, root),
+    ]
+  env = build_os_env.make_clean_env(keep_keys = [ 'PATH' ])
+  env['GZIP'] = '-n'
+  Shell.execute(' && '.join(command), shell = True, non_blocking = True, env = env)
+    
 if __name__ == '__main__':
   raise SystemExit(main())
   
