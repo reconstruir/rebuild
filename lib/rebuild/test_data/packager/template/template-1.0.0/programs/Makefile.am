@@ -1,1 +1,1 @@
-SUBDIRS = template_program1 template_program2
+SUBDIRS = template_program1 template_program2 template_print_env
