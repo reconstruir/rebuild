@@ -187,8 +187,8 @@ CSCOPE = cscope
 DIST_SUBDIRS = $(SUBDIRS)
 am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/config.h.in \
 	$(srcdir)/libtemplate1.pc.in $(srcdir)/libtemplate2.pc.in \
-	$(srcdir)/template.pc.in README ar-lib compile depcomp install-sh \
-	missing
+	$(srcdir)/template.pc.in README ar-lib compile depcomp \
+	install-sh missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)

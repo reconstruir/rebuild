@@ -3700,7 +3700,7 @@ esac
 
 ac_config_headers="$ac_config_headers config.h"
 
-ac_config_files="$ac_config_files Makefile libs/template1/Makefile libs/template2/Makefile libs/Makefile programs/Makefile programs/template_program1/Makefile programs/template_program2/Makefile template.pc libtemplate1.pc libtemplate2.pc"
+ac_config_files="$ac_config_files Makefile libs/template1/Makefile libs/template2/Makefile libs/Makefile programs/Makefile programs/template_program1/Makefile programs/template_program2/Makefile programs/template_print_env/Makefile template.pc libtemplate1.pc libtemplate2.pc"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -4436,6 +4436,7 @@ do
     "programs/Makefile") CONFIG_FILES="$CONFIG_FILES programs/Makefile" ;;
     "programs/template_program1/Makefile") CONFIG_FILES="$CONFIG_FILES programs/template_program1/Makefile" ;;
     "programs/template_program2/Makefile") CONFIG_FILES="$CONFIG_FILES programs/template_program2/Makefile" ;;
+    "programs/template_print_env/Makefile") CONFIG_FILES="$CONFIG_FILES programs/template_print_env/Makefile" ;;
     "template.pc") CONFIG_FILES="$CONFIG_FILES template.pc" ;;
     "libtemplate1.pc") CONFIG_FILES="$CONFIG_FILES libtemplate1.pc" ;;
     "libtemplate2.pc") CONFIG_FILES="$CONFIG_FILES libtemplate2.pc" ;;
