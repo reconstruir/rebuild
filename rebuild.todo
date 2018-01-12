@@ -620,3 +620,10 @@ x lib/rebuild/package/package_manager.py
 lib/rebuild/recipe/recipe.py
 x lib/rebuild/tools_manager/build_requirement_manager.py
 x lib/rebuild/tools_manager/tools_manager.py
+
+jan 10
+- finish refactoring rebuild.value from rebuild.recipe
+- fix instructions to be system specific masked
+
+- add a rebuild_ldd unit test
+

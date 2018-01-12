@@ -16,8 +16,8 @@ class test_builder_autoconf(unit_test):
   def test_amhello(self):
     self._build_autoconf_package(self, 'amhello', '1.0', '1', self.data_dir())
 
-  def test_water(self):
-    self._build_autoconf_package(self, 'water', '1.0.0', '1', self.data_dir())
+  def test_template(self):
+    self._build_autoconf_package(self, 'template', '1.0.0', '1', self.data_dir())
 
   def test_mercury(self):
     pkg = self._build_autoconf_package(self, 'mercury', '2.3.4', '0', self.data_dir())
