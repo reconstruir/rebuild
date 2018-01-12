@@ -13,6 +13,7 @@ AC_CONFIG_FILES([
  programs/Makefile
  programs/template_program1/Makefile
  programs/template_program2/Makefile
+ programs/template_print_env/Makefile
  template.pc
  libtemplate1.pc
  libtemplate2.pc
