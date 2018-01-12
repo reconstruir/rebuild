@@ -5,7 +5,6 @@ from collections import namedtuple
 from bes.compat import StringIO
 from bes.common import check
 from rebuild.base import build_system
-from rebuild.step import step_arg_type
 from bes.key_value import key_value_list
 from .recipe_value_list import recipe_value_list
 from .recipe_parser_util import recipe_parser_util

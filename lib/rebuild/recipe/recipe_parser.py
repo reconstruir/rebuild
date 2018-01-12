@@ -12,7 +12,8 @@ from bes.text import string_list, tree_text_parser
 from bes.python import code
 
 from rebuild.base import build_version, requirement, package_descriptor
-from rebuild.step import step_description, step_arg_type
+from rebuild.step import step_description
+from rebuild.value import value_type
 from rebuild.instruction import instruction_list
 
 from .masked_value import masked_value
@@ -140,7 +141,7 @@ class recipe_parser(object):
     env_vars = []
     for child in node.children:
       text = tree_text_parser.node_text_flat(child)
-      value = masked_value.parse_mask_and_value(text, self.filename, step_arg_type.KEY_VALUES)
+      value = masked_value.parse_mask_and_value(text, self.filename, value_type.KEY_VALUES)
       env_vars.append(value)
     return masked_value_list(env_vars)
 

@@ -4,15 +4,15 @@
 from bes.common import check, string_util
 from bes.text import comments
 from collections import namedtuple
-from .step_arg_type import step_arg_type
+from rebuild.value import value_type
 
 class step_arg_spec(namedtuple('step_arg_spec', 'name,atype,default,line_number')):
   
   def __new__(clazz, name, atype, default, line_number):
     check.check_string(name, 'name')
-    check.check_step_arg_type(atype, 'atype')
+    check.check_value_type(atype, 'atype')
     if check.is_string(atype):
-      atype = step_arg_type.name_to_value(atype)
+      atype = value_type.name_to_value(atype)
     if default != None:
       check.check_string(default, 'default')
     check.check_int(line_number, 'line_number')
@@ -27,7 +27,7 @@ class step_arg_spec(namedtuple('step_arg_spec', 'name,atype,default,line_number'
       raise RuntimeError('invalid arg spec: "%s"' % (text))
     name = parts[0]
     atype = parts[1].upper()
-    if not step_arg_type.name_is_valid(atype):
+    if not value_type.name_is_valid(atype):
       raise RuntimeError('invalid arg type: "%s"' % (atype))
     default = None
     if len(parts) > 2:

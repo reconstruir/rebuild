@@ -4,7 +4,8 @@
 import os.path as path
 from bes.common import bool_util, check
 from bes.key_value import key_value, key_value_list
-from rebuild.step import hook_registry, step_arg_type
+from rebuild.step import hook_registry
+from rebuild.value import value_type
 from bes.text import comments, string_list
 from .recipe_file import recipe_file
 
@@ -20,7 +21,7 @@ class recipe_parser_util(object):
   @classmethod
   def parse_key_and_value(clazz, text, filename, arg_type):
     check.check_string(text, 'text')
-    check.check_step_arg_type(arg_type, 'arg_type')
+    check.check_value_type(arg_type, 'arg_type')
     text = comments.strip_line(text)
     key, delimiter, value = text.partition(':')
     key = key.strip()
@@ -36,19 +37,19 @@ class recipe_parser_util(object):
 
   @classmethod
   def parse_value(clazz, value, filename, arg_type):
-    if arg_type == step_arg_type.BOOL:
+    if arg_type == value_type.BOOL:
       return bool_util.parse_bool(value)
-    elif arg_type == step_arg_type.INT:
+    elif arg_type == value_type.INT:
       return int(value)
-    elif arg_type == step_arg_type.KEY_VALUES:
+    elif arg_type == value_type.KEY_VALUES:
       return key_value_list.parse(value, options = key_value_list.KEEP_QUOTES)
-    elif arg_type == step_arg_type.STRING_LIST:
+    elif arg_type == value_type.STRING_LIST:
       return clazz._parse_string_list(value)
-    elif arg_type == step_arg_type.STRING:
+    elif arg_type == value_type.STRING:
       return value
-    elif arg_type == step_arg_type.HOOK_LIST:
+    elif arg_type == value_type.HOOK_LIST:
       return clazz._parse_hook_list(value)
-    elif arg_type == step_arg_type.FILE_LIST:
+    elif arg_type == value_type.FILE_LIST:
       return clazz._parse_file_list(value, path.dirname(filename))
     raise ValueError('unknown arg_type: %s' % (str(arg_type)))
 

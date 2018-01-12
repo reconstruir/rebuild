@@ -4,7 +4,7 @@
 from bes.testing.unit_test import unit_test
 from rebuild.recipe import masked_value as V, masked_value_list as VL
 from rebuild.base import build_system
-from rebuild.step import step_arg_type as SPEC
+from rebuild.value import value_type
 
 class test_masked_value_list(unit_test):
 
@@ -39,23 +39,23 @@ class test_masked_value_list(unit_test):
 
   @classmethod
   def _int(clazz, s):
-    return V.parse_mask_and_value(s, '<none>', SPEC.INT)
+    return V.parse_mask_and_value(s, '<none>', value_type.INT)
     
   @classmethod
   def _string(clazz, s):
-    return V.parse_mask_and_value(s, '<none>', SPEC.STRING)
+    return V.parse_mask_and_value(s, '<none>', value_type.STRING)
     
   @classmethod
   def _bool(clazz, s):
-    return V.parse_mask_and_value(s, '<none>', SPEC.BOOL)
+    return V.parse_mask_and_value(s, '<none>', value_type.BOOL)
     
   @classmethod
   def _string_list(clazz, s):
-    return V.parse_mask_and_value(s, '<none>', SPEC.STRING_LIST)
+    return V.parse_mask_and_value(s, '<none>', value_type.STRING_LIST)
     
   @classmethod
   def _key_values(clazz, s):
-    return V.parse_mask_and_value(s, '<none>', SPEC.KEY_VALUES)
+    return V.parse_mask_and_value(s, '<none>', value_type.KEY_VALUES)
     
 if __name__ == '__main__':
   unit_test.main()

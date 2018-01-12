@@ -7,7 +7,7 @@ from bes.text import string_list
 from bes.compat import StringIO
 from bes.key_value import key_value, key_value_list
 from rebuild.base import build_system
-from rebuild.step import step_arg_type
+from rebuild.value import value_type
 from .recipe_parser_util import recipe_parser_util
 
 class masked_value(namedtuple('masked_value', 'mask,value')):

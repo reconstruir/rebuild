@@ -7,26 +7,27 @@ import copy, os, os.path as path
 
 from abc import abstractmethod, ABCMeta
 from collections import namedtuple
+
 from bes.common import check, dict_util, object_util, string_util, Shell, variable
+from bes.fs import file_util
+from bes.key_value import key_value_list
 from bes.system import log
 from bes.system.compat import with_metaclass
-from bes.key_value import key_value_list
 from bes.text import string_list
 from rebuild.base import build_blurb, build_os_env, build_target, reitred_masked_config
-from rebuild.toolchain import toolchain
-from rebuild.pkg_config import pkg_config
-from bes.fs import file_util
 from rebuild.dependency import dependency_resolver
+from rebuild.pkg_config import pkg_config
+from rebuild.toolchain import toolchain
+from rebuild.value import value_type
 
 from .hook_poto import hook_poto
 from .hook_extra_code import HOOK_EXTRA_CODE
-from .step_arg_type import step_arg_type
 from .step_registry import step_registry
 from .step_result import step_result
 from .variable_manager import variable_manager
 from .step_arg_spec import step_arg_spec
 
-class step_register_meta(ABCMeta, step_arg_type.CONSTANTS):
+class step_register_meta(ABCMeta, value_type.CONSTANTS):
 
   def __new__(meta, name, bases, class_dict):
     clazz = ABCMeta.__new__(meta, name, bases, class_dict)
