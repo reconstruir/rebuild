@@ -5,7 +5,7 @@
 import os, os.path as path
 from bes.archive import archiver
 from bes.fs import file_replace, file_util
-from refactor import files as refactor_files
+from bes.refactor import files as refactor_files
 from rebuild.package.unit_test_packages import unit_test_packages
 from rebuild.base import build_os_env, package_descriptor, requirement
 from bes.fs import temp_file
