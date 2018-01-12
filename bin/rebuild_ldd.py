@@ -3,7 +3,7 @@
 #
 
 import argparse, os, os.path as path
-from rebuild import library
+from rebuild.toolchain import library
 
 def main():
 
