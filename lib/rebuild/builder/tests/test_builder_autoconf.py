@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
-#
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
+
 import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import file_util, temp_file
@@ -20,10 +20,13 @@ class test_builder_autoconf(unit_test):
     self._build_autoconf_package(self, 'template', '1.0.0', '1', self.data_dir())
 
   def test_mercury(self):
-    pkg = self._build_autoconf_package(self, 'mercury', '2.3.4', '0', self.data_dir())
+    self.maxDiff = None
+    pkg = self._build_autoconf_package(self, 'mercury', '1.2.8', '0', self.data_dir())
     expected_files = [
+      'bin/mercury_print_env',
       'bin/mercury_program1',
       'bin/mercury_program2',
+      'bin/rebbe_mercury_print_env',
       'bin/rebbe_mercury_program1',
       'bin/rebbe_mercury_program2',
       'include/mercury1/mercury1.h',
@@ -32,20 +35,26 @@ class test_builder_autoconf(unit_test):
       'lib/libmercury2.a',
       'lib/librebbe_mercury1.a',
       'lib/librebbe_mercury2.a',
+      'lib/pkgconfig/libmercury1.pc',
+      'lib/pkgconfig/libmercury2.pc',
+      'lib/pkgconfig/librebbe_mercury1.pc',
+      'lib/pkgconfig/librebbe_mercury2.pc',
       'lib/pkgconfig/mercury.pc',
       'lib/pkgconfig/rebbe_mercury.pc',
       'share/doc/mercury/README',
     ]
     self.assertEqual( expected_files, pkg.files )
     self.assertEqual( 'mercury', pkg.info.name )
-    self.assertEqual( build_version('2.3.4', 0, 0), pkg.info.version )
+    self.assertEqual( build_version('1.2.8', 0, 0), pkg.info.version )
     self.assertEqual( 'lib', pkg.info.properties['category'] )
 
   def test_arsenic(self):
     pkg = self._build_autoconf_package(self, 'arsenic', '1.2.9', '0', self.data_dir())
     expected_files = [
+      'bin/arsenic_print_env',
       'bin/arsenic_program1',
       'bin/arsenic_program2',
+      'bin/rebbe_arsenic_print_env',
       'bin/rebbe_arsenic_program1',
       'bin/rebbe_arsenic_program2',
       'include/arsenic1/arsenic1.h',
