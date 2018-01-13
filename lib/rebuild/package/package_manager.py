@@ -4,14 +4,14 @@
 # FIXME: theres no notion of transactions or anything else robust in this nice code
 
 import copy, os.path as path, platform
-from bes.common import check, dict_util, json_util, object_util, string_util, variable
+from bes.common import check, object_util, string_util, variable
 from bes.system import os_env_var
 from rebuild.instruction import instruction_list
 from rebuild.base import build_os_env, build_system, requirement
 from rebuild.dependency import dependency_resolver
 from rebuild.pkg_config import pkg_config
 from bes.archive import archive, archiver
-from bes.fs import dir_util, file_util, temp_file
+from bes.fs import file_util
 from .artifact_manager import artifact_manager, ArtifactNotFoundError
 from .package import package
 from .package_db import package_db
@@ -40,20 +40,12 @@ class PackageMissingRequirementsError(Exception):
 
 class package_manager(object):
 
-  INSTALLATION_DIR = 'installation'
-  DATABASE_PATH = 'database/packages.json'
-
-  PKG_INFO_FILENAME = 'metadata/info.json'
-  PACKAGE_FILES_DIR = 'files'
-
-  ENV_DIR = 'env'
-
   def __init__(self, root_dir):
     self.root_dir = root_dir
-    self._database_path = path.join(self.root_dir, self.DATABASE_PATH)
+    self._database_path = path.join(self.root_dir, 'database/packages.json')
     self._db = package_db(self._database_path)
-    self._installation_dir = path.join(self.root_dir, self.INSTALLATION_DIR)
-    self._env_dir = path.join(self.root_dir, self.ENV_DIR)
+    self._installation_dir = path.join(self.root_dir, 'installation')
+    self._env_dir = path.join(self.root_dir, 'env')
     self._lib_dir = path.join(self._installation_dir, 'lib')
     self._bin_dir = path.join(self._installation_dir, 'bin')
     self._include_dir = path.join(self._installation_dir, 'include')
@@ -183,27 +175,6 @@ class package_manager(object):
   @classmethod
   def package_files(clazz, tarball):
     return package(tarball).files
-
-  # FIXME: move this to package maybe
-  @classmethod
-  def create_package(clazz, tarball_path, pkg_desc, build_target, stage_dir, env_dir):
-    metadata_dict = dict_util.combine(pkg_desc.to_dict(), build_target.to_dict())
-    assert 'properties' in metadata_dict
-    metadata = json_util.to_json(metadata_dict, indent = 2)
-    metadata_filename = temp_file.make_temp_file(suffix = '.json')
-    file_util.save(metadata_filename, content = metadata)
-    extra_items = [
-      archive.Item(metadata_filename, clazz.PKG_INFO_FILENAME),
-    ]
-    if env_dir and path.isdir(env_dir):
-      env_files = dir_util.list(env_dir, relative = True)
-      for env_file in env_files:
-        extra_items.append(archive.Item(path.join(env_dir, env_file), clazz.ENV_DIR + '/' + env_file))
-    archiver.create(tarball_path, stage_dir,
-                    base_dir = 'files',
-                    extra_items = extra_items,
-                    exclude = '*.pc.bak')
-    return tarball_path
 
   def install_package(self, pkg_desc, build_target, artifact_manager, allow_downgrade = False):
     assert artifact_manager.is_artifact_manager(artifact_manager)

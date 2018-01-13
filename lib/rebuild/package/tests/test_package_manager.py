@@ -6,7 +6,7 @@ from bes.fs import temp_file
 from bes.system import host
 from rebuild.base import build_system, build_target, build_level, package_descriptor
 from rebuild.pkg_config import pkg_config
-from rebuild.package import artifact_manager, package_manager
+from rebuild.package import artifact_manager, package, package_manager
 from rebuild.package import PackageFilesConflictError, PackageAlreadyInstallededError, PackageMissingRequirementsError, ArtifactNotFoundError
 from bes.archive import archiver, temp_archive
 from rebuild.package.unit_test_packages import unit_test_packages
@@ -218,7 +218,7 @@ class test_package_manager(unittest.TestCase):
     tmp_stage_dir = temp_archive.write_temp_items(items)
     env_items = temp_archive.make_temp_item_list(env_items)
     tmp_env_dir = temp_archive.write_temp_items(env_items)
-    package_manager.create_package(tarball_path, pi, bi, tmp_stage_dir, tmp_env_dir)
+    package.create_tarball(tarball_path, pi, bi, tmp_stage_dir, tmp_env_dir)
     return tarball_path
 
 if __name__ == '__main__':

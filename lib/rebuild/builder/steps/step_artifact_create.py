@@ -6,7 +6,7 @@ import os, os.path as path
 from bes.archive import archiver
 from bes.fs import file_util
 from rebuild.step import compound_step, step, step_result
-from rebuild.package import package_tester
+from rebuild.package import package, package_tester
 
 class step_artifact_create_make_package(step):
   'Make a package from the state_dir.'
@@ -18,11 +18,11 @@ class step_artifact_create_make_package(step):
     tarball_name = '%s.tar.gz' % (script.descriptor.full_name)
     assert tarball_name == script.descriptor.tarball_filename
     output_tarball_path = path.join(script.artifact_stage_dir, script.descriptor.tarball_filename)
-    staged_tarball = script.requirements_manager.create_package(output_tarball_path,
-                                                                script.descriptor,
-                                                                script.build_target,
-                                                                script.stage_dir,
-                                                                script.env_dir)
+    staged_tarball = package.create_tarball(output_tarball_path,
+                                            script.descriptor,
+                                            script.build_target,
+                                            script.stage_dir,
+                                            script.env_dir)
     self.blurb('staged tarball: %s' % (staged_tarball))
     return step_result(True, None, output = { 'staged_tarball': staged_tarball })
   

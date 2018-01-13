@@ -3,13 +3,13 @@
 
 import json, os.path as path, re
 
-from bes.archive import archiver
-from bes.fs import file_replace, file_search, file_mime, file_util
-from bes.common import check, string_util
+from bes.archive import archive, archiver
+from bes.common import check, dict_util, json_util, string_util
+from bes.fs import dir_util, file_replace, file_search, file_mime, file_util, temp_file
 from bes.match import matcher_filename
-from rebuild.pkg_config import pkg_config_file
 from bes.python import setup_tools
 from rebuild.base import package_descriptor
+from rebuild.pkg_config import pkg_config_file
 
 class package(object):
 
@@ -124,4 +124,24 @@ class package(object):
   def package_files(clazz, tarball):
     return package(tarball).files
 
+  @classmethod
+  def create_tarball(clazz, tarball_path, pkg_desc, build_target, stage_dir, env_dir):
+    metadata_dict = dict_util.combine(pkg_desc.to_dict(), build_target.to_dict())
+    assert 'properties' in metadata_dict
+    metadata = json_util.to_json(metadata_dict, indent = 2)
+    metadata_filename = temp_file.make_temp_file(suffix = '.json')
+    file_util.save(metadata_filename, content = metadata)
+    extra_items = [
+      archive.Item(metadata_filename, 'metadata/info.json'),
+    ]
+    if env_dir and path.isdir(env_dir):
+      env_files = dir_util.list(env_dir, relative = True)
+      for env_file in env_files:
+        extra_items.append(archive.Item(path.join(env_dir, env_file), 'env' + '/' + env_file))
+    archiver.create(tarball_path, stage_dir,
+                    base_dir = 'files',
+                    extra_items = extra_items,
+                    exclude = '*.pc.bak')
+    return tarball_path
+  
 check.register_class(package)
