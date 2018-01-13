@@ -31,7 +31,7 @@ class test_builder(unit_test):
     bldr = builder(env)
     packages = [ 'amhello' ]
     rv = bldr.build_many_scripts(packages)
-    self.assertEqual( bldr.EXIT_CODE_SUCCESS, rv )
+    self.assertEqual( builder.EXIT_CODE_SUCCESS, rv )
 
   def test_libpng(self):
     tmp_dir = temp_file.make_temp_dir()
@@ -44,55 +44,31 @@ class test_builder(unit_test):
     bldr = builder(env)
     packages = [ 'zlib', 'libpng' ]
     rv = bldr.build_many_scripts(packages)
-    self.assertEqual( bldr.EXIT_CODE_SUCCESS, rv )
+    self.assertEqual( builder.EXIT_CODE_SUCCESS, rv )
 
   def test_fructose(self):
-    tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
-    if self.DEBUG:
-      print("tmp_dir: ", tmp_dir)
-    data_files = [
+    rv = self._build_project([
       'build_fructose.py',
       'fructose-3.4.5.tar.gz',
       'fructose-test.c',
-    ]
-
-    for f in data_files:
-      file_util.copy(self.data_path(f), tmp_dir)
-
-    filenames = [ path.join(tmp_dir, 'build_fructose.py') ]
-    config = builder_config()
-    config.build_root = path.join(tmp_dir, 'BUILD')
-    config.no_network = True
-    config.source_dir = self.data_dir()
-    env = builder_env(config, filenames)
-    bldr = builder(env)
-    packages_to_build = [ 'fructose' ]
-    rv = bldr.build_many_scripts(packages_to_build)
-    self.assertEqual( bldr.EXIT_CODE_SUCCESS, rv )
+    ], [
+      'build_fructose.py',
+    ], [
+      'fructose',
+    ])
+    self.assertEqual( builder.EXIT_CODE_SUCCESS, rv )
     
   def test_fructose_recipe_v2(self):
-    tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
-    if self.DEBUG:
-      print("tmp_dir: ", tmp_dir)
-    data_files = [
+    rv = self._build_project([
       'build_fructose.rrecipe',
       'fructose-3.4.5.tar.gz',
       'fructose-test.c',
-    ]
-
-    for f in data_files:
-      file_util.copy(self.data_path(f), tmp_dir)
-
-    filenames = [ path.join(tmp_dir, 'build_fructose.rrecipe') ]
-    config = builder_config()
-    config.build_root = path.join(tmp_dir, 'BUILD')
-    config.no_network = True
-    config.source_dir = self.data_dir()
-    env = builder_env(config, filenames)
-    bldr = builder(env)
-    packages_to_build = [ 'fructose' ]
-    rv = bldr.build_many_scripts(packages_to_build)
-    self.assertEqual( bldr.EXIT_CODE_SUCCESS, rv )
+    ], [
+      'build_fructose.rrecipe',
+    ], [
+      'fructose',
+    ])
+    self.assertEqual( builder.EXIT_CODE_SUCCESS, rv )
     
   def xxxtest_orange(self):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
@@ -131,7 +107,22 @@ class test_builder(unit_test):
     bldr = builder(env)
     packages_to_build = [ 'orange' ]
     rv = bldr.build_many_scripts(packages_to_build)
-    self.assertEqual( bldr.EXIT_CODE_SUCCESS, rv )
-
+    self.assertEqual( builder.EXIT_CODE_SUCCESS, rv )
+    
+  def _build_project(self, data_files, build_scripts, packages_to_build):
+    tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
+    if self.DEBUG:
+      print("tmp_dir: ", tmp_dir)
+    for f in data_files:
+      file_util.copy(self.data_path(f), tmp_dir)
+    filenames = [ path.join(tmp_dir, script) for script in build_scripts ]
+    config = builder_config()
+    config.build_root = path.join(tmp_dir, 'BUILD')
+    config.no_network = True
+    config.source_dir = self.data_dir()
+    env = builder_env(config, filenames)
+    bldr = builder(env)
+    return bldr.build_many_scripts(packages_to_build)
+    
 if __name__ == '__main__':
   unit_test.main()
