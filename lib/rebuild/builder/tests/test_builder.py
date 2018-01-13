@@ -1,22 +1,26 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 #
+
+from collections import namedtuple
 import os.path as path
-from bes.testing.unit_test import unit_test
 from bes.fs import file_util, temp_file
+from bes.git import git_download_cache
+from bes.testing.unit_test import unit_test
 from rebuild.builder import builder, builder_config, builder_env
 from rebuild.builder.unit_test_packaging import unit_test_packaging
-from rebuild.source_finder import local_source_finder, source_finder_chain
-from bes.git import git_download_cache
 from rebuild.checksum import checksum_manager
+from rebuild.package import artifact_manager, package_manager
+from rebuild.source_finder import local_source_finder, source_finder_chain
+from rebuild.base import build_arch, build_level, build_system, build_target, package_descriptor
 
 class test_builder(unit_test):
 
   __unit_test_data_dir__ = '../../test_data/packager'
 
   DEBUG = False
-  DEBUG = True
-  
+#  DEBUG = True
+
   def test_amhello(self):
     tmp_dir = temp_file.make_temp_dir()
     amhello_builder_script = unit_test_packaging.make_recipe(1, tmp_dir, 'build_amhello.py', 'amhello', '1.0', 0)
@@ -56,7 +60,7 @@ class test_builder(unit_test):
     ], [
       'fructose',
     ])
-    self.assertEqual( builder.EXIT_CODE_SUCCESS, rv )
+    self.assertEqual( builder.EXIT_CODE_SUCCESS, rv.exit_code )
     
   def test_fructose_recipe_v2(self):
     rv = self._build_project([
@@ -68,7 +72,36 @@ class test_builder(unit_test):
     ], [
       'fructose',
     ])
-    self.assertEqual( builder.EXIT_CODE_SUCCESS, rv )
+    self.assertEqual( builder.EXIT_CODE_SUCCESS, rv.exit_code )
+
+  def test_fructose_with_env_vars(self):
+    rv = self._build_project([
+      'build_fructose_with_env_vars.py',
+      'fructose-3.4.5.tar.gz',
+      'fructose-test.c',
+    ], [
+      'build_fructose_with_env_vars.py',
+    ], [
+      'fructose',
+    ])
+    self.assertEqual( builder.EXIT_CODE_SUCCESS, rv.exit_code )
+    publish_dir = path.join(rv.tmp_dir, 'BUILD/artifacts')
+    self.assertTrue( path.exists(publish_dir) )
+    am = artifact_manager(publish_dir, address = None, no_git = True)
+    pm = self._make_test_pm()
+    pdesc = package_descriptor('fructose', '3.4.5-6')
+    bt = build_target(system = build_system.HOST,
+                      level = build_level.RELEASE,
+                      archs = build_arch.HOST_ARCH)
+    install_rv = pm.install_package(pdesc, bt, am)
+    self.assertTrue( install_rv )
+    self.assertEqual( [ 'fructose-3.4.5-6' ], pm.list_all(include_version = True) )
+    self.assertEqual( { 'FRUCTOSE_FOO': '666' }, pm.env_vars([ 'fructose' ]) )
+    
+  def _make_test_pm(self):
+    root_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
+    pm_dir = path.join(root_dir, 'package_manager')
+    return package_manager(pm_dir)
     
   def xxxtest_orange(self):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
@@ -108,6 +141,8 @@ class test_builder(unit_test):
     packages_to_build = [ 'orange' ]
     rv = bldr.build_many_scripts(packages_to_build)
     self.assertEqual( builder.EXIT_CODE_SUCCESS, rv )
+
+  _build_result = namedtuple('build_result', 'exit_code,tmp_dir')
     
   def _build_project(self, data_files, build_scripts, packages_to_build):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
@@ -122,7 +157,8 @@ class test_builder(unit_test):
     config.source_dir = self.data_dir()
     env = builder_env(config, filenames)
     bldr = builder(env)
-    return bldr.build_many_scripts(packages_to_build)
+    exit_code = bldr.build_many_scripts(packages_to_build)
+    return self._build_result(exit_code, tmp_dir)
     
 if __name__ == '__main__':
   unit_test.main()
