@@ -41,8 +41,8 @@ class test_package(unittest.TestCase):
   def test_package_info_orange(self):
     tmp_tarball = unit_test_packages.make_orange(debug = self.DEBUG)
     expected_pi = package_descriptor('orange', '6.5.4-3',
-                              requirement.parse('fructose(all) >= 3.4.5-6 fiber(all) >= 1.0.0-0'),
-                              properties = { 'category': 'lib' })
+                                     requirement.parse('fructose(all) >= 3.4.5-6 fiber(all) >= 1.0.0-0'),
+                                     properties = { 'category': build_category.LIB })
     self.assertEqual( expected_pi, package.package_info(tmp_tarball) )
 
 if __name__ == '__main__':

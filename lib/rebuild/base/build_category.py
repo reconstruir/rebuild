@@ -1,13 +1,8 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-class build_category(object):
+from bes.enum import enum
 
-  LIB = 'lib'
-  TOOL = 'tool'
-
-  CATEGORIES = [ LIB, TOOL ]
-
-  @classmethod
-  def category_is_valid(clazz, s):
-    return s in clazz.CATEGORIES
+class build_category(enum):
+  LIB = 1
+  TOOL = 2
