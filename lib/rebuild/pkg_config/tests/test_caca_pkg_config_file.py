@@ -9,7 +9,7 @@ from rebuild.pkg_config.entry import entry
 
 class test_caca_pkg_config_file(unit_test):
 
-  __unit_test_data_dir__ = 'test_data/real_examples'
+  __unit_test_data_dir__ = '../../../../test_data/pkg_config/real_examples'
 
   FOO_PC = '''prefix=/usr/foo
 exec_prefix=${prefix}

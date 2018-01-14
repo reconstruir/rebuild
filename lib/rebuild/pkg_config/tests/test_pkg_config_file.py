@@ -1,15 +1,16 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
-#
-import copy, glob, os.path as path, unittest
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
+
+from bes.testing.unit_test import unit_test
+import copy, glob, os.path as path
 from bes.fs import temp_file
 from rebuild.pkg_config import pkg_config_file
 from rebuild.pkg_config.entry import entry
 
-class Testpkg_config_file(unittest.TestCase):
+class test_pkg_config_file(unit_test):
 
-  TEST_DATA_DIR = path.abspath(path.join(path.dirname(__file__), 'test_data/real_examples'))
-
+  __unit_test_data_dir__ = '../../../../test_data/pkg_config/real_examples'
+  
   FOO_PC = '''prefix=/usr/foo
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
@@ -71,7 +72,8 @@ Cflags: -I${includedir}
     self.assertEqual( self.FOO_EXPECTED_EXPORTS, cf.exports )
 
   def test_parse_many_examples(self):
-    examples = glob.glob(path.join(self.TEST_DATA_DIR, '*.pc'))
+    examples = glob.glob(path.join(self.data_dir(), '*.pc'))
+    print('data_dir: %s' % (self.data_dir()))
     self.assertTrue( len(examples) > 0 )
     for example in examples:
       cf = pkg_config_file()
@@ -157,7 +159,7 @@ Cflags: -I${includedir}
     self.assertEqual( cf, new_cf )
 
   def test_write_many_examples(self):
-    examples = glob.glob(path.join(self.TEST_DATA_DIR, '*.pc'))
+    examples = glob.glob(path.join(self.data_dir(), '*.pc'))
     for example in examples:
       cf = pkg_config_file()
       cf.parse_file(example)
@@ -205,5 +207,5 @@ Cflags: -I${includedir}
     cf.cleanup_duplicate_exports()
     self.assertEqual( expected_pc.strip(), str(cf).strip() )
 
-if __name__ == '__main__':
-  unittest.main()
+if __name__ == "__main__":
+  unit_test.main()
