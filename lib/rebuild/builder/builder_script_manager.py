@@ -40,8 +40,8 @@ class builder_script_manager(object):
         resolved_requirements = [ req for req in all_requirements_dependencies_resolved if not req.is_tool() ]
         resolved_build_requirements = [ req for req in all_requirements_dependencies_resolved if req.is_tool() ]
 
-        check.check_package_descriptor_seq(resolved_requirements, 'resolved_requirements')
-        check.check_package_descriptor_seq(resolved_build_requirements, 'resolved_build_requirements')
+        check.check_package_descriptor_seq(resolved_requirements)
+        check.check_package_descriptor_seq(resolved_build_requirements)
 
         script.descriptor.resolved_requirements = resolved_requirements
         script.descriptor.resolved_build_requirements = resolved_build_requirements

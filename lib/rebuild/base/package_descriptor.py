@@ -20,7 +20,10 @@ class package_descriptor(object):
   PROPERTY_CATEGORY = 'category'
   PROPERTY_PKG_CONFIG_NAME = 'pkg_config_name'
   
-  def __init__(self, name, ver, requirements = None, build_requirements = None, properties = None):
+  def __init__(self, name, version, requirements = None, build_requirements = None, properties = None):
+    check.check_string(name)
+#    check.check_build_version(version)
+
     requirements = requirements or []
     build_requirements = build_requirements or []
     properties = properties or {}
@@ -28,7 +31,7 @@ class package_descriptor(object):
     if not self.name_is_valid(name):
       raise RuntimeError('Invalid name: \"%s\"' % (name))
     self._name = name
-    self._version = build_version.validate_version(ver)
+    self._version = build_version.validate_version(version)
 
     self._requirements = self.parse_requirements(requirements)
     self._resolved_requirements = None
@@ -86,7 +89,7 @@ class package_descriptor(object):
   def resolved_requirements(self, value):
     if self._resolved_requirements != None:
       raise RuntimeError('resolved_requirements can only be set once')
-    check.check_package_descriptor_seq(value, 'value')
+    check.check_package_descriptor_seq(value)
     self._resolved_requirements = value
 
   @property
@@ -97,7 +100,7 @@ class package_descriptor(object):
   def resolved_build_requirements(self, value):
     if self._resolved_build_requirements != None:
       raise RuntimeError('resolved_build_requirements can only be set once')
-    check.check_package_descriptor_seq(value, 'value')
+    check.check_package_descriptor_seq(value)
     self._resolved_build_requirements = value
 
   @property
@@ -136,11 +139,11 @@ class package_descriptor(object):
     return '; '.join([ '%s=%s' % (item[0], item[1]) for item in items ])
 
   def __eq__(self, other):
-    check.check_package_descriptor(other, 'other')
+    check.check_package_descriptor(other)
     return self.__dict__ == other.__dict__
 
   def __lt__(self, other):
-    check.check_package_descriptor(other, 'other')
+    check.check_package_descriptor(other)
     name_rv = cmp(self.name, other.name)
     if name_rv < 0:
       return True
@@ -244,8 +247,8 @@ class package_descriptor(object):
   @classmethod
   def full_name_cmp(clazz, pi1, pi2):
     'Compare name, version and revision and return an int either -1, 0, or 1'
-    check.check_package_descriptor(pi1, 'pi1')
-    check.check_package_descriptor(pi2, 'pi2')
+    check.check_package_descriptor(pi1)
+    check.check_package_descriptor(pi2)
     name_cmp = cmp(pi1.name, pi2.name)
     if name_cmp != 0:
       return name_cmp

@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import re
-from bes.common import algorithm, object_util, string_util, number_util
+from bes.common import algorithm, check, object_util, string_util, number_util
 from collections import namedtuple
 from bes.compat import StringIO
 from bes.compat import cmp
@@ -122,3 +122,5 @@ class build_version(namedtuple('build_version', 'upstream_version,revision,epoch
     if upstream_version_cmp != 0:
       return upstream_version_cmp
     return cmp(v1.revision, v2.revision)
+
+check.register_class(build_version)

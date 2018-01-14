@@ -10,9 +10,9 @@ class instruction(namedtuple('instruction', 'name,flags,requires')):
   def __new__(clazz, name, flags, requires):
     flags = flags or {}
     requires = requires or set()
-    check.check_string(name, 'name')
-    check.check_dict(flags, 'flags', key_type = check.STRING_TYPES, value_type = string_list)
-    check.check_set(requires, 'requires', entry_type = check.STRING_TYPES)
+    check.check_string(name)
+    check.check_dict(flags, key_type = check.STRING_TYPES, value_type = string_list)
+    check.check_set(requires, entry_type = check.STRING_TYPES)
     return clazz.__bases__[0].__new__(clazz, name, flags, requires)
 
   def __str__(self):

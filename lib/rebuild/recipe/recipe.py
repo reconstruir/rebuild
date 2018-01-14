@@ -13,7 +13,7 @@ class recipe(namedtuple('recipe', 'format_version,filename,enabled,properties,re
   def __new__(clazz, format_version, filename, enabled, properties, requirements,
               build_requirements, descriptor, instructions, steps, load, env_vars):
     if env_vars:
-      check.check_masked_value_list(env_vars, 'env_vars')
+      check.check_masked_value_list(env_vars)
     return clazz.__bases__[0].__new__(clazz, format_version, filename, enabled, properties, requirements,
                                       build_requirements, descriptor, instructions, steps, load, env_vars)
 

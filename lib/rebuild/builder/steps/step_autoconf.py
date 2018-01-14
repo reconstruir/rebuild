@@ -32,7 +32,7 @@ class step_autoconf_configure(step):
     '''
     configure_flags = self.args_get_string_list(args, 'configure_flags')
     print('CACACACA: configure_flags=%s - %s' % (configure_flags, type(configure_flags)))
-    check.check_string_list(configure_flags, 'configure_flags')
+    check.check_string_list(configure_flags)
     configure_flags = configure_flags.to_list()
     configure_env = self.args_get_key_value_list(args, 'configure_env')
 

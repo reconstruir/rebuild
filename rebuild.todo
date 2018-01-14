@@ -627,3 +627,9 @@ jan 10
 
 - add a rebuild_ldd unit test
 - sort out the test data bs
+
+jan 13
+- fix the fact category is stored in info.json as "lib" instead of "LIB"
+- fix checksum_manager._checksum_dir: check.check(level, build_target, 'build_target') either level is misnamed or
+  the type is wrong
+- package_descriptor.__init__ figure out the correct type for version arg

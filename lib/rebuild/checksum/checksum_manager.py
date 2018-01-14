@@ -16,7 +16,7 @@ class checksum_manager(object):
   CHECKSUMS_TARGETS_FILENAME = 'targets.checksums'
   
   def __init__(self, root_dir):
-    check.check_string(root_dir, 'root_dir')
+    check.check_string(root_dir)
     build_blurb.add_blurb(self, label = 'build')
     self._root_dir = root_dir
     self._build_target = build_target
@@ -54,15 +54,15 @@ class checksum_manager(object):
 
   def remove_checksums(self, packages, level):
     packages = object_util.listify(packages)
-    check.check_package_descriptor_seq(packages, 'packages')
+    check.check_package_descriptor_seq(packages)
     checksum_dirs = [ self._checksum_dir(pd, level) for pd in packages ]
     for d in checksum_dirs:
       self.blurb('removing checksums: %s' % (path.relpath(d)))
     file_util.remove(checksum_dirs)
 
   def _checksum_dir(self, pd, level):
-    check.check(pd, package_descriptor, 'package_descriptor')
-    check.check(level, build_target, 'build_target')
+    check.check_package_descriptor(pd)
+    check.check(level, build_target)
     return path.join(self._root_dir, level.build_path, pd.full_name)
 
   def load_checksums(self, pd, level):

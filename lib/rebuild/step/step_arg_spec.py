@@ -9,13 +9,13 @@ from rebuild.value import value_type
 class step_arg_spec(namedtuple('step_arg_spec', 'name,atype,default,line_number')):
   
   def __new__(clazz, name, atype, default, line_number):
-    check.check_string(name, 'name')
-    check.check_value_type(atype, 'atype')
+    check.check_string(name)
+    check.check_value_type(atype)
     if check.is_string(atype):
       atype = value_type.name_to_value(atype)
     if default != None:
-      check.check_string(default, 'default')
-    check.check_int(line_number, 'line_number')
+      check.check_string(default)
+    check.check_int(line_number)
     return clazz.__bases__[0].__new__(clazz, name, atype, default, line_number)
 
   @classmethod

@@ -17,7 +17,7 @@ class recipe_step_list(object):
     return self._steps[i]
   
   def __setitem__(self, i, step):
-    check.check_recipe_step(step, 'step')
+    check.check_recipe_step(step)
     self._steps[i] = step
 
   def __eq__(self, other):
@@ -36,7 +36,7 @@ class recipe_step_list(object):
     return buf.getvalue().strip()
     
   def append(self, step):
-    check.check_recipe_step(step, 'step')
+    check.check_recipe_step(step)
     self._steps.append(step)
 
   def extend(self, steps):

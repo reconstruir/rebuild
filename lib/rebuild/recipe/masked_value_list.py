@@ -12,7 +12,7 @@ class masked_value_list(object):
   def __init__(self, values = None):
     self._values = []
     for value in values or []:
-      check.check_masked_value(value, 'value')
+      check.check_masked_value(value)
       self._values.append(value)
 
   def __iter__(self):
@@ -22,7 +22,7 @@ class masked_value_list(object):
     return self._values[i]
   
   def __setitem__(self, i, value):
-    check.check_masked_value(value, 'value')
+    check.check_masked_value(value)
     self._values[i] = value
 
   def __eq__(self, other):
@@ -41,7 +41,7 @@ class masked_value_list(object):
     return buf.getvalue()
     
   def append(self, value):
-    check.check_masked_value(value, 'value')
+    check.check_masked_value(value)
     if self._values:
       expected_type = type(self._values[-1])
       actual_type = type(value)
@@ -94,7 +94,7 @@ class masked_value_list(object):
   def _resolve_string_list(self, values):
     result = string_list()
     for value in values:
-      check.check_string_list(value, 'value')
+      check.check_string_list(value)
       result.extend(value)
     result.remove_dups()
     return result

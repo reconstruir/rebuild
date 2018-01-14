@@ -41,7 +41,7 @@ class requirement(namedtuple('requirement', 'name,operator,version,system_mask')
 
   @classmethod
   def requirement_list_to_string(clazz, reqs):
-    check.check_requirement_seq(reqs, 'reqs')
+    check.check_requirement_seq(reqs)
     return ' '.join(str(req) for req in reqs)
 
   @classmethod
@@ -172,7 +172,7 @@ class requirement(namedtuple('requirement', 'name,operator,version,system_mask')
     'Resolve requirements for the given system.'
     if not build_system.system_is_valid(system):
       raise RuntimeError('Invalid system: %s' % (system))
-    check.check_requirement_seq(requirements, 'requirements')
+    check.check_requirement_seq(requirements)
     return [ req for req in requirements if req.system_mask == None or build_system.mask_matches(req.system_mask, system) ]
 
 check.register_class(requirement)

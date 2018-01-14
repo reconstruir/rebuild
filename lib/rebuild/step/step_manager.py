@@ -34,35 +34,35 @@ class step_manager(object):
     return s
 
   def add_step(self, description, script, env):
-    check.check_dict(description.args, 'description.args')
-    check.check_step_description(description, 'description')
+    check.check_dict(description.args)
+    check.check_step_description(description)
     s = description.step_class()
     global_args = s.global_args()
     parsed_args = description.step_class.parse_step_args(script, env, copy.deepcopy(description.args))
-    check.check_dict(parsed_args, 'parsed_args')
+    check.check_dict(parsed_args)
     s.args = dict_util.combine(global_args, parsed_args)
     return self._add_step(s)
 
   def add_steps(self, descriptions, script, env):
-    check.check_step_description_seq(descriptions, 'descriptions')
+    check.check_step_description_seq(descriptions)
     for description in descriptions:
       self.add_step(description, script, env)
 
   def add_step_v2(self, recipe_step, script, env):
-    check.check_recipe_step(recipe_step, 'recipe_step')
+    check.check_recipe_step(recipe_step)
     step_class = recipe_step.description.step_class
     s = step_class()
     s.recipe = recipe_step
     global_args = s.global_args()
     resolved_args = recipe_step.resolve_values(script.build_target.system)
-    check.check_dict(resolved_args, 'resolved_args')
+    check.check_dict(resolved_args)
     parsed_args = recipe_step.description.step_class.parse_step_args(script, env, copy.deepcopy(recipe_step.description.args))
-    check.check_dict(parsed_args, 'parsed_args')
+    check.check_dict(parsed_args)
     s.args = dict_util.combine(global_args, resolved_args, parsed_args)
     return self._add_step(s)
 
   def add_steps_v2(self, steps, script, env):
-    check.check_recipe_step_list(steps, 'steps')
+    check.check_recipe_step_list(steps)
     for step in steps:
       self.add_step_v2(step, script, env)
 

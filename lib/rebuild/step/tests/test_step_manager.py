@@ -332,7 +332,7 @@ class %s(step):
     exec(code, globals(), tmp_locals)
     assert name in tmp_locals
     result_class = tmp_locals[name]
-    check.check_class(result_class, 'result_class')
+    check.check_class(result_class)
     globals()[name] = result_class
     return result_class
     

@@ -12,11 +12,11 @@ from .recipe_parser_util import recipe_parser_util
 class recipe_step(namedtuple('recipe_step', 'name,description,values')):
 
   def __new__(clazz, name, description, values):
-    check.check_string(name, 'name')
-    check.check_step_description(description, 'description')
+    check.check_string(name)
+    check.check_step_description(description)
     if not check.is_recipe_value_list(values):
       values = recipe_value_list(values)
-    check.check_recipe_value_list(values, 'values')
+    check.check_recipe_value_list(values)
     return clazz.__bases__[0].__new__(clazz, name, description, values)
 
   def __str__(self):

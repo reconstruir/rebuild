@@ -16,9 +16,9 @@ class source_finder(with_metaclass(ABCMeta, object)):
 
   @classmethod
   def _find_tarball(clazz, where, name, version, system):
-    check.check_string(name, 'name')
-    check.check_string(version, 'version')
-    check.check_string(system, 'system')
+    check.check_string(name)
+    check.check_string(version)
+    check.check_string(system)
     tarballs = tarball_finder.find(where, name, version)
     tarball = clazz._determine_tarball(tarballs, name, version, system)
     if not tarball:

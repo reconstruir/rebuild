@@ -94,9 +94,9 @@ class dependency_resolver(object):
 
   @classmethod
   def resolve_and_order_deps(clazz, names, descriptor_map, dependency_map):
-    check.check_string_seq(names, 'names')
-    check.check_dict(descriptor_map, 'descriptor_map')
-    check.check_dict(dependency_map, 'dependency_map')
+    check.check_string_seq(names)
+    check.check_dict(descriptor_map)
+    check.check_dict(dependency_map)
     resolved_names = clazz.resolve_deps(dependency_map, names)
     resolved = [ descriptor_map[name] for name in resolved_names ]
     resolved_map = dict_util.filter_with_keys(dependency_map, resolved_names)

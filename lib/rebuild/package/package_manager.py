@@ -178,7 +178,7 @@ class package_manager(object):
 
   def install_package(self, pkg_desc, build_target, artifact_manager, allow_downgrade = False):
     assert artifact_manager.is_artifact_manager(artifact_manager)
-    check.check_package_descriptor(pkg_desc, 'pkg_desc')
+    check.check_package_descriptor(pkg_desc)
     pkg = artifact_manager.package(pkg_desc, build_target)
 
     if self.is_installed(pkg.info.name):
@@ -203,14 +203,14 @@ class package_manager(object):
       return True
 
   def install_packages(self, packages, build_target, artifact_manager, allow_downgrade = False):
-    check.check_package_descriptor_seq(packages, 'packages')
+    check.check_package_descriptor_seq(packages)
     assert artifact_manager.is_artifact_manager(artifact_manager)
     for pkg_desc in packages:
       self.install_package(pkg_desc, build_target, artifact_manager, allow_downgrade = allow_downgrade)
 
   def uninstall_packages(self, packages): #, build_target):
     # FIXME: nothing happens with build_target
-    #check.check_package_descriptor_seq(packages, 'packages')
+    #check.check_package_descriptor_seq(packages)
     for pkg_name in packages:
       self.uninstall_package(pkg_name) #, build_target)
 

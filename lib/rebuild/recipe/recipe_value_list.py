@@ -10,7 +10,7 @@ class recipe_value_list(object):
   def __init__(self, values = None):
     self._values = []
     for value in values or []:
-      check.check_recipe_value(value, 'value')
+      check.check_recipe_value(value)
       self._values.append(value)
 
   def __iter__(self):
@@ -20,7 +20,7 @@ class recipe_value_list(object):
     return self._values[i]
   
   def __setitem__(self, i, value):
-    check.check_recipe_value(value, 'value')
+    check.check_recipe_value(value)
     self._values[i] = value
 
   def __eq__(self, other):
@@ -39,7 +39,7 @@ class recipe_value_list(object):
     return buf.getvalue()
     
   def append(self, value):
-    check.check_recipe_value(value, 'value')
+    check.check_recipe_value(value)
     self._values.append(value)
 
   def extend(self, values):

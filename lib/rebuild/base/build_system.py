@@ -85,7 +85,7 @@ class build_system(object):
 
   @classmethod
   def parse_system(clazz, s):
-    check.check_string(s, 'system')
+    check.check_string(s)
     systems = clazz.mask_split(clazz.resolve_mask(s))
     if len(systems) != 1:
       raise ValueError('Invalid system: %s' % (str(s)))

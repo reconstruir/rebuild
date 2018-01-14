@@ -51,7 +51,7 @@ class builder_env(object):
     return tools_manager(path.join(build_dir, 'tools'))
 
   def update_tools(self, packages):
-    check.check_package_descriptor_seq(packages, 'packages')
+    check.check_package_descriptor_seq(packages)
     self.tools_manager.update(packages, self.artifact_manager)
 
   def tool_exe(self, package_info, tool_name):

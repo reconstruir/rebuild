@@ -53,7 +53,7 @@ class step(with_metaclass(step_register_meta, object)):
     defs = clazz.define_args()
     if check.is_string(defs):
       defs = step_arg_spec.parse_many(defs)
-    check.check_dict(defs, 'defs')
+    check.check_dict(defs)
     return defs
 
 #  @abstractmethod
@@ -218,7 +218,7 @@ class step(with_metaclass(step_register_meta, object)):
     command = [ part for part in command if part ]
     extra_env = extra_env or key_value_list()
     save_logs = save_logs or []
-    check.check_key_value_list(extra_env, 'extra_env')
+    check.check_key_value_list(extra_env)
     
     log.log_i('build', 'call_shell(cmd=%s, args=%s)' % (command, args))
     build_blurb.blurb_verbose('build', 'call_shell(cmd=%s, args=%s, extra_env=%s)' % (command, args, extra_env))
@@ -340,14 +340,14 @@ class step(with_metaclass(step_register_meta, object)):
     if env_name and env_name in args:
       config = args[env_name]
       resolved = reitred_masked_config.resolve_key_values(config, script.build_target.system)
-      check.check_key_value_list(resolved, 'resolved')
+      check.check_key_value_list(resolved)
       env_dict = { env_name: resolved }
 
     flags_dict = {}
     if flags_name and flags_name in args:
       config = args[flags_name]
       resolved = reitred_masked_config.resolve_list(config, script.build_target.system)
-      check.check_list(resolved, 'resolved')
+      check.check_list(resolved)
       flags_dict = { flags_name: resolved }
 
     return dict_util.combine(env_dict, flags_dict)
@@ -358,7 +358,7 @@ class step(with_metaclass(step_register_meta, object)):
     if key and key in args:
       config = args[key]
       resolved = reitred_masked_config.resolve_key_values(config, script.build_target.system)
-      check.check_key_value_list(resolved, 'resolved')
+      check.check_key_value_list(resolved)
       result = { key: resolved }
     return result
 
@@ -407,16 +407,16 @@ class step(with_metaclass(step_register_meta, object)):
         
   @classmethod
   def args_get_string_list(clazz, args, key):
-    check.check_dict(args, 'args')
+    check.check_dict(args)
     result = args.get(key, string_list())
     if check.is_string_seq(result):
       result = string_list(result)
-    check.check_string_list(result, 'result')
+    check.check_string_list(result)
     return result
 
   @classmethod
   def args_get_key_value_list(clazz, args, key):
-    check.check_dict(args, 'args')
+    check.check_dict(args)
     result = args.get(key, key_value_list())
-    check.check_key_value_list(result, 'result')
+    check.check_key_value_list(result)
     return result

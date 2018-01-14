@@ -27,7 +27,7 @@ class builder_recipe_loader(object):
       return recipes.recipes
     result = []
     for recipe in recipes.recipes:
-      check.check_dict(recipe, 'recipe')
+      check.check_dict(recipe)
       next_recipe = clazz._load_from_dict(recipe, filename)
       result.append(next_recipe)
     return result
@@ -138,7 +138,7 @@ class builder_recipe_loader(object):
     for recipe in recipes:
       if callable(recipe):
         recipe = recipe(load_env)
-      check.check_dict(recipe, 'recipe')
+      check.check_dict(recipe)
       result.append(recipe)
     return clazz._recipes(filename, result)
 

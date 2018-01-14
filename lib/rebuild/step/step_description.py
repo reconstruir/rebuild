@@ -38,7 +38,7 @@ class step_description(namedtuple('step_description', 'step_class,args')):
 
   @classmethod
   def parse_description(self, text):
-    check.check_string(text, 'text')
+    check.check_string(text)
     step_class = step_registry.get(text)
     if not step_class:
       raise RuntimeError('no such step class: %s' % (text))

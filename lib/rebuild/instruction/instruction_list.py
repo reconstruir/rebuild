@@ -80,7 +80,7 @@ class instruction_list(type_checked_list):
     return clazz.parse(file_util.read(filename, codec = 'utf-8'))
 
   def dependencies(self, target):
-    check.check_string(target, 'target')
+    check.check_string(target)
     dependency_map = self._dependency_map()
     if not target in dependency_map:
       raise KeyError('target not found: \"%s\"' % (target))

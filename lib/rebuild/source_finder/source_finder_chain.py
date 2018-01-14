@@ -11,7 +11,7 @@ class source_finder_chain(object):
     self._finders = []
 
   def add_finder(self, finder):
-    check.check(finder, source_finder, 'finder')
+    check.check(finder, source_finder)
     assert finder not in self._finders
     self._finders.append(finder)
     

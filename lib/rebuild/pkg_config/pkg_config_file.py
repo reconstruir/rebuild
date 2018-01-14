@@ -84,7 +84,7 @@ class pkg_config_file(object):
 #        variable.value = value
 
 #  def set_variables(self, variables):
-#    check.check_key_value_list(variables, 'variables')
+#    check.check_key_value_list(variables)
 #    for kv in variables:
 #      self.set_variable(kv.key, kv.value)
 

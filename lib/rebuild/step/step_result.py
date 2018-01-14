@@ -7,13 +7,13 @@ from bes.common import check
 class step_result(object):
 
   def __init__(self, success, message = None, failed_step = None, output = {}):
-    check.check_bool(success, 'success')
+    check.check_bool(success)
     self.success = success
     if message:
-      check.check_string(message, 'message')
+      check.check_string(message)
     self.message = message
     self.failed_step = failed_step
-    check.check_dict(output, 'output')
+    check.check_dict(output)
     self.output = copy.deepcopy(output)
 
   def __str__(self):

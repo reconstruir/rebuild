@@ -18,7 +18,7 @@ class tools_manager(object):
     self.package_manager = build_requirement_manager(self.tools_dir)
 
   def update(self, packages, am):
-    check.check_package_descriptor_seq(packages, 'packages')
+    check.check_package_descriptor_seq(packages)
     assert isinstance(am, artifact_manager)
     self.package_manager.install_packages(packages, am)
     bin_dirs = self.all_bin_dirs(packages)

@@ -70,7 +70,7 @@ class hook_poto(dependency_provider):
   @classmethod
   def parse_list(clazz, l):
     'Parse a list of hooks from a list of strings.'
-    check.check_string_seq(l, 'l')
+    check.check_string_seq(l)
     return [ clazz.parse(s) for s in l ]
     
   def _load(self, extra_code = None):
@@ -96,7 +96,7 @@ class hook_poto(dependency_provider):
 
   @classmethod
   def hook_list_filenames(clazz, hooks):
-    check.check_hook_poto_seq(hooks, 'hooks')
+    check.check_hook_poto_seq(hooks)
     return [ hook.filename for hook in hooks ]
 
 check.register_class(hook_poto)

@@ -9,10 +9,10 @@ from .masked_value_list import masked_value_list
 class recipe_value(namedtuple('recipe_value', 'key,values')):
 
   def __new__(clazz, key, values):
-    check.check_string(key, 'key')
+    check.check_string(key)
     if not isinstance(values, masked_value_list):
       values = masked_value_list(values)
-    check.check_masked_value_list(values, 'values')
+    check.check_masked_value_list(values)
     return clazz.__bases__[0].__new__(clazz, key, values)
 
   def __str__(self):

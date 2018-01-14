@@ -14,14 +14,14 @@ class recipe_parser_util(object):
   @classmethod
   def parse_key(clazz, text):
     'Parse only the key'
-    check.check_string(text, 'text')
+    check.check_string(text)
     key, _, _ = comments.strip_line(text).partition(':')
     return key.strip()
 
   @classmethod
   def parse_key_and_value(clazz, text, filename, arg_type):
-    check.check_string(text, 'text')
-    check.check_value_type(arg_type, 'arg_type')
+    check.check_string(text)
+    check.check_value_type(arg_type)
     text = comments.strip_line(text)
     key, delimiter, value = text.partition(':')
     key = key.strip()

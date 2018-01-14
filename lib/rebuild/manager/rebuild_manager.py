@@ -161,7 +161,7 @@ exec ${1+"$@"}
   def remove_checksums(self, packages, build_target):
     assert False
     packages = object_util.listify(packages)
-    check.check_package_descriptor_seq(packages, 'packages')
+    check.check_package_descriptor_seq(packages)
     checksum_dirs = [ self.checksum_dir(package_info, build_target) for package_info in packages ]
     file_util.remove(checksum_dirs)
 

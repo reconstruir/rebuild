@@ -19,7 +19,7 @@ class builder_resolver(object):
     
   def resolve_packages(self, names, build_target):
     check.check_string_seq(names)
-    check.build_target(build_target)
+    check.check_build_target(build_target)
     return self.script_manager.resolve_requirements(names, build_target.system)
 
   def package_names(self):
