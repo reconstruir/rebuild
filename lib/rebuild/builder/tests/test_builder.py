@@ -16,7 +16,7 @@ from rebuild.base import build_arch, build_level, build_system, build_target, pa
 
 class test_builder(unit_test):
 
-  __unit_test_data_dir__ = '../../test_data/packager'
+  __unit_test_data_dir__ = '../../../../test_data/packager'
 
   DEBUG = False
 #  DEBUG = True

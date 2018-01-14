@@ -11,7 +11,7 @@ from rebuild.package.unit_test_packages import unit_test_packages
 
 class test_remanager(script_unit_test):
 
-  __unit_test_data_dir__ = '../../lib/rebuild/test_data/remanager'
+  __unit_test_data_dir__ = '../../test_data/remanager'
   __script__ = __file__, '../remanager.py'
 
   DEBUG = False

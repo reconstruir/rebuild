@@ -11,7 +11,7 @@ from test_steps import *
 
 class test_recipe_parser(unit_test):
 
-  __unit_test_data_dir__ = '../../test_data/recipe_parser'
+  __unit_test_data_dir__ = '../../../../test_data/recipe_parser'
   
   @classmethod
   def _parse(self, text):

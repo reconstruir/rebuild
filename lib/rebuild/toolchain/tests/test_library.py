@@ -1,6 +1,5 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
-#
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
 from bes.testing.unit_test import unit_test
@@ -10,7 +9,7 @@ from bes.system import host
 
 class test_library(unit_test):
 
-  __unit_test_data_dir__ = '../../test_data/binary_objects'
+  __unit_test_data_dir__ = '../../../../test_data/binary_objects'
 
   def test_is_library(self):
     self.assertFalse( self.__is_library('cherry.o') )

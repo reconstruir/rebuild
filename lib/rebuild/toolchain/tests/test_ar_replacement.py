@@ -11,7 +11,7 @@ from bes.testing.unit_test.unit_test_skip import skip_if
 
 class test_ar_replacement(unit_test):
 
-  __unit_test_data_dir__ = '../../test_data/binary_objects'
+  __unit_test_data_dir__ = '../../../../test_data/binary_objects'
 
   IGNORED_CONTENTS = []
   if host.is_macos():
