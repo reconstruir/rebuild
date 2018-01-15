@@ -6,7 +6,7 @@ from rebuild.instruction import instruction_list as IL, instruction as I
 
 class test_instruction_list(unit_test):
 
-  __unit_test_data_dir__ = 'test_data/instruction_list'
+  __unit_test_data_dir__ = '../../../../test_data/instruction_list'
     
   def xtest_update(self):
     a = IL()
