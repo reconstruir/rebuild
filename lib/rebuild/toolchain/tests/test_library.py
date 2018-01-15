@@ -9,7 +9,7 @@ from bes.system import host
 
 class test_library(unit_test):
 
-  __unit_test_data_dir__ = '../../../../test_data/binary_objects'
+  __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/binary_objects'
 
   def test_is_library(self):
     self.assertFalse( self.__is_library('cherry.o') )

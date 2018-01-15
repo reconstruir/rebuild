@@ -636,3 +636,5 @@ jan 13
 
 jan 14
 - git code will download even if --no-network is given
+- change test_mirror_script to be new style
+- bes_network test_data paths

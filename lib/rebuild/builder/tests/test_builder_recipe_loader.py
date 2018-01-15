@@ -8,7 +8,7 @@ from rebuild.builder.builder_recipe_loader import builder_recipe_loader
 
 class test_builder_recipe_loader(unit_test):
 
-  __unit_test_data_dir__ = '../../../../test_data/builder_script'
+  __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/builder_script'
 
   def test_load_libjpeg(self):
     filenames = [ self.data_path('build_libjpeg.py') ]

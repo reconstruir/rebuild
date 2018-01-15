@@ -6,7 +6,7 @@ from rebuild.binary_format import binary_detector
 
 class test_binary_detector(unit_test):
 
-  __unit_test_data_dir__ = '../../../../test_data/binary_objects'
+  __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/binary_objects'
 
   def test_is_strippable_macho(self):
     self.assertTrue( self._is_strippable('macos/fat_64_fruits.so') )

@@ -9,7 +9,7 @@ from rebuild.builder import builder_script, builder_script_manager, builder_conf
 
 class test_builder_script(unit_test):
 
-  __unit_test_data_dir__ = '../../../../test_data/builder_script'
+  __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/builder_script'
 
   @classmethod
   def setUpClass(clazz):

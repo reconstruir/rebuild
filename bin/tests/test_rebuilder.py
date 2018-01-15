@@ -9,7 +9,7 @@ from bes.common import Shell
 
 class test_rebuilder_script(script_unit_test):
 
-  __unit_test_data_dir__ = '../../test_data/rebuilder'
+  __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/rebuilder'
   __script__ = __file__, '../rebuilder.py'
 
   DEBUG = False

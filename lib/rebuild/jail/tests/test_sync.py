@@ -9,7 +9,7 @@ from rebuild.jail import sync
 
 class test_sync(unit_test):
 
-  __unit_test_data_dir__ = '../../../../test_data/sync'
+  __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/sync'
 
   DEBUG = False
   #DEBUG = True

@@ -9,8 +9,6 @@ from bes.system import host
 
 class test_native_package_manager(unit_test):
 
-  #__unit_test_data_dir__ = 'test_data/binary_objects'
-
   @skip_if(not host.is_macos(), 'not macos')
   def test_is_installed_macos(self):
     self.assertFalse( native_package_manager.is_installed('bash') )

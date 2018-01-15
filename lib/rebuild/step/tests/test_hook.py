@@ -8,7 +8,7 @@ from rebuild.step import hook
 
 class test_hook(unit_test):
 
-  __unit_test_data_dir__ = '../../../../test_data/step/hook'
+  __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/step/hook'
 
   def xtest_parse(self):
     self.assertEqual( hook('foo.py', 'func'), hook.parse('foo.py:func') )

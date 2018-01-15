@@ -8,7 +8,7 @@ from rebuild.tools import patch
 
 class test_patch(unit_test):
 
-  __unit_test_data_dir__ = '../../../../test_data/tools/patch'
+  __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/tools/patch'
 
   def test_patch(self):
     p = self.data_path('src_to_dst.patch')

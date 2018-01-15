@@ -12,7 +12,7 @@ from bes.system import host
 
 class test_jail_cli(unit_test):
 
-  __unit_test_data_dir__ = '../../../../test_data/jail_cli'
+  __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/jail_cli'
 
   DEBUG = False
   #DEBUG = True

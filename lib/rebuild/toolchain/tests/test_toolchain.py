@@ -18,8 +18,6 @@ def _can_compile_linux(): return host.is_linux()
 
 class test_toolchain(unit_test):
 
-  __unit_test_data_dir__ = 'test_data/toolchain'
-
   _DEBUG = True
   _DEBUG = False
 

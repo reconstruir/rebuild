@@ -12,7 +12,7 @@ from bes.testing.unit_test import unit_test
 
 class test_darwin_package_util(unit_test):
 
-  __unit_test_data_dir__ = '../../../../../test_data/binary_objects'
+  __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/binary_objects'
 
   DEBUG = False
   #DEBUG = True

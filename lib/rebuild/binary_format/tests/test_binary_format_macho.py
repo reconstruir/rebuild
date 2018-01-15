@@ -7,7 +7,7 @@ from rebuild.binary_format import binary_format_macho as macho
 
 class test_binary_format_macho(unit_test):
 
-  __unit_test_data_dir__ = '../../../../test_data/binary_objects'
+  __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/binary_objects'
 
   def test_name(self):
     self.assertEqual( 'macho', macho().name() )

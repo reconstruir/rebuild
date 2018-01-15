@@ -10,7 +10,7 @@ from rebuild.pkg_config import caca_pkg_config
 
 class test_caca_pkg_config(unit_test):
 
-  __unit_test_data_dir__ = '../../../../test_data/pkg_config/real_examples'
+  __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/pkg_config/real_examples'
   
   def test_scan_dir(self):
     pc_files = caca_pkg_config.scan_dir(self.data_dir())
