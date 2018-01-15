@@ -7,7 +7,7 @@ from rebuild.step import hook_poto
 
 class test_hook_poto(unit_test):
 
-  __unit_test_data_dir__ = 'test_data/hook'
+  __unit_test_data_dir__ = '../../../../test_data/step/hook'
 
   def test_parse(self):
     self.assertEqual( hook_poto('foo.py', 'func'), hook_poto.parse('foo.py:func') )
