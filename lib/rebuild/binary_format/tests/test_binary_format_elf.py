@@ -6,7 +6,7 @@ from rebuild.binary_format import binary_format_elf as elf
 
 class test_binary_format_elf(unit_test):
 
-  __unit_test_data_dir__ = '../../../../test_data/binary_objects'
+  __unit_test_data_dir__ = '${test_data_dir}/binary_objects'
 
   def test_name(self):
     self.assertEqual( 'elf', elf().name() )
