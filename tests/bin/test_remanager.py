@@ -12,7 +12,7 @@ from rebuild.package.unit_test_packages import unit_test_packages
 class test_remanager(script_unit_test):
 
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/remanager'
-  __script__ = __file__, '../remanager.py'
+  __script__ = __file__, '../../bin/remanager.py'
 
   DEBUG = False
 #g  DEBUG = True

@@ -5,7 +5,7 @@
 import os, os.path as path
 from bes.testing.unit_test import unit_test
 from bes.common import Shell
-from bes.fs import file_util, temp_file
+from bes.fs import file_util, file_find, temp_file
 from rebuild.base import build_os_env
 
 class test_bes_sudo_editor_py(unit_test):
@@ -42,7 +42,7 @@ root	ALL=(ALL:ALL) ALL
 #includedir /etc/sudoers.d
 '''
 
-  __BES_SUDO_EDITOR_PY = path.normpath(path.join(path.dirname(__file__), '../../../../bin/rebuild_sudo_editor.py'))
+  _BES_SUDO_EDITOR_PY = file_find.find_in_ancestors(__file__, 'bin/rebuild_sudo_editor.py')
 
   DEBUG = False
   #DEBUG = True
@@ -52,7 +52,7 @@ root	ALL=(ALL:ALL) ALL
     sudoers_tmp = temp_file.make_temp_file(content = self.__SUDOERS_UBUNTU, delete = not self.DEBUG)
     os.chmod(sudoers_tmp, mode)
     cmd = [
-      self.__BES_SUDO_EDITOR_PY,
+      self._BES_SUDO_EDITOR_PY,
       '--sudoers',
       sudoers_tmp,
       'chupacabra',
@@ -70,7 +70,7 @@ root	ALL=(ALL:ALL) ALL
     self.assertEquals( 'chupacabra ALL = (root) NOPASSWD: /usr/sbin/chroot # bes_sudo:v1' , difference )
 
     cmd = [
-      self.__BES_SUDO_EDITOR_PY,
+      self._BES_SUDO_EDITOR_PY,
       '--sudoers',
       sudoers_tmp,
       'tjefferson',
