@@ -5,6 +5,7 @@ import os, os.path as path
 
 from bes.archive import archiver
 from bes.fs import file_util
+from bes.common import dict_util
 from rebuild.step import compound_step, step, step_result
 from rebuild.package import package, package_tester
 
@@ -73,14 +74,17 @@ class step_artifact_create_test_package(step):
       message = 'Missing staged tarball for %s: ' % (str(script.descriptor))
       self.log_d(message)
       return step_result(False, message)
-      
+
+    extra_env = self.args_get_key_value_list(args, 'package_test_env')
     for test in tests:
-      config = package_tester.test_config(staged_tarball,
+      config = package_tester.test_config(script,
+                                          staged_tarball,
                                           script.source_dir,
                                           script.test_dir,
                                           env.artifact_manager,
                                           env.tools_manager,
-                                          script.build_target)
+                                          script.build_target,
+                                          extra_env)
       tester = package_tester(config, test)
       result =  tester.run()
       if not result.success:
@@ -92,8 +96,9 @@ class step_artifact_create_test_package(step):
 
   @classmethod
   def parse_step_args(clazz, script, env, args):
-    return clazz.resolve_step_args_files(script, args, 'tests')
-
+    return dict_util.combine(clazz.resolve_step_args_files(script, args, 'tests'),
+                             clazz.resolve_step_args_key_values(script, args, 'package_test_env'))
+  
 class step_artifact_create_publish_package(step):
   'Publish the package created by step_artifact_create_make_package.'
 

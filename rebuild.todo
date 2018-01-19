@@ -638,3 +638,7 @@ jan 14
 - git code will download even if --no-network is given
 - change test_mirror_script to be new style
 - bes_network test_data paths
+
+jan 218
+- build_os_env.env_substitite() is confusing
+- the whole variable substitution chicken and egg issue

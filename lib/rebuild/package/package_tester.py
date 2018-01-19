@@ -11,7 +11,7 @@ from rebuild.step import step_result
 from rebuild.base import build_blurb, build_os_env, build_target
 from rebuild.toolchain import toolchain
 from rebuild.dependency import dependency_resolver
-from bes.common import Shell
+from bes.common import Shell, variable
 from bes.fs import file_replace
 
 from .package import package
@@ -19,7 +19,7 @@ from .package_manager import package_manager
 
 class package_tester(object):
 
-  test_config = namedtuple('test_config', 'package_tarball,source_dir,test_dir,artifact_manager,tools_manager,build_target')
+  test_config = namedtuple('test_config', 'script,package_tarball,source_dir,test_dir,artifact_manager,tools_manager,build_target,extra_env')
 
   def __init__(self, config, test):
     self._config = config
@@ -115,7 +115,7 @@ class package_tester(object):
   def __run_perl_test(clazz, config, test_source):
     return clazz.__run_exe_test('PERL', 'perl', config, test_source)
 
-  __test_setup = namedtuple('__test_setup','package_info,env,saved_env,test_dir,test_name,test_source_with_replacements,package_manager')
+  _test_setup = namedtuple('_test_setup','package_info,env,saved_env,test_dir,test_name,test_source_with_replacements,package_manager')
 
   @classmethod
   def __setup_test(clazz, config, test_source):
@@ -144,19 +144,24 @@ class package_tester(object):
     shell_env = build_os_env.make_clean_env()
     build_os_env.update(shell_env, config.tools_manager.shell_env(pd.resolved_build_requirements), prepend = True)
     build_os_env.update(shell_env, pm.shell_env(all_packages), prepend = True)
-
+    
     test_source_with_replacements = path.join(test_root_dir, path.basename(test_source))
     replacements = {
       'REBUILDER_SOURCE_DIR': config.source_dir,
       'REBUILDER_TEST_DIR': config.test_dir,
       'REBUILDER_TEST_NAME': test_name,
     }
+    caca = {}
+    caca['REBUILDER_BUILD_DIR'] = config.script.build_dir
+    for kv in config.extra_env:
+      shell_env[kv.key] = variable.substitute(kv.value, caca)
+      
     file_replace.copy_with_substitute(test_source, test_source_with_replacements,
                                       replacements, backup = False)
-    return clazz.__test_setup(package.info, shell_env, saved_env,
-                              test_root_dir, test_name,
-                              test_source_with_replacements,
-                              pm)
+    return clazz._test_setup(package.info, shell_env, saved_env,
+                             test_root_dir, test_name,
+                             test_source_with_replacements,
+                             pm)
 
   @classmethod
   def __run_exe_test(clazz, exe_env_name, exe_default, config, test_source):
