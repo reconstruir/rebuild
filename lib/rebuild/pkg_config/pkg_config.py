@@ -10,13 +10,13 @@ from rebuild.base import build_arch, build_blurb, build_system
 class pkg_config(object):
 
   # FIXME: maybe this should be centralized
-  def __pkg_config_exe():
+  def _pkg_config_exe():
     version = '0.29.1'
     exe = 'rebbe_pkg-config'
     tools_root = path.normpath(path.join(path.dirname(__file__), '..', 'tools', host.SYSTEM, build_arch.HOST_ARCH))
     return path.join(tools_root, 'pkg_config-%s_rev1' % (version), 'bin', exe)
 
-  PKG_CONFIG_EXE = __pkg_config_exe()
+  PKG_CONFIG_EXE = _pkg_config_exe()
   #PKG_CONFIG_EXE = '/Users/ramiro/proj/software/tmp/builds/macos/release/pkg_config-0.29.1_2017-10-04-15-15-48-032758/build/pkg-config'
 
   @classmethod
