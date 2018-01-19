@@ -23,21 +23,33 @@ class PackageFilesConflictError(Exception):
     super(PackageFilesConflictError, self).__init__()
     self.message = message
 
+  def __str__(self):
+    return self.message
+  
 class PackageNotFoundError(Exception):
   def __init__(self, message):
     super(PackageNotFoundError, self).__init__()
     self.message = message
 
+  def __str__(self):
+    return self.message
+  
 class PackageAlreadyInstallededError(Exception):
   def __init__(self, message):
     super(PackageAlreadyInstallededError, self).__init__()
     self.message = message
 
+  def __str__(self):
+    return self.message
+  
 class PackageMissingRequirementsError(Exception):
   def __init__(self, message):
     super(PackageMissingRequirementsError, self).__init__()
     self.message = message
 
+  def __str__(self):
+    return self.message
+  
 class package_manager(object):
 
   def __init__(self, root_dir):
