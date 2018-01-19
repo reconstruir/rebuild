@@ -79,11 +79,8 @@ class step_artifact_create_test_package(step):
     for test in tests:
       config = package_tester.test_config(script,
                                           staged_tarball,
-                                          script.source_dir,
-                                          script.test_dir,
                                           env.artifact_manager,
                                           env.tools_manager,
-                                          script.build_target,
                                           extra_env)
       tester = package_tester(config, test)
       result =  tester.run()

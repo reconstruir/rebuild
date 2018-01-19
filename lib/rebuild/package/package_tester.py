@@ -19,7 +19,7 @@ from .package_manager import package_manager
 
 class package_tester(object):
 
-  test_config = namedtuple('test_config', 'script,package_tarball,source_dir,test_dir,artifact_manager,tools_manager,build_target,extra_env')
+  test_config = namedtuple('test_config', 'script,package_tarball,artifact_manager,tools_manager,extra_env')
 
   def __init__(self, config, test):
     self._config = config
@@ -33,7 +33,7 @@ class package_tester(object):
   def __run_test(clazz, config, test):
     build_blurb.blurb('tester', 'Testing %s with %s' % (config.package_tarball, test))
     assert path.isfile(test)
-    tc = toolchain.get_toolchain(config.build_target)
+    tc = toolchain.get_toolchain(config.script.build_target)
     ce = tc.compiler_environment()
     compiler_flags = tc.compiler_flags()
     if test.endswith('.cpp'):
@@ -120,18 +120,18 @@ class package_tester(object):
   @classmethod
   def __setup_test(clazz, config, test_source):
     test_name = path.splitext(path.basename(test_source))[0]
-    test_root_dir = path.join(config.test_dir, test_name)
+    test_root_dir = path.join(config.script.test_dir, test_name)
     pm_root_dir = path.join(test_root_dir, 'requirements')
 
     pm = package_manager(pm_root_dir)
 
-    package = pm.load_tarball(config.package_tarball, config.build_target, config.artifact_manager)
+    package = pm.load_tarball(config.package_tarball, config.script.build_target, config.artifact_manager)
     pd = package.info
     
     deps_packages = pd.resolved_requirements
     all_packages = deps_packages + [ pd ]
 
-    pm.install_packages(deps_packages, config.build_target, config.artifact_manager)
+    pm.install_packages(deps_packages, config.script.build_target, config.artifact_manager)
     pm.install_tarball(config.package_tarball)
 
     config.tools_manager.update(pd.resolved_build_requirements, config.artifact_manager)
@@ -147,8 +147,8 @@ class package_tester(object):
     
     test_source_with_replacements = path.join(test_root_dir, path.basename(test_source))
     replacements = {
-      'REBUILDER_SOURCE_DIR': config.source_dir,
-      'REBUILDER_TEST_DIR': config.test_dir,
+      'REBUILDER_SOURCE_DIR': config.script.source_dir,
+      'REBUILDER_TEST_DIR': config.script.test_dir,
       'REBUILDER_TEST_NAME': test_name,
     }
     caca = {}
