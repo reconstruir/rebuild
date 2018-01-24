@@ -29,7 +29,7 @@ class caca_entry(namedtuple('caca_entry', 'line,etype,value')):
   def parse(clazz, line):
     'Parse a pkg-config .pc file entry.'
     check.check_line_token(line)
-    delimiter = clazz._first_delimiter(line.text)
+    delimiter = clazz._first_delimiter(line.text_no_comments)
     value = None
     etype = None
     if delimiter == clazz.COLON:
@@ -77,6 +77,7 @@ class caca_entry(namedtuple('caca_entry', 'line,etype,value')):
 
   @classmethod
   def _parse_value(clazz, line, delimiter):
+    print('parsing %s' % (str(line)))
     v = line.text_no_comments.partition(delimiter)
     assert v[1] == delimiter
     return key_value(v[0].strip(), v[2].strip())

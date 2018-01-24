@@ -142,8 +142,8 @@ class caca_pkg_config_file(namedtuple('caca_pkg_config_file', 'filename,entries,
 #    cf.cleanup_duplicate_properties()
 #    return cf.write_file(dst_pc)
 #
-#  @classmethod
-#  def is_pc_file(clazz, f):
-#    'Return True of f is a pkg-config pc file.'
-#    return f.lower().endswith('.pc')
-#
+  @classmethod
+  def is_pc_file(clazz, f):
+    'Return True of f is a pkg-config pc file.'
+    return f.lower().endswith('.pc')
+

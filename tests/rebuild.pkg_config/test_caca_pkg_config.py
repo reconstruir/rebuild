@@ -25,10 +25,9 @@ class test_caca_pkg_config(unit_test):
       'libtiff-4.pc', 'libwebp.pc', 'libxml-2.0.pc', 'opencv.pc', 'openssl.pc', 'tesseract.pc', 'zlib.pc', 
     ], [ path.basename(f) for f in pc_files ] )
 
-  def xtest_scan(self):
+  def test_list_all(self):
     pc_path = [ self.data_dir() ]
-    rv = caca_pkg_config.scan(pc_path)
-    self.assertEqual( {}, rv )
+    self.assertEqual( ['exiv2', 'freetype2', 'gdal', 'gio-2.0', 'gio-unix-2.0', 'glib-2.0', 'gmodule-2.0', 'gmodule-export-2.0', 'gmodule-no-export-2.0', 'gobject-2.0', 'gthread-2.0', 'IlmBase', 'ImageMagick', 'ImageMagick++', 'ImageMagick++-6.Q16', 'ImageMagick-6.Q16', 'lept', 'libarchive', 'libavcodec', 'libavdevice', 'libavfilter', 'libavformat', 'libavutil', 'libcrypto', 'libcurl', 'libffi', 'libpng', 'libpng16', 'libssl', 'libswresample', 'libswscale', 'libtiff-4', 'libwebp', 'libxml-2.0', 'Magick++', 'Magick++-6.Q16', 'MagickCore', 'MagickCore-6.Q16', 'MagickWand', 'MagickWand-6.Q16', 'opencv', 'OpenEXR', 'openssl', 'tesseract', 'Wand', 'Wand-6.Q16', 'zlib'], caca_pkg_config.list_all(pc_path) )
 
 if __name__ == '__main__':
   unit_test.main()
