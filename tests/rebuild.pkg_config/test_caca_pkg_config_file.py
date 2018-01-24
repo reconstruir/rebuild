@@ -4,8 +4,9 @@
 from bes.testing.unit_test import unit_test
 import copy, glob, os.path as path, unittest
 from bes.fs import temp_file
+from bes.key_value import key_value_list
 from rebuild.pkg_config import caca_pkg_config_file
-from rebuild.pkg_config.entry import entry
+#from rebuild.pkg_config.entry import entry
 
 class test_caca_pkg_config_file(unit_test):
 
@@ -27,20 +28,20 @@ Cflags: -I${includedir}
 '''
 
   FOO_EXPECTED_VARIABLES = [
-    entry(entry.VARIABLE, 'prefix', '/usr/foo'),
-    entry(entry.VARIABLE, 'exec_prefix', '${prefix}'),
-    entry(entry.VARIABLE, 'libdir', '${exec_prefix}/lib'),
-    entry(entry.VARIABLE, 'sharedlibdir', '${libdir}'),
-    entry(entry.VARIABLE, 'includedir', '${prefix}/include'),
+    ( 'prefix', '/usr/foo' ),
+    ( 'exec_prefix', '${prefix}' ),
+    ( 'libdir', '${exec_prefix}/lib' ),
+    ( 'sharedlibdir', '${libdir}' ),
+    ( 'includedir', '${prefix}/include' ),
   ]
 
-  FOO_EXPECTED_EXPORTS = [
-    entry(entry.EXPORT, 'Name', 'foo'),
-    entry(entry.EXPORT, 'Description', 'foo library'),
-    entry(entry.EXPORT, 'Version', '1.2.3'),
-    entry(entry.EXPORT, 'Requires', ''),
-    entry(entry.EXPORT, 'Libs', '-L${libdir} -L${sharedlibdir} -lfoo'),
-    entry(entry.EXPORT, 'Cflags', '-I${includedir}'),
+  FOO_EXPECTED_PROPERTIES = [
+    ( 'Name', 'foo' ),
+    ( 'Description', 'foo library' ),
+    ( 'Version', '1.2.3' ),
+    ( 'Requires', '' ),
+    ( 'Libs', '-L${libdir} -L${sharedlibdir} -lfoo' ),
+    ( 'Cflags', '-I${includedir}' ),
   ]
 
   TEMPLATE_PC = '''prefix=/usr/foo
@@ -58,18 +59,16 @@ Libs: -L${libdir} -L${sharedlibdir} -lfoo
 Cflags: -I${includedir}
 '''
 
-  def test__init__(self):
-    filename = temp_file.make_temp_file(content = self.FOO_PC)
-    cf = caca_pkg_config_file(filename)
-    self.assertEqual( filename, cf.filename )
-#    self.assertEqual( self.FOO_EXPECTED_VARIABLES, cf.variables )
-#    self.assertEqual( self.FOO_EXPECTED_EXPORTS, cf.exports )
-
-  def xtest_parse_string(self):
-    cf = caca_pkg_config_file()
-    cf.parse_string(self.FOO_PC)
+  def test_parse_text(self):
+    cf = caca_pkg_config_file.parse_text('<unknown>', self.FOO_PC)
     self.assertEqual( self.FOO_EXPECTED_VARIABLES, cf.variables )
-    self.assertEqual( self.FOO_EXPECTED_EXPORTS, cf.exports )
+    self.assertEqual( self.FOO_EXPECTED_PROPERTIES, cf.properties )
+    
+  def test_parse_file(self):
+    tmp = temp_file.make_temp_file(content = self.FOO_PC)
+    cf = caca_pkg_config_file.parse_file(tmp)
+    self.assertEqual( self.FOO_EXPECTED_VARIABLES, cf.variables )
+    self.assertEqual( self.FOO_EXPECTED_PROPERTIES, cf.properties )
 
   def xtest_parse_many_examples(self):
     examples = glob.glob(path.join(self.data_path(), '*.pc'))
@@ -86,7 +85,7 @@ Cflags: -I${includedir}
     self.assertEqual( 'prefix', expected_variables[0].name )
     expected_variables[0].value = '/something/else'
     self.assertEqual( expected_variables, cf.variables )
-    self.assertEqual( self.FOO_EXPECTED_EXPORTS, cf.exports )
+    self.assertEqual( self.FOO_EXPECTED_PROPERTIES, cf.properties )
 
   def xtest_deep_copy(self):
     cf = caca_pkg_config_file()
@@ -94,10 +93,10 @@ Cflags: -I${includedir}
 
     copy_cf = cf.deep_copy()
     self.assertEqual( self.FOO_EXPECTED_VARIABLES, cf.variables )
-    self.assertEqual( self.FOO_EXPECTED_EXPORTS, cf.exports )
+    self.assertEqual( self.FOO_EXPECTED_PROPERTIES, cf.properties )
 
     self.assertEqual( self.FOO_EXPECTED_VARIABLES, copy_cf.variables )
-    self.assertEqual( self.FOO_EXPECTED_EXPORTS, copy_cf.exports )
+    self.assertEqual( self.FOO_EXPECTED_PROPERTIES, copy_cf.properties )
 
   def xtest_resolve(self):
     self.maxDiff = None
@@ -106,7 +105,7 @@ Cflags: -I${includedir}
     cf.parse_string(self.FOO_PC)
 
     self.assertEqual( self.FOO_EXPECTED_VARIABLES, cf.variables )
-    self.assertEqual( self.FOO_EXPECTED_EXPORTS, cf.exports )
+    self.assertEqual( self.FOO_EXPECTED_PROPERTIES, cf.properties )
 
     cf.resolve()
 
@@ -117,7 +116,7 @@ Cflags: -I${includedir}
       entry(entry.VARIABLE, 'sharedlibdir', '/usr/foo/lib'),
       entry(entry.VARIABLE, 'includedir', '/usr/foo/include'),
     ]
-    expected_exports = [
+    expected_properties = [
       entry(entry.EXPORT, 'Name', 'foo'),
       entry(entry.EXPORT, 'Description', 'foo library'),
       entry(entry.EXPORT, 'Version', '1.2.3'),
@@ -126,7 +125,7 @@ Cflags: -I${includedir}
       entry(entry.EXPORT, 'Cflags', '-I/usr/foo/include'),
     ]
     self.assertEqual( expected_variables, cf.variables )
-    self.assertEqual( expected_exports, cf.exports )
+    self.assertEqual( expected_properties, cf.properties )
 
   def xxxx_replace(self):
     self.maxDiff = None
@@ -134,7 +133,7 @@ Cflags: -I${includedir}
     cf = caca_pkg_config_file()
     cf.parse_string(self.TEMPLATE_PC)
     cf.replace(replacements)
-    expected_exports = [
+    expected_properties = [
       entry(entry.EXPORT, 'Name', 'foobar'),
       entry(entry.EXPORT, 'Description', 'something nice'),
       entry(entry.EXPORT, 'Version', '6.6.6'),
@@ -142,7 +141,7 @@ Cflags: -I${includedir}
       entry(entry.EXPORT, 'Libs', '-L${libdir} -L${sharedlibdir} -lfoo'),
       entry(entry.EXPORT, 'Cflags', '-I${includedir}'),
     ]
-    self.assertEqual( expected_exports, cf.exports )
+    self.assertEqual( expected_properties, cf.properties )
 
   def xtest_write_filename(self):
     filename = temp_file.make_temp_file(content = self.FOO_PC)
@@ -170,7 +169,7 @@ Cflags: -I${includedir}
     
       self.assertEqual( cf, new_cf )
 
-  def xtest_cleanup_duplicate_exports_flags(self):
+  def xtest_cleanup_duplicate_properties_flags(self):
     self.maxDiff = None
     
     dup_pc = '''prefix=/usr/foo
@@ -203,7 +202,7 @@ Cflags: -I${includedir}
 '''
     cf = caca_pkg_config_file()
     cf.parse_string(dup_pc)
-    cf.cleanup_duplicate_exports()
+    cf.cleanup_duplicate_properties()
     self.assertEqual( expected_pc.strip(), str(cf).strip() )
 
 if __name__ == '__main__':
