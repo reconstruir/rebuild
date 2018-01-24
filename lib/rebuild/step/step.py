@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-# FIXME: unify the replacements here with those in step_pkg_config_make_pc.py
-
 import copy, os, os.path as path
 
 from abc import abstractmethod, ABCMeta
@@ -16,7 +14,6 @@ from bes.system.compat import with_metaclass
 from bes.text import string_list
 from rebuild.base import build_blurb, build_os_env, build_target, reitred_masked_config
 from rebuild.dependency import dependency_resolver
-from rebuild.pkg_config import pkg_config
 from rebuild.toolchain import toolchain
 from rebuild.value import value_type
 

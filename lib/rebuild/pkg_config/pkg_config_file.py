@@ -89,6 +89,7 @@ class pkg_config_file(object):
 #      self.set_variable(kv.key, kv.value)
 
   def set_export(self, name, value):
+    assert False
     for export in self.exports:
       if export.name == name:
         export.value = value
@@ -129,7 +130,6 @@ class pkg_config_file(object):
     buf.write(' '.join([ str(req) for req in self.requirements ]))
     return buf.getvalue()
 
-        
   def __unduplicate_flags(clazz, flags):
     'Unduplicate flags.'
     v = string_util.split_by_white_space(flags)

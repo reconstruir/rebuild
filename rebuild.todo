@@ -642,3 +642,5 @@ jan 14
 jan 218
 - build_os_env.env_substitite() is confusing
 - the whole variable substitution chicken and egg issue
+- from step.py # FIXME: unify the replacements here with those in step_pkg_config_make_pc.py
+

@@ -16,7 +16,7 @@ class caca_pkg_config_file(object):
   def __init__(self, filename):
     self.filename = filename
     self.content = file_util.read(path.abspath(filename)).decode('utf-8')
-    self.variables, self.exports = self._parse(self.content)
+    self.variables, self.properties = self._parse(self.content)
 
   def write_file(self, filename, backup = True):
     new_content = str(self)
@@ -35,13 +35,13 @@ class caca_pkg_config_file(object):
     lines = [ line for line in lines if line and not line.startswith('#') ]
     entries = [ entry.parse(line) for line in lines ]
     variables = []
-    exports = []
+    properties = []
     for e in entries:
       if e.is_variable():
         variables.append(e)
       else:
-        exports.append(e)
-    return ( variables, exports )
+        properties.append(e)
+    return ( variables, properties )
 
   def _parse_file(self, filename):
     content = file_util.read(filename).decode('utf-8')
@@ -58,8 +58,8 @@ class caca_pkg_config_file(object):
 
   def __str__(self):
     variables_lines = [ str(variable) for variable in self.variables ]
-    exports_lines = [ str(export) for export in self.exports ]
-    return '\n'.join(variables_lines) + '\n\n' + '\n'.join(exports_lines)
+    properties_lines = [ str(export) for export in self.properties ]
+    return '\n'.join(variables_lines) + '\n\n' + '\n'.join(properties_lines)
 
   @classmethod
   def __line_is_valid(clazz, line):
@@ -72,7 +72,7 @@ class caca_pkg_config_file(object):
   def deep_copy(self):
     result = caca_pkg_config_file()
     result.variables = copy.deepcopy(self.variables)
-    result.exports = copy.deepcopy(self.exports)
+    result.properties = copy.deepcopy(self.properties)
     return result
 
   def variables_as_dict(self):
@@ -92,7 +92,7 @@ class caca_pkg_config_file(object):
 #      self.set_variable(kv.key, kv.value)
 
   def set_export(self, name, value):
-    for export in self.exports:
+    for export in self.properties:
       if export.name == name:
         export.value = value
 
@@ -101,7 +101,7 @@ class caca_pkg_config_file(object):
     for variable in self.variables:
       variable.replace(self.variables_as_dict())
     variable_dict = self.variables_as_dict()
-    for export in self.exports:
+    for export in self.properties:
       export.replace(variable_dict)
 
 #  def replace(self, replacements):
@@ -109,12 +109,12 @@ class caca_pkg_config_file(object):
 #    assert isinstance(replacements, dict)
 #    for variable in self.variables:
 #      variable.replace(replacements)
-#    for export in self.exports:
+#    for export in self.properties:
 #      export.replace(replacements)
 
-  def cleanup_duplicate_exports(self):
-    'Cleanup duplicate flags in exports.'
-    for export in self.exports:
+  def cleanup_duplicate_properties(self):
+    'Cleanup duplicate flags in properties.'
+    for export in self.properties:
       if export.name.lower().startswith('requires'):
         export.value = self.__dedup_requirements(export.value)
       else:
@@ -143,7 +143,7 @@ class caca_pkg_config_file(object):
   def rewrite_cleanup(clazz, src_pc, dst_pc):
     cf = caca_pkg_config_file()
     cf.parse_file(src_pc)
-    cf.cleanup_duplicate_exports()
+    cf.cleanup_duplicate_properties()
     return cf.write_file(dst_pc)
 
   @classmethod

@@ -45,9 +45,11 @@ class caca_entry(namedtuple('caca_entry', 'line,etype,value')):
     assert etype != None
     return clazz(line, etype, value)
 
+  @property
   def is_variable(self):
     return self.etype == entry_type.VARIABLE
 
+  @property
   def is_property(self):
     return self.etype == entry_type.PROPERTY
 
@@ -78,3 +80,4 @@ class caca_entry(namedtuple('caca_entry', 'line,etype,value')):
     v = line.text_no_comments.partition(delimiter)
     assert v[1] == delimiter
     return key_value(v[0].strip(), v[2].strip())
+check.register_class(caca_entry, name = 'caca_pkg_config_entry')
