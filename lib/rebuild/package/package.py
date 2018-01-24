@@ -9,7 +9,6 @@ from bes.fs import dir_util, file_replace, file_search, file_mime, file_util, te
 from bes.match import matcher_filename
 from bes.python import setup_tools
 from rebuild.base import package_descriptor
-from rebuild.pkg_config import pkg_config_file
 
 class package(object):
 

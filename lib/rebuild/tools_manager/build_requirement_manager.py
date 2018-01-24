@@ -9,7 +9,6 @@ import copy, os.path as path
 from bes.common import dict_util, json_util, string_util, variable
 from bes.system import host
 
-from rebuild.pkg_config import pkg_config
 from rebuild.base import build_target, build_system, build_level, package_descriptor
 from bes.fs import dir_util, file_search, file_util, file_path, temp_file
 

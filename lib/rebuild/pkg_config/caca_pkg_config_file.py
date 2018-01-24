@@ -5,6 +5,7 @@
 
 import copy, glob, os.path as path
 from bes.common import algorithm, string_util
+from bes.text import lines
 from bes.key_value import key_value
 from bes.fs import dir_util, file_util
 from .entry import entry

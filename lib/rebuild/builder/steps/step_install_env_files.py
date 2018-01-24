@@ -6,7 +6,6 @@ import os, os.path as path
 from bes.common import object_util, variable
 from bes.fs import file_replace
 from rebuild.step import step, step_result
-from rebuild.pkg_config import pkg_config_file
 
 # FIXME: unify the replacements here with those in step
 

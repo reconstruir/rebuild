@@ -15,12 +15,19 @@ class test_caca_entry(unit_test):
     self.assertEqual( entry_type.COMMENT, caca_entry.parse(line_token(1, '# comment foo')).etype )
     self.assertEqual( entry_type.VARIABLE, caca_entry.parse(line_token(1, 'prefix=/usr/foo # with comment')).etype )
     
-  def test_parse_value(self):
+  def test_parse_variable_value(self):
     self.assertEqual( ( 'prefix', '/usr/foo' ), caca_entry.parse(line_token(1, 'prefix=/usr/foo')).value )
     self.assertEqual( ( 'prefix', '/usr/foo' ), caca_entry.parse(line_token(1, 'prefix = /usr/foo')).value )
     self.assertEqual( ( 'prefix', '/usr/foo' ), caca_entry.parse(line_token(1, 'prefix = /usr/foo ')).value )
     self.assertEqual( ( 'prefix', '/usr/foo' ), caca_entry.parse(line_token(1, ' prefix = /usr/foo ')).value )
     self.assertEqual( ( 'prefix', '/usr/foo' ), caca_entry.parse(line_token(1, 'prefix=/usr/foo # comment')).value )
+    
+  def test_parse_property_value(self):
+    self.assertEqual( ( 'Name', 'foo' ), caca_entry.parse(line_token(1, 'Name=foo')).value )
+    self.assertEqual( ( 'Name', 'foo' ), caca_entry.parse(line_token(1, 'Name = foo')).value )
+    self.assertEqual( ( 'Name', 'foo' ), caca_entry.parse(line_token(1, 'Name = foo ')).value )
+    self.assertEqual( ( 'Name', 'foo' ), caca_entry.parse(line_token(1, ' Name = foo ')).value )
+    self.assertEqual( ( 'Name', 'foo' ), caca_entry.parse(line_token(1, 'Name=foo # comment')).value )
     
 if __name__ == "__main__":
   unit_test.main()
