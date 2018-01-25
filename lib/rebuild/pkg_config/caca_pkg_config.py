@@ -40,6 +40,5 @@ class caca_pkg_config(object):
     files = clazz.scan(pc_path)
     result = []
     for name, pc_file in files.items():
-      result.append(clazz._list_all_item(pc_file.properties.find_key('Name').value,
-                                         pc_file.properties.find_key('Description').value))
+      result.append(clazz._list_all_item(name, pc_file.properties.find_key('Description').value))
     return sorted(result, cmp = lambda a, b: cmp(a.name.lower(), b.name.lower()))

@@ -3,108 +3,17 @@
 
 import os.path as path
 from bes.testing.unit_test import script_unit_test
-from bes.fs import file_find, temp_file
-from bes.system import host
-from bes.common import Shell
+from rebuild.pkg_config import caca_pkg_config
 
-class test_rebuilder_script(script_unit_test):
+class test_rebuild_pkg_config(script_unit_test):
 
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/pkg_config/real_examples'
   __script__ = __file__, '../../bin/rebuild_pkg_config.py'
 
-  DEBUG = False
-#  DEBUG = True
-
-  BUILD_LEVEL = 'release'
-
-#  artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
-  
-  def test_fructose(self):
-    tmp_dir = self._make_temp_dir()
-    cmd = [
-      '--source-dir',
-      path.join(self.data_dir(), '../packager'),
-      '--no-network',
-      '-v',
-      '--root', tmp_dir,
-      '--level', self.BUILD_LEVEL,
-      'fructose',
-    ]
-    rv = self.run_script(cmd, cwd = self.data_dir())
-    if rv.exit_code != 0:
-      print((rv.stdout))
-    self.assertEqual( 0, rv.exit_code )
-    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
-    self.assertTrue( path.exists(path.join(artifacts_dir, 'fructose-3.4.5-6.tar.gz')) )
-    self.assertFalse( path.exists(path.join(artifacts_dir, 'fiber-1.0.0.tar.gz')) )
-
-  def test_fructose_recipe_v2(self):
-    tmp_dir = self._make_temp_dir()
-    cmd = [
-      '--source-dir',
-      path.join(self.data_dir(), '../packager'),
-      '--no-network',
-      '-v',
-      '--root', tmp_dir,
-      '--level', self.BUILD_LEVEL,
-      'fructose',
-    ]
-    rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'recipe_v2'))
-    if True: #rv.exit_code != 0:
-      print('FAILED stderr:')
-      print((rv.stderr))
-      print('FAILED stdout:')
-      print((rv.stdout))
-    self.assertEqual( 0, rv.exit_code )
-    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
-    self.assertTrue( path.exists(path.join(artifacts_dir, 'fructose-3.4.5-6.tar.gz')) )
-    self.assertFalse( path.exists(path.join(artifacts_dir, 'fiber-1.0.0.tar.gz')) )
-    
-  def test_fructose_fiber(self):
-    tmp_dir = self._make_temp_dir()
-    cmd = [
-      '--source-dir',
-      path.join(self.data_dir(), '../packager'),
-      '--no-network',
-      '-v',
-      '--root', tmp_dir,
-      '--level', self.BUILD_LEVEL,
-      'fructose',
-      'fiber',
-    ]
-    rv = self.run_script(cmd, cwd = self.data_dir())
-    if rv.exit_code != 0:
-      print((rv.stdout))
-    self.assertEqual( 0, rv.exit_code )
-    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
-    self.assertTrue( path.exists(path.join(artifacts_dir, 'fructose-3.4.5-6.tar.gz')) )
-    self.assertTrue( path.exists(path.join(artifacts_dir, 'fiber-1.0.0.tar.gz')) )
-    
-  def xxxtest_orange(self):
-    tmp_dir = self._make_temp_dir()
-    cmd = [
-      '--source-dir',
-      path.join(self.data_dir(), '../packager'),
-      '--no-network',
-      '-v',
-      '--root', tmp_dir,
-      '--level', self.BUILD_LEVEL,
-      'orange',
-    ]
-    rv = self.run_script(cmd, cwd = self.data_dir())
-    if rv.exit_code != 0:
-      print((rv.stdout))
-    self.assertEqual( 0, rv.exit_code )
-    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
-    self.assertTrue( path.exists(path.join(artifacts_dir, 'fructose-3.4.5-6.tar.gz')) )
-    self.assertTrue( path.exists(path.join(artifacts_dir, 'fiber-1.0.0.tar.gz')) )
-    self.assertTrue( path.exists(path.join(artifacts_dir, 'fiber-orange-6.5.4-3.tar.gz')) )
-
-  def _make_temp_dir(self):
-    tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
-    if self.DEBUG:
-      print("tmp_dir: ", tmp_dir)
-    return tmp_dir
+  def test_list_all(self):
+    pc_path = [ self.data_dir() ]
+    self.assertEquals( ['exiv2', 'freetype2', 'gdal', 'gio-2.0', 'gio-unix-2.0', 'glib-2.0', 'gmodule-2.0', 'gmodule-export-2.0', 'gmodule-no-export-2.0', 'gobject-2.0', 'gthread-2.0', 'IlmBase', 'ImageMagick', 'ImageMagick++', 'ImageMagick++-6.Q16', 'ImageMagick-6.Q16', 'lept', 'libarchive', 'libavcodec', 'libavdevice', 'libavfilter', 'libavformat', 'libavutil', 'libcrypto', 'libcurl', 'libffi', 'libpng', 'libpng16', 'libssl', 'libswresample', 'libswscale', 'libtiff-4', 'libwebp', 'libxml-2.0', 'Magick++', 'Magick++-6.Q16', 'MagickCore', 'MagickCore-6.Q16', 'MagickWand', 'MagickWand-6.Q16', 'opencv', 'OpenEXR', 'openssl', 'tesseract', 'Wand', 'Wand-6.Q16', 'zlib'],
+                       [ mod.name for mod in caca_pkg_config.list_all(pc_path) ] )
 
 if __name__ == '__main__':
   script_unit_test.main()
