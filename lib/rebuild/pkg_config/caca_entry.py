@@ -77,7 +77,6 @@ class caca_entry(namedtuple('caca_entry', 'line,etype,value')):
 
   @classmethod
   def _parse_value(clazz, line, delimiter):
-    print('parsing %s' % (str(line)))
     v = line.text_no_comments.partition(delimiter)
     assert v[1] == delimiter
     return key_value(v[0].strip(), v[2].strip())

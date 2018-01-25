@@ -33,9 +33,13 @@ class caca_pkg_config(object):
         result[name] = pc_file
     return result
   
-#  _list_item = namedtuple('_list_item', 'name,description')
+  _list_all_item = namedtuple('_list_all_item', 'name,description')
   @classmethod
   def list_all(clazz, pc_path):
     'List all modules available.'
     files = clazz.scan(pc_path)
-    return sorted([ key for key in files.keys()], key = str.lower)
+    result = []
+    for name, pc_file in files.items():
+      result.append(clazz._list_all_item(pc_file.properties.find_key('Name').value,
+                                         pc_file.properties.find_key('Description').value))
+    return sorted(result, cmp = lambda a, b: cmp(a.name.lower(), b.name.lower()))

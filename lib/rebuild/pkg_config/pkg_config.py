@@ -61,19 +61,11 @@ class pkg_config(object):
       libs.append('-lpthread')
     return libs
 
-  @classmethod
-  def __make_lib_pkgconfig_dir(clazz, root_dir):
-    return path.join(root_dir, 'lib/pkgconfig')
-
-  @classmethod
-  def __make_share_pkgconfig_dir(clazz, root_dir):
-    return path.join(root_dir, 'share/pkgconfig')
-
   # FIXME: add option for more path args
   @classmethod
   def make_pkg_config_path(clazz, root_dir):
-    libdir = clazz.__make_lib_pkgconfig_dir(root_dir)
-    sharedir = clazz.__make_share_pkgconfig_dir(root_dir)
+    libdir = path.join(root_dir, 'lib/pkgconfig')
+    sharedir = path.join(root_dir, 'share/pkgconfig')
     return [ libdir, sharedir ]
 
   @classmethod
