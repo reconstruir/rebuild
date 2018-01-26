@@ -37,12 +37,24 @@ class pkg_config_cli(object):
     print(str(table))
     return 0
   
-  def _command_modversion(self, modules):
-    #pkg-config --modversion glproto xcursor
-    #1.4.17
-    #1.1.14
-    print('_command_modversion(%s)' % (modules))
-    return 0
+  def _command_modversion(self, module_names):
+    module_versions = caca_pkg_config.module_versions(self.PKG_CONFIG_PATH.path, module_names)
+    rv = 0
+    for name in module_names:
+      if not self._print_mod_version(module_versions, name):
+        rv = 1
+    return rv
+  
+  def _print_mod_version(self, module_versions, name):
+    version = module_versions[name]
+    if version is None:
+      print('''Package %s was not found in the pkg-config search path.
+Perhaps you should add the directory containing `%s.pc'
+to the PKG_CONFIG_PATH environment variable
+No package '%s' found''' % (name, name, name))
+      return False
+    print(version)
+    return True
   
   @classmethod
   def run(clazz):

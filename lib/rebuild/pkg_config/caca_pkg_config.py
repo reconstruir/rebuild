@@ -47,4 +47,16 @@ class caca_pkg_config(object):
   def list_all_names(clazz, pc_path):
     mods = clazz.list_all(pc_path)
     return [ mod.name for mod in mods ]
-  
+
+  @classmethod
+  def module_versions(clazz, pc_path, module_names):
+    'List all modules available.'
+    files = clazz.scan(pc_path)
+    result = {}
+    for name in module_names:
+      pc_file = files.get(name, None)
+      if pc_file:
+        result[name] = pc_file.properties.find_key('Version').value
+      else:
+        result[name] = None
+    return result
