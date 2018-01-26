@@ -9,6 +9,12 @@ from collections import namedtuple
 
 class caca_pkg_config(object):
 
+  PROPERTY_CFLAGS = 'Cflags'
+  PROPERTY_DESCRIPTION = 'Description'
+  PROPERTY_LIBS = 'Libs'
+  PROPERTY_NAME = 'Name'
+  PROPERTY_VERSION = 'Version'
+  
   def __init__(self, pc_path):
     self.files = self._scan_path(pc_path)
   
@@ -49,7 +55,15 @@ class caca_pkg_config(object):
     result = {}
     pc_file = self.files.get(name, None)
     if pc_file:
-      return pc_file.resolved_properties.find_key('Version').value
+      return pc_file.resolved_properties.find_key(self.PROPERTY_VERSION).value
+    else:
+      return None
+
+  def module_cflags(self, name):
+    result = {}
+    pc_file = self.files.get(name, None)
+    if pc_file:
+      return pc_file.resolved_properties.find_key(self.PROPERTY_CFLAGS).value
     else:
       return None
 
@@ -60,3 +74,6 @@ class caca_pkg_config(object):
       result[name] = self.module_version(name)
     return result
   
+  def module_exists(self, name):
+    'Return True if module exists.'
+    return self.files.get(name, None) != None

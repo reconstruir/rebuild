@@ -20,7 +20,9 @@ class pkg_config_cli(object):
     command_group.add_argument('--list-all', action = 'store_true')
     command_group.add_argument('--modversion', nargs = '+', action = 'store',
                                help = 'Print the version for the given modules.')
-
+    command_group.add_argument('--cflags', nargs = '+', action = 'store',
+                               help = 'Print the cflags for the given modules.')
+    self.pc = caca_pkg_config(self.PKG_CONFIG_PATH.path)
     
   def main(self):
     args = self.parser.parse_args()
@@ -29,34 +31,42 @@ class pkg_config_cli(object):
       return self._command_list_all()
     elif args.modversion:
       return self._command_modversion(args.modversion)
+    elif args.cflags:
+      return self._command_cflags(args.cflags)
     return 0
 
   def _command_list_all(self):
-    pc = caca_pkg_config(self.PKG_CONFIG_PATH.path)
-    all_modules = pc.list_all()
+    all_modules = self.pc.list_all()
     table = text_table(data = all_modules, column_delimiter = ' ')
     print(str(table))
     return 0
   
   def _command_modversion(self, module_names):
-    pc = caca_pkg_config(self.PKG_CONFIG_PATH.path)
-    module_versions = pc.module_versions(module_names)
-    rv = 0
+    if not self._check_modules_exist(module_names):
+      return 1
     for name in module_names:
-      if not self._print_mod_version(module_versions, name):
-        rv = 1
-    return rv
+      version = self.pc.module_version(name)
+      print(version)
+    return 0
   
-  def _print_mod_version(self, module_versions, name):
-    version = module_versions[name]
-    if version is None:
-      print('''Package %s was not found in the pkg-config search path.
+  def _command_cflags(self, module_names):
+    if not self._check_modules_exist(module_names):
+      return 1
+    for name in module_names:
+      version = self.pc.module_cflags(name)
+      print(version)
+    return 0
+  
+  def _check_modules_exist(self, module_names):
+    result = True
+    for name in module_names:
+      if not self.pc.module_exists(name):
+        result = False
+        print('''Package %s was not found in the pkg-config search path.
 Perhaps you should add the directory containing `%s.pc'
 to the PKG_CONFIG_PATH environment variable
 No package '%s' found''' % (name, name, name))
-      return False
-    print(version)
-    return True
+    return result
   
   @classmethod
   def run(clazz):
