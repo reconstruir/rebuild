@@ -5,12 +5,15 @@ import argparse
 
 from rebuild.pkg_config import pkg_config
 from bes.common import string_util
+from bes.system import os_env_var
 from bes.text import text_table
 
 from rebuild.pkg_config import caca_pkg_config
 
 class pkg_config_cli(object):
 
+  PKG_CONFIG_PATH = os_env_var('PKG_CONFIG_PATH')
+  
   def __init__(self):
     self.parser = argparse.ArgumentParser(description = 'Build packages.')
     command_group = self.parser.add_mutually_exclusive_group()
@@ -29,7 +32,7 @@ class pkg_config_cli(object):
     return 0
 
   def _command_list_all(self):
-    all_modules = caca_pkg_config.list_all([ '/Users/ramiro/.rebuild/dev_tools/installation/lib/pkgconfig' ])
+    all_modules = caca_pkg_config.list_all(self.PKG_CONFIG_PATH.path)
     table = text_table(data = all_modules, column_delimiter = ' ')
     print(str(table))
     return 0
