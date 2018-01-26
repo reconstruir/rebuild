@@ -28,17 +28,19 @@ class pkg_config_cli(object):
     if args.list_all:
       return self._command_list_all()
     elif args.modversion:
-      return self._command_modversion(sorted(args.modversion))
+      return self._command_modversion(args.modversion)
     return 0
 
   def _command_list_all(self):
-    all_modules = caca_pkg_config.list_all(self.PKG_CONFIG_PATH.path)
+    pc = caca_pkg_config(self.PKG_CONFIG_PATH.path)
+    all_modules = pc.list_all()
     table = text_table(data = all_modules, column_delimiter = ' ')
     print(str(table))
     return 0
   
   def _command_modversion(self, module_names):
-    module_versions = caca_pkg_config.module_versions(self.PKG_CONFIG_PATH.path, module_names)
+    pc = caca_pkg_config(self.PKG_CONFIG_PATH.path)
+    module_versions = pc.module_versions(module_names)
     rv = 0
     for name in module_names:
       if not self._print_mod_version(module_versions, name):

@@ -3,7 +3,9 @@
 
 import os.path as path
 from bes.testing.unit_test import script_unit_test
+from bes.common import string_util
 from rebuild.pkg_config import caca_pkg_config
+from rebuild.base import build_os_env
 
 class test_rebuild_pkg_config(script_unit_test):
 
@@ -25,21 +27,42 @@ class test_rebuild_pkg_config(script_unit_test):
   @property
   def pc_path(self):
     return [ self.data_dir() ]
+
+  @property
+  def clean_env(self):
+    return build_os_env.make_clean_env(update = { 'PKG_CONFIG_PATH': ':'.join(self.pc_path) },
+                                       keep_keys = build_os_env.KEYS_THAT_ARE_PATHS)
   
   def test_list_all(self):
-    self.assertEquals( self.ALL_MODULES, [ mod.name for mod in caca_pkg_config.list_all(self.pc_path) ] )
+    self.maxDiff = None
+    cmd = [
+      '--list-all',
+    ]
+    rv = self.run_script(cmd, env = self.clean_env)
+    self.assertEquals( 0, rv.exit_code )
+    self.assertEquals( self.ALL_MODULES, self._parse_list_all_output(rv.stdout) )
+
+  @classmethod
+  def _parse_list_all_output(clazz, stdout):
+    lines = stdout.strip().split('\n')
+    return [ string_util.split_by_white_space(line, strip = True)[0] for line in lines ]
 
   def test_modversion(self):
-    mod_versions = caca_pkg_config.module_versions(self.pc_path, self.ALL_MODULES)
+    self.maxDiff = None
+    cmd = [
+      '--modversion',
+    ] + self.ALL_MODULES
+    rv = self.run_script(cmd, env = self.clean_env)
     expected_versions = [
-      '0.24', '18.0.12', '2.0.0', '2.44.1', '2.44.1', '2.44.1', '2.44.1', '2.44.1',
-      '2.44.1', '2.44.1', '2.44.1', '2.2.0', '6.9.2', '6.9.2', '6.9.2', '6.9.2',
-      '1.72', '3.1.2', '56.41.100', '56.4.100', '5.16.101', '56.36.100', '54.27.100',
-      '1.0.2d', '7.44.0', '3.2.1', '1.6.18', '1.6.18', '1.0.2d', '1.2.100', '3.1.101',
-      '4.0.4', '0.4.3', '2.9.2', '6.9.2', '6.9.2', '6.9.2', '6.9.2', '6.9.2', '6.9.2',
-      '3.0.0', '2.2.0', '1.0.2d', '3.02.02', '6.9.2', '6.9.2', '1.2.8',
+      u'0.24', u'18.0.12', u'2.0.0', u'2.44.1', u'2.44.1', u'2.44.1', u'2.44.1', u'2.44.1',
+      u'2.44.1', u'2.44.1', u'2.44.1', u'2.2.0', u'6.9.2', u'6.9.2', u'6.9.2', u'6.9.2',
+      u'1.72', u'3.1.2', u'56.41.100', u'56.4.100', u'5.16.101', u'56.36.100', u'54.27.100',
+      u'1.0.2d', u'7.44.0', u'3.2.1', u'1.6.18', u'1.6.18', u'1.0.2d', u'1.2.100', u'3.1.101',
+      u'4.0.4', u'0.4.3', u'2.9.2', u'6.9.2', u'6.9.2', u'6.9.2', u'6.9.2', u'6.9.2', u'6.9.2',
+      u'3.0.0', u'2.2.0', u'1.0.2d', u'3.02.02', u'6.9.2', u'6.9.2', u'1.2.8',
     ]
-    self.assertEquals( expected_versions, [ mod_versions[name] for name in self.ALL_MODULES ] )
+    self.assertEquals( 0, rv.exit_code )
+    self.assertEquals( expected_versions, rv.stdout.strip().split('\n') )
 
 if __name__ == '__main__':
   script_unit_test.main()
