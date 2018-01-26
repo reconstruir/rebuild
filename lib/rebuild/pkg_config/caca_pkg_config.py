@@ -2,8 +2,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.fs import dir_util, file_util #file_find, file_match, 
-
+from bes.fs import dir_util, file_util
+from rebuild.dependency import dependency_resolver
 from .caca_pkg_config_file import caca_pkg_config_file
 from collections import namedtuple
 
@@ -17,7 +17,7 @@ class caca_pkg_config(object):
   
   def __init__(self, pc_path):
     self.files = self._scan_path(pc_path)
-  
+    
   @classmethod
   def _scan_dir(clazz, d):
     'Scan a directory for .pc files.'
@@ -38,6 +38,14 @@ class caca_pkg_config(object):
           raise RuntimeError('Duplicate pc file: %s' % (filename))
         result[name] = pc_file
     return result
+
+  @classmethod
+  def _make_dep_map(clazz, files):
+    'Scan a directory for .pc files.'
+    dep_map = {}
+    for name, pc_file in self.files.items():
+      pass
+    return dep_map
   
   _list_all_item = namedtuple('_list_all_item', 'name,description')
   def list_all(self):
