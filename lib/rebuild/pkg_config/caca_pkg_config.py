@@ -42,3 +42,9 @@ class caca_pkg_config(object):
     for name, pc_file in files.items():
       result.append(clazz._list_all_item(name, pc_file.properties.find_key('Description').value))
     return sorted(result, cmp = lambda a, b: cmp(a.name.lower(), b.name.lower()))
+
+  @classmethod
+  def list_all_names(clazz, pc_path):
+    mods = clazz.list_all(pc_path)
+    return [ mod.name for mod in mods ]
+  

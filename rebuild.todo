@@ -639,8 +639,14 @@ jan 14
 - change test_mirror_script to be new style
 - bes_network test_data paths
 
-jan 218
+jan 21
 - build_os_env.env_substitite() is confusing
 - the whole variable substitution chicken and egg issue
 - from step.py # FIXME: unify the replacements here with those in step_pkg_config_make_pc.py
 
+jan 25
+- rebuild.dependency.dependency_resolver.missing_dependency_error: Missing dependency for python/python_kivy/build.py: python_pkg_resources
+if python_kivy depends on python_pillow and pillow depents pn pkg_resources and pkg_resources is retired the error doesnt say
+why the dependency is missing
+
+some python packages depend on setuptools at runtime because of pkg_resources.  python3 has that builtin so need a variable way to do this dependency onpyt for python2

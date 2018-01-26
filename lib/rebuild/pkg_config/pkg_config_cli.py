@@ -5,6 +5,7 @@ import argparse
 
 from rebuild.pkg_config import pkg_config
 from bes.common import string_util
+from bes.text import text_table
 
 from rebuild.pkg_config import caca_pkg_config
 
@@ -29,12 +30,14 @@ class pkg_config_cli(object):
 
   def _command_list_all(self):
     all_modules = caca_pkg_config.list_all([ '/Users/ramiro/.rebuild/dev_tools/installation/lib/pkgconfig' ])
-    longest_name = max([ len(mod.name) for mod in all_modules ])
-    for mod in all_modules:
-      print('%s %s' % (string_util.left_justify(mod.name, longest_name), mod.description))
+    table = text_table(data = all_modules, column_delimiter = ' ')
+    print(str(table))
     return 0
   
   def _command_modversion(self, modules):
+    #pkg-config --modversion glproto xcursor
+    #1.4.17
+    #1.1.14
     print('_command_modversion(%s)' % (modules))
     return 0
   
