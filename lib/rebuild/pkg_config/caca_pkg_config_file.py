@@ -9,13 +9,20 @@ from bes.text import lines
 from bes.key_value import key_value, key_value_list
 from bes.fs import file_util
 #from .entry import entry
-#from rebuild.base import requirement
+from rebuild.base import requirement
 from .caca_entry import caca_entry
 
 from collections import namedtuple
 
 class caca_pkg_config_file(namedtuple('caca_pkg_config_file', 'filename,entries,variables,properties,resolved_variables,resolved_properties')):
 
+  PROPERTY_CFLAGS = 'Cflags'
+  PROPERTY_DESCRIPTION = 'Description'
+  PROPERTY_LIBS = 'Libs'
+  PROPERTY_NAME = 'Name'
+  PROPERTY_REQUIRES = 'Requires'
+  PROPERTY_VERSION = 'Version'
+  
   def __new__(clazz, filename, entries, variables, properties):
     check.check_string(filename)
     check.check_caca_pkg_config_entry_seq(entries)
@@ -25,6 +32,14 @@ class caca_pkg_config_file(namedtuple('caca_pkg_config_file', 'filename,entries,
     resolved_variables.substitute_variables(variables.to_dict())
     resolved_properties = properties[:]
     resolved_properties.substitute_variables(resolved_variables.to_dict())
+
+    raw_reqs = resolved_properties.find_key(clazz.PROPERTY_REQUIRES)
+    if raw_reqs:
+      reqs = clazz._parse_requirements(raw_reqs.value)
+      resolved_properties.replace(clazz.PROPERTY_REQUIRES, key_value(clazz.PROPERTY_REQUIRES, reqs))
+    else:
+      resolved_properties.append(key_value(clazz.PROPERTY_REQUIRES, []))
+    
     return clazz.__bases__[0].__new__(clazz, filename, entries, variables, properties, resolved_variables, resolved_properties)
   
   def write_file(self, filename, backup = True):
@@ -50,7 +65,16 @@ class caca_pkg_config_file(namedtuple('caca_pkg_config_file', 'filename,entries,
   def parse_file(clazz, filename):
     text = file_util.read(filename).decode('utf-8')
     return clazz.parse_text(filename, text)
-  
+
+  @classmethod
+  def _parse_requirements(clazz, text):
+    'Parse the "Requires" property of a pc file.'
+    ll = lines(text, delimiter = ',').texts(strip_head = True, strip_tail = True)
+    result = []
+    for s in ll:
+      result.extend(requirement.parse(s))
+    return result
+    
 #  def __str__(self):
 #    variables_lines = [ str(variable) for variable in self.variables ]
 #    properties_lines = [ str(export) for export in self.properties ]
@@ -145,3 +169,19 @@ class caca_pkg_config_file(namedtuple('caca_pkg_config_file', 'filename,entries,
   def is_pc_file(clazz, f):
     'Return True of f is a pkg-config pc file.'
     return f.lower().endswith('.pc')
+
+  @property
+  def version(self):
+    return self.get_property(self.PROPERTY_VERSION)
+
+  @property
+  def cflags(self):
+    return self.get_property(self.PROPERTY_CFLAGS)
+
+  @property
+  def requires(self):
+    return self.get_property(self.PROPERTY_REQUIRES)
+
+  def get_property(self, name):
+    return self.resolved_properties.find_key(name).value
+  

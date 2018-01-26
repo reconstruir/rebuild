@@ -9,12 +9,6 @@ from collections import namedtuple
 
 class caca_pkg_config(object):
 
-  PROPERTY_CFLAGS = 'Cflags'
-  PROPERTY_DESCRIPTION = 'Description'
-  PROPERTY_LIBS = 'Libs'
-  PROPERTY_NAME = 'Name'
-  PROPERTY_VERSION = 'Version'
-  
   def __init__(self, pc_path):
     self.files = self._scan_path(pc_path)
     
@@ -59,29 +53,21 @@ class caca_pkg_config(object):
     mods = self.list_all()
     return [ mod.name for mod in mods ]
 
-  def module_version(self, name):
-    result = {}
-    pc_file = self.files.get(name, None)
-    if pc_file:
-      return pc_file.resolved_properties.find_key(self.PROPERTY_VERSION).value
-    else:
-      return None
+  def module_version(self, module_name):
+    return self.module_property(module_name, caca_pkg_config_file.PROPERTY_VERSION)
+    
+  def module_cflags(self, module_name):
+    return self.module_property(module_name, caca_pkg_config_file.PROPERTY_CFLAGS)
+    
+  def module_requires(self, module_name):
+    return self.module_property(module_name, caca_pkg_config_file.PROPERTY_REQUIRES)
 
-  def module_cflags(self, name):
-    result = {}
-    pc_file = self.files.get(name, None)
-    if pc_file:
-      return pc_file.resolved_properties.find_key(self.PROPERTY_CFLAGS).value
-    else:
-      return None
-
-  def module_versions(self, module_names):
-    'List all modules available.'
-    result = {}
-    for name in module_names:
-      result[name] = self.module_version(name)
-    return result
-  
+  def module_property(self, module_name, property_name):
+    pc_file = self.files.get(module_name, None)
+    if not pc_file:
+      raise ValueError('Invalid module: %s' % (module_name))
+    return pc_file.get_property(property_name)
+    
   def module_exists(self, name):
     'Return True if module exists.'
     return self.files.get(name, None) != None

@@ -47,7 +47,7 @@ class test_caca_pkg_config(unit_test):
 
   def test_modversion(self):
     pc = caca_pkg_config(self.pc_path)
-    mod_versions = pc.module_versions(self.ALL_MODULES)
+    mod_versions = [ pc.module_version(module_name) for module_name in self.ALL_MODULES ]
     expected_versions = [
       '0.24', '18.0.12', '2.0.0', '2.44.1', '2.44.1', '2.44.1', '2.44.1', '2.44.1',
       '2.44.1', '2.44.1', '2.44.1', '2.2.0', '6.9.2', '6.9.2', '6.9.2', '6.9.2',
@@ -56,8 +56,7 @@ class test_caca_pkg_config(unit_test):
       '4.0.4', '0.4.3', '2.9.2', '6.9.2', '6.9.2', '6.9.2', '6.9.2', '6.9.2', '6.9.2',
       '3.0.0', '2.2.0', '1.0.2d', '3.02.02', '6.9.2', '6.9.2', '1.2.8',
     ]
-    self.assertEquals( expected_versions, [ mod_versions[name] for name in self.ALL_MODULES ] )
-
+    self.assertEquals( expected_versions, mod_versions )
     
 if __name__ == '__main__':
   unit_test.main()

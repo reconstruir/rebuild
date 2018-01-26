@@ -22,6 +22,8 @@ class pkg_config_cli(object):
                                help = 'Print the version for the given modules.')
     command_group.add_argument('--cflags', nargs = '+', action = 'store',
                                help = 'Print the cflags for the given modules.')
+    command_group.add_argument('--print-requires', nargs = '+', action = 'store',
+                               help = 'Print the requires property for the given modules.')
     self.pc = caca_pkg_config(self.PKG_CONFIG_PATH.path)
     
   def main(self):
@@ -33,6 +35,8 @@ class pkg_config_cli(object):
       return self._command_modversion(args.modversion)
     elif args.cflags:
       return self._command_cflags(args.cflags)
+    elif args.print_requires:
+      return self._command_print_requires(args.print_requires)
     return 0
 
   def _command_list_all(self):
@@ -55,6 +59,15 @@ class pkg_config_cli(object):
     for name in module_names:
       version = self.pc.module_cflags(name)
       print(version)
+    return 0
+
+  def _command_print_requires(self, module_names):
+    if not self._check_modules_exist(module_names):
+      return 1
+    for name in module_names:
+      poto_requires = self.pc.module_requires(name)
+      for req in poto_requires:
+        print(req)
     return 0
   
   def _check_modules_exist(self, module_names):
