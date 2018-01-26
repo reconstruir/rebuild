@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: libtemplatedepends1
+Version: @VERSION@
+Description: libtemplatedepends1 is nice
+Requires:
+Libs: -L${libdir} -ltemplatedepends1
+Libs.private:
+Cflags: -I${includedir}
