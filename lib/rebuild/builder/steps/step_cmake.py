@@ -13,7 +13,7 @@ class step_cmake_configure(step):
     super(step_cmake_configure, self).__init__()
 
   def execute(self, script, env, args):
-    cmake_flags = self.args_get_list(args, 'cmake_flags')
+    cmake_flags = self.args_get_string_list(args, 'cmake_flags')
     cmake_env = self.args_get_key_value_list(args, 'cmake_env')
 
     cmd = [ 'cmake' ]
