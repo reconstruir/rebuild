@@ -4,9 +4,9 @@
 # FIXME: maintain integrity of original pc whitespace and comments
 
 #import copy, glob, os.path as path
-from bes.common import check #algorithm, string_util
+from bes.common import check, variable #algorithm, string_util
 from bes.text import lines
-from bes.key_value import key_value_list
+from bes.key_value import key_value, key_value_list
 from bes.fs import file_util
 #from .entry import entry
 #from rebuild.base import requirement
@@ -14,20 +14,19 @@ from .caca_entry import caca_entry
 
 from collections import namedtuple
 
-class caca_pkg_config_file(namedtuple('caca_pkg_config_file', 'filename,entries,variables,properties')):
+class caca_pkg_config_file(namedtuple('caca_pkg_config_file', 'filename,entries,variables,properties,resolved_variables,resolved_properties')):
 
   def __new__(clazz, filename, entries, variables, properties):
     check.check_string(filename)
     check.check_caca_pkg_config_entry_seq(entries)
     check.check_key_value_list(variables)
     check.check_key_value_list(properties)
-    return clazz.__bases__[0].__new__(clazz, filename, entries, variables, properties)
+    resolved_variables = variables[:]
+    resolved_variables.substitute_variables(variables.to_dict())
+    resolved_properties = properties[:]
+    resolved_properties.substitute_variables(resolved_variables.to_dict())
+    return clazz.__bases__[0].__new__(clazz, filename, entries, variables, properties, resolved_variables, resolved_properties)
   
-#  def __init__(self, filename):
-#    self.filename = filename
-#    self.content = file_util.read(path.abspath(filename)).decode('utf-8')
-#    self.variables, self.properties = self._parse(self.content)
-
   def write_file(self, filename, backup = True):
     new_content = str(self)
     if path.exists(filename):
@@ -146,4 +145,3 @@ class caca_pkg_config_file(namedtuple('caca_pkg_config_file', 'filename,entries,
   def is_pc_file(clazz, f):
     'Return True of f is a pkg-config pc file.'
     return f.lower().endswith('.pc')
-

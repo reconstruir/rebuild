@@ -40,7 +40,7 @@ class caca_pkg_config(object):
     files = clazz.scan(pc_path)
     result = []
     for name, pc_file in files.items():
-      result.append(clazz._list_all_item(name, pc_file.properties.find_key('Description').value))
+      result.append(clazz._list_all_item(name, pc_file.resolved_properties.find_key('Description').value))
     return sorted(result, cmp = lambda a, b: cmp(a.name.lower(), b.name.lower()))
 
   @classmethod
@@ -56,7 +56,7 @@ class caca_pkg_config(object):
     for name in module_names:
       pc_file = files.get(name, None)
       if pc_file:
-        result[name] = pc_file.properties.find_key('Version').value
+        result[name] = pc_file.resolved_properties.find_key('Version').value
       else:
         result[name] = None
     return result
