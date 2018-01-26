@@ -50,9 +50,7 @@ class test_rebuilder_script(script_unit_test):
       'fructose',
     ]
     rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'recipe_v2'))
-    if True: #rv.exit_code != 0:
-      print('FAILED stderr:')
-      print((rv.stderr))
+    if rv.exit_code != 0:
       print('FAILED stdout:')
       print((rv.stdout))
     self.assertEqual( 0, rv.exit_code )
