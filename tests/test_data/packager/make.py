@@ -15,17 +15,15 @@ DEBUG = False
 
 def main():
   root = os.getcwd()
-  template_name = 'template'
-  template_version = '1.0.0'
-  template_dir = '%s-%s' % (template_name, template_version)
-  make_template_tarball(root, template_name, template_version)
+  make_template_tarball(root, 'template', '1.0.0')
+  make_template_tarball(root, 'templatedepends', '1.2.3')
   PACKAGES = [
-    ( 'fructose-3.4.5-6', template_name, template_version ),
-    ( 'mercury-1.2.8-0', template_name, template_version ),
-    ( 'arsenic-1.2.9-0', template_name, template_version ),
-    ( 'fiber-1.0.0-0', template_name, template_version ),
-    ( 'pear-1.2.3-1', 'apple', '1.2.3' ),
-    ( 'orange-6.5.4-3', 'apple', '1.2.3' ),
+#    ( 'fructose-3.4.5-6', 'template', '1.0.0' ),
+#    ( 'mercury-1.2.8-0', 'template', '1.0.0' ),
+#    ( 'arsenic-1.2.9-0', 'template', '1.0.0' ),
+#    ( 'fiber-1.0.0-0', 'template', '1.0.0' ),
+    ( 'pear-1.2.3-1', 'templatedepends', '1.2.3' ),
+    ( 'orange-6.5.4-3', 'templatedepends', '1.2.3' ),
    ]
 
   for package, template_name, template_version in PACKAGES:
