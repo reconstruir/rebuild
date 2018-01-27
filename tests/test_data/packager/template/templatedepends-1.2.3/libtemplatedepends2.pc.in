@@ -6,7 +6,7 @@ includedir=@includedir@
 Name: libtemplatedepends2
 Version: @VERSION@
 Description: libtemplatedepends2 is nice
-Requires:
-Libs: -L${libdir} -ltemplatedepends2
-Libs.private:
-Cflags: -I${includedir}
+Requires: @templatedepends2_REQUIRES@
+Libs: -L${libdir} @templatedepends2_LIBS@
+Libs.private: @templatedepends2_LIBS_PRIVATE@
+Cflags: -I${includedir} @templatedepends2_CFLAGS@

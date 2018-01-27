@@ -7,4 +7,3 @@ Name: @PACKAGE_NAME@
 Version: @VERSION@
 Description: @PACKAGE_NAME@ is nice
 Requires: libtemplatedepends1 libtemplatedepends2
-
