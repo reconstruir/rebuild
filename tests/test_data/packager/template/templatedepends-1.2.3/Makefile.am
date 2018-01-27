@@ -1,4 +1,4 @@
-SUBDIRS = libs programs
+SUBDIRS = libs programs my_macros
 dist_doc_DATA = README
 
 pkgconfigdir = $(libdir)/pkgconfig

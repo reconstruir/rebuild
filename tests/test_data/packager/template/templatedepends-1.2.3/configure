@@ -266,8 +266,8 @@ fi
     $as_echo "$0: be upgraded to zsh 4.3.4 or later."
   else
     $as_echo "$0: Please tell bug-autoconf@gnu.org and
-$0: templatedepends-maintainer@fateware.com about your system,
-$0: including any error possibly output before this
+$0: templatedepends-maintainer@fateware.com about your
+$0: system, including any error possibly output before this
 $0: message. Then install a modern shell, or manually run
 $0: the script under such a shell if you do have one."
   fi
@@ -588,6 +588,11 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
+ZLIB_LIBS
+ZLIB_CFLAGS
+PKG_CONFIG_LIBDIR
+PKG_CONFIG_PATH
+PKG_CONFIG
 ac_ct_AR
 AR
 RANLIB
@@ -686,7 +691,12 @@ CC
 CFLAGS
 LDFLAGS
 LIBS
-CPPFLAGS'
+CPPFLAGS
+PKG_CONFIG
+PKG_CONFIG_PATH
+PKG_CONFIG_LIBDIR
+ZLIB_CFLAGS
+ZLIB_LIBS'
 
 
 # Initialize some variables set by options.
@@ -1316,6 +1326,13 @@ Some influential environment variables:
   LIBS        libraries to pass to the linker, e.g. -l<library>
   CPPFLAGS    (Objective) C/C++ preprocessor flags, e.g. -I<include dir> if
               you have headers in a nonstandard directory <include dir>
+  PKG_CONFIG  path to pkg-config utility
+  PKG_CONFIG_PATH
+              directories to add to pkg-config's search path
+  PKG_CONFIG_LIBDIR
+              path overriding pkg-config's built-in search path
+  ZLIB_CFLAGS C compiler flags for ZLIB, overriding pkg-config
+  ZLIB_LIBS   linker flags for ZLIB, overriding pkg-config
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -2393,6 +2410,7 @@ END
     as_fn_error $? "Your 'rm' program is bad, sorry." "$LINENO" 5
   fi
 fi
+
 
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
@@ -3525,8 +3543,6 @@ else
   RANLIB="$ac_cv_prog_RANLIB"
 fi
 
-#AM_PROG_AR
-#PKG_PROG_PKG_CONFIG(0.16)
 
 if test -n "$ac_tool_prefix"; then
   for ac_prog in ar lib "link -lib"
@@ -3699,9 +3715,209 @@ unknown)
   ;;
 esac
 
+
+
+
+
+
+
+
+if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
+	if test -n "$ac_tool_prefix"; then
+  # Extract the first word of "${ac_tool_prefix}pkg-config", so it can be a program name with args.
+set dummy ${ac_tool_prefix}pkg-config; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_PKG_CONFIG+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $PKG_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_PKG_CONFIG="$PKG_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+PKG_CONFIG=$ac_cv_path_PKG_CONFIG
+if test -n "$PKG_CONFIG"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $PKG_CONFIG" >&5
+$as_echo "$PKG_CONFIG" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+fi
+if test -z "$ac_cv_path_PKG_CONFIG"; then
+  ac_pt_PKG_CONFIG=$PKG_CONFIG
+  # Extract the first word of "pkg-config", so it can be a program name with args.
+set dummy pkg-config; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_ac_pt_PKG_CONFIG+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $ac_pt_PKG_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ac_pt_PKG_CONFIG="$ac_pt_PKG_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_ac_pt_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+ac_pt_PKG_CONFIG=$ac_cv_path_ac_pt_PKG_CONFIG
+if test -n "$ac_pt_PKG_CONFIG"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_pt_PKG_CONFIG" >&5
+$as_echo "$ac_pt_PKG_CONFIG" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+  if test "x$ac_pt_PKG_CONFIG" = x; then
+    PKG_CONFIG=""
+  else
+    case $cross_compiling:$ac_tool_warned in
+yes:)
+{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
+$as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
+ac_tool_warned=yes ;;
+esac
+    PKG_CONFIG=$ac_pt_PKG_CONFIG
+  fi
+else
+  PKG_CONFIG="$ac_cv_path_PKG_CONFIG"
+fi
+
+fi
+if test -n "$PKG_CONFIG"; then
+	_pkg_min_version=0.29.1
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking pkg-config is at least version $_pkg_min_version" >&5
+$as_echo_n "checking pkg-config is at least version $_pkg_min_version... " >&6; }
+	if $PKG_CONFIG --atleast-pkgconfig-version $_pkg_min_version; then
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	else
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+		PKG_CONFIG=""
+	fi
+fi
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for ZLIB" >&5
+$as_echo_n "checking for ZLIB... " >&6; }
+
+if test -n "$ZLIB_CFLAGS"; then
+    pkg_cv_ZLIB_CFLAGS="$ZLIB_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"\$zlib_pkg\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "$zlib_pkg") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_ZLIB_CFLAGS=`$PKG_CONFIG --cflags "$zlib_pkg" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$ZLIB_LIBS"; then
+    pkg_cv_ZLIB_LIBS="$ZLIB_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"\$zlib_pkg\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "$zlib_pkg") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_ZLIB_LIBS=`$PKG_CONFIG --libs "$zlib_pkg" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        ZLIB_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "$zlib_pkg" 2>&1`
+        else
+	        ZLIB_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "$zlib_pkg" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$ZLIB_PKG_ERRORS" >&5
+
+	:
+elif test $pkg_failed = untried; then
+     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+	:
+else
+	ZLIB_CFLAGS=$pkg_cv_ZLIB_CFLAGS
+	ZLIB_LIBS=$pkg_cv_ZLIB_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	have_zlib="yes (pkg-config)"
+fi
+#PKG_CHECK_MODULES([OPENSSL], [openssl])
+#echo "FUCKFUCK YOU"
+#which pkg-config
+#echo "HAVE_PKG_CONFIG:"  $HAVE_PKG_CONFIG
+#AC_CHECK_PROG(HAVE_PKG_CONFIG, [ pkg-config ], [ yes ], [ no ])
+#if test x"$HAVE_PKG_CONFIG" != x"yes" ; then
+#  AC_MSG_ERROR([Please install pkg-config before installing.])
+#fi
+#m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 ac_config_headers="$ac_config_headers config.h"
 
-ac_config_files="$ac_config_files Makefile libs/templatedepends1/Makefile libs/templatedepends2/Makefile libs/Makefile programs/Makefile programs/templatedepends_program1/Makefile programs/templatedepends_program2/Makefile templatedepends.pc libtemplatedepends1.pc libtemplatedepends2.pc"
+ac_config_files="$ac_config_files Makefile libs/Makefile libs/templatedepends1/Makefile libs/templatedepends2/Makefile libtemplatedepends1.pc libtemplatedepends2.pc my_macros/Makefile programs/Makefile programs/templatedepends_program1/Makefile programs/templatedepends_program2/Makefile templatedepends.pc"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -4431,15 +4647,16 @@ do
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "config.h") CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
+    "libs/Makefile") CONFIG_FILES="$CONFIG_FILES libs/Makefile" ;;
     "libs/templatedepends1/Makefile") CONFIG_FILES="$CONFIG_FILES libs/templatedepends1/Makefile" ;;
     "libs/templatedepends2/Makefile") CONFIG_FILES="$CONFIG_FILES libs/templatedepends2/Makefile" ;;
-    "libs/Makefile") CONFIG_FILES="$CONFIG_FILES libs/Makefile" ;;
+    "libtemplatedepends1.pc") CONFIG_FILES="$CONFIG_FILES libtemplatedepends1.pc" ;;
+    "libtemplatedepends2.pc") CONFIG_FILES="$CONFIG_FILES libtemplatedepends2.pc" ;;
+    "my_macros/Makefile") CONFIG_FILES="$CONFIG_FILES my_macros/Makefile" ;;
     "programs/Makefile") CONFIG_FILES="$CONFIG_FILES programs/Makefile" ;;
     "programs/templatedepends_program1/Makefile") CONFIG_FILES="$CONFIG_FILES programs/templatedepends_program1/Makefile" ;;
     "programs/templatedepends_program2/Makefile") CONFIG_FILES="$CONFIG_FILES programs/templatedepends_program2/Makefile" ;;
     "templatedepends.pc") CONFIG_FILES="$CONFIG_FILES templatedepends.pc" ;;
-    "libtemplatedepends1.pc") CONFIG_FILES="$CONFIG_FILES libtemplatedepends1.pc" ;;
-    "libtemplatedepends2.pc") CONFIG_FILES="$CONFIG_FILES libtemplatedepends2.pc" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac

@@ -88,7 +88,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/my_macros/pkg.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 DIST_COMMON = $(srcdir)/Makefile.am $(top_srcdir)/configure \
@@ -97,7 +98,8 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = templatedepends.pc libtemplatedepends1.pc libtemplatedepends2.pc
+CONFIG_CLEAN_FILES = libtemplatedepends1.pc libtemplatedepends2.pc \
+	templatedepends.pc
 CONFIG_CLEAN_VPATH_FILES =
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -185,9 +187,10 @@ ETAGS = etags
 CTAGS = ctags
 CSCOPE = cscope
 DIST_SUBDIRS = $(SUBDIRS)
-am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/templatedepends.pc.in \
-	$(srcdir)/config.h.in $(srcdir)/libtemplatedepends1.pc.in \
-	$(srcdir)/libtemplatedepends2.pc.in README ar-lib compile depcomp \
+am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/config.h.in \
+	$(srcdir)/libtemplatedepends1.pc.in \
+	$(srcdir)/libtemplatedepends2.pc.in \
+	$(srcdir)/templatedepends.pc.in README ar-lib compile depcomp \
 	install-sh missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
@@ -270,11 +273,16 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
 VERSION = @VERSION@
+ZLIB_CFLAGS = @ZLIB_CFLAGS@
+ZLIB_LIBS = @ZLIB_LIBS@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -318,7 +326,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = libs programs
+SUBDIRS = libs programs my_macros
 dist_doc_DATA = README
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = templatedepends.pc libtemplatedepends1.pc libtemplatedepends2.pc
@@ -375,11 +383,11 @@ $(srcdir)/config.h.in:  $(am__configure_deps)
 
 distclean-hdr:
 	-rm -f config.h stamp-h1
-templatedepends.pc: $(top_builddir)/config.status $(srcdir)/templatedepends.pc.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
 libtemplatedepends1.pc: $(top_builddir)/config.status $(srcdir)/libtemplatedepends1.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 libtemplatedepends2.pc: $(top_builddir)/config.status $(srcdir)/libtemplatedepends2.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+templatedepends.pc: $(top_builddir)/config.status $(srcdir)/templatedepends.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 install-dist_docDATA: $(dist_doc_DATA)
 	@$(NORMAL_INSTALL)
