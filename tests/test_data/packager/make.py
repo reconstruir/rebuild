@@ -3,7 +3,7 @@
 
 import os, os.path as path
 from bes.archive import archiver
-from bes.fs import file_replace, file_util, tar_util
+from bes.fs import file_replace, file_find, file_util, tar_util
 from bes.refactor import files as refactor_files
 from rebuild.package.unit_test_packages import unit_test_packages
 from rebuild.base import build_os_env, package_descriptor, requirement
@@ -11,7 +11,7 @@ from bes.fs import temp_file
 from bes.common import Shell
 
 DEBUG = False
-#DEBUG = True
+DEBUG = True
 
 def main():
   root = os.getcwd()
@@ -45,7 +45,8 @@ def main():
       if value.startswith('file:'):
         filename = value.partition(':')[2]
         more_replacements[key] = file_util.read(filename)
-  
+
+  pc_files_dir = path.join(root, 'pc_files')
   for package, template_name, template_version, more_replacements in PACKAGES:
     template_tarball = path.join(root, '%s-%s.tar.gz' % (template_name, template_version))
     tmp_dir = temp_file.make_temp_dir(delete = not DEBUG)
@@ -87,7 +88,12 @@ def main():
     env['GZIP'] = '-n'
     flat_command = ' && '.join(command)
     Shell.execute(flat_command, shell = True, non_blocking = True, env = env)
-
+    pc_files = file_find.find_fnmatch(working_dir, [ '*.pc' ], relative = False)
+    for pc_file in pc_files:
+      dst_pc_file = path.join(pc_files_dir, path.basename(pc_file))
+      assert not path.isfile(dst_pc_file)
+      file_util.copy(pc_file, dst_pc_file)
+    
 def make_template_tarball(root, template_name, template_version):
   tmp_dir = temp_file.make_temp_dir(delete = not DEBUG)
   if DEBUG:
