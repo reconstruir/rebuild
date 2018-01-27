@@ -10,6 +10,9 @@ from rebuild.base import build_os_env, package_descriptor, requirement
 from bes.fs import temp_file
 from bes.common import Shell
 
+DEBUG = False
+#DEBUG = True
+
 def main():
   root = os.getcwd()
   template_name = 'template'
@@ -27,7 +30,7 @@ def main():
 
   for package, template_name, template_version in PACKAGES:
     template_tarball = path.join(root, '%s-%s.tar.gz' % (template_name, template_version))
-    tmp_dir = temp_file.make_temp_dir()
+    tmp_dir = temp_file.make_temp_dir(delete = not DEBUG)
     desc = unit_test_packages.TEST_PACKAGES[package]
     pi = desc['package_info']
 
@@ -35,6 +38,8 @@ def main():
 
     archiver.extract(template_tarball, tmp_dir, base_dir = 'foo', strip_common_base = True)
     working_dir = path.join(tmp_dir, 'foo')
+    if DEBUG:
+      print('working_dir=%s' % (working_dir))
     refactor_files.refactor(template_name, pi.name, [ working_dir ])
     configure_ac_path = path.join(working_dir, 'configure.ac')
 
@@ -51,7 +56,8 @@ def main():
     ]
     env = build_os_env.make_clean_env(keep_keys = [ 'PATH' ])
     env['GZIP'] = '-n'
-    Shell.execute(' && '.join(command), shell = True, non_blocking = True, env = env)
+    flat_command = ' && '.join(command)
+    Shell.execute(flat_command, shell = True, non_blocking = True, env = env)
 
 def make_template_tarball(root, template_name, template_version):
   tmp_dir = temp_file.make_temp_dir(delete = False)
@@ -71,7 +77,10 @@ def make_template_tarball(root, template_name, template_version):
   env = build_os_env.make_clean_env(keep_keys = [ 'PATH' ])
   env['GZIP'] = '-n'
   Shell.execute(' && '.join(command), shell = True, non_blocking = True, env = env)
-    
+  result = path.join(root, '%s-%s.tar.gz' % (template_name, template_version))
+  assert path.isfile(result)
+  return result
+  
 if __name__ == '__main__':
   raise SystemExit(main())
   
