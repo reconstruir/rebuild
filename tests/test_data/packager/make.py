@@ -11,7 +11,7 @@ from bes.fs import temp_file
 from bes.common import Shell
 
 DEBUG = False
-DEBUG = True
+#DEBUG = True
 
 def main():
   root = os.getcwd()
@@ -24,7 +24,7 @@ def main():
     ( 'fiber-1.0.0-0', 'template', '1.0.0', {} ),
     ( 'pear-1.2.3-1', 'templatedepends', '1.2.3', {
 #      '#@REB_01@': 'PKG_CHECK_MODULES([CACA], [caca])',
-      '#@REB_02@': 'pear1_REQUIRES="caca_requires1"',
+      '#@REB_02@': 'pear1_REQUIRES="potocaca_requires1"',
       '#@REB_03@': 'AC_SUBST(pear1_REQUIRES)',
       '#@REB_04@': 'pear1_LIBS="poto_libs"',
       '#@REB_05@': 'AC_SUBST(pear1_LIBS)',
@@ -54,7 +54,7 @@ def main():
         filename = value.partition(':')[2]
         more_replacements[key] = file_util.read(filename)
 
-  pc_files_dir = path.join(root, 'pc_files')
+  pc_files_dir = path.join(root, '../pkg_config/dependency_tests')
   for package, template_name, template_version, more_replacements in PACKAGES:
     template_tarball = path.join(root, '%s-%s.tar.gz' % (template_name, template_version))
     tmp_dir = temp_file.make_temp_dir(delete = not DEBUG)

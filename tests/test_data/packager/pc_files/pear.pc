@@ -1,9 +1,0 @@
-prefix=/usr/local
-exec_prefix=${prefix}
-libdir=${exec_prefix}/lib
-includedir=${prefix}/include
-
-Name: pear
-Version: 1.2.3
-Description: pear is nice
-Requires: libpear1 libpear2
