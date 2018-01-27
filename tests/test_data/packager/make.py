@@ -18,10 +18,10 @@ def main():
   make_template_tarball(root, 'template', '1.0.0')
   make_template_tarball(root, 'templatedepends', '1.2.3')
   PACKAGES = [
-#    ( 'fructose-3.4.5-6', 'template', '1.0.0' ),
-#    ( 'mercury-1.2.8-0', 'template', '1.0.0' ),
-#    ( 'arsenic-1.2.9-0', 'template', '1.0.0' ),
-#    ( 'fiber-1.0.0-0', 'template', '1.0.0' ),
+    ( 'fructose-3.4.5-6', 'template', '1.0.0' ),
+    ( 'mercury-1.2.8-0', 'template', '1.0.0' ),
+    ( 'arsenic-1.2.9-0', 'template', '1.0.0' ),
+    ( 'fiber-1.0.0-0', 'template', '1.0.0' ),
     ( 'pear-1.2.3-1', 'templatedepends', '1.2.3' ),
     ( 'orange-6.5.4-3', 'templatedepends', '1.2.3' ),
    ]
