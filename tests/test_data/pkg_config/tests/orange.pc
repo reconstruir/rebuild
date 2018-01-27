@@ -1,0 +1,9 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: orange
+Version: 6.5.4
+Description: orange is nice
+Requires: liborange1 liborange2

@@ -1,0 +1,12 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libfructose2
+Version: 3.4.5
+Description: libfructose2 is nice
+Requires: libfructose1
+Libs: -L${libdir} -lfructose2
+Libs.private:
+Cflags: -I${includedir}

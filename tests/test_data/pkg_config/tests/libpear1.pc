@@ -1,0 +1,12 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libpear1
+Version: 1.2.3
+Description: libpear1 is nice
+Requires: caca_requires1
+Libs: -L${libdir} poto_libs
+Libs.private: poto_libs_private
+Cflags: -I${includedir} poto_cflags

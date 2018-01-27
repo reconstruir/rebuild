@@ -1,0 +1,10 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: fructose
+Version: 3.4.5
+Description: fructose is nice
+Requires: libfructose1 libfructose2
+
