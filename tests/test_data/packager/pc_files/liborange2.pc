@@ -1,0 +1,12 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: liborange2
+Version: 6.5.4
+Description: liborange2 is nice
+Requires: @orange2_REQUIRES@
+Libs: -L${libdir} @orange2_LIBS@
+Libs.private: @orange2_LIBS_PRIVATE@
+Cflags: -I${includedir} @orange2_CFLAGS@

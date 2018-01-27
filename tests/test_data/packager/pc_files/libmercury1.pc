@@ -1,0 +1,12 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libmercury1
+Version: 1.2.8
+Description: libmercury1 is nice
+Requires:
+Libs: -L${libdir} -lmercury1
+Libs.private:
+Cflags: -I${includedir}

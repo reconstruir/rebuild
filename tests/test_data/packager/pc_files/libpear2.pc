@@ -1,0 +1,12 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libpear2
+Version: 1.2.3
+Description: libpear2 is nice
+Requires: @pear2_REQUIRES@
+Libs: -L${libdir} @pear2_LIBS@
+Libs.private: @pear2_LIBS_PRIVATE@
+Cflags: -I${includedir} @pear2_CFLAGS@
