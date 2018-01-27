@@ -24,7 +24,7 @@ def main():
     ( 'fiber-1.0.0-0', 'template', '1.0.0', {} ),
     ( 'pear-1.2.3-1', 'templatedepends', '1.2.3', {
 #      '#@REB_01@': 'PKG_CHECK_MODULES([CACA], [caca])',
-      '#@REB_02@': 'pear1_REQUIRES="poto_requires"',
+      '#@REB_02@': 'pear1_REQUIRES="caca_requires1"',
       '#@REB_03@': 'AC_SUBST(pear1_REQUIRES)',
       '#@REB_04@': 'pear1_LIBS="poto_libs"',
       '#@REB_05@': 'AC_SUBST(pear1_LIBS)',
@@ -32,6 +32,14 @@ def main():
       '#@REB_07@': 'AC_SUBST(pear1_LIBS_PRIVATE)',
       '#@REB_08@': 'pear1_CFLAGS="poto_cflags"',
       '#@REB_09@': 'AC_SUBST(pear1_CFLAGS)',
+      '#@REB_10@': 'pear2_REQUIRES="caca_requires1"',
+      '#@REB_11@': 'AC_SUBST(pear2_REQUIRES)',
+      '#@REB_12@': 'pear2_LIBS="poto_libs"',
+      '#@REB_13@': 'AC_SUBST(pear2_LIBS)',
+      '#@REB_14@': 'pear2_LIBS_PRIVATE="poto_libs_private"',
+      '#@REB_15@': 'AC_SUBST(pear2_LIBS_PRIVATE)',
+      '#@REB_16@': 'pear2_CFLAGS="poto_cflags"',
+      '#@REB_17@': 'AC_SUBST(pear2_CFLAGS)',
       '/*@pear1_dot_c@*/': 'file:template/code/pear/pear1.c',
       '/*@pear1_dot_h@*/': 'file:template/code/pear/pear1.h',
       '/*@pear2_dot_c@*/': 'file:template/code/pear/pear2.c',
@@ -91,7 +99,6 @@ def main():
     pc_files = file_find.find_fnmatch(working_dir, [ '*.pc' ], relative = False)
     for pc_file in pc_files:
       dst_pc_file = path.join(pc_files_dir, path.basename(pc_file))
-      assert not path.isfile(dst_pc_file)
       file_util.copy(pc_file, dst_pc_file)
     
 def make_template_tarball(root, template_name, template_version):
