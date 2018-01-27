@@ -4,7 +4,6 @@ AC_CONFIG_MACRO_DIRS([my_macros])
 AC_PROG_CC
 AC_PROG_RANLIB
 AM_PROG_AR
-echo FUCKFUCK
 PKG_PROG_PKG_CONFIG([0.29.1])
 #PKG_CHECK_MODULES([ZLIB], [$zlib_pkg], [have_zlib="yes (pkg-config)"], [:])
 #PKG_CHECK_MODULES([OPENSSL], [openssl])
