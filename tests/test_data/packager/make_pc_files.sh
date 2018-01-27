@@ -10,6 +10,8 @@ pear-1.2.3.tar.gz \
 orange-6.5.4.tar.gz \
 "
 
+files="pear-1.2.3.tar.gz"
+
 tmp_dir=/tmp/make_pc_files.$$
 rm -rf $tmp_dir
 mkdir -p $tmp_dir

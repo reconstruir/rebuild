@@ -11,24 +11,26 @@ from bes.fs import temp_file
 from bes.common import Shell
 
 DEBUG = False
-#DEBUG = True
+DEBUG = True
 
 def main():
   root = os.getcwd()
   make_template_tarball(root, 'template', '1.0.0')
   make_template_tarball(root, 'templatedepends', '1.2.3')
   PACKAGES = [
-    ( 'fructose-3.4.5-6', 'template', '1.0.0' ),
-    ( 'mercury-1.2.8-0', 'template', '1.0.0' ),
-    ( 'arsenic-1.2.9-0', 'template', '1.0.0' ),
-    ( 'fiber-1.0.0-0', 'template', '1.0.0' ),
+#    ( 'fructose-3.4.5-6', 'template', '1.0.0' ),
+#    ( 'mercury-1.2.8-0', 'template', '1.0.0' ),
+#    ( 'arsenic-1.2.9-0', 'template', '1.0.0' ),
+#    ( 'fiber-1.0.0-0', 'template', '1.0.0' ),
     ( 'pear-1.2.3-1', 'templatedepends', '1.2.3' ),
-    ( 'orange-6.5.4-3', 'templatedepends', '1.2.3' ),
+#    ( 'orange-6.5.4-3', 'templatedepends', '1.2.3' ),
    ]
 
   for package, template_name, template_version in PACKAGES:
     template_tarball = path.join(root, '%s-%s.tar.gz' % (template_name, template_version))
     tmp_dir = temp_file.make_temp_dir(delete = not DEBUG)
+    if DEBUG:
+      print('DEBUG1: tmp_dir=%s' % (tmp_dir))
     desc = unit_test_packages.TEST_PACKAGES[package]
     pi = desc['package_info']
 
@@ -52,13 +54,15 @@ def main():
       'make dist',
       'cp %s.tar.gz %s' % (version_no_revision, root),
     ]
-    env = build_os_env.make_clean_env(keep_keys = [ 'PATH' ])
+    env = build_os_env.make_clean_env(keep_keys = [ 'PATH', 'PKG_CONFIG_PATH' ])
     env['GZIP'] = '-n'
     flat_command = ' && '.join(command)
     Shell.execute(flat_command, shell = True, non_blocking = True, env = env)
 
 def make_template_tarball(root, template_name, template_version):
-  tmp_dir = temp_file.make_temp_dir(delete = False)
+  tmp_dir = temp_file.make_temp_dir(delete = not DEBUG)
+  if DEBUG:
+    print('DEBUG2: tmp_dir=%s' % (tmp_dir))
   full_name = '%s-%s' % (template_name, template_version)
   template_dir = path.join(root, 'template')
   tar_util.copy_tree_with_tar(template_dir, tmp_dir)
@@ -72,7 +76,7 @@ def make_template_tarball(root, template_name, template_version):
     'make dist',
     'cp %s %s' % (tarball_filename, root),
     ]
-  env = build_os_env.make_clean_env(keep_keys = [ 'PATH' ])
+  env = build_os_env.make_clean_env(keep_keys = [ 'PATH', 'PKG_CONFIG_PATH' ])
   env['GZIP'] = '-n'
   Shell.execute(' && '.join(command), shell = True, non_blocking = True, env = env)
   result = path.join(root, '%s-%s.tar.gz' % (template_name, template_version))

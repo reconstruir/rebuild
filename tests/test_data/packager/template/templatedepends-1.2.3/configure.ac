@@ -6,15 +6,8 @@ AC_PROG_RANLIB
 AM_PROG_AR
 PKG_PROG_PKG_CONFIG([0.29.1])
 #PKG_CHECK_MODULES([ZLIB], [$zlib_pkg], [have_zlib="yes (pkg-config)"], [:])
+#PKG_CHECK_MODULES([ZLIB], [zlib]) #, [have_zlib="yes (pkg-config)"], [:])
 #PKG_CHECK_MODULES([OPENSSL], [openssl])
-#echo "FUCKFUCK YOU"
-#which pkg-config
-#echo "HAVE_PKG_CONFIG:"  $HAVE_PKG_CONFIG
-#AC_CHECK_PROG(HAVE_PKG_CONFIG, [ pkg-config ], [ yes ], [ no ])
-#if test x"$HAVE_PKG_CONFIG" != x"yes" ; then
-#  AC_MSG_ERROR([Please install pkg-config before installing.])
-#fi
-#m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
  Makefile
