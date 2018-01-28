@@ -5,12 +5,11 @@
 from bes.testing.unit_test import unit_test
 
 import os.path as path
-#from bes.fs import file_util, temp_file
 from rebuild.pkg_config import caca_pkg_config
 
 class test_caca_pkg_config(unit_test):
 
-  __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/pkg_config/real_examples'
+  __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/pkg_config'
 
   ALL_MODULES = [
     'exiv2', 'freetype2', 'gdal', 'gio-2.0', 'gio-unix-2.0', 'glib-2.0',
@@ -26,10 +25,14 @@ class test_caca_pkg_config(unit_test):
   
   @property
   def pc_path(self):
-    return [ self.data_dir() ]
+    return [ self.data_dir(where = 'real_examples') ]
+ 
+  @property
+  def pc_path_deps(self):
+    return [ self.data_dir(where = 'dependency_tests') ]
  
   def test_scan_dir(self):
-    pc_files = caca_pkg_config._scan_dir(self.data_dir())
+    pc_files = caca_pkg_config._scan_dir(self.pc_path[0])
     self.assertEqual( [
       'IlmBase.pc', 'ImageMagick++-6.Q16.pc', 'ImageMagick++.pc', 'ImageMagick-6.Q16.pc', 'ImageMagick.pc', 
       'Magick++-6.Q16.pc', 'Magick++.pc', 'MagickCore-6.Q16.pc', 'MagickCore.pc', 'MagickWand-6.Q16.pc', 
@@ -57,6 +60,14 @@ class test_caca_pkg_config(unit_test):
       '3.0.0', '2.2.0', '1.0.2d', '3.02.02', '6.9.2', '6.9.2', '1.2.8',
     ]
     self.assertEquals( expected_versions, mod_versions )
+    
+  def test_dependencies(self):
+    pc = caca_pkg_config(self.pc_path_deps)
+    print(pc.dep_map)
+    all_modules = pc.list_all_names()
+    for m in all_modules:
+      reqs = pc.module_requires(m)
+      print('%s: %s' % (m, reqs))
     
 if __name__ == '__main__':
   unit_test.main()

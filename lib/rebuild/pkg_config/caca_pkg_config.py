@@ -11,6 +11,7 @@ class caca_pkg_config(object):
 
   def __init__(self, pc_path):
     self.files = self._scan_path(pc_path)
+    self.dep_map = self._make_dep_map(self.files)
     
   @classmethod
   def _scan_dir(clazz, d):
@@ -37,8 +38,11 @@ class caca_pkg_config(object):
   def _make_dep_map(clazz, files):
     'Scan a directory for .pc files.'
     dep_map = {}
-    for name, pc_file in self.files.items():
-      pass
+    for name, pc_file in files.items():
+      p = set()
+      for req in pc_file.requires:
+        p.add(req.name)
+      dep_map[name] = p
     return dep_map
   
   _list_all_item = namedtuple('_list_all_item', 'name,description')
