@@ -21,6 +21,15 @@ function test_list_all()
   $_exe --list-all | sort >& $_log
 }
 
+function test_print_requires()
+{
+  local _exe=$1
+  local _log=$2
+  assert test -n "$_exe"
+  assert test -n "$_log"
+  $_exe --print-requires $($_exe --list-all | awk '{ print $1; }' | sort) >& $_log
+}
+
 function main()
 {
   if [ $# -ne 2 ]; then
@@ -44,6 +53,9 @@ function main()
   test_list_all $_exe1 $_log_dir1/test_list_all
   test_list_all $_exe2 $_log_dir2/test_list_all
 
+  test_print_requires $_exe1 $_log_dir1/test_print_requires
+  test_print_requires $_exe2 $_log_dir2/test_print_requires
+  
   echo "$_log_dir1 $_log_dir2"
   return 0
 }
