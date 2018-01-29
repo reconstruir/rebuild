@@ -5,7 +5,7 @@
 
 #import copy, glob, os.path as path
 from bes.common import check, variable #algorithm, string_util
-from bes.text import lines
+from bes.text import lines, string_list_parser
 from bes.key_value import key_value, key_value_list
 from bes.fs import file_util
 #from .entry import entry
@@ -176,12 +176,15 @@ class caca_pkg_config_file(namedtuple('caca_pkg_config_file', 'filename,entries,
 
   @property
   def cflags(self):
-    return self.get_property(self.PROPERTY_CFLAGS)
+    cflags = self.get_property(self.PROPERTY_CFLAGS) or ''
+    return string_list_parser.parse_to_list(cflags, options = string_list_parser.KEEP_QUOTES)
 
   @property
   def requires(self):
     return self.get_property(self.PROPERTY_REQUIRES)
 
   def get_property(self, name):
-    return self.resolved_properties.find_key(name).value
-  
+    prop = self.resolved_properties.find_key(name)
+    if prop:
+      return prop.value
+    return None

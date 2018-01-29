@@ -6,7 +6,7 @@ includedir=${prefix}/include
 Name: liborange1
 Version: 6.5.4
 Description: liborange1 is nice
-Requires: fructose
-Libs: -L${libdir} poto_libs
-Libs.private: poto_libs_private
-Cflags: -I${includedir} poto_cflags
+Requires: fruit
+Libs: -L${libdir} -lorange1
+Libs.private: 
+Cflags: -I${includedir} -DORANGE1

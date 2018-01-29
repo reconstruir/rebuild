@@ -4,7 +4,7 @@
 import argparse
 
 from rebuild.pkg_config import pkg_config
-from bes.common import string_util, table as caca_table
+from bes.common import algorithm, string_util, table as caca_table
 from bes.system import os_env_var
 from bes.text import text_table
 
@@ -56,9 +56,11 @@ class pkg_config_cli(object):
   def _command_cflags(self, module_names):
     if not self._check_modules_exist(module_names):
       return 1
+    cflags = []
     for name in module_names:
-      version = self.pc.module_cflags(name)
-      print(version)
+      cflags.extend(self.pc.module_cflags(name))
+    cflags = algorithm.unique(cflags)
+    print(' '.join(cflags))
     return 0
 
   def _command_print_requires(self, module_names):
@@ -67,7 +69,7 @@ class pkg_config_cli(object):
     for name in module_names:
       poto_requires = self.pc.module_requires(name)
       for req in poto_requires:
-        print(req)
+        print('%s: %s' % (name, req))
     return 0
   
   def _check_modules_exist(self, module_names):

@@ -30,6 +30,10 @@ class unit_test_packages(object):
       'requirements': '',
       'properties': { 'category': 'lib' },
     },
+    'citrus-1.0.0-0': {
+      'requirements': '',
+      'properties': { 'category': 'lib' },
+    },
     'fructose-3.4.5-6': {
       'requirements': '',
       'properties': { 'category': 'lib' },
@@ -64,15 +68,19 @@ class unit_test_packages(object):
       'properties': { 'category': 'lib' },
     },
     'apple-1.2.3-1': {
-      'requirements': 'fructose(all) >= 3.4.5-6 fiber(all) >= 1.0.0-0',
+      'requirements': 'fruit(all) >= 1.0.0',
+      'properties': { 'category': 'lib' },
+    },
+    'fruit-1.0.0': {
+      'requirements': 'fructose(all) >= 3.4.5-6 fiber(all) >= 1.0.0-0 water(all) >= 1.0.0-0',
       'properties': { 'category': 'lib' },
     },
     'pear-1.2.3-1': {
-      'requirements': 'fructose(all) >= 3.4.5-6 fiber(all) >= 1.0.0-0',
+      'requirements': 'fruit(all) >= 1.0.0',
       'properties': { 'category': 'lib' },
     },
     'orange-6.5.4-3': {
-      'requirements': 'fructose(all) >= 3.4.5-6 fiber(all) >= 1.0.0-0',
+      'requirements': 'fruit(all) >= 1.0.0-0 citrus(all) >= 1.0.0-0',
       'properties': { 'category': 'lib' },
     },
     'orange_juice-1.4.5': {
@@ -81,6 +89,10 @@ class unit_test_packages(object):
     },
     'pear_juice-6.6.6': {
       'requirements': 'pear(all) >= 1.2.3-1',
+      'properties': { 'category': 'lib' },
+    },
+    'smoothie-1.0.0': {
+      'requirements': 'orange(all) >= 6.5.4-3 pear(all) >= 1.2.3-1 apple(all) >= 1.2.3-1',
       'properties': { 'category': 'lib' },
     },
    }

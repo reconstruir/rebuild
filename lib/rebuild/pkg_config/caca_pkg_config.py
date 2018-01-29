@@ -12,6 +12,8 @@ class caca_pkg_config(object):
   def __init__(self, pc_path):
     self.files = self._scan_path(pc_path)
     self.dep_map = self._make_dep_map(self.files)
+    #print('DEP_MAP:')
+    #self._print_dep_map(self.dep_map)
     
   @classmethod
   def _scan_dir(clazz, d):
@@ -45,6 +47,11 @@ class caca_pkg_config(object):
       dep_map[name] = p
     return dep_map
   
+  @classmethod
+  def _print_dep_map(clazz, dep_map):
+    for name, deps in sorted(dep_map.items()):
+      print('%s: %s' % (name, ' '.join(sorted(deps))))
+  
   _list_all_item = namedtuple('_list_all_item', 'name,description')
   def list_all(self):
     'List all modules available.'
@@ -59,20 +66,30 @@ class caca_pkg_config(object):
     return [ mod.name for mod in mods ]
 
   def module_version(self, module_name):
-    return self.module_property(module_name, caca_pkg_config_file.PROPERTY_VERSION)
+    return self._get_pc_file(module_name).version
     
   def module_cflags(self, module_name):
-    return self.module_property(module_name, caca_pkg_config_file.PROPERTY_CFLAGS)
+    cflags = []
+    reqs = self.module_requires(module_name)
+    req_names = [ req.name for req in reqs ]
+    order = dependency_resolver.resolve_deps(self.dep_map, req_names)
+    for mod in reqs:
+      cflags.extend(self._single_module_cflags(mod.name))
+    cflags.extend(self._single_module_cflags(module_name))
+    return cflags
     
   def module_requires(self, module_name):
-    return self.module_property(module_name, caca_pkg_config_file.PROPERTY_REQUIRES)
+    return self._get_pc_file(module_name).requires
 
-  def module_property(self, module_name, property_name):
-    pc_file = self.files.get(module_name, None)
-    if not pc_file:
-      raise ValueError('Invalid module: %s' % (module_name))
-    return pc_file.get_property(property_name)
-    
   def module_exists(self, name):
     'Return True if module exists.'
     return self.files.get(name, None) != None
+
+  def _single_module_cflags(self, module_name):
+    return self._get_pc_file(module_name).cflags
+
+  def _get_pc_file(self, module_name):
+    pc_file = self.files.get(module_name, None)
+    if not pc_file:
+      raise ValueError('Invalid module: %s' % (module_name))
+    return pc_file

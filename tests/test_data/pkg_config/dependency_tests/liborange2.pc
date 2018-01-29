@@ -6,7 +6,7 @@ includedir=${prefix}/include
 Name: liborange2
 Version: 6.5.4
 Description: liborange2 is nice
-Requires: fiber
-Libs: -L${libdir} poto_libs
-Libs.private: poto_libs_private
-Cflags: -I${includedir} poto_cflags
+Requires: water
+Libs: -L${libdir} -lorange2
+Libs.private: 
+Cflags: -I${includedir} -DORANGE2
