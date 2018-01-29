@@ -4,7 +4,7 @@
 import argparse
 
 from rebuild.pkg_config import pkg_config
-from bes.common import string_util
+from bes.common import string_util, table as caca_table
 from bes.system import os_env_var
 from bes.text import text_table
 
@@ -13,7 +13,7 @@ from rebuild.pkg_config import caca_pkg_config
 class pkg_config_cli(object):
 
   PKG_CONFIG_PATH = os_env_var('PKG_CONFIG_PATH')
-  
+
   def __init__(self):
     self.parser = argparse.ArgumentParser(description = 'Build packages.')
     command_group = self.parser.add_mutually_exclusive_group()
