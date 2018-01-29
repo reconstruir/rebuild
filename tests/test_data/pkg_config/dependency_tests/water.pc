@@ -1,0 +1,10 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: water
+Version: 1.0.0
+Description: water is nice
+Requires: libwater1 libwater2
+

@@ -1,0 +1,12 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libsmoothie1
+Version: 1.0.0
+Description: libsmoothie1 is nice
+Requires: orange pear apple
+Libs: -L${libdir} -lsmoothie1
+Libs.private: 
+Cflags: -I${includedir} -DSMOOTHIE1

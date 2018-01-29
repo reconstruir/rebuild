@@ -1,0 +1,9 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: smoothie
+Version: 1.0.0
+Description: smoothie is nice
+Requires: libsmoothie1 libsmoothie2

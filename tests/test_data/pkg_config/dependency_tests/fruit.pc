@@ -1,0 +1,9 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: fruit
+Version: 1.0.0
+Description: fruit is nice
+Requires: libfruit1 libfruit2

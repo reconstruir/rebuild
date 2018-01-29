@@ -1,0 +1,12 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libfruit2
+Version: 1.0.0
+Description: libfruit2 is nice
+Requires: fruit
+Libs: -L${libdir} -lfruit2
+Libs.private: 
+Cflags: -I${includedir} -DDRUIT2

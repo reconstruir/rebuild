@@ -1,0 +1,12 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libsmoothie2
+Version: 1.0.0
+Description: libsmoothie2 is nice
+Requires: water
+Libs: -L${libdir} -lsmoothie2
+Libs.private: 
+Cflags: -I${includedir} -DSMOOTHIE2
