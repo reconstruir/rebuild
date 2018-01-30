@@ -48,7 +48,7 @@ packages: apple pear_juice
       'test1'
     ]
     rv = self.run_script(args)
-    self.assertEqual( [ 'fiber', 'fructose', 'orange', 'orange_juice' ], rv.stdout.split('\n') )
+    self.assertEqual( [ 'citrus', 'fiber', 'fructose', 'fruit', 'orange', 'orange_juice', 'water' ], rv.stdout.split('\n') )
 
   def test_update_two_times(self):
     tmp_dir = self._make_temp_dir()
@@ -77,7 +77,7 @@ packages: orange_juice
       'test1'
     ]
     rv = self.run_script(args)
-    self.assertEqual( [ 'fiber', 'fructose', 'orange', 'orange_juice' ], rv.stdout.split('\n') )
+    self.assertEqual( [ 'citrus', 'fiber', 'fructose', 'fruit', 'orange', 'orange_juice', 'water' ], rv.stdout.split('\n') )
     config = '''
 [common]
 artifacts_dir: /somewhere/not/there
@@ -102,7 +102,7 @@ packages: orange_juice pear_juice
       'test1'
     ]
     rv = self.run_script(args)
-    self.assertEqual( [ 'fiber', 'fructose', 'orange', 'orange_juice', 'pear', 'pear_juice' ], rv.stdout.split('\n') )
+    self.assertEqual( [ 'citrus', 'fiber', 'fructose', 'fruit', 'orange', 'orange_juice', 'pear', 'pear_juice', 'water' ], rv.stdout.split('\n') )
 
   def test_update_script(self):
     tmp_dir = self._make_temp_dir()
@@ -131,7 +131,7 @@ packages: orange_juice
       'test1'
     ]
     rv = self.run_script(args)
-    self.assertEqual( [ 'fiber', 'fructose', 'orange', 'orange_juice' ], rv.stdout.split('\n') )
+    self.assertEqual( [ 'citrus', 'fiber', 'fructose', 'fruit', 'orange', 'orange_juice', 'water' ], rv.stdout.split('\n') )
     config = '''
 [common]
 artifacts_dir: /somewhere/not/there
@@ -155,7 +155,7 @@ packages: orange_juice pear_juice
       'test1'
     ]
     rv = self.run_script(args)
-    self.assertEqual( [ 'fiber', 'fructose', 'orange', 'orange_juice', 'pear', 'pear_juice' ], rv.stdout.split('\n') )
+    self.assertEqual( [ 'citrus', 'fiber', 'fructose', 'fruit', 'orange', 'orange_juice', 'pear', 'pear_juice', 'water' ], rv.stdout.split('\n') )
 
   def _make_temp_dir(self):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)

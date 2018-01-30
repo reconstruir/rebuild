@@ -93,15 +93,19 @@ class test_package_manager(unittest.TestCase):
     apple_tarball = unit_test_packages.make_apple(debug = self.DEBUG)
     with self.assertRaises(PackageMissingRequirementsError) as context:
       pm.install_tarball(apple_tarball)
-    self.assertEqual( 'package apple missing requirements: fructose, fiber', context.exception.message )
+    self.assertEqual( 'package apple missing requirements: fruit', context.exception.message )
 
-  def test_install_tarball_with_requirements(self):
+  def test_install_tarball_with_manual_requirements(self):
     pm = self.__make_test_pm()
+    water_tarball = unit_test_packages.make_water(debug = self.DEBUG)
     apple_tarball = unit_test_packages.make_apple(debug = self.DEBUG)
     fructose_tarball = unit_test_packages.make_fructose(debug = self.DEBUG)
     fiber_tarball = unit_test_packages.make_fiber(debug = self.DEBUG)
+    fruit_tarball = unit_test_packages.make_fruit(debug = self.DEBUG)
+    pm.install_tarball(water_tarball)
     pm.install_tarball(fiber_tarball)
     pm.install_tarball(fructose_tarball)
+    pm.install_tarball(fruit_tarball)
     pm.install_tarball(apple_tarball)
 
   def test_uninstall(self):

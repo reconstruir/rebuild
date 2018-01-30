@@ -220,6 +220,10 @@ Cflags: -I${includedir}
     return clazz.make_simple_tarball('apple-1.2.3-1', clazz.TEST_PACKAGES, debug = debug)
 
   @classmethod
+  def make_fruit(clazz, debug = False):
+    return clazz.make_simple_tarball('fruit-1.0.0', clazz.TEST_PACKAGES, debug = debug)
+
+  @classmethod
   def make_orange(clazz, debug = False):
     return clazz.make_simple_tarball('orange-6.5.4-3', clazz.TEST_PACKAGES, debug = debug)
 
