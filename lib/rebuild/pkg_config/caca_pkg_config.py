@@ -58,7 +58,8 @@ class caca_pkg_config(object):
     result = []
     for name, pc_file in self.files.items():
       desc = pc_file.resolved_properties.find_key('Description').value
-      result.append(self._list_all_item(name, '%s - %s' % (name, desc)))
+      prop_name = pc_file.resolved_properties.find_key('Name').value
+      result.append(self._list_all_item(name, '%s - %s' % (prop_name, desc)))
     return sorted(result, cmp = lambda a, b: cmp(a.name.lower(), b.name.lower()))
 
   def list_all_names(self):

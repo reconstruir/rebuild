@@ -12,13 +12,20 @@ function assert()
   fi
 }
 
+function list_all()
+{
+  local _exe=$1
+  assert test -n "$_exe"
+  $($_exe --list-all | awk '{ print $1; }' | sort)
+}
+
 function test_list_all()
 {
   local _exe=$1
   local _log=$2
   assert test -n "$_exe"
   assert test -n "$_log"
-  $_exe --list-all | sort >& $_log
+  $(list_all $_exe) >& $_log
 }
 
 function test_print_requires()

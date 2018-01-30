@@ -69,7 +69,8 @@ class pkg_config_cli(object):
     for name in module_names:
       poto_requires = self.pc.module_requires(name)
       for req in poto_requires:
-        print('%s: %s' % (name, req))
+        #print('%s: %s' % (name, req))
+        print(req)
     return 0
   
   def _check_modules_exist(self, module_names):
