@@ -652,3 +652,7 @@ why the dependency is missing
 some python packages depend on setuptools at runtime because of pkg_resources.  python3 has that builtin so need a variable way to do this dependency onpyt for python2
 
 cleanup the shit that happens in ~/.rebuild/dev_tools/setup.sh to cleanup things like PKG_CONFIG_PATH.  also figure out a way to version these files so they update if the template changes
+
+jan 30:
+ - key_value_list: is_key_value_list, verify_key_value_list
+ 

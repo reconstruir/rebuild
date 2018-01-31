@@ -19,8 +19,21 @@ class test_pkg_config_comparison(unit_test):
   @property
   def pc_path_deps(self):
     return [ self.data_dir(where = 'dependency_tests') ]
- 
+
+  @classmethod
+  def _list_all_names_old(clazz, p):
+    return pkg_config.list_all(p)
+  
+  @classmethod
+  def _list_all_names_new(clazz, p):
+    return [ ( item.name, item.description ) for item in caca_pkg_config(p).list_all() ]
+  
   def test_list_all_names(self):
+    rnew = self._list_all_names_new(self.pc_path)
+    rold = self._list_all_names_old(self.pc_path)
+    self.assertEqual( rold, rnew )
+
+  def xtest_cflags(self):
     rnew = [ ( item.name, item.description ) for item in caca_pkg_config(self.pc_path).list_all() ]
     rold = pkg_config.list_all(self.pc_path)
     self.assertEqual( rold, rnew )

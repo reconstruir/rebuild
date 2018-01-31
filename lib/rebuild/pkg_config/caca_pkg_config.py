@@ -2,6 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
+from bes.common import algorithm, check, object_util
 from bes.fs import dir_util, file_util
 from rebuild.dependency import dependency_resolver
 from .caca_pkg_config_file import caca_pkg_config_file
@@ -69,7 +70,9 @@ class caca_pkg_config(object):
   def module_version(self, module_name):
     return self._get_pc_file(module_name).version
     
-  def module_cflags(self, module_name):
+  def cflags(self, modules):
+    modules = object_util.listify(modules)
+    check.check_string_seq(modules)
     cflags = []
     reqs = self.module_requires(module_name)
     req_names = [ req.name for req in reqs ]
@@ -79,9 +82,32 @@ class caca_pkg_config(object):
     cflags.extend(self._single_module_cflags(module_name))
     return cflags
     
-  def module_requires(self, module_name):
-    return self._get_pc_file(module_name).requires
+  def requires(self, modules, resolved = False):
+    modules = object_util.listify(modules)
+    check.check_string_seq(modules)
+    if not resolved:
+    #return self._get_pc_file(module_name).requires
 
+  def _requires_no_resolve(self, modules):
+    modules = object_util.listify(modules)
+    check.check_string_seq(modules)
+    reqs = []
+    for name in modules:
+      reqs.extend(self._get_pc_file(module_name).requires)
+    return algorithm.unique(reqs)
+
+  def _resolve_requires(self, modules):
+    modules = object_util.listify(modules)
+    check.check_string_seq(modules)
+    immediate_reqs = self.module_requires(module_name)
+    immediate_req_names = [ req.name for req in reqs ]
+    order = dependency_resolver.resolve_deps(self.dep_map, req_names)
+    for mod in reqs:
+      cflags.extend(self._single_module_cflags(mod.name))
+    cflags.extend(self._single_module_cflags(module_name))
+    return cflags
+    
+  
   def module_exists(self, name):
     'Return True if module exists.'
     return self.files.get(name, None) != None
