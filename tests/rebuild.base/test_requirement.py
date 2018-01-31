@@ -107,35 +107,6 @@ class test_requirement(unit_test):
     reqs = R.parse(text)
     self.assertEqual( 'foo >= 1.2.3 orange >= 6.6.6 baz(desktop) bar(linux)', R.requirement_list_to_string(reqs) )
     
-  def test_parse_simple(self):
-    text = 'foo >= 1.2.3'
-    requirements = R.parse(text)
-    self.assertEqual( [
-      ( 'foo', '>=', '1.2.3', None ),
-    ], requirements )
-
-  def test_parse_multiple(self):
-    text = 'foo >= 1.2.3 bar >= 6.6.6'
-    requirements = R.parse(text)
-    self.assertEqual( [
-      ( 'foo', '>=', '1.2.3', None ),
-      ( 'bar', '>=', '6.6.6', None ),
-    ], requirements )
-
-  def test_requirement_with_system(self):
-    self.maxDiff = None
-    text = 'apple(linux) >= 1.2.3 kiwi orange(macos) == 6.6.6 pear(ios) lychee(all) corn(desktop) tomato(linux|macos) <= 9.8.7'
-    requirements = R.parse(text)
-    self.assertEqual( [
-      ( 'apple', '>=', '1.2.3', 'linux' ),
-      ( 'kiwi', None, None, None ),
-      ( 'orange', '==', '6.6.6', 'macos' ),
-      ( 'pear', None, None, 'ios' ),
-      ( 'lychee', None, None, 'all' ),
-      ( 'corn', None, None, 'desktop' ),
-      ( 'tomato', '<=', '9.8.7', 'linux|macos' ),
-    ], requirements )
-
   def test_resolve_requirements(self):
     text = 'apple(linux) >= 1.2.3 kiwi orange(macos) == 6.6.6 pear(ios) lychee(all) corn(desktop) tomato(linux|macos) <= 9.8.7'
     requirements = R.parse(text)
@@ -166,25 +137,6 @@ class test_requirement(unit_test):
       ( 'kiwi', None, None, None ),
       ( 'lychee', None, None, 'all' ),
     ], R.resolve_requirements(requirements, 'android') )
-
-  def test_parse_global_system_mask(self):
-    text = 'all: foo >= 1.2.3'
-    requirements = R.parse(text)
-    self.assertEqual( [
-      ( 'foo', '>=', '1.2.3', 'all' ),
-    ], requirements )
-
-  def test_parse_global_system_mask_and_override(self):
-    text = 'all: foo(linux) >= 1.2.3'
-    requirements = R.parse(text)
-    self.assertEqual( [
-      ( 'foo', '>=', '1.2.3', 'linux' ),
-    ], requirements )
-    
-  def test_parse_with_comment(self):
-    text = 'all: #foo >= 1.2.3'
-    requirements = R.parse(text)
-    self.assertEqual( [], requirements )
 
 if __name__ == "__main__":
   unit_test.main()
