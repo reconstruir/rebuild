@@ -10,7 +10,7 @@ from .build_system import build_system
 
 class requirement(namedtuple('requirement', 'name,operator,version,system_mask')):
 
-  def __new__(clazz, name, operator, version, system_mask):
+  def __new__(clazz, name, operator, version, system_mask = None):
     assert name
     assert name == str(name)
     name = str(name)
