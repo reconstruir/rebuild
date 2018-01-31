@@ -7,6 +7,7 @@ from bes.text import comments
 from collections import namedtuple
 from bes.common import check, string_util, type_checked_list
 from .requirement import requirement
+from .build_system import build_system
 
 class requirement_list(type_checked_list):
 
@@ -87,6 +88,7 @@ class requirement_list(type_checked_list):
         state = STATE_NAME
         
     reqs.remove_dups()
+    check.check_requirement_list(reqs)
     return reqs
 
   _TOKEN_NAME = 'name'
@@ -151,5 +153,11 @@ class requirement_list(type_checked_list):
       if not c in [ '=', '>', '<', '!' ]:
         return False
     return True
+
+  def resolve(self, system):
+    'Resolve requirements for the given system.'
+    if not build_system.system_is_valid(system):
+      raise RuntimeError('Invalid system: %s' % (system))
+    return requirement_list([ req for req in iter(self) if req.system_mask == None or build_system.mask_matches(req.system_mask, system) ])
   
 check.register_class(requirement_list, include_seq = False)

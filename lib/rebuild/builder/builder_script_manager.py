@@ -32,7 +32,7 @@ class builder_script_manager(object):
       build_blurb.blurb_verbose('build', 'resolving dependencies for: %s - %s' % (path.relpath(script.filename), script.descriptor.name))
       try:
         all_requirements = script.descriptor.requirements + script.descriptor.build_requirements
-        all_requirements_system_resolved = requirement.resolve_requirements(all_requirements, env.config.build_target.system)
+        all_requirements_system_resolved = all_requirements.resolve(env.config.build_target.system)
 
         all_requirements_dependencies_resolved = self._resolve_and_order_dependencies(all_requirements_system_resolved,
                                                                                        self.scripts, dependency_map)

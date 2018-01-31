@@ -10,6 +10,7 @@ from .build_system import build_system
 from .build_version import build_version
 from .reitred_masked_config import reitred_masked_config
 from .requirement import requirement
+from .requirement_list import requirement_list
 
 class package_descriptor(object):
 
@@ -23,9 +24,10 @@ class package_descriptor(object):
   def __init__(self, name, version, requirements = None, build_requirements = None, properties = None):
     check.check_string(name)
 #    check.check_build_version(version)
-
-    requirements = requirements or []
-    build_requirements = build_requirements or []
+    requirements = requirement_list(requirements)
+    build_requirements = requirement_list(build_requirements)
+    check.check_requirement_list(requirements)
+    check.check_requirement_list(build_requirements)
     properties = properties or {}
 
     if not self.name_is_valid(name):
@@ -123,9 +125,9 @@ class package_descriptor(object):
     part1 = self.full_name
     part2 = []
     if self.requirements:
-      part2.append(requirement.requirement_list_to_string(self.requirements))
+      part2.append(self.requirements.to_string())
     if self.build_requirements:
-      part2.append(requirement.requirement_list_to_string(self.build_requirements))
+      part2.append(self.build_requirements.to_string())
     if self.properties:
       part2.append(self.properties_to_string())
     part2 = self.STR_PROPERTIES_DELIMITER.join(part2)
@@ -214,7 +216,7 @@ class package_descriptor(object):
         result.extend(reqs)
       else:
         raise RuntimeError('Invalid requirement: %s - %s' % (str(dep), type(dep)))
-    return result
+    return requirement_list(result)
 
   @classmethod
   def name_is_valid(clazz, name):

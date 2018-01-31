@@ -8,6 +8,7 @@ from collections import namedtuple
 from bes.compat import StringIO
 from rebuild.base import build_system
 from .requirement import requirement
+from .requirement_list import requirement_list
 
 class reitred_masked_config(namedtuple('reitred_masked_config', 'system_mask,data')):
 
@@ -84,7 +85,7 @@ class reitred_masked_config(namedtuple('reitred_masked_config', 'system_mask,dat
   @classmethod
   def parse_func_requirement(clazz, text):
     assert ':' not in text
-    return [ req for req in requirement.parse(text) ]
+    return requirement_list.parse(text)
 
   @classmethod
   def resolve_key_values(clazz, config, system):

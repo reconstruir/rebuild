@@ -9,7 +9,7 @@ from bes.text import lines, string_list_parser
 from bes.key_value import key_value, key_value_list
 from bes.fs import file_util
 #from .entry import entry
-from rebuild.base import requirement
+from rebuild.base import requirement, requirement_list
 from .caca_entry import caca_entry
 
 from collections import namedtuple
@@ -72,7 +72,7 @@ class caca_pkg_config_file(namedtuple('caca_pkg_config_file', 'filename,entries,
     ll = lines(text, delimiter = ',').texts(strip_head = True, strip_tail = True)
     result = []
     for s in ll:
-      result.extend(requirement.parse(s))
+      result.extend(requirement_list.parse(s))
     return result
     
 #  def __str__(self):
@@ -141,7 +141,7 @@ class caca_pkg_config_file(namedtuple('caca_pkg_config_file', 'filename,entries,
 #
 #  @classmethod
 #  def __dedup_requirements(clazz, value):
-#    reqs = requirement.parse(value)
+#    reqs = requirement_list.parse(value)
 #    return requirement.requirement_list_to_string(reqs)
 #
 #  def __parse_requirements(self):

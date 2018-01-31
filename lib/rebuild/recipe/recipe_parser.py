@@ -11,7 +11,7 @@ from bes.system import log
 from bes.text import string_list, tree_text_parser
 from bes.python import code
 
-from rebuild.base import build_version, requirement, package_descriptor
+from rebuild.base import build_version, requirement, requirement_list, package_descriptor
 from rebuild.step import step_description
 from rebuild.value import value_type
 from rebuild.instruction import instruction_list
@@ -133,7 +133,7 @@ class recipe_parser(object):
     reqs = []
     for child in node.children:
       req_text = tree_text_parser.node_text_flat(child)
-      next_reqs = requirement.parse(req_text)
+      next_reqs = requirement_list.parse(req_text)
       reqs.extend(next_reqs)
     return reqs
 

@@ -8,7 +8,7 @@ from bes.common import algorithm, string_util
 from bes.key_value import key_value
 from bes.fs import dir_util, file_util
 from .entry import entry
-from rebuild.base import requirement
+from rebuild.base import requirement, requirement_list
 
 class pkg_config_file(object):
 
@@ -120,8 +120,9 @@ class pkg_config_file(object):
 
   @classmethod
   def __dedup_requirements(clazz, value):
-    reqs = requirement.parse(value)
-    return requirement.requirement_list_to_string(reqs)
+    reqs = requirement_list.parse(value)
+    reqs.remove_dups()
+    return reqs.to_string()
 
   def __parse_requirements(self):
     buf = StringIO()

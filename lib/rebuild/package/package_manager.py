@@ -282,7 +282,7 @@ class package_manager(object):
     'resolve requirements for one pkg.'
     assert pkg_desc
     all_requirements = pkg_desc.requirements + pkg_desc.build_requirements
-    all_requirements_system_resolved = requirement.resolve_requirements(all_requirements, build_target.system)
+    all_requirements_system_resolved = all_requirements.resolve(build_target.system)
     all_requirements_system_resolved_names = [ req.name for req in all_requirements_system_resolved ]
     all_requirements_dependencies_resolved = dependency_resolver.resolve_and_order_deps(all_requirements_system_resolved_names,
                                                                                         descriptor_map,

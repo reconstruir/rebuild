@@ -6,7 +6,7 @@ import os.path as path
 from bes.common import dict_util, json_util, string_util
 from bes.fs import file_util, temp_file, temp_item
 from bes.archive import archiver
-from rebuild.base import build_arch, build_category, build_system, build_target, package_descriptor, requirement
+from rebuild.base import build_arch, build_category, build_system, build_target, package_descriptor, requirement, requirement_list
 from collections import namedtuple
 
 class unit_test_packages(object):
@@ -98,7 +98,7 @@ class unit_test_packages(object):
    }
   for k, v in TEST_PACKAGES.items():
     template = TEST_PACKAGES[k]
-    reqs = requirement.parse(template.get('requirements', ''))
+    reqs = requirement_list.parse(template.get('requirements', ''))
     props = template.get('properties', {})
     pi = package_descriptor.parse(k)
     pi = package_descriptor(pi.name, pi.version, requirements = reqs, properties = props)
@@ -118,7 +118,7 @@ class unit_test_packages(object):
 
   def create_tarball(self, root_dir):
     pi = package_descriptor.parse(self.desc)
-    reqs = requirement.parse(self.requirements)
+    reqs = requirement_list.parse(self.requirements)
     package = self.make_test_package(pi.name, pi.version, reqs,
                                      self.system, self.level,
                                      name_override = self.name_override,
