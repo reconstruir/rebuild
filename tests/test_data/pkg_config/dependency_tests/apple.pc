@@ -7,4 +7,3 @@ Name: apple
 Version: 1.2.3
 Description: apple is nice
 Requires: libapple1 libapple2
-

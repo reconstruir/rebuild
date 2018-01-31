@@ -6,7 +6,7 @@ includedir=${prefix}/include
 Name: libapple1
 Version: 1.2.3
 Description: libapple1 is nice
-Requires:
+Requires: fruit
 Libs: -L${libdir} -lapple1
-Libs.private:
-Cflags: -I${includedir}
+Libs.private: 
+Cflags: -I${includedir} -DAPPLE1
