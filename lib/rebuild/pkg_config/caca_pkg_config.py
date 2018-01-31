@@ -85,7 +85,7 @@ class caca_pkg_config(object):
   def requires(self, modules, resolved = False):
     modules = object_util.listify(modules)
     check.check_string_seq(modules)
-    if not resolved:
+    #if not resolved:
     #return self._get_pc_file(module_name).requires
 
   def _requires_no_resolve(self, modules):
