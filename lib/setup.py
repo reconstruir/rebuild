@@ -1,5 +1,7 @@
+#!/usr/bin/env python
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
+
 from setuptools import setup, find_packages
-from bes.setup import tools as bes_tools
 
 setup(
   name = 'rebuild',
@@ -8,10 +10,6 @@ setup(
   zip_safe = True,
   author = 'Ramiro Estrugo',
   author_email = 'bes@fateware.com',
-  include_package_data = True,
-  package_data = {
-    'rebuild': bes_tools.find_tests_if_wanted('rebuild'),
-  },
   scripts = [
     '../bin/rebuild_ar.py',
     '../bin/rebuild_jail.py',
