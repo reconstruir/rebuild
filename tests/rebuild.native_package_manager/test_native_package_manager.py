@@ -12,12 +12,12 @@ class test_native_package_manager(unit_test):
   @skip_if(not host.is_macos(), 'not macos')
   def test_is_installed_macos(self):
     self.assertFalse( native_package_manager.is_installed('bash') )
-    self.assertTrue( native_package_manager.is_installed('com.apple.pkg.Essentials') )
+    self.assertTrue( native_package_manager.is_installed('com.apple.pkg.Core') )
   
   @skip_if(not host.is_linux(), 'not linux')
   def test_is_installed_linux(self):
     self.assertTrue( native_package_manager.is_installed('bash') )
-    self.assertFalse( native_package_manager.is_installed('com.apple.pkg.Essentials') )
+    self.assertFalse( native_package_manager.is_installed('com.apple.pkg.Core') )
   
   @skip_if(not host.is_linux(), 'not linux')
   def test_owner(self):
