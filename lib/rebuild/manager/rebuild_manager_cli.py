@@ -1,6 +1,5 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
-#
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import argparse, copy, os, os.path as path
 from collections import namedtuple
@@ -203,49 +202,49 @@ class rebuild_manager_cli(object):
       command = args.command
       
     if command == 'tools:update':
-      return self.__command_tools_update()
+      return self._command_tools_update()
     elif command == 'tools:install':
-      return self.__command_tools_install(args.dest_dir)
+      return self._command_tools_install(args.dest_dir)
     elif command == 'tools:print':
-      return self.__command_tools_print()
+      return self._command_tools_print()
     elif command in [ 'packages:install', 'packages:update' ]:
       self._packages_check_common_args(args)
       if command == 'packages:install':
-        return self.__command_packages_install(args.artifact_manager,
-                                               args.dest_dir,
-                                               args.project_name,
-                                               args.packages,
-                                               args.wipe,
-                                               args.build_target)
-      elif command == 'packages:update':
-        return self.__command_packages_update(args.artifact_manager,
-                                              args.root_dir,
-                                              args.wipe,
+        return self._command_packages_install(args.artifact_manager,
+                                              args.dest_dir,
                                               args.project_name,
-                                              args.downgrade,
+                                              args.packages,
+                                              args.wipe,
                                               args.build_target)
+      elif command == 'packages:update':
+        return self._command_packages_update(args.artifact_manager,
+                                             args.root_dir,
+                                             args.wipe,
+                                             args.project_name,
+                                             args.downgrade,
+                                             args.build_target)
     elif command in [ 'packages:uninstall' ]:
-      return self.__command_packages_uninstall(args.dest_dir,
-                                               args.project_name,
-                                               args.packages,
-                                               self._validate_build_target(args))
+      return self._command_packages_uninstall(args.dest_dir,
+                                              args.project_name,
+                                              args.packages,
+                                              self._validate_build_target(args))
     elif command in [ 'packages:print' ]:
-      return self.__command_packages_print(args.root_dir,
-                                           args.project_name,
-                                           self._validate_build_target(args))
+      return self._command_packages_print(args.root_dir,
+                                          args.project_name,
+                                          self._validate_build_target(args))
     elif command in [ 'config:packages' ]:
       bt = self._validate_build_target(args)
-      return self.__command_config_packages(args.root_dir, args.project_name, bt)
+      return self._command_config_packages(args.root_dir, args.project_name, bt)
     elif command == 'package:files':
-      return self.__command_package_files(args.package)
+      return self._command_package_files(args.package)
     elif command == 'package:info':
-      return self.__command_package_info(args.package)
+      return self._command_package_info(args.package)
     elif command == 'package:metadata':
-      return self.__command_package_metadata(args.package)
+      return self._command_package_metadata(args.package)
     elif command == 'test':
-      return self.__command_test(args.level, args.package_tarball, args.test,
-                                 args.artifacts_dir, args.tools_dir,
-                                 args.tmp_dir, args.opts, args.verbose)
+      return self._command_test(args.level, args.package_tarball, args.test,
+                                args.artifacts_dir, args.tools_dir,
+                                args.tmp_dir, args.opts, args.verbose)
     else:
       raise RuntimeError('Unknown command: %s' % (command))
     return 0
@@ -267,40 +266,40 @@ class rebuild_manager_cli(object):
       raise SystemExit(1)
     return bt
 
-  def __command_tools_update(self):
-    print("__command_tools_update()")
+  def _command_tools_update(self):
+    print("_command_tools_update()")
     return 0
 
-  def __command_tools_print(self):
-    print("__command_tools_print()")
+  def _command_tools_print(self):
+    print("_command_tools_print()")
     return 0
 
-  def __command_tools_install(self, dest_dir):
+  def _command_tools_install(self, dest_dir):
     assert False, 'implement me properly'
     am = artifact_manager(None, rebuild_manager.ARTIFACTS_GIT_ADDRESS)
-    rebbe = rebuild_manager(dest_dir)
+    rm = rebuild_manager(dest_dir)
     return 0
 
-  def __command_packages_install(self, artifact_manager, dest_dir, project_name, packages, wipe, bt):
-    rebbe = rebuild_manager(dest_dir, artifact_manager = artifact_manager)
-    return self.__update_project(rebbe, project_name, packages, wipe, bt)
+  def _command_packages_install(self, artifact_manager, dest_dir, project_name, packages, wipe, bt):
+    rm = rebuild_manager(dest_dir, artifact_manager = artifact_manager)
+    return self._update_project(rm, project_name, packages, wipe, bt)
 
-  def __command_packages_uninstall(self, dest_dir, project_name, packages, bt):
-    rebbe = rebuild_manager(dest_dir, artifact_manager = None)
-    success = rebbe.uninstall_packages(project_name, packages, bt)
+  def _command_packages_uninstall(self, dest_dir, project_name, packages, bt):
+    rm = rebuild_manager(dest_dir, artifact_manager = None)
+    success = rm.uninstall_packages(project_name, packages, bt)
     return self.bool_to_exit_code(success)
 
-  def __command_packages_print(self, root_dir, project_name, bt):
-    rebbe = rebuild_manager(root_dir, artifact_manager = None)
+  def _command_packages_print(self, root_dir, project_name, bt):
+    rm = rebuild_manager(root_dir, artifact_manager = None)
     assert project_name
-    packages = rebbe.installed_packages(project_name, bt)
+    packages = rm.installed_packages(project_name, bt)
     for p in packages:
       print(p)
     return 0
 
-  def __command_config_packages(self, root_dir, project_name, bt):
-    rebbe = rebuild_manager(root_dir, artifact_manager = None)
-    config = rebbe.config(bt)
+  def _command_config_packages(self, root_dir, project_name, bt):
+    rm = rebuild_manager(root_dir, artifact_manager = None)
+    config = rm.config(bt)
     section = config.get(project_name, None)
     if not section:
       return 1
@@ -315,9 +314,9 @@ class rebuild_manager_cli(object):
 remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir @ROOT_DIR@ ${1+"$@"}
 '''
 
-  def __command_packages_update(self, artifact_manager, root_dir, wipe, project_name, allow_downgrade, bt):
-    rebbe = rebuild_manager(root_dir, artifact_manager = artifact_manager)
-    success = rebbe.update_from_config(bt, project_name = project_name, allow_downgrade = allow_downgrade)
+  def _command_packages_update(self, artifact_manager, root_dir, wipe, project_name, allow_downgrade, bt):
+    rm = rebuild_manager(root_dir, artifact_manager = artifact_manager)
+    success = rm.update_from_config(bt, project_name = project_name, allow_downgrade = allow_downgrade)
     update_script = rebuild_manager_script(self.UPDATE_SCRIPT_TEMPLATE, 'update.sh')
     variables = {
       '@ARTIFACTS_DIR@': artifact_manager.publish_dir,
@@ -326,10 +325,10 @@ remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir @ROOT_DIR@ $
     update_script.save(root_dir, variables)
     return self.bool_to_exit_code(success)
 
-  def __update_project(self, rebbe, project_name, packages, wipe, bt):
+  def _update_project(self, rm, project_name, packages, wipe, bt):
     if wipe:
-      rebbe.wipe_project_dir(project_name)
-    success = rebbe.resolve_and_update_packages(project_name, packages, bt)
+      rm.wipe_project_dir(project_name)
+    success = rm.resolve_and_update_packages(project_name, packages, bt)
     return self.bool_to_exit_code(success)
 
   def bool_to_exit_code(clazz, success):
@@ -338,13 +337,13 @@ remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir @ROOT_DIR@ $
    else:
      return 1
 
-  def __command_package_files(self, tarball):
+  def _command_package_files(self, tarball):
     package = package(tarball)
     for f in package.files:
       print(f)
     return 0
 
-  def __command_package_info(self, tarball):
+  def _command_package_info(self, tarball):
     package = package(tarball)
     package_info = package.info
     info = str(package_info)
@@ -353,12 +352,12 @@ remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir @ROOT_DIR@ $
       print((part.strip()))
     return 0
 
-  def __command_package_metadata(self, tarball):
+  def _command_package_metadata(self, tarball):
     content = archiver.extract_member_to_string(tarball, package.INFO_FILENAME)
     print(content)
     return 0
 
-  def __command_test(self, bt, package_tarball, test, artifacts_dir, tools_dir, tmp_dir, opts, verbose):
+  def _command_test(self, bt, package_tarball, test, artifacts_dir, tools_dir, tmp_dir, opts, verbose):
     DEFAULT_OPTIONS = 'build_python=False'
     #opts = copy.deepcopy(DEFAULT_OPTIONS)
     parsed_opts = key_value_parser.parse_to_dict(opts)
