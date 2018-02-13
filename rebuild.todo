@@ -654,3 +654,7 @@ some python packages depend on setuptools at runtime because of pkg_resources.  
 cleanup the shit that happens in ~/.rebuild/dev_tools/setup.sh to cleanup things like PKG_CONFIG_PATH.  also figure out a way to version these files so they update if the template changes
 
 figure out why shit package_descripttor.parse_requirements is needed.
+
+Feb 13
+ - cleanup shit in build: Downloading git@git:rebuild.git@181b29f to /Users/ramiro/proj/third_party/BUILD/downloads/git@git_rebuild.git/181b29f.tar.gz
+ 
