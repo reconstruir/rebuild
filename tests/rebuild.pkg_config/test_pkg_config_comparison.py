@@ -21,22 +21,33 @@ class test_pkg_config_comparison(unit_test):
     return [ self.data_dir(where = 'dependency_tests') ]
 
   @classmethod
-  def _list_all_names_old(clazz, p):
+  def _list_all_old(clazz, p):
     return pkg_config.list_all(p)
   
   @classmethod
-  def _list_all_names_new(clazz, p):
+  def _list_all_new(clazz, p):
     return [ ( item.name, item.description ) for item in caca_pkg_config(p).list_all() ]
   
+  @classmethod
+  def _list_all_names_old(clazz, p):
+    return [ item[0] for item in clazz._list_all_old(p) ]
+  
+  @classmethod
+  def _list_all_names_new(clazz, p):
+    return [ item[0] for item in clazz._list_all_new(p) ]
+  
   def test_list_all_names(self):
-    rnew = self._list_all_names_new(self.pc_path)
-    rold = self._list_all_names_old(self.pc_path)
+    rnew = self._list_all_names_new(self.pc_path_deps)
+    rold = self._list_all_names_old(self.pc_path_deps)
     self.assertEqual( rold, rnew )
 
-  def xtest_cflags(self):
-    rnew = [ ( item.name, item.description ) for item in caca_pkg_config(self.pc_path).list_all() ]
-    rold = pkg_config.list_all(self.pc_path)
-    self.assertEqual( rold, rnew )
+  def test_cflags(self):
+    all_mod = self._list_all_names_new(self.pc_path_deps)
+    for mod in all_mod:
+      cnew = caca_pkg_config(self.pc_path).cflags(mod)
+      #cnew = pkg_config.cflags(mod, self.pc_path_deps)
+      cold = pkg_config.cflags(mod, self.pc_path_deps)
+      self.assertEqual( cold, cnew )
 
   def xtest_modversion(self):
     pc = caca_pkg_config(self.pc_path)

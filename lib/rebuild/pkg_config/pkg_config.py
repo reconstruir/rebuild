@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common import algorithm, object_util, Shell, string_util
+from bes.common import algorithm, check, object_util, Shell, string_util
 from bes.system import log, os_env_var, host
 from bes.fs import file_find, file_match, file_util
 from rebuild.base import build_arch, build_blurb, build_system
@@ -100,6 +100,7 @@ class pkg_config(object):
 
   @classmethod
   def __call_pkg_config(clazz, args, PKG_CONFIG_LIBDIR = [], PKG_CONFIG_PATH = []):
+    check.check_string_seq(PKG_CONFIG_PATH)
     cmd = [ clazz.PKG_CONFIG_EXE ] + object_util.listify(args)
     env = {
       'PKG_CONFIG_DEBUG_SPEW': '1',
@@ -110,7 +111,7 @@ class pkg_config(object):
     for p in PKG_CONFIG_PATH:
       file_util.mkdir(p)
     #build_blurb.blurb_verbose('pkg_config', '__call_pkg_config() cmd=%s' % (str(cmd)))
-    #print('pkg_config', '__call_pkg_config() cmd=%s' % (str(cmd)))
+    #print('pkg_config', '__call_pkg_config() cmd=%s; env=%s' % (str(cmd), str(env)))
     rv = Shell.execute(cmd, env = env)
     return rv
     

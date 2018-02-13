@@ -6,7 +6,7 @@ includedir=${prefix}/include
 Name: libpear1
 Version: 1.2.3
 Description: libpear1 is nice
-Requires: fruit
-Libs: -L${libdir} -lpear1
-Libs.private: 
-Cflags: -I${includedir} -DPEAR1
+Requires: @pear1_REQUIRES@
+Libs: -L${libdir} @pear1_LIBS@
+Libs.private: @pear1_LIBS_PRIVATE@
+Cflags: -I${includedir} @pear1_CFLAGS@

@@ -4,7 +4,7 @@
 # FIXME: maintain integrity of original pc whitespace and comments
 
 #import copy, glob, os.path as path
-from bes.common import check, variable #algorithm, string_util
+from bes.common import check, variable, string_util
 from bes.text import lines, string_list_parser
 from bes.key_value import key_value, key_value_list
 from bes.fs import file_util
@@ -188,3 +188,32 @@ class caca_pkg_config_file(namedtuple('caca_pkg_config_file', 'filename,entries,
     if prop:
       return prop.value
     return None
+
+  PC_FILE_TEMPLATE = '''prefix=@PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+sharedlibdir=${libdir}
+includedir=${prefix}/include
+
+Name: @NAME@
+Description: @DESCRIPTION@
+Version: @VERSION@
+
+Requires: @REQUIRES@
+Libs: @LIBS@
+Cflags: @CFLAGS@
+'''
+  
+  @classmethod
+  def make_pc_file_content(clazz, prefix, name, description, version, requires, libs, cflags):
+    'Make a testing .pc file.'
+    replacements = {
+      '@PREFIX@': prefix,
+      '@NAME@': name,
+      '@DESCRIPTION@': description,
+      '@VERSION@': version,
+      '@REQUIRES@': requires,
+      '@LIBS@': libs,
+      '@CFLAGS@': cflags,
+    }
+    return string_util.replace(clazz.PC_FILE_TEMPLATE, replacements)
