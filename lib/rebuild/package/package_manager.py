@@ -188,7 +188,8 @@ class package_manager(object):
   def package_files(clazz, tarball):
     return package(tarball).files
 
-  def install_package(self, pkg_desc, build_target, artifact_manager, allow_downgrade = False, force_install = False):
+  def install_package(self, pkg_desc, build_target, artifact_manager,
+                      allow_downgrade = False, force_install = False):
     assert artifact_manager.is_artifact_manager(artifact_manager)
     check.check_package_descriptor(pkg_desc)
     pkg = artifact_manager.package(pkg_desc, build_target)
@@ -196,6 +197,8 @@ class package_manager(object):
     if self.is_installed(pkg.info.name):
       old_pkg_desc = self._db.find_package(pkg.info.name).info
       comparison = package_descriptor.full_name_cmp(old_pkg_desc, pkg_desc)
+      if force_install:
+        comparison = -1
       if comparison == 0:
         return False
       elif comparison < 0:
