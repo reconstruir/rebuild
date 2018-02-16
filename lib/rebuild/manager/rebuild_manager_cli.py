@@ -97,6 +97,10 @@ class rebuild_manager_cli(object):
                                action = 'store_true',
                                default = False,
                                help = 'Allow downgrade of packages [ False ]')
+    update_parser.add_argument('--force',
+                               action = 'store_true',
+                               default = False,
+                               help = 'Force update of packages even if the version is the same [ False ]')
     update_parser.add_argument('project_name',
                                action = 'store',
                                default = None,
@@ -222,6 +226,7 @@ class rebuild_manager_cli(object):
                                              args.wipe,
                                              args.project_name,
                                              args.downgrade,
+                                             args.force,
                                              args.build_target)
     elif command in [ 'packages:uninstall' ]:
       return self._command_packages_uninstall(args.dest_dir,
@@ -314,9 +319,12 @@ class rebuild_manager_cli(object):
 remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir @ROOT_DIR@ ${1+"$@"}
 '''
 
-  def _command_packages_update(self, artifact_manager, root_dir, wipe, project_name, allow_downgrade, bt):
+  def _command_packages_update(self, artifact_manager, root_dir, wipe, project_name, allow_downgrade, force_install, bt):
     rm = rebuild_manager(root_dir, artifact_manager = artifact_manager)
-    success = rm.update_from_config(bt, project_name = project_name, allow_downgrade = allow_downgrade)
+    success = rm.update_from_config(bt,
+                                    project_name = project_name,
+                                    allow_downgrade = allow_downgrade,
+                                    force_install = force_install)
     update_script = rebuild_manager_script(self.UPDATE_SCRIPT_TEMPLATE, 'update.sh')
     variables = {
       '@ARTIFACTS_DIR@': artifact_manager.publish_dir,

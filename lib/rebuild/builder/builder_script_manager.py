@@ -35,7 +35,7 @@ class builder_script_manager(object):
         all_requirements_system_resolved = all_requirements.resolve(env.config.build_target.system)
 
         all_requirements_dependencies_resolved = self._resolve_and_order_dependencies(all_requirements_system_resolved,
-                                                                                       self.scripts, dependency_map)
+                                                                                      self.scripts, dependency_map)
 
         resolved_requirements = [ req for req in all_requirements_dependencies_resolved if not req.is_tool() ]
         resolved_build_requirements = [ req for req in all_requirements_dependencies_resolved if req.is_tool() ]

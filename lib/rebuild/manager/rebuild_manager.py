@@ -31,9 +31,9 @@ class rebuild_manager(object):
       self.package_managers[project_name] = package_manager(root_dir)
     return self.package_managers[project_name]
 
-  def update_packages(self, project_name, packages, build_target, allow_downgrade = False):
+  def update_packages(self, project_name, packages, build_target, allow_downgrade = False, force_install= False):
     pm = self._package_manager(project_name)
-    pm.install_packages(packages, build_target, self.artifact_manager, allow_downgrade = allow_downgrade)
+    pm.install_packages(packages, build_target, self.artifact_manager, allow_downgrade = allow_downgrade, force_install = force_install)
 
   def project_root_dir(self, project_name):
     return self._package_manager(project_name).root_dir
@@ -57,12 +57,12 @@ class rebuild_manager(object):
     resolved_infos = [ r.info for r in resolved ]
     return self.ResolveResult(available_packages, [], resolved_infos)
 
-  def resolve_and_update_packages(self, project_name, packages, build_target, allow_downgrade = False):
+  def resolve_and_update_packages(self, project_name, packages, build_target, allow_downgrade = False, force_install = False):
     resolve_rv = self.resolve_packages(packages, build_target)
     if resolve_rv.missing:
       self.blurb('missing artifacts at %s: %s' % (self.artifact_manager.publish_dir, ' '.join(resolve_rv.missing)))
       return []
-    self.update_packages(project_name, resolve_rv.resolved, build_target, allow_downgrade = allow_downgrade)
+    self.update_packages(project_name, resolve_rv.resolved, build_target, allow_downgrade = allow_downgrade, force_install = force_install)
     return [ pi.name for pi in resolve_rv.resolved ]
 
   def uninstall_packages(self, project_name, packages, build_target):
@@ -78,7 +78,7 @@ class rebuild_manager(object):
     config.load_file(self.config_filename, build_target)
     return config
 
-  def update_from_config(self, build_target, project_name = None, allow_downgrade = False):
+  def update_from_config(self, build_target, project_name = None, allow_downgrade = False, force_install = False):
     config = self._load_config(build_target)
 
     want_specific_project = project_name is not None
@@ -86,18 +86,19 @@ class rebuild_manager(object):
       raise RuntimeError('Unknown project: %s' % (project_name))
 
     if want_specific_project:
-      return self._update_project_from_config(build_target, config[project_name], project_name, allow_downgrade)
+      return self._update_project_from_config(build_target, config[project_name], project_name, allow_downgrade, force_install)
     else:
       for project_name, values in config.items():
         if not self._update_project_from_config(build_target, values, project_name, allow_downgrade):
           return False
       return True
   
-  def _update_project_from_config(self, build_target, values, project_name, allow_downgrade):
+  def _update_project_from_config(self, build_target, values, project_name, allow_downgrade, force_install):
     resolved_packages = self.resolve_and_update_packages(project_name,
                                                          values['packages'],
                                                          build_target,
-                                                         allow_downgrade = allow_downgrade)
+                                                         allow_downgrade = allow_downgrade,
+                                                         force_install = force_install)
     if not resolved_packages:
       self.blurb('failed to update %s from %s' % (project_name, self.config_filename))
       return False

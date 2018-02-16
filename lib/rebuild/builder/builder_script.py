@@ -55,11 +55,11 @@ class builder_script(object):
     
   @property
   def requirements(self):
-    return self.recipe.requirements
+    return self.descriptor.requirements
     
   @property
   def build_requirements(self):
-    return self.recipe.build_requirements
+    return self.descriptor.build_requirements
     
   @property
   def instructions(self):

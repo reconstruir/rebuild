@@ -244,7 +244,7 @@ class package_descriptor(object):
     return object_util.listify(self.properties.get(self.PROPERTY_PKG_CONFIG_NAME, [ self.name ]))
 
   def is_tool(self):
-    return self.category == build_category.TOOL
+    return self.category.lower() == build_category.value_to_name(build_category.TOOL).lower()
 
   @classmethod
   def full_name_cmp(clazz, pi1, pi2):
