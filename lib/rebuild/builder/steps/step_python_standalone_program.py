@@ -18,18 +18,31 @@ class step_python_make_standalone_program(step):
     if not standalone_programs:
       return step_result(True)
 
+    file_util.mkdir(script.stage_bin_dir)
     for program in standalone_programs:
-      rv = Shell.execute('pyinstaller', raise_error = False)
       src_program = path.join(script.build_dir, program[0])
-      dst_program = path.join(script.build_dir, 'dist', path.basename(program[1]))
-      cmd = 'pyinstaller -F %s' % (src_program)
-      rv = self.call_shell(cmd, script, env, args)
-      if not rv.success:
-        return rv
-      file_util.mkdir(script.stage_bin_dir)
-      install.install(dst_program, script.stage_bin_dir, mode = 0o755)
+      if Shell.is_shell_script(src_program):
+        self._make_standalone_shell_script(program, script, env, args)
+      else:
+        self._make_standalone_python(program, script, env, args)
+      
     return step_result(True)
 
+  def _make_standalone_python(self, program, script, env, args):
+    src_program = path.join(script.build_dir, program[0])
+    dst_program = path.join(script.build_dir, 'dist', path.basename(program[1]))
+    cmd = 'pyinstaller -F %s' % (src_program)
+    rv = self.call_shell(cmd, script, env, args)
+    if not rv.success:
+      return rv
+    install.install(dst_program, script.stage_bin_dir, mode = 0o755)
+  
+  def _make_standalone_shell_script(self, program, script, env, args):
+    src_program = path.join(script.build_dir, program[0])
+    dst_program = path.join(script.build_dir, path.basename(program[1]))
+    file_util.copy(src_program, dst_program)
+    install.install(dst_program, script.stage_bin_dir, mode = 0o755)
+  
 class step_python_standalone_program(compound_step):
   'A complete step to make python libs using the "build" target of setuptools.'
   from .step_setup import step_setup
