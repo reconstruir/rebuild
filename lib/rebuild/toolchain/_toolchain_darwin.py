@@ -39,7 +39,8 @@ class _toolchain_darwin(_toolchain_base):
   def compiler_flags(self):
     'Return the compiler flags for the given darwin.'
 
-    sysroot_flags = self.sysroot_flags()
+    sysroot_cflags = self.sysroot_cflags()
+    sysroot_cxxflags = self.sysroot_cxxflags()
     arch_flags = self._make_arch_flags(self.build_target.archs)
 
     if self.build_target.level == build_level.RELEASE:
@@ -47,14 +48,15 @@ class _toolchain_darwin(_toolchain_base):
     else:
       opt_flags = [ '-g' ]
 
-    cflags = sysroot_flags + arch_flags + opt_flags
+    cflags = sysroot_cflags + arch_flags + opt_flags
+    cxxflags = sysroot_cxxflags + arch_flags + opt_flags
 
     ldflags = []
       
     env = {
       'CFLAGS': cflags,
       'LDFLAGS': ldflags,
-      'CXXFLAGS': cflags,
+      'CXXFLAGS': cxxflags,
       'REBUILD_COMPILE_OPT_FLAGS': opt_flags,
       'REBUILD_COMPILE_ARCH_FLAGS': arch_flags,
       'REBUILD_COMPILE_ARCHS': self.build_target.archs,
@@ -73,12 +75,16 @@ class _toolchain_darwin(_toolchain_base):
   def sysroot(self):
     return xcrun.sdk_path(self.sdk)
 
-  def sysroot_flags(self):
-    'Return the sysroot flags.'
-    sysroot = self.sysroot()
+  def sysroot_cflags(self):
+    'Return the sysroot CFLAGS.'
     return [
-      '-isystem %s' % (path.join(sysroot, 'usr/include')),
-#      '--sysroot %s' % (path.join(self._platforms_dir, self._api_dir, self._arch_dir)),
+      '-isystem %s' % (path.join(self.sysroot(), 'usr/include')),
+    ]
+  
+  def sysroot_cxxflags(self):
+    'Return the sysroot CXXFLAGS.'
+    return [
+      '-isystem %s' % (path.join(self.sysroot(), 'usr/include/c++')),
     ]
   
   def autoconf_flags(self):

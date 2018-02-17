@@ -27,7 +27,11 @@ class _toolchain_base(with_metaclass(ABCMeta, object)):
     pass
   
   @abstractmethod
-  def sysroot_flags(self):
+  def sysroot_cflags(self):
+    pass
+  
+  @abstractmethod
+  def sysroot_cxxflags(self):
     pass
   
   @abstractmethod

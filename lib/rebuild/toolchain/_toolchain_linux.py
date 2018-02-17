@@ -63,10 +63,13 @@ class _toolchain_linux(_toolchain_base):
   def sysroot(self):
     return '/'
 
-  def sysroot_flags(self):
-    'Return the sysroot flags.'
-    return [
-    ]
+  def sysroot_cflags(self):
+    'Return the sysroot CFLAGS.'
+    return []
+
+  def sysroot_cxxflags(self):
+    'Return the sysroot CXXFLAGS.'
+    return []
 
   def autoconf_flags(self):
     return [

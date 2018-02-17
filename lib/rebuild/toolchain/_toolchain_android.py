@@ -63,7 +63,7 @@ class _toolchain_android(_toolchain_base):
 
   def compiler_flags(self):
     'Return the compiler flags for the given darwin.'
-    sysroot_flags = self.sysroot_flags()
+    sysroot_cflags = self.sysroot_cflags()
     arch_flags = []
     pic_flags = [ '-fPIC' ]
 
@@ -72,9 +72,9 @@ class _toolchain_android(_toolchain_base):
     else:
       opt_flags = [ '-g' ]
 
-    cflags = sysroot_flags + arch_flags + opt_flags + pic_flags
+    cflags = sysroot_cflags + arch_flags + opt_flags + pic_flags
     
-    ldflags = sysroot_flags
+    ldflags = sysroot_cflags
       
     env = {
       'CFLAGS': cflags,
@@ -110,7 +110,7 @@ class _toolchain_android(_toolchain_base):
   def sysroot(self):
     return path.join(self.ndk_root, 'sysroot')
   
-  def sysroot_flags(self):
+  def sysroot_cflags(self):
     'Return the sysroot flags.'
     sysroot = self.sysroot()
     return [
