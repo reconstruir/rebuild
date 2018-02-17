@@ -657,4 +657,7 @@ figure out why shit package_descripttor.parse_requirements is needed.
 
 Feb 13
  - cleanup shit in build: Downloading git@git:rebuild.git@181b29f to /Users/ramiro/proj/third_party/BUILD/downloads/git@git_rebuild.git/181b29f.tar.gz
- 
+
+
+feb 17
+- figure out why the build.py in gnu_flex needs to have M4=m4 instead of using rebbe_m4.  maybe its missing env vars
