@@ -6,7 +6,7 @@ import json
 
 setup(
   name = 'rebuild',
-  version = json.loads(open('rebuild/version.txt', 'r').read())['version'],
+  version = json.loads(open('version.txt', 'r').read())['version'],
   packages = find_packages(include = ['rebuild*']),
   include_package_data = True,
   zip_safe = True,
