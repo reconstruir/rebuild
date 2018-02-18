@@ -4,6 +4,7 @@
 import os.path as path
 from rebuild.step import compound_step, step, step_result
 from bes.python import setup_tools
+from bes.common import json_util
 
 class step_python_egg_build(step):
   'A step to do the "bdist_egg" target of setuptools.'
@@ -14,6 +15,17 @@ class step_python_egg_build(step):
     super(step_python_egg_build, self).__init__()
 
   def execute(self, script, env, args):
+    tarball_address = args.get('tarball_address', ( None, None ))
+    update_version_tag = args.get('update_version_tag', None)
+
+    if update_version_tag:
+      assert tarball_address
+      filename = path.join(script.build_dir, update_version_tag)
+      assert path.isfile(filename)
+      v = json_util.read_file(filename)
+      v['tag'] = tarball_address[1]
+      json_util.save_file(filename, v)
+    
     setup_script = args.get('setup_script', self.DEFAULT_SETUP_SCRIPT)
     setup_dir = args.get('setup_dir', None)
     cmd = '${PYTHON} %s bdist_egg --plat-name=${REBUILD_PYTHON_PLATFORM_NAME}' % (setup_script)
