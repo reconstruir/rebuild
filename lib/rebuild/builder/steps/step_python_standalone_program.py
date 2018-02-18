@@ -21,10 +21,12 @@ class step_python_make_standalone_program(step):
     file_util.mkdir(script.stage_bin_dir)
     for program in standalone_programs:
       src_program = path.join(script.build_dir, program[0])
-      if Shell.is_shell_script(src_program):
+      if src_program.lower().endswith('.py'):
+        self._make_standalone_python(program, script, env, args)
+      elif Shell.is_shell_script(src_program):
         self._make_standalone_shell_script(program, script, env, args)
       else:
-        self._make_standalone_python(program, script, env, args)
+        raise RuntimeError('Unknown standalone program type: %s' % (src_program))
       
     return step_result(True)
 
