@@ -3,5 +3,5 @@
 
 from bes.version import version
 
-__version__, __bes_tag__ = version.version(__name__, '../version.txt')
+__version__, __bes_tag__ = version.version(__name__, 'version.txt')
 __author__ = 'bes@fateware.com'
