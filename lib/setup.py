@@ -2,11 +2,13 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from setuptools import setup, find_packages
+import json
 
 setup(
   name = 'rebuild',
-  version = '1.0.0',
+  version = json.loads(open('rebuild/version.txt', 'r').read())['version'],
   packages = find_packages(include = ['rebuild*']),
+  include_package_data = True,
   zip_safe = True,
   author = 'Ramiro Estrugo',
   author_email = 'bes@fateware.com',

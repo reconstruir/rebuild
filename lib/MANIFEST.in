@@ -1,1 +1,2 @@
-include rebuild/version.txt
+include version.txt
+
