@@ -4,7 +4,7 @@
 import os.path as path
 from bes.common import check, dict_util
 from rebuild.base import build_blurb, package_descriptor, requirement
-from rebuild.dependency import dependency_resolver, missing_dependency_error
+from bes.dependency import dependency_resolver, missing_dependency_error
 from collections import namedtuple
 from .builder_recipe_loader import builder_recipe_loader
 from .builder_script import builder_script

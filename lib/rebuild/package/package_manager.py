@@ -8,7 +8,7 @@ from bes.common import check, object_util, string_util, variable
 from bes.system import os_env_var
 from rebuild.instruction import instruction_list
 from rebuild.base import build_os_env, build_system, requirement
-from rebuild.dependency import dependency_resolver
+from bes.dependency import dependency_resolver
 from rebuild.pkg_config import pkg_config
 from bes.archive import archive, archiver
 from bes.fs import file_util

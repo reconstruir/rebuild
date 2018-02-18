@@ -4,7 +4,7 @@
 from abc import ABCMeta, abstractmethod
 from bes.system.compat import with_metaclass
 from bes.common import check
-from rebuild.dependency import dependency_provider
+from bes.dependency import dependency_provider
 from .hook_registry import hook_registry
 
 class hook_register_meta(ABCMeta):

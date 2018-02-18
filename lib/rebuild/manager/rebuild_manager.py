@@ -5,7 +5,7 @@ import os.path as path
 from bes.fs import file_util
 from bes.common import check, dict_util, object_util
 from rebuild.base import build_blurb, build_os_env, build_target, package_descriptor
-from rebuild.dependency import dependency_resolver
+from bes.dependency import dependency_resolver
 from rebuild.package import artifact_manager, package, package_manager, package_list
 from collections import namedtuple
 from .rebuild_manager_config import rebuild_manager_config

@@ -4,7 +4,7 @@
 import os.path as path
 from bes.common import check, object_util, string_util
 from bes.python import code
-from rebuild.dependency import dependency_provider
+from bes.dependency import dependency_provider
 
 class hook_poto(dependency_provider):
 

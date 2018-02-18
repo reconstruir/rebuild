@@ -118,6 +118,14 @@ class _toolchain_android(_toolchain_base):
       '--sysroot %s' % (self._sysroot_platform_dir),
     ]
 
+  def sysroot_cxxflags(self):
+    'Return the sysroot flags.'
+    sysroot = self.sysroot()
+    return [
+      '-isystem %s' % (path.join(sysroot, 'usr/include/c++', self._triplet)),
+      '--sysroot %s' % (self._sysroot_platform_dir),
+    ]
+
   def autoconf_flags(self):
     return [
       '--host=%s' % (self._triplet),

@@ -10,7 +10,7 @@ from collections import namedtuple
 from rebuild.step import step_result
 from rebuild.base import build_blurb, build_os_env, build_target
 from rebuild.toolchain import toolchain
-from rebuild.dependency import dependency_resolver
+from bes.dependency import dependency_resolver
 from bes.common import Shell, variable
 from bes.fs import file_replace
 

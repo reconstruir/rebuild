@@ -4,7 +4,7 @@
 import os.path as path
 from bes.common import algorithm, check, object_util
 from bes.fs import dir_util, file_util
-from rebuild.dependency import dependency_resolver
+from bes.dependency import dependency_resolver
 from .caca_pkg_config_file import caca_pkg_config_file
 from collections import namedtuple
 

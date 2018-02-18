@@ -8,7 +8,7 @@ from bes.text import string_list_parser
 from bes.compat import StringIO
 from .instruction_list_parser import instruction_list_parser
 from .instruction import instruction
-from rebuild.dependency import dependency_resolver
+from bes.dependency import dependency_resolver
 
 class instruction_list(type_checked_list):
 

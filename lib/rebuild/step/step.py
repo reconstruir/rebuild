@@ -13,7 +13,7 @@ from bes.system import log
 from bes.system.compat import with_metaclass
 from bes.text import string_list
 from rebuild.base import build_blurb, build_os_env, build_target, reitred_masked_config
-from rebuild.dependency import dependency_resolver
+from bes.dependency import dependency_resolver
 from rebuild.toolchain import toolchain
 from rebuild.value import value_type
 

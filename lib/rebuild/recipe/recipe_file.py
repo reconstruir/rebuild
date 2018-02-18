@@ -3,7 +3,7 @@
 
 import os.path as path
 from bes.common import check
-from rebuild.dependency import dependency_provider
+from bes.dependency import dependency_provider
 
 class recipe_file(dependency_provider):
 

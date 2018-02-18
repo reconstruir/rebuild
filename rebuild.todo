@@ -645,7 +645,7 @@ jan 21
 - from step.py # FIXME: unify the replacements here with those in step_pkg_config_make_pc.py
 
 jan 25
-- rebuild.dependency.dependency_resolver.missing_dependency_error: Missing dependency for python/python_kivy/build.py: python_pkg_resources
+- bes.dependency.dependency_resolver.missing_dependency_error: Missing dependency for python/python_kivy/build.py: python_pkg_resources
 if python_kivy depends on python_pillow and pillow depents pn pkg_resources and pkg_resources is retired the error doesnt say
 why the dependency is missing
 

@@ -17,6 +17,7 @@ setup(
     '../bin/rebuild_macho.py',
     '../bin/rebuild_native_package.py',
     '../bin/rebuild_sudo_editor.py',
+    '../bin/rebuild_update_tarball_address.py',
     '../bin/rebuilder.py',
     '../bin/remanager.py',
     'rebuild/tools/linux/armv7/pkg_config-0.29.1_rev1/bin/armv7l-unknown-linux-gnueabihf-pkg-config',
