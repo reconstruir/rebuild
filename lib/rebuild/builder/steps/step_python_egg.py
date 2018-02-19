@@ -24,7 +24,7 @@ class step_python_egg_build(step):
       filename = path.join(script.build_dir, update_version_tag)
       assert path.isfile(filename)
       v1 = version_info.read_file(filename)
-      v2 = v.change(tag = tarball_address[1])
+      v2 = v1.change(address = tarball_address[0], tag = tarball_address[1])
       v2.save_file(filename)
     
     setup_script = args.get('setup_script', self.DEFAULT_SETUP_SCRIPT)
