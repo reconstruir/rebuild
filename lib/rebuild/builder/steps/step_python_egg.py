@@ -5,6 +5,7 @@ import os.path as path
 from rebuild.step import compound_step, step, step_result
 from bes.python import setup_tools
 from bes.common import json_util
+from bes.version import version_info
 
 class step_python_egg_build(step):
   'A step to do the "bdist_egg" target of setuptools.'
@@ -22,9 +23,9 @@ class step_python_egg_build(step):
       assert tarball_address
       filename = path.join(script.build_dir, update_version_tag)
       assert path.isfile(filename)
-      v = json_util.read_file(filename)
-      v['tag'] = tarball_address[1]
-      json_util.save_file(filename, v)
+      v1 = version_info.read_file(filename)
+      v2 = v.change(tag = tarball_address[1])
+      v2.save_file(filename)
     
     setup_script = args.get('setup_script', self.DEFAULT_SETUP_SCRIPT)
     setup_dir = args.get('setup_dir', None)
