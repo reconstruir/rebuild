@@ -2,16 +2,18 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from setuptools import setup, find_packages
-import json
+
+ver = {}
+exec(open('rebuild/ver.py', 'r').read(), {}, ver)
 
 setup(
   name = 'rebuild',
-  version = json.loads(open('rebuild/version.txt', 'r').read())['version'],
+  version = ver['BES_VERSION'],
   packages = find_packages(include = ['rebuild*']),
   include_package_data = True,
   zip_safe = True,
-  author = 'Ramiro Estrugo',
-  author_email = 'bes@fateware.com',
+  author = ver['BES_AUTHOR_NAME'],
+  author_email = ver['BES_AUTHOR_EMAIL'],
   scripts = [
     '../bin/rebuild_ar.py',
     '../bin/rebuild_jail.py',
