@@ -33,10 +33,12 @@ class step_python_make_standalone_program(step):
   def _make_standalone_python(self, program, script, env, args):
     src_program = path.join(script.build_dir, program[0])
     dst_program = path.join(script.build_dir, 'dist', path.basename(program[1]))
-    cmd = 'pyinstaller -F %s' % (src_program)
+    cmd = 'pyinstaller --log INFO --hidden-import=bes.system.thread_id_base --hidden-import=bes.system.thread_id_macos -F %s' % (src_program)
+#    cmd = 'pyinstaller --log INFO --hidden-import=fuck.you.hard -F %s' % (src_program)
     rv = self.call_shell(cmd, script, env, args)
     if not rv.success:
       return rv
+    print('FUCK: install(%s, %s)' % (dst_program, script.stage_bin_dir))
     install.install(dst_program, script.stage_bin_dir, mode = 0o755)
   
   def _make_standalone_shell_script(self, program, script, env, args):
