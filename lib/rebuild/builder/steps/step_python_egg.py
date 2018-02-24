@@ -4,7 +4,7 @@
 import os.path as path
 from rebuild.step import compound_step, step, step_result
 from bes.python import setup_tools
-from bes.common import json_util
+from bes.common import time_util
 from bes.version import version_info
 
 class step_python_egg_build(step):
@@ -24,7 +24,8 @@ class step_python_egg_build(step):
       filename = path.join(script.build_dir, update_version_tag)
       assert path.isfile(filename)
       v1 = version_info.read_file(filename)
-      v2 = v1.change(address = tarball_address[0], tag = tarball_address[1])
+      v2 = v1.change(address = tarball_address[0], tag = tarball_address[1], timestamp = time_util.timestamp(timezone = True))
+#      time_util
       v2.save_file(filename)
     
     setup_script = args.get('setup_script', self.DEFAULT_SETUP_SCRIPT)
