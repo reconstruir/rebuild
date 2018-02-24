@@ -661,3 +661,6 @@ Feb 13
 
 feb 17
 - figure out why the build.py in gnu_flex needs to have M4=m4 instead of using rebbe_m4.  maybe its missing env vars
+
+feb 22
+- need to cleanup old downloads same as old builds
