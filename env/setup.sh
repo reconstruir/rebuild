@@ -6,7 +6,7 @@ _rebuild_dev_root()
 
 rebuild_dev()
 {
-  bes_dev
+  bes_dev 1
   bes_setup $(_rebuild_dev_root) ${1+"$@"}
   return 0
 }
