@@ -286,13 +286,18 @@ class package_manager(object):
   def _resolve_requirements(clazz, pkg_desc, descriptor_map, dependency_map, build_target):
     'resolve requirements for one pkg.'
     assert pkg_desc
-    all_requirements = pkg_desc.requirements + pkg_desc.build_requirements
-    all_requirements_system_resolved = all_requirements.resolve(build_target.system)
-    all_requirements_system_resolved_names = [ req.name for req in all_requirements_system_resolved ]
-    all_requirements_dependencies_resolved = dependency_resolver.resolve_and_order_deps(all_requirements_system_resolved_names,
-                                                                                        descriptor_map,
-                                                                                        dependency_map)
-    resolved_requirements = [ req for req in all_requirements_dependencies_resolved if not req.is_tool() ]
-    resolved_build_requirements = [ req for req in all_requirements_dependencies_resolved if req.is_tool() ]
+
+    requirements = pkg_desc.requirements.resolve(build_target.system)
+    requirements_names = [ req.name for req in requirements ]
+    resolved_requirements = dependency_resolver.resolve_and_order_deps(requirements_names,
+                                                                       descriptor_map,
+                                                                       dependency_map)
+
+    build_requirements = pkg_desc.build_requirements.resolve(build_target.system)
+    build_requirements_names = [ req.name for req in build_requirements ]
+    resolved_build_requirements = dependency_resolver.resolve_and_order_deps(build_requirements_names,
+                                                                             descriptor_map,
+                                                                             dependency_map)
+    
     pkg_desc.resolved_requirements = resolved_requirements
     pkg_desc.resolved_build_requirements = resolved_build_requirements

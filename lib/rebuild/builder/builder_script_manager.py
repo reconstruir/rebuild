@@ -31,14 +31,12 @@ class builder_script_manager(object):
     for name, script in sorted(self.scripts.items()):
       build_blurb.blurb_verbose('build', 'resolving dependencies for: %s - %s' % (path.relpath(script.filename), script.descriptor.name))
       try:
-        all_requirements = script.descriptor.requirements + script.descriptor.build_requirements
-        all_requirements_system_resolved = all_requirements.resolve(env.config.build_target.system)
-
-        all_requirements_dependencies_resolved = self._resolve_and_order_dependencies(all_requirements_system_resolved,
-                                                                                      self.scripts, dependency_map)
-
-        resolved_requirements = [ req for req in all_requirements_dependencies_resolved if not req.is_tool() ]
-        resolved_build_requirements = [ req for req in all_requirements_dependencies_resolved if req.is_tool() ]
+        requirements = script.descriptor.requirements.resolve(env.config.build_target.system)
+        resolved_requirements = self._resolve_and_order_dependencies(requirements,
+                                                                     self.scripts, dependency_map)
+        build_requirements = script.descriptor.build_requirements.resolve(env.config.build_target.system)
+        resolved_build_requirements = self._resolve_and_order_dependencies(build_requirements,
+                                                                           self.scripts, dependency_map)
 
         check.check_package_descriptor_seq(resolved_requirements)
         check.check_package_descriptor_seq(resolved_build_requirements)
@@ -100,10 +98,6 @@ class builder_script_manager(object):
   def package_names(self):
     'Return all the package names.'
     return sorted(self.scripts.keys())
-
-  def package_is_tool(self, package_name):
-    'Return True if package_name is a tool.'
-    return self.scripts[package_name].descriptor.is_tool()
 
   _partitioned = namedtuple('_partitioned', 'libs,tools')
   def partition_libs_and_tools(self, package_names):
