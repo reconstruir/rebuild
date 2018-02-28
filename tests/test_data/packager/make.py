@@ -8,7 +8,8 @@ from bes.refactor import files as refactor_files
 from rebuild.package.unit_test_packages import unit_test_packages
 from rebuild.base import build_os_env, package_descriptor, requirement
 from bes.fs import temp_file
-from bes.common import Shell, variable
+from bes.common import variable
+from bes.system import execute
 
 DEBUG = False
 #DEBUG = True
@@ -135,7 +136,7 @@ def main():
     env = build_os_env.make_clean_env(keep_keys = [ 'PATH', 'PKG_CONFIG_PATH' ])
     env['GZIP'] = '-n'
     flat_command = ' && '.join(command)
-    Shell.execute(flat_command, shell = True, non_blocking = True, env = env)
+    execute.execute(flat_command, shell = True, non_blocking = True, env = env)
     pc_files = file_find.find_fnmatch(working_dir, [ '*.pc' ], relative = False)
     for pc_file in pc_files:
       dst_pc_file = path.join(pc_files_dir, path.basename(pc_file))
@@ -160,7 +161,7 @@ def make_template_tarball(root, template_name, template_version):
     ]
   env = build_os_env.make_clean_env(keep_keys = [ 'PATH', 'PKG_CONFIG_PATH' ])
   env['GZIP'] = '-n'
-  Shell.execute(' && '.join(command), shell = True, non_blocking = True, env = env)
+  execute.execute(' && '.join(command), shell = True, non_blocking = True, env = env)
   result = path.join(root, '%s-%s.tar.gz' % (template_name, template_version))
   assert path.isfile(result)
   return result

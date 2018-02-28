@@ -3,7 +3,8 @@
 
 import os.path as path
 from .library_base import library_base
-from bes.common import algorithm, Shell
+from bes.common import algorithm
+from bes.system import execute
 from rebuild.binary_format import binary_format_macho
 
 class library_macos(library_base):
@@ -28,7 +29,7 @@ class library_macos(library_base):
     if not binary_format_macho().file_is_of_type(filename, types):
       return None
     cmd = [ 'otool', '-L', filename ]
-    rv = Shell.execute(cmd)
+    rv = execute.execute(cmd)
     assert rv.stdout.find('is not an object file') == -1
     lines = rv.stdout.split('\n')
     if len(lines) < 2:

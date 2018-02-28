@@ -11,7 +11,8 @@ from rebuild.step import step_result
 from rebuild.base import build_blurb, build_os_env, build_target
 from rebuild.toolchain import toolchain
 from bes.dependency import dependency_resolver
-from bes.common import Shell, variable
+from bes.common import variable
+from bes.system import execute
 from bes.fs import file_replace
 
 from .package import package
@@ -70,16 +71,16 @@ class package_tester(object):
     build_blurb.blurb_verbose('tester', '%s: cflags=\"%s\" libs=\"%s\"' % (setup.package_info.name, cflags_flat, libs_flat))
 
     # Build the test
-    rv = Shell.execute(compilation_cmd,
-                       env = setup.env,
-                       non_blocking = build_blurb.verbose,
-                       stderr_to_stdout = True,
-                       raise_error = False)
+    rv = execute.execute(compilation_cmd,
+                         env = setup.env,
+                         non_blocking = build_blurb.verbose,
+                         stderr_to_stdout = True,
+                         raise_error = False)
     if rv.exit_code != 0:
       return step_result(rv.exit_code == 0, rv.stdout)
     # Run the test
-    rv = Shell.execute(test_exe, env = setup.env, non_blocking = build_blurb.verbose,
-                       stderr_to_stdout = True, raise_error = False)
+    rv = execute.execute(test_exe, env = setup.env, non_blocking = build_blurb.verbose,
+                         stderr_to_stdout = True, raise_error = False)
 
     # Restore the environment cause __setup_test() hacks it
     os.environ = setup.saved_env
@@ -97,8 +98,8 @@ class package_tester(object):
     setup.env['PYTHONPATH'] = setup.package_manager.python_lib_dir
     # Run the test
     cmd = 'python2.7 %s' % (setup.test_source_with_replacements)
-    rv = Shell.execute(cmd, env = setup.env, non_blocking = build_blurb.verbose,
-                       stderr_to_stdout = True, raise_error = False)
+    rv = execute.execute(cmd, env = setup.env, non_blocking = build_blurb.verbose,
+                         stderr_to_stdout = True, raise_error = False)
     if rv.exit_code != 0:
       return step_result(rv.exit_code == 0, rv.stdout)
     return step_result(True, None)
@@ -169,8 +170,8 @@ class package_tester(object):
     build_blurb.blurb_verbose('tester', '%s: running shell test %s' % (setup.package_info.name, test_source))
     exe = clazz.__determine_exe(exe_env_name, exe_default)
     cmd = '%s %s' % (exe, setup.test_source_with_replacements)
-    rv = Shell.execute(cmd, env = setup.env, non_blocking = build_blurb.verbose,
-                       stderr_to_stdout = True, raise_error = False)
+    rv = execute.execute(cmd, env = setup.env, non_blocking = build_blurb.verbose,
+                         stderr_to_stdout = True, raise_error = False)
     os.environ = setup.saved_env
     if rv.exit_code != 0:
       return step_result(rv.exit_code == 0, rv.stdout)

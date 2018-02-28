@@ -5,7 +5,7 @@
 import argparse, os, os.path as path, sys
 
 try:
-  from bes.common import Shell
+  from bes.system import execute
 except:
   p = path.abspath(path.normpath(path.join(path.dirname(__file__), '../../bes/lib')))
   sys.path.append(p)
@@ -13,7 +13,7 @@ except:
   sys.path.append(p)
 
 
-from bes.common import Shell
+from bes.system import execute
 from rebuild.toolchain.darwin import darwin_sdk
 from rebuild.toolchain.darwin import xcrun
 from rebuild.toolchain import ar_replacement

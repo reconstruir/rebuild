@@ -4,7 +4,6 @@
 
 import os, os.path as path
 from bes.testing.unit_test import unit_test
-from bes.common import Shell
 from bes.fs import file_util, file_find, temp_file
 from rebuild.base import build_os_env
 

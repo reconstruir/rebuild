@@ -7,7 +7,7 @@ from rebuild.base import build_target, build_system
 from rebuild.toolchain import compiler, toolchain
 from bes.fs import file_util, temp_file
 from bes.system import host
-from bes.common import object_util, Shell, variable
+from bes.common import object_util, variable
 from bes.testing.unit_test.unit_test_skip import skip_if
 
 def _can_compile_macos(): return host.is_macos()

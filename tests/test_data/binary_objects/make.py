@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from bes.system import host
-from bes.common import Shell, string_util
+from bes.common import string_util
 from bes.fs import file_util
 import os.path as path
 
@@ -188,7 +188,7 @@ def _resolve_filenames(filenames):
 def _shell_cmd(cmd):
   if DEBUG:
     print("CMD: %s" % (' '.join(cmd)))
-  rv = Shell.execute(cmd, stderr_to_stdout = True, raise_error = False)
+  rv = execute.execute(cmd, stderr_to_stdout = True, raise_error = False)
   if rv.exit_code != 0:
     print(rv.stdout)
     raise SystemExit(rv.exit_code)

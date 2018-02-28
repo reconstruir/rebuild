@@ -3,7 +3,7 @@
 #
 
 from rebuild.step import step, step_result
-from bes.common import Shell, string_util
+from bes.common import string_util
 
 class step_shell(step):
   'A build step that is a shell command.'

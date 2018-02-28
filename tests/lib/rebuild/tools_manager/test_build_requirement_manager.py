@@ -3,7 +3,7 @@
 #
 import os.path as path, unittest
 from bes.fs import temp_file
-from bes.common import Shell
+from bes.system import execute
 from rebuild.package import artifact_manager
 from rebuild.base import package_descriptor
 from rebuild.tools_manager import build_requirement_manager
@@ -44,7 +44,7 @@ class test_build_requirement_manager(unittest.TestCase):
     tpm.install_package(package_info, am)
     tool_name = package_info.name + '_script.sh'
     exe = tpm.tool_exe(package_info, tool_name)
-    rv = Shell.execute(exe)
+    rv = execute.execute(exe)
     self.assertEqual( 0, rv.exit_code )
     self.assertEqual( package_info.full_name, rv.stdout.strip() )
 

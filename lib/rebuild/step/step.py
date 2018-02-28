@@ -6,10 +6,10 @@ import copy, os, os.path as path
 from abc import abstractmethod, ABCMeta
 from collections import namedtuple
 
-from bes.common import check, dict_util, object_util, string_util, Shell, variable
+from bes.common import check, dict_util, object_util, string_util, variable
 from bes.fs import file_util
 from bes.key_value import key_value_list
-from bes.system import log
+from bes.system import execute, log
 from bes.system.compat import with_metaclass
 from bes.text import string_list
 from rebuild.base import build_blurb, build_os_env, build_target, reitred_masked_config
@@ -211,7 +211,7 @@ class step(with_metaclass(step_register_meta, object)):
   
   @classmethod
   def call_shell(clazz, command, script, env, args, extra_env = None, save_logs = None, execution_dir = None):
-    command = Shell.listify_command(command)
+    command = execute.listify_command(command)
     command = [ part for part in command if part ]
     extra_env = extra_env or key_value_list()
     save_logs = save_logs or []
@@ -254,13 +254,13 @@ class step(with_metaclass(step_register_meta, object)):
       cwd = path.join(script.build_dir, execution_dir)
     else:
       cwd = script.build_dir
-    rv = Shell.execute(command,
-                       cwd = cwd,
-                       env = env,
-                       shell = True,
-                       non_blocking = build_blurb.verbose,
-                       stderr_to_stdout = build_blurb.verbose,
-                       raise_error = False)
+    rv = execute.execute(command,
+                         cwd = cwd,
+                         env = env,
+                         shell = True,
+                         non_blocking = build_blurb.verbose,
+                         stderr_to_stdout = build_blurb.verbose,
+                         raise_error = False)
     message = rv.stdout
     if rv.stderr:
       message = message + '\n' + rv.stderr

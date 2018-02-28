@@ -5,7 +5,8 @@
 import os.path as path
 from .toolchain import toolchain
 from bes.fs import file_util
-from bes.common import object_util, Shell, variable
+from bes.common import object_util, variable
+from bes.system import execute
 
 class compiler(object):
 
@@ -29,7 +30,7 @@ class compiler(object):
       variables['OBJ'] = obj
       cmd = variable.substitute(cmd, variables)
       print('CMD: %s' % (cmd))
-      Shell.execute(cmd)
+      execute.execute(cmd)
     return targets
   
   @classmethod

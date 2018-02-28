@@ -5,8 +5,7 @@
 import argparse, os.path as path
 from rebuild.jail import config_file, jail
 from bes.fs import file_util
-from bes.system import user, host
-from bes.common import Shell
+from bes.system import execute, user, host
 
 class jail_cli(object):
 
@@ -50,7 +49,7 @@ class jail_cli(object):
       'username': user.USERNAME,
     }
     if host.SYSTEM == host.MACOS:
-      variables['DARWIN_USER_CACHE_DIR'] = Shell.execute('getconf DARWIN_USER_CACHE_DIR').stdout.strip()
+      variables['DARWIN_USER_CACHE_DIR'] = execute.execute('getconf DARWIN_USER_CACHE_DIR').stdout.strip()
     cf = config_file(self._args.config, variables)
     if self._args.wipe:
       file_util.remove(self._args.location)
@@ -66,7 +65,7 @@ class jail_cli(object):
       'username': user.USERNAME,
     }
     if host.SYSTEM == host.MACOS:
-      variables['DARWIN_USER_CACHE_DIR'] = Shell.execute('getconf DARWIN_USER_CACHE_DIR').stdout.strip()
+      variables['DARWIN_USER_CACHE_DIR'] = execute.execute('getconf DARWIN_USER_CACHE_DIR').stdout.strip()
     cf = config_file(self._args.config, variables)
     return cf
   

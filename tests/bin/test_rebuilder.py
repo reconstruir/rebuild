@@ -5,7 +5,6 @@ import os.path as path
 from bes.testing.unit_test import script_unit_test
 from bes.fs import file_find, temp_file
 from bes.system import host
-from bes.common import Shell
 
 class test_rebuilder_script(script_unit_test):
 

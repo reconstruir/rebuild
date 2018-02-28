@@ -2,9 +2,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path, shutil
-from bes.system import host
+from bes.system import execute, host
 from collections import namedtuple
-from bes.common import Shell
 from rebuild.toolchain.darwin import lipo
 from bes.fs import dir_util, file_util, temp_file
 
@@ -52,7 +51,7 @@ class ar_replacement(object):
       archive,
     ]
     cmd_flat = ' '.join(cmd)
-    rv = Shell.execute(cmd_flat)
+    rv = execute.execute(cmd_flat)
     return rv.stdout.strip().split('\n')
 
   @classmethod
@@ -81,7 +80,7 @@ class ar_replacement(object):
     ]
     cmd_flat = ' '.join(cmd)
     file_util.mkdir(dest_dir)
-    Shell.execute(cmd_flat, cwd = dest_dir)
+    execute.execute(cmd_flat, cwd = dest_dir)
 
   @classmethod
   def _extract_darwin_fat(clazz, archive, dest_dir, tools):
@@ -110,7 +109,7 @@ class ar_replacement(object):
     ] + objects
     cmd_flat = ' '.join(cmd)
     file_util.mkdir(path.dirname(archive))
-    Shell.execute(cmd_flat)
+    execute.execute(cmd_flat)
 
   @classmethod
   def _replace_darwin(clazz, archive, objects, tools):
@@ -128,7 +127,7 @@ class ar_replacement(object):
     parent_dir = path.dirname(archive)
     if parent_dir:
       file_util.mkdir(parent_dir)
-    Shell.execute(cmd_flat)
+    execute.execute(cmd_flat)
         
   FatToThinItem = namedtuple('FatToThinItem', 'arch,filename')
   @classmethod

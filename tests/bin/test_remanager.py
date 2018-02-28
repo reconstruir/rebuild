@@ -3,7 +3,7 @@
 
 import os.path as path
 from bes.testing.unit_test import script_unit_test
-from bes.common import Shell
+from bes.system import execute
 from bes.fs import file_util, temp_file
 from rebuild.base import build_os_env
 from rebuild.package import artifact_manager
@@ -146,7 +146,7 @@ packages: orange_juice pear_juice
     ]
     env = build_os_env.make_clean_env(keep_keys = [ 'PYTHONPATH' ],
                                       update = { 'PATH': path.dirname(self.script) })
-    rv = Shell.execute(cmd, raise_error = False, env = env)
+    rv = execute.execute(cmd, raise_error = False, env = env)
     self.assertEqual( 0, rv.exit_code )
     args = [
       'packages',

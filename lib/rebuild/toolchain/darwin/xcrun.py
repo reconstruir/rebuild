@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.common import Shell
+from bes.system import execute
 from .darwin_sdk import darwin_sdk
 
 class xcrun(object):
@@ -11,7 +11,7 @@ class xcrun(object):
   @classmethod
   def xcrun(clazz, args):
     cmd = [ clazz.XCRUN_EXE ] + args
-    return Shell.execute(cmd, shell = False)
+    return execute.execute(cmd, shell = False)
 
   @classmethod
   def find_tool(clazz, sdk, tool):

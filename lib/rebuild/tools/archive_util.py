@@ -3,7 +3,8 @@
 
 import os.path as path, re
 
-from bes.common import algorithm, object_util, Shell, string_util
+from bes.common import algorithm, object_util, string_util
+from bes.system import execute
 from bes.fs import dir_util, file_find, file_util, temp_file
 from bes.archive import archiver
 
@@ -17,7 +18,7 @@ class archive_util(object):
     confiugure_path = path.join(tmp_dir, 'configure')
     if not path.exists(confiugure_path):
       raise RuntimeError('No configure script found in %s' % (tarball))
-    help = Shell.execute('./configure --help', cwd = tmp_dir, shell = True, raise_error = False).stdout
+    help = execute.execute('./configure --help', cwd = tmp_dir, shell = True, raise_error = False).stdout
     file_util.remove(tmp_dir)
     return help
 
@@ -52,7 +53,7 @@ class archive_util(object):
     if string_util.remove_tail(dirs[1], clazz.ORIGINAL_DIR_TAIL) != dirs[0]:
       raise RuntimeError('Dir 1 and 2 dont have the same name: %s %s' % (dirs[1], dirs[0]))
     cmd = 'diff -ur %s %s --exclude="*~" --exclude=".#*" --exclude="#*"' % (dirs[1], dirs[0])
-    patch = Shell.execute(cmd, cwd = working_dir, raise_error = False).stdout
+    patch = execute.execute(cmd, cwd = working_dir, raise_error = False).stdout
     return patch.strip()
     
   @classmethod
@@ -60,7 +61,7 @@ class archive_util(object):
     'Return the output of ag (silver searcher) for an archive.'
     tmp_dir = temp_file.make_temp_dir()
     archiver.extract(tarball, tmp_dir, strip_common_base = True)
-    result = Shell.execute('ag %s .' % (pattern), cwd = tmp_dir, shell = True, raise_error = False).stdout
+    result = execute.execute('ag %s .' % (pattern), cwd = tmp_dir, shell = True, raise_error = False).stdout
     file_util.remove(tmp_dir)
     return result
 
@@ -77,6 +78,6 @@ class archive_util(object):
     tmp_file1 = temp_file.make_temp_file(content = content1)
     tmp_file2 = temp_file.make_temp_file(content = content2)
 
-    rv = Shell.execute('diff -u %s %s' % (tmp_file1, tmp_file2), raise_error = False)
+    rv = execute.execute('diff -u %s %s' % (tmp_file1, tmp_file2), raise_error = False)
 
     return rv.stdout

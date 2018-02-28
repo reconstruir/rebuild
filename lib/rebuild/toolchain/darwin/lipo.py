@@ -2,7 +2,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import re
-from bes.common import object_util, Shell, string_util
+from bes.common import object_util, string_util
+from bes.system import execute
 
 class lipo(object):
 
@@ -55,7 +56,7 @@ class lipo(object):
   def __call_lipo(clazz, args, lipo_exe = None):
     exe = lipo_exe or clazz.LIPO_EXE
     cmd = [ exe ] + args
-    return Shell.execute(cmd, shell = False)
+    return execute.execute(cmd, shell = False)
 
   @classmethod
   def __call_lipo_info(clazz, filename, lipo_exe = None):

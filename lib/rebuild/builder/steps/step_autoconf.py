@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common import check, Shell
+from bes.common import check
 from rebuild.step import compound_step, step, step_call_hooks, step_result
 from rebuild.toolchain import toolchain
 

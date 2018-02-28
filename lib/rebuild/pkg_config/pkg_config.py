@@ -2,8 +2,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common import algorithm, check, object_util, Shell, string_util
-from bes.system import log, os_env_var, host
+from bes.common import algorithm, check, object_util, string_util
+from bes.system import execute, log, os_env_var, host
 from bes.fs import file_find, file_match, file_util
 from rebuild.base import build_arch, build_blurb, build_system
 
@@ -112,7 +112,7 @@ class pkg_config(object):
       file_util.mkdir(p)
     #build_blurb.blurb_verbose('pkg_config', '__call_pkg_config() cmd=%s' % (str(cmd)))
     #print('pkg_config', '__call_pkg_config() cmd=%s; env=%s' % (str(cmd), str(env)))
-    rv = Shell.execute(cmd, env = env)
+    rv = execute.execute(cmd, env = env)
     return rv
     
   @classmethod

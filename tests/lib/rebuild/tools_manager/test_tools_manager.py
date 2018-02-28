@@ -3,7 +3,7 @@
 #
 import os.path as path, unittest
 from bes.fs import temp_file
-from bes.common import Shell
+from bes.system import execute
 from rebuild.base import build_target, build_system, build_level, package_descriptor
 from rebuild.package import artifact_manager
 from rebuild.tools_manager import tools_manager
@@ -52,7 +52,7 @@ class test_tools_manager(unittest.TestCase):
     tm.update(packages, am)
     tool_name = water_desc.name + '_script.sh'
     exe = tm.tool_exe(water_desc, tool_name)
-    rv = Shell.execute(exe)
+    rv = execute.execute(exe)
     self.assertEqual( 0, rv.exit_code )
     self.assertEqual( water_desc.full_name, rv.stdout.strip() )
 

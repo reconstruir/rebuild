@@ -2,7 +2,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import glob, os, os.path as path
-from bes.common import algorithm, Shell, string_list_util
+from bes.common import algorithm, string_list_util
+from bes.system import execute
 from bes.fs import dir_util, file_util
 from rebuild.native_package_manager import native_package_manager as npm
 from bes.match import matcher_util
@@ -31,7 +32,7 @@ class jail(object):
 
     for post_hook in config.jail.hooks.post or []:
       #print "executing: ", post_hook
-      Shell.execute(post_hook)
+      execute.execute(post_hook)
 
   @classmethod
   def __install_packages(clazz, dst_dir, config, no_filters):

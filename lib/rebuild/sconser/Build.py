@@ -5,7 +5,8 @@ from collections import namedtuple
 from datetime import datetime
 import os, os.path as path, platform, sys
 
-from bes.common import object_util, Shell, tuple_util
+from bes.common import object_util, tuple_util
+from bes.system import execute
 from bes.text import text_canvas
 from bes.unix import terminal
 
@@ -201,10 +202,10 @@ class Build(object):
 
     non_blocking = verbose
 
-    rv = Shell.execute(binary_path, raise_error = False,
-                       non_blocking = non_blocking,
-                       stderr_to_stdout = True,
-                       env = runner_env)
+    rv = execute.execute(binary_path, raise_error = False,
+                         non_blocking = non_blocking,
+                         stderr_to_stdout = True,
+                         env = runner_env)
 
     if rv.exit_code != 0:
       sys.stdout.write(rv.stdout)

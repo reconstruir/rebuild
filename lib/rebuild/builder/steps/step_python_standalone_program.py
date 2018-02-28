@@ -3,7 +3,7 @@
 
 import os.path as path
 from bes.fs import file_util
-from bes.common import Shell
+from bes.system import execute
 from rebuild.step import compound_step, step, step_result
 from rebuild.tools import install
 
@@ -23,7 +23,7 @@ class step_python_make_standalone_program(step):
       src_program = path.join(script.build_dir, program[0])
       if src_program.lower().endswith('.py'):
         self._make_standalone_python(program, script, env, args)
-      elif Shell.is_shell_script(src_program):
+      elif execute.is_shell_script(src_program):
         self._make_standalone_shell_script(program, script, env, args)
       else:
         raise RuntimeError('Unknown standalone program type: %s' % (src_program))

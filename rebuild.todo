@@ -664,3 +664,7 @@ feb 17
 
 feb 22
 - need to cleanup old downloads same as old builds
+
+feb 26
+- build_os_env.env_substitite() replaces twice why 2nd one is redundant might have been cause of a bug that no longer exists
+

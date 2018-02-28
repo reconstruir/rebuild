@@ -5,7 +5,8 @@ from .native_package_manager_base import native_package_manager_base
 
 import os.path as path
 from bes.compat.plistlib import plistlib_loads
-from bes.common import algorithm, Shell, string_list_util
+from bes.common import algorithm, string_list_util
+from bes.system import execute
 
 class native_package_manager_macos(native_package_manager_base):
     
@@ -89,4 +90,4 @@ class native_package_manager_macos(native_package_manager_base):
   @classmethod
   def _call_pkgutil(clazz, cmd):
     'Return the output of pkgutil as lines.'
-    return Shell.execute(cmd, raise_error = False)
+    return execute.execute(cmd, raise_error = False)

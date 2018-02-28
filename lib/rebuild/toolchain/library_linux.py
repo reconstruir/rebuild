@@ -3,7 +3,8 @@
 
 from .library_base import library_base
 import os.path as path
-from bes.common import Shell, string_util
+from bes.common import string_util
+from bes.system import execute
 from rebuild.binary_format import binary_format_elf
 
 class library_linux(library_base):
@@ -27,7 +28,7 @@ class library_linux(library_base):
     if not binary_format_elf().file_is_of_type(filename, types):
       return None
     cmd = [ 'ldd', filename ]
-    rv = Shell.execute(cmd)
+    rv = execute.execute(cmd)
     assert rv.stdout.find('not a dynamic executable') == -1
     lines = rv.stdout.split('\n')
     deps = [ clazz.__parse_ldd_line(line) for line in lines ]

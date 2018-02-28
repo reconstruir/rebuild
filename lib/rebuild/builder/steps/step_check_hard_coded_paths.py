@@ -2,7 +2,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from rebuild.step import step, step_result
-from bes.common import Shell
 from bes.fs import file_search, file_util, file_mime
 
 class step_check_hard_coded_paths(step):

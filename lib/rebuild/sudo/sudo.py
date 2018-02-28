@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
-#!/usr/bin/env python
-#-*- coding:utf-8 -*-
 
 import getpass, os.path as path, subprocess
-from bes.common import json_util, Shell
+from bes.common import json_util
+from bes.system import execute
 
 #from mac_address import mac_address
 #import re
@@ -50,7 +49,7 @@ class sudo(object):
   def sudo_subprocess(clazz, cmd, prompt = 'sudo password: '):
     'Make one line of sudo config.'
 
-    cmd = Shell.listify_command(cmd)
+    cmd = execute.listify_command(cmd)
 
     if '-S' in cmd:
       password = getpass.getpass(prompt = prompt)
@@ -68,4 +67,4 @@ class sudo(object):
     stderr_data = output[1]
     exit_code = process.wait()
 
-    return Shell.Result(stdout_data, stderr_data, exit_code)
+    return execute.Result(stdout_data, stderr_data, exit_code)

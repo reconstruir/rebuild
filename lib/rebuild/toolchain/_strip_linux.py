@@ -4,7 +4,7 @@
 from ._strip_base import _strip_base
 
 from .toolchain import toolchain
-from bes.common import Shell
+from bes.system import execute
 
 class _strip_linux(_strip_base):
 
@@ -15,5 +15,5 @@ class _strip_linux(_strip_base):
     ce = tc.compiler_environment()
     strip_exe = ce['STRIP']
     cmd = [ strip_exe, binary ]
-    rv = Shell.execute(cmd, raise_error = False)
+    rv = execute.execute(cmd, raise_error = False)
     return rv.exit_code == 0

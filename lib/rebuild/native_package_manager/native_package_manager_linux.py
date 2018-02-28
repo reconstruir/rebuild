@@ -3,7 +3,8 @@
 
 import os.path as path
 from .native_package_manager_base import native_package_manager_base
-from bes.common import Shell, string_util, string_list_util
+from bes.common import string_util, string_list_util
+from bes.system import execute
 
 class native_package_manager_linux(native_package_manager_base):
 
@@ -11,7 +12,7 @@ class native_package_manager_linux(native_package_manager_base):
   def installed_packages(clazz):
     'Return a list of installed pacakge.'
     cmd = 'dpkg -l'
-    rv = clazz.__call_dpkg(cmd)
+    rv = clazz._call_dpkg(cmd)
     if rv.exit_code != 0:
       raise RuntimeError('Failed to execute: %s' % (cmd))
     lines = rv.stdout.strip().split('\n')
@@ -27,7 +28,7 @@ class native_package_manager_linux(native_package_manager_base):
   def package_contents(clazz, package_name):
     'Return a list of installed pacakge.'
     cmd = 'dpkg-query -L %s' % (package_name)
-    rv = clazz.__call_dpkg(cmd)
+    rv = clazz._call_dpkg(cmd)
     if rv.exit_code != 0:
       raise RuntimeError('Failed to execute: %s' % (cmd))
     contents = rv.stdout.strip().split('\n')
@@ -58,19 +59,19 @@ class native_package_manager_linux(native_package_manager_base):
   def is_installed(clazz, package_name):
     'Return True if native_package_manager is installed.'
     cmd = 'dpkg -l %s' % (package_name)
-    rv = clazz.__call_dpkg(cmd)
+    rv = clazz._call_dpkg(cmd)
     return rv.exit_code == 0
 
   @classmethod
   def owner(clazz, filename):
     'Return the package that owns filename.'
     cmd = 'dpkg -S %s' % (filename)
-    rv = clazz.__call_dpkg(cmd)
+    rv = clazz._call_dpkg(cmd)
     if rv.exit_code != 0:
       return None
     return rv.stdout.split(':')[0].strip()
   
   @classmethod
-  def __call_dpkg(clazz, cmd):
+  def _call_dpkg(clazz, cmd):
     'Call dpkg.'
-    return Shell.execute(cmd, raise_error = False, shell = True)
+    return execute.execute(cmd, raise_error = False, shell = True)

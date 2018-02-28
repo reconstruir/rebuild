@@ -5,7 +5,7 @@ import os.path as path
 from rebuild.step import compound_step, step, step_result
 from rebuild.base import build_system
 from bes.python import setup_tools
-from bes.common import Shell
+from bes.system import execute
 
 class step_perl_module_setup(step):
   'Setup a perl module for compilation.'
@@ -40,7 +40,7 @@ class step_perl_module_post_install_cleanup(step):
     new_path = path.join(script.stage_lib_dir, 'x86_64-linux-gnu')
     if not path.exists(new_path):
       cmd = 'mkdir x86_64-linux-gnu && mv perl x86_64-linux-gnu'
-      Shell.execute(cmd, cwd = script.stage_lib_dir, shell = True)
+      execute.execute(cmd, cwd = script.stage_lib_dir, shell = True)
     return step_result(True)
 
 class step_perl_module(compound_step):

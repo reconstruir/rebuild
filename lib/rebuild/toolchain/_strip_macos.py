@@ -5,7 +5,7 @@ from ._strip_base import _strip_base
 
 from rebuild.binary_format import binary_format_macho
 from rebuild.toolchain import toolchain
-from bes.common import Shell
+from bes.system import execute
 
 class _strip_macos(_strip_base):
 
@@ -23,5 +23,5 @@ class _strip_macos(_strip_base):
     if file_type == macho.FILE_TYPE_SHARED_LIB:
       cmd.append('-x')
     cmd.append(binary)
-    rv = Shell.execute(cmd, raise_error = False)
+    rv = execute.execute(cmd, raise_error = False)
     return rv.exit_code == 0

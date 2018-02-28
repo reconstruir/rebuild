@@ -3,9 +3,8 @@
 
 import copy, os, os.path as path
 
-from bes.system import host
-from bes.common import dict_util, variable, Shell
-from bes.system import os_env_var
+from bes.system import execute, host, os_env_var
+from bes.common import dict_util, variable
 
 class build_os_env(object):
 
@@ -141,14 +140,10 @@ class build_os_env(object):
     for key in sorted(env.keys()):
       env[key] = variable.substitute(str(env[key]), env)
 
-    # FIXME: why twice ?
-    for key in sorted(env.keys()):
-      env[key] = variable.substitute(str(env[key]), env)
-
   @classmethod
   def call_python_script(clazz, cmd):
     fallback_python_path = path.normpath(path.join(path.dirname(__file__), '../../..'))
     env = clazz.make_clean_env(keep_keys = [ 'PYTHONPATH' ])
     env['PYTHONDONTWRITEBYTECODE'] = '1'
     env['PYTHONPATH'] = env['PYTHONPATH'] + ':' + fallback_python_path
-    return Shell.execute(cmd, env = env, raise_error = False, stderr_to_stdout = True)
+    return execute.execute(cmd, env = env, raise_error = False, stderr_to_stdout = True)

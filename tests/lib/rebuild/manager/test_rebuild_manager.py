@@ -3,7 +3,7 @@
 #
 import os.path as path, unittest
 from bes.fs import tar_util, temp_file
-from bes.common import Shell
+from bes.system import execute
 from bes.git import git
 from rebuild.base import build_target, package_descriptor
 from rebuild.manager import rebuild_manager
@@ -55,7 +55,7 @@ class test_rebuild_manager(unittest.TestCase):
     for package_info in packages:
       tool_name = package_info.name + '_script.sh'
       exe = rebbe.tool_exe(package_info, tool_name)
-      rv = Shell.execute(exe)
+      rv = execute.execute(exe)
       self.assertEqual( 0, rv.exit_code )
       self.assertEqual( package_info.full_name, rv.stdout.strip() )
 

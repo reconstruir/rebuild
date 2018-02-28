@@ -3,7 +3,7 @@
 
 import argparse, os, os.path as path, sys
 
-from bes.common import Shell
+from bes.system import execute
 
 from rebuild.base import build_blurb
 
@@ -43,11 +43,11 @@ class CommandLineBuild(object):
 
     if args.clean:
       cmd = clazz.make_scons_cmd(args.verbose, [ '-c' ])
-      Shell.execute(cmd, non_blocking = True)
+      execute.execute(cmd, non_blocking = True)
 
     cmd = clazz.make_scons_cmd(args.verbose, scons_args)
 
-    Shell.execute(cmd, non_blocking = True)
+    execute.execute(cmd, non_blocking = True)
 
     return ( 0, None )
 
