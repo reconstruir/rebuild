@@ -4,7 +4,8 @@
 import os.path as path
 from bes.fs import file_util
 from bes.common import check, dict_util, object_util
-from rebuild.base import build_blurb, build_os_env, build_target, package_descriptor
+from bes.system import os_env
+from rebuild.base import build_blurb, build_target, package_descriptor
 from bes.dependency import dependency_resolver
 from rebuild.package import artifact_manager, package, package_manager, package_list
 from collections import namedtuple
@@ -145,7 +146,7 @@ exec ${1+"$@"}
     pm = self._package_manager(project_name)
     variables = {
       '@PREFIX@': pm.installation_dir,
-      '@LIBRARY_PATH@': build_os_env.LD_LIBRARY_PATH_VAR_NAME,
+      '@LIBRARY_PATH@': os_env.LD_LIBRARY_PATH_VAR_NAME,
       '@NAME@': project_name,
     }
     setup_script.save(pm.root_dir, variables)

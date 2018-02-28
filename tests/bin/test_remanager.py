@@ -3,9 +3,8 @@
 
 import os.path as path
 from bes.testing.unit_test import script_unit_test
-from bes.system import execute
+from bes.system import os_env, execute
 from bes.fs import file_util, temp_file
-from rebuild.base import build_os_env
 from rebuild.package import artifact_manager
 from rebuild.package.unit_test_packages import unit_test_packages
 
@@ -144,8 +143,8 @@ packages: orange_juice pear_juice
       path.join(tmp_dir, 'update.sh'),
       'test1'
     ]
-    env = build_os_env.make_clean_env(keep_keys = [ 'PYTHONPATH' ],
-                                      update = { 'PATH': path.dirname(self.script) })
+    env = os_env.make_clean_env(keep_keys = [ 'PYTHONPATH' ],
+                                update = { 'PATH': path.dirname(self.script) })
     rv = execute.execute(cmd, raise_error = False, env = env)
     self.assertEqual( 0, rv.exit_code )
     args = [

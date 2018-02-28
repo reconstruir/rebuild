@@ -4,7 +4,7 @@
 import os.path as path
 from bes.testing.unit_test import script_unit_test
 from bes.common import string_util
-from rebuild.base import build_os_env
+from bes.system import os_env
 
 class test_rebuild_pkg_config(script_unit_test):
 
@@ -29,8 +29,8 @@ class test_rebuild_pkg_config(script_unit_test):
 
   @property
   def clean_env(self):
-    return build_os_env.make_clean_env(update = { 'PKG_CONFIG_PATH': ':'.join(self.pc_path) },
-                                       keep_keys = build_os_env.KEYS_THAT_ARE_PATHS)
+    return os_env.make_clean_env(update = { 'PKG_CONFIG_PATH': ':'.join(self.pc_path) },
+                                 keep_keys = os_env.KEYS_THAT_ARE_PATHS)
   
   def test_list_all(self):
     self.maxDiff = None

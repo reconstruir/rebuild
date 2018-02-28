@@ -8,11 +8,11 @@ import os, os.path as path
 from collections import namedtuple
 
 from rebuild.step import step_result
-from rebuild.base import build_blurb, build_os_env, build_target
+from rebuild.base import build_blurb, build_target
 from rebuild.toolchain import toolchain
 from bes.dependency import dependency_resolver
 from bes.common import variable
-from bes.system import execute
+from bes.system import execute, os_env
 from bes.fs import file_replace
 
 from .package import package
@@ -137,14 +137,14 @@ class package_tester(object):
 
     config.tools_manager.update(pd.resolved_build_requirements, config.artifact_manager)
 
-    saved_env = build_os_env.clone_current_env()
+    saved_env = os_env.clone_current_env()
 
     config.tools_manager.export_variables_to_current_env(pd.resolved_build_requirements)
     pm.export_variables_to_current_env(all_packages)
 
-    shell_env = build_os_env.make_clean_env()
-    build_os_env.update(shell_env, config.tools_manager.shell_env(pd.resolved_build_requirements), prepend = True)
-    build_os_env.update(shell_env, pm.shell_env(all_packages), prepend = True)
+    shell_env = os_env.make_clean_env()
+    os_env.update(shell_env, config.tools_manager.shell_env(pd.resolved_build_requirements), prepend = True)
+    os_env.update(shell_env, pm.shell_env(all_packages), prepend = True)
     
     test_source_with_replacements = path.join(test_root_dir, path.basename(test_source))
     replacements = {

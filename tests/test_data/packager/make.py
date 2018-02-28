@@ -6,10 +6,10 @@ from bes.archive import archiver
 from bes.fs import file_replace, file_find, file_util, tar_util
 from bes.refactor import files as refactor_files
 from rebuild.package.unit_test_packages import unit_test_packages
-from rebuild.base import build_os_env, package_descriptor, requirement
+from rebuild.base import package_descriptor, requirement
 from bes.fs import temp_file
 from bes.common import variable
-from bes.system import execute
+from bes.system import os_env, execute
 
 DEBUG = False
 #DEBUG = True
@@ -133,7 +133,7 @@ def main():
       'make dist',
       'cp %s.tar.gz %s' % (version_no_revision, root),
     ]
-    env = build_os_env.make_clean_env(keep_keys = [ 'PATH', 'PKG_CONFIG_PATH' ])
+    env = os_env.make_clean_env(keep_keys = [ 'PATH', 'PKG_CONFIG_PATH' ])
     env['GZIP'] = '-n'
     flat_command = ' && '.join(command)
     execute.execute(flat_command, shell = True, non_blocking = True, env = env)
@@ -159,7 +159,7 @@ def make_template_tarball(root, template_name, template_version):
     'make dist',
     'cp %s %s' % (tarball_filename, root),
     ]
-  env = build_os_env.make_clean_env(keep_keys = [ 'PATH', 'PKG_CONFIG_PATH' ])
+  env = os_env.make_clean_env(keep_keys = [ 'PATH', 'PKG_CONFIG_PATH' ])
   env['GZIP'] = '-n'
   execute.execute(' && '.join(command), shell = True, non_blocking = True, env = env)
   result = path.join(root, '%s-%s.tar.gz' % (template_name, template_version))
