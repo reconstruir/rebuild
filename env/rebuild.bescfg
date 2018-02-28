@@ -1,5 +1,5 @@
 # rebuild
 name: rebuild
-PATH: ${root}/bin
-PYTHONPATH: ${root}/lib
+unixpath: ${root}/bin
+pythonpath: ${root}/lib
 requires: bes
