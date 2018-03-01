@@ -129,7 +129,7 @@ class package_tester(object):
     package = pm.load_tarball(config.package_tarball, config.script.build_target, config.artifact_manager)
     pd = package.info
     
-    deps_packages = pd.resolved_requirements
+    deps_packages = pd.resolved_requirements + pd.resolved_build_requirements
     all_packages = deps_packages + [ pd ]
 
     pm.install_packages(deps_packages, config.script.build_target, config.artifact_manager)

@@ -45,6 +45,7 @@ class builder_recipe_loader(object):
     del properties['name']
     del properties['version']
     requirements = clazz._load_requirements(recipe_dict, 'requirements')
+    build_requirements = clazz._load_requirements(recipe_dict, 'build_requirements')
     build_tool_requirements = clazz._load_requirements(recipe_dict, 'build_tool_requirements')
     
     # Check that some important properties are given
@@ -52,6 +53,7 @@ class builder_recipe_loader(object):
       raise RuntimeError('\"%s\" property missing from %s' % (package_descriptor.PROPERTY_CATEGORY, filename))
     descriptor = package_descriptor(name, version,
                                     requirements = requirements,
+                                    build_requirements = build_requirements,
                                     build_tool_requirements = build_tool_requirements,
                                     properties = properties)
     instructions = clazz._load_instructions(recipe_dict, 'instructions')
@@ -60,8 +62,8 @@ class builder_recipe_loader(object):
     # recipe_dict should be empty now
     if recipe_dict:
       raise RuntimeError('Unknown recipe values for %s: %s' % (filename, recipe_dict))
-    return recipe(1, filename, enabled, properties, requirements, build_tool_requirements,
-                  descriptor, instructions, steps, None, env_vars)
+    return recipe(1, filename, enabled, properties, requirements, build_requirements,
+                  build_tool_requirements, descriptor, instructions, steps, None, env_vars)
 
   @classmethod
   def _load_env_vars(clazz, filename, args, key):

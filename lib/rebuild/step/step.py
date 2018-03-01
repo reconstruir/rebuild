@@ -145,7 +145,8 @@ class step(with_metaclass(step_register_meta, object)):
     env = os_env.make_clean_env()
 
     STATIC = True
-    assert script.descriptor.resolved_requirements != None
+    resolved_requirements = script.descriptor.resolved_requirements + script.descriptor.resolved_build_requirements
+    assert resolved_requirements != None
     export_compilation_flags_requirements = clazz.export_compilation_flags_requirements(script.descriptor, script.build_target.system)
     if STATIC:
       env['REBBE_PKG_CONFIG_STATIC'] = '1'
@@ -177,7 +178,7 @@ class step(with_metaclass(step_register_meta, object)):
     env['REBUILD_STAGE_FRAMEWORKS_DIR'] = path.join(script.stage_dir, 'frameworks')
 
     os_env.update(env, script.env.tools_manager.shell_env(script.descriptor.resolved_build_tool_requirements))
-    os_env.update(env, script.requirements_manager.shell_env(script.descriptor.resolved_requirements))
+    os_env.update(env, script.requirements_manager.shell_env(script.descriptor.resolved_requirements + script.descriptor.resolved_build_requirements))
     os_env.update(env, os_env.make_shell_env(script.stage_dir))
 
     env['REBUILD_PYTHON_VERSION'] = '2.7'
@@ -393,7 +394,7 @@ class step(with_metaclass(step_register_meta, object)):
   def export_compilation_flags_requirements(clazz, descriptor, system):
     config = descriptor.properties.get('export_compilation_flags_requirements', [])
     resolved = reitred_masked_config.resolve_list(config, system)
-    deps_names = [ dep.name for dep in descriptor.requirements ]
+    deps_names = [ dep.name for dep in descriptor.requirements + descriptor.build_requirements ]
     export_names = resolved
     if export_names == dependency_resolver.ALL_DEPS:
       export_names = deps_names

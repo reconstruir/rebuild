@@ -236,7 +236,7 @@ class builder(object):
     'Return a list of package names for packages that depend on what.'
     result = []
     for _, script in self._env.script_manager.scripts.items():
-      requirements_names = sorted([ req.name for req in script.descriptor.requirements ])
+      requirements_names = sorted([ req.name for req in script.descriptor.requirements + script.descriptor.build_requirements ])
       if what in requirements_names:
         result.append(script.descriptor.name)
     return result

@@ -6,16 +6,17 @@ from collections import namedtuple
 from bes.common import check, node
 from bes.text import white_space
 
-class recipe(namedtuple('recipe', 'format_version,filename,enabled,properties,requirements,build_tool_requirements,descriptor,instructions,steps,load,env_vars')):
+class recipe(namedtuple('recipe', 'format_version,filename,enabled,properties,requirements,build_requirements,build_tool_requirements,descriptor,instructions,steps,load,env_vars')):
 
   CHECK_UNKNOWN_PROPERTIES = True
   
-  def __new__(clazz, format_version, filename, enabled, properties, requirements,
+  def __new__(clazz, format_version, filename, enabled, properties, requirements, build_requirements,
               build_tool_requirements, descriptor, instructions, steps, load, env_vars):
     if env_vars:
       check.check_masked_value_list(env_vars)
     return clazz.__bases__[0].__new__(clazz, format_version, filename, enabled, properties, requirements,
-                                      build_tool_requirements, descriptor, instructions, steps, load, env_vars)
+                                      build_requirements, build_tool_requirements, descriptor, instructions,
+                                      steps, load, env_vars)
 
   def __str__(self):
     return self.to_string()
@@ -37,6 +38,9 @@ class recipe(namedtuple('recipe', 'format_version,filename,enabled,properties,re
       root.add_child('')
     if self.build_tool_requirements:
       root.children.append(self._requirements_to_node('build_tool_requirements', self.build_tool_requirements))
+      root.add_child('')
+    if self.build_requirements:
+      root.children.append(self._requirements_to_node('build_requirements', self.build_requirements))
       root.add_child('')
     root.children.append(self._steps_to_node(self.steps))
     if self.load:

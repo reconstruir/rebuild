@@ -16,11 +16,21 @@ class step_setup_install_requirements(step):
   def execute(self, script, env, args):
     package_desc = script.descriptor
     build_blurb.blurb('build', '%s - requirements: %s' % (package_desc.name, ' '.join([ t.name for t in package_desc.resolved_requirements ])))
-    if not package_desc.resolved_requirements:
+    
+    if package_desc.resolved_requirements:
+      script.requirements_manager.install_packages(package_desc.resolved_requirements,
+                                                   script.build_target,
+                                                   env.artifact_manager)
+    else:
       message = 'No requirements for %s' % (script.descriptor.full_name)
       self.log_d(message)
-      return step_result(True, message)
-    script.requirements_manager.install_packages(package_desc.resolved_requirements,
-                                                 script.build_target,
-                                                 env.artifact_manager)
+      
+    if package_desc.resolved_build_requirements:
+      script.requirements_manager.install_packages(package_desc.resolved_build_requirements,
+                                                   script.build_target,
+                                                   env.artifact_manager)
+    else:
+      message = 'No build_requirements for %s' % (script.descriptor.full_name)
+      self.log_d(message)
+      
     return step_result(True, None)
