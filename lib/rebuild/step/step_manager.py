@@ -73,7 +73,7 @@ class step_manager(object):
       result = s.execute(script, env, step_args)
       output.update(result.output or {})
       if not result.success:
-        return step_result(False, message = result.message, failed_step = s, output = output)
+        return step_result(False, message = result.message, failed_step = result.failed_step, output = output)
     return step_result(True, output = output)
 
   def step_list(self, args):
