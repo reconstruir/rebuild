@@ -6,11 +6,11 @@ import copy, os, os.path as path
 from rebuild.step import step, step_result
 from rebuild.base import build_blurb
 
-class step_setup_install_build_requirements(step):
+class step_setup_install_build_tool_requirements(step):
   'Install package dependencies.'
 
   def __init__(self):
-    super(step_setup_install_build_requirements, self).__init__()
+    super(step_setup_install_build_tool_requirements, self).__init__()
 
   def execute(self, script, env, args):
     package_desc = script.descriptor
