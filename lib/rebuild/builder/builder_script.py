@@ -58,8 +58,8 @@ class builder_script(object):
     return self.descriptor.requirements
     
   @property
-  def build_requirements(self):
-    return self.descriptor.build_requirements
+  def build_tool_requirements(self):
+    return self.descriptor.build_tool_requirements
     
   @property
   def instructions(self):

@@ -14,10 +14,10 @@ class step_setup_install_build_tool_requirements(step):
 
   def execute(self, script, env, args):
     package_desc = script.descriptor
-    build_blurb.blurb('build', '%s - build_requirements: %s' % (package_desc.name, ' '.join([ t.name for t in package_desc.resolved_build_requirements ])))
-    if not package_desc.resolved_build_requirements:
+    build_blurb.blurb('build', '%s - build_tool_requirements: %s' % (package_desc.name, ' '.join([ t.name for t in package_desc.resolved_build_tool_requirements ])))
+    if not package_desc.resolved_build_tool_requirements:
       message = 'No tools for %s' % (script.descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
-    env.update_tools(package_desc.resolved_build_requirements)
+    env.update_tools(package_desc.resolved_build_tool_requirements)
     return step_result(True, None)

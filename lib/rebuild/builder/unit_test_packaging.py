@@ -101,7 +101,7 @@ def rebuild_recipes(env):
 package %s-%s-%s
   properties
     category=lib
-  build_requirements
+  build_tool_requirements
     %s
   steps
     step_autoconf

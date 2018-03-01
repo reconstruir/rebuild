@@ -14,7 +14,7 @@ class package_descriptor_list(object):
     for pd in descriptors:
       if pd.name in dep_map:
         raise RuntimeError('already in dependency map: %s' % (pd.name))
-      dep_map[pd.name] = pd.requirements_names | pd.build_requirements_names
+      dep_map[pd.name] = pd.requirements_names | pd.build_tool_requirements_names
     return dep_map
 
   @classmethod

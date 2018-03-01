@@ -307,7 +307,7 @@ package foo-1.2.3-4
     linux: wine >= 2.0
     grape >= 3.0
 
-  build_requirements
+  build_tool_requirements
     all: kiwi >= 2.4.6
 
   steps
@@ -346,7 +346,7 @@ package foo-1.2.3-4
     linux: wine >= 2.0
     all: grape >= 3.0
 
-  build_requirements
+  build_tool_requirements
     all: kiwi >= 2.4.6
 
   steps

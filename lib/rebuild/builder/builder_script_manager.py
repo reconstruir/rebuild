@@ -34,15 +34,15 @@ class builder_script_manager(object):
         requirements = script.descriptor.requirements.resolve(env.config.build_target.system)
         resolved_requirements = self._resolve_and_order_dependencies(requirements,
                                                                      self.scripts, dependency_map)
-        build_requirements = script.descriptor.build_requirements.resolve(env.config.build_target.system)
-        resolved_build_requirements = self._resolve_and_order_dependencies(build_requirements,
+        build_tool_requirements = script.descriptor.build_tool_requirements.resolve(env.config.build_target.system)
+        resolved_build_tool_requirements = self._resolve_and_order_dependencies(build_tool_requirements,
                                                                            self.scripts, dependency_map)
 
         check.check_package_descriptor_seq(resolved_requirements)
-        check.check_package_descriptor_seq(resolved_build_requirements)
+        check.check_package_descriptor_seq(resolved_build_tool_requirements)
 
         script.descriptor.resolved_requirements = resolved_requirements
-        script.descriptor.resolved_build_requirements = resolved_build_requirements
+        script.descriptor.resolved_build_tool_requirements = resolved_build_tool_requirements
 
       except missing_dependency_error as ex:
         raise missing_dependency_error('Missing dependency for %s: %s' % (script.filename, ' '.join(ex.missing_deps)), ex.missing_deps)
@@ -87,8 +87,8 @@ class builder_script_manager(object):
     for name in sorted(scripts.keys()):
       script = scripts[name]
       requirements_names = script.descriptor.requirements_names_for_system(system)
-      build_requirements_names = script.descriptor.build_requirements_names_for_system(system)
-      dep_map[name] = requirements_names | build_requirements_names
+      build_tool_requirements_names = script.descriptor.build_tool_requirements_names_for_system(system)
+      dep_map[name] = requirements_names | build_tool_requirements_names
     return dep_map
 
   def subset(self, package_names):

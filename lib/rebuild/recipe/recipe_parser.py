@@ -74,7 +74,7 @@ class recipe_parser(object):
     enabled = True
     properties = {}
     requirements = []
-    build_requirements = []
+    build_tool_requirements = []
     steps = []
     instructions = []
     enabled = 'True'
@@ -86,8 +86,8 @@ class recipe_parser(object):
         properties = self._parse_properties(child)
       elif text.startswith('requirements'):
         requirements = self._parse_requirements(child)
-      elif text.startswith('build_requirements'):
-        build_requirements = self._parse_requirements(child)
+      elif text.startswith('build_tool_requirements'):
+        build_tool_requirements = self._parse_requirements(child)
       elif text.startswith('steps'):
         steps = self._parse_steps(child)
       elif text.startswith('enabled'):
@@ -100,9 +100,9 @@ class recipe_parser(object):
       elif text.startswith('instructions'):
         instructions = self._parse_instructions(child)
     desc = package_descriptor(name, version, requirements = requirements,
-                              build_requirements = build_requirements,
+                              build_tool_requirements = build_tool_requirements,
                               properties = properties)
-    return recipe(2, self.filename, enabled, properties, requirements, build_requirements, 
+    return recipe(2, self.filename, enabled, properties, requirements, build_tool_requirements, 
                   desc, instructions, steps, load, env_vars)
 
   def _parse_package_header(self, node):

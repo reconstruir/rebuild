@@ -135,15 +135,15 @@ class package_tester(object):
     pm.install_packages(deps_packages, config.script.build_target, config.artifact_manager)
     pm.install_tarball(config.package_tarball)
 
-    config.tools_manager.update(pd.resolved_build_requirements, config.artifact_manager)
+    config.tools_manager.update(pd.resolved_build_tool_requirements, config.artifact_manager)
 
     saved_env = os_env.clone_current_env()
 
-    config.tools_manager.export_variables_to_current_env(pd.resolved_build_requirements)
+    config.tools_manager.export_variables_to_current_env(pd.resolved_build_tool_requirements)
     pm.export_variables_to_current_env(all_packages)
 
     shell_env = os_env.make_clean_env()
-    os_env.update(shell_env, config.tools_manager.shell_env(pd.resolved_build_requirements), prepend = True)
+    os_env.update(shell_env, config.tools_manager.shell_env(pd.resolved_build_tool_requirements), prepend = True)
     os_env.update(shell_env, pm.shell_env(all_packages), prepend = True)
     
     test_source_with_replacements = path.join(test_root_dir, path.basename(test_source))

@@ -293,11 +293,11 @@ class package_manager(object):
                                                                        descriptor_map,
                                                                        dependency_map)
 
-    build_requirements = pkg_desc.build_requirements.resolve(build_target.system)
-    build_requirements_names = [ req.name for req in build_requirements ]
-    resolved_build_requirements = dependency_resolver.resolve_and_order_deps(build_requirements_names,
+    build_tool_requirements = pkg_desc.build_tool_requirements.resolve(build_target.system)
+    build_tool_requirements_names = [ req.name for req in build_tool_requirements ]
+    resolved_build_tool_requirements = dependency_resolver.resolve_and_order_deps(build_tool_requirements_names,
                                                                              descriptor_map,
                                                                              dependency_map)
     
     pkg_desc.resolved_requirements = resolved_requirements
-    pkg_desc.resolved_build_requirements = resolved_build_requirements
+    pkg_desc.resolved_build_tool_requirements = resolved_build_tool_requirements

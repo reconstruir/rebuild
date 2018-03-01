@@ -662,4 +662,4 @@ feb 22
 - need to cleanup old downloads same as old builds
 
 feb 28
-- write unit test for package manager for different combinations of requirements and build_requirements where they depend on each other
+- write unit test for package manager for different combinations of requirements and build_tool_requirements where they depend on each other

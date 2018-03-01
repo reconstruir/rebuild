@@ -32,6 +32,6 @@ class builder_resolver(object):
     for name in sorted(scripts.keys()):
       script = scripts[name]
       requirements_names = script.descriptor.requirements_names_for_system(system)
-      build_requirements_names = script.descriptor.build_requirements_names_for_system(system)
-      dep_map[name] = requirements_names | build_requirements_names
+      build_tool_requirements_names = script.descriptor.build_tool_requirements_names_for_system(system)
+      dep_map[name] = requirements_names | build_tool_requirements_names
     return dep_map

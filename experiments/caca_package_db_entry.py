@@ -6,10 +6,10 @@ from collections import namedtuple
 from bes.common import check, node
 from bes.text import white_space
 
-class caca_package_db_entry(namedtuple('caca_package_db_entry', 'format_version,name,version,category,system,archs,level,distro,requirements,build_requirements,env_vars')):
+class caca_package_db_entry(namedtuple('caca_package_db_entry', 'format_version,name,version,category,system,archs,level,distro,requirements,build_tool_requirements,env_vars')):
 
   def __new__(clazz, format_version, name, version, category, system, archs, level,
-              distro, requirements, build_requirements, env_vars):
+              distro, requirements, build_tool_requirements, env_vars):
     check.check_int(format_version)
     check.check_string(name)
     check.check_string(version)
@@ -18,7 +18,7 @@ class caca_package_db_entry(namedtuple('caca_package_db_entry', 'format_version,
     if env_vars:
       check.check_masked_value_list(env_vars)
     return clazz.__bases__[0].__new__(clazz, format_version, filename, enabled, properties, requirements,
-                                      build_requirements, descriptor, instructions, steps, load, env_vars)
+                                      build_tool_requirements, descriptor, instructions, steps, load, env_vars)
 
   def __str__(self):
     return self.to_string()
@@ -38,8 +38,8 @@ class caca_package_db_entry(namedtuple('caca_package_db_entry', 'format_version,
     if self.requirements:
       root.children.append(self._requirements_to_node('requirements', self.requirements))
       root.add_child('')
-    if self.build_requirements:
-      root.children.append(self._requirements_to_node('build_requirements', self.build_requirements))
+    if self.build_tool_requirements:
+      root.children.append(self._requirements_to_node('build_tool_requirements', self.build_tool_requirements))
       root.add_child('')
     root.children.append(self._steps_to_node(self.steps))
     if self.load:

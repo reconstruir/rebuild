@@ -50,7 +50,7 @@ class test_builder_script_execute(unit_test):
     ], archiver.members(artifact_path) )
     self.assertEqual( {
       u'archs': [u'x86_64'],
-      u'build_requirements': [],
+      u'build_tool_requirements': [],
       u'build_level': u'release',
       u'name': u'amhello',
       u'properties': {u'category': u'lib'},

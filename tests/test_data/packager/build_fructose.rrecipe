@@ -3,7 +3,7 @@
 package fructose-3.4.5-6
   properties
     category=lib
-#  build_requirements
+#  build_tool_requirements
 #    all: gnu_libtool >= 2.4.6
   steps
     step_autoconf

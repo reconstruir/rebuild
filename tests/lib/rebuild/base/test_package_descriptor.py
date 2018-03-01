@@ -29,7 +29,7 @@ class test_package_descriptor(unit_test):
     self.maxDiff = None
     expected_json = '''\
 {
-  "build_requirements": [], 
+  "build_tool_requirements": [], 
   "name": "foo", 
   "properties": {},
   "requirements": [ 
