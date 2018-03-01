@@ -374,8 +374,6 @@ theres no filtering of requirements in BuildScript.py used to be in __load_requi
 theres some weirdness about None system_mask in requirement
 step_setup_install_deps -> step_setup_install_requirements
 
-Context.package_descriptor needs to be renamed
-step_setup_tools -> step_setup_build_requirements
 requirements dont take into account operators
 
 need better example projects that zlib and libpng
