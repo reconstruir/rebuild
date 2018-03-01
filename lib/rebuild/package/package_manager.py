@@ -171,7 +171,7 @@ class package_manager(object):
 
   # FIXME: what about satisfying version and revision
   def _missing_requirements(self, pkg, system):
-    requirements = pkg.info.requirements_for_system(system) + pkg.info.build_requirements_for_system(system)
+    requirements = pkg.info.requirements_for_system(system)
     if not requirements:
       return []
     missing_requirements = []
