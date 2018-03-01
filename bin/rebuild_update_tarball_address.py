@@ -12,14 +12,13 @@ def main():
   tarball_address = r[0].steps[0].args['tarball_address']
   address = tarball_address[0]
   tag = tarball_address[1]
-  #print('address: %s tag: %s' % (address, tag))
   gr = repo(temp_file.make_temp_dir(), address = address)
   gr.clone()
   last = gr.last_commit_hash(short_hash = True)
   if last == tag:
     return 0
   replacements = { tag: last }
-  print('%s: update tag %s to %s' % (filename, tag, last))
+  print('%s: update %s -> %s' % (filename, tag, last))
   file_replace.replace(filename, replacements, backup = True, word_boundary = True)
   return 0
 
