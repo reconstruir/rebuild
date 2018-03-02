@@ -5,7 +5,7 @@
 
 #import copy, glob, os.path as path
 from bes.common import check, variable, string_util
-from bes.text import lines, string_list_parser
+from bes.text import text_line_parser, string_list_parser
 from bes.key_value import key_value, key_value_list
 from bes.fs import file_util
 #from .entry import entry
@@ -55,7 +55,7 @@ class caca_pkg_config_file(namedtuple('caca_pkg_config_file', 'filename,entries,
 
   @classmethod
   def parse_text(clazz, filename, text):
-    ll = lines(text)
+    ll = text_line_parser(text)
     entries = [ caca_entry.parse(line) for line in ll ]
     variables = key_value_list([ entry.value for entry in entries if entry.is_variable ])
     properties = key_value_list([ entry.value for entry in entries if entry.is_property ])
@@ -69,7 +69,7 @@ class caca_pkg_config_file(namedtuple('caca_pkg_config_file', 'filename,entries,
   @classmethod
   def _parse_requirements(clazz, text):
     'Parse the "Requires" property of a pc file.'
-    ll = lines(text, delimiter = ',').texts(strip_head = True, strip_tail = True)
+    ll = text_line_parser(text, delimiter = ',').texts(strip_head = True, strip_tail = True)
     result = []
     for s in ll:
       result.extend(requirement_list.parse(s))
