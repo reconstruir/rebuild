@@ -70,12 +70,11 @@ Cflags: -I${includedir}
     self.assertEqual( self.FOO_EXPECTED_VARIABLES, cf.variables )
     self.assertEqual( self.FOO_EXPECTED_PROPERTIES, cf.properties )
 
-  def xtest_parse_many_examples(self):
-    examples = glob.glob(path.join(self.data_path(), '*.pc'))
+  def test_parse_many_examples(self):
+    examples = glob.glob(path.join(self.data_dir(), '*.pc'))
     self.assertTrue( len(examples) > 0 )
     for example in examples:
-      cf = caca_pkg_config_file()
-      cf.parse_file(example)
+      caca_pkg_config_file.parse_file(example)
 
   def xxxx_set_variable(self):
     cf = caca_pkg_config_file()
