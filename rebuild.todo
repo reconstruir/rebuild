@@ -666,3 +666,6 @@ feb 28
 
 feb 29
 - when a compound step fails it spews the compound step name not the name of the leaf step that actually failed
+
+mar 3
+- had to do git mv libedit-20170329-3.1.tar.gz libedit-20170329.3.1.tar.gz because tarball finder is dumb
