@@ -669,3 +669,5 @@ feb 29
 
 mar 3
 - had to do git mv libedit-20170329-3.1.tar.gz libedit-20170329.3.1.tar.gz because tarball finder is dumb
+
+TMPDIR did not work for some tests in third_party/.  standardize it and make suer the env var is set for all tests
