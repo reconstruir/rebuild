@@ -1,24 +1,28 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import os.path as path
+import pkgutil
+import os, os.path as path
 from bes.common import algorithm, check, object_util, string_util
 from bes.system import execute, log, os_env_var, host
-from bes.fs import file_find, file_match, file_util
+from bes.fs import file_find, file_match, file_path, file_util, temp_file
 from rebuild.base import build_arch, build_blurb, build_system
 
 class pkg_config(object):
 
-  # FIXME: maybe this should be centralized
-  def _pkg_config_exe():
-    version = '0.29.1'
-    exe = 'rebbe_pkg-config'
-    tools_root = path.normpath(path.join(path.dirname(__file__), '..', 'tools', host.SYSTEM, build_arch.HOST_ARCH))
-    return path.join(tools_root, 'pkg_config-%s_rev1' % (version), 'bin', exe)
+  _PKG_CONFIG_VERSION = 'pkg-config-0.29.1'
+  _PKG_CONFIG_SUB_PATH = path.join('pkg_config_binaries', host.SYSTEM, build_arch.HOST_ARCH, _PKG_CONFIG_VERSION)
+  _PKG_CONFIG_EXE = path.normpath(path.join(path.dirname(__file__), _PKG_CONFIG_SUB_PATH))
 
-  PKG_CONFIG_EXE = _pkg_config_exe()
-  #PKG_CONFIG_EXE = '/Users/ramiro/proj/software/tmp/builds/macos/release/pkg_config-0.29.1_2017-10-04-15-15-48-032758/build/pkg-config'
-
+  @classmethod
+  def pkg_config_exe(clazz):
+    if file_path.is_executable(clazz._PKG_CONFIG_EXE):
+      return clazz._PKG_CONFIG_EXE
+    exe_data = pkgutil.get_data(__name__, clazz._PKG_CONFIG_SUB_PATH)
+    exe_tmp = temp_file.make_temp_file(content = exe_data, prefix = None, suffix = clazz._PKG_CONFIG_VERSION)
+    os.chmod(exe_tmp, 0o755)
+    return exe_tmp
+  
   @classmethod
   def list_all(clazz, PKG_CONFIG_PATH = []):
     rv = clazz.__call_pkg_config('--list-all',
@@ -101,7 +105,7 @@ class pkg_config(object):
   @classmethod
   def __call_pkg_config(clazz, args, PKG_CONFIG_LIBDIR = [], PKG_CONFIG_PATH = []):
     check.check_string_seq(PKG_CONFIG_PATH)
-    cmd = [ clazz.PKG_CONFIG_EXE ] + object_util.listify(args)
+    cmd = [ clazz.pkg_config_exe() ] + object_util.listify(args)
     env = {
       'PKG_CONFIG_DEBUG_SPEW': '1',
       'PKG_CONFIG_LIBDIR': ':'.join(PKG_CONFIG_LIBDIR),
