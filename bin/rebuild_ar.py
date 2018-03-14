@@ -1,6 +1,5 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
-#
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import argparse, os, os.path as path, sys
 
@@ -11,7 +10,6 @@ except:
   sys.path.append(p)
   p = path.abspath(path.normpath(path.join(path.dirname(__file__), '../lib')))
   sys.path.append(p)
-
 
 from bes.system import execute
 from rebuild.toolchain.darwin import darwin_sdk

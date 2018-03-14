@@ -6,22 +6,14 @@ import os, os.path as path
 from bes.common import algorithm, check, object_util, string_util
 from bes.system import execute, log, os_env_var, host
 from bes.fs import file_find, file_match, file_path, file_util, temp_file
+from bes.python import package
 from rebuild.base import build_arch, build_blurb, build_system
 
 class pkg_config(object):
 
   _PKG_CONFIG_VERSION = 'pkg-config-0.29.1'
   _PKG_CONFIG_SUB_PATH = path.join('pkg_config_binaries', host.SYSTEM, build_arch.HOST_ARCH, _PKG_CONFIG_VERSION)
-  _PKG_CONFIG_EXE = path.normpath(path.join(path.dirname(__file__), _PKG_CONFIG_SUB_PATH))
-
-  @classmethod
-  def pkg_config_exe(clazz):
-    if file_path.is_executable(clazz._PKG_CONFIG_EXE):
-      return clazz._PKG_CONFIG_EXE
-    exe_data = pkgutil.get_data(__name__, clazz._PKG_CONFIG_SUB_PATH)
-    exe_tmp = temp_file.make_temp_file(content = exe_data, prefix = None, suffix = clazz._PKG_CONFIG_VERSION)
-    os.chmod(exe_tmp, 0o755)
-    return exe_tmp
+  _PKG_CONFIG_EXE = package.get_data_program_exe(_PKG_CONFIG_SUB_PATH, __file__, __name__)
   
   @classmethod
   def list_all(clazz, PKG_CONFIG_PATH = []):
@@ -105,7 +97,7 @@ class pkg_config(object):
   @classmethod
   def __call_pkg_config(clazz, args, PKG_CONFIG_LIBDIR = [], PKG_CONFIG_PATH = []):
     check.check_string_seq(PKG_CONFIG_PATH)
-    cmd = [ clazz.pkg_config_exe() ] + object_util.listify(args)
+    cmd = [ clazz._PKG_CONFIG_EXE ] + object_util.listify(args)
     env = {
       'PKG_CONFIG_DEBUG_SPEW': '1',
       'PKG_CONFIG_LIBDIR': ':'.join(PKG_CONFIG_LIBDIR),
