@@ -12,6 +12,9 @@ from rebuild.builder import builder, builder_config, builder_env
 class test_builder_autoconf(unit_test):
 
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/packager'
+
+  DEBUG = True
+  #DEBUG = False
   
   def test_amhello(self):
     self._build_autoconf_package(self, 'amhello', '1.0', '1', self.data_dir())
@@ -78,7 +81,9 @@ class test_builder_autoconf(unit_test):
 
   @classmethod
   def _build_autoconf_package(clazz, asserter, name, version, revision, tarball_dir):
-    tmp_dir = temp_file.make_temp_dir()
+    tmp_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
+    if clazz.DEBUG:
+      print('_build_autoconf_package() tmp_dir=%s; version=%s' % (tmp_dir, version))
     builder_script_content = unit_test_packaging.make_recipe_v1_content(name, version, revision)
     builder_script = file_util.save(path.join(tmp_dir, 'build.py'), content = builder_script_content)
     tarball_filename = '%s-%s.tar.gz' % (name, version)
@@ -100,6 +105,8 @@ class test_builder_autoconf(unit_test):
     rv = bldr.build_script(script, env)
     if not rv.status == bldr.SCRIPT_SUCCESS:
       print(rv.packager_result.message)
+      if clazz.DEBUG:
+        print('log_dir: %s' % (script.logs_dir))
     asserter.assertEqual( bldr.SCRIPT_SUCCESS, rv.status )
     tarball = rv.packager_result.output['published_tarball']
     pkg = package(tarball)

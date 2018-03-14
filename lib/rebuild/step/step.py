@@ -142,7 +142,8 @@ class step(with_metaclass(step_register_meta, object)):
 
   @classmethod
   def create_command_env(clazz, script):
-    env = os_env.make_clean_env()
+    #env = os_env.make_clean_env()
+    env = os_env.make_clean_env(keep_keys = [ 'PYTHONPATH' ])
 
     STATIC = True
     resolved_requirements = script.descriptor.resolved_requirements + script.descriptor.resolved_build_requirements
@@ -255,6 +256,10 @@ class step(with_metaclass(step_register_meta, object)):
       cwd = path.join(script.build_dir, execution_dir)
     else:
       cwd = script.build_dir
+    print('POTO: execute(command=%s)' % (command))
+    print('POTO: old PYTHONPATH=%s' % (os.environ['PYTHONPATH']))
+    print('POTO: new PYTHONPATH=%s' % (env['PYTHONPATH']))
+    
     rv = execute.execute(command,
                          cwd = cwd,
                          env = env,

@@ -47,8 +47,4 @@ class _toolchain_base(with_metaclass(ABCMeta, object)):
     return result
 
   def ar_replacement_program_exe(self):
-#    x = package.get_data_program_exe('../../../bin/rebuild_ar.py', __file__, __name__)
-    y = path.abspath(path.normpath(path.join(path.dirname(__file__), '../../../bin/rebuild_ar.py')))
-#    print('GOOD: %s' % (y))
-#    print(' BAD: %s' % (x))
-    return y
+    return package.get_data_program_exe('programs/rebuild_ar_replacement.py', __file__, __name__)
