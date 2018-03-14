@@ -100,7 +100,7 @@ class test_builder_autoconf(unit_test):
     rv = bldr.build_script(script, env)
     #runner.build_script(script, env)
     if not rv.status == bldr.SCRIPT_SUCCESS:
-      print(rv.status)
+      print(rv.packager_result.message)
     asserter.assertEqual( bldr.SCRIPT_SUCCESS, rv.status )
     tarball = rv.packager_result.output['published_tarball']
     pkg = package(tarball)
