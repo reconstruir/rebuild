@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+import os.path as path
 from abc import abstractmethod, ABCMeta
 from bes.system.compat import with_metaclass
-from bes.common import string_util
 
 class _toolchain_base(with_metaclass(ABCMeta, object)):
 
@@ -44,3 +44,7 @@ class _toolchain_base(with_metaclass(ABCMeta, object)):
     for key, flags in compiler_flags.items():
       result[key] = ' '.join(flags)
     return result
+
+  def ar_replacement_program_exe(self):
+    return path.abspath(path.normpath(path.join(path.dirname(__file__), '../../../bin/rebuild_ar.py')))
+  

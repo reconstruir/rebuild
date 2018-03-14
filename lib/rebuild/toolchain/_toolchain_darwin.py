@@ -19,13 +19,12 @@ class _toolchain_darwin(_toolchain_base):
     return path.isdir(self.sysroot())
     
   def compiler_environment(self):
-    ar_replacement = path.abspath(path.normpath(path.join(path.dirname(__file__), '../../../bin/rebuild_ar.py')))
     env = {
       'CC': xcrun.find_tool(self.sdk, 'clang'),
       'CXX': xcrun.find_tool(self.sdk, 'clang++'),
       'RANLIB': xcrun.find_tool(self.sdk, 'ranlib'),
       'STRIP': xcrun.find_tool(self.sdk, 'strip'),
-      'AR': ar_replacement,
+      'AR': self.ar_replacement_program_exe(),
       'AR_REAL': xcrun.find_tool(self.sdk, 'ar'),
       'AR_FLAGS': 'r',
       'ARFLAGS': 'r',

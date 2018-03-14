@@ -14,8 +14,6 @@ class _toolchain_linux(_toolchain_base):
     return True
     
   def compiler_environment(self):
-    ar_replacement = path.abspath(path.normpath(path.join(path.dirname(__file__), '../../../bin/rebuild_ar.py')))
-
     env = {
       'CC': 'gcc',
       'CXX': 'g++',
@@ -24,7 +22,7 @@ class _toolchain_linux(_toolchain_base):
       'RANLIB': 'ranlib',
       'STRIP': 'strip',
       'AR': 'ar',
-      'AR_REPLACEMENT': ar_replacement,
+      'AR_REPLACEMENT': self.ar_replacement_program_exe(),
       'AR_REAL': 'ar',
       'AR_FLAGS': 'r',
       'ARFLAGS': 'r',

@@ -43,14 +43,13 @@ class _toolchain_android(_toolchain_base):
     return self.ndk_root and path.isdir(self.ndk_root)
     
   def compiler_environment(self):
-    ar_replacement = path.abspath(path.normpath(path.join(path.dirname(__file__), '../../../bin/rebuild_ar.py')))
     env = {
       'CC': self._find_tool('gcc'),
       'CXX': self._find_tool('g++'),
       'CPP': self._find_tool('cpp'),
       'RANLIB': self._find_tool('ranlib'),
       'STRIP': self._find_tool('strip'),
-      'AR': 'ar', #ar_replacement,
+      'AR': 'ar', #self.ar_replacement_program_exe(),
       'AR_REAL': self._find_tool('ar'),
       'AR_FLAGS': 'r',
       'ARFLAGS': 'r',
