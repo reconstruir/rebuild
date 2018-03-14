@@ -17,16 +17,16 @@ class pkg_config(object):
   
   @classmethod
   def list_all(clazz, PKG_CONFIG_PATH = []):
-    rv = clazz.__call_pkg_config('--list-all',
-                                 PKG_CONFIG_PATH = PKG_CONFIG_PATH)
-    return clazz.__parse_list_all_output(rv.stdout)
+    rv = clazz._call_pkg_config('--list-all',
+                                PKG_CONFIG_PATH = PKG_CONFIG_PATH)
+    return clazz._parse_list_all_output(rv.stdout)
 
   @classmethod
   def cflags(clazz, modules, PKG_CONFIG_PATH = []):
     modules = object_util.listify(modules)
     args = [ '--cflags' ] + modules
-    rv = clazz.__call_pkg_config(args, PKG_CONFIG_PATH = PKG_CONFIG_PATH)
-    return clazz.__parse_flags(rv.stdout)
+    rv = clazz._call_pkg_config(args, PKG_CONFIG_PATH = PKG_CONFIG_PATH)
+    return clazz._parse_flags(rv.stdout)
 
   @classmethod
   def libs(clazz, modules, PKG_CONFIG_PATH = [], static = False):
@@ -34,13 +34,13 @@ class pkg_config(object):
     args = [ '--libs' ] + modules
     if static:
       args.append('--static')
-    rv = clazz.__call_pkg_config(args, PKG_CONFIG_PATH = PKG_CONFIG_PATH)
-    libs = clazz.__parse_flags(rv.stdout)
-    libs = clazz.__libs_cleanup(libs)
+    rv = clazz._call_pkg_config(args, PKG_CONFIG_PATH = PKG_CONFIG_PATH)
+    libs = clazz._parse_flags(rv.stdout)
+    libs = clazz._libs_cleanup(libs)
     return libs
 
   @classmethod
-  def __libs_cleanup(clazz, libs):
+  def _libs_cleanup(clazz, libs):
     'Cleanups libs so that -ldl and -lpthread are last to work around bugs in some libs like openssl.'
     libs = libs[:]
     add_dl = False
@@ -79,14 +79,14 @@ class pkg_config(object):
     return [ f for f in pc_files ]
 
   @classmethod
-  def __parse_list_all_output(clazz, s):
+  def _parse_list_all_output(clazz, s):
     lines = [ line for line in s.split('\n') if line ]
-    items = [ clazz.__parse_list_all_entry(line) for line in lines ]
+    items = [ clazz._parse_list_all_entry(line) for line in lines ]
     assert None not in items
     return sorted(items, key = lambda item: item[0].lower())
 
   @classmethod
-  def __parse_list_all_entry(clazz, s):
+  def _parse_list_all_entry(clazz, s):
     i = s.find(' ')
     if i < 0:
       return None
@@ -95,7 +95,7 @@ class pkg_config(object):
     return ( name, description )
 
   @classmethod
-  def __call_pkg_config(clazz, args, PKG_CONFIG_LIBDIR = [], PKG_CONFIG_PATH = []):
+  def _call_pkg_config(clazz, args, PKG_CONFIG_LIBDIR = [], PKG_CONFIG_PATH = []):
     check.check_string_seq(PKG_CONFIG_PATH)
     cmd = [ clazz._PKG_CONFIG_EXE ] + object_util.listify(args)
     env = {
@@ -106,13 +106,13 @@ class pkg_config(object):
     }
     for p in PKG_CONFIG_PATH:
       file_util.mkdir(p)
-    #build_blurb.blurb_verbose('pkg_config', '__call_pkg_config() cmd=%s' % (str(cmd)))
-    #print('pkg_config', '__call_pkg_config() cmd=%s; env=%s' % (str(cmd), str(env)))
+    #build_blurb.blurb_verbose('pkg_config', '_call_pkg_config() cmd=%s' % (str(cmd)))
+    #print('pkg_config', '_call_pkg_config() cmd=%s; env=%s' % (str(cmd), str(env)))
     rv = execute.execute(cmd, env = env)
     return rv
     
   @classmethod
-  def __parse_flags(clazz, s):
+  def _parse_flags(clazz, s):
     flags = string_util.split_by_white_space(s)
     return algorithm.unique([ flag.strip() for flag in flags ])
 
