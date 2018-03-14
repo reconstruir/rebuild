@@ -256,9 +256,6 @@ class step(with_metaclass(step_register_meta, object)):
       cwd = path.join(script.build_dir, execution_dir)
     else:
       cwd = script.build_dir
-    print('POTO: execute(command=%s)' % (command))
-    print('POTO: old PYTHONPATH=%s' % (os.environ['PYTHONPATH']))
-    print('POTO: new PYTHONPATH=%s' % (env['PYTHONPATH']))
     
     rv = execute.execute(command,
                          cwd = cwd,
