@@ -98,7 +98,6 @@ class test_builder_autoconf(unit_test):
     script = env.script_manager.scripts[ name ]
     env.checksum_manager.ignore(script.descriptor.full_name)
     rv = bldr.build_script(script, env)
-    #runner.build_script(script, env)
     if not rv.status == bldr.SCRIPT_SUCCESS:
       print(rv.packager_result.message)
     asserter.assertEqual( bldr.SCRIPT_SUCCESS, rv.status )

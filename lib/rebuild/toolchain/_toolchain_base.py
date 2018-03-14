@@ -4,6 +4,7 @@
 import os.path as path
 from abc import abstractmethod, ABCMeta
 from bes.system.compat import with_metaclass
+from bes.python import package
 
 class _toolchain_base(with_metaclass(ABCMeta, object)):
 
@@ -46,5 +47,8 @@ class _toolchain_base(with_metaclass(ABCMeta, object)):
     return result
 
   def ar_replacement_program_exe(self):
-    return path.abspath(path.normpath(path.join(path.dirname(__file__), '../../../bin/rebuild_ar.py')))
-  
+#    x = package.get_data_program_exe('../../../bin/rebuild_ar.py', __file__, __name__)
+    y = path.abspath(path.normpath(path.join(path.dirname(__file__), '../../../bin/rebuild_ar.py')))
+#    print('GOOD: %s' % (y))
+#    print(' BAD: %s' % (x))
+    return y
