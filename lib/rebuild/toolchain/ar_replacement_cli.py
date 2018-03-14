@@ -3,13 +3,31 @@
 
 import argparse, os, os.path as path, sys
 
-#import argparse, copy, os, os.path as path
-#from rem_health.lab_results import results_finder, results_parser
-#from bes.common import algorithm, check, table
-#from bes.text import text_table, text_cell_renderer
-#from rem_health.pdf import parse as pdf_parse
-
+from bes.system import execute
+from rebuild.toolchain.darwin import darwin_sdk
+from rebuild.toolchain.darwin import xcrun
+from rebuild.toolchain import ar_replacement
+  
 class ar_replacement_cli(object):
+
+  AR_COMMAND_CONTENTS = 't'
+  AR_COMMAND_EXTRACT = 'x'
+  AR_COMMAND_QUIET = 'c'
+  AR_COMMAND_REPLACE = 'r'
+  AR_COMMAND_UPDATE = 'u'
+
+  AR_COMMANDS = set([
+    AR_COMMAND_CONTENTS,
+    AR_COMMAND_EXTRACT,
+    AR_COMMAND_QUIET,
+    AR_COMMAND_REPLACE,
+    AR_COMMAND_UPDATE,
+   ])
+
+  DEFAULT_LIPO = os.environ.get('LIPO', 'lipo')
+  DEFAULT_AR = os.environ.get('AR_REAL', None) or os.environ.get('AR', 'ar')
+  DEFAULT_LIBTOOL = os.environ.get('APPLE_LIBTOOL', 'libtool')
+  DEFAULT_RANLIB = os.environ.get('RANLIB', 'ranlib')
   
   def __init__(self):
     self.parser = argparse.ArgumentParser()
@@ -44,20 +62,20 @@ class ar_replacement_cli(object):
                              help = 'IOS xcode sdk to use to find ar, lipo and libtool. [ None ]')
     self.parser.add_argument('--ar',
                              action = 'store',
-                             default = DEFAULT_AR,
-                             help = 'Path to ar executable. [ %s ]' % (DEFAULT_AR))
+                             default = self.DEFAULT_AR,
+                             help = 'Path to ar executable. [ %s ]' % (self.DEFAULT_AR))
     self.parser.add_argument('--lipo',
                              action = 'store',
-                             default = DEFAULT_LIPO,
-                             help = 'Path to lipo executable. [ %s ]' % (DEFAULT_LIPO))
+                             default = self.DEFAULT_LIPO,
+                             help = 'Path to lipo executable. [ %s ]' % (self.DEFAULT_LIPO))
     self.parser.add_argument('--libtool',
                              action = 'store',
-                             default = DEFAULT_LIBTOOL,
-                             help = 'Path to libtool executable. [ %s ]' % (DEFAULT_LIBTOOL))
+                             default = self.DEFAULT_LIBTOOL,
+                             help = 'Path to libtool executable. [ %s ]' % (self.DEFAULT_LIBTOOL))
     self.parser.add_argument('--ranlib',
                              action = 'store',
-                             default = DEFAULT_RANLIB,
-                             help = 'Path to ranlib executable. [ %s ]' % (DEFAULT_RANLIB))
+                             default = self.DEFAULT_RANLIB,
+                             help = 'Path to ranlib executable. [ %s ]' % (self.DEFAULT_RANLIB))
     self.parser.add_argument('rest', action = 'store', nargs = '+', help = 'Rest of AR args')
 
   def main(self):
@@ -112,19 +130,19 @@ class ar_replacement_cli(object):
   @classmethod
   def _is_ar_command(clazz, s):
     'Return True if s is an ar command.'
-    return False not in [ c in AR_COMMANDS for c in s ]
+    return False not in [ c in clazz.AR_COMMANDS for c in s ]
 
   def _update_ar_commands(self, ar_commands, args):
     for c in ar_commands:
-      if c == AR_COMMAND_CONTENTS:
+      if c == self.AR_COMMAND_CONTENTS:
         args.contents = True
-      elif c == AR_COMMAND_EXTRACT:
+      elif c == self.AR_COMMAND_EXTRACT:
         args.extract = True
-      elif c == AR_COMMAND_QUIET:
+      elif c == self.AR_COMMAND_QUIET:
         args.quiet = True
-      elif c == AR_COMMAND_REPLACE:
+      elif c == self.AR_COMMAND_REPLACE:
         args.replace = True
-      elif c == AR_COMMAND_UPDATE:
+      elif c == self.AR_COMMAND_UPDATE:
         args.update = True
 
   @classmethod
