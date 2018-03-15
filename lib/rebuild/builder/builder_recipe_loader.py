@@ -44,9 +44,18 @@ class builder_recipe_loader(object):
       raise RuntimeError('No version given in %s.' % (filename))
     del properties['name']
     del properties['version']
+
     requirements = clazz._load_requirements(recipe_dict, 'requirements')
+    print('FUCK: LOADED requirements: %s' % (str(requirements)))
     build_requirements = clazz._load_requirements(recipe_dict, 'build_requirements')
     build_tool_requirements = clazz._load_requirements(recipe_dict, 'build_tool_requirements')
+    env_vars = clazz._load_env_vars(filename, recipe_dict, 'env_vars')
+    print('FUCK: LOADED env_vars: %s' % (str(env_vars)))
+    if env_vars:
+      pass
+      #properties['env_vars'] = env_vars
+      #resolved_env_vars = env_vars.resolve(self, system):
+      #print('FUCK: LOADED env_vars[0]: %s - %s' % (str(env_vars[0]), type(env_vars[0])))
     
     # Check that some important properties are given
     if not package_descriptor.PROPERTY_CATEGORY in properties:
@@ -58,7 +67,6 @@ class builder_recipe_loader(object):
                                     properties = properties)
     instructions = clazz._load_instructions(recipe_dict, 'instructions')
     steps = clazz._load_steps(recipe_dict)
-    env_vars = clazz._load_env_vars(filename, recipe_dict, 'env_vars')
     # recipe_dict should be empty now
     if recipe_dict:
       raise RuntimeError('Unknown recipe values for %s: %s' % (filename, recipe_dict))

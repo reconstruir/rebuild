@@ -127,6 +127,11 @@ class package(object):
   def create_tarball(clazz, tarball_path, pkg_desc, build_target, stage_dir, env_dir):
     metadata_dict = dict_util.combine(pkg_desc.to_dict(), build_target.to_dict())
     assert 'properties' in metadata_dict
+    print('FUCK: pkg_desc=%s' % (str(pkg_desc)))
+    print('FUCK: pkg_desc.dict=%s' % (str(pkg_desc.to_dict())))
+    print('FUCK: build_target=%s' % (str(build_target)))
+    print('FUCK: build_target.dict=%s' % (str(build_target.to_dict())))
+    print('FUCK: properties=%s' % (metadata_dict['properties']))
     metadata = json_util.to_json(metadata_dict, indent = 2)
     metadata_filename = temp_file.make_temp_file(suffix = '.json')
     file_util.save(metadata_filename, content = metadata)

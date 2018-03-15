@@ -9,6 +9,9 @@ def rebuild_recipes(env):
         'FRUCTOSE_FOO': '666',
       }
     ),
+    env_vars = [
+      'all: FRUCTOSE_FOO=666',
+    ],
     requirements = [
     ],
     steps = [
