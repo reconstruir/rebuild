@@ -672,3 +672,8 @@ mar 11
  - build netifaces with our own python
  - add test for pyinstaller that proves it wokrs.  it doesnt when python.h is missng
  
+mar 14
+ - figure out why build.rebc in python_chardet does not deal with tests
+ - checksums might be fucked
+ - add tools to checksums
+ 
