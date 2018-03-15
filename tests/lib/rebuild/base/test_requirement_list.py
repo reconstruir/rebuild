@@ -10,16 +10,16 @@ class test_requirement_list(unit_test):
     text = 'foo >= 1.2.3 orange >= 6.6.6 bar baz bar orange >= 6.6.6'
     requirements = RL.parse(text)
     self.assertEqual( [
-      ( 'foo', '>=', '1.2.3', None ),
-      ( 'orange', '>=', '6.6.6', None ),
-      ( 'bar', None, None, None ),
-      ( 'baz', None, None, None ),
+      ( 'foo', '>=', '1.2.3', None, None ),
+      ( 'orange', '>=', '6.6.6', None, None ),
+      ( 'bar', None, None, None, None ),
+      ( 'baz', None, None, None, None ),
     ], requirements )
     self.assertEqual( [
-      ( 'foo', '>=', '1.2.3', None ),
-      ( 'orange', '>=', '6.6.6', None ),
-      ( 'bar', None, None, None ),
-      ( 'baz', None, None, None ),
+      ( 'foo', '>=', '1.2.3', None, None ),
+      ( 'orange', '>=', '6.6.6', None, None ),
+      ( 'bar', None, None, None, None ),
+      ( 'baz', None, None, None, None ),
     ], requirements )
   
   def test_to_string(self):
@@ -35,30 +35,30 @@ class test_requirement_list(unit_test):
     reqs = RL.parse(text)
 
     self.assertEqual( [
-      ( 'apple', '>=', '1.2.3', 'linux' ),
-      ( 'kiwi', None, None, None ),
-      ( 'lychee', None, None, 'all' ),
-      ( 'corn', None, None, 'desktop' ),
-      ( 'tomato', '<=', '9.8.7', 'linux|macos' ),
+      ( 'apple', '>=', '1.2.3', 'linux', None ),
+      ( 'kiwi', None, None, None, None ),
+      ( 'lychee', None, None, 'all', None ),
+      ( 'corn', None, None, 'desktop', None ),
+      ( 'tomato', '<=', '9.8.7', 'linux|macos', None ),
     ], reqs.resolve('linux') )
 
     self.assertEqual( [
-      ( 'kiwi', None, None, None ),
-      ( 'orange', '==', '6.6.6', 'macos' ),
-      ( 'lychee', None, None, 'all' ),
-      ( 'corn', None, None, 'desktop' ),
-      ( 'tomato', '<=', '9.8.7', 'linux|macos' ),
+      ( 'kiwi', None, None, None, None ),
+      ( 'orange', '==', '6.6.6', 'macos', None ),
+      ( 'lychee', None, None, 'all', None ),
+      ( 'corn', None, None, 'desktop', None ),
+      ( 'tomato', '<=', '9.8.7', 'linux|macos', None ),
     ], reqs.resolve('macos') )
 
     self.assertEqual( [
-      ( 'kiwi', None, None, None ),
-      ( 'pear', None, None, 'ios' ),
-      ( 'lychee', None, None, 'all' ),
+      ( 'kiwi', None, None, None, None ),
+      ( 'pear', None, None, 'ios', None ),
+      ( 'lychee', None, None, 'all', None ),
     ], reqs.resolve('ios') )
 
     self.assertEqual( [
-      ( 'kiwi', None, None, None ),
-      ( 'lychee', None, None, 'all' ),
+      ( 'kiwi', None, None, None, None ),
+      ( 'lychee', None, None, 'all', None ),
     ], reqs.resolve('android') )
 
 if __name__ == "__main__":

@@ -164,37 +164,37 @@ class test_reitred_masked_config(unit_test):
     self.assertEqual( [ '-fall', '-f4', '-f5' ], MC.resolve_list(test_flags, 'macos') )
 
   def test_parse_requirement(self):
-    self.assertEqual( ( 'linux', [ ( 'foo', '>=', '1.2.3', 'linux' ) ] ),
+    self.assertEqual( ( 'linux', [ ( 'foo', '>=', '1.2.3', 'linux', None ) ] ),
                       MC.parse_requirement('linux: foo >= 1.2.3') )
-    self.assertEqual( ( 'linux', [ ( 'foo', None, None, 'linux' ) ] ),
+    self.assertEqual( ( 'linux', [ ( 'foo', None, None, 'linux', None ) ] ),
                       MC.parse_requirement('linux: foo') )
-    self.assertEqual( ( 'linux', [ ( 'foo', '>=', '1.2.3', 'linux' ), ( 'bar', '>=', '6.6.6', 'linux' ) ] ),
+    self.assertEqual( ( 'linux', [ ( 'foo', '>=', '1.2.3', 'linux', None ), ( 'bar', '>=', '6.6.6', 'linux', None ) ] ),
                       MC.parse_requirement('linux: foo >= 1.2.3 bar >= 6.6.6') )
-    self.assertEqual( ( 'linux', [ ( 'foo', '>=', '1.2.3', 'linux' ), ( 'bar', '>=', '6.6.6', 'linux' ) ] ),
+    self.assertEqual( ( 'linux', [ ( 'foo', '>=', '1.2.3', 'linux', None ), ( 'bar', '>=', '6.6.6', 'linux', None ) ] ),
                       MC.parse_requirement('linux: foo >= 1.2.3 bar(linux) >= 6.6.6') )
-    self.assertEqual( ( 'linux', [ ( 'foo', '>=', '1.2.3', 'linux' ), ( 'bar', '>=', '6.6.6', 'linux|macos' ) ] ),
+    self.assertEqual( ( 'linux', [ ( 'foo', '>=', '1.2.3', 'linux', None ), ( 'bar', '>=', '6.6.6', 'linux|macos', None ) ] ),
                       MC.parse_requirement('linux: foo >= 1.2.3 bar(linux|macos) >= 6.6.6') )
-    self.assertEqual( ( 'linux', [ ( 'foo', '>=', '1.2.3', 'linux' ), ( 'bar', '>=', '6.6.6', 'macos' ) ] ),
+    self.assertEqual( ( 'linux', [ ( 'foo', '>=', '1.2.3', 'linux', None ), ( 'bar', '>=', '6.6.6', 'macos', None ) ] ),
                       MC.parse_requirement('linux: foo >= 1.2.3 bar(macos) >= 6.6.6') )
 
   def test_parse_requirement_with_system_aliases(self):
-    self.assertEqual( ( 'all', [ ( 'foo', '>=', '1.2.3', 'all' ) ] ),
+    self.assertEqual( ( 'all', [ ( 'foo', '>=', '1.2.3', 'all', None ) ] ),
                       MC.parse_requirement('all: foo >= 1.2.3') )
-    self.assertEqual( ( 'desktop', [ ( 'foo', '>=', '1.2.3', 'desktop' ) ] ),
+    self.assertEqual( ( 'desktop', [ ( 'foo', '>=', '1.2.3', 'desktop', None ) ] ),
                       MC.parse_requirement('desktop: foo >= 1.2.3') )
 
   def test_parse_requirement_with_system_override(self):
-    self.assertEqual( ( 'all', [ ( 'foo', '>=', '1.2.3', 'linux' ) ] ),
+    self.assertEqual( ( 'all', [ ( 'foo', '>=', '1.2.3', 'linux', None ) ] ),
                       MC.parse_requirement('all: foo(linux) >= 1.2.3') )
 
   def test_parse_requirement_empty_mask(self):
-    self.assertEqual( ( None, [ ( 'foo', '>=', '1.2.3', None ) ] ),
+    self.assertEqual( ( None, [ ( 'foo', '>=', '1.2.3', None, None ) ] ),
                       MC.parse_requirement(': foo >= 1.2.3') )
 #    self.assertEqual( ( None, [ ( 'foo', '>=', '1.2.3', None ), ( 'bar', '>=', '6.6.6', None ) ] ),
 #                      MC.parse_requirement(': foo >= 1.2.3 bar >= 6.6.6') )
 
   def test_parse_requirement_per_req_system_mask(self):
-    self.assertEqual( ( None, [ ( 'foo', '>=', '1.2.3', 'linux' ), ( 'bar', '>=', '6.6.6', 'macos' ) ] ),
+    self.assertEqual( ( None, [ ( 'foo', '>=', '1.2.3', 'linux', None ), ( 'bar', '>=', '6.6.6', 'macos', None ) ] ),
                       MC.parse_requirement(': foo(linux) >= 1.2.3 bar(macos) >= 6.6.6') )
 
   def test_resolve_requirement(self):
@@ -204,11 +204,11 @@ class test_reitred_masked_config(unit_test):
       'macos: formacos',
       'android: forandroid',
     ]
-    self.assertEqual( [ ( 'forall1', None, None, None ), ( 'forall2', None, None, None ), ( 'forlinux', None, None, None ) ],
+    self.assertEqual( [ ( 'forall1', None, None, None, None ), ( 'forall2', None, None, None, None ), ( 'forlinux', None, None, None, None ) ],
                       MC.resolve_requirement(config, 'linux') )
-    self.assertEqual( [ ( 'forall1', None, None, None ), ( 'forall2', None, None, None ), ( 'formacos', None, None, None ) ],
+    self.assertEqual( [ ( 'forall1', None, None, None, None ), ( 'forall2', None, None, None, None ), ( 'formacos', None, None, None, None ) ],
                       MC.resolve_requirement(config, 'macos') )
-    self.assertEqual( [ ( 'forall1', None, None, None ), ( 'forall2', None, None, None ), ( 'forandroid', None, None, None ) ],
+    self.assertEqual( [ ( 'forall1', None, None, None, None ), ( 'forall2', None, None, None, None ), ( 'forandroid', None, None, None, None ) ],
                       MC.resolve_requirement(config, 'android') )
 
   def test_resolve_requirement_empty_mask(self):
@@ -222,10 +222,10 @@ class test_reitred_masked_config(unit_test):
     config = [
       ': forall1(all) forall2(all) forlinux(linux) formacos(macos)',
     ]
-    self.assertEqual( [ ( 'forall1', None, None, None ), ( 'forall2', None, None, None ), ( 'forlinux', None, None, None ) ],
+    self.assertEqual( [ ( 'forall1', None, None, None, None ), ( 'forall2', None, None, None, None ), ( 'forlinux', None, None, None, None ) ],
                       MC.resolve_requirement(config, 'linux') )
 
-    self.assertEqual( [ ( 'forall1', None, None, None ), ( 'forall2', None, None, None ), ( 'formacos', None, None, None ) ],
+    self.assertEqual( [ ( 'forall1', None, None, None, None ), ( 'forall2', None, None, None, None ), ( 'formacos', None, None, None, None ) ],
                       MC.resolve_requirement(config, 'macos') )
 
   def test_resolve_requirement_global_mask_and_per_req_system_masks(self):
@@ -244,11 +244,11 @@ class test_reitred_masked_config(unit_test):
     config = [
       'all: forall1 forall2 forlinux(linux) formacos(macos)',
     ]
-    self.assertEqual( [ ( 'forall1', None, None, None ), ( 'forall2', None, None, None ), ( 'forlinux', None, None, None ) ],
+    self.assertEqual( [ ( 'forall1', None, None, None, None ), ( 'forall2', None, None, None, None ), ( 'forlinux', None, None, None, None ) ],
                       MC.resolve_requirement(config, 'linux') )
-    self.assertEqual( [ ( 'forall1', None, None, None ), ( 'forall2', None, None, None ), ( 'formacos', None, None, None ) ],
+    self.assertEqual( [ ( 'forall1', None, None, None, None ), ( 'forall2', None, None, None, None ), ( 'formacos', None, None, None, None ) ],
                       MC.resolve_requirement(config, 'macos') )
-    self.assertEqual( [ ( 'forall1', None, None, None ), ( 'forall2', None, None, None ) ],
+    self.assertEqual( [ ( 'forall1', None, None, None, None ), ( 'forall2', None, None, None, None ) ],
                       MC.resolve_requirement(config, 'android') )
 
   def test_resolve_requirement_global_mask(self):
@@ -256,10 +256,10 @@ class test_reitred_masked_config(unit_test):
       'macos: foo >= 1.0 bar >= 2.0 baz >= 3.0 kiwi >= 4.0',
     ]
     self.assertEqual( [
-      ( 'foo', '>=', '1.0', None ),
-      ( 'bar', '>=', '2.0', None ),
-      ( 'baz', '>=', '3.0', None ),
-      ( 'kiwi', '>=', '4.0', None ),
+      ( 'foo', '>=', '1.0', None, None ),
+      ( 'bar', '>=', '2.0', None, None ),
+      ( 'baz', '>=', '3.0', None, None ),
+      ( 'kiwi', '>=', '4.0', None, None ),
     ], MC.resolve_requirement(config, 'macos') )
     
     self.assertEqual( [], MC.resolve_requirement(config, 'linux') )

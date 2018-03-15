@@ -5,11 +5,11 @@ from bes.common import check
 from collections import namedtuple
 from bes.compat import StringIO
 
-#from .requirement_hardness import requirement_hardness
+from .requirement_hardness import requirement_hardness
 
-class requirement(namedtuple('requirement', 'name,operator,version,system_mask')):
+class requirement(namedtuple('requirement', 'name,operator,version,system_mask,hardness')):
 
-  def __new__(clazz, name, operator, version, system_mask = None):
+  def __new__(clazz, name, operator, version, system_mask = None, hardness = None):
     assert name
     assert name == str(name)
     name = str(name)
@@ -22,7 +22,9 @@ class requirement(namedtuple('requirement', 'name,operator,version,system_mask')
     if system_mask:
       assert system_mask == str(system_mask)
       system_mask = str(system_mask)
-    return clazz.__bases__[0].__new__(clazz, name, operator, version, system_mask)
+    if hardness:
+      check.check_requirement_hardness(hardness)
+    return clazz.__bases__[0].__new__(clazz, name, operator, version, system_mask, hardness)
 
   def __str__(self):
     buf = StringIO()
