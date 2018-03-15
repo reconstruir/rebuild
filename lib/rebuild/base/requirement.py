@@ -5,6 +5,8 @@ from bes.common import check
 from collections import namedtuple
 from bes.compat import StringIO
 
+#from .requirement_hardness import requirement_hardness
+
 class requirement(namedtuple('requirement', 'name,operator,version,system_mask')):
 
   def __new__(clazz, name, operator, version, system_mask = None):
