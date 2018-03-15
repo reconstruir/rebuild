@@ -15,6 +15,10 @@ class step_artifact_create_make_package(step):
   def __init__(self):
     super(step_artifact_create_make_package, self).__init__()
 
+  @classmethod
+  def define_args(clazz):
+    return 'delete_files string_list'
+  
   def execute(self, script, env, args):
     tarball_name = '%s.tar.gz' % (script.descriptor.full_name)
     assert tarball_name == script.descriptor.tarball_filename
@@ -55,8 +59,11 @@ class step_artifact_create_test_package(step):
 
   @classmethod
   def define_args(clazz):
-    return 'tests file_list'
-    
+    return '''
+    tests file_list
+    package_test_env key_values
+    '''
+  
   def execute(self, script, env, args):
     if env.config.skip_tests:
       message = '%s: Skipping tests because of --skip-tests' % (script.descriptor.full_name)

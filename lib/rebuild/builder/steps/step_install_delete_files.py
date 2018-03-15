@@ -12,6 +12,10 @@ class step_install_delete_files(step):
   def __init__(self):
     super(step_install_delete_files, self).__init__()
 
+  @classmethod
+  def define_args(clazz):
+    return 'delete_files string_list'
+  
   def execute(self, script, env, args):
     delete_files = args.get('delete_files', [])
     if not delete_files:
