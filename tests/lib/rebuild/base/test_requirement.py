@@ -17,5 +17,11 @@ class test_requirement(unit_test):
   def test_to_string_colon_format(self):
     self.assertEqual( 'all: foo >= 1.2.3', R('foo', '>=', '1.2.3', None).to_string_colon_format() )
     
+  def clone_replace_hardness(self):
+    r1 = R('foo', '>=', '1.2.3', 'linux', 'RUN')
+    r2 = r1.clone_replace_hardness(self, 'BUILD')
+    self.assertEqual( 'RUN', str(r1.hardness) )
+    self.assertEqual( 'BUILD', str(r2.hardness) )
+    
 if __name__ == "__main__":
   unit_test.main()

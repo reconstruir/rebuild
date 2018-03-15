@@ -44,4 +44,9 @@ class requirement(namedtuple('requirement', 'name,operator,version,system_mask,h
     req_no_system_mask = requirement(self.name, self.operator, self.version, None)
     return '%s: %s' % (self.system_mask or 'all', str(req_no_system_mask))
 
+  def clone_replace_hardness(self, hardness):
+    l = list(*self)
+    l[4] = hardness
+    return self.__class__(*l)
+
 check.register_class(requirement)
