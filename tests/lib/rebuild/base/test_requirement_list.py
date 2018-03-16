@@ -61,5 +61,20 @@ class test_requirement_list(unit_test):
       ( 'lychee', None, None, 'all', None ),
     ], reqs.resolve('android') )
 
+  def test_filter_by_hardness(self):
+    text = 'a >= 1.2 RUN b >= 2.3 TOOL c >= 3.4 BUILD d >= 5.6 e >= 6.7'
+    r = RL.parse(text)
+    self.assertEqual( [
+      ( 'a', '>=', '1.2', None, None ),
+      ( 'b', '>=', '2.3', None, 'RUN' ),
+      ( 'e', '>=', '6.7', None, None ),
+    ], r.filter_by_hardness('RUN') )
+    self.assertEqual( [
+      ( 'c', '>=', '3.4', None, 'TOOL' ),
+    ], r.filter_by_hardness('TOOL') )
+    self.assertEqual( [
+      ( 'd', '>=', '5.6', None, 'BUILD' ),
+    ], r.filter_by_hardness('BUILD') )
+
 if __name__ == "__main__":
   unit_test.main()

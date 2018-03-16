@@ -3,6 +3,7 @@
 
 from bes.testing.unit_test import unit_test
 from rebuild.base.requirement_parser import requirement_parser as RP
+from rebuild.base import requirement_hardness
 
 class test_requirement_parser(unit_test):
 
@@ -118,6 +119,21 @@ class test_requirement_parser(unit_test):
     text = 'all: #foo >= 1.2.3'
     requirements = self._parse(text)
     self.assertEqual( [], requirements )
+
+  def test_hardness(self):
+    r = self._parse('all: RUN foo >= 1.2.3')
+    self.assertEqual( [
+      ( 'foo', '>=', '1.2.3', 'all', 'RUN' ),
+    ], r )
+
+  def test_hardness_multiple(self):
+    r = self._parse('all: RUN foo >= 1.2.3 BUILD bar >= 6.6.6')
+    self.assertEqual( [
+      ( 'foo', '>=', '1.2.3', 'all', 'RUN' ),
+      ( 'bar', '>=', '6.6.6', 'all', 'BUILD' ),
+    ], r )
+    self.assertTrue( isinstance(r[0][4], requirement_hardness) )
+    self.assertTrue( isinstance(r[1][4], requirement_hardness) )
 
 if __name__ == '__main__':
   unit_test.main()

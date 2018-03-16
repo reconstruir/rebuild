@@ -16,12 +16,21 @@ class test_requirement(unit_test):
 
   def test_to_string_colon_format(self):
     self.assertEqual( 'all: foo >= 1.2.3', R('foo', '>=', '1.2.3', None).to_string_colon_format() )
+
+  def test___str__with_hardness(self):
+    self.assertEqual( 'RUN foo(linux) >= 1.2.3', str(R('foo', '>=', '1.2.3', 'linux', 'RUN')) )
+    #self.assertEqual( 'orange >= 6.6.6', str(R('orange', '>=', '6.6.6', 'all', 'RUN')) )
     
-  def clone_replace_hardness(self):
+  def test_clone_replace_hardness(self):
     r1 = R('foo', '>=', '1.2.3', 'linux', 'RUN')
-    r2 = r1.clone_replace_hardness(self, 'BUILD')
+    r2 = r1.clone_replace_hardness('BUILD')
     self.assertEqual( 'RUN', str(r1.hardness) )
     self.assertEqual( 'BUILD', str(r2.hardness) )
+    
+  def test_hardness_matches(self):
+    self.assertTrue( R('foo', '>=', '1.2.3', 'linux', 'RUN').hardness_matches('RUN') )
+    self.assertFalse( R('foo', '>=', '1.2.3', 'linux', 'RUN').hardness_matches('TOOL') )
+    self.assertTrue( R('foo', '>=', '1.2.3', 'linux', None).hardness_matches('RUN') )
     
 if __name__ == "__main__":
   unit_test.main()

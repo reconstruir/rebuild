@@ -45,12 +45,11 @@ class builder_recipe_loader(object):
     del properties['name']
     del properties['version']
 
-    requirements = clazz._load_requirements(recipe_dict, 'requirements')
-    print('FUCK: LOADED requirements: %s' % (str(requirements)))
+#    requirements = clazz._load_requirements(recipe_dict, 'requirements')
+    requirements = clazz._load_requirements_poto(recipe_dict, 'requirements')
     build_requirements = clazz._load_requirements(recipe_dict, 'build_requirements')
     build_tool_requirements = clazz._load_requirements(recipe_dict, 'build_tool_requirements')
     env_vars = clazz._load_env_vars(filename, recipe_dict, 'env_vars')
-    print('FUCK: LOADED env_vars: %s' % (str(env_vars)))
     if env_vars:
       pass
       #properties['env_vars'] = env_vars
@@ -92,6 +91,11 @@ class builder_recipe_loader(object):
       return []
     requirements = package_descriptor.parse_requirements(args[key])
     del args[key]
+    return requirements
+
+  @classmethod
+  def _load_requirements_poto(clazz, args, key):
+    requirements = clazz._load_requirements(args, 'requirements')
     return requirements
 
   @classmethod

@@ -4,6 +4,7 @@
 from bes.compat import StringIO
 from bes.common import check, type_checked_list
 from .requirement import requirement
+from .requirement_hardness import requirement_hardness
 from .requirement_parser import requirement_parser
 from .build_system import build_system
 
@@ -42,5 +43,9 @@ class requirement_list(type_checked_list):
     if not build_system.system_is_valid(system):
       raise RuntimeError('Invalid system: %s' % (system))
     return requirement_list([ req for req in iter(self) if req.system_mask == None or build_system.mask_matches(req.system_mask, system) ])
+  
+  def filter_by_hardness(self, hardness):
+    'Return only the requirements that match hardness.'
+    return requirement_list([ req for req in self if req.hardness_matches(hardness) ])
   
 check.register_class(requirement_list, include_seq = False)

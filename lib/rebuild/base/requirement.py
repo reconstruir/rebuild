@@ -23,11 +23,15 @@ class requirement(namedtuple('requirement', 'name,operator,version,system_mask,h
       assert system_mask == str(system_mask)
       system_mask = str(system_mask)
     if hardness:
+      hardness = requirement_hardness(hardness)
       check.check_requirement_hardness(hardness)
     return clazz.__bases__[0].__new__(clazz, name, operator, version, system_mask, hardness)
 
   def __str__(self):
     buf = StringIO()
+    if self.hardness:
+      buf.write(str(self.hardness))
+      buf.write(' ')
     buf.write(self.name)
     if self.system_mask and self.system_mask != 'all':
       buf.write('(')
@@ -45,8 +49,15 @@ class requirement(namedtuple('requirement', 'name,operator,version,system_mask,h
     return '%s: %s' % (self.system_mask or 'all', str(req_no_system_mask))
 
   def clone_replace_hardness(self, hardness):
-    l = list(*self)
+    l = list(self)
     l[4] = hardness
     return self.__class__(*l)
 
+  def hardness_matches(self, hardness):
+    'Return True if hardness matches.'
+    hardness = requirement_hardness(hardness)
+    if not self.hardness:
+      return hardness == requirement_hardness.DEFAULT
+    return self.hardness == hardness
+  
 check.register_class(requirement)
