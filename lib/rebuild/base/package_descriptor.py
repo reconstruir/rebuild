@@ -247,6 +247,7 @@ class package_descriptor(object):
       if check.is_requirement(dep):
         result.append(dep)
       elif string_util.is_string(dep):
+        #assert False
         reqs = reitred_masked_config.parse_requirement(dep).data
         result.extend(reqs)
       else:

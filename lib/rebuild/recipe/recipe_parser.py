@@ -86,11 +86,14 @@ class recipe_parser(object):
       if text.startswith('properties'):
         properties = self._parse_properties(child)
       elif text.startswith('requirements'):
-        requirements = self._parse_requirements(child)
+        reqs, build_reqs, build_tool_reqs = self._parse_requirements_poto(child)
+        requirements.extend(reqs)
+        build_requirements.extend(build_reqs)
+        build_tool_requirements.extend(build_tool_reqs)
       elif text.startswith('build_requirements'):
-        build_requirements = self._parse_requirements(child)
+        build_requirements.extend(self._parse_requirements(child))
       elif text.startswith('build_tool_requirements'):
-        build_tool_requirements = self._parse_requirements(child)
+        build_tool_requirements.extend(self._parse_requirements(child))
       elif text.startswith('steps'):
         steps = self._parse_steps(child)
       elif text.startswith('enabled'):
@@ -140,7 +143,15 @@ class recipe_parser(object):
       req_text = tree_text_parser.node_text_flat(child)
       next_reqs = requirement_list.parse(req_text)
       reqs.extend(next_reqs)
-    return reqs
+    return requirement_list(reqs)
+
+  def _parse_requirements_poto(self, node):
+    all_reqs = self._parse_requirements(node)
+    check.check_requirement_list(all_reqs)
+    requirements = all_reqs.filter_by_hardness('RUN')
+    build_tool_requirements = all_reqs.filter_by_hardness('TOOL')
+    build_requirements = all_reqs.filter_by_hardness('BUILD')
+    return requirements, build_requirements, build_tool_requirements
 
   def _parse_env_vars(self, node):
     env_vars = []

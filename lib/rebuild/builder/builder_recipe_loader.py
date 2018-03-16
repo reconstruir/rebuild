@@ -8,7 +8,7 @@ from bes.common import check
 from bes.python import code
 from bes.fs import file_util
 
-from rebuild.base import package_descriptor
+from rebuild.base import package_descriptor, requirement_list
 from rebuild.instruction import instruction_list
 from rebuild.step.hook_extra_code import HOOK_EXTRA_CODE
 from rebuild.step import step_description
@@ -45,10 +45,9 @@ class builder_recipe_loader(object):
     del properties['name']
     del properties['version']
 
-#    requirements = clazz._load_requirements(recipe_dict, 'requirements')
-    requirements = clazz._load_requirements_poto(recipe_dict, 'requirements')
-    build_requirements = clazz._load_requirements(recipe_dict, 'build_requirements')
-    build_tool_requirements = clazz._load_requirements(recipe_dict, 'build_tool_requirements')
+    requirements, build_requirements, build_tool_requirements = clazz._load_requirements_poto(recipe_dict, 'requirements', name)
+    build_requirements.extend(clazz._load_requirements(recipe_dict, 'build_requirements'))
+    build_tool_requirements.extend(clazz._load_requirements(recipe_dict, 'build_tool_requirements'))
     env_vars = clazz._load_env_vars(filename, recipe_dict, 'env_vars')
     if env_vars:
       pass
@@ -88,15 +87,21 @@ class builder_recipe_loader(object):
   @classmethod
   def _load_requirements(clazz, args, key):
     if not key in args:
-      return []
-    requirements = package_descriptor.parse_requirements(args[key])
+      return requirement_list()
+    requirements = requirement_list()
+    for x in args[key]:
+      requirements.extend(requirement_list.parse(x))
     del args[key]
     return requirements
 
   @classmethod
-  def _load_requirements_poto(clazz, args, key):
-    requirements = clazz._load_requirements(args, 'requirements')
-    return requirements
+  def _load_requirements_poto(clazz, args, key, name):
+    all_reqs = clazz._load_requirements(args, 'requirements')
+    check.check_requirement_list(all_reqs)
+    requirements = all_reqs.filter_by_hardness('RUN')
+    build_tool_requirements = all_reqs.filter_by_hardness('TOOL')
+    build_requirements = all_reqs.filter_by_hardness('BUILD')
+    return requirements, build_requirements, build_tool_requirements
 
   @classmethod
   def _load_instructions(clazz, args, key):

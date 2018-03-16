@@ -108,6 +108,7 @@ class pkg_config(object):
       file_util.mkdir(p)
     #build_blurb.blurb_verbose('pkg_config', '_call_pkg_config() cmd=%s' % (str(cmd)))
     #print('pkg_config', '_call_pkg_config() cmd=%s; env=%s' % (str(cmd), str(env)))
+    print('pkg_config', '_call_pkg_config() cmd=%s' % (str(cmd)))
     rv = execute.execute(cmd, env = env)
     return rv
     
