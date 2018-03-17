@@ -45,14 +45,26 @@ class requirement(namedtuple('requirement', 'name,operator,version,system_mask,h
     return buf.getvalue()
 
   def to_string_colon_format(self):
-    req_no_system_mask = requirement(self.name, self.operator, self.version, None)
-    return '%s: %s' % (self.system_mask or 'all', str(req_no_system_mask))
+    req_no_system_mask = self.clone_replace_system_mask(None)
+    buf = StringIO()
+    if self.system_mask:
+      buf.write(self.system_mask)
+    else:
+      buf.write('all')
+    buf.write(': ')
+    buf.write(str(req_no_system_mask))
+    return buf.getvalue()
 
   def clone_replace_hardness(self, hardness):
     l = list(self)
     l[4] = hardness
     return self.__class__(*l)
-
+  
+  def clone_replace_system_mask(self, system_mask):
+    l = list(self)
+    l[3] = system_mask
+    return self.__class__(*l)
+  
   def hardness_matches(self, hardness):
     'Return True if hardness matches.'
     hardness = requirement_hardness(hardness)
