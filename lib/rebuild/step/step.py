@@ -313,10 +313,7 @@ class step(with_metaclass(step_register_meta, object)):
     filenames = d.get(name, [])
     files = [ path.join(script.source_dir, f) for f in filenames ]
     import os
-    print('script.source_dir=%s' % (script.source_dir))
-    print('cwd=%s' % (os.getcwd()))
     for f in files:
-      print('checking: %s' % (f))
       if not path.isfile(f):
         raise RuntimeError('Not found for \"%s\": %s' % (name, f))
     return { name: files }
