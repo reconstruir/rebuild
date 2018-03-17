@@ -190,7 +190,6 @@ class package_manager(object):
 
   def install_package(self, pkg_desc, build_target, artifact_manager,
                       allow_downgrade = False, force_install = False):
-    print('FUCK: install_package(%s)' % (pkg_desc.name))
     assert artifact_manager.is_artifact_manager(artifact_manager)
     check.check_package_descriptor(pkg_desc)
     pkg = artifact_manager.package(pkg_desc, build_target)
@@ -306,9 +305,6 @@ class package_manager(object):
                                                                              descriptor_map,
                                                                              dependency_map)
     
-    print('FUCK: RESOLVE %s: resolved_build_requirements=%s' % (pkg_desc.name, resolved_build_requirements))
-    print('FUCK: RESOLVE %s: resolved_build_tool_requirements=%s' % (pkg_desc.name, resolved_build_tool_requirements))
-
     pkg_desc.resolved_requirements = resolved_requirements
     pkg_desc.resolved_build_requirements = resolved_build_requirements
     pkg_desc.resolved_build_tool_requirements = resolved_build_tool_requirements

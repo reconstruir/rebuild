@@ -51,8 +51,6 @@ class rebuild_manager(object):
     if missing_packages:
       return self.ResolveResult(available_packages, missing_packages, [])
     dep_map = self.dep_map(build_target)
-    for k, v in sorted(dep_map.items()):
-      print('FUCK: dep_map: %s: %s' % (k, v))
     resolved_deps = dependency_resolver.resolve_deps(dep_map, packages)
     wanted_dep_map = dict_util.filter_with_keys(dep_map, resolved_deps)
     packaged_in_order = dependency_resolver.build_order_flat(wanted_dep_map)
@@ -65,7 +63,6 @@ class rebuild_manager(object):
     if resolve_rv.missing:
       self.blurb('missing artifacts at %s: %s' % (self.artifact_manager.publish_dir, ' '.join(resolve_rv.missing)))
       return []
-    print('FUCK: project_name=%s; resolved_packages=%s' % (project_name, [ f.name for f in resolve_rv.resolved ]))
     self.update_packages(project_name, resolve_rv.resolved, build_target, allow_downgrade = allow_downgrade, force_install = force_install)
     return [ pi.name for pi in resolve_rv.resolved ]
 

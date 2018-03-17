@@ -114,7 +114,6 @@ class artifact_manager(object):
 
   def __load_package(self, tarball):
     if not tarball in self._package_cache:
-      print('FUCK: loading package: %s' % (tarball))
       self._package_cache[tarball] = package(tarball)
     return self._package_cache[tarball]
 

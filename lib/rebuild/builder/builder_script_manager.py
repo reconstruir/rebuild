@@ -18,6 +18,7 @@ class builder_script_manager(object):
       build_blurb.blurb_verbose('build', 'loading %s' % (filename))
       builder_scripts = self._load_scripts(filename, env)
       for script in builder_scripts:
+        #print('%s: caca_requirements=%s' % (script.descriptor.name, str(script.descriptor.caca_requirements)))
         self.scripts[script.descriptor.name] = script
         #print "filename: %s" % (script.filename)
         #print "    name: %s" % (script.name)
