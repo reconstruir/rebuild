@@ -677,3 +677,5 @@ mar 14
  - checksums might be fucked
  - add tools to checksums
  
+mar 16
+ - need to add a mechanism for appending to environtment stuff like CFLAGS

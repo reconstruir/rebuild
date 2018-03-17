@@ -1,6 +1,9 @@
 
 def rebuild_recipes(env):
   tests = [ 'all: fructose-test.c' ]
+  configure_env = [
+    'linux: CFLAGS="-I${REBUILD_REQUIREMENTS_INCLUDE_DIR} -std=gnu99" LDFLAGS=\"-L${REBUILD_REQUIREMENTS_LIB_DIR}\"',
+  ]
   return env.args(
     properties = env.args(
       name = 'fructose',
@@ -32,6 +35,9 @@ fructose
     requirements = [
     ],
     steps = [
-      'step_autoconf', { 'tests': tests },
+      'step_autoconf', {
+        'tests': tests,
+        'configure_env': configure_env,
+      },
     ],
   )
