@@ -18,7 +18,7 @@ class test_rebuilder_script(script_unit_test):
 
 #  artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
   
-  def test_fructose(self):
+  def test_basic_fructose(self):
     tmp_dir = self._make_temp_dir()
     cmd = [
       '--source-dir',
@@ -29,7 +29,7 @@ class test_rebuilder_script(script_unit_test):
       '--level', self.BUILD_LEVEL,
       'fructose',
     ]
-    rv = self.run_script(cmd, cwd = self.data_dir())
+    rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
     if rv.exit_code != 0:
       print((rv.stdout))
     self.assertEqual( 0, rv.exit_code )
@@ -69,7 +69,7 @@ class test_rebuilder_script(script_unit_test):
       'fructose',
       'fiber',
     ]
-    rv = self.run_script(cmd, cwd = self.data_dir())
+    rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
     if rv.exit_code != 0:
       print((rv.stdout))
     self.assertEqual( 0, rv.exit_code )
@@ -88,7 +88,7 @@ class test_rebuilder_script(script_unit_test):
       '--level', self.BUILD_LEVEL,
       'orange',
     ]
-    rv = self.run_script(cmd, cwd = self.data_dir())
+    rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
     if rv.exit_code != 0:
       print((rv.stdout))
     self.assertEqual( 0, rv.exit_code )

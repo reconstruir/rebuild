@@ -32,6 +32,7 @@ class tools_manager(object):
     return self.package_manager.tool_exe(package_info, tool_name)
 
   def bin_dirs(self, package_names):
+    assert False
     return self.package_manager.bin_dirs(package_names)
 
   # FIXME: whats the difference between bin_dirs and all_bin_dirs
