@@ -27,6 +27,7 @@ class test_database_entry(unit_test):
   "info": { 
     "build_requirements": [], 
     "build_tool_requirements": [], 
+    "caca_requirements": [], 
     "name": "kiwi", 
     "properties": {}, 
     "requirements": [ 

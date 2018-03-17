@@ -21,9 +21,14 @@ class package_descriptor(object):
   PROPERTY_CATEGORY = 'category'
   PROPERTY_PKG_CONFIG_NAME = 'pkg_config_name'
   
-  def __init__(self, name, version, requirements = None, build_tool_requirements = None, build_requirements = None, properties = None):
+  def __init__(self, name, version, requirements = None, build_tool_requirements = None,
+               build_requirements = None, properties = None, caca_requirements = None):
     check.check_string(name)
 #    check.check_build_version(version)
+
+    caca_requirements = requirement_list(caca_requirements)
+    check.check_requirement_list(caca_requirements)
+
     requirements = requirement_list(requirements)
     check.check_requirement_list(requirements)
 
@@ -49,6 +54,8 @@ class package_descriptor(object):
     self._build_requirements = self.parse_requirements(build_requirements)
     self._resolved_build_requirements = None
 
+    self._caca_requirements = self.parse_requirements(caca_requirements)
+    
     self._properties = properties
 
   @property
@@ -91,6 +98,14 @@ class package_descriptor(object):
   def build_requirements(self, value):
     raise RuntimeError('build_requirements are immutable.')
 
+  @property
+  def caca_requirements(self):
+    return self._caca_requirements
+
+  @caca_requirements.setter
+  def caca_requirements(self, value):
+    raise RuntimeError('caca_requirements are immutable.')
+  
   @property 
   def properties(self):
     return self._properties
@@ -151,6 +166,8 @@ class package_descriptor(object):
   def __str__(self):
     part1 = self.full_name
     part2 = []
+    if self.caca_requirements:
+      part2.append(self.caca_requirements.to_string())
     if self.requirements:
       part2.append(self.requirements.to_string())
     if self.build_tool_requirements:
@@ -181,6 +198,9 @@ class package_descriptor(object):
     version_rv = build_version.compare(self.version, other.version)
     if version_rv < 0:
       return True
+    caca_requirements_rv = cmp(self.caca_requirements, other.caca_requirements)
+    if caca_requirements_rv < 0:
+      return True
     requirements_rv = cmp(self.requirements, other.requirements)
     if requirements_rv < 0:
       return True
@@ -201,6 +221,7 @@ class package_descriptor(object):
     return {
       'name': self.name,
       'version': str(self.version),
+      'caca_requirements': [ req.to_string_colon_format() for req in self.caca_requirements ],
       'requirements': [ req.to_string_colon_format() for req in self.requirements ],
       'build_tool_requirements': [ req.to_string_colon_format() for req in self.build_tool_requirements ],
       'build_requirements': [ req.to_string_colon_format() for req in self.build_requirements ],
@@ -217,11 +238,13 @@ class package_descriptor(object):
   def parse_dict(clazz, d):
     assert 'name' in d
     assert 'version' in d
+    caca_requirements = clazz.parse_requirements(d.get('caca_requirements', None))
     requirements = clazz.parse_requirements(d.get('requirements', None))
     build_tool_requirements = clazz.parse_requirements(d.get('build_tool_requirements', None))
     build_requirements = clazz.parse_requirements(d.get('build_requirements', None))
     properties = d.get('properties', {})
     return package_descriptor(str(d['name']), str(d['version']),
+                              caca_requirements = caca_requirements,
                               requirements = requirements,
                               build_tool_requirements = build_tool_requirements,
                               build_requirements = build_requirements,

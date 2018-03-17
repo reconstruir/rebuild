@@ -341,6 +341,11 @@ package foo-1.2.3-4
     category=lib
     foo="f o o"
 
+  caca_requirements
+    all: cheese >= 1.2
+    linux: wine >= 2.0
+    all: grape >= 3.0
+
   requirements
     all: cheese >= 1.2
     linux: wine >= 2.0

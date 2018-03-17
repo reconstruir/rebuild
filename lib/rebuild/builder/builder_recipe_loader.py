@@ -45,7 +45,7 @@ class builder_recipe_loader(object):
     del properties['name']
     del properties['version']
 
-    requirements, build_requirements, build_tool_requirements = clazz._load_requirements_poto(recipe_dict, 'requirements', name)
+    caca_requirements, requirements, build_requirements, build_tool_requirements = clazz._load_requirements_poto(recipe_dict, 'requirements', name)
     build_requirements.extend(clazz._load_requirements(recipe_dict, 'build_requirements'))
     build_tool_requirements.extend(clazz._load_requirements(recipe_dict, 'build_tool_requirements'))
     env_vars = clazz._load_env_vars(filename, recipe_dict, 'env_vars')
@@ -59,6 +59,7 @@ class builder_recipe_loader(object):
     if not package_descriptor.PROPERTY_CATEGORY in properties:
       raise RuntimeError('\"%s\" property missing from %s' % (package_descriptor.PROPERTY_CATEGORY, filename))
     descriptor = package_descriptor(name, version,
+                                    caca_requirements = caca_requirements,
                                     requirements = requirements,
                                     build_requirements = build_requirements,
                                     build_tool_requirements = build_tool_requirements,
@@ -68,7 +69,7 @@ class builder_recipe_loader(object):
     # recipe_dict should be empty now
     if recipe_dict:
       raise RuntimeError('Unknown recipe values for %s: %s' % (filename, recipe_dict))
-    return recipe(1, filename, enabled, properties, requirements, build_requirements,
+    return recipe(1, filename, enabled, properties, caca_requirements, requirements, build_requirements,
                   build_tool_requirements, descriptor, instructions, steps, None, env_vars)
 
   @classmethod
@@ -96,12 +97,12 @@ class builder_recipe_loader(object):
 
   @classmethod
   def _load_requirements_poto(clazz, args, key, name):
-    all_reqs = clazz._load_requirements(args, 'requirements')
-    check.check_requirement_list(all_reqs)
-    requirements = all_reqs.filter_by_hardness('RUN')
-    build_tool_requirements = all_reqs.filter_by_hardness('TOOL')
-    build_requirements = all_reqs.filter_by_hardness('BUILD')
-    return requirements, build_requirements, build_tool_requirements
+    caca_reqs = clazz._load_requirements(args, 'requirements')
+    check.check_requirement_list(caca_reqs)
+    requirements = caca_reqs.filter_by_hardness('RUN')
+    build_tool_requirements = caca_reqs.filter_by_hardness('TOOL')
+    build_requirements = caca_reqs.filter_by_hardness('BUILD')
+    return caca_reqs, requirements, build_requirements, build_tool_requirements
 
   @classmethod
   def _load_instructions(clazz, args, key):

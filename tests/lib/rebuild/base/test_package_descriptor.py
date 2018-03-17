@@ -31,6 +31,7 @@ class test_package_descriptor(unit_test):
 {
   "build_requirements": [], 
   "build_tool_requirements": [], 
+  "caca_requirements": [], 
   "name": "foo", 
   "properties": {},
   "requirements": [ 
