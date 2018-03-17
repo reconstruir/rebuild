@@ -679,3 +679,7 @@ mar 14
  
 mar 16
  - need to add a mechanism for appending to environtment stuff like CFLAGS
+
+mar 17
+ - install files step majorly fucked
+ 

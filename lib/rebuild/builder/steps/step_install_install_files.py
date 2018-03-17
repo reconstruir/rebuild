@@ -4,8 +4,9 @@
 from rebuild.step import step, step_result
 from rebuild.tools import install
 
+from bes.common import object_util
 from bes.fs import file_util
-import os.path as path
+import os, os.path as path, shutil
 
 class step_install_install_files(step):
   'Install files to the stage dir.'
@@ -20,25 +21,28 @@ class step_install_install_files(step):
       self.log_d(message)
       return step_result(True, message)
 
-    separator = args.get('install_files_separator', 'install_files')
-    
-    for install_file in install_files:
-      self.blurb('Installing extra file %s' % (install_file))
-      parts = install_file.split(path.sep)
-      sep_index = parts.index(separator)
-      install_file_rel = path.sep.join(parts[sep_index + 1:])
-      dest_filename = path.join(script.stage_dir, install_file_rel)
-      if path.exists(dest_filename):
-        return step_result(False, 'File already exists: %s' % (dest_filename))
-      dest_dir = path.dirname(dest_filename)
-      mode = file_util.mode(install_file)
-      install.install(install_file, dest_dir, mode)
+    if (len(install_files) % 2) != 0:
+      return step_result(False, 'Invalid file list: %s' % (install_files))
+      
+    for install_file in object_util.chunks(install_files, 2):
+      src = path.join(script.source_dir, install_file[0])
+      if not path.isfile(src):
+        return step_result(False, 'File not found: %s' % (src))
+      dst = path.join(script.stage_dir, install_file[1])
+      if path.exists(dst):
+        return step_result(False, 'File already exists: %s' % (dst))
+      dst_dir = path.dirname(dst)
+      mode = file_util.mode(src)
+      self.blurb('Installing file %s in %s (%s)' % (src, dst_dir, mode))
+      file_util.mkdir(path.dirname(dst))
+      shutil.copy(src, dst)
+      os.chmod(dst, mode)
       
     return step_result(True, None)
 
-  def sources_keys(self):
-    return [ 'install_files' ]
+#  def sources_keys(self):
+#    return [ 'install_files' ]
 
   @classmethod
   def parse_step_args(clazz, script, env, args):
-    return clazz.resolve_step_args_files(script, args, 'install_files')
+    return clazz.resolve_step_args_list(script, args, 'install_files')
