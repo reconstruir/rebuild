@@ -152,10 +152,10 @@ class package_tester(object):
       'REBUILDER_TEST_DIR': config.script.test_dir,
       'REBUILDER_TEST_NAME': test_name,
     }
-    caca = {}
-    caca['REBUILDER_BUILD_DIR'] = config.script.build_dir
+    substitutions = {}
+    substitutions['REBUILDER_BUILD_DIR'] = config.script.build_dir
     for kv in config.extra_env:
-      shell_env[kv.key] = variable.substitute(kv.value, caca)
+      shell_env[kv.key] = variable.substitute(kv.value, substitutions)
       
     file_replace.copy_with_substitute(test_source, test_source_with_replacements,
                                       replacements, backup = False)
