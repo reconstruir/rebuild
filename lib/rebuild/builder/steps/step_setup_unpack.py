@@ -15,6 +15,8 @@ class step_setup_unpack(step):
     super(step_setup_unpack, self).__init__()
 
   def execute(self, script, env, args):
+    if args.get('no_tarballs', False):
+      return step_result(True, None)
 
     downloaded_tarballs = args.get('downloaded_tarballs', [])
     extra_tarballs = args.get('extra_tarballs', [])
