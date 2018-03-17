@@ -13,9 +13,7 @@ class pkg_config(object):
 
   _PKG_CONFIG_VERSION = 'pkg-config-0.29.1'
   _PKG_CONFIG_SUB_PATH = path.join('pkg_config_binaries', host.SYSTEM, build_arch.HOST_ARCH, _PKG_CONFIG_VERSION)
-  print('BEFORE:')
   _PKG_CONFIG_EXE = package.get_data_program_exe(_PKG_CONFIG_SUB_PATH, __file__, __name__)
-  print('AFTER:')
   
   @classmethod
   def list_all(clazz, PKG_CONFIG_PATH = []):
