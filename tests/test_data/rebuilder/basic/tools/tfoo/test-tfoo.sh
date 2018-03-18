@@ -3,4 +3,4 @@
 set -e -x
 
 output=$(tfoo.py one two tre)
-test "$output" == 'one two tre'
+test "$output" == 'tfoo: one two tre'

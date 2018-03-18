@@ -7,4 +7,5 @@ def rebuild_subdirs():
     'fiber/build.py',
     'orange/build.py',
     'tools/tfoo/build.py',
+    'tools/tbar/build.py',
   ]

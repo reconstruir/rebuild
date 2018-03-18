@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 
-import sys
+import subprocess, sys
 
 def main():
-  sys.stdout.write('tfoo: ')
+
+  #tfoo_rv = subprocess.check_output(['tfoo.py', 'a', 'b', 'c'])
+
+  sys.stdout.write('tbar: ')
   for i, arg in enumerate(sys.argv[1:]):
     if i != 0:
       sys.stdout.write(' ')
