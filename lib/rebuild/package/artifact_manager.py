@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common import string_util
+from bes.common import check, string_util
 from bes.system import log
 from rebuild.base import build_blurb
 from bes.git import git
@@ -120,3 +120,5 @@ class artifact_manager(object):
   def dependency_map(self, build_target):
     available = package_list.descriptors(self.available_packages(build_target))
     return package_descriptor_list.dependency_map(available)
+
+check.register_class(artifact_manager, include_seq = False)

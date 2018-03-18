@@ -4,9 +4,6 @@
 import os.path as path
 from bes.common import check
 from bes.system import host, os_env, os_env_var
-from bes.fs import file_util
-from rebuild.base import build_target, build_system, package_descriptor
-from rebuild.package import artifact_manager
 from .build_requirement_manager import build_requirement_manager
 
 class tools_manager(object):
@@ -19,27 +16,24 @@ class tools_manager(object):
 
   def update(self, packages, am):
     check.check_package_descriptor_seq(packages)
-    assert isinstance(am, artifact_manager)
+    check.check_artifact_manager(am)
     self.package_manager.install_packages(packages, am)
-    bin_dirs = self.all_bin_dirs(packages)
+    bin_dirs = self._all_bin_dirs(packages)
     os_env.PATH.prepend(bin_dirs)
 
   def tool_exe(self, package_info, tool_name):
     'Return an abs path to the given tool.'
     return self.package_manager.tool_exe(package_info, tool_name)
 
-  def all_bin_dirs(self, packages):
+  def _all_bin_dirs(self, packages):
     return [ self.package_manager.bin_dir(p) for p in packages ]
 
-  def all_lib_dirs(self, packages):
+  def _all_lib_dirs(self, packages):
     return [ self.package_manager.lib_dir(p) for p in packages ]
 
-  def all_env_vars(self, packages):
-    return self.package_manager.all_env_vars(packages)
-
   def shell_env(self, packages):
-    tools_bin_path = [ self.package_manager.bin_dir(p) for p in packages ]
-    tools_lib_path = [ self.package_manager.lib_dir(p) for p in packages ]
+    tools_bin_path = self._all_bin_dirs(packages)
+    tools_lib_path = self._all_lib_dirs(packages)
     env = {
       os_env.LD_LIBRARY_PATH_VAR_NAME: os_env_var.path_join(tools_lib_path),
       'PATH': os_env_var.path_join(tools_bin_path),

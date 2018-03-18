@@ -65,17 +65,17 @@ class step_artifact_create_test_package(step):
     '''
   
   def execute(self, script, env, args):
-    if env.config.skip_tests:
-      message = '%s: Skipping tests because of --skip-tests' % (script.descriptor.full_name)
-      self.blurb(message)
-      return step_result(True, message)
-      
     tests = args.get('tests', [])
     if not tests:
       message = 'No tests for %s' % (script.descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
 
+    if env.config.skip_tests:
+      message = '%s: Skipping tests because of --skip-tests' % (script.descriptor.full_name)
+      self.blurb(message)
+      return step_result(True, message)
+      
     staged_tarball = args.get('staged_tarball', None)
     if not staged_tarball or not path.isfile(staged_tarball):
       message = 'Missing staged tarball for %s: ' % (str(script.descriptor))
