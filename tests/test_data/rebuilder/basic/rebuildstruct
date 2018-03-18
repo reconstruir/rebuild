@@ -8,6 +8,7 @@ def rebuild_subdirs():
     'libs/libpotato/build.py',
     'libs/libstarch/build.py',
     'orange/build.py',
-    'tools/tbar/build.py',
+    'tools/tbar/build_100.py',
+#    'tools/tbar/build_101.py',
     'tools/tfoo/build.py',
   ]

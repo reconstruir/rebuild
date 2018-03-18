@@ -18,15 +18,7 @@ class test_rebuilder_script(script_unit_test):
 
   def test_basic_fructose(self):
     tmp_dir = self._make_temp_dir()
-    cmd = [
-      '--source-dir',
-      path.join(self.data_dir(), '../packager'),
-      '--no-network',
-      '-v',
-      '--root', tmp_dir,
-      '--level', self.BUILD_LEVEL,
-      'fructose',
-    ]
+    cmd = self._make_command(tmp_dir, 'fructose')
     rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
     if rv.exit_code != 0:
       print(rv.stdout)
@@ -37,15 +29,7 @@ class test_rebuilder_script(script_unit_test):
 
   def test_fructose_recipe_v2(self):
     tmp_dir = self._make_temp_dir()
-    cmd = [
-      '--source-dir',
-      path.join(self.data_dir(), '../packager'),
-      '--no-network',
-      '-v',
-      '--root', tmp_dir,
-      '--level', self.BUILD_LEVEL,
-      'fructose',
-    ]
+    cmd = self._make_command(tmp_dir, 'fructose')
     rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'recipe_v2'))
     if rv.exit_code != 0:
       print('FAILED stdout:')
@@ -57,16 +41,7 @@ class test_rebuilder_script(script_unit_test):
     
   def test_fructose_fiber(self):
     tmp_dir = self._make_temp_dir()
-    cmd = [
-      '--source-dir',
-      path.join(self.data_dir(), '../packager'),
-      '--no-network',
-      '-v',
-      '--root', tmp_dir,
-      '--level', self.BUILD_LEVEL,
-      'fructose',
-      'fiber',
-    ]
+    cmd = self._make_command(tmp_dir, 'fructose', 'fiber')
     rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
     if rv.exit_code != 0:
       print(rv.stdout)
@@ -77,15 +52,7 @@ class test_rebuilder_script(script_unit_test):
     
   def xxxtest_orange(self):
     tmp_dir = self._make_temp_dir()
-    cmd = [
-      '--source-dir',
-      path.join(self.data_dir(), '../packager'),
-      '--no-network',
-      '-v',
-      '--root', tmp_dir,
-      '--level', self.BUILD_LEVEL,
-      'orange',
-    ]
+    cmd = self._make_command(tmp_dir, 'orange')
     rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
     if rv.exit_code != 0:
       print(rv.stdout)
@@ -98,16 +65,7 @@ class test_rebuilder_script(script_unit_test):
   def test_tool_tfoo(self):
     self.maxDiff = None
     tmp_dir = self._make_temp_dir()
-    cmd = [
-      '--source-dir',
-      path.join(self.data_dir(), '../packager'),
-      '--no-network',
-      '-v',
-      '--root', tmp_dir,
-      '--level', self.BUILD_LEVEL,
-      '--timestamp', 'timestamp',
-      'tfoo',
-    ]
+    cmd = self._make_command(tmp_dir, 'tfoo')
     rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
     if rv.exit_code != 0:
       print(rv.stdout)
@@ -118,16 +76,7 @@ class test_rebuilder_script(script_unit_test):
   def test_tool_tbar_depends_on_tool_tfoo(self):
     self.maxDiff = None
     tmp_dir = self._make_temp_dir()
-    cmd = [
-      '--source-dir',
-      path.join(self.data_dir(), '../packager'),
-      '--no-network',
-      '-v',
-      '--root', tmp_dir,
-      '--level', self.BUILD_LEVEL,
-      '--timestamp', 'timestamp',
-      'tbar',
-    ]
+    cmd = self._make_command(tmp_dir, 'tbar')
     rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
     if rv.exit_code != 0:
       print(rv.stdout)
@@ -138,16 +87,7 @@ class test_rebuilder_script(script_unit_test):
   def test_lib_libstarch(self):
     self.maxDiff = None
     tmp_dir = self._make_temp_dir()
-    cmd = [
-      '--source-dir',
-      path.join(self.data_dir(), '../packager'),
-      '--no-network',
-      '-v',
-      '--root', tmp_dir,
-      '--level', self.BUILD_LEVEL,
-      '--timestamp', 'timestamp',
-      'libstarch',
-    ]
+    cmd = self._make_command(tmp_dir, 'libstarch')
     rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
     if rv.exit_code != 0:
       print(rv.stdout)
@@ -158,16 +98,7 @@ class test_rebuilder_script(script_unit_test):
   def test_lib_libpotato_depends_on_libstarch(self):
     self.maxDiff = None
     tmp_dir = self._make_temp_dir()
-    cmd = [
-      '--source-dir',
-      path.join(self.data_dir(), '../packager'),
-      '--no-network',
-      '-v',
-      '--root', tmp_dir,
-      '--level', self.BUILD_LEVEL,
-      '--timestamp', 'timestamp',
-      'libpotato',
-    ]
+    cmd = self._make_command(tmp_dir, 'libpotato')
     rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
     if rv.exit_code != 0:
       print(rv.stdout)
@@ -181,5 +112,17 @@ class test_rebuilder_script(script_unit_test):
       print("tmp_dir: ", tmp_dir)
     return tmp_dir
 
+  def _make_command(self, tmp_dir, *args):
+    cmd = [
+      '--source-dir',
+      path.join(self.data_dir(), '../packager'),
+      '--no-network',
+      '-v',
+      '--root', tmp_dir,
+      '--level', self.BUILD_LEVEL,
+      '--timestamp', 'timestamp',
+    ] + list(args)
+    return cmd
+  
 if __name__ == '__main__':
   script_unit_test.main()
