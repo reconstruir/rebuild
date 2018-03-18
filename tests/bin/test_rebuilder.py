@@ -128,7 +128,7 @@ class test_rebuilder_script(script_unit_test):
       'checksums/macos/x86_64/release/tfoo-1.0.0/targets.checksums',
     ], file_find.find(tmp_dir) )
     
-  def test_tool_tbar_depends_on_tfoo(self):
+  def test_tool_tbar_depends_on_tool_tfoo(self):
     self.maxDiff = None
     tmp_dir = self._make_temp_dir()
     cmd = [
