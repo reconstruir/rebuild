@@ -12,7 +12,7 @@ class test_rebuilder_script(script_unit_test):
   __script__ = __file__, '../../bin/rebuilder.py'
 
   DEBUG = False
-  #DEBUG = True
+  DEBUG = True
 
   BUILD_LEVEL = 'release'
 
@@ -29,7 +29,7 @@ class test_rebuilder_script(script_unit_test):
     ]
     rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
     if rv.exit_code != 0:
-      print((rv.stdout))
+      print(rv.stdout)
     self.assertEqual( 0, rv.exit_code )
     artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
     self.assertTrue( path.exists(path.join(artifacts_dir, 'fructose-3.4.5-6.tar.gz')) )
@@ -49,7 +49,7 @@ class test_rebuilder_script(script_unit_test):
     rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'recipe_v2'))
     if rv.exit_code != 0:
       print('FAILED stdout:')
-      print((rv.stdout))
+      print(rv.stdout)
     self.assertEqual( 0, rv.exit_code )
     artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
     self.assertTrue( path.exists(path.join(artifacts_dir, 'fructose-3.4.5-6.tar.gz')) )
@@ -69,7 +69,7 @@ class test_rebuilder_script(script_unit_test):
     ]
     rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
     if rv.exit_code != 0:
-      print((rv.stdout))
+      print(rv.stdout)
     self.assertEqual( 0, rv.exit_code )
     artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
     self.assertTrue( path.exists(path.join(artifacts_dir, 'fructose-3.4.5-6.tar.gz')) )
@@ -88,7 +88,7 @@ class test_rebuilder_script(script_unit_test):
     ]
     rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
     if rv.exit_code != 0:
-      print((rv.stdout))
+      print(rv.stdout)
     self.assertEqual( 0, rv.exit_code )
     artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
     self.assertTrue( path.exists(path.join(artifacts_dir, 'fructose-3.4.5-6.tar.gz')) )
@@ -110,7 +110,7 @@ class test_rebuilder_script(script_unit_test):
     ]
     rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
     if rv.exit_code != 0:
-      print((rv.stdout))
+      print(rv.stdout)
     self.assertEqual( 0, rv.exit_code )
     artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
     self.assertEqual( [
@@ -141,7 +141,7 @@ class test_rebuilder_script(script_unit_test):
     ]
     rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
     if rv.exit_code != 0:
-      print((rv.stdout))
+      print(rv.stdout)
     self.assertEqual( 0, rv.exit_code )
     artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
     #self.assertTrue( path.exists(path.join(artifacts_dir, 'tbar-1.0.0.tar.gz')) )
@@ -183,8 +183,8 @@ class test_rebuilder_script(script_unit_test):
       'libstarch',
     ]
     rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
-    if rv.exit_code != 0:
-      print((rv.stdout))
+    if True or rv.exit_code != 0:
+      print(rv.stdout)
     self.assertEqual( 0, rv.exit_code )
     artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
     self.assertEqual( [
@@ -260,7 +260,7 @@ class test_rebuilder_script(script_unit_test):
     ]
     rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
     if rv.exit_code != 0:
-      print((rv.stdout))
+      print(rv.stdout)
     self.assertEqual( 0, rv.exit_code )
     artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
     self.assertTrue( path.exists(path.join(artifacts_dir, 'libpotato-1.0.0.tar.gz')) )

@@ -19,7 +19,7 @@ def rebuild_recipes(env):
         'no_tarballs': True,
       },
       'step_post_install', {
-        'install_files': [ 'all: files/bin/tbar.py bin/tbar.py' ],
+        'install_files': [ 'all: files/bin/tbar.py bin/tbar.py files/bin/tbar_code_gen.py bin/tbar_code_gen.py' ],
         'tests': tests,
         'skip_binary_third_party_prefix': True,
       }
