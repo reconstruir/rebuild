@@ -26,6 +26,7 @@ def rebuild_recipes(env):
     ),
     requirements = [
       'all: RUN libstarch >= 1.0.0',
+      'all: TOOL tbar >= 1.0.0',
     ],
     steps = [
       'step_setup', {

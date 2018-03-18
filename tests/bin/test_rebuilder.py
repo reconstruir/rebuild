@@ -155,7 +155,7 @@ class test_rebuilder_script(script_unit_test):
     artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
     self.assertEqual( [ 'libstarch-1.0.0.tar.gz' ], file_find.find(artifacts_dir) )
 
-  def test_lib_libpotato(self):
+  def test_lib_libpotato_depends_on_libstarch(self):
     self.maxDiff = None
     tmp_dir = self._make_temp_dir()
     cmd = [
@@ -173,7 +173,7 @@ class test_rebuilder_script(script_unit_test):
       print(rv.stdout)
     self.assertEqual( 0, rv.exit_code )
     artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
-    self.assertEqual( [ 'libpotato-1.0.0.tar.gz', 'libstarch-1.0.0.tar.gz' ], file_find.find(artifacts_dir) )
+    self.assertEqual( [ 'libpotato-1.0.0.tar.gz', 'libstarch-1.0.0.tar.gz', 'tbar-1.0.0.tar.gz', 'tfoo-1.0.0.tar.gz' ], file_find.find(artifacts_dir) )
     
   def _make_temp_dir(self):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)

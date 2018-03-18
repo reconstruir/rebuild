@@ -15,11 +15,17 @@ LIBSTARCH_HEADERS = libpotato/potato.h libpotato/common.h
 libpotato.a: $(LIBSTARCH_OBJS)
 	$(AR) $(AR_FLAGS) $@ $^
 
-STARCH_PROG1_MAIN_OBJS = programs/potato_prog1/potato_prog1_main.o
+STARCH_PROG1_MAIN_OBJS = programs/potato_prog1/potato_prog1_main.o potato_gen.o
 STARCH_PROG1_MAIN_LIBS = -lstarch
 
 potato_prog1_main: $(STARCH_PROG1_MAIN_OBJS) libpotato.a
 	$(CC) -o $@ $^ $(LDFLAGS) $(STARCH_PROG1_MAIN_LIBS)
+
+potato_gen.h:
+	tbar_code_gen.py potato_gen --header myfunc 667 > $@
+
+potato_gen.c: potato_gen.h
+	tbar_code_gen.py potato_gen myfunc 667 > $@
 
 clean:
 	rm -f $(LIBSTARCH_OBJS) $(STARCH_PROG1_MAIN_OBJS) libpotato.a potato_prog1_main
