@@ -264,6 +264,7 @@ class test_rebuilder_script(script_unit_test):
     self.assertEqual( 0, rv.exit_code )
     artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
     self.assertTrue( path.exists(path.join(artifacts_dir, 'libpotato-1.0.0.tar.gz')) )
+    self.assertTrue( path.exists(path.join(artifacts_dir, 'libstarch-1.0.0.tar.gz')) )
     
   def _make_temp_dir(self):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)

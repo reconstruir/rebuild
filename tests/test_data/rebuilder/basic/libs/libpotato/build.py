@@ -15,6 +15,9 @@ def rebuild_recipes(env):
       version = '1.0.0',
       category = 'lib',
     ),
+    requirements = [
+      'all: RUN libstarch >= 1.0.0',
+    ],
     steps = [
       'step_setup', {
         'copy_source_to_build_dir': True,
