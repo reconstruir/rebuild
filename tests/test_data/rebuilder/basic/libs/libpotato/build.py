@@ -1,7 +1,7 @@
 
 def rebuild_recipes(env):
   tests = [
-    'all: test-libpotato.c',
+    'all: test-libpotato.c test-libpotato-env-var-from-tool.c',
   ]
   pc_files = [
     'all: libpotato.pc',

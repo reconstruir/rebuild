@@ -24,9 +24,6 @@ class tools_manager(object):
     bin_dirs = self.all_bin_dirs(packages)
     os_env.PATH.prepend(bin_dirs)
 
-  def uninstall(self, package_name):
-    assert False
-    
   def tool_exe(self, package_info, tool_name):
     'Return an abs path to the given tool.'
     return self.package_manager.tool_exe(package_info, tool_name)
