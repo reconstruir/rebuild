@@ -5,6 +5,7 @@ import os.path as path
 from bes.testing.unit_test import script_unit_test
 from bes.fs import file_find, temp_file
 from bes.system import host
+from collections import namedtuple
 
 class test_rebuilder_script(script_unit_test):
 
@@ -16,95 +17,47 @@ class test_rebuilder_script(script_unit_test):
 
   BUILD_LEVEL = 'release'
 
+  _test_context = namedtuple('_test_context', 'tmp_dir,command,result,artifacts_dir,artifacts,droppings')
+
   def test_basic_fructose(self):
-    tmp_dir = self._make_temp_dir()
-    cmd = self._make_command(tmp_dir, 'fructose')
-    rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
-    if rv.exit_code != 0:
-      print(rv.stdout)
-    self.assertEqual( 0, rv.exit_code )
-    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
-    self.assertTrue( path.exists(path.join(artifacts_dir, 'fructose-3.4.5-6.tar.gz')) )
-    self.assertFalse( path.exists(path.join(artifacts_dir, 'fiber-1.0.0.tar.gz')) )
+    test = self._run_test('basic', 'fructose')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
 
   def test_fructose_recipe_v2(self):
-    tmp_dir = self._make_temp_dir()
-    cmd = self._make_command(tmp_dir, 'fructose')
-    rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'recipe_v2'))
-    if rv.exit_code != 0:
-      print('FAILED stdout:')
-      print(rv.stdout)
-    self.assertEqual( 0, rv.exit_code )
-    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
-    self.assertTrue( path.exists(path.join(artifacts_dir, 'fructose-3.4.5-6.tar.gz')) )
-    self.assertFalse( path.exists(path.join(artifacts_dir, 'fiber-1.0.0.tar.gz')) )
+    test = self._run_test('recipe_v2', 'fructose')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
     
-  def test_fructose_fiber(self):
-    tmp_dir = self._make_temp_dir()
-    cmd = self._make_command(tmp_dir, 'fructose', 'fiber')
-    rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
-    if rv.exit_code != 0:
-      print(rv.stdout)
-    self.assertEqual( 0, rv.exit_code )
-    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
-    self.assertTrue( path.exists(path.join(artifacts_dir, 'fructose-3.4.5-6.tar.gz')) )
-    self.assertTrue( path.exists(path.join(artifacts_dir, 'fiber-1.0.0.tar.gz')) )
+  def test_fructose_and_fiber(self):
+    test = self._run_test('basic', 'fructose', 'fiber')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'fiber-1.0.0.tar.gz', 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
     
   def xxxtest_orange(self):
-    tmp_dir = self._make_temp_dir()
-    cmd = self._make_command(tmp_dir, 'orange')
-    rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
-    if rv.exit_code != 0:
-      print(rv.stdout)
-    self.assertEqual( 0, rv.exit_code )
-    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
-    self.assertTrue( path.exists(path.join(artifacts_dir, 'fructose-3.4.5-6.tar.gz')) )
-    self.assertTrue( path.exists(path.join(artifacts_dir, 'fiber-1.0.0.tar.gz')) )
-    self.assertTrue( path.exists(path.join(artifacts_dir, 'fiber-orange-6.5.4-3.tar.gz')) )
+    test = self._run_test('basic', 'fructose', 'fiber')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'fiber-1.0.0.tar.gz', 'fiber-orange-6.5.4-3.tar.gz', 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
 
   def test_tool_tfoo(self):
-    self.maxDiff = None
-    tmp_dir = self._make_temp_dir()
-    cmd = self._make_command(tmp_dir, 'tfoo')
-    rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
-    if rv.exit_code != 0:
-      print(rv.stdout)
-    self.assertEqual( 0, rv.exit_code )
-    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
-    self.assertEqual( [ 'tfoo-1.0.0.tar.gz' ], file_find.find(artifacts_dir) )
+    test = self._run_test('basic', 'tfoo')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'tfoo-1.0.0.tar.gz' ], test.artifacts )
     
-  def test_tool_tbar_depends_on_tool_tfoo(self):
-    self.maxDiff = None
-    tmp_dir = self._make_temp_dir()
-    cmd = self._make_command(tmp_dir, 'tbar')
-    rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
-    if rv.exit_code != 0:
-      print(rv.stdout)
-    self.assertEqual( 0, rv.exit_code )
-    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
-    self.assertEqual( [ 'tbar-1.0.0.tar.gz', 'tfoo-1.0.0.tar.gz' ], file_find.find(artifacts_dir) )
+  def test_tool_tbar_depends_on_tfoo(self):
+    test = self._run_test('basic', 'tbar')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'tbar-1.0.0.tar.gz', 'tfoo-1.0.0.tar.gz' ], test.artifacts )
 
   def test_lib_libstarch(self):
-    self.maxDiff = None
-    tmp_dir = self._make_temp_dir()
-    cmd = self._make_command(tmp_dir, 'libstarch')
-    rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
-    if rv.exit_code != 0:
-      print(rv.stdout)
-    self.assertEqual( 0, rv.exit_code )
-    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
-    self.assertEqual( [ 'libstarch-1.0.0.tar.gz' ], file_find.find(artifacts_dir) )
+    test = self._run_test('basic', 'libstarch')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'libstarch-1.0.0.tar.gz' ], test.artifacts )
 
   def test_lib_libpotato_depends_on_libstarch(self):
-    self.maxDiff = None
-    tmp_dir = self._make_temp_dir()
-    cmd = self._make_command(tmp_dir, 'libpotato')
-    rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
-    if rv.exit_code != 0:
-      print(rv.stdout)
-    self.assertEqual( 0, rv.exit_code )
-    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
-    self.assertEqual( [ 'libpotato-1.0.0.tar.gz', 'libstarch-1.0.0.tar.gz', 'tbar-1.0.0.tar.gz', 'tfoo-1.0.0.tar.gz' ], file_find.find(artifacts_dir) )
+    test = self._run_test('basic', 'libpotato')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'libpotato-1.0.0.tar.gz', 'libstarch-1.0.0.tar.gz', 'tbar-1.0.0.tar.gz', 'tfoo-1.0.0.tar.gz' ], test.artifacts )
     
   def _make_temp_dir(self):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
@@ -123,6 +76,18 @@ class test_rebuilder_script(script_unit_test):
       '--timestamp', 'timestamp',
     ] + list(args)
     return cmd
+
+  def _run_test(self, cwd_subdir, *args):
+    tmp_dir = self._make_temp_dir()
+    command = self._make_command(tmp_dir, *args)
+    cwd = path.join(self.data_dir(), cwd_subdir)
+    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
+    result = self.run_script(command, cwd = cwd)
+    artifacts = file_find.find(artifacts_dir)
+    droppings = file_find.find(tmp_dir)
+    if result.exit_code != 0:
+      print(result.stdout)
+    return self._test_context(tmp_dir, command, result, artifacts_dir, artifacts, droppings)
   
 if __name__ == '__main__':
   script_unit_test.main()
