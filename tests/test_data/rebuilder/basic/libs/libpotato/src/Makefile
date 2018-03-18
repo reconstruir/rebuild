@@ -5,7 +5,7 @@ AR_FLAGS=r
 LOCAL_CFLAGS=-I.
 
 %.o: %.c
-	$(CC) $(LOCAL_CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(LOCAL_CFLAGS) -c $< -o $@
 
 all: libpotato.a potato_prog1_main
 
@@ -16,9 +16,10 @@ libpotato.a: $(LIBSTARCH_OBJS)
 	$(AR) $(AR_FLAGS) $@ $^
 
 STARCH_PROG1_MAIN_OBJS = programs/potato_prog1/potato_prog1_main.o
+STARCH_PROG1_MAIN_LIBS = -lstarch
 
 potato_prog1_main: $(STARCH_PROG1_MAIN_OBJS) libpotato.a
-	$(CC) -o $@ $^
+	$(CC) -o $@ $^ $(LDFLAGS) $(STARCH_PROG1_MAIN_LIBS)
 
 clean:
 	rm -f $(LIBSTARCH_OBJS) $(STARCH_PROG1_MAIN_OBJS) libpotato.a potato_prog1_main

@@ -1,7 +1,9 @@
 #include "potato.h"
 #include "common.h"
+#include <libstarch/amylose.h>
+#include <libstarch/amylopectin.h>
 
 int potato_foo(int x)
 {
-  return potato_common_foo() + 900;
+  return potato_common_foo() + amylose_bar(0) + amylopectin_bar(0) + 900;
 }

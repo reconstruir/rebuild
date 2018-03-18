@@ -8,6 +8,6 @@ Name: ${REBUILD_PACKAGE_NAME}
 Description: ${REBUILD_PACKAGE_DESCRIPTION}
 Version: ${REBUILD_PACKAGE_VERSION}
 
-Requires:
-Libs: -L${libdir} -L${sharedlibdir} -lpotato
+Requires: libstarch
+Libs: -L${libdir} -L${sharedlibdir} -lpotato -lstarch
 Cflags: -I${includedir}

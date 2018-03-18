@@ -3,7 +3,7 @@
 
 int main()
 {
-  int EXPECTED_X = 901;
+  int EXPECTED_X = 1801;
   int x = potato_foo(0);
   if (x != EXPECTED_X) {
     fprintf(stderr, "error x is %d instead of %d", x, EXPECTED_X);

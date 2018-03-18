@@ -12,7 +12,7 @@ class test_rebuilder_script(script_unit_test):
   __script__ = __file__, '../../bin/rebuilder.py'
 
   DEBUG = False
-#  DEBUG = True
+  #DEBUG = True
 
   BUILD_LEVEL = 'release'
 
