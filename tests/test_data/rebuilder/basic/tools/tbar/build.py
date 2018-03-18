@@ -11,6 +11,9 @@ def rebuild_recipes(env):
       version = '1.0.0',
       category = 'tool',
     ),
+    requirements = [
+      'all: TOOL tfoo >= 1.0.0',
+    ],
     steps = [
       'step_setup', {
         'no_tarballs': True,
