@@ -31,13 +31,17 @@ class tools_manager(object):
   def _all_lib_dirs(self, packages):
     return [ self.package_manager.lib_dir(p) for p in packages ]
 
+  def _all_python_lib_dirs(self, packages):
+    return [ self.package_manager.python_lib_dir(p) for p in packages ]
+  
   def shell_env(self, packages):
     tools_bin_path = self._all_bin_dirs(packages)
     tools_lib_path = self._all_lib_dirs(packages)
+    tools_python_lib_path = self._all_python_lib_dirs(packages)
     env = {
       os_env.LD_LIBRARY_PATH_VAR_NAME: os_env_var.path_join(tools_lib_path),
       'PATH': os_env_var.path_join(tools_bin_path),
-      'PYTHONPATH': os_env_var.path_join(self.package_manager.python_lib_dirs(packages)),
+      'PYTHONPATH': os_env_var.path_join(tools_python_lib_path),
     }
     all_env_vars = self.package_manager.all_env_vars(packages)
     os_env.update(env, all_env_vars)

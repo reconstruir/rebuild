@@ -25,7 +25,7 @@ class build_requirement_manager(object):
     pkg = package(package_tarball)
     if self.is_installed(pkg.info):
       return
-    pkg_dir = self.__package_dir(pkg.info)
+    pkg_dir = self._package_dir(pkg.info)
     pkg.extract_files(pkg_dir)
     replacements = {
       '@REBUILD_PACKAGE_PREFIX@': pkg_dir,
@@ -35,14 +35,14 @@ class build_requirement_manager(object):
   def uninstall(self, pkg_desc):
     if not self.is_installed(pkg_desc):
       return
-    pkg_dir = self.__package_dir(pkg_desc)
+    pkg_dir = self._package_dir(pkg_desc)
     file_util.remove(pkg_dir)
 
   def is_installed(self, pkg_desc):
-    pkg_dir = self.__package_dir(pkg_desc)
+    pkg_dir = self._package_dir(pkg_desc)
     return path.isdir(pkg_dir)
 
-  def __package_dir(self, pkg_desc):
+  def _package_dir(self, pkg_desc):
     return path.join(self.root_dir, pkg_desc.full_name)
 
   def install_package(self, pkg_desc, artifact_manager):
@@ -55,12 +55,12 @@ class build_requirement_manager(object):
   def bin_dir(self, pkg_desc):
     if not self.is_installed(pkg_desc):
       raise RuntimeError('package not installed: %s' % (pkg_desc))
-    return path.join(self.__package_dir(pkg_desc), 'bin')
+    return path.join(self._package_dir(pkg_desc), 'bin')
 
   def lib_dir(self, pkg_desc):
     if not self.is_installed(pkg_desc):
       raise RuntimeError('package not installed: %s' % (pkg_desc))
-    return path.join(self.__package_dir(pkg_desc), 'lib')
+    return path.join(self._package_dir(pkg_desc), 'lib')
 
   def env_vars(self, pkg_desc):
     if not self.is_installed(pkg_desc):
@@ -68,7 +68,7 @@ class build_requirement_manager(object):
       return None
     env_vars = copy.deepcopy(pkg_desc.env_vars)
     variables = {
-      'REBUILD_PACKAGE_ROOT_DIR': self.__package_dir(pkg_desc),
+      'REBUILD_PACKAGE_ROOT_DIR': self._package_dir(pkg_desc),
       'REBUILD_PACKAGE_VERSION': str(pkg_desc.version),
       'REBUILD_PACKAGE_NAME': pkg_desc.name,
     }
@@ -79,7 +79,7 @@ class build_requirement_manager(object):
   def python_lib_dir(self, pkg_desc):
     if not self.is_installed(pkg_desc):
       return None
-    return path.join(self.__package_dir(pkg_desc), 'lib/python')
+    return path.join(self._package_dir(pkg_desc), 'lib/python')
 
   def tool_exe(self, pkg_desc, tool_name):
     if string_util.is_string(pkg_desc):
@@ -114,14 +114,6 @@ class build_requirement_manager(object):
     named_packages = [ pi for pi in infos if pi.name == package_name ]
     assert len(named_packages) == 1
     return named_packages[0]
-
-  # FIXME: doesnt deal with multiple versions of tools
-  def bin_dirs(self, package_names):
-    return [ self.bin_dir(pi) for pi in self.list_all() if pi.name in package_names ]
-
-  # FIXME: doesnt deal with multiple versions of tools
-  def python_lib_dirs(self, packages):
-    return [ self.python_lib_dir(pi) for pi in packages ]
 
   # FIXME: doesnt deal with multiple versions of tools
   def all_env_vars(self, packages):
