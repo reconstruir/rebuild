@@ -16,8 +16,6 @@ class test_rebuilder_script(script_unit_test):
 
   BUILD_LEVEL = 'release'
 
-#  artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
-  
   def test_basic_fructose(self):
     tmp_dir = self._make_temp_dir()
     cmd = [
@@ -169,6 +167,82 @@ class test_rebuilder_script(script_unit_test):
       'checksums/macos/x86_64/release/tfoo-1.0.0/sources.checksums',
       'checksums/macos/x86_64/release/tfoo-1.0.0/targets.checksums',
       'tools/macos/tfoo-1.0.0/bin/tfoo.py',
+    ], file_find.find(tmp_dir) )
+
+  def test_lib_libstarch(self):
+    self.maxDiff = None
+    tmp_dir = self._make_temp_dir()
+    cmd = [
+      '--source-dir',
+      path.join(self.data_dir(), '../packager'),
+      '--no-network',
+      '-v',
+      '--root', tmp_dir,
+      '--level', self.BUILD_LEVEL,
+      '--timestamp', 'timestamp',
+      'libstarch',
+    ]
+    rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
+    if rv.exit_code != 0:
+      print((rv.stdout))
+    self.assertEqual( 0, rv.exit_code )
+    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
+    self.assertEqual( [
+      'artifacts/macos/x86_64/release/libstarch-1.0.0.tar.gz',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/artifact/libstarch-1.0.0.tar.gz',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/build/.gitignore',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/build/Makefile',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/build/libstarch.a',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/build/libstarch/amylopectin.c',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/build/libstarch/amylopectin.h',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/build/libstarch/amylopectin.o',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/build/libstarch/amylose.c',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/build/libstarch/amylose.h',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/build/libstarch/amylose.o',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/build/libstarch/common.c',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/build/libstarch/common.h',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/build/libstarch/common.o',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/build/programs/starch_prog1/starch_prog1_main.c',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/build/programs/starch_prog1/starch_prog1_main.c~',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/build/programs/starch_prog1/starch_prog1_main.o',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/build/rebbe_retry.sh',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/build/starch_prog1_main',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/check/unpacked/files/bin/starch_prog1_main',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/check/unpacked/files/include/libstarch/amylopectin.h',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/check/unpacked/files/include/libstarch/amylose.h',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/check/unpacked/files/include/libstarch/common.h',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/check/unpacked/files/lib/libstarch.a',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/check/unpacked/files/lib/pkgconfig/libstarch.pc',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/check/unpacked/metadata/info.json',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/libstarch-1.0.0.tar.gz',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/source/.gitignore',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/source/Makefile',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/source/libstarch/amylopectin.c',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/source/libstarch/amylopectin.h',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/source/libstarch/amylose.c',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/source/libstarch/amylose.h',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/source/libstarch/common.c',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/source/libstarch/common.h',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/source/programs/starch_prog1/starch_prog1_main.c',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/source/programs/starch_prog1/starch_prog1_main.c~',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/stage/bin/starch_prog1_main',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/stage/include/libstarch/amylopectin.h',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/stage/include/libstarch/amylose.h',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/stage/include/libstarch/common.h',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/stage/lib/libstarch.a',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/stage/lib/pkgconfig/libstarch.pc',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/stage/lib/pkgconfig/libstarch.pc.bak',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/test/test-libstarch/requirements/database/packages.json',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/test/test-libstarch/requirements/installation/bin/starch_prog1_main',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/test/test-libstarch/requirements/installation/include/libstarch/amylopectin.h',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/test/test-libstarch/requirements/installation/include/libstarch/amylose.h',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/test/test-libstarch/requirements/installation/include/libstarch/common.h',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/test/test-libstarch/requirements/installation/lib/libstarch.a',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/test/test-libstarch/requirements/installation/lib/pkgconfig/libstarch.pc',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/test/test-libstarch/test-libstarch.c',
+      'builds/macos/x86_64/release/libstarch-1.0.0_timestamp/test/test-libstarch/test-libstarch.exe',
+      'checksums/macos/x86_64/release/libstarch-1.0.0/sources.checksums',
+      'checksums/macos/x86_64/release/libstarch-1.0.0/targets.checksums',
     ], file_find.find(tmp_dir) )
     
   def _make_temp_dir(self):

@@ -8,4 +8,5 @@ def rebuild_subdirs():
     'orange/build.py',
     'tools/tfoo/build.py',
     'tools/tbar/build.py',
+    'libs/libstarch/build.py',
   ]

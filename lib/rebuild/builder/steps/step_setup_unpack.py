@@ -45,7 +45,7 @@ class step_setup_unpack(step):
     if tarball_source_dir_override_args:
       tarball_source_dir_override = tarball_source_dir_override_args['tarball_source_dir_override']
       tmp_tarball_filename = '%s.tar.gz' % (script.descriptor.full_name)
-      tmp_tarball_path = path.join(script.tmp_dir, tmp_tarball_filename)
+      tmp_tarball_path = path.join(script.working_dir, tmp_tarball_filename)
       archiver.create(tmp_tarball_path, tarball_source_dir_override, base_dir = script.descriptor.full_name)
       tarballs_dict = { 'tarballs': [ tmp_tarball_path ] }
     else:

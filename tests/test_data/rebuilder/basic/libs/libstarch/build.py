@@ -5,6 +5,10 @@ def rebuild_recipes(env):
     'all: test-libstarch.c',
   ]
 
+  pc_files = [
+    'all: libstarch.pc',
+  ]
+  
   return env.args(
     properties = env.args(
       name = 'libstarch',
@@ -13,14 +17,15 @@ def rebuild_recipes(env):
     ),
     steps = [
       'step_setup', {
-        'no_tarballs': True,
         'copy_source_to_build_dir': True,
+        'tarball_source_dir_override': 'src',
       },
       'step_make',
       'step_make_install',
       'step_post_install', {
         'tests': tests,
         'skip_binary_third_party_prefix': True,
+        'pc_files': pc_files,
       }
     ],
   )
