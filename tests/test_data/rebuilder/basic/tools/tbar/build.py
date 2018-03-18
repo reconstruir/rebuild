@@ -2,7 +2,7 @@
 def rebuild_recipes(env):
 
   tests = [
-    'all: test-tbar.sh',
+    'all: test-tbar.sh test-tbar-env-var.sh',
   ]
 
   return env.args(
@@ -10,9 +10,16 @@ def rebuild_recipes(env):
       name = 'tbar',
       version = '1.0.0',
       category = 'tool',
+      env_vars = {
+        'TBAR_ENV1': 'foo',
+        'TBAR_ENV2': 'bar',
+      }
     ),
     requirements = [
       'all: TOOL tfoo >= 1.0.0',
+    ],
+    env_vars = [
+      'all: TBAR_ENV1=foo TBAR_ENV2=bar',
     ],
     steps = [
       'step_setup', {
