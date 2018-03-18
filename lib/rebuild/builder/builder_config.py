@@ -4,6 +4,7 @@
 import os.path as path
 from collections import namedtuple
 from rebuild.base import build_arch, build_level, build_system, build_target
+from bes.common import time_util
 
 class builder_config(object):
 
@@ -32,7 +33,8 @@ class builder_config(object):
     self.verbose = False
     self.wipe = False
     self.third_party_prefix = self.DEFAULT_THIRD_PARTY_PREFIX
-
+    self.timestamp = time_util.timestamp()
+    
   def builds_dir(self, build_target):
     return path.join(self.build_root, 'builds', build_target.build_path)
     

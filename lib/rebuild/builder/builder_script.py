@@ -4,7 +4,7 @@
 import copy, os.path as path
 from collections import namedtuple
 
-from bes.common import algorithm, time_util
+from bes.common import algorithm
 from bes.fs import file_checksum, file_util
 from bes.system import log
 from rebuild.base import build_blurb, build_target
@@ -23,7 +23,9 @@ class builder_script(object):
     self.enabled = self.build_target.parse_expression(recipe.enabled)
     self.source_dir = path.dirname(self.filename)
     self._step_manager = step_manager('build')
-    self.working_dir = self._make_working_dir(self.env.config.builds_dir(self.build_target))
+    self.working_dir = self._make_working_dir(self.env.config.builds_dir(self.build_target),
+                                              self.descriptor.full_name,
+                                              self.env.config.timestamp)
     self.source_unpacked_dir = path.join(self.working_dir, 'source')
     self.build_dir = path.join(self.working_dir, 'build')
     self.stage_dir = path.join(self.working_dir, 'stage')
@@ -69,8 +71,9 @@ class builder_script(object):
   def steps(self):
     return self.recipe.steps
 
-  def _make_working_dir(self, build_dir):
-    base_dir = '%s_%s' % (self.descriptor.full_name, time_util.timestamp())
+  @classmethod
+  def _make_working_dir(clazz, build_dir, full_name, timestamp):
+    base_dir = '%s_%s' % (full_name, timestamp)
     return path.join(build_dir, base_dir)
     
   def _add_steps_v1(self):

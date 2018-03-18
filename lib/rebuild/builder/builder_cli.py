@@ -58,6 +58,8 @@ class builder_cli(object):
     self.parser.add_argument('--third-party-prefix', default = builder_config.DEFAULT_THIRD_PARTY_PREFIX,
                              action = 'store', type = str,
                              help = 'Prefix for third party source binaries. [ %s _]' % (builder_config.DEFAULT_THIRD_PARTY_PREFIX))
+    self.parser.add_argument('--timestamp', default = None, action = 'store', type = str,
+                             help = 'Timestamp to use for build working build directory droppings.  For predictable unit tests. [ None]')
     
   def main(self):
     args = self.parser.parse_args()
@@ -117,6 +119,8 @@ class builder_cli(object):
     config.verbose = args.verbose
     config.wipe = args.wipe
     config.third_party_prefix = args.third_party_prefix
+    if args.timestamp:
+      config.timestamp = args.timestamp
     env = builder_env(config, available_packages)
     
     build_blurb.blurb('build', 'target=%s; host=%s' % (config.build_target.build_path, config.host_build_target.build_path))

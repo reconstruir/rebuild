@@ -97,25 +97,8 @@ class test_rebuilder_script(script_unit_test):
     self.assertTrue( path.exists(path.join(artifacts_dir, 'fiber-1.0.0.tar.gz')) )
     self.assertTrue( path.exists(path.join(artifacts_dir, 'fiber-orange-6.5.4-3.tar.gz')) )
 
-  def test_tool_tbar(self):
-    tmp_dir = self._make_temp_dir()
-    cmd = [
-      '--source-dir',
-      path.join(self.data_dir(), '../packager'),
-      '--no-network',
-      '-v',
-      '--root', tmp_dir,
-      '--level', self.BUILD_LEVEL,
-      'tbar',
-    ]
-    rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
-    if rv.exit_code != 0:
-      print((rv.stdout))
-    self.assertEqual( 0, rv.exit_code )
-    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
-    self.assertTrue( path.exists(path.join(artifacts_dir, 'tbar-1.0.0.tar.gz')) )
-    
   def test_tool_tfoo(self):
+    self.maxDiff = None
     tmp_dir = self._make_temp_dir()
     cmd = [
       '--source-dir',
@@ -124,6 +107,7 @@ class test_rebuilder_script(script_unit_test):
       '-v',
       '--root', tmp_dir,
       '--level', self.BUILD_LEVEL,
+      '--timestamp', 'timestamp',
       'tfoo',
     ]
     rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
@@ -131,7 +115,61 @@ class test_rebuilder_script(script_unit_test):
       print((rv.stdout))
     self.assertEqual( 0, rv.exit_code )
     artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
-    self.assertTrue( path.exists(path.join(artifacts_dir, 'tfoo-1.0.0.tar.gz')) )
+    self.assertEqual( [
+      'artifacts/macos/x86_64/release/tfoo-1.0.0.tar.gz',
+      'builds/macos/x86_64/release/tfoo-1.0.0_timestamp/artifact/tfoo-1.0.0.tar.gz',
+      'builds/macos/x86_64/release/tfoo-1.0.0_timestamp/check/unpacked/files/bin/tfoo.py',
+      'builds/macos/x86_64/release/tfoo-1.0.0_timestamp/check/unpacked/metadata/info.json',
+      'builds/macos/x86_64/release/tfoo-1.0.0_timestamp/stage/bin/tfoo.py',
+      'builds/macos/x86_64/release/tfoo-1.0.0_timestamp/test/test-tfoo/requirements/database/packages.json',
+      'builds/macos/x86_64/release/tfoo-1.0.0_timestamp/test/test-tfoo/requirements/installation/bin/tfoo.py',
+      'builds/macos/x86_64/release/tfoo-1.0.0_timestamp/test/test-tfoo/test-tfoo.sh',
+      'checksums/macos/x86_64/release/tfoo-1.0.0/sources.checksums',
+      'checksums/macos/x86_64/release/tfoo-1.0.0/targets.checksums',
+    ], file_find.find(tmp_dir) )
+    
+  def test_tool_tbar_depends_on_tfoo(self):
+    self.maxDiff = None
+    tmp_dir = self._make_temp_dir()
+    cmd = [
+      '--source-dir',
+      path.join(self.data_dir(), '../packager'),
+      '--no-network',
+      '-v',
+      '--root', tmp_dir,
+      '--level', self.BUILD_LEVEL,
+      '--timestamp', 'timestamp',
+      'tbar',
+    ]
+    rv = self.run_script(cmd, cwd = path.join(self.data_dir(), 'basic'))
+    if rv.exit_code != 0:
+      print((rv.stdout))
+    self.assertEqual( 0, rv.exit_code )
+    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
+    #self.assertTrue( path.exists(path.join(artifacts_dir, 'tbar-1.0.0.tar.gz')) )
+    self.assertEqual( [
+      'artifacts/macos/x86_64/release/tbar-1.0.0.tar.gz',
+      'artifacts/macos/x86_64/release/tfoo-1.0.0.tar.gz',
+      'builds/macos/x86_64/release/tbar-1.0.0_timestamp/artifact/tbar-1.0.0.tar.gz',
+      'builds/macos/x86_64/release/tbar-1.0.0_timestamp/check/unpacked/files/bin/tbar.py',
+      'builds/macos/x86_64/release/tbar-1.0.0_timestamp/check/unpacked/metadata/info.json',
+      'builds/macos/x86_64/release/tbar-1.0.0_timestamp/stage/bin/tbar.py',
+      'builds/macos/x86_64/release/tbar-1.0.0_timestamp/test/test-tbar/requirements/database/packages.json',
+      'builds/macos/x86_64/release/tbar-1.0.0_timestamp/test/test-tbar/requirements/installation/bin/tbar.py',
+      'builds/macos/x86_64/release/tbar-1.0.0_timestamp/test/test-tbar/test-tbar.sh',
+      'builds/macos/x86_64/release/tfoo-1.0.0_timestamp/artifact/tfoo-1.0.0.tar.gz',
+      'builds/macos/x86_64/release/tfoo-1.0.0_timestamp/check/unpacked/files/bin/tfoo.py',
+      'builds/macos/x86_64/release/tfoo-1.0.0_timestamp/check/unpacked/metadata/info.json',
+      'builds/macos/x86_64/release/tfoo-1.0.0_timestamp/stage/bin/tfoo.py',
+      'builds/macos/x86_64/release/tfoo-1.0.0_timestamp/test/test-tfoo/requirements/database/packages.json',
+      'builds/macos/x86_64/release/tfoo-1.0.0_timestamp/test/test-tfoo/requirements/installation/bin/tfoo.py',
+      'builds/macos/x86_64/release/tfoo-1.0.0_timestamp/test/test-tfoo/test-tfoo.sh',
+      'checksums/macos/x86_64/release/tbar-1.0.0/sources.checksums',
+      'checksums/macos/x86_64/release/tbar-1.0.0/targets.checksums',
+      'checksums/macos/x86_64/release/tfoo-1.0.0/sources.checksums',
+      'checksums/macos/x86_64/release/tfoo-1.0.0/targets.checksums',
+      'tools/macos/tfoo-1.0.0/bin/tfoo.py',
+    ], file_find.find(tmp_dir) )
     
   def _make_temp_dir(self):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
