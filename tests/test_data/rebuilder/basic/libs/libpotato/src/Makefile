@@ -9,8 +9,8 @@ LOCAL_CFLAGS=-I.
 
 all: libpotato.a potato_prog1_main
 
-LIBSTARCH_OBJS = libpotato/amylose.o libpotato/amylopectin.o libpotato/common.o
-LIBSTARCH_HEADERS = libpotato/amylopectin.h libpotato/amylose.h libpotato/common.h
+LIBSTARCH_OBJS = libpotato/potato.o libpotato/common.o
+LIBSTARCH_HEADERS = libpotato/potato.h libpotato/common.h
 
 libpotato.a: $(LIBSTARCH_OBJS)
 	$(AR) $(AR_FLAGS) $@ $^

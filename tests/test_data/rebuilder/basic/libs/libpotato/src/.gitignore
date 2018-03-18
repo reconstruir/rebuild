@@ -2,5 +2,5 @@ programs/potato_prog1/potato_prog1_main.o
 potato_prog1_main
 libpotato.a
 libpotato/amylopectin.o
-libpotato/amylose.o
+libpotato/potato.o
 libpotato/common.o
