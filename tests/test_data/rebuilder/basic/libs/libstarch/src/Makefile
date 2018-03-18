@@ -2,24 +2,26 @@ prefix=/usr/local
 CC=clang
 AR=ar
 AR_FLAGS=r
-LOCAL_CFLAGS=-Isrc
+LOCAL_CFLAGS=-I.
 
 %.o: %.c
 	$(CC) $(LOCAL_CFLAGS) -c $< -o $@
 
 all: libstarch.a starch_prog1_main
 
-LIBSTARCH_OBJS = src/libstarch/amylose.o src/libstarch/amylopectin.o src/libstarch/common.o
-LIBSTARCH_HEADERS = src/libstarch/amylopectin.h src/libstarch/amylose.h src/libstarch/common.h
+LIBSTARCH_OBJS = libstarch/amylose.o libstarch/amylopectin.o libstarch/common.o
+LIBSTARCH_HEADERS = libstarch/amylopectin.h libstarch/amylose.h libstarch/common.h
 
 libstarch.a: $(LIBSTARCH_OBJS)
 	$(AR) $(AR_FLAGS) $@ $^
 
-starch_prog1_main: programs/starch_prog1/starch_prog1_main.o libstarch.a
+STARCH_PROG1_MAIN_OBJS = programs/starch_prog1/starch_prog1_main.o
+
+starch_prog1_main: $(STARCH_PROG1_MAIN_OBJS) libstarch.a
 	$(CC) -o $@ $^
 
 clean:
-	rm -f $(LIBSTARCH_OBJS) libstarch.a
+	rm -f $(LIBSTARCH_OBJS) $(STARCH_PROG1_MAIN_OBJS) libstarch.a starch_prog1_main
 
 install: starch_prog1_main libstarch.a $(LIBSTARCH_HEADERS)
 	mkdir -p $(prefix)/bin

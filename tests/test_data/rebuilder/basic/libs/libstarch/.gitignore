@@ -1,6 +1,0 @@
-programs/starch_prog1/starch_prog1_main.o
-starch_prog1_main
-libstarch.a
-src/libstarch/amylopectin.o
-src/libstarch/amylose.o
-src/libstarch/common.o
