@@ -14,5 +14,7 @@ from .reitred_masked_config import reitred_masked_config
 from .requirement import requirement
 from .requirement_hardness import requirement_hardness
 from .requirement_list import requirement_list
+from .requirement_manager import requirement_manager
+
 
 
