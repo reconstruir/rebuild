@@ -6,10 +6,10 @@ from bes.fs import temp_file
 from bes.system import execute
 from rebuild.package import artifact_manager
 from rebuild.base import package_descriptor
-from rebuild.tools_manager import build_requirement_manager
+from rebuild.tools_manager import tools_package_manager
 from rebuild.package.unit_test_packages import unit_test_packages
 
-class test_build_requirement_manager(unittest.TestCase):
+class test_tools_package_manager(unittest.TestCase):
 
   DEBUG = False
 #  DEBUG = True
@@ -19,7 +19,7 @@ class test_build_requirement_manager(unittest.TestCase):
     pm_dir = path.join(root_dir, 'package_manager')
     if self.DEBUG:
       print("\nroot_dir:\n", root_dir)
-    return build_requirement_manager(pm_dir)
+    return tools_package_manager(pm_dir)
 
   @classmethod
   def __make_test_artifact_manager(clazz):

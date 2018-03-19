@@ -4,7 +4,7 @@
 import os.path as path
 from bes.common import check
 from bes.system import host, os_env, os_env_var
-from .build_requirement_manager import build_requirement_manager
+from .tools_package_manager import tools_package_manager
 
 class tools_manager(object):
 
@@ -12,7 +12,7 @@ class tools_manager(object):
     assert tools_dir
     tools_dir = path.abspath(tools_dir)
     self.tools_dir = path.join(tools_dir, host.SYSTEM)
-    self.package_manager = build_requirement_manager(self.tools_dir)
+    self.package_manager = tools_package_manager(self.tools_dir)
 
   def update(self, packages, am):
     check.check_package_descriptor_seq(packages)

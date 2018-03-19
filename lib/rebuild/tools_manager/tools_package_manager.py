@@ -14,7 +14,7 @@ from bes.fs import dir_util, file_search, file_util, file_path, temp_file
 
 from rebuild.package import artifact_manager, ArtifactNotFoundError, package
 
-class build_requirement_manager(object):
+class tools_package_manager(object):
 
   BUILD_TARGET = build_target(host.SYSTEM, build_level.RELEASE)
 
