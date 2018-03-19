@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.common import check
+from bes.common import check, object_util
 from collections import namedtuple
 from bes.compat import StringIO
 
+from .build_system import build_system
 from .requirement_hardness import requirement_hardness
 
 class requirement(namedtuple('requirement', 'name,operator,version,system_mask,hardness')):
@@ -64,12 +65,23 @@ class requirement(namedtuple('requirement', 'name,operator,version,system_mask,h
     l = list(self)
     l[3] = system_mask
     return self.__class__(*l)
-  
+
+  def system_mask_matches(self, system):
+    'Resolve requirements for the given system.'
+    if not build_system.system_is_valid(system):
+      raise ValueError('invalid system: %s - %s' % (str(system), type(system)))
+    self_system_mask = self.system_mask or build_system.ALL
+    return build_system.mask_matches(self_system_mask, system)
+
   def hardness_matches(self, hardness):
     'Return True if hardness matches.'
-    hardness = requirement_hardness(hardness)
-    if not self.hardness:
-      return hardness == requirement_hardness.DEFAULT
-    return self.hardness == hardness
+    hardness = object_util.listify(hardness)
+    if not requirement_hardness.is_valid_seq(hardness):
+      raise ValueError('invalid hardness: %s - %s' % (str(hardness), type(hardness)))
+    self_hardness = self.hardness or requirement_hardness.DEFAULT
+    for h in hardness:
+      if self_hardness == requirement_hardness(h):
+        return True
+    return False
   
 check.register_class(requirement)

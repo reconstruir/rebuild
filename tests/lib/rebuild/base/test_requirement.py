@@ -43,5 +43,16 @@ class test_requirement(unit_test):
     self.assertFalse( R('foo', '>=', '1.2.3', 'linux', 'RUN').hardness_matches('TOOL') )
     self.assertTrue( R('foo', '>=', '1.2.3', 'linux', None).hardness_matches('RUN') )
     
+  def test_hardness_matches_seq(self):
+    self.assertTrue( R('foo', '>=', '1.2.3', 'linux', 'RUN').hardness_matches([ 'RUN', 'TOOL']) )
+    self.assertTrue( R('foo', '>=', '1.2.3', 'linux', 'TOOL').hardness_matches([ 'RUN', 'TOOL']) )
+    self.assertTrue( R('foo', '>=', '1.2.3', 'linux', None).hardness_matches([ 'RUN', 'TOOL']) )
+    
+  def test_system_mask_matches(self):
+    self.assertTrue( R('foo', '>=', '1.2.3', 'linux', None).system_mask_matches('linux') )
+    self.assertFalse( R('foo', '>=', '1.2.3', 'linux', None).system_mask_matches('macos') )
+    self.assertTrue( R('foo', '>=', '1.2.3', 'all', None).system_mask_matches('linux') )
+    self.assertTrue( R('foo', '>=', '1.2.3', 'all', None).system_mask_matches('macos') )
+
 if __name__ == "__main__":
   unit_test.main()

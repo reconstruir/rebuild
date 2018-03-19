@@ -97,4 +97,9 @@ class build_system(object):
 
   @classmethod
   def mask_matches(clazz, mask, system):
-    return system in clazz._resolve_mask_to_list(mask)
+    resolved_mask = clazz._resolve_mask_to_list(mask)
+    if not resolved_mask:
+      raise ValueError('Invalid mask: %s - %s' % (str(mask), type(mask)))
+    if not clazz.system_is_valid(system):
+      raise ValueError('Invalid system: %s - %s' % (str(system), type(system)))
+    return system in resolved_mask
