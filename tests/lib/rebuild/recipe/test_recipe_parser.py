@@ -165,6 +165,30 @@ package foo-1.2.3-4
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_string_list\n  string_list_value\n    all: a b "x y"', str(r[0].steps[0]) )
 
+  def test_step_value_string_list_with_comment(self):
+    text = '''!rebuildrecipe!
+package foo-1.2.3-4
+  steps
+    step_takes_string_list
+      string_list_value: a b "x y" # comment
+'''
+    r = self._parse(text)
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 1, len(r[0].steps) )
+    self.assertMultiLineEqual( 'step_takes_string_list\n    string_list_value: a b "x y"', str(r[0].steps[0]) )
+    
+  def test_step_value_string_list_with_quoted_hash(self):
+    text = '''!rebuildrecipe!
+package foo-1.2.3-4
+  steps
+    step_takes_string_list
+      string_list_value: a b "x # y"
+'''
+    r = self._parse(text)
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 1, len(r[0].steps) )
+    self.assertMultiLineEqual( 'step_takes_string_list\n    string_list_value: a b "x # y"', str(r[0].steps[0]) )
+    
   def test_step_value_key_values_multi_line(self):
     text = '''!rebuildrecipe!
 package foo-1.2.3-4
