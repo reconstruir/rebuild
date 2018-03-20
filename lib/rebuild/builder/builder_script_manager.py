@@ -3,7 +3,7 @@
 
 import os.path as path
 from bes.common import check, dict_util
-from rebuild.base import build_blurb, package_descriptor, requirement
+from rebuild.base import build_blurb, package_descriptor, requirement, requirement_manager
 from bes.dependency import dependency_resolver, missing_dependency_error
 from collections import namedtuple
 from .builder_recipe_loader import builder_recipe_loader
@@ -27,6 +27,16 @@ class builder_script_manager(object):
         #print ""
 
     dependency_map = self._dependency_map(self.scripts, env.config.build_target.system)
+
+    '''
+    caca_rm = requirement_manager()
+    for script in self.scripts.values():
+      caca_rm.add_package(script.descriptor)
+    run_linux = caca_rm.resolve('cython', 'RUN', 'linux')
+    print('FUCK: run_macos: %s' % (caca_rm.resolve('cython', 'RUN', 'macos')))
+    print('FUCK: build_macos: %s' % (caca_rm.resolve('cython', 'BUILD', 'macos')))
+    print('FUCK: tool_macos: %s' % (caca_rm.resolve('cython', 'TOOL', 'macos')))
+    '''
     
     # Resolve and order all the dependencies for all the scripts
     for name, script in sorted(self.scripts.items()):

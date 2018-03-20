@@ -48,9 +48,13 @@ class requirement_list(type_checked_list):
     'Return only the requirements that match hardness.'
     return requirement_list([ req for req in self if req.hardness_matches(hardness) ])
 
-  def filter_by_system_mask(self, system_mask):
-    'Return only the requirements that match hardness.'
-    return requirement_list([ req for req in self if req.system_mask_matches(system_mask) ])
+  def filter_by_system(self, system):
+    'Return only the requirements that match system.'
+    return requirement_list([ req for req in self if req.system_mask_matches(system) ])
+
+  def names(self):
+    'Return only the requirements that match system.'
+    return [ req.name for req in self ]
 
   '''
   def dependency_map(self, hardness, system):

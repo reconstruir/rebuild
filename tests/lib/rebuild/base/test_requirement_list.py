@@ -76,13 +76,13 @@ class test_requirement_list(unit_test):
       ( 'd', '>=', '5.6', None, 'BUILD' ),
     ], r.filter_by_hardness('BUILD') )
 
-  def test_filter_by_system_mask(self):
+  def test_filter_by_system(self):
     text = 'a(linux) >= 1.2 b(macos) >= 2.3 c(android) >= 3.4 d(desktop) >= 5.6 e(mobile) >= 6.7 f(ios) >= 7.8'
     r = RL.parse(text)
     self.assertEqual( [
       ( 'a', '>=', '1.2', 'linux', None ),
       ( 'd', '>=', '5.6', 'desktop', None ),
-    ], r.filter_by_system_mask('linux') )
+    ], r.filter_by_system('linux') )
     
 if __name__ == "__main__":
   unit_test.main()

@@ -316,6 +316,10 @@ class package_descriptor(object):
     return build_version.compare(pi1.version, pi2.version)
 
   @property
+  def caca_requirements_names(self):
+    return set([ req.name for req in self.caca_requirements ])
+
+  @property
   def requirements_names(self):
     return set([ req.name for req in self.requirements ])
 
