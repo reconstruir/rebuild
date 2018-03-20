@@ -41,7 +41,7 @@ package foo-1.2.3-4
     self.assertEqual( 1, len(r) )
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
-    self.assertEqual( 'step_takes_bool\n    bool_value: True', str(r[0].steps[0]) )
+    self.assertMultiLineEqual( 'step_takes_bool\n    bool_value: True', str(r[0].steps[0]) )
 
   def test_step_value_bool_with_mask(self):
     self.maxDiff = None
@@ -57,7 +57,7 @@ package foo-1.2.3-4
     self.assertEqual( 1, len(r) )
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
-    self.assertEqual( 'step_takes_bool\n  bool_value\n    all: True', str(r[0].steps[0]) )
+    self.assertMultiLineEqual( 'step_takes_bool\n  bool_value\n    all: True', str(r[0].steps[0]) )
 
   def test_step_value_key_values(self):
     text = '''!rebuildrecipe!
@@ -71,7 +71,7 @@ package foo-1.2.3-4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( 'step_takes_key_values\n    key_values_value: a=5 b=6 c="x y"', str(r[0].steps[0]) )
+    self.assertMultiLineEqual( 'step_takes_key_values\n    key_values_value: a=5 b=6 c="x y"', str(r[0].steps[0]) )
 
   def test_step_value_key_values_with_mask(self):
     text = '''!rebuildrecipe!
@@ -86,7 +86,55 @@ package foo-1.2.3-4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( 'step_takes_key_values\n  key_values_value\n    all: a=5 b=6 c="x y"', str(r[0].steps[0]) )
+    self.assertMultiLineEqual( 'step_takes_key_values\n  key_values_value\n    all: a=5 b=6 c="x y"', str(r[0].steps[0]) )
+
+  def test_step_value_string(self):
+    text = '''!rebuildrecipe!
+package foo-1.2.3-4
+  steps
+    step_takes_string
+      string_value: my string with spaces
+'''
+    r = self._parse(text)
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 1, len(r[0].steps) )
+    self.assertMultiLineEqual( 'step_takes_string\n    string_value: my string with spaces', str(r[0].steps[0]) )
+
+  def test_step_value_string_with_quotes(self):
+    text = '''!rebuildrecipe!
+package foo-1.2.3-4
+  steps
+    step_takes_string
+      string_value: my string with "a quote"
+'''
+    r = self._parse(text)
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 1, len(r[0].steps) )
+    self.assertMultiLineEqual( 'step_takes_string\n    string_value: my string with "a quote"', str(r[0].steps[0]) )
+
+  def test_step_value_string_with_comments(self):
+    text = '''!rebuildrecipe!
+package foo-1.2.3-4
+  steps
+    step_takes_string
+      string_value: my string # comment
+'''
+    r = self._parse(text)
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 1, len(r[0].steps) )
+    self.assertMultiLineEqual( 'step_takes_string\n    string_value: my string', str(r[0].steps[0]) )
+    
+  def test_step_value_string_with_hash_in_quotes(self):
+    text = '''!rebuildrecipe!
+package foo-1.2.3-4
+  steps
+    step_takes_string
+      string_value: "my string # with a hash"
+'''
+    r = self._parse(text)
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 1, len(r[0].steps) )
+    self.assertMultiLineEqual( 'step_takes_string\n    string_value: "my string # with a hash"', str(r[0].steps[0]) )
     
   def test_step_value_string_list(self):
     text = '''!rebuildrecipe!
@@ -100,7 +148,7 @@ package foo-1.2.3-4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( 'step_takes_string_list\n    string_list_value: a b "x y"', str(r[0].steps[0]) )
+    self.assertMultiLineEqual( 'step_takes_string_list\n    string_list_value: a b "x y"', str(r[0].steps[0]) )
 
   def test_step_value_string_list_with_mask(self):
     text = '''!rebuildrecipe!
@@ -115,7 +163,7 @@ package foo-1.2.3-4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( 'step_takes_string_list\n  string_list_value\n    all: a b "x y"', str(r[0].steps[0]) )
+    self.assertMultiLineEqual( 'step_takes_string_list\n  string_list_value\n    all: a b "x y"', str(r[0].steps[0]) )
 
   def test_step_value_key_values_multi_line(self):
     text = '''!rebuildrecipe!
@@ -132,7 +180,7 @@ package foo-1.2.3-4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( 'step_takes_key_values\n  key_values_value\n    all: a=5 b=6 c="x y" d=7 e=8 f="kiwi apple"', str(r[0].steps[0]) )
+    self.assertMultiLineEqual( 'step_takes_key_values\n  key_values_value\n    all: a=5 b=6 c="x y" d=7 e=8 f="kiwi apple"', str(r[0].steps[0]) )
     
   def test_step_value_key_values_many_masks(self):
     text = '''!rebuildrecipe!
@@ -285,7 +333,7 @@ package foo-1.2.3-4
     self.assertEqual( 1, len(r) )
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
-    self.assertEqual( 'step_takes_bool\n    bool_value: True', str(r[0].steps[0]) )
+    self.assertMultiLineEqual( 'step_takes_bool\n    bool_value: True', str(r[0].steps[0]) )
     
   def test_complete(self):
     self.maxDiff = None
@@ -411,7 +459,7 @@ package foo-1.2.3-4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( 'step_takes_hook_list\n    hook_list_value: test_loaded_hook1 test_loaded_hook2', str(r[0].steps[0]) )
+    self.assertMultiLineEqual( 'step_takes_hook_list\n    hook_list_value: test_loaded_hook1 test_loaded_hook2', str(r[0].steps[0]) )
     
   def test_step_value_hook_list_with_mask(self):
     text = '''!rebuildrecipe!
@@ -452,7 +500,7 @@ package foo-1.2.3-4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertEqual( 'step_takes_file_list\n    file_list_value: test_file1.txt test_file2.txt', str(r[0].steps[0]) )
+    self.assertMultiLineEqual( 'step_takes_file_list\n    file_list_value: test_file1.txt test_file2.txt', str(r[0].steps[0]) )
 
   def test_step_comments(self):
     text = '''!rebuildrecipe!
@@ -474,7 +522,7 @@ package foo-1.2.3-4 # comment
     self.assertEqual( 1, len(r) )
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
-    self.assertEqual( 'step_takes_bool\n    bool_value: True', str(r[0].steps[0]) )
+    self.assertMultiLineEqual( 'step_takes_bool\n    bool_value: True', str(r[0].steps[0]) )
 
   def test_step_empty_value(self):
     text = '''!rebuildrecipe!
@@ -486,8 +534,7 @@ package foo-1.2.3-4
     self.assertEqual( 1, len(r) )
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
-    self.assertEqual( 'step_takes_bool', str(r[0].steps[0]) )
-
+    self.assertMultiLineEqual( 'step_takes_bool', str(r[0].steps[0]) )
     
 if __name__ == '__main__':
   unit_test.main()
