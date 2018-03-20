@@ -410,6 +410,8 @@ class step(with_metaclass(step_register_meta, object)):
   def args_get_string_list(clazz, args, key):
     check.check_dict(args)
     result = args.get(key, string_list())
+    if not result:
+      return string_list()
     if check.is_string_seq(result):
       result = string_list(result)
     check.check_string_list(result)

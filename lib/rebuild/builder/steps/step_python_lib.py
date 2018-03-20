@@ -11,9 +11,18 @@ class step_python_lib_build(step):
   def __init__(self):
     super(step_python_lib_build, self).__init__()
 
+  @classmethod
+  def define_args(clazz):
+    return '''
+    python_lib_build_flags   string_list
+    python_lib_build_env     key_values
+    '''
+
   def execute(self, script, env, args):
-    cmd = '${PYTHON} setup.py build %s' % (args.get('python_lib_build_flags', ''))
-    return self.call_shell(cmd, script, env, args, extra_env = self.args_get_key_value_list(args, 'python_lib_builder_env'))
+    python_lib_build_flags = self.args_get_string_list(args, 'python_lib_build_flags')
+    python_lib_build_env = self.args_get_key_value_list(args, 'python_lib_build_env')
+    cmd = '${PYTHON} setup.py build %s' % (' '.join(python_lib_build_flags))
+    return self.call_shell(cmd, script, env, args, extra_env = python_lib_build_env)
 
   @classmethod
   def parse_step_args(clazz, script, env, args):
@@ -25,9 +34,18 @@ class step_python_lib_install(step):
   def __init__(self):
     super(step_python_lib_install, self).__init__()
 
+  @classmethod
+  def define_args(clazz):
+    return '''
+    python_lib_install_flags   string_list
+    python_lib_install_env     key_values
+    '''
+
   def execute(self, script, env, args):
-    cmd = 'mkdir -p ${REBUILD_STAGE_PYTHON_LIB_DIR} && ${PYTHON} setup.py install --home=${REBUILD_STAGE_PREFIX_DIR} --install-lib=${REBUILD_STAGE_PYTHON_LIB_DIR} %s' % (args.get('python_lib_install_flags', ''))
-    return self.call_shell(cmd, script, env, args, extra_env = self.args_get_key_value_list(args, 'python_lib_install_env'))
+    python_lib_install_flags = self.args_get_string_list(args, 'python_lib_install_flags')
+    python_lib_install_env = self.args_get_key_value_list(args, 'python_lib_install_env')
+    cmd = 'mkdir -p ${REBUILD_STAGE_PYTHON_LIB_DIR} && ${PYTHON} setup.py install --home=${REBUILD_STAGE_PREFIX_DIR} --install-lib=${REBUILD_STAGE_PYTHON_LIB_DIR} %s' % (' '.join(python_lib_install_flags))
+    return self.call_shell(cmd, script, env, args, extra_env = python_lib_install_env)
 
   @classmethod
   def parse_step_args(clazz, script, env, args):

@@ -58,7 +58,7 @@ class masked_value_list(object):
 
   def resolve(self, system):
     if not self._values:
-      raise IndexError('list is empty')
+      return []
     first_value = self._values[0].value
     values = self._resolve_values(system)
     if not values:

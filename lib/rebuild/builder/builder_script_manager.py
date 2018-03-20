@@ -83,7 +83,7 @@ class builder_script_manager(object):
     return dependency_resolver.build_order_flat(clazz._dependency_map(scripts, system))
 
   @classmethod
-  def build_order(clazz, scripts, system):
+  def bxuild_order(clazz, scripts, system):
     'Return the build order for the given map of scripts.'
     return dependency_resolver.build_order(clazz._dependency_map(scripts, system))
 
