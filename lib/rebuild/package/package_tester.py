@@ -27,63 +27,63 @@ class package_tester(object):
     self._test = test
 
   def run(self):
-    rv = self.__run_test(self._config, self._test)
+    rv = self._run_test(self._config, self._test)
     return rv
 
   @classmethod
-  def __run_test(clazz, config, test):
+  def _run_test(clazz, config, test):
     build_blurb.blurb('tester', 'Testing %s with %s' % (config.package_tarball, test))
     assert path.isfile(test)
     tc = toolchain.get_toolchain(config.script.build_target)
     ce = tc.compiler_environment()
     compiler_flags = tc.compiler_flags()
     if test.endswith('.cpp'):
-      return clazz.__run_c_test(config, test, ce['CXX'], compiler_flags['CXXFLAGS'])
+      return clazz._run_c_test(config, test, ce['CXX'], compiler_flags['CXXFLAGS'])
     if test.endswith('.c'):
-      return clazz.__run_c_test(config, test, ce['CC'], compiler_flags['CFLAGS'])
+      return clazz._run_c_test(config, test, ce['CC'], compiler_flags['CFLAGS'])
     elif test.endswith('.py'):
-      return clazz.__run_python_test(config, test)
+      return clazz._run_python_test(config, test)
     elif test.endswith('.pl'):
-      return clazz.__run_perl_test(config, test)
+      return clazz._run_perl_test(config, test)
     elif test.endswith('.sh'):
-      return clazz.__run_shell_test(config, test)
+      return clazz._run_shell_test(config, test)
     else:
       raise RuntimeError('Uknown test type for %s: %s' % (config.package_info.name, test))
 
   @classmethod
-  def __run_c_test(clazz, config, test_source, compiler, extra_cflags):
-    setup = clazz.__setup_test(config, test_source)
-    build_blurb.blurb_verbose('tester', '%s: running c test %s with %s' % (setup.package_info.name, test_source, compiler))
-    package_names_for_pkg_config = [ setup.package_info.name ]
+  def _run_c_test(clazz, config, test_source, compiler, extra_cflags):
+    context = clazz._make_test_context(config, test_source)
+    build_blurb.blurb_verbose('tester', '%s: running c test %s with %s' % (context.package_info.name, test_source, compiler))
+    package_names_for_pkg_config = [ context.package_info.name ]
 
     # FIXME: static is hardcoded here (depends on global static mode)
-    cflags, libs = setup.package_manager.compilation_flags(package_names_for_pkg_config, static = True)
-    test_exe = path.join(setup.test_dir, setup.test_name + '.exe')
+    cflags, libs = context.package_manager.compilation_flags(package_names_for_pkg_config, static = True)
+    test_exe = path.join(context.test_dir, context.test_name + '.exe')
     cflags += extra_cflags
     cflags_flat = ' '.join(cflags)
     libs_flat = ' '.join(libs)
     compilation_cmd = '%s -o %s %s %s %s' % (compiler,
                                              test_exe,
-                                             setup.test_source_with_replacements,
+                                             context.test_source_with_replacements,
                                              cflags_flat,
                                              libs_flat)
-    build_blurb.blurb_verbose('tester', '%s: compilation_cmd=\"%s\"' % (setup.package_info.name, compilation_cmd))
-    build_blurb.blurb_verbose('tester', '%s: cflags=\"%s\" libs=\"%s\"' % (setup.package_info.name, cflags_flat, libs_flat))
+    build_blurb.blurb_verbose('tester', '%s: compilation_cmd=\"%s\"' % (context.package_info.name, compilation_cmd))
+    build_blurb.blurb_verbose('tester', '%s: cflags=\"%s\" libs=\"%s\"' % (context.package_info.name, cflags_flat, libs_flat))
 
     # Build the test
     rv = execute.execute(compilation_cmd,
-                         env = setup.env,
+                         env = context.env,
                          non_blocking = build_blurb.verbose,
                          stderr_to_stdout = True,
                          raise_error = False)
     if rv.exit_code != 0:
       return step_result(rv.exit_code == 0, rv.stdout)
     # Run the test
-    rv = execute.execute(test_exe, env = setup.env, non_blocking = build_blurb.verbose,
+    rv = execute.execute(test_exe, env = context.env, non_blocking = build_blurb.verbose,
                          stderr_to_stdout = True, raise_error = False)
 
-    # Restore the environment cause __setup_test() hacks it
-    os.environ = setup.saved_env
+    # Restore the environment cause _make_test_context() hacks it
+    os.environ = context.saved_env
 
     if rv.exit_code != 0:
       return step_result(rv.exit_code == 0, rv.stdout)
@@ -91,35 +91,35 @@ class package_tester(object):
     return step_result(True, None)
 
   @classmethod
-  def __run_python_test(clazz, config, test_source):
-    setup = clazz.__setup_test(config, test_source)
-    build_blurb.blurb_verbose('tester', '%s: running python test %s' % (setup.package_info.name, test_source))
-    # FIXME: move this to setup
-    setup.env['PYTHONPATH'] = setup.package_manager.python_lib_dir
+  def _run_python_test(clazz, config, test_source):
+    context = clazz._make_test_context(config, test_source)
+    build_blurb.blurb_verbose('tester', '%s: running python test %s' % (context.package_info.name, test_source))
+    # FIXME: move this to context
+    context.env['PYTHONPATH'] = context.package_manager.python_lib_dir
     # Run the test
-    cmd = 'python2.7 %s' % (setup.test_source_with_replacements)
-    rv = execute.execute(cmd, env = setup.env, non_blocking = build_blurb.verbose,
+    cmd = 'python2.7 %s' % (context.test_source_with_replacements)
+    rv = execute.execute(cmd, env = context.env, non_blocking = build_blurb.verbose,
                          stderr_to_stdout = True, raise_error = False)
     if rv.exit_code != 0:
       return step_result(rv.exit_code == 0, rv.stdout)
     return step_result(True, None)
 
   @classmethod
-  def __run_shell_test(clazz, config, test_source):
-    return clazz.__run_exe_test('SHELL', 'bash', config, test_source)
+  def _run_shell_test(clazz, config, test_source):
+    return clazz._run_exe_test('SHELL', 'bash', config, test_source)
 
   @classmethod
   def __determine_exe(clazz, env_var_name, default_exe):
     return os.environ.get(env_var_name, default_exe)
   
   @classmethod
-  def __run_perl_test(clazz, config, test_source):
-    return clazz.__run_exe_test('PERL', 'perl', config, test_source)
+  def _run_perl_test(clazz, config, test_source):
+    return clazz._run_exe_test('PERL', 'perl', config, test_source)
 
-  _test_setup = namedtuple('_test_setup','package_info,env,saved_env,test_dir,test_name,test_source_with_replacements,package_manager')
+  _test_context = namedtuple('_test_context','package_info,env,saved_env,test_dir,test_name,test_source_with_replacements,package_manager')
 
   @classmethod
-  def __setup_test(clazz, config, test_source):
+  def _make_test_context(clazz, config, test_source):
     test_name = path.splitext(path.basename(test_source))[0]
     test_root_dir = path.join(config.script.test_dir, test_name)
     pm_root_dir = path.join(test_root_dir, 'requirements')
@@ -159,20 +159,20 @@ class package_tester(object):
       
     file_replace.copy_with_substitute(test_source, test_source_with_replacements,
                                       replacements, backup = False)
-    return clazz._test_setup(package.info, shell_env, saved_env,
-                             test_root_dir, test_name,
-                             test_source_with_replacements,
-                             pm)
+    return clazz._test_context(package.info, shell_env, saved_env,
+                               test_root_dir, test_name,
+                               test_source_with_replacements,
+                               pm)
 
   @classmethod
-  def __run_exe_test(clazz, exe_env_name, exe_default, config, test_source):
-    setup = clazz.__setup_test(config, test_source)
-    build_blurb.blurb_verbose('tester', '%s: running shell test %s' % (setup.package_info.name, test_source))
+  def _run_exe_test(clazz, exe_env_name, exe_default, config, test_source):
+    context = clazz._make_test_context(config, test_source)
+    build_blurb.blurb_verbose('tester', '%s: running shell test %s' % (context.package_info.name, test_source))
     exe = clazz.__determine_exe(exe_env_name, exe_default)
-    cmd = '%s %s' % (exe, setup.test_source_with_replacements)
-    rv = execute.execute(cmd, env = setup.env, non_blocking = build_blurb.verbose,
+    cmd = '%s %s' % (exe, context.test_source_with_replacements)
+    rv = execute.execute(cmd, env = context.env, non_blocking = build_blurb.verbose,
                          stderr_to_stdout = True, raise_error = False)
-    os.environ = setup.saved_env
+    os.environ = context.saved_env
     if rv.exit_code != 0:
       return step_result(rv.exit_code == 0, rv.stdout)
     return step_result(True, None)
