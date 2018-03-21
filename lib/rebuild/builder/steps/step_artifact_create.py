@@ -67,7 +67,7 @@ class step_artifact_create_test_package(step):
     '''
   
   def execute(self, script, env, args):
-    if self.recipe:
+    if self._recipe:
       values = self.recipe.resolve_values(env.config.build_target.system)
       tests = values.get('tests', [])
       extra_env = values.get('package_test_env', key_value_list()) or key_value_list()

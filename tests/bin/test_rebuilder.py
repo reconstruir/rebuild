@@ -49,6 +49,11 @@ class test_rebuilder_script(script_unit_test):
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'tbar-1.0.0.tar.gz', 'tfoo-1.0.0.tar.gz' ], test.artifacts )
 
+  def test_tool_tbaz(self):
+    test = self._run_test('basic', 'tbaz')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'tbaz-1.0.0.tar.gz' ], test.artifacts )
+    
   def test_lib_libstarch(self):
     test = self._run_test('basic', 'libstarch')
     self.assertEqual( 0, test.result.exit_code )

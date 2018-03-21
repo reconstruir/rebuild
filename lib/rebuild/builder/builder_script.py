@@ -4,7 +4,7 @@
 import copy, os.path as path
 from collections import namedtuple
 
-from bes.common import algorithm
+from bes.common import algorithm, check
 from bes.fs import file_checksum, file_util
 from bes.system import log
 from rebuild.base import build_blurb, build_target
@@ -112,9 +112,15 @@ class builder_script(object):
     sources = []
     for step, args in self.step_list({}):
       for sources_key in step.sources_keys():
-        if sources_key in args:
-          assert isinstance(args[sources_key], list)
-          sources.extend(args[sources_key])
+        caca = args.get(sources_key, []) or []
+        if caca:
+          print('LOCO CHECKING for %s in %s - %s' % (sources_key, caca, type(caca)))
+          assert isinstance(caca, list)
+          from rebuild.recipe import recipe_install_file
+          if check.is_recipe_install_file_seq(caca):
+            sources.extend([ x.filename for x in caca])
+          else:
+            sources.extend(caca)
       for k, v in args.items():
         sources.extend(dependency_provider.determine_provided(v))
     sources.append(self.filename)

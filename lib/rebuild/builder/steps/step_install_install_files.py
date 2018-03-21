@@ -4,7 +4,7 @@
 from rebuild.step import step, step_result
 from rebuild.tools import install
 
-from bes.common import object_util
+from bes.common import check, object_util
 from bes.fs import file_util
 import os, os.path as path, shutil
 
@@ -14,21 +14,31 @@ class step_install_install_files(step):
   def __init__(self):
     super(step_install_install_files, self).__init__()
 
+  @classmethod
+  def define_args(clazz):
+    return '''
+    install_files   file_install_list
+    '''
+    
   def execute(self, script, env, args):
-    install_files = args.get('install_files', [])
+    if self._recipe:
+      values = self.recipe.resolve_values(env.config.build_target.system)
+      install_files = values.get('install_files', [])
+    else:
+      install_files = args.get('install_files', [])
+
     if not install_files:
       message = 'No install_files for %s' % (script.descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
-
-    if (len(install_files) % 2) != 0:
-      return step_result(False, 'Invalid file list: %s' % (install_files))
-      
-    for install_file in object_util.chunks(install_files, 2):
-      src = path.join(script.source_dir, install_file[0])
+    check.check_recipe_install_file_seq(install_files)
+    for install_file in install_files:
+      print('FOOOOO install_file: %s:%s - %s:%s' % (install_file.filename, type(install_file.filename), install_file.dst_filename, type(install_file.dst_filename)))
+      #src = path.join(script.source_dir, install_file.filename)
+      src = str(install_file.filename)
       if not path.isfile(src):
         return step_result(False, 'File not found: %s' % (src))
-      dst = path.join(script.stage_dir, install_file[1])
+      dst = path.join(script.stage_dir, install_file.dst_filename)
       if path.exists(dst):
         return step_result(False, 'File already exists: %s' % (dst))
       dst_dir = path.dirname(dst)
@@ -40,8 +50,8 @@ class step_install_install_files(step):
       
     return step_result(True, None)
 
-#  def sources_keys(self):
-#    return [ 'install_files' ]
+  def sources_keys(self):
+    return [ 'install_files' ]
 
   @classmethod
   def parse_step_args(clazz, script, env, args):

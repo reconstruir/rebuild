@@ -91,10 +91,10 @@ class recipe_parser_util(object):
     data = clazz._parse_string_list(value)
     if (len(data) % 2) != 0:
       raise RuntimeError('invalid non even list: %s' % (data))
-    for filename, target_filename in object_util.chunks(data, 2):
-      filename_abs = path.join(base, filename)
+    for filename, dst_filename in object_util.chunks(data, 2):
+      filename_abs = path.abspath(path.join(base, filename))
       if not path.isfile(filename_abs):
         raise RuntimeError('not found: %s' % (filename_abs))
-      result.append(recipe_install_file(filename_abs, target_filename))
+      result.append(recipe_install_file(filename_abs, dst_filename))
     return result
   

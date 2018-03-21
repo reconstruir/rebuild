@@ -7,13 +7,13 @@ from bes.dependency import dependency_provider
 
 class recipe_install_file(dependency_provider):
 
-  def __init__(self, filename, target_filename):
+  def __init__(self, filename, dst_filename):
     'Create a new hook.'
     self.filename = filename
-    self.target_filename = target_filename
+    self.dst_filename = dst_filename
 
   def value_to_string(self):
-    return '%s %s' % (path.basename(self.filename), self.target_filename)
+    return '%s %s' % (path.basename(self.filename), self.dst_filename)
     
   def provided(self):
     'Return a list of dependencies provided by this provider.'

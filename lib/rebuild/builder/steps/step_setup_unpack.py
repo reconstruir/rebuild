@@ -14,6 +14,12 @@ class step_setup_unpack(step):
   def __init__(self):
     super(step_setup_unpack, self).__init__()
 
+  @classmethod
+  def define_args(clazz):
+    return '''
+    no_tarballs   bool        False
+    '''
+
   def execute(self, script, env, args):
     if args.get('no_tarballs', False):
       return step_result(True, None)

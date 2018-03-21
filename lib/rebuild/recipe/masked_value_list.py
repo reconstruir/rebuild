@@ -75,6 +75,8 @@ class masked_value_list(object):
       return self._resolve_string_list(values)
     elif check.is_recipe_file_seq(values[0]):
       return self._resolve_list(values)
+    elif check.is_recipe_install_file_seq(values[0]):
+      return self._resolve_list(values)
     raise TypeError('unknown value type: %s - %s' % (str(values[0]), type(values[0])))
 
   def _resolve_values(self, system):

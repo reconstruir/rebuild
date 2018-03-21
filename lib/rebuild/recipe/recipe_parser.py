@@ -107,6 +107,12 @@ class recipe_parser(object):
         env_vars = self._parse_env_vars(child)
       elif text.startswith('instructions'):
         instructions = self._parse_instructions(child)
+    if env_vars:
+      poto1 = env_vars.resolve('macos')
+      poto2 = env_vars.resolve('linux')
+      d = poto1.to_dict()
+      d.update(poto2.to_dict())
+      properties['env_vars'] = d
     desc = package_descriptor(name, version,
                               caca_requirements = caca_requirements,
                               requirements = requirements,

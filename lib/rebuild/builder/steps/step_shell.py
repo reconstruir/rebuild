@@ -11,8 +11,15 @@ class step_shell(step):
   def __init__(self):
     super(step_shell, self).__init__()
 
+  @classmethod
+  def define_args(clazz):
+    return '''
+    cmd   string
+    '''
+  
   def execute(self, script, env, args):
     cmd = args.get('cmd', None)
+    print('XXXXXXXXXXXXX: cmd=%s' % (cmd))
     assert string_util.is_string(cmd)
     shell_env = self.args_get_key_value_list(args, 'shell_env')
     self.log_d('step_shell.execute() cmd=%s; shell_env=%s' % (cmd, shell_env))
@@ -21,6 +28,7 @@ class step_shell(step):
   @classmethod
   def parse_step_args(clazz, script, env, args):
     result = clazz.resolve_step_args_env_and_flags(script, args, 'shell_env', None)
-    assert 'cmd' in args
+    if not 'cmd' in args:
+      return {}
     result['cmd'] = args['cmd']
     return result

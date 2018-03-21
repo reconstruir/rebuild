@@ -12,6 +12,12 @@ class step_cleanup_binary_filenames(step):
   def __init__(self):
     super(step_cleanup_binary_filenames, self).__init__()
 
+  @classmethod
+  def define_args(clazz):
+    return '''
+    skip_binary_third_party_prefix   bool        False
+    '''
+    
   def execute(self, script, env, args):
     if not path.isdir(script.stage_bin_dir):
       return step_result(True, None)

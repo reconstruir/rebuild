@@ -256,7 +256,8 @@ class step(with_metaclass(step_register_meta, object)):
       cwd = path.join(script.build_dir, execution_dir)
     else:
       cwd = script.build_dir
-    
+
+    print("OOOOOOOOOOOOOOOOOOOOOOOO: command=%s" % (command))
     rv = execute.execute(command,
                          cwd = cwd,
                          env = env,
