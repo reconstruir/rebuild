@@ -3,7 +3,9 @@
 
 import os, os.path as path
 
+from bes.common import check
 from bes.archive import archiver
+from bes.key_value import key_value_list
 from bes.fs import file_util
 from bes.common import dict_util
 from rebuild.step import compound_step, step, step_result
@@ -65,7 +67,14 @@ class step_artifact_create_test_package(step):
     '''
   
   def execute(self, script, env, args):
-    tests = args.get('tests', [])
+    if self.recipe:
+      values = self.recipe.resolve_values(env.config.build_target.system)
+      tests = values.get('tests', [])
+      extra_env = values.get('package_test_env', key_value_list()) or key_value_list()
+    else:
+      tests = args.get('tests', [])
+      extra_env = self.args_get_key_value_list(args, 'package_test_env')
+    
     if not tests:
       message = 'No tests for %s' % (script.descriptor.full_name)
       self.log_d(message)
@@ -82,8 +91,10 @@ class step_artifact_create_test_package(step):
       self.log_d(message)
       return step_result(False, message)
 
-    extra_env = self.args_get_key_value_list(args, 'package_test_env')
     for test in tests:
+      if not check.is_string(test):
+        assert hasattr(test, 'filename')
+        test = test.filename
       config = package_tester.test_config(script,
                                           staged_tarball,
                                           env.artifact_manager,
