@@ -20,8 +20,7 @@ class hook(with_metaclass(hook_register_meta, dependency_provider)):
     'Create a new hook.'
     pass
 
-  @property
-  def name(self):
+  def value_to_string(self):
     return self.__class__.__name__
     
   @property

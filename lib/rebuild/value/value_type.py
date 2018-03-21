@@ -14,6 +14,7 @@ class value_type(enum):
   STRING = 5
   HOOK_LIST = 6
   FILE_LIST = 7
+  FILE_INSTALL_LIST = 8
     
   DEFAULT = STRING
 

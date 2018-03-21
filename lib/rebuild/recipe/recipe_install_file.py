@@ -12,9 +12,8 @@ class recipe_install_file(dependency_provider):
     self.filename = filename
     self.target_filename = target_filename
 
-  @property
-  def name(self):
-    return path.basename(self.filename)
+  def value_to_string(self):
+    return '%s %s' % (path.basename(self.filename), self.target_filename)
     
   def provided(self):
     'Return a list of dependencies provided by this provider.'

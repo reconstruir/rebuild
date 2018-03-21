@@ -11,8 +11,7 @@ class recipe_file(dependency_provider):
     'Create a new hook.'
     self.filename = filename
 
-  @property
-  def name(self):
+  def value_to_string(self):
     return path.basename(self.filename)
     
   def provided(self):

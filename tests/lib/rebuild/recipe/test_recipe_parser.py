@@ -521,10 +521,22 @@ package foo-1.2.3-4
 '''
     r = P(text, self.data_path('test_file1.txt')).parse()
     self.assertEqual( 1, len(r) )
-    self.assertEqual( 'foo', r[0].descriptor.name )
-    self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_file_list\n    file_list_value: test_file1.txt test_file2.txt', str(r[0].steps[0]) )
+
+  def test_step_value_file_install_list(self):
+    text = '''!rebuildrecipe!
+package foo-1.2.3-4
+
+  steps
+    step_takes_file_install_list
+      file_install_list_value: test_file1.txt etc/foo/f1.txt test_file2.txt etc/foo/f2.txt
+'''
+    r = P(text, self.data_path('test_file1.txt')).parse()
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 1, len(r[0].steps) )
+    self.assertMultiLineEqual( 'step_takes_file_install_list\n    file_install_list_value: test_file1.txt etc/foo/f1.txt test_file2.txt etc/foo/f2.txt', str(r[0].steps[0]) )
+
 
   def test_step_comments(self):
     text = '''!rebuildrecipe!
