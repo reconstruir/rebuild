@@ -10,12 +10,14 @@ from bes.fs import dir_util, file_util
 
 from .package import package
 from .package_list import package_list
-from rebuild.base import package_descriptor, package_descriptor_list
+from rebuild.base import package_descriptor, package_descriptor_list, requirement_manager
 
 class ArtifactNotFoundError(Exception):
   pass
 
 #log.configure('artifact_manager=debug')
+
+#FIXME: make publish_dir be immutable
 
 class artifact_manager(object):
 
@@ -42,7 +44,12 @@ class artifact_manager(object):
         git.init(self.publish_dir)
 
     self._package_cache = {}
-
+    self._reset()
+    
+  def _reset(self):
+    self._available_packages_map = {}
+    self._requirement_managers = {}
+    
   def artifact_path(self, package_info, build_target):
     filename = '%s.tar.gz' % (package_info.full_name)
     return path.join(self.publish_dir, build_target.build_path, filename)
@@ -54,17 +61,23 @@ class artifact_manager(object):
     file_util.copy(tarball, artifact_path)
     if not self.no_git:
       git.add(self.publish_dir, pkg_info.artifact_path(build_target))
+    self._reset()
     return artifact_path
 
   def available_packages(self, build_target):
+    if build_target.build_path not in self._available_packages_map:
+      self._available_packages_map[build_target.build_path] = self._compute_available_packages(build_target)
+    return self._available_packages_map[build_target.build_path]
+
+  def _compute_available_packages(self, build_target):
     d = path.join(self.publish_dir, build_target.build_path)
     if not path.exists(d):
       return []
     if not path.isdir(d):
       raise RuntimeError('Not a directory: %s' % (d))
     all_files = dir_util.list(d)
-    return [ self._load_package(f) for f in all_files ]
-
+    return [ self._get_package(f) for f in all_files ]
+  
   def latest_available_packages(self, build_target):
     available = self.available_packages(build_target)
     return package_list.latest_versions(available)
@@ -105,14 +118,9 @@ class artifact_manager(object):
     tarball = self.artifact_path(package_info, build_target)
     if not path.isfile(tarball):
       raise ArtifactNotFoundError('Artifact \"%s\" not found for %s' % (tarball, package_info.full_name))
-    return self._load_package(tarball)
+    return self._get_package(tarball)
 
-#  @classmethod
-#  def parse_filename(clazz, filename):
-#    s = string_util.remove_tail(filename, '.tar.gz')
-#    return package_descriptor.parse(s)
-
-  def _load_package(self, tarball):
+  def _get_package(self, tarball):
     if not tarball in self._package_cache:
       self._package_cache[tarball] = package(tarball)
     return self._package_cache[tarball]
@@ -121,4 +129,15 @@ class artifact_manager(object):
     available = package_list.descriptors(self.available_packages(build_target))
     return package_descriptor_list.dependency_map(available)
 
+  def get_requirement_manager(clazz, build_target):
+    if not build_target.build_path in self._requirement_managers:
+      self._requirement_managers[build_target.build_path] = self._make_requirement_manager(build_target)
+    return self._requirement_managers[build_target.build_path]
+
+  def _make_requirement_manager(self, build_target):
+    rm = requirement_manager()
+    for package in self.latest_available_packages(build_target):
+      rm.add_package(package.info)
+    return rm
+  
 check.register_class(artifact_manager, include_seq = False)
