@@ -32,7 +32,7 @@ class package_tester(object):
 
   @classmethod
   def _run_test(clazz, config, test):
-    build_blurb.blurb('tester', 'Testing %s with %s' % (config.package_tarball, test))
+    build_blurb.blurb('tester', 'Testing %s with %s' % (path.relpath(config.package_tarball), test))
     assert path.isfile(test)
     tc = toolchain.get_toolchain(config.script.build_target)
     ce = tc.compiler_environment()
