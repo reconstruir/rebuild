@@ -2,12 +2,13 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common import bool_util, check
+from bes.common import bool_util, check, object_util
 from bes.key_value import key_value, key_value_list
 from rebuild.step import hook_registry
 from rebuild.value import value_type
 from bes.text import comments, string_list
 from .recipe_file import recipe_file
+from .recipe_install_file import recipe_install_file
 
 class recipe_parser_util(object):
 
@@ -51,6 +52,8 @@ class recipe_parser_util(object):
       return clazz._parse_hook_list(value)
     elif arg_type == value_type.FILE_LIST:
       return clazz._parse_file_list(value, path.dirname(filename))
+    elif arg_type == value_type.FILE_INSTALL_LIST:
+      return clazz._parse_file_install_list(value, path.dirname(filename))
     raise ValueError('unknown arg_type: %s' % (str(arg_type)))
 
   @classmethod
@@ -81,3 +84,17 @@ class recipe_parser_util(object):
         raise RuntimeError('not found: %s' % (filename_abs))
       files.append(recipe_file(filename_abs))
     return files
+
+  @classmethod
+  def _parse_file_install_list(clazz, value, base):
+    result = []
+    data = clazz._parse_string_list(value)
+    if (len(data) % 2) != 0:
+      raise RuntimeError('invalid non even list: %s' % (data))
+    for filename, target_filename in object_util.chunks(data, 2):
+      filename_abs = path.join(base, filename)
+      if not path.isfile(filename_abs):
+        raise RuntimeError('not found: %s' % (filename_abs))
+      result.append(recipe_install_file(filename_abs, target_filename))
+    return result
+  

@@ -5,6 +5,7 @@ from .masked_value import masked_value
 from .masked_value_list import masked_value_list
 from .recipe import recipe
 from .recipe_file import recipe_file
+from .recipe_install_file import recipe_install_file
 from .recipe_parser import recipe_parser, recipe_parser_error
 from .recipe_parser_util import recipe_parser_util
 from .recipe_step import recipe_step
