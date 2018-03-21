@@ -63,7 +63,7 @@ class artifact_manager(object):
     if not path.isdir(d):
       raise RuntimeError('Not a directory: %s' % (d))
     all_files = dir_util.list(d)
-    return [ self.__load_package(f) for f in all_files ]
+    return [ self._load_package(f) for f in all_files ]
 
   def latest_available_packages(self, build_target):
     available = self.available_packages(build_target)
@@ -74,8 +74,8 @@ class artifact_manager(object):
     result = []
     available_packages = self.available_packages(build_target)
     for package_name in package_names:
-      available_package = self.__find_package_by_name(package_name,
-                                                      available_packages)
+      available_package = self._find_package_by_name(package_name,
+                                                     available_packages)
       if not available_package:
         raise ArtifactNotFoundError('package \"%s\" not found' % (package_name))
 
@@ -86,7 +86,7 @@ class artifact_manager(object):
     return result
 
   @classmethod
-  def __find_package_by_name(self, package_name, available_packages):
+  def _find_package_by_name(self, package_name, available_packages):
     candidates = []
     for available_package in available_packages:
       if package_name == available_package.info.name:
@@ -105,14 +105,14 @@ class artifact_manager(object):
     tarball = self.artifact_path(package_info, build_target)
     if not path.isfile(tarball):
       raise ArtifactNotFoundError('Artifact \"%s\" not found for %s' % (tarball, package_info.full_name))
-    return self.__load_package(tarball)
+    return self._load_package(tarball)
 
 #  @classmethod
 #  def parse_filename(clazz, filename):
 #    s = string_util.remove_tail(filename, '.tar.gz')
 #    return package_descriptor.parse(s)
 
-  def __load_package(self, tarball):
+  def _load_package(self, tarball):
     if not tarball in self._package_cache:
       self._package_cache[tarball] = package(tarball)
     return self._package_cache[tarball]
