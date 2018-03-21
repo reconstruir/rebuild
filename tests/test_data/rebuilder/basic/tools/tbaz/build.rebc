@@ -1,0 +1,23 @@
+!rebuildrecipe!
+
+package tbaz-1.0.0
+
+  properties
+    category=tool
+
+  steps
+    step_setup
+      no_tarballs: True
+
+    step_shell
+      cmd
+        all: install -m 755 $REBUILDER_SOURCE_DIR/files/bin/tbaz.py $REBUILD_STAGE_PREFIX_DIR/bin/tbaz.py
+
+    step_post_install
+#      install_files
+#        all: files/bin/tbaz.py bin/tbaz.py
+        
+      tests
+        all: test-tbaz.sh
+        
+      skip_binary_third_party_prefix: True
