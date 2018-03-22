@@ -693,7 +693,6 @@ mar 19
  - when resolving values use a standard list with overritten methods for get that set defaults correctly
 
 mar 20
-- is_artifact_manager not needed
 - s/package.info/package.descriptor
 - lots of other package fields have old names
 - maybe package_manager should accept artifact manager in its ctor instead of passing it in in methods

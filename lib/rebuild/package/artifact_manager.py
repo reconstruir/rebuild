@@ -110,10 +110,6 @@ class artifact_manager(object):
       candidates = sorted(candidates, cmp = package.info_cmp)
     return candidates[-1]
 
-  @classmethod
-  def is_artifact_manager(clazz, o):
-    return isinstance(o, artifact_manager)
-
   def package(self, package_info, build_target):
     tarball = self.artifact_path(package_info, build_target)
     if not path.isfile(tarball):

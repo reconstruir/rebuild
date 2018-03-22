@@ -6,7 +6,7 @@
 
 import copy, os.path as path
 
-from bes.common import dict_util, json_util, string_util, variable
+from bes.common import check, dict_util, json_util, string_util, variable
 from bes.system import host
 
 from rebuild.base import build_target, build_system, build_level, package_descriptor
@@ -46,7 +46,7 @@ class tools_package_manager(object):
     return path.join(self.root_dir, pkg_desc.full_name)
 
   def install_package(self, pkg_desc, artifact_manager):
-    assert artifact_manager.is_artifact_manager(artifact_manager)
+    check.check_artifact_manager(artifact_manager)
     if self.is_installed(pkg_desc):
       return
     package = artifact_manager.package(pkg_desc, self.BUILD_TARGET)

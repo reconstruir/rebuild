@@ -52,8 +52,10 @@ class PackageMissingRequirementsError(Exception):
   
 class package_manager(object):
 
-  def __init__(self, root_dir):
+  def __init__(self, root_dir): #, artifact_manager):
+    #check.check_artifact_manager(artifact_manager)
     self.root_dir = root_dir
+    #self._artifact_manager = artifact_manager
     self._database_path = path.join(self.root_dir, 'database/packages.json')
     self._db = package_db(self._database_path)
     self._installation_dir = path.join(self.root_dir, 'installation')
@@ -190,7 +192,7 @@ class package_manager(object):
 
   def install_package(self, pkg_desc, build_target, artifact_manager,
                       allow_downgrade = False, force_install = False):
-    assert artifact_manager.is_artifact_manager(artifact_manager)
+    check.check_artifact_manager(artifact_manager)
     check.check_package_descriptor(pkg_desc)
     pkg = artifact_manager.package(pkg_desc, build_target)
 
@@ -219,7 +221,7 @@ class package_manager(object):
 
   def install_packages(self, packages, build_target, artifact_manager, allow_downgrade = False, force_install = False):
     check.check_package_descriptor_seq(packages)
-    assert artifact_manager.is_artifact_manager(artifact_manager)
+    check.check_artifact_manager(artifact_manager)
     for pkg_desc in packages:
       self.install_package(pkg_desc, build_target, artifact_manager,
                            allow_downgrade = allow_downgrade,
