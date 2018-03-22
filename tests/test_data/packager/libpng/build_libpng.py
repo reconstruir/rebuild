@@ -17,7 +17,6 @@ def rebuild_recipes(env):
       name = 'libpng',
       version = '1.6.28',
       revision = '1',
-      category = 'lib',
       export_compilation_flags_requirements = [
         'all: zlib',
       ]

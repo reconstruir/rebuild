@@ -6,14 +6,13 @@ from collections import namedtuple
 from bes.common import check, node
 from bes.text import white_space
 
-class caca_package_db_entry(namedtuple('caca_package_db_entry', 'format_version,name,version,category,system,archs,level,distro,requirements,build_tool_requirements,env_vars')):
+class caca_package_db_entry(namedtuple('caca_package_db_entry', 'format_version,name,version,system,archs,level,distro,requirements,build_tool_requirements,env_vars')):
 
-  def __new__(clazz, format_version, name, version, category, system, archs, level,
+  def __new__(clazz, format_version, name, version, system, archs, level,
               distro, requirements, build_tool_requirements, env_vars):
     check.check_int(format_version)
     check.check_string(name)
     check.check_string(version)
-    check.check_string(category)
     
     if env_vars:
       check.check_masked_value_list(env_vars)
@@ -68,7 +67,7 @@ class caca_package_db_entry(namedtuple('caca_package_db_entry', 'format_version,
     value = properties[key]
     if key in [ 'export_compilation_flags_requirements', 'extra_cflags', 'env_vars']:
       properties_node.children.append(clazz._system_specific_property_to_node(key, properties))
-    elif key in [ 'category', 'download_url', 'old_pkg_config_name' ]:
+    elif key in [ 'download_url', 'old_pkg_config_name' ]:
       properties_node.children.append(node('%s=%s' % (key, value)))
     else:
       if clazz.CHECK_UNKNOWN_PROPERTIES:

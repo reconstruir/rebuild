@@ -20,7 +20,6 @@ def rebuild_recipes(env):
     properties = env.args(
       name = 'libjpeg',
       version = '9a-1',
-      category = 'lib',
     ),
     steps = [
       'step_autoconf', {

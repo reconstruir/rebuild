@@ -14,7 +14,6 @@ def rebuild_recipes(env):
       name = 'zlib',
       version = '1.2.8',
       revision = '1',
-      category = 'lib',
     ),
     steps = [
       'step_autoconf', {

@@ -8,7 +8,6 @@ def rebuild_recipes(env):
     properties = env.args(
       name = 'fructose',
       version = '3.4.5-6',
-      category = 'lib',
     ),
     instructions = '''
 libfructose1

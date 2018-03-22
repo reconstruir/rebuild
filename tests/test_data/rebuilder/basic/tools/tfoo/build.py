@@ -9,7 +9,6 @@ def rebuild_recipes(env):
     properties = env.args(
       name = 'tfoo',
       version = '1.0.0',
-      category = 'tool',
     ),
     steps = [
       'step_setup', {

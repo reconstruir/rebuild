@@ -52,7 +52,7 @@ class test_builder_script_execute(unit_test):
       u'archs': [u'x86_64'],
       u'build_level': u'release',
       u'name': u'amhello',
-      u'properties': {u'category': u'lib'},
+      u'properties': {},
       u'requirements': [],
       u'system': u''+host.SYSTEM,
       u'version': u'1.0'

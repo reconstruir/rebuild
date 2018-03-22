@@ -49,7 +49,6 @@ class test_builder_autoconf(unit_test):
     self.assertEqual( expected_files, pkg.files )
     self.assertEqual( 'mercury', pkg.info.name )
     self.assertEqual( build_version('1.2.8', 0, 0), pkg.info.version )
-    self.assertEqual( 'lib', pkg.info.properties['category'] )
 
   def test_arsenic(self):
     pkg = self._build_autoconf_package(self, 'arsenic', '1.2.9', '0', self.data_dir())
@@ -77,7 +76,6 @@ class test_builder_autoconf(unit_test):
     self.assertEqual( expected_files, pkg.files )
     self.assertEqual( 'arsenic', pkg.info.name )
     self.assertEqual( build_version('1.2.9', 0, 0), pkg.info.version )
-    self.assertEqual( 'lib', pkg.info.properties['category'] )
 
   @classmethod
   def _build_autoconf_package(clazz, asserter, name, version, revision, tarball_dir):

@@ -67,7 +67,6 @@ def rebuild_recipes(env):
     properties = env.args(
       name = '%s',
       version = '%s-%s',
-      category = 'lib',
     ),
     requirements = [
       %s
@@ -100,8 +99,6 @@ def rebuild_recipes(env):
 !rebuildrecipe!
 
 package %s-%s-%s
-  properties
-    category=lib
   build_tool_requirements
     %s
   steps

@@ -2,9 +2,6 @@
 
 package tbar-1.0.0
 
-  properties
-    category=tool
-
   requirements
     all: TOOL tfoo >= 1.0.0
 

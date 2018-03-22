@@ -22,7 +22,6 @@ class builder_recipe_env(object):
         name = name,
         version = version,
         revision = revision,
-        category = 'lib',
         pkg_config_name = pkg_config_name,
       ),
       steps = steps,

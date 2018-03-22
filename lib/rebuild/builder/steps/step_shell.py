@@ -19,7 +19,6 @@ class step_shell(step):
   
   def execute(self, script, env, args):
     cmd = args.get('cmd', None)
-    print('XXXXXXXXXXXXX: cmd=%s' % (cmd))
     assert string_util.is_string(cmd)
     shell_env = self.args_get_key_value_list(args, 'shell_env')
     self.log_d('step_shell.execute() cmd=%s; shell_env=%s' % (cmd, shell_env))

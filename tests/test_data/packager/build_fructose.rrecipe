@@ -1,8 +1,6 @@
 !rebuildrecipe!
 
 package fructose-3.4.5-6
-  properties
-    category=lib
   steps
     step_autoconf
       copy_source_to_build_dir: True

@@ -368,7 +368,6 @@ package foo-1.2.3-4
   enabled=$system is MACOS
 
   properties
-    category=lib
     foo="f o o"
     bar="b a r"
         baz="b a z"
@@ -407,7 +406,6 @@ package foo-1.2.3-4
   properties
     bar="b a r"
     baz="b a z"
-    category=lib
     foo="f o o"
 
   requirements

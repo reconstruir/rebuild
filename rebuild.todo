@@ -260,7 +260,6 @@ jan 19
 - add better aliases for ${REBUILD_REQUIREMENTS_DIR}/include ${REBUILD_REQUIREMENTS_DIR}/lib
 - maybe add --datarootdir=${REBUILD_REQUIREMENTS_SHARE_DIR} to all autoconf invocations
 - add 'PERL5LIB': '${REBUILD_REQUIREMENTS_DIR}/lib/x86_64-linux-gnu/perl/5.22' to Step.py
-- change all category = 'lib', to category = env.LIB, and such in build.py files
 - argument.env class is Context should be some kind of BuildEnv thing
 - theres a lot of cut-n-paste in PackageTestser between python ahd shell tests
 - need to standardize CFLAGS and LDFLAGS and have a one shot way to set them
@@ -623,7 +622,6 @@ jan 10
 - sort out the test data bs
 
 jan 13
-- fix the fact category is stored in info.json as "lib" instead of "LIB"
 - fix checksum_manager._checksum_dir: check.check(level, build_target, 'build_target') either level is misnamed or
   the type is wrong
 - package_descriptor.__init__ figure out the correct type for version arg

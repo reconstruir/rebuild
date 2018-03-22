@@ -4,7 +4,7 @@
 from bes.testing.unit_test import unit_test
 import os.path as path
 from bes.fs import temp_file
-from rebuild.base import build_category, build_target, package_descriptor, requirement
+from rebuild.base import build_target, package_descriptor, requirement
 from rebuild.builder import builder_script, builder_script_manager, builder_config, builder_env
 
 class test_builder_script(unit_test):
@@ -19,7 +19,7 @@ class test_builder_script(unit_test):
     filename = self.data_path('build_zlib.py')
     script = self._load_builder_script(filename)
     expected_requirements = []
-    expected_properties = { package_descriptor.PROPERTY_CATEGORY: build_category.LIB }
+    expected_properties = {}
     self.assertEqual( package_descriptor('zlib', '1.2.8-1', requirements = expected_requirements, properties = expected_properties).__dict__, script.descriptor.__dict__ )
     self.assertEqual( [], script.descriptor.requirements )
 
@@ -27,7 +27,7 @@ class test_builder_script(unit_test):
     filename = self.data_path('build_libjpeg.py')
     script = self._load_builder_script(filename)
     expected_requirements = []
-    expected_properties = { package_descriptor.PROPERTY_CATEGORY: build_category.LIB }
+    expected_properties = {}
     self.assertEqual( package_descriptor('libjpeg', '9a-1', requirements = expected_requirements, properties = expected_properties), script.descriptor )
     self.assertEqual( [], script.descriptor.requirements )
 
@@ -36,7 +36,7 @@ class test_builder_script(unit_test):
     script = self._load_builder_script(filename)
 
     expected_requirements = requirement.parse('cmake(all) >= 3.3.1-1')
-    expected_properties = { package_descriptor.PROPERTY_CATEGORY: build_category.LIB }
+    expected_properties = {}
     expected_package_info = package_descriptor('libopenjpeg', '2.1-1',
                                                requirements = expected_requirements,
                                                properties = expected_properties)
@@ -48,14 +48,13 @@ class test_builder_script(unit_test):
     script = self._load_builder_script(filename)
 
     expected_requirements = requirement.parse('zlib(all) >= 1.2.8-1')
-    expected_properties = { package_descriptor.PROPERTY_CATEGORY: build_category.LIB }
+    expected_properties = {}
     expected_package_info = package_descriptor('libpng', '1.6.18-1',
                                                requirements = expected_requirements,
                                                properties = expected_properties)
 
     self.assertEqual( expected_package_info, script.descriptor )
     self.assertEqual( expected_requirements, script.descriptor.requirements )
-    self.assertEqual( build_category.LIB, script.descriptor.properties[package_descriptor.PROPERTY_CATEGORY] )
 
   def _load_builder_script(self, filename):
     bt = build_target()

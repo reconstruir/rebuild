@@ -4,7 +4,7 @@
 
 import os.path as path, unittest
 from bes.fs import temp_file, temp_item
-from rebuild.base import build_category, build_target, build_version, package_descriptor, requirement, requirement_list
+from rebuild.base import build_target, build_version, package_descriptor, requirement, requirement_list
 from rebuild.package.package import package
 from rebuild.package.unit_test_packages import unit_test_packages
 
@@ -19,7 +19,7 @@ class test_package(unittest.TestCase):
     self.assertEqual( 'water', p.info.name )
     self.assertEqual( build_version('1.0.0', '0', 0), p.info.version )
     self.assertEqual( [], p.info.requirements )
-    self.assertEqual( { 'category': build_category.LIB }, p.info.properties )
+    self.assertEqual( {}, p.info.properties )
     self.assertEqual( [ 'bin/water_script.sh', 'docs/water_bar.txt', 'docs/water_foo.txt', 'lib/pkgconfig/water.pc' ], p.files )
     self.assertEqual( [ 'lib/pkgconfig/water.pc' ], p.pkg_config_files )
     self.assertEqual( 'macos', p.system )
@@ -30,7 +30,7 @@ class test_package(unittest.TestCase):
     self.assertEqual( 'orange', p.info.name )
     self.assertEqual( build_version('6.5.4', '3', 0), p.info.version )
     self.assertEqual( requirement_list.parse('fruit(all) >= 1.0.0-0 citrus(all) >= 1.0.0-0'), p.info.requirements )
-    self.assertEqual( { 'category': build_category.LIB }, p.info.properties )
+    self.assertEqual( {}, p.info.properties )
     self.assertEqual( [ 'bin/orange_script.sh', 'docs/orange_bar.txt', 'docs/orange_foo.txt', 'lib/pkgconfig/orange.pc' ], p.files )
     self.assertEqual( [ 'lib/pkgconfig/orange.pc' ], p.pkg_config_files )
 
@@ -42,7 +42,7 @@ class test_package(unittest.TestCase):
     tmp_tarball = unit_test_packages.make_orange(debug = self.DEBUG)
     expected_pi = package_descriptor('orange', '6.5.4-3',
                                      requirements = requirement_list.parse('fruit(all) >= 1.0.0-0 citrus(all) >= 1.0.0-0'),
-                                     properties = { 'category': build_category.LIB })
+                                     properties = {})
     self.assertEqual( expected_pi, package.package_info(tmp_tarball) )
 
 if __name__ == '__main__':

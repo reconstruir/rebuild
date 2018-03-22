@@ -5,7 +5,6 @@ import json, os.path as path
 from bes.common import check, object_util, string_util
 from bes.compat import cmp
 
-from .build_category import build_category
 from .build_system import build_system
 from .build_version import build_version
 from .reitred_masked_config import reitred_masked_config
@@ -18,13 +17,9 @@ class package_descriptor(object):
 
   STR_PROPERTIES_DELIMITER = '; '
 
-  PROPERTY_CATEGORY = 'category'
   PROPERTY_PKG_CONFIG_NAME = 'pkg_config_name'
   
   def __init__(self, name, version,
-               #requirements = None,
-               #build_tool_requirements = None,
-               #build_requirements = None,
                properties = None,
                requirements = None):
     check.check_string(name)
@@ -32,15 +27,6 @@ class package_descriptor(object):
 
     requirements = requirement_list(requirements)
     check.check_requirement_list(requirements)
-
-###    requirements = requirement_list(requirements)
-###    check.check_requirement_list(requirements)
-
-###    build_tool_requirements = requirement_list(build_tool_requirements)
-###    check.check_requirement_list(build_tool_requirements)
-
-###    build_requirements = requirement_list(build_requirements)
-###    check.check_requirement_list(build_requirements)
 
     properties = properties or {}
 
@@ -207,16 +193,9 @@ class package_descriptor(object):
     return self.properties.get('env_vars', {})
 
   @property
-  def category(self):
-    return self.properties.get(self.PROPERTY_CATEGORY, None)
-
-  @property
   def pkg_config_name(self):
     'Return the name of the .pc file for pkg config this package uses.'
     return object_util.listify(self.properties.get(self.PROPERTY_PKG_CONFIG_NAME, [ self.name ]))
-
-  def is_tool(self):
-    return self.category.lower() == build_category.value_to_name(build_category.TOOL).lower()
 
   @classmethod
   def full_name_cmp(clazz, pi1, pi2):

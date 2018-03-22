@@ -4,7 +4,6 @@ def rebuild_recipes(env):
       name = 'libjpeg',
       version = '9a',
       revision = '1',
-      category = 'lib',
     ),
     steps = [
       step_setup,

@@ -6,13 +6,13 @@ from collections import namedtuple
 #from bes.common import check, node
 #from bes.text import white_space
 
-class package_metadata(namedtuple('package_metadata', 'name,version,system,distro,archs,category,level,requirements,build_tool_requirements,build_requirements,env_vars,pkg_config_name')):
+class package_metadata(namedtuple('package_metadata', 'name,version,system,distro,archs,level,requirements,build_tool_requirements,build_requirements,env_vars,pkg_config_name')):
 
-  def __new__(clazz, name, version, system, distro, archs, category, level, requirements,
+  def __new__(clazz, name, version, system, distro, archs, level, requirements,
               build_tool_requirements, build_requirements, env_vars, pkg_config_name):
     if env_vars:
       check.check_masked_value_list(env_vars)
-    return clazz.__bases__[0].__new__(name, version, system, distro, archs, category, level, requirements,
+    return clazz.__bases__[0].__new__(name, version, system, distro, archs, level, requirements,
                                       build_tool_requirements, build_requirements, env_vars, pkg_config_name)
 
 #  def __str__(self):

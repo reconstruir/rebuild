@@ -6,7 +6,7 @@ import os.path as path
 from bes.common import dict_util, json_util, string_util
 from bes.fs import file_util, temp_file, temp_item
 from bes.archive import archiver
-from rebuild.base import build_arch, build_category, build_system, build_target, package_descriptor, requirement, requirement_list
+from rebuild.base import build_arch, build_system, build_target, package_descriptor, requirement, requirement_list
 from collections import namedtuple
 
 class unit_test_packages(object):
@@ -16,84 +16,64 @@ class unit_test_packages(object):
   TEST_PACKAGES = {
     'water-1.0.0-0': {
       'requirements': '',
-      'properties': { 'category': 'lib' },
     },
     'water-1.0.0-1': {
       'requirements': '',
-      'properties': { 'category': 'lib' },
     },
     'water-1.0.0-2': {
       'requirements': '',
-      'properties': { 'category': 'lib' },
     },
     'fiber-1.0.0-0': {
       'requirements': '',
-      'properties': { 'category': 'lib' },
     },
     'citrus-1.0.0-0': {
       'requirements': '',
-      'properties': { 'category': 'lib' },
     },
     'fructose-3.4.5-6': {
       'requirements': '',
-      'properties': { 'category': 'lib' },
     },
     'mercury-1.2.8-0': {
       'requirements': '',
-      'properties': { 'category': 'lib' },
     },
     'mercury-1.2.8-1': {
       'requirements': '',
-      'properties': { 'category': 'lib' },
     },
     'mercury-1.2.9-0': {
       'requirements': '',
-      'properties': { 'category': 'lib' },
     },
     'mercury_conflict-3.2.1-0': {
       'requirements': '',
       'name_override': 'mercury',
-      'properties': { 'category': 'lib' },
     },
     'arsenic-1.2.9-0': {
       'requirements': '',
-      'properties': { 'category': 'lib' },
     },
     'arsenic-1.2.9-1': {
       'requirements': '',
-      'properties': { 'category': 'lib' },
     },
     'arsenic-1.2.10-0': {
       'requirements': '',
-      'properties': { 'category': 'lib' },
     },
     'apple-1.2.3-1': {
       'requirements': 'fruit(all) >= 1.0.0',
-      'properties': { 'category': 'lib' },
     },
     'fruit-1.0.0': {
       'requirements': 'fructose(all) >= 3.4.5-6 fiber(all) >= 1.0.0-0 water(all) >= 1.0.0-0',
-      'properties': { 'category': 'lib' },
     },
     'pear-1.2.3-1': {
       'requirements': 'fruit(all) >= 1.0.0',
-      'properties': { 'category': 'lib' },
     },
     'orange-6.5.4-3': {
       'requirements': 'fruit(all) >= 1.0.0-0 citrus(all) >= 1.0.0-0',
-      'properties': { 'category': 'lib' },
     },
     'orange_juice-1.4.5': {
       'requirements': 'orange(all) >= 6.5.4-3',
-      'properties': { 'category': 'lib' },
     },
     'pear_juice-6.6.6': {
       'requirements': 'pear(all) >= 1.2.3-1',
-      'properties': { 'category': 'lib' },
     },
     'smoothie-1.0.0': {
       'requirements': 'orange(all) >= 6.5.4-3 pear(all) >= 1.2.3-1 apple(all) >= 1.2.3-1',
-      'properties': { 'category': 'lib' },
     },
    }
   for k, v in TEST_PACKAGES.items():
@@ -136,7 +116,7 @@ class unit_test_packages(object):
   def make_test_package(clazz, name, version, requirements,
                         system, build_level, properties = None,
                         name_override = None, debug = False):
-    props = { 'category': build_category.LIB } 
+    props = {}
     props.update(properties or {})
     pi = package_descriptor(name, version, requirements = requirements, properties = props)
     assert build_system.system_is_valid(system)

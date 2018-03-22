@@ -62,7 +62,7 @@ class recipe(namedtuple('recipe', 'format_version,filename,enabled,properties,re
     value = properties[key]
     if key in [ 'export_compilation_flags_requirements', 'extra_cflags', 'env_vars']:
       properties_node.children.append(clazz._system_specific_property_to_node(key, properties))
-    elif key in [ 'category', 'download_url', 'pkg_config_name' ]:
+    elif key in [ 'download_url', 'pkg_config_name' ]:
       properties_node.children.append(node('%s=%s' % (key, value)))
     else:
       if clazz.CHECK_UNKNOWN_PROPERTIES:

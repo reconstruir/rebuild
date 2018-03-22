@@ -53,9 +53,6 @@ class builder_recipe_loader(object):
       #resolved_env_vars = env_vars.resolve(self, system):
       #print('FUCK: LOADED env_vars[0]: %s - %s' % (str(env_vars[0]), type(env_vars[0])))
     
-    # Check that some important properties are given
-    if not package_descriptor.PROPERTY_CATEGORY in properties:
-      raise RuntimeError('\"%s\" property missing from %s' % (package_descriptor.PROPERTY_CATEGORY, filename))
     descriptor = package_descriptor(name, version,
                                     requirements = requirements,
                                     properties = properties)

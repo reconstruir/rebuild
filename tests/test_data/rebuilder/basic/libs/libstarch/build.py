@@ -13,7 +13,6 @@ def rebuild_recipes(env):
     properties = env.args(
       name = 'libstarch',
       version = '1.0.0',
-      category = 'lib',
     ),
     steps = [
       'step_setup', {

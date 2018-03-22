@@ -7,7 +7,6 @@ def rebuild_recipes(env):
     properties = env.args(
       name = 'libopenjpeg',
       version = '2.1-1',
-      category = 'lib',
     ),
     requirements = [ 
       #'all: cmake >= 3.3.1-1',

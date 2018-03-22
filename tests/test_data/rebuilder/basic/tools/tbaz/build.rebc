@@ -2,9 +2,6 @@
 
 package tbaz-1.0.0
 
-  properties
-    category=tool
-
   steps
     step_setup
       no_tarballs: True

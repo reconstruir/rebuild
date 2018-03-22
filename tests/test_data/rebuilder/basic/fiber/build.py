@@ -8,7 +8,6 @@ def rebuild_recipes(env):
     properties = env.args(
       name = 'fiber',
       version = '1.0.0-0',
-      category = 'lib',
     ),
     instructions = '''
 libfiber1

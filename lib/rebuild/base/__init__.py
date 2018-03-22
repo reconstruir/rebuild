@@ -3,7 +3,6 @@
 
 from .build_arch import build_arch
 from .build_blurb import build_blurb
-from .build_category import build_category
 from .build_level import build_level
 from .build_system import build_system
 from .build_target import build_target

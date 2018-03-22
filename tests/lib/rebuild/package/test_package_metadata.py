@@ -4,7 +4,6 @@
 from bes.testing.unit_test import unit_test
 import os.path as path
 #from bes.fs import temp_file, temp_item
-#from rebuild.base import build_category, build_target, build_version, package_descriptor, requirement, requirement_list
 from rebuild.package import package_metadata as PM
 
 class test_package_metadata(unit_test):

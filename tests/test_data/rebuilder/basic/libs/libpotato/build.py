@@ -19,7 +19,6 @@ def rebuild_recipes(env):
     properties = env.args(
       name = 'libpotato',
       version = '1.0.0',
-      category = 'lib',
       export_compilation_flags_requirements = [
         'all: libstarch',
       ],

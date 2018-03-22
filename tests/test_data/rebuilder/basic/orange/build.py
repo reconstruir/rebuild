@@ -8,7 +8,6 @@ def rebuild_recipes(env):
     properties = env.args(
       name = 'orange',
       version = '6.5.4-3',
-      category = 'lib',
     ),
     instructions = '''
 liborange1

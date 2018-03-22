@@ -7,7 +7,6 @@ def rebuild_recipes(env):
     properties = env.args(
       name = 'zlib',
       version = '1.2.8-1',
-      category = 'lib',
     ),
     steps = [
       'step_setup',

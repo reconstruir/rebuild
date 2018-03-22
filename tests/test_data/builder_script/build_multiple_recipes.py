@@ -24,7 +24,6 @@ def rebuild_recipes(env):
       properties = env.args(
         name = 'libsdl2',
         version = '2.0.5',
-        category = 'lib',
         pkg_config_name = 'sdl2',
         export_compilation_flags_requirements = [
           #          'all: ALL_DEPS',
@@ -77,7 +76,6 @@ def rebuild_recipes(env):
       properties = env.args(
         name = 'libsdl2_image',
         version = '2.0.1',
-        category = 'lib',
         pkg_config_name = 'SDL2_image',
         export_compilation_flags_requirements = [
           'all: ALL_DEPS',
@@ -114,7 +112,6 @@ def rebuild_recipes(env):
       properties = env.args(
         name = 'libsdl2_mixer',
         version = '2.0.1',
-        category = 'lib',
       ),
       requirements = [
         'all: libsdl2 >= 2.0.5',
@@ -145,7 +142,6 @@ def rebuild_recipes(env):
       properties = env.args(
         name = 'libsdl2_ttf',
         version = '2.0.13',
-        category = 'lib',
         pkg_config_name = 'SDL2_ttf',
       ),
       requirements = [
