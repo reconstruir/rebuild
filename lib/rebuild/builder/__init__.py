@@ -5,7 +5,6 @@ from rebuild.base import build_target
 
 from .builder import builder
 from .builder_cli import builder_cli
-from .builder_resolver import builder_resolver
 from .builder_script import builder_script
 from .builder_script_manager import builder_script_manager
 from .check import check, check_result

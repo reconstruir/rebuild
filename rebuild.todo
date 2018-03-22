@@ -686,4 +686,22 @@ mar 17
 mar 18
  - split build_sytem into build_os and build_os_mask
  - reorg value_type, masked_value and recipe_parser_util into a coherent class hierarchy for values
+ - reimplement package_descriptor_list a proper typed_list subclass
+ - reimplement package_list as a proper typed_list subclass
+ - make package_descriptor be a namedtuple and remove methods that check for immutable properties
  
+mar 19
+ - figure out a way to add android ndk tool to all deps when building for android so dont have to use the one in ~/.rebuild/
+ - when resolving values use a standard list with overritten methods for get that set defaults correctly
+
+mar 20
+- is_artifact_manager not needed
+- s/package.info/package.descriptor
+- lots of other package fields have old names
+- maybe package_manager should accept artifact manager in its ctor instead of passing it in in methods
+- test_package_manager.py might be recreating the test artifact manager over and over
+- add environment var for changing DEBUG on off in tests that do droppings
+- package_manager doesn do anything about satisfying version or revision in _missing_requirements() and in general
+- requirement_manager has a lot of cut-n-paste code in the resolve_ methods
+- theres no unit test for export_compilation_flags_requirements and also not one where its system masked
+- package_manager.install_tarball() needs an argument telling it if want run or build or both packages

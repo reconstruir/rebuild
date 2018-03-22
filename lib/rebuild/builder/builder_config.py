@@ -32,6 +32,7 @@ class builder_config(object):
     self.users = False
     self.verbose = False
     self.wipe = False
+    self.scratch = False
     self.third_party_prefix = self.DEFAULT_THIRD_PARTY_PREFIX
     self.timestamp = time_util.timestamp()
     

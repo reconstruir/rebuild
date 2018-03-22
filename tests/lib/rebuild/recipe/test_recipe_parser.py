@@ -379,9 +379,6 @@ package foo-1.2.3-4
     linux: wine >= 2.0
     grape >= 3.0
 
-  build_tool_requirements
-    all: kiwi >= 2.4.6
-
   steps
     step_apple
       apple_bool_value: True
@@ -413,18 +410,10 @@ package foo-1.2.3-4
     category=lib
     foo="f o o"
 
-  caca_requirements
-    all: cheese >= 1.2
-    linux: wine >= 2.0
-    all: grape >= 3.0
-
   requirements
     all: cheese >= 1.2
     linux: wine >= 2.0
     all: grape >= 3.0
-
-  build_tool_requirements
-    all: kiwi >= 2.4.6
 
   steps
     step_apple

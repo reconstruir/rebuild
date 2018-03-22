@@ -134,6 +134,26 @@ class artifact_manager(object):
       self._requirement_managers[build_target.build_path] = self._make_requirement_manager(build_target)
     return self._requirement_managers[build_target.build_path]
 
+  def get_requirement_manager(self, build_target):
+    if not build_target.build_path in self._requirement_managers:
+      self._requirement_managers[build_target.build_path] = self._make_requirement_manager(build_target)
+    return self._requirement_managers[build_target.build_path]
+
+  def resolve(self, names, build_target):
+    return self.get_requirement_manager(build_target).resolve(names, build_target.system)
+  
+  def resolve_deps(self, names, build_target):
+    return self.get_requirement_manager(build_target).resolve_deps(names, build_target.system)
+
+  def resolve_deps_caca_run_build(self, names, build_target):
+    return self.get_requirement_manager(build_target).resolve_deps_caca_run_build(names, build_target.system)
+  
+  def resolve_deps_caca_run(self, names, build_target):
+    return self.get_requirement_manager(build_target).resolve_deps_caca_run(names, build_target.system)
+  
+  def resolve_deps_caca_tool(self, names, build_target, caca):
+    return self.get_requirement_manager(build_target).resolve_deps_caca_tool(names, build_target.system, caca)
+  
   def _make_requirement_manager(self, build_target):
     rm = requirement_manager()
     for package in self.latest_available_packages(build_target):

@@ -22,7 +22,6 @@ class test_builder_script(unit_test):
     expected_properties = { package_descriptor.PROPERTY_CATEGORY: build_category.LIB }
     self.assertEqual( package_descriptor('zlib', '1.2.8-1', requirements = expected_requirements, properties = expected_properties).__dict__, script.descriptor.__dict__ )
     self.assertEqual( [], script.descriptor.requirements )
-    self.assertEqual( [], script.descriptor.build_tool_requirements )
 
   def test_libjpeg(self):
     filename = self.data_path('build_libjpeg.py')
@@ -31,37 +30,31 @@ class test_builder_script(unit_test):
     expected_properties = { package_descriptor.PROPERTY_CATEGORY: build_category.LIB }
     self.assertEqual( package_descriptor('libjpeg', '9a-1', requirements = expected_requirements, properties = expected_properties), script.descriptor )
     self.assertEqual( [], script.descriptor.requirements )
-    self.assertEqual( [], script.descriptor.build_tool_requirements )
 
   def test_libopenjpeg(self):
     filename = self.data_path('build_libopenjpeg.py')
     script = self._load_builder_script(filename)
 
-    expected_requirements = []
+    expected_requirements = requirement.parse('cmake(all) >= 3.3.1-1')
     expected_properties = { package_descriptor.PROPERTY_CATEGORY: build_category.LIB }
-    expected_build_tool_requirements = [] #requirement.parse('cmake(all) >= 3.3.1-1')
     expected_package_info = package_descriptor('libopenjpeg', '2.1-1',
                                                requirements = expected_requirements,
-                                               build_tool_requirements = expected_build_tool_requirements,
                                                properties = expected_properties)
     self.assertEqual( expected_package_info, script.descriptor )
     self.assertEqual( expected_requirements, script.descriptor.requirements )
-    self.assertEqual( expected_build_tool_requirements, script.descriptor.build_tool_requirements )
 
   def test_libpng(self):
     filename = self.data_path('build_libpng.py')
     script = self._load_builder_script(filename)
 
-    expected_requirements = [] #requirement.parse('zlib(all) >= 1.2.8-1')
+    expected_requirements = requirement.parse('zlib(all) >= 1.2.8-1')
     expected_properties = { package_descriptor.PROPERTY_CATEGORY: build_category.LIB }
-    expected_build_tool_requirements = []
     expected_package_info = package_descriptor('libpng', '1.6.18-1',
                                                requirements = expected_requirements,
                                                properties = expected_properties)
 
     self.assertEqual( expected_package_info, script.descriptor )
     self.assertEqual( expected_requirements, script.descriptor.requirements )
-    self.assertEqual( expected_build_tool_requirements, script.descriptor.build_tool_requirements )
     self.assertEqual( build_category.LIB, script.descriptor.properties[package_descriptor.PROPERTY_CATEGORY] )
 
   def _load_builder_script(self, filename):

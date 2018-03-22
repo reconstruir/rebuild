@@ -47,6 +47,7 @@ class builder_cli(object):
     self.parser.add_argument('--deps-only', action = 'store_true', help = 'Only build dependencies')
     self.parser.add_argument('--no-network', action = 'store_true', help = 'Down go to the network.')
     self.parser.add_argument('--skip-tests', action = 'store_true', help = 'Skip the tests part of the build.')
+    self.parser.add_argument('--scratch', action = 'store_true', help = 'Start from scratch by deleting existing data.')
     self.parser.add_argument('--filter', nargs = '+', default = None, help = 'filter the list of build files to the given list.')
     self.parser.add_argument('-r', '--root', action = 'store', type = str, default = path.abspath('BUILD'), help = 'Root dir where to store the build.')
     self.parser.add_argument('target_packages', action = 'append', nargs = '*', type = str)
@@ -118,6 +119,7 @@ class builder_cli(object):
     config.users = args.users
     config.verbose = args.verbose
     config.wipe = args.wipe
+    config.scratch = args.scratch
     config.third_party_prefix = args.third_party_prefix
     if args.timestamp:
       config.timestamp = args.timestamp

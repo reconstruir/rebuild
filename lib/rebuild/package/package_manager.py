@@ -124,14 +124,14 @@ class package_manager(object):
 #    libs = pkg_config.libs(pkg_config_names, PKG_CONFIG_PATH = pkg_config_path, static = static)
     return None # ( cflags, libs )
 
-  def install_tarball(self, pkg_tarball):
+  def install_tarball(self, pkg_tarball, artifact_manager):
 
     pkg = package(pkg_tarball)
 
     if self.is_installed(pkg.info.name):
       raise PackageAlreadyInstallededError('package %s already installed' % (pkg.info.name))
-
-    missing_requirements = self._missing_requirements(pkg, pkg.system)
+    missing_requirements = self._missing_requirements(pkg, pkg.build_target, artifact_manager)
+    
     if missing_requirements:
       raise PackageMissingRequirementsError('package %s missing requirements: %s' % (pkg.info.name, ', '.join(missing_requirements)))
       
@@ -169,17 +169,17 @@ class package_manager(object):
         conflicts.append(f)
     return sorted(conflicts)
 
-  # FIXME: what about satisfying version and revision
-  def _missing_requirements(self, pkg, system):
-    requirements = pkg.info.requirements_for_system(system)
-    if not requirements:
+  def _missing_requirements(self, pkg, build_target, artifact_manager):
+    requirements = pkg.info.requirements.filter_by_system(build_target.system).filter_by_hardness(['BUILD', 'RUN']).names()
+    resolved_deps = artifact_manager.resolve_deps_caca_run_build(requirements, build_target)
+    if not resolved_deps:
       return []
     missing_requirements = []
-    for req in requirements:
-      if not self._db.has_package(req.name):
-        missing_requirements.append(req.name)
+    for req in resolved_deps:
+      if not self._db.has_package(req):
+        missing_requirements.append(req)
     return missing_requirements
-    
+  
   @classmethod
   def pkg_desc(clazz, tarball):
     return package(tarball).info
@@ -203,18 +203,18 @@ class package_manager(object):
         return False
       elif comparison < 0:
         self.uninstall_package(pkg.info.name)
-        self.install_tarball(pkg.tarball)
+        self.install_tarball(pkg.tarball, artifact_manager)
         return True
       else:
         if allow_downgrade:
           self.uninstall_package(pkg.info.name)
-          self.install_tarball(pkg.tarball)
+          self.install_tarball(pkg.tarball, artifact_manager)
           return True
         else:
           print(('warning: installed package %s newer than available package %s' % (old_pkg_desc.full_name, pkg_desc.full_name)))
         return False
     else:
-      self.install_tarball(pkg.tarball)
+      self.install_tarball(pkg.tarball, artifact_manager)
       return True
 
   def install_packages(self, packages, build_target, artifact_manager, allow_downgrade = False, force_install = False):
@@ -272,39 +272,4 @@ class package_manager(object):
     'load a tarball and resturn a package object with requirements resolved according to packages currently installed.'
     if not package.package_is_valid(filename):
       raise RuntimeError('Not a valid package: %s' % (filename))
-    pkg = package(filename)
-    all_available_packages = artifact_manager.latest_available_packages(build_target)
-    all_available_descriptors = package_list.descriptors(all_available_packages)
-    all_available_descriptors = package_descriptor_list.filter_out_by_name(all_available_descriptors, pkg.info.name)
-    all_descriptors = all_available_descriptors + [ pkg.info ]
-    dependency_map = package_descriptor_list.dependency_map(all_descriptors)
-    descriptor_map = package_descriptor_list.descriptor_map(all_descriptors)
-    self._resolve_requirements(pkg.info, descriptor_map, dependency_map, build_target)
-    return pkg
-
-  @classmethod
-  def _resolve_requirements(clazz, pkg_desc, descriptor_map, dependency_map, build_target):
-    'resolve requirements for one pkg.'
-    assert pkg_desc
-
-    requirements = pkg_desc.requirements.resolve(build_target.system)
-    requirements_names = [ req.name for req in requirements ]
-    resolved_requirements = dependency_resolver.resolve_and_order_deps(requirements_names,
-                                                                       descriptor_map,
-                                                                       dependency_map)
-    
-    build_requirements = pkg_desc.build_requirements.resolve(build_target.system)
-    build_requirements_names = [ req.name for req in build_requirements ]
-    resolved_build_requirements = dependency_resolver.resolve_and_order_deps(build_requirements_names,
-                                                                             descriptor_map,
-                                                                             dependency_map)
-
-    build_tool_requirements = pkg_desc.build_tool_requirements.resolve(build_target.system)
-    build_tool_requirements_names = [ req.name for req in build_tool_requirements ]
-    resolved_build_tool_requirements = dependency_resolver.resolve_and_order_deps(build_tool_requirements_names,
-                                                                             descriptor_map,
-                                                                             dependency_map)
-    
-    pkg_desc.resolved_requirements = resolved_requirements
-    pkg_desc.resolved_build_requirements = resolved_build_requirements
-    pkg_desc.resolved_build_tool_requirements = resolved_build_tool_requirements
+    return package(filename)

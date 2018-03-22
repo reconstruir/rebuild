@@ -9,8 +9,8 @@ def rebuild_recipes(env):
       version = '2.1-1',
       category = 'lib',
     ),
-    build_tool_requirements = [ 
-#      'all: cmake >= 3.3.1-1',
+    requirements = [ 
+      #'all: cmake >= 3.3.1-1',
     ],
     steps = [
       'step_setup',

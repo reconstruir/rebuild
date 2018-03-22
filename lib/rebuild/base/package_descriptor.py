@@ -21,22 +21,26 @@ class package_descriptor(object):
   PROPERTY_CATEGORY = 'category'
   PROPERTY_PKG_CONFIG_NAME = 'pkg_config_name'
   
-  def __init__(self, name, version, requirements = None, build_tool_requirements = None,
-               build_requirements = None, properties = None, caca_requirements = None):
+  def __init__(self, name, version,
+               #requirements = None,
+               #build_tool_requirements = None,
+               #build_requirements = None,
+               properties = None,
+               requirements = None):
     check.check_string(name)
 #    check.check_build_version(version)
-
-    caca_requirements = requirement_list(caca_requirements)
-    check.check_requirement_list(caca_requirements)
 
     requirements = requirement_list(requirements)
     check.check_requirement_list(requirements)
 
-    build_tool_requirements = requirement_list(build_tool_requirements)
-    check.check_requirement_list(build_tool_requirements)
+###    requirements = requirement_list(requirements)
+###    check.check_requirement_list(requirements)
 
-    build_requirements = requirement_list(build_requirements)
-    check.check_requirement_list(build_requirements)
+###    build_tool_requirements = requirement_list(build_tool_requirements)
+###    check.check_requirement_list(build_tool_requirements)
+
+###    build_requirements = requirement_list(build_requirements)
+###    check.check_requirement_list(build_requirements)
 
     properties = properties or {}
 
@@ -46,15 +50,6 @@ class package_descriptor(object):
     self._version = build_version.validate_version(version)
 
     self._requirements = self.parse_requirements(requirements)
-    self._resolved_requirements = None
-
-    self._build_tool_requirements = self.parse_requirements(build_tool_requirements)
-    self._resolved_build_tool_requirements = None
-
-    self._build_requirements = self.parse_requirements(build_requirements)
-    self._resolved_build_requirements = None
-
-    self._caca_requirements = self.parse_requirements(caca_requirements)
     
     self._properties = properties
 
@@ -81,30 +76,6 @@ class package_descriptor(object):
   @requirements.setter
   def requirements(self, value):
     raise RuntimeError('requirements are immutable.')
-
-  @property
-  def build_tool_requirements(self):
-    return self._build_tool_requirements
-
-  @build_tool_requirements.setter
-  def build_tool_requirements(self, value):
-    raise RuntimeError('build_tool_requirements are immutable.')
-
-  @property
-  def build_requirements(self):
-    return self._build_requirements
-
-  @build_requirements.setter
-  def build_requirements(self, value):
-    raise RuntimeError('build_requirements are immutable.')
-
-  @property
-  def caca_requirements(self):
-    return self._caca_requirements
-
-  @caca_requirements.setter
-  def caca_requirements(self, value):
-    raise RuntimeError('caca_requirements are immutable.')
   
   @property 
   def properties(self):
@@ -113,39 +84,6 @@ class package_descriptor(object):
   @properties.setter
   def properties(self, value):
     raise RuntimeError('properties are immutable.')
-
-  @property
-  def resolved_requirements(self):
-    return self._resolved_requirements or []
-
-  @resolved_requirements.setter
-  def resolved_requirements(self, value):
-    if self._resolved_requirements != None:
-      raise RuntimeError('resolved_requirements can only be set once')
-    check.check_package_descriptor_seq(value)
-    self._resolved_requirements = value
-
-  @property
-  def resolved_build_tool_requirements(self):
-    return self._resolved_build_tool_requirements or []
-
-  @resolved_build_tool_requirements.setter
-  def resolved_build_tool_requirements(self, value):
-    if self._resolved_build_tool_requirements != None:
-      raise RuntimeError('resolved_build_tool_requirements can only be set once')
-    check.check_package_descriptor_seq(value)
-    self._resolved_build_tool_requirements = value
-
-  @property
-  def resolved_build_requirements(self):
-    return self._resolved_build_requirements or []
-
-  @resolved_build_requirements.setter
-  def resolved_build_requirements(self, value):
-    if self._resolved_build_requirements != None:
-      raise RuntimeError('resolved_build_requirements can only be set once')
-    check.check_package_descriptor_seq(value)
-    self._resolved_build_requirements = value
 
   @property
   def full_name(self):
@@ -166,14 +104,8 @@ class package_descriptor(object):
   def __str__(self):
     part1 = self.full_name
     part2 = []
-    if self.caca_requirements:
-      part2.append(self.caca_requirements.to_string())
     if self.requirements:
       part2.append(self.requirements.to_string())
-    if self.build_tool_requirements:
-      part2.append(self.build_tool_requirements.to_string())
-    if self.build_requirements:
-      part2.append(self.build_requirements.to_string())
     if self.properties:
       part2.append(self.properties_to_string())
     part2 = self.STR_PROPERTIES_DELIMITER.join(part2)
@@ -198,17 +130,8 @@ class package_descriptor(object):
     version_rv = build_version.compare(self.version, other.version)
     if version_rv < 0:
       return True
-    caca_requirements_rv = cmp(self.caca_requirements, other.caca_requirements)
-    if caca_requirements_rv < 0:
-      return True
     requirements_rv = cmp(self.requirements, other.requirements)
     if requirements_rv < 0:
-      return True
-    build_tool_requirements_rv = cmp(self.build_tool_requirements, other.build_tool_requirements)
-    if build_tool_requirements_rv < 0:
-      return True
-    build_requirements_rv = cmp(self.build_requirements, other.build_requirements)
-    if build_requirements_rv < 0:
       return True
     if self.properties.keys() < other.properties.keys():
       return True
@@ -221,10 +144,7 @@ class package_descriptor(object):
     return {
       'name': self.name,
       'version': str(self.version),
-      'caca_requirements': [ req.to_string_colon_format() for req in self.caca_requirements ],
       'requirements': [ req.to_string_colon_format() for req in self.requirements ],
-      'build_tool_requirements': [ req.to_string_colon_format() for req in self.build_tool_requirements ],
-      'build_requirements': [ req.to_string_colon_format() for req in self.build_requirements ],
       'properties': self.properties,
     }
 
@@ -238,16 +158,10 @@ class package_descriptor(object):
   def parse_dict(clazz, d):
     assert 'name' in d
     assert 'version' in d
-    caca_requirements = clazz.parse_requirements(d.get('caca_requirements', None))
     requirements = clazz.parse_requirements(d.get('requirements', None))
-    build_tool_requirements = clazz.parse_requirements(d.get('build_tool_requirements', None))
-    build_requirements = clazz.parse_requirements(d.get('build_requirements', None))
     properties = d.get('properties', {})
     return package_descriptor(str(d['name']), str(d['version']),
-                              caca_requirements = caca_requirements,
                               requirements = requirements,
-                              build_tool_requirements = build_tool_requirements,
-                              build_requirements = build_requirements,
                               properties = properties,)
 
   @classmethod
@@ -270,8 +184,7 @@ class package_descriptor(object):
       if check.is_requirement(dep):
         result.append(dep)
       elif string_util.is_string(dep):
-        #assert False
-        reqs = reitred_masked_config.parse_requirement(dep).data
+        reqs = requirement_list.parse(dep)
         result.extend(reqs)
       else:
         raise RuntimeError('Invalid requirement: %s - %s' % (str(dep), type(dep)))
@@ -316,49 +229,7 @@ class package_descriptor(object):
     return build_version.compare(pi1.version, pi2.version)
 
   @property
-  def caca_requirements_names(self):
-    return set([ req.name for req in self.caca_requirements ])
-
-  @property
   def requirements_names(self):
     return set([ req.name for req in self.requirements ])
-
-  @property
-  def build_tool_requirements_names(self):
-    return set([ req.name for req in self.build_tool_requirements ])
-
-  @property
-  def build_requirements_names(self):
-    return set([ req.name for req in self.build_requirements ])
-
-  @property
-  def resolved_requirements_names(self):
-    return set([ req.name for req in self.resolved_requirements ])
-
-  @property
-  def resolved_build_tool_requirements_names(self):
-    return set([ req.name for req in self.resolved_build_tool_requirements ])
-  
-  @property
-  def resolved_build_requirements_names(self):
-    return set([ req.name for req in self.resolved_build_requirements ])
-  
-  def requirements_for_system(self, system):
-    return [ req for req in self.requirements if build_system.mask_matches(req.system_mask, system) ]
-
-  def requirements_names_for_system(self, system):
-    return set([ req.name for req in self.requirements_for_system(system) ])
-  
-  def build_tool_requirements_for_system(self, system):
-    return [ req for req in self.build_tool_requirements if build_system.mask_matches(req.system_mask, system) ]
-
-  def build_tool_requirements_names_for_system(self, system):
-    return set([ req.name for req in self.build_tool_requirements_for_system(system) ])
-
-  def build_requirements_for_system(self, system):
-    return [ req for req in self.build_requirements if build_system.mask_matches(req.system_mask, system) ]
-
-  def build_requirements_names_for_system(self, system):
-    return set([ req.name for req in self.build_requirements_for_system(system) ])
 
 check.register_class(package_descriptor)

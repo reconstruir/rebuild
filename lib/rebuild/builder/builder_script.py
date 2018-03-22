@@ -55,14 +55,21 @@ class builder_script(object):
   def properties(self):
     return self.recipe.properties
     
-  @property
   def requirements(self):
-    return self.descriptor.requirements
-    
-  @property
-  def build_tool_requirements(self):
-    return self.descriptor.build_tool_requirements
-    
+    return self.env.requirements(self.descriptor)
+
+  def tool_requirements(self):
+    return self.env.tool_requirements(self.descriptor)
+  
+  def resolve_deps_caca_tool(self, include_names):
+    return self.env.resolve_deps_caca_tool(self.descriptor, include_names)
+  
+  def resolve_deps_poto_build_run(self, include_names):
+    return self.env.resolve_deps_poto_build_run(self.descriptor, include_names)
+  
+  def resolve_deps_poto_run(self, include_names):
+    return self.env.resolve_deps_poto_run(self.descriptor, include_names)
+  
   @property
   def instructions(self):
     return self.recipe.instructions
@@ -114,7 +121,6 @@ class builder_script(object):
       for sources_key in step.sources_keys():
         caca = args.get(sources_key, []) or []
         if caca:
-          print('LOCO CHECKING for %s in %s - %s' % (sources_key, caca, type(caca)))
           assert isinstance(caca, list)
           from rebuild.recipe import recipe_install_file
           if check.is_recipe_install_file_seq(caca):
@@ -132,7 +138,7 @@ class builder_script(object):
       print('WEIRD a build script with no all_scripts: %s' % (self.filename))
       return []
     sources = []
-    for dep in self.descriptor.requirements:
+    for dep in self.requirements():
       dep_script = all_scripts[dep.name]
       sources += dep_script._sources(all_scripts)
     return sources

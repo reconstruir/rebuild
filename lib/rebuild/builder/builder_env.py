@@ -8,7 +8,7 @@ from rebuild.package import artifact_manager
 from rebuild.tools_manager import tools_manager
 from rebuild.checksum import checksum_manager
 from rebuild.package import artifact_manager
-from rebuild.base import package_descriptor
+from rebuild.base import package_descriptor, requirement_manager
 from bes.git import git_download_cache, git_util
 from rebuild.source_finder import repo_source_finder, local_source_finder, source_finder_chain
 from .builder_script_manager import builder_script_manager
@@ -23,7 +23,25 @@ class builder_env(object):
     self.downloads_manager = self._make_downloads_manager(config.build_root)
     self.artifact_manager = self._make_artifact_manager(config.build_root)
     self.script_manager = builder_script_manager(filenames, self)
-    
+    self.requirement_manager = requirement_manager()
+    for script in self.script_manager.scripts.values():
+      self.requirement_manager.add_package(script.descriptor)
+
+  def requirements(self, descriptor):
+    return self.requirement_manager.resolve_deps([descriptor.name], self.config.build_target.system)
+
+  def tool_requirements(self, descriptor):
+    return self.requirement_manager.resolve_tools_deps([descriptor.name], self.config.host_build_target.system)
+      
+  def resolve_deps_caca_tool(self, descriptor, include_names):
+    return self.requirement_manager.resolve_deps_caca_tool([descriptor.name], self.config.host_build_target.system, include_names)
+      
+  def resolve_deps_poto_build_run(self, descriptor, include_names):
+    return self.requirement_manager.resolve_deps_poto_build_run([descriptor.name], self.config.build_target.system, include_names)
+
+  def resolve_deps_poto_run(self, descriptor, include_names):
+    return self.requirement_manager.resolve_deps_poto_run([descriptor.name], self.config.build_target.system, include_names)
+  
   @classmethod
   def _make_source_finder(clazz, build_dir, source_dir, address, no_network):
     chain = source_finder_chain()

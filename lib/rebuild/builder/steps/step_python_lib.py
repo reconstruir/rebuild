@@ -26,7 +26,7 @@ class step_python_lib_build(step):
 
   @classmethod
   def parse_step_args(clazz, script, env, args):
-    return clazz.resolve_step_args_env_and_flags(script, args, 'python_lib_builder_env', 'python_lib_build_flags')
+    return clazz.resolve_step_args_env_and_flags(script, args, 'python_lib_build_env', 'python_lib_build_flags')
 
 class step_python_lib_install(step):
   'Install the dist produced by setuptools install.'

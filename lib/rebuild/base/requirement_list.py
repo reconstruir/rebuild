@@ -55,24 +55,5 @@ class requirement_list(type_checked_list):
   def names(self):
     'Return only the requirements that match system.'
     return [ req.name for req in self ]
-
-  '''
-  def dependency_map(self, hardness, system):
-    check.check_requirement_hardness_seq(descriptor)
-    dep_map = {}
-    for req in iter(self):
-      
-    for name, descriptor in self._packages.items():
-      reqs = descriptor.caca_requirements.filter_by_hardness(hardness)
-
-
-#    check.check_package_descriptor_seq(descriptors)
-#    dep_map = {}
-#    for pd in descriptors:
-#      if pd.name in dep_map:
-#        raise RuntimeError('already in dependency map: %s' % (pd.name))
-      dep_map[pd.name] = pd.requirements_names | pd.build_tool_requirements_names | pd.build_requirements_names
-    return dep_map
-'''
   
 check.register_class(requirement_list, include_seq = False)

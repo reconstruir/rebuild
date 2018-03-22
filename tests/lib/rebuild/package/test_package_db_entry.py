@@ -25,9 +25,6 @@ class test_database_entry(unit_test):
     "f2"
   ], 
   "info": { 
-    "build_requirements": [], 
-    "build_tool_requirements": [], 
-    "caca_requirements": [], 
     "name": "kiwi", 
     "properties": {}, 
     "requirements": [ 
@@ -48,8 +45,6 @@ class test_database_entry(unit_test):
     "f2"
   ],
   "info": {
-    "build_requirements": [], 
-    "build_tool_requirements": [], 
     "version": "6.7.8-2", 
     "name": "kiwi", 
     "requirements": [

@@ -73,10 +73,7 @@ class recipe_parser(object):
     name, version = self._parse_package_header(node)
     enabled = True
     properties = {}
-    caca_requirements = []
     requirements = []
-    build_tool_requirements = []
-    build_requirements = []
     steps = []
     instructions = []
     enabled = 'True'
@@ -87,15 +84,8 @@ class recipe_parser(object):
       if text.startswith('properties'):
         properties = self._parse_properties(child)
       elif text.startswith('requirements'):
-        caca_reqs, reqs, build_reqs, build_tool_reqs = self._parse_requirements_poto(child)
-        caca_requirements.extend(caca_reqs)
-        requirements.extend(reqs)
-        build_requirements.extend(build_reqs)
-        build_tool_requirements.extend(build_tool_reqs)
-      elif text.startswith('build_requirements'):
-        build_requirements.extend(self._parse_requirements(child))
-      elif text.startswith('build_tool_requirements'):
-        build_tool_requirements.extend(self._parse_requirements(child))
+        caca_reqs = self._parse_requirements(child)
+        requirements.extend(caca_reqs)
       elif text.startswith('steps'):
         steps = self._parse_steps(child)
       elif text.startswith('enabled'):
@@ -114,13 +104,10 @@ class recipe_parser(object):
       d.update(poto2.to_dict())
       properties['env_vars'] = d
     desc = package_descriptor(name, version,
-                              caca_requirements = caca_requirements,
                               requirements = requirements,
-                              build_tool_requirements = build_tool_requirements,
-                              build_requirements = build_requirements,
                               properties = properties)
-    return recipe(2, self.filename, enabled, properties, caca_requirements, requirements, build_requirements,
-                  build_tool_requirements, desc, instructions, steps, load, env_vars)
+    return recipe(2, self.filename, enabled, properties, requirements,
+                  desc, instructions, steps, load, env_vars)
 
   def _parse_package_header(self, node):
     parts = string_util.split_by_white_space(node.data.text, strip = True)
@@ -153,14 +140,6 @@ class recipe_parser(object):
       next_reqs = requirement_list.parse(req_text)
       reqs.extend(next_reqs)
     return requirement_list(reqs)
-
-  def _parse_requirements_poto(self, node):
-    caca_reqs = self._parse_requirements(node)
-    check.check_requirement_list(caca_reqs)
-    requirements = caca_reqs.filter_by_hardness('RUN')
-    build_tool_requirements = caca_reqs.filter_by_hardness('TOOL')
-    build_requirements = caca_reqs.filter_by_hardness('BUILD')
-    return caca_reqs, requirements, build_requirements, build_tool_requirements
 
   def _parse_env_vars(self, node):
     env_vars = []

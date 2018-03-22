@@ -8,7 +8,7 @@ from bes.common import check, dict_util, json_util, string_util
 from bes.fs import dir_util, file_replace, file_search, file_mime, file_util, temp_file
 from bes.match import matcher_filename
 from bes.python import setup_tools
-from rebuild.base import package_descriptor
+from rebuild.base import build_target, package_descriptor
 
 class package(object):
 
@@ -40,6 +40,13 @@ class package(object):
   @property
   def system(self):
     return self.metadata['system']
+
+  @property
+  def build_target(self):
+    return build_target(system = self.metadata['system'],
+                        level = self.metadata['level'],
+                        archs = self.metadata['archs'],
+                        distro = self.metadata['distro'])
 
   @property
   def files(self):
@@ -127,11 +134,6 @@ class package(object):
   def create_tarball(clazz, tarball_path, pkg_desc, build_target, stage_dir, env_dir):
     metadata_dict = dict_util.combine(pkg_desc.to_dict(), build_target.to_dict())
     assert 'properties' in metadata_dict
-#    print('FUCK: pkg_desc=%s' % (str(pkg_desc)))
-#    print('FUCK: pkg_desc.dict=%s' % (str(pkg_desc.to_dict())))
-#    print('FUCK: build_target=%s' % (str(build_target)))
-#    print('FUCK: build_target.dict=%s' % (str(build_target.to_dict())))
-#    print('FUCK: properties=%s' % (metadata_dict['properties']))
     metadata = json_util.to_json(metadata_dict, indent = 2)
     metadata_filename = temp_file.make_temp_file(suffix = '.json')
     file_util.save(metadata_filename, content = metadata)

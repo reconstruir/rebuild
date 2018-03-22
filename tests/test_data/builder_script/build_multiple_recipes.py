@@ -46,8 +46,6 @@ def rebuild_recipes(env):
 #        'xdamage(linux) >= 1.1.4',
 #        'mesa(linux) >= 13.0.3',
       ],
-      build_tool_requirements = [
-      ],
       steps = [
         'step_autoconf', {
           'configure_env': configure_env,

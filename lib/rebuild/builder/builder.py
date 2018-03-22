@@ -72,6 +72,7 @@ class builder(object):
     self._env.checksum_manager.remove_checksums(descriptors, self._env.config.build_target)
 
   def wipe_build_dirs(self, package_names):
+    self.blurb('wiping build dirs for: %s' % (' '.join(package_names)), fit = True)
     for package_name in package_names:
       script = self._env.script_manager.scripts[package_name]
       builds_dir = self._env.config.builds_dir(script.build_target)
@@ -82,6 +83,13 @@ class builder(object):
           self.blurb('wiping temporary build directory: %s' % (path.relpath(tmp_dir)))
         file_util.remove(tmp_dirs)
 
+  def scratch_existing_data(self):
+    dirs_to_scratch = [ 'artifacts', 'builds', 'checksums', 'tools' ]
+    dirs = [ path.join(self._env.config.build_root, d) for d in dirs_to_scratch ]
+    for d in dirs:
+      print('scratching existing data: %s' % (path.relpath(d)))
+      file_util.remove(d)
+    
   def wipe_old_build_dirs(self, package_names):
     for package_name in package_names:
       script = self._env.script_manager.scripts[package_name]
@@ -153,15 +161,20 @@ class builder(object):
       for name in package_names:
         script = self._env.script_manager.scripts[name]
         self._env.checksum_manager.ignore(script.descriptor.full_name)
-      
+
+    if self._env.config.scratch:
+      self.scratch_existing_data()
+
     if self._env.config.wipe:
-      self.blurb('wiping build dirs for: %s' % (' '.join(package_names)), fit = True)
       self.wipe_build_dirs(package_names)
 
     # Wipe build dirs older than 24 hours to prevent the tmp dir usage to grow unbounded
     self.wipe_old_build_dirs(self.package_names())
       
     if self._env.config.users:
+      #
+      # This whole section is broken
+      #
       depends_on_packages = []
       for package_name in package_names:
         depends_on_packages += self._depends_on(package_name)
@@ -169,38 +182,26 @@ class builder(object):
       package_names += depends_on_packages
     package_names = algorithm.unique(package_names)
 
-#      if self._env.config.tools_only and not script.descriptor.is_tool():
-#        self.blurb('skipping non tool: %s' % (filename))
-#        continue
-
     # If no package names are given we want them all
     package_names = package_names or self.package_names()
-    print('package_names: %s' % (' '.join(package_names)))
-    resolved_package_names = self._resolve_package_names(package_names)
-    print('resolved_package_names: %s' % (' '.join(resolved_package_names)))
-    partitioned = self._env.script_manager.partition_libs_and_tools(resolved_package_names)
-    print('part  libs: %s' % (' '.join(partitioned.libs)))
-    print('part tools: %s' % (' '.join(partitioned.tools)))
 
-    resolved_tool_names = self._resolve_package_names(partitioned.tools)
-    print('resolved_tool_names: %s' % (' '.join(resolved_tool_names)))
+    tools_to_build = self._env.requirement_manager.resolve_tools(package_names, self._env.config.host_build_target.system)
+    to_build = self._env.requirement_manager.resolve(package_names, self._env.config.host_build_target.system)
 
-#    raise SystemExit()
+    tools_to_build_names = [ pd.name for pd in tools_to_build ]
+    to_build_names = [ pd.name for pd in to_build ]
     
-    resolved_scripts = dict_util.filter_with_keys(self._env.script_manager.scripts, resolved_package_names)
-    packages_to_build = self._env.script_manager.build_order_flat(resolved_scripts, self._env.config.build_target.system)
-    
-    if self._env.config.deps_only:
-      for package_name in package_names:
-        packages_to_build.remove(package_name)
-
-    exit_code = self._build_packages(packages_to_build)
+    save_build_target = self._env.config.build_target
+    self._env.config.build_target = self._env.config.host_build_target
+    exit_code = self._build_packages(tools_to_build_names, 'tools')
+    self._env.config.build_target = save_build_target
     if exit_code != self.EXIT_CODE_SUCCESS:
-      pass
-    return exit_code
+      return exit_code
 
-  def _build_packages(self, packages_to_build):
-    self.blurb('building packages: %s' % (' '.join(packages_to_build)), fit = True)
+    return self._build_packages(to_build_names, 'packages')
+
+  def _build_packages(self, packages_to_build, label):
+    self.blurb('building %s: %s' % (label, ' '.join(packages_to_build)), fit = True)
     exit_code = self.EXIT_CODE_SUCCESS
     failed_packages = []
     for name in  packages_to_build:
@@ -223,11 +224,11 @@ class builder(object):
       
     return exit_code
 
-  def _resolve_package_names(self, package_names):
-    if not package_names:
-      return []
-    return self._env.script_manager.resolve_requirements(package_names,
-                                                         self._env.config.build_target.system)
+#  def _resolve_package_names(self, package_names):
+#    if not package_names:
+#      return []
+#    return self._env.script_manager.resolve_requirements(package_names,
+#                                                         self._env.config.build_target.system)
 
   def package_names(self):
     return self._env.script_manager.package_names()

@@ -2,6 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
+from bes.common import algorithm
 from bes.fs import file_util
 from bes.common import check, dict_util, object_util
 from bes.system import os_env
@@ -45,16 +46,19 @@ class rebuild_manager(object):
 
   ResolveResult = namedtuple('ResolveResult', 'available,missing,resolved')
   def resolve_packages(self, packages, build_target):
+    print('packages: %s - %s' % (str(packages), type(packages)))
+    resolved_names = algorithm.unique(self.artifact_manager.resolve_deps_caca_run_build(packages, build_target) + packages)
+    print('    resolved_names: %s - %s' % (str(resolved_names), type(resolved_names)))
     available_packages = self.artifact_manager.available_packages(build_target)
     available_names = [ p.info.name for p in available_packages ]
     missing_packages = dependency_resolver.check_missing(available_names, packages)
     if missing_packages:
       return self.ResolveResult(available_packages, missing_packages, [])
-    dep_map = self.dep_map(build_target)
-    resolved_deps = dependency_resolver.resolve_deps(dep_map, packages)
-    wanted_dep_map = dict_util.filter_with_keys(dep_map, resolved_deps)
-    packaged_in_order = dependency_resolver.build_order_flat(wanted_dep_map)
-    resolved = self.artifact_manager.resolve_packages(packaged_in_order, build_target)
+#    dep_map = self.dep_map(build_target)
+#    resolved_deps = dependency_resolver.resolve_deps(dep_map, packages)
+#    wanted_dep_map = dict_util.filter_with_keys(dep_map, resolved_deps)
+#    packaged_in_order = dependency_resolver.build_order_flat(wanted_dep_map)
+    resolved = self.artifact_manager.resolve_packages(resolved_names, build_target)
     resolved_infos = [ r.info for r in resolved ]
     return self.ResolveResult(available_packages, [], resolved_infos)
 

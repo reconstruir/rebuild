@@ -15,22 +15,15 @@ class step_setup_install_requirements(step):
 
   def execute(self, script, env, args):
     package_desc = script.descriptor
-    build_blurb.blurb('build', '%s - requirements: %s' % (package_desc.name, ' '.join([ t.name for t in package_desc.resolved_requirements ])))
-    
-    if package_desc.resolved_requirements:
-      script.requirements_manager.install_packages(package_desc.resolved_requirements,
-                                                   script.build_target,
-                                                   env.artifact_manager)
-    else:
+    requirements = env.requirement_manager.resolve_deps_caca_run_build([package_desc.name], env.config.build_target.system)
+    build_blurb.blurb('build', '%s - requirements: %s' % (package_desc.name, ' '.join(requirements)))
+
+    if not requirements:
       message = 'No requirements for %s' % (script.descriptor.full_name)
       self.log_d(message)
-      
-    if package_desc.resolved_build_requirements:
-      script.requirements_manager.install_packages(package_desc.resolved_build_requirements,
-                                                   script.build_target,
-                                                   env.artifact_manager)
-    else:
-      message = 'No build_requirements for %s' % (script.descriptor.full_name)
-      self.log_d(message)
-      
+      return step_result(True, message)
+    
+    script.requirements_manager.install_packages(env.requirement_manager.descriptors(requirements),
+                                                 script.build_target,
+                                                 env.artifact_manager)
     return step_result(True, None)

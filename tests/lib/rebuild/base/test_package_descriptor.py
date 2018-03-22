@@ -29,9 +29,6 @@ class test_package_descriptor(unit_test):
     self.maxDiff = None
     expected_json = '''\
 {
-  "build_requirements": [], 
-  "build_tool_requirements": [], 
-  "caca_requirements": [], 
   "name": "foo", 
   "properties": {},
   "requirements": [ 
@@ -41,7 +38,7 @@ class test_package_descriptor(unit_test):
   "version": "1.2.3-1" 
 }'''
 
-    pi = package_descriptor('foo', '1.2.3-1', self.TEST_REQUIREMENTS)
+    pi = package_descriptor('foo', '1.2.3-1', requirements = self.TEST_REQUIREMENTS)
     actual_json = pi.to_json()
 
     self.assert_string_equal_ws( expected_json, actual_json )
@@ -57,7 +54,7 @@ class test_package_descriptor(unit_test):
   ]
 }'''
 
-    expected_info = package_descriptor('foo', '1.2.3-1', self.TEST_REQUIREMENTS)
+    expected_info = package_descriptor('foo', '1.2.3-1', requirements = self.TEST_REQUIREMENTS)
     actual_info = package_descriptor.parse_json(json)
 
     self.assertEqual( expected_info, actual_info )
@@ -70,7 +67,7 @@ class test_package_descriptor(unit_test):
   "requirements": null
 }'''
 
-    expected_info = package_descriptor('foo', '1.2.3-1', None)
+    expected_info = package_descriptor('foo', '1.2.3-1')
     actual_info = package_descriptor.parse_json(json)
 
     self.assertEqual( expected_info, actual_info )

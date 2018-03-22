@@ -18,53 +18,13 @@ class builder_script_manager(object):
       build_blurb.blurb_verbose('build', 'loading %s' % (filename))
       builder_scripts = self._load_scripts(filename, env)
       for script in builder_scripts:
-        #print('%s: caca_requirements=%s' % (script.descriptor.name, str(script.descriptor.caca_requirements)))
+        #print('%s: requirements=%s' % (script.descriptor.name, str(script.descriptor.requirements)))
         self.scripts[script.descriptor.name] = script
         #print "filename: %s" % (script.filename)
         #print "    name: %s" % (script.name)
         #print "    requirements: %s" % (script.requirements)
         #print "    args: %s" % (script.args)
         #print ""
-
-    dependency_map = self._dependency_map(self.scripts, env.config.build_target.system)
-
-    '''
-    caca_rm = requirement_manager()
-    for script in self.scripts.values():
-      caca_rm.add_package(script.descriptor)
-    run_linux = caca_rm.resolve('cython', 'RUN', 'linux')
-    print('FUCK: run_macos: %s' % (caca_rm.resolve('cython', 'RUN', 'macos')))
-    print('FUCK: build_macos: %s' % (caca_rm.resolve('cython', 'BUILD', 'macos')))
-    print('FUCK: tool_macos: %s' % (caca_rm.resolve('cython', 'TOOL', 'macos')))
-    '''
-    
-    # Resolve and order all the dependencies for all the scripts
-    for name, script in sorted(self.scripts.items()):
-      build_blurb.blurb_verbose('build', 'resolving dependencies for: %s - %s' % (path.relpath(script.filename), script.descriptor.name))
-      try:
-        requirements = script.descriptor.requirements.resolve(env.config.build_target.system)
-        resolved_requirements = self._resolve_and_order_dependencies(requirements,
-                                                                     self.scripts, dependency_map)
-        build_tool_requirements = script.descriptor.build_tool_requirements.resolve(env.config.build_target.system)
-        resolved_build_tool_requirements = self._resolve_and_order_dependencies(build_tool_requirements,
-                                                                                self.scripts, dependency_map)
-        build_requirements = script.descriptor.build_requirements.resolve(env.config.build_target.system)
-        resolved_build_requirements = self._resolve_and_order_dependencies(build_requirements,
-                                                                           self.scripts, dependency_map)
-        
-        check.check_package_descriptor_seq(resolved_requirements)
-        check.check_package_descriptor_seq(resolved_build_tool_requirements)
-        check.check_package_descriptor_seq(resolved_build_requirements)
-
-        script.descriptor.resolved_requirements = resolved_requirements
-        script.descriptor.resolved_build_tool_requirements = resolved_build_tool_requirements
-        script.descriptor.resolved_build_requirements = resolved_build_requirements
-
-      except missing_dependency_error as ex:
-        raise missing_dependency_error('Missing dependency for %s: %s' % (script.filename, ' '.join(ex.missing_deps)), ex.missing_deps)
-      except Exception as ex:
-        print('caught unknown exception: %s' % (str(ex)))
-        raise
 
   def __getitem__(self, name):
     return self.scripts[name]
@@ -82,10 +42,9 @@ class builder_script_manager(object):
     'Return the build order for the given map of scripts.'
     return dependency_resolver.build_order_flat(clazz._dependency_map(scripts, system))
 
-  @classmethod
-  def bxuild_order(clazz, scripts, system):
+  def caca_build_order(self, names, system):
     'Return the build order for the given map of scripts.'
-    return dependency_resolver.build_order(clazz._dependency_map(scripts, system))
+    return dependency_resolver.build_order_flat(clazz._dependency_map(scripts, system))
 
   def resolve_requirements(self, names, system):
     '''
@@ -102,7 +61,7 @@ class builder_script_manager(object):
     dep_map = {}
     for name in sorted(scripts.keys()):
       script = scripts[name]
-      requirements_names = script.descriptor.requirements_names_for_system(system)
+      requirements_names = script.descriptor.requirements._names_for_system(system)
       build_tool_requirements_names = script.descriptor.build_tool_requirements_names_for_system(system)
       build_requirements_names = script.descriptor.build_requirements_names_for_system(system)
       dep_map[name] = requirements_names | build_requirements_names | build_tool_requirements_names
@@ -115,19 +74,6 @@ class builder_script_manager(object):
   def package_names(self):
     'Return all the package names.'
     return sorted(self.scripts.keys())
-
-  _partitioned = namedtuple('_partitioned', 'libs,tools')
-  def partition_libs_and_tools(self, package_names):
-    'Return a subset of all scripts for package_names.'
-    libs = []
-    tools = []
-    for package_name in package_names:
-      script = self.scripts[package_name]
-      if script.descriptor.is_tool():
-        tools.append(package_name)
-      else:
-        libs.append(package_name)
-    return self._partitioned(libs, tools)
         
   @classmethod
   def _load_scripts(clazz, filename, env):

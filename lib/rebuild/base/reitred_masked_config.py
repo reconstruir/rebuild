@@ -20,7 +20,7 @@ class reitred_masked_config(namedtuple('reitred_masked_config', 'system_mask,dat
     if self.system_mask:
       buf.write(self.system_mask)
       buf.write(': ')
-    buf.write(self.data)
+    buf.write(str(self.data))
     return buf.getvalue()
 
   @classmethod

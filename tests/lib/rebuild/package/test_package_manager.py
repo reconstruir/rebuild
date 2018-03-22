@@ -37,15 +37,17 @@ class test_package_manager(unittest.TestCase):
 
   def test_install_tarball_simple(self):
     pm = self.__make_test_pm()
+    am = self.__make_artifact_manager()
     water_tarball = unit_test_packages.make_water()
-    pm.install_tarball(water_tarball)
+    pm.install_tarball(water_tarball, am)
 
   def test_install_tarball_pkg_config(self):
     self.maxDiff = None
     pm = self.__make_test_pm()
+    am = self.__make_artifact_manager()
 
     water_tarball = unit_test_packages.make_water()
-    pm.install_tarball(water_tarball)
+    pm.install_tarball(water_tarball, am)
 
     PKG_CONFIG_PATH = pm.pkg_config_path
 
@@ -74,39 +76,43 @@ class test_package_manager(unittest.TestCase):
 
   def test_install_tarball_conflicts(self):
     pm = self.__make_test_pm()
+    am = self.__make_artifact_manager()
     mercury_tarball = unit_test_packages.make_mercury(debug = self.DEBUG)
     mercury_confict_tarball = unit_test_packages.make_mercury_conflict(debug = self.DEBUG)
-    pm.install_tarball(mercury_tarball)
+    pm.install_tarball(mercury_tarball, am)
     with self.assertRaises(PackageFilesConflictError) as context:
-      pm.install_tarball(mercury_confict_tarball)
+      pm.install_tarball(mercury_confict_tarball, am)
 
   def test_install_tarball_already_installed(self):
     pm = self.__make_test_pm()
+    am = self.__make_artifact_manager()
     water_tarball = unit_test_packages.make_water(debug = self.DEBUG)
-    pm.install_tarball(water_tarball)
+    pm.install_tarball(water_tarball, am)
     with self.assertRaises(PackageAlreadyInstallededError) as context:
-      pm.install_tarball(water_tarball)
+      pm.install_tarball(water_tarball, am)
     self.assertEqual( 'package water already installed', context.exception.message )
 
   def test_install_tarball_missing_requirements(self):
     pm = self.__make_test_pm()
+    am = self.__make_artifact_manager()
     apple_tarball = unit_test_packages.make_apple(debug = self.DEBUG)
     with self.assertRaises(PackageMissingRequirementsError) as context:
-      pm.install_tarball(apple_tarball)
-    self.assertEqual( 'package apple missing requirements: fruit', context.exception.message )
+      pm.install_tarball(apple_tarball, am)
+    self.assertEqual( 'package apple missing requirements: fiber, fructose, water', context.exception.message )
 
   def test_install_tarball_with_manual_requirements(self):
     pm = self.__make_test_pm()
+    am = self.__make_artifact_manager()
     water_tarball = unit_test_packages.make_water(debug = self.DEBUG)
     apple_tarball = unit_test_packages.make_apple(debug = self.DEBUG)
     fructose_tarball = unit_test_packages.make_fructose(debug = self.DEBUG)
     fiber_tarball = unit_test_packages.make_fiber(debug = self.DEBUG)
     fruit_tarball = unit_test_packages.make_fruit(debug = self.DEBUG)
-    pm.install_tarball(water_tarball)
-    pm.install_tarball(fiber_tarball)
-    pm.install_tarball(fructose_tarball)
-    pm.install_tarball(fruit_tarball)
-    pm.install_tarball(apple_tarball)
+    pm.install_tarball(water_tarball, am)
+    pm.install_tarball(fiber_tarball, am)
+    pm.install_tarball(fructose_tarball, am)
+    pm.install_tarball(fruit_tarball, am)
+    pm.install_tarball(apple_tarball, am)
 
   def test_uninstall(self):
     pm = self.__make_test_pm()
@@ -120,8 +126,9 @@ class test_package_manager(unittest.TestCase):
     
   def test_is_installed(self):
     pm = self.__make_test_pm()
+    am = self.__make_artifact_manager()
     water_tarball = unit_test_packages.make_water(debug = self.DEBUG)
-    pm.install_tarball(water_tarball)
+    pm.install_tarball(water_tarball, am)
     self.assertTrue( pm.is_installed('water') )
     self.assertFalse( pm.is_installed('notthere') )
 

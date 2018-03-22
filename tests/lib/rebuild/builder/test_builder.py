@@ -19,7 +19,7 @@ class test_builder(unit_test):
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/packager'
 
   DEBUG = False
-#  DEBUG = True
+  #DEBUG = True
 
   def test_amhello(self):
     tmp_dir = temp_file.make_temp_dir()

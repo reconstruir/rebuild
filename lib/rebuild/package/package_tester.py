@@ -11,7 +11,7 @@ from rebuild.step import step_result
 from rebuild.base import build_blurb, build_target
 from rebuild.toolchain import toolchain
 from bes.dependency import dependency_resolver
-from bes.common import variable
+from bes.common import algorithm, variable
 from bes.system import execute, os_env
 from bes.fs import file_replace
 
@@ -129,21 +129,24 @@ class package_tester(object):
     package = pm.load_tarball(config.package_tarball, config.script.build_target, config.artifact_manager)
     pd = package.info
     
-    deps_packages = pd.resolved_requirements + pd.resolved_build_requirements
+    deps_packages = config.script.resolve_deps_poto_build_run(False)
     all_packages = deps_packages + [ pd ]
 
     pm.install_packages(deps_packages, config.script.build_target, config.artifact_manager)
-    pm.install_tarball(config.package_tarball)
+    pm.install_tarball(config.package_tarball, config.artifact_manager)
 
-    config.tools_manager.update(pd.resolved_build_tool_requirements, config.artifact_manager)
+    tool_reqs = pd.requirements.filter_by_hardness(['TOOL'])
+    tool_reqs_names = tool_reqs.names()
+    resolved_tool_reqs = config.artifact_manager.resolve_deps_caca_tool(tool_reqs_names, config.script.env.config.host_build_target, True)
+    config.tools_manager.update(resolved_tool_reqs, config.artifact_manager)
 
     saved_env = os_env.clone_current_env()
 
-    config.tools_manager.export_variables_to_current_env(pd.resolved_build_tool_requirements)
+    config.tools_manager.export_variables_to_current_env(resolved_tool_reqs)
     pm.export_variables_to_current_env(all_packages)
 
     shell_env = os_env.make_clean_env()
-    os_env.update(shell_env, config.tools_manager.shell_env(pd.resolved_build_tool_requirements), prepend = True)
+    os_env.update(shell_env, config.tools_manager.shell_env(resolved_tool_reqs), prepend = True)
     os_env.update(shell_env, pm.shell_env(all_packages), prepend = True)
     
     test_source_with_replacements = path.join(test_root_dir, path.basename(test_source))

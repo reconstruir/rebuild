@@ -39,8 +39,6 @@ liborange2
     requirements = [
       "all: fructose >= 3.4.5-6", "all: fiber >= 1.0.0-0"
     ],
-    build_tool_requirements = [
-    ],
     steps = [
       'step_autoconf', {
 #        'tests': tests,

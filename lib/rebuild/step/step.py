@@ -146,9 +146,7 @@ class step(with_metaclass(step_register_meta, object)):
     env = os_env.make_clean_env(keep_keys = [ 'PYTHONPATH' ])
 
     STATIC = True
-    resolved_requirements = script.descriptor.resolved_requirements + script.descriptor.resolved_build_requirements
-    assert resolved_requirements != None
-    export_compilation_flags_requirements = clazz.export_compilation_flags_requirements(script.descriptor, script.build_target.system)
+    export_compilation_flags_requirements = clazz.export_compilation_flags_requirements(script, script.build_target.system)
     if STATIC:
       env['REBBE_PKG_CONFIG_STATIC'] = '1'
       
@@ -178,8 +176,8 @@ class step(with_metaclass(step_register_meta, object)):
     env['REBUILD_STAGE_PYTHON_LIB_DIR'] = path.join(script.stage_dir, 'lib/python')
     env['REBUILD_STAGE_FRAMEWORKS_DIR'] = path.join(script.stage_dir, 'frameworks')
 
-    os_env.update(env, script.env.tools_manager.shell_env(script.descriptor.resolved_build_tool_requirements))
-    os_env.update(env, script.requirements_manager.shell_env(script.descriptor.resolved_requirements + script.descriptor.resolved_build_requirements))
+    os_env.update(env, script.env.tools_manager.shell_env(script.resolve_deps_caca_tool(False)))
+    os_env.update(env, script.requirements_manager.shell_env(script.resolve_deps_poto_run(False)))
     os_env.update(env, os_env.make_shell_env(script.stage_dir))
 
     env['REBUILD_PYTHON_VERSION'] = '2.7'
@@ -257,7 +255,6 @@ class step(with_metaclass(step_register_meta, object)):
     else:
       cwd = script.build_dir
 
-    print("OOOOOOOOOOOOOOOOOOOOOOOO: command=%s" % (command))
     rv = execute.execute(command,
                          cwd = cwd,
                          env = env,
@@ -395,16 +392,17 @@ class step(with_metaclass(step_register_meta, object)):
         file_util.copy(src, dst)
 
   @classmethod
-  def export_compilation_flags_requirements(clazz, descriptor, system):
-    config = descriptor.properties.get('export_compilation_flags_requirements', [])
+  def export_compilation_flags_requirements(clazz, script, system):
+    config = script.descriptor.properties.get('export_compilation_flags_requirements', [])
     resolved = reitred_masked_config.resolve_list(config, system)
-    deps_names = [ dep.name for dep in descriptor.requirements + descriptor.build_requirements ]
+    requirements = script.descriptor.requirements.filter_by_hardness(['RUN', 'BUILD']).filter_by_system(system)
+    deps_names = requirements.names()
     export_names = resolved
     if export_names == dependency_resolver.ALL_DEPS:
       export_names = deps_names
     delta = (set(export_names) - set(deps_names))
     if delta:
-      raise RuntimeError('Trying to export deps that are not specified by %s: %s' % (descriptor.name, ' '.join(delta)))
+      raise RuntimeError('Trying to export deps that are not specified by %s: %s' % (script.descriptor.name, ' '.join(delta)))
     return export_names
         
   @classmethod
@@ -421,7 +419,7 @@ class step(with_metaclass(step_register_meta, object)):
   @classmethod
   def args_get_key_value_list(clazz, args, key):
     check.check_dict(args)
-    result = args.get(key, key_value_list())
+    result = args.get(key, None) or key_value_list()
     check.check_key_value_list(result)
     return result
 
