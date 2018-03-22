@@ -19,9 +19,9 @@ class rebuild_manager(object):
 
   CONFIG_FILENAME = 'config'
   
-  def __init__(self, root_dir = None, artifact_manager = None):
+  def __init__(self, artifact_manager, root_dir = None):
+    check.check_artifact_manager(artifact_manager)
     build_blurb.add_blurb(self, label = 'build')
-    #assert root_dir
     self.root_dir = path.abspath(root_dir or self.DEFAULT_ROOT_DIR)
     self.artifact_manager = artifact_manager
     self.package_managers = {}
@@ -30,12 +30,12 @@ class rebuild_manager(object):
   def _package_manager(self, project_name):
     if project_name not in self.package_managers:
       root_dir = path.join(self.root_dir, project_name)
-      self.package_managers[project_name] = package_manager(root_dir)
+      self.package_managers[project_name] = package_manager(root_dir, self.artifact_manager)
     return self.package_managers[project_name]
 
   def update_packages(self, project_name, packages, build_target, allow_downgrade = False, force_install= False):
     pm = self._package_manager(project_name)
-    pm.install_packages(packages, build_target, self.artifact_manager, allow_downgrade = allow_downgrade, force_install = force_install)
+    pm.install_packages(packages, build_target, allow_downgrade = allow_downgrade, force_install = force_install)
 
   def project_root_dir(self, project_name):
     return self._package_manager(project_name).root_dir
@@ -46,18 +46,12 @@ class rebuild_manager(object):
 
   ResolveResult = namedtuple('ResolveResult', 'available,missing,resolved')
   def resolve_packages(self, packages, build_target):
-    print('packages: %s - %s' % (str(packages), type(packages)))
     resolved_names = algorithm.unique(self.artifact_manager.resolve_deps_caca_run_build(packages, build_target) + packages)
-    print('    resolved_names: %s - %s' % (str(resolved_names), type(resolved_names)))
     available_packages = self.artifact_manager.available_packages(build_target)
     available_names = [ p.info.name for p in available_packages ]
     missing_packages = dependency_resolver.check_missing(available_names, packages)
     if missing_packages:
       return self.ResolveResult(available_packages, missing_packages, [])
-#    dep_map = self.dep_map(build_target)
-#    resolved_deps = dependency_resolver.resolve_deps(dep_map, packages)
-#    wanted_dep_map = dict_util.filter_with_keys(dep_map, resolved_deps)
-#    packaged_in_order = dependency_resolver.build_order_flat(wanted_dep_map)
     resolved = self.artifact_manager.resolve_packages(resolved_names, build_target)
     resolved_infos = [ r.info for r in resolved ]
     return self.ResolveResult(available_packages, [], resolved_infos)

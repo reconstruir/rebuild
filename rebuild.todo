@@ -695,7 +695,6 @@ mar 19
 mar 20
 - s/package.info/package.descriptor
 - lots of other package fields have old names
-- maybe package_manager should accept artifact manager in its ctor instead of passing it in in methods
 - test_package_manager.py might be recreating the test artifact manager over and over
 - add environment var for changing DEBUG on off in tests that do droppings
 - package_manager doesn do anything about satisfying version or revision in _missing_requirements() and in general

@@ -52,10 +52,10 @@ class PackageMissingRequirementsError(Exception):
   
 class package_manager(object):
 
-  def __init__(self, root_dir): #, artifact_manager):
-    #check.check_artifact_manager(artifact_manager)
+  def __init__(self, root_dir, artifact_manager):
+    check.check_artifact_manager(artifact_manager)
     self.root_dir = root_dir
-    #self._artifact_manager = artifact_manager
+    self._artifact_manager = artifact_manager
     self._database_path = path.join(self.root_dir, 'database/packages.json')
     self._db = package_db(self._database_path)
     self._installation_dir = path.join(self.root_dir, 'installation')
@@ -126,13 +126,13 @@ class package_manager(object):
 #    libs = pkg_config.libs(pkg_config_names, PKG_CONFIG_PATH = pkg_config_path, static = static)
     return None # ( cflags, libs )
 
-  def install_tarball(self, pkg_tarball, artifact_manager):
+  def install_tarball(self, pkg_tarball):
 
     pkg = package(pkg_tarball)
 
     if self.is_installed(pkg.info.name):
       raise PackageAlreadyInstallededError('package %s already installed' % (pkg.info.name))
-    missing_requirements = self._missing_requirements(pkg, pkg.build_target, artifact_manager)
+    missing_requirements = self._missing_requirements(pkg, pkg.build_target)
     
     if missing_requirements:
       raise PackageMissingRequirementsError('package %s missing requirements: %s' % (pkg.info.name, ', '.join(missing_requirements)))
@@ -171,9 +171,9 @@ class package_manager(object):
         conflicts.append(f)
     return sorted(conflicts)
 
-  def _missing_requirements(self, pkg, build_target, artifact_manager):
+  def _missing_requirements(self, pkg, build_target):
     requirements = pkg.info.requirements.filter_by_system(build_target.system).filter_by_hardness(['BUILD', 'RUN']).names()
-    resolved_deps = artifact_manager.resolve_deps_caca_run_build(requirements, build_target)
+    resolved_deps = self._artifact_manager.resolve_deps_caca_run_build(requirements, build_target)
     if not resolved_deps:
       return []
     missing_requirements = []
@@ -190,11 +190,10 @@ class package_manager(object):
   def package_files(clazz, tarball):
     return package(tarball).files
 
-  def install_package(self, pkg_desc, build_target, artifact_manager,
+  def install_package(self, pkg_desc, build_target,
                       allow_downgrade = False, force_install = False):
-    check.check_artifact_manager(artifact_manager)
     check.check_package_descriptor(pkg_desc)
-    pkg = artifact_manager.package(pkg_desc, build_target)
+    pkg = self._artifact_manager.package(pkg_desc, build_target)
 
     if self.is_installed(pkg.info.name):
       old_pkg_desc = self._db.find_package(pkg.info.name).info
@@ -205,25 +204,24 @@ class package_manager(object):
         return False
       elif comparison < 0:
         self.uninstall_package(pkg.info.name)
-        self.install_tarball(pkg.tarball, artifact_manager)
+        self.install_tarball(pkg.tarball)
         return True
       else:
         if allow_downgrade:
           self.uninstall_package(pkg.info.name)
-          self.install_tarball(pkg.tarball, artifact_manager)
+          self.install_tarball(pkg.tarball)
           return True
         else:
           print(('warning: installed package %s newer than available package %s' % (old_pkg_desc.full_name, pkg_desc.full_name)))
         return False
     else:
-      self.install_tarball(pkg.tarball, artifact_manager)
+      self.install_tarball(pkg.tarball)
       return True
 
-  def install_packages(self, packages, build_target, artifact_manager, allow_downgrade = False, force_install = False):
+  def install_packages(self, packages, build_target, allow_downgrade = False, force_install = False):
     check.check_package_descriptor_seq(packages)
-    check.check_artifact_manager(artifact_manager)
     for pkg_desc in packages:
-      self.install_package(pkg_desc, build_target, artifact_manager,
+      self.install_package(pkg_desc, build_target,
                            allow_downgrade = allow_downgrade,
                            force_install = force_install)
 
@@ -270,7 +268,7 @@ class package_manager(object):
     for key, value in all_env_vars.items():
       os_env_var(key).value = value
 
-  def load_tarball(self, filename, build_target, artifact_manager):
+  def load_tarball(self, filename, build_target):
     'load a tarball and resturn a package object with requirements resolved according to packages currently installed.'
     if not package.package_is_valid(filename):
       raise RuntimeError('Not a valid package: %s' % (filename))

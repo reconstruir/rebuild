@@ -124,16 +124,16 @@ class package_tester(object):
     test_root_dir = path.join(config.script.test_dir, test_name)
     pm_root_dir = path.join(test_root_dir, 'requirements')
 
-    pm = package_manager(pm_root_dir)
+    pm = package_manager(pm_root_dir, config.artifact_manager)
 
-    package = pm.load_tarball(config.package_tarball, config.script.build_target, config.artifact_manager)
+    package = pm.load_tarball(config.package_tarball, config.script.build_target)
     pd = package.info
     
     deps_packages = config.script.resolve_deps_poto_build_run(False)
     all_packages = deps_packages + [ pd ]
 
-    pm.install_packages(deps_packages, config.script.build_target, config.artifact_manager)
-    pm.install_tarball(config.package_tarball, config.artifact_manager)
+    pm.install_packages(deps_packages, config.script.build_target)
+    pm.install_tarball(config.package_tarball)
 
     tool_reqs = pd.requirements.filter_by_hardness(['TOOL'])
     tool_reqs_names = tool_reqs.names()

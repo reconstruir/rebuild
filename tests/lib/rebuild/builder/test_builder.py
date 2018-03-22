@@ -88,20 +88,20 @@ class test_builder(unit_test):
     publish_dir = path.join(rv.tmp_dir, 'BUILD/artifacts')
     self.assertTrue( path.exists(publish_dir) )
     am = artifact_manager(publish_dir, address = None, no_git = True)
-    pm = self._make_test_pm()
+    pm = self._make_test_pm(am)
     pdesc = package_descriptor('fructose', '3.4.5-6')
     bt = build_target(system = build_system.HOST,
                       level = build_level.RELEASE,
                       archs = build_arch.HOST_ARCH)
-    install_rv = pm.install_package(pdesc, bt, am)
+    install_rv = pm.install_package(pdesc, bt)
     self.assertTrue( install_rv )
     self.assertEqual( [ 'fructose-3.4.5-6' ], pm.list_all(include_version = True) )
     self.assertEqual( { 'FRUCTOSE_FOO': '666' }, pm.env_vars([ 'fructose' ]) )
     
-  def _make_test_pm(self):
+  def _make_test_pm(self, am):
     root_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     pm_dir = path.join(root_dir, 'package_manager')
-    return package_manager(pm_dir)
+    return package_manager(pm_dir, am)
     
   def xxxtest_orange(self):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)

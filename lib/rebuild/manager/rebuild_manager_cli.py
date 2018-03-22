@@ -194,7 +194,6 @@ class rebuild_manager_cli(object):
     if args.artifacts:
       if not path.isdir(args.artifacts):
         raise RuntimeError('Not an artifacts directory: %s' % (args.artifacts))
-    args.artifact_manager = artifact_manager(args.artifacts, address = None, no_git = True)
     args.build_target = self._validate_build_target(args)
     
   def main(self):
@@ -204,6 +203,11 @@ class rebuild_manager_cli(object):
       command = '%s:%s' % (args.command, subcommand)
     else:
       command = args.command
+
+    if hasattr(args, 'artifacts'):
+      self.artifact_manager = artifact_manager(args.artifacts, address = None, no_git = True)
+    else:
+      self.artifact_manager = artifact_manager(None)
       
     if command == 'tools:update':
       return self._command_tools_update()
@@ -214,15 +218,13 @@ class rebuild_manager_cli(object):
     elif command in [ 'packages:install', 'packages:update' ]:
       self._packages_check_common_args(args)
       if command == 'packages:install':
-        return self._command_packages_install(args.artifact_manager,
-                                              args.dest_dir,
+        return self._command_packages_install(args.dest_dir,
                                               args.project_name,
                                               args.packages,
                                               args.wipe,
                                               args.build_target)
       elif command == 'packages:update':
-        return self._command_packages_update(args.artifact_manager,
-                                             args.root_dir,
+        return self._command_packages_update(args.root_dir,
                                              args.wipe,
                                              args.project_name,
                                              args.downgrade,
@@ -281,21 +283,21 @@ class rebuild_manager_cli(object):
 
   def _command_tools_install(self, dest_dir):
     assert False, 'implement me properly'
-    am = artifact_manager(None, rebuild_manager.ARTIFACTS_GIT_ADDRESS)
-    rm = rebuild_manager(dest_dir)
+    #am = artifact_manager(None, rebuild_manager.ARTIFACTS_GIT_ADDRESS)
+    #rm = rebuild_manager(am, dest_dir)
     return 0
 
-  def _command_packages_install(self, artifact_manager, dest_dir, project_name, packages, wipe, bt):
-    rm = rebuild_manager(dest_dir, artifact_manager = artifact_manager)
+  def _command_packages_install(self, dest_dir, project_name, packages, wipe, bt):
+    rm = rebuild_manager(self.artifact_manager, dest_dir)
     return self._update_project(rm, project_name, packages, wipe, bt)
 
   def _command_packages_uninstall(self, dest_dir, project_name, packages, bt):
-    rm = rebuild_manager(dest_dir, artifact_manager = None)
+    rm = rebuild_manager(self.artifact_manager, dest_dir)
     success = rm.uninstall_packages(project_name, packages, bt)
     return self.bool_to_exit_code(success)
 
   def _command_packages_print(self, root_dir, project_name, bt):
-    rm = rebuild_manager(root_dir, artifact_manager = None)
+    rm = rebuild_manager(self.artifact_manager, root_dir)
     assert project_name
     packages = rm.installed_packages(project_name, bt)
     for p in packages:
@@ -303,7 +305,7 @@ class rebuild_manager_cli(object):
     return 0
 
   def _command_config_packages(self, root_dir, project_name, bt):
-    rm = rebuild_manager(root_dir, artifact_manager = None)
+    rm = rebuild_manager(self.artifact_manager, root_dir)
     config = rm.config(bt)
     section = config.get(project_name, None)
     if not section:
@@ -319,15 +321,15 @@ class rebuild_manager_cli(object):
 remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir @ROOT_DIR@ --force ${1+"$@"}
 '''
 
-  def _command_packages_update(self, artifact_manager, root_dir, wipe, project_name, allow_downgrade, force_install, bt):
-    rm = rebuild_manager(root_dir, artifact_manager = artifact_manager)
+  def _command_packages_update(self, root_dir, wipe, project_name, allow_downgrade, force_install, bt):
+    rm = rebuild_manager(self.artifact_manager, root_dir)
     success = rm.update_from_config(bt,
                                     project_name = project_name,
                                     allow_downgrade = allow_downgrade,
                                     force_install = force_install)
     update_script = rebuild_manager_script(self.UPDATE_SCRIPT_TEMPLATE, 'update.sh')
     variables = {
-      '@ARTIFACTS_DIR@': artifact_manager.publish_dir,
+      '@ARTIFACTS_DIR@': self.artifact_manager.publish_dir,
       '@ROOT_DIR@': root_dir,
     }
     update_script.save(root_dir, variables)
