@@ -76,11 +76,11 @@ class test_builder(unit_test):
 
   def test_fructose_with_env_vars(self):
     rv = self._build_project([
-      'build_fructose_with_env_vars.py',
+      'build_fructose_with_env_vars.rebc',
       'fructose-3.4.5.tar.gz',
       'fructose-test.c',
     ], [
-      'build_fructose_with_env_vars.py',
+      'build_fructose_with_env_vars.rebc',
     ], [
       'fructose',
     ])

@@ -1,0 +1,11 @@
+!rebuildrecipe!
+
+package fructose-3.4.5-6
+
+  env_vars
+    all: FRUCTOSE_FOO=666
+
+  steps
+    step_autoconf
+      configure_env
+        linux: CFLAGS="-I${REBUILD_REQUIREMENTS_INCLUDE_DIR} -std=gnu99" LDFLAGS="-L${REBUILD_REQUIREMENTS_LIB_DIR}"
