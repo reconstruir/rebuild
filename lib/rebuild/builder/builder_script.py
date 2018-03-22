@@ -54,12 +54,6 @@ class builder_script(object):
   @property
   def properties(self):
     return self.recipe.properties
-    
-  def requirements(self):
-    return self.env.requirements(self.descriptor)
-
-  def tool_requirements(self):
-    return self.env.tool_requirements(self.descriptor)
   
   def resolve_deps_caca_tool(self, include_names):
     return self.env.resolve_deps_caca_tool(self.descriptor, include_names)
@@ -130,6 +124,7 @@ class builder_script(object):
       for k, v in args.items():
         sources.extend(dependency_provider.determine_provided(v))
     sources.append(self.filename)
+    sources = [ path.relpath(f) for f in sources ]
     return sorted(algorithm.unique(sources))
 
   def _dep_sources(self, all_scripts):
@@ -138,7 +133,7 @@ class builder_script(object):
       print('WEIRD a build script with no all_scripts: %s' % (self.filename))
       return []
     sources = []
-    for dep in self.requirements():
+    for dep in self.resolve_deps_poto_build_run(False):
       dep_script = all_scripts[dep.name]
       sources += dep_script._sources(all_scripts)
     return sources

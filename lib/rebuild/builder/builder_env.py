@@ -26,12 +26,6 @@ class builder_env(object):
     self.requirement_manager = requirement_manager()
     for script in self.script_manager.scripts.values():
       self.requirement_manager.add_package(script.descriptor)
-
-  def requirements(self, descriptor):
-    return self.requirement_manager.resolve_deps([descriptor.name], self.config.build_target.system)
-
-  def tool_requirements(self, descriptor):
-    return self.requirement_manager.resolve_tools_deps([descriptor.name], self.config.host_build_target.system)
       
   def resolve_deps_caca_tool(self, descriptor, include_names):
     return self.requirement_manager.resolve_deps_caca_tool([descriptor.name], self.config.host_build_target.system, include_names)
