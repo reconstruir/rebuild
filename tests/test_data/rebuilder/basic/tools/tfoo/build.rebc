@@ -2,6 +2,9 @@
 
 package tfoo-1.0.0
 
+  env_vars
+    all: TFOO_ENV1=tfoo_env1 TFOO_ENV2=tfoo_env2
+
   steps
     step_setup
       no_tarballs: True
@@ -11,6 +14,6 @@ package tfoo-1.0.0
         all: files/bin/tfoo.py bin/tfoo.py
         
       tests
-        all: test-tfoo.sh
+        all: test-tfoo.sh test-tfoo-env-var.sh
         
       skip_binary_third_party_prefix: True

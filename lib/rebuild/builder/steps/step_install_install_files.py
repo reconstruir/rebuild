@@ -33,9 +33,7 @@ class step_install_install_files(step):
       return step_result(True, message)
     check.check_recipe_install_file_seq(install_files)
     for install_file in install_files:
-      print('FOOOOO install_file: %s:%s - %s:%s' % (install_file.filename, type(install_file.filename), install_file.dst_filename, type(install_file.dst_filename)))
-      #src = path.join(script.source_dir, install_file.filename)
-      src = str(install_file.filename)
+      src = install_file.filename
       if not path.isfile(src):
         return step_result(False, 'File not found: %s' % (src))
       dst = path.join(script.stage_dir, install_file.dst_filename)
