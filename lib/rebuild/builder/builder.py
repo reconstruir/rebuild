@@ -105,7 +105,7 @@ class builder(object):
   EXIT_CODE_ABORTED = 2
 
   def _call_build_script(self, script):
-    result = self.build_script(script, self._env)
+    result = self._build_script(script, self._env)
     if result.status == self.SCRIPT_SUCCESS:
       self.blurb('%s - SUCCESS' % (script.descriptor.name))
       return self.EXIT_CODE_SUCCESS
@@ -127,7 +127,7 @@ class builder(object):
   SCRIPT_ABORTED = 'aborted'
   _run_result = namedtuple('_run_result', 'status,packager_result')
   
-  def build_script(self, script, env):
+  def _build_script(self, script, env):
     try:
       checksum_ignored = env.checksum_manager.is_ignored(script.descriptor.full_name)
       needs_rebuilding = checksum_ignored or script.needs_rebuilding()
@@ -224,12 +224,6 @@ class builder(object):
       
     return exit_code
 
-#  def _resolve_package_names(self, package_names):
-#    if not package_names:
-#      return []
-#    return self._env.script_manager.resolve_requirements(package_names,
-#                                                         self._env.config.build_target.system)
-
   def package_names(self):
     return self._env.script_manager.package_names()
   
@@ -241,8 +235,3 @@ class builder(object):
       if what in requirements_names:
         result.append(script.descriptor.name)
     return result
-
-#  def package_info(self, package_name):
-#    'Return the package info for a package.'
-#    return self._env.script_manager.scripts[package_name].package_info
-

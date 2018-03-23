@@ -198,12 +198,12 @@ class recipe_parser(object):
 
   def _load_code(self, loads, node):
     for l in loads:
-      filename = path.join(path.dirname(self.filename), l)
-      if not path.isfile(filename):
-        self._error('file not found: %s' % (filename), node)
+      code_filename = path.join(path.dirname(self.filename), l)
+      if not path.isfile(code_filename):
+        self._error('python file to load not found: %s' % (code_filename), node)
       tmp_globals = {}
       tmp_locals = {}
-      code.execfile(filename, tmp_globals, tmp_locals)
+      code.execfile(code_filename, tmp_globals, tmp_locals)
       for key, value in tmp_locals.items():
         if check.is_class(value):
-          setattr(value, '__load_file__', filename)
+          setattr(value, '__load_file__', code_filename)

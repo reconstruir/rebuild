@@ -701,3 +701,10 @@ mar 20
 - requirement_manager has a lot of cut-n-paste code in the resolve_ methods
 - theres no unit test for export_compilation_flags_requirements and also not one where its system masked
 - package_manager.install_tarball() needs an argument telling it if want run or build or both packages
+
+mar 22
+- builder.wipe_build_dirs() doesnt deal with the host build target issue when building tool deps same with no checksums need to do resolutions before
+- depends_on is broken in builder
+- the steps loaded from third_party/lib/openssl/openssl_steps.py in third_party/lib/openssl/build.rebc dont end up
+  in checksum sources
+  
