@@ -104,8 +104,8 @@ class builder(object):
   EXIT_CODE_FAILED = 1
   EXIT_CODE_ABORTED = 2
 
-  def _call_build_script(self, script):
-    result = self._build_script(script, self._env)
+  def _call_build_one_script(self, script):
+    result = self._build_one_script(script, self._env)
     if result.status == self.SCRIPT_SUCCESS:
       self.blurb('%s - SUCCESS' % (script.descriptor.name))
       return self.EXIT_CODE_SUCCESS
@@ -127,7 +127,7 @@ class builder(object):
   SCRIPT_ABORTED = 'aborted'
   _run_result = namedtuple('_run_result', 'status,packager_result')
   
-  def _build_script(self, script, env):
+  def _build_one_script(self, script, env):
     try:
       checksum_ignored = env.checksum_manager.is_ignored(script.descriptor.full_name)
       needs_rebuilding = checksum_ignored or script.needs_rebuilding()
@@ -210,7 +210,7 @@ class builder(object):
       if not script.enabled and not self._env.config.disabled:
         self.blurb('disabled: %s' % (filename))
         continue
-      exit_code = self._call_build_script(script)
+      exit_code = self._call_build_one_script(script)
       if exit_code == self.EXIT_CODE_FAILED:
         failed_packages.append(name)
         if not self._env.config.keep_going:

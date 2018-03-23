@@ -46,7 +46,7 @@ class rebuild_manager(object):
 
   ResolveResult = namedtuple('ResolveResult', 'available,missing,resolved')
   def resolve_packages(self, packages, build_target):
-    resolved_names = algorithm.unique(self.artifact_manager.resolve_deps_caca_run_build(packages, build_target) + packages)
+    resolved_names = algorithm.unique(self.artifact_manager.resolve_deps_caca_run(packages, build_target) + packages)
     available_packages = self.artifact_manager.available_packages(build_target)
     available_names = [ p.info.name for p in available_packages ]
     missing_packages = dependency_resolver.check_missing(available_names, packages)
@@ -58,6 +58,7 @@ class rebuild_manager(object):
 
   def resolve_and_update_packages(self, project_name, packages, build_target, allow_downgrade = False, force_install = False):
     resolve_rv = self.resolve_packages(packages, build_target)
+    print('resolve_rv: %s' % (str(resolve_rv)))
     if resolve_rv.missing:
       self.blurb('missing artifacts at %s: %s' % (self.artifact_manager.publish_dir, ' '.join(resolve_rv.missing)))
       return []

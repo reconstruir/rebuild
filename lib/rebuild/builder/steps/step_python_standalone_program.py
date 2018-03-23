@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import os.path as path
+import os, os.path as path
+
+from bes.common import variable
 from bes.fs import file_util
 from bes.system import execute
 from rebuild.step import compound_step, step, step_result
@@ -22,29 +24,59 @@ class step_python_make_standalone_program(step):
     for program in standalone_programs:
       src_program = path.join(script.build_dir, program[0])
       if src_program.lower().endswith('.py'):
-        self._make_standalone_python(program, script, env, args)
-      elif execute.is_shell_script(src_program):
-        self._make_standalone_shell_script(program, script, env, args)
+        rv = self._make_standalone_python(program, script, env, args)
+        if not rv.success:
+          return rv
+      elif src_program.lower().endswith('.sh'):
+        rv = self._make_standalone_shell_script(program, script, env, args)
+        if not rv.success:
+          return rv
       else:
         raise RuntimeError('Unknown standalone program type: %s' % (src_program))
-      
-    return step_result(True)
+    return step_result(True, None)
 
   def _make_standalone_python(self, program, script, env, args):
-    src_program = path.join(script.build_dir, program[0])
-    dst_program = path.join(script.build_dir, 'dist', path.basename(program[1]))
-    cmd = 'pyinstaller --log INFO -F %s' % (src_program)
+    src_basename = path.basename(program[0])
+    dst_basename = path.basename(program[1])
+    if dst_basename.endswith('.py'):
+      return step_result(False, 'dst program should not end in .py: %s' % (dst_basename))
+    src_program = variable.substitute(program[0], script.substitutions)
+    if not path.isabs(src_program):
+      src_program = path.join(script.build_dir, src_program)
+    if not path.isfile(src_program):
+      return step_result(False, 'src program not found: %s' % (src_program))
+    tmp_src_program = path.join(script.build_dir, dst_basename + '.py')
+    file_util.copy(src_program, tmp_src_program)
+    
+    dst_program = path.join(script.build_dir, 'dist', dst_basename)
+    cmd = 'pyinstaller --log INFO -F %s' % (tmp_src_program)
     rv = self.call_shell(cmd, script, env, args)
     if not rv.success:
       return rv
-    install.install(dst_program, script.stage_bin_dir, mode = 0o755)
+    if not path.isfile(dst_program):
+      return step_result(False, 'dst program not found: %s' % (dst_program))
+    installed_program = path.join(script.stage_dir, program[1])
+    file_util.mkdir(path.dirname(installed_program))
+    file_util.copy(dst_program, installed_program)
+    os.chmod(installed_program, 0o755)
+    return step_result(True, None)
   
   def _make_standalone_shell_script(self, program, script, env, args):
-    src_program = path.join(script.build_dir, program[0])
-    dst_program = path.join(script.build_dir, path.basename(program[1]))
-    file_util.copy(src_program, dst_program)
-    install.install(dst_program, script.stage_bin_dir, mode = 0o755)
-  
+    src_basename = path.basename(program[0])
+    dst_basename = path.basename(program[1])
+    if dst_basename.endswith('.sh'):
+      return step_result(False, 'dst program should not end in .sh: %s' % (dst_basename))
+    src_program = variable.substitute(program[0], script.substitutions)
+    if not path.isabs(src_program):
+      src_program = path.join(script.build_dir, src_program)
+    if not path.isfile(src_program):
+      return step_result(False, 'src program not found: %s' % (src_program))
+    installed_program = path.join(script.stage_dir, program[1])
+    file_util.mkdir(path.dirname(installed_program))
+    file_util.copy(src_program, installed_program)
+    os.chmod(installed_program, 0o755)
+    return step_result(True, None)
+
 class step_python_standalone_program(compound_step):
   'A complete step to make python libs using the "build" target of setuptools.'
   from .step_setup import step_setup

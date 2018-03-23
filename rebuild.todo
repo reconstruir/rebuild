@@ -707,4 +707,11 @@ mar 22
 - depends_on is broken in builder
 - the steps loaded from third_party/lib/openssl/openssl_steps.py in third_party/lib/openssl/build.rebc dont end up
   in checksum sources
-  
+- prune the scripts tree to avoid crawing and downloading shit that is irrelevant
+
+step.py: these sppear to be named wrong sould be REBUILD_ not REBUILDER_ but check metadata/info.json in packages
+    env['REBUILDER_BUILD_DIR'] = script.build_dir
+    env['REBUILDER_SOURCE_DIR'] = script.source_dir
+    env['REBUILDER_TEST_DIR'] = script.test_dir
+
+builder_script.py you suck so bad because file not found: %s' % (s))

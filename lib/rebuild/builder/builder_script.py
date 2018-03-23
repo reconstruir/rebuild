@@ -4,7 +4,7 @@
 import copy, os.path as path
 from collections import namedtuple
 
-from bes.common import algorithm, check
+from bes.common import algorithm, check, variable
 from bes.fs import file_checksum, file_util
 from bes.system import log
 from rebuild.base import build_blurb, build_target
@@ -42,7 +42,17 @@ class builder_script(object):
       self._add_steps_v1()
     else:
       self._add_steps_v2()
-
+    self.substitutions = {
+      'REBUILD_REQUIREMENTS_DIR': self.requirements_manager.installation_dir,
+      'REBUILD_REQUIREMENTS_BIN_DIR': self.requirements_manager.bin_dir,
+      'REBUILD_REQUIREMENTS_LIB_DIR': self.requirements_manager.lib_dir,
+      'REBUILD_STAGE_DIR': self.stage_dir,
+      'REBUILD_STAGE_BIN_DIR': self.stage_bin_dir,
+      'REBUILD_STAGE_LIB_DIR': self.stage_lib_dir,
+      'REBUILD_SOURCE_DIR': path.abspath(self.source_dir),
+      'REBUILD_BUILD_DIR': self.build_dir,
+    }
+      
   @property
   def descriptor(self):
     return self.recipe.descriptor
@@ -140,9 +150,15 @@ class builder_script(object):
 
   def _sources(self, all_scripts):
     'Return a list of all script and dependency sources for this script.'
-#    for f in self._script_sources():
-#      print('%s: %s' % (self.descriptor.full_name, f))
-    return self._script_sources() + self._dep_sources(all_scripts)
+    sources = self._script_sources() + self._dep_sources(all_scripts)
+    result = []
+    for source in sources:
+      s = variable.substitute(source, self.substitutions)
+      if path.isfile(s):
+        result.append(s)
+      else:
+        pass #print('you suck so bad because file not found: %s' % (s))
+    return result
 
   def _targets(self):
     return [ self.env.artifact_manager.artifact_path(self.descriptor, self.build_target) ]

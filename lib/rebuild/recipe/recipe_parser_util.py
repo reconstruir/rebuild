@@ -53,7 +53,11 @@ class recipe_parser_util(object):
     elif arg_type == value_type.FILE_LIST:
       return clazz._parse_file_list(value, path.dirname(filename))
     elif arg_type == value_type.FILE_INSTALL_LIST:
-      return clazz._parse_file_install_list(value, path.dirname(filename))
+      if filename:
+        base = path.dirname(filename)
+      else:
+        base = None
+      return clazz._parse_file_install_list(value, base)
     raise ValueError('unknown arg_type: %s' % (str(arg_type)))
 
   @classmethod
@@ -92,9 +96,12 @@ class recipe_parser_util(object):
     if (len(data) % 2) != 0:
       raise RuntimeError('invalid non even list: %s' % (data))
     for filename, dst_filename in object_util.chunks(data, 2):
-      filename_abs = path.abspath(path.join(base, filename))
-      if not path.isfile(filename_abs):
-        raise RuntimeError('not found: %s' % (filename_abs))
+      if base:
+        filename_abs = path.abspath(path.join(base, filename))
+      else:
+        filename_abs = filename
+#      if not path.isfile(filename_abs):
+#        raise RuntimeError('not found: %s' % (filename_abs))
       result.append(recipe_install_file(filename_abs, dst_filename))
     return result
   

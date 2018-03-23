@@ -100,7 +100,7 @@ class test_builder_autoconf(unit_test):
     bldr = builder(env)
     script = env.script_manager.scripts[ name ]
     env.checksum_manager.ignore(script.descriptor.full_name)
-    rv = bldr.build_script(script, env)
+    rv = bldr._build_one_script(script, env)
     if not rv.status == bldr.SCRIPT_SUCCESS:
       print(rv.packager_result.message)
       if clazz.DEBUG:

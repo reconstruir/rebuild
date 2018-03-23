@@ -4,7 +4,10 @@
 from rebuild.step import step, step_result
 from rebuild.tools import install
 
-from bes.common import check, object_util
+from rebuild.recipe import recipe_parser_util
+from rebuild.value import value_type
+
+from bes.common import check, object_util, variable
 from bes.fs import file_util
 import os, os.path as path, shutil
 
@@ -26,19 +29,21 @@ class step_install_install_files(step):
       install_files = values.get('install_files', [])
     else:
       install_files = args.get('install_files', [])
-
+      value = ' '.join(install_files)
+      install_files = recipe_parser_util.parse_value(value, None, value_type.FILE_INSTALL_LIST)
+      
     if not install_files:
       message = 'No install_files for %s' % (script.descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
     check.check_recipe_install_file_seq(install_files)
     for install_file in install_files:
-      src = install_file.filename
+      src = variable.substitute(install_file.filename, script.substitutions)
       if not path.isfile(src):
         return step_result(False, 'File not found: %s' % (src))
       dst = path.join(script.stage_dir, install_file.dst_filename)
-      if path.exists(dst):
-        return step_result(False, 'File already exists: %s' % (dst))
+#      if path.exists(dst):
+#        return step_result(False, 'File already exists: %s' % (dst))
       dst_dir = path.dirname(dst)
       mode = file_util.mode(src)
       self.blurb('Installing file %s in %s (%s)' % (src, dst_dir, mode))

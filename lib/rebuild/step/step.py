@@ -173,6 +173,7 @@ class step(with_metaclass(step_register_meta, object)):
     env['REBUILDER_TEST_DIR'] = script.test_dir
 
     env['REBUILD_STAGE_PREFIX_DIR'] = script.stage_dir
+    env['REBUILD_STAGE_BIN_DIR'] = path.join(script.stage_dir, 'bin')
     env['REBUILD_STAGE_PYTHON_LIB_DIR'] = path.join(script.stage_dir, 'lib/python')
     env['REBUILD_STAGE_FRAMEWORKS_DIR'] = path.join(script.stage_dir, 'frameworks')
 
