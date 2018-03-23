@@ -174,4 +174,14 @@ class requirement_manager(object):
       all_deps = just_deps
     return all_deps
 
+  def resolve_deps_poto(self, names, system, hadrness, include_names):
+    'Resolve dependencies.'
+    check.check_string_seq(names)
+    just_deps = self._resolve_deps(names, hadrness, system)
+    if include_names:
+      all_deps = algorithm.unique(just_deps + self.descriptors(names))
+    else:
+      all_deps = just_deps
+    return all_deps
+
 check.register_class(requirement_manager, include_seq = False)

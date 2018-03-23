@@ -40,14 +40,14 @@ class test_package_manager(unittest.TestCase):
   def test_install_tarball_simple(self):
     pm = self._make_test_pm()
     water_tarball = unit_test_packages.make_water()
-    pm.install_tarball(water_tarball)
+    pm.install_tarball(water_tarball, ['BUILD', 'RUN'])
 
   def test_install_tarball_pkg_config(self):
     self.maxDiff = None
     pm = self._make_test_pm()
 
     water_tarball = unit_test_packages.make_water()
-    pm.install_tarball(water_tarball)
+    pm.install_tarball(water_tarball, ['BUILD', 'RUN'])
 
     PKG_CONFIG_PATH = pm.pkg_config_path
 
@@ -78,23 +78,23 @@ class test_package_manager(unittest.TestCase):
     pm = self._make_test_pm()
     mercury_tarball = unit_test_packages.make_mercury(debug = self.DEBUG)
     mercury_confict_tarball = unit_test_packages.make_mercury_conflict(debug = self.DEBUG)
-    pm.install_tarball(mercury_tarball)
+    pm.install_tarball(mercury_tarball, ['BUILD', 'RUN'])
     with self.assertRaises(PackageFilesConflictError) as context:
-      pm.install_tarball(mercury_confict_tarball)
+      pm.install_tarball(mercury_confict_tarball, ['BUILD', 'RUN'])
 
   def test_install_tarball_already_installed(self):
     pm = self._make_test_pm()
     water_tarball = unit_test_packages.make_water(debug = self.DEBUG)
-    pm.install_tarball(water_tarball)
+    pm.install_tarball(water_tarball, ['BUILD', 'RUN'])
     with self.assertRaises(PackageAlreadyInstallededError) as context:
-      pm.install_tarball(water_tarball)
+      pm.install_tarball(water_tarball, ['BUILD', 'RUN'])
     self.assertEqual( 'package water already installed', context.exception.message )
 
   def test_install_tarball_missing_requirements(self):
     pm = self._make_test_pm()
     apple_tarball = unit_test_packages.make_apple(debug = self.DEBUG)
     with self.assertRaises(PackageMissingRequirementsError) as context:
-      pm.install_tarball(apple_tarball)
+      pm.install_tarball(apple_tarball, ['BUILD', 'RUN'])
     self.assertEqual( 'package apple missing requirements: fiber, fructose, water', context.exception.message )
 
   def test_install_tarball_with_manual_requirements(self):
@@ -104,16 +104,16 @@ class test_package_manager(unittest.TestCase):
     fructose_tarball = unit_test_packages.make_fructose(debug = self.DEBUG)
     fiber_tarball = unit_test_packages.make_fiber(debug = self.DEBUG)
     fruit_tarball = unit_test_packages.make_fruit(debug = self.DEBUG)
-    pm.install_tarball(water_tarball)
-    pm.install_tarball(fiber_tarball)
-    pm.install_tarball(fructose_tarball)
-    pm.install_tarball(fruit_tarball)
-    pm.install_tarball(apple_tarball)
+    pm.install_tarball(water_tarball, ['BUILD', 'RUN'])
+    pm.install_tarball(fiber_tarball, ['BUILD', 'RUN'])
+    pm.install_tarball(fructose_tarball, ['BUILD', 'RUN'])
+    pm.install_tarball(fruit_tarball, ['BUILD', 'RUN'])
+    pm.install_tarball(apple_tarball, ['BUILD', 'RUN'])
 
   def test_uninstall(self):
     pm = self._make_test_pm()
     pi = package_descriptor('water', '1.0.0')
-    install_rv = pm.install_package(pi, self.TEST_BUILD_TARGET)
+    install_rv = pm.install_package(pi, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
     self.assertTrue( install_rv )
     self.assertEqual( [ 'water-1.0.0' ], pm.list_all(include_version = True) )
     pm.uninstall_package('water')
@@ -122,7 +122,7 @@ class test_package_manager(unittest.TestCase):
   def test_is_installed(self):
     pm = self._make_test_pm()
     water_tarball = unit_test_packages.make_water(debug = self.DEBUG)
-    pm.install_tarball(water_tarball)
+    pm.install_tarball(water_tarball, ['BUILD', 'RUN'])
     self.assertTrue( pm.is_installed('water') )
     self.assertFalse( pm.is_installed('notthere') )
 
@@ -138,7 +138,7 @@ class test_package_manager(unittest.TestCase):
   def test_install_package(self):
     pm = self._make_test_pm()
     pi = package_descriptor('water', '1.0.0')
-    install_rv = pm.install_package(pi, self.TEST_BUILD_TARGET)
+    install_rv = pm.install_package(pi, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
     self.assertTrue( install_rv )
     self.assertEqual( [ 'water-1.0.0' ], pm.list_all(include_version = True) )
 
@@ -146,12 +146,12 @@ class test_package_manager(unittest.TestCase):
     pm = self._make_test_pm()
 
     old_pi = package_descriptor('water', '1.0.0')
-    install_rv = pm.install_package(old_pi, self.TEST_BUILD_TARGET)
+    install_rv = pm.install_package(old_pi, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
     self.assertTrue( install_rv )
     self.assertEqual( [ 'water-1.0.0' ], pm.list_all(include_version = True) )
 
     new_pi = package_descriptor('water', '1.0.0-1')
-    install_rv = pm.install_package(new_pi, self.TEST_BUILD_TARGET)
+    install_rv = pm.install_package(new_pi, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
     self.assertTrue( install_rv )
     self.assertEqual( [ 'water-1.0.0-1' ], pm.list_all(include_version = True) )
 
@@ -159,12 +159,12 @@ class test_package_manager(unittest.TestCase):
     pm = self._make_test_pm()
 
     old_pi = package_descriptor('water', '1.0.0')
-    install_rv = pm.install_package(old_pi, self.TEST_BUILD_TARGET)
+    install_rv = pm.install_package(old_pi, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
     self.assertTrue( install_rv )
     self.assertEqual( [ 'water-1.0.0' ], pm.list_all(include_version = True) )
 
     new_pi = package_descriptor('water', '1.0.0')
-    install_rv = pm.install_package(new_pi, self.TEST_BUILD_TARGET)
+    install_rv = pm.install_package(new_pi, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
     self.assertFalse( install_rv )
     self.assertEqual( [ 'water-1.0.0' ], pm.list_all(include_version = True) )
 
@@ -172,7 +172,7 @@ class test_package_manager(unittest.TestCase):
     pm = self._make_test_pm()
     pi = package_descriptor('notthere', '6.6.6-1')
     with self.assertRaises(ArtifactNotFoundError) as context:
-      pm.install_package(pi, self.TEST_BUILD_TARGET)
+      pm.install_package(pi, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
 
   def test_install_packages(self):
     pm = self._make_test_pm()
@@ -183,7 +183,7 @@ class test_package_manager(unittest.TestCase):
       package_descriptor.parse('arsenic-1.2.9'),
     ]
 
-    pm.install_packages(packages, self.TEST_BUILD_TARGET)
+    pm.install_packages(packages, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
 
     self.assertEqual( [ 'arsenic-1.2.9', 'mercury-1.2.8', 'water-1.0.0' ], pm.list_all(include_version = True) )
 

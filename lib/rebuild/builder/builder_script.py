@@ -74,6 +74,9 @@ class builder_script(object):
   def resolve_deps_poto_run(self, include_names):
     return self.env.resolve_deps_poto_run(self.descriptor, include_names)
   
+  def resolve_deps(self, hardness, include_names):
+    return self.env.resolve_deps(self.descriptor, hardness, include_names)
+  
   @property
   def instructions(self):
     return self.recipe.instructions

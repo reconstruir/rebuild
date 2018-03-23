@@ -126,13 +126,13 @@ class package_manager(object):
 #    libs = pkg_config.libs(pkg_config_names, PKG_CONFIG_PATH = pkg_config_path, static = static)
     return None # ( cflags, libs )
 
-  def install_tarball(self, pkg_tarball):
+  def install_tarball(self, pkg_tarball, hardness):
 
     pkg = package(pkg_tarball)
 
     if self.is_installed(pkg.info.name):
       raise PackageAlreadyInstallededError('package %s already installed' % (pkg.info.name))
-    missing_requirements = self._missing_requirements(pkg, pkg.build_target)
+    missing_requirements = self._missing_requirements(pkg, pkg.build_target, hardness)
     
     if missing_requirements:
       raise PackageMissingRequirementsError('package %s missing requirements: %s' % (pkg.info.name, ', '.join(missing_requirements)))
@@ -171,8 +171,8 @@ class package_manager(object):
         conflicts.append(f)
     return sorted(conflicts)
 
-  def _missing_requirements(self, pkg, build_target):
-    requirements = pkg.info.requirements.filter_by_system(build_target.system).filter_by_hardness(['BUILD', 'RUN']).names()
+  def _missing_requirements(self, pkg, build_target, hardness):
+    requirements = pkg.info.requirements.filter_by_system(build_target.system).filter_by_hardness(hardness).names()
     resolved_deps = self._artifact_manager.resolve_deps_caca_run_build(requirements, build_target)
     if not resolved_deps:
       return []
@@ -190,7 +190,7 @@ class package_manager(object):
   def package_files(clazz, tarball):
     return package(tarball).files
 
-  def install_package(self, pkg_desc, build_target,
+  def install_package(self, pkg_desc, build_target, hardness,
                       allow_downgrade = False, force_install = False):
     check.check_package_descriptor(pkg_desc)
     pkg = self._artifact_manager.package(pkg_desc, build_target)
@@ -204,24 +204,25 @@ class package_manager(object):
         return False
       elif comparison < 0:
         self.uninstall_package(pkg.info.name)
-        self.install_tarball(pkg.tarball)
+        self.install_tarball(pkg.tarball, hardness)
         return True
       else:
         if allow_downgrade:
           self.uninstall_package(pkg.info.name)
-          self.install_tarball(pkg.tarball)
+          self.install_tarball(pkg.tarball, hardness)
           return True
         else:
           print(('warning: installed package %s newer than available package %s' % (old_pkg_desc.full_name, pkg_desc.full_name)))
         return False
     else:
-      self.install_tarball(pkg.tarball)
+      self.install_tarball(pkg.tarball, hardness)
       return True
 
-  def install_packages(self, packages, build_target, allow_downgrade = False, force_install = False):
+  def install_packages(self, packages, build_target, hardness, allow_downgrade = False, force_install = False):
     check.check_package_descriptor_seq(packages)
+    
     for pkg_desc in packages:
-      self.install_package(pkg_desc, build_target,
+      self.install_package(pkg_desc, build_target, hardness,
                            allow_downgrade = allow_downgrade,
                            force_install = force_install)
 

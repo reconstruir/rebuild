@@ -93,7 +93,7 @@ class test_builder(unit_test):
     bt = build_target(system = build_system.HOST,
                       level = build_level.RELEASE,
                       archs = build_arch.HOST_ARCH)
-    install_rv = pm.install_package(pdesc, bt)
+    install_rv = pm.install_package(pdesc, bt, ['BUILD', 'RUN'])
     self.assertTrue( install_rv )
     self.assertEqual( [ 'fructose-3.4.5-6' ], pm.list_all(include_version = True) )
     self.assertEqual( { 'FRUCTOSE_FOO': '666' }, pm.env_vars([ 'fructose' ]) )

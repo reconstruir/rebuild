@@ -35,7 +35,7 @@ class rebuild_manager(object):
 
   def update_packages(self, project_name, packages, build_target, allow_downgrade = False, force_install= False):
     pm = self._package_manager(project_name)
-    pm.install_packages(packages, build_target, allow_downgrade = allow_downgrade, force_install = force_install)
+    pm.install_packages(packages, build_target, [ 'RUN' ], allow_downgrade = allow_downgrade, force_install = force_install)
 
   def project_root_dir(self, project_name):
     return self._package_manager(project_name).root_dir
@@ -58,7 +58,6 @@ class rebuild_manager(object):
 
   def resolve_and_update_packages(self, project_name, packages, build_target, allow_downgrade = False, force_install = False):
     resolve_rv = self.resolve_packages(packages, build_target)
-    print('resolve_rv: %s' % (str(resolve_rv)))
     if resolve_rv.missing:
       self.blurb('missing artifacts at %s: %s' % (self.artifact_manager.publish_dir, ' '.join(resolve_rv.missing)))
       return []

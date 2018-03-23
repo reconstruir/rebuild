@@ -715,3 +715,8 @@ step.py: these sppear to be named wrong sould be REBUILD_ not REBUILDER_ but che
     env['REBUILDER_TEST_DIR'] = script.test_dir
 
 builder_script.py you suck so bad because file not found: %s' % (s))
+
+mar 23
+- unit tests for package_manager with different hadnessess
+- marking artifact_manager and requirement_manager poto and caca methids
+- s/artifact_manager.resolve_packages/find_packages/
