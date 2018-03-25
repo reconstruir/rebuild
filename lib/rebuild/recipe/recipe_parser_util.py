@@ -61,6 +61,26 @@ class recipe_parser_util(object):
     raise ValueError('unknown arg_type: %s' % (str(arg_type)))
 
   @classmethod
+  def value_default(clazz, arg_type):
+    if arg_type == value_type.BOOL:
+      return False
+    elif arg_type == value_type.INT:
+      return 0
+    elif arg_type == value_type.KEY_VALUES:
+      return key_value_list()
+    elif arg_type == value_type.STRING_LIST:
+      return string_list()
+    elif arg_type == value_type.STRING:
+      return ''
+    elif arg_type == value_type.HOOK_LIST:
+      return []
+    elif arg_type == value_type.FILE_LIST:
+      return []
+    elif arg_type == value_type.FILE_INSTALL_LIST:
+      return []
+    raise ValueError('unknown arg_type: %s' % (str(arg_type)))
+
+  @classmethod
   def _parse_string_list(clazz, value):
     if not value:
       return []

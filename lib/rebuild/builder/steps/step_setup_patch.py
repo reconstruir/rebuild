@@ -17,7 +17,12 @@ class step_setup_patch(step):
     return 'patches file_list'
     
   def execute(self, script, env, args):
-    patches = args.get('patches', None)
+    if self._recipe:
+      values = self.recipe.resolve_values(env.config.build_target.system)
+      patches = [ f.filename for f in values.get('patches') ]
+    else:
+      patches = args.get('patches', None)
+
     if not patches:
       message = 'No patches for %s' % (script.descriptor.full_name)
       self.log_d(message)
