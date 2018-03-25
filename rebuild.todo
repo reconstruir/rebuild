@@ -720,3 +720,5 @@ mar 23
 - unit tests for package_manager with different hadnessess
 - marking artifact_manager and requirement_manager poto and caca methids
 - s/artifact_manager.resolve_packages/find_packages/
+- add notion of TEST to hardness and make it a mask maybe
+- make the hardness masks lowercase all over
