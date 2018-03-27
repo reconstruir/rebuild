@@ -121,16 +121,6 @@ class requirement_manager(object):
     resolved_map = dict_util.filter_with_keys(all_dep_map, non_tool_everything_names)
     return self.descriptors(dependency_resolver.build_order_flat(resolved_map))
 
-  def resolve_deps_caca_tool(self, names, system, include_names):
-    'Resolve packages without tools return the names in build order.'
-    check.check_string_seq(names)
-    just_deps = self._resolve_deps(names, [ 'TOOL' ], system)
-    if include_names:
-      all_deps = algorithm.unique(just_deps + self.descriptors(names))
-    else:
-      all_deps = just_deps
-    return all_deps
-
   def resolve_deps_poto(self, names, system, hadrness, include_names):
     'Resolve dependencies.'
     check.check_string_seq(names)

@@ -14,7 +14,7 @@ class step_setup_install_build_tool_requirements(step):
 
   def execute(self, script, env, args):
     package_desc = script.descriptor
-    tools = env.resolve_deps_caca_tool(package_desc, False)
+    tools = script.resolve_deps(['TOOL'], False)
     build_blurb.blurb('build', '%s - tool requirements: %s' % (package_desc.name, ' '.join([ t.name for t in tools ])))
     if not tools:
       message = 'No tools for %s' % (script.descriptor.full_name)

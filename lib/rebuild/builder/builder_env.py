@@ -27,9 +27,6 @@ class builder_env(object):
     for script in self.script_manager.scripts.values():
       self.requirement_manager.add_package(script.descriptor)
       
-  def resolve_deps_caca_tool(self, descriptor, include_names):
-    return self.requirement_manager.resolve_deps_caca_tool([descriptor.name], self.config.host_build_target.system, include_names)
-      
   def resolve_deps(self, descriptor, hardness, include_names):
     return self.requirement_manager.resolve_deps_poto([descriptor.name], self.config.build_target.system, hardness, include_names)
   

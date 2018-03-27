@@ -141,9 +141,6 @@ class artifact_manager(object):
   def resolve_deps(self, names, build_target):
     return self.get_requirement_manager(build_target).resolve_deps(names, build_target.system)
 
-  def resolve_deps_caca_tool(self, names, build_target, caca):
-    return self.get_requirement_manager(build_target).resolve_deps_caca_tool(names, build_target.system, caca)
-
   def resolve_deps_poto(self, names, build_target, hardness, include_names):
     return self.get_requirement_manager(build_target).resolve_deps_poto(names, build_target.system, hardness, include_names)
   
