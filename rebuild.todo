@@ -714,3 +714,7 @@ mar 23
 - s/artifact_manager.resolve_packages/find_packages/
 - add notion of TEST to hardness and make it a mask maybe
 - make the hardness masks lowercase all over
+
+mar 27
+- retire in rebuild/package/package_db_entry.py key = 'info'
+

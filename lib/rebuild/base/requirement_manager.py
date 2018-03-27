@@ -121,18 +121,6 @@ class requirement_manager(object):
     resolved_map = dict_util.filter_with_keys(all_dep_map, non_tool_everything_names)
     return self.descriptors(dependency_resolver.build_order_flat(resolved_map))
 
-  def resolve_deps_caca_run(self, names, system):
-    'Resolve packages without tools return the names in build order.'
-    check.check_string_seq(names)
-    just_deps = self._resolve_deps(names, [ 'RUN' ], system)
-    return [ req.name for req in just_deps ]
-
-  def resolve_deps_caca_run(self, names, system, include_names = False):
-    'Resolve packages without tools return the names in build order.'
-    check.check_string_seq(names)
-    just_deps = self._resolve_deps(names, [ 'RUN' ], system)
-    return [ req.name for req in just_deps ]
-
   def resolve_deps_caca_tool(self, names, system, include_names):
     'Resolve packages without tools return the names in build order.'
     check.check_string_seq(names)

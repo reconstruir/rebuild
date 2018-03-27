@@ -29,9 +29,13 @@ class package_db_entry(object):
 
   @classmethod
   def parse_dict(clazz, d):
-    assert 'descriptor' in d
+    if 'descriptor' in d:
+      key = 'descriptor'
+    else:
+      key = 'info'
+    assert key in d
     assert 'files' in d
-    descriptor = d['descriptor']
+    descriptor = d[key]
     assert isinstance(descriptor, dict)
     descriptor = package_descriptor.parse_dict(descriptor)
     files = d['files']
