@@ -78,9 +78,6 @@ class builder_script(object):
   def resolve_deps_caca_tool(self, include_names):
     return self.env.resolve_deps_caca_tool(self.descriptor, include_names)
   
-  def resolve_deps_poto_build_run(self, include_names):
-    return self.env.resolve_deps_poto_build_run(self.descriptor, include_names)
-  
   def resolve_deps(self, hardness, include_names):
     return self.env.resolve_deps(self.descriptor, hardness, include_names)
   
@@ -153,7 +150,7 @@ class builder_script(object):
       print('WEIRD a build script with no all_scripts: %s' % (self.filename))
       return []
     sources = []
-    for dep in self.resolve_deps_poto_build_run(False):
+    for dep in self.resolve_deps(['BUILD', 'RUN'], False):
       dep_script = all_scripts[dep.name]
       sources += dep_script._sources(all_scripts)
     return sources

@@ -149,16 +149,6 @@ class requirement_manager(object):
       all_deps = just_deps
     return all_deps
 
-  def resolve_deps_poto_build_run(self, names, system, include_names):
-    'Resolve packages without tools return the names in build order.'
-    check.check_string_seq(names)
-    just_deps = self._resolve_deps(names, [ 'BUILD', 'RUN' ], system)
-    if include_names:
-      all_deps = algorithm.unique(just_deps + self.descriptors(names))
-    else:
-      all_deps = just_deps
-    return all_deps
-
   def resolve_deps_poto(self, names, system, hadrness, include_names):
     'Resolve dependencies.'
     check.check_string_seq(names)
