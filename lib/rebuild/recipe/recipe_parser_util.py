@@ -65,13 +65,13 @@ class recipe_parser_util(object):
     if arg_type == value_type.BOOL:
       return False
     elif arg_type == value_type.INT:
-      return 0
+      return None
     elif arg_type == value_type.KEY_VALUES:
       return key_value_list()
     elif arg_type == value_type.STRING_LIST:
       return string_list()
     elif arg_type == value_type.STRING:
-      return ''
+      return None
     elif arg_type == value_type.HOOK_LIST:
       return []
     elif arg_type == value_type.FILE_LIST:

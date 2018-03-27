@@ -30,6 +30,7 @@ key_values_value
       'bool_value': True,
       'int_value': None,
       'string_value': None,
+      'string_value': None,
     }
     self.assertEqual( expected, r )
     r = step.resolve_values('macos')
