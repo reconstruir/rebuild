@@ -165,7 +165,7 @@ class step(with_metaclass(step_register_meta, object)):
     env.update(script.substitutions)
     
     os_env.update(env, script.env.tools_manager.shell_env(script.resolve_deps_caca_tool(False)))
-    os_env.update(env, script.requirements_manager.shell_env(script.resolve_deps_poto_run(False)))
+    os_env.update(env, script.requirements_manager.shell_env(script.resolve_deps(['RUN'], False)))
     os_env.update(env, os_env.make_shell_env(script.stage_dir))
 
     env['REBUILD_PYTHON_VERSION'] = '2.7'

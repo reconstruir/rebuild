@@ -5,29 +5,7 @@ from bes.common import check
 from .package_descriptor import package_descriptor
 
 class package_descriptor_list(object):
-
-  @classmethod
-  def dependency_map(clazz, descriptors):
-    'Return a map of dependencies for the given descriptor list.'
-    check.check_package_descriptor_seq(descriptors)
-    dep_map = {}
-    for pd in descriptors:
-      if pd.name in dep_map:
-        raise RuntimeError('already in dependency map: %s' % (pd.name))
-      dep_map[pd.name] = pd.requirements_names | pd.build_tool_requirements_names | pd.build_requirements_names
-    return dep_map
-
-  @classmethod
-  def descriptor_map(clazz, descriptors):
-    'Return a map for the given descriptor list.'
-    check.check_package_descriptor_seq(descriptors)
-    desc_map = {}
-    for pd in descriptors:
-      if pd.name in desc_map:
-        raise RuntimeError('already in descriptor map: %s' % (pd.name))
-      desc_map[pd.name] = pd
-    return desc_map
-
+  
   @classmethod
   def sort_by_name(clazz, descriptors):
     'Sort a list of descriptors in ascending order using package info.'

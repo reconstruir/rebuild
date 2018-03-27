@@ -33,9 +33,6 @@ class builder_env(object):
   def resolve_deps_poto_build_run(self, descriptor, include_names):
     return self.requirement_manager.resolve_deps_poto_build_run([descriptor.name], self.config.build_target.system, include_names)
 
-  def resolve_deps_poto_run(self, descriptor, include_names):
-    return self.requirement_manager.resolve_deps_poto_run([descriptor.name], self.config.build_target.system, include_names)
-  
   def resolve_deps(self, descriptor, hardness, include_names):
     return self.requirement_manager.resolve_deps_poto([descriptor.name], self.config.build_target.system, hardness, include_names)
   

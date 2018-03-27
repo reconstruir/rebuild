@@ -52,13 +52,8 @@ class requirement_manager(object):
       if not desc:
         raise KeyError('Not found in packages: %s' % (name))
       reqs.extend(desc.requirements.filter_by_hardness(hardness).filter_by_system(system))
-      #reqs.append(requirement(desc.name, '==', str(desc.version), system, None))
     dep_map = self._dependency_map(hardness, system)
     return dependency_resolver.resolve_and_order_deps(reqs.names(), self._descriptor_map, dep_map)
-  
-#  @classmethod
-#  def _resolve_and_order_dependencies(clazz, names, scripts, dependency_map):
-#    return dependency_resolver.resolve_and_order_deps(names, descriptor_map, dependency_map)
 
   def _dependency_map(self, hardness, system):
     dep_map = {}
@@ -158,16 +153,6 @@ class requirement_manager(object):
     'Resolve packages without tools return the names in build order.'
     check.check_string_seq(names)
     just_deps = self._resolve_deps(names, [ 'BUILD', 'RUN' ], system)
-    if include_names:
-      all_deps = algorithm.unique(just_deps + self.descriptors(names))
-    else:
-      all_deps = just_deps
-    return all_deps
-
-  def resolve_deps_poto_run(self, names, system, include_names):
-    'Resolve packages without tools return the names in build order.'
-    check.check_string_seq(names)
-    just_deps = self._resolve_deps(names, [ 'RUN' ], system)
     if include_names:
       all_deps = algorithm.unique(just_deps + self.descriptors(names))
     else:
