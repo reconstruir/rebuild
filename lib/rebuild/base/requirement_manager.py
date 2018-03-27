@@ -127,12 +127,6 @@ class requirement_manager(object):
     just_deps = self._resolve_deps(names, [ 'RUN' ], system)
     return [ req.name for req in just_deps ]
 
-  def resolve_deps_caca_run_build(self, names, system, include_names = False):
-    'Resolve packages without tools return the names in build order.'
-    check.check_string_seq(names)
-    just_deps = self._resolve_deps(names, [ 'RUN', 'BUILD' ], system)
-    return [ req.name for req in just_deps ]
-
   def resolve_deps_caca_run(self, names, system, include_names = False):
     'Resolve packages without tools return the names in build order.'
     check.check_string_seq(names)

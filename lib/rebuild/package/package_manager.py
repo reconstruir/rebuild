@@ -173,13 +173,15 @@ class package_manager(object):
 
   def _missing_requirements(self, pkg, build_target, hardness):
     requirements = pkg.descriptor.requirements.filter_by_system(build_target.system).filter_by_hardness(hardness).names()
-    resolved_deps = self._artifact_manager.resolve_deps_caca_run_build(requirements, build_target)
+
+    resolved_deps = self._artifact_manager.resolve_deps_poto(requirements, build_target, [ 'BUILD', 'RUN' ], False)
+
     if not resolved_deps:
       return []
     missing_requirements = []
     for req in resolved_deps:
-      if not self._db.has_package(req):
-        missing_requirements.append(req)
+      if not self._db.has_package(req.name):
+        missing_requirements.append(req.name)
     return missing_requirements
   
   @classmethod
