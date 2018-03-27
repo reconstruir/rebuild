@@ -24,18 +24,18 @@ class package_db(object):
     result = []
     for entry in self.db.values():
       if include_version:
-        result.append(entry.info.full_name)
+        result.append(entry.descriptor.full_name)
       else:
-        result.append(entry.info.name)
+        result.append(entry.descriptor.name)
     return sorted(result)
 
   def has_package(self, name):
     return name in self.db
 
-  def add_package(self, package_info, files):
-    if self.has_package(package_info.name):
-      raise RuntimeError('Package database already has \"%s\"' % (package_info.name))
-    self.db[package_info.name] = package_db_entry(package_info, files)
+  def add_package(self, package_descriptor, files):
+    if self.has_package(package_descriptor.name):
+      raise RuntimeError('Package database already has \"%s\"' % (package_descriptor.name))
+    self.db[package_descriptor.name] = package_db_entry(package_descriptor, files)
     self.__save()
 
   def remove_package(self, name):
@@ -82,4 +82,4 @@ class package_db(object):
     file_util.save(filename, s)
 
   def list_all_descriptors(self):
-    return sorted([entry.info for entry in self.db.values() ])
+    return sorted([entry.descriptor for entry in self.db.values() ])

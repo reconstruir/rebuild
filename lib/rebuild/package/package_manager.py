@@ -99,16 +99,16 @@ class package_manager(object):
   def pkg_config_path(self):
     return pkg_config.make_pkg_config_path(self._installation_dir)
 
-  def info_for_name(self, pkg_name):
+  def descriptor_for_name(self, pkg_name):
     entry = self._db.find_package(pkg_name)
     if not entry:
       raise PackageNotFoundError('package %s not found' % (pkg_name))
-    return entry.info
+    return entry.descriptor
 
   def compilation_flags(self, pkg_names, static = False):
     pkg_config_path = self.pkg_config_path
-    infos = [ self.info_for_name(pkg_name) for pkg_name in pkg_names ]
-    pkg_config_names = object_util.flatten_list_of_lists([ pi.pkg_config_name for pi in infos ])
+    descriptors = [ self.descriptor_for_name(pkg_name) for pkg_name in pkg_names ]
+    pkg_config_names = object_util.flatten_list_of_lists([ pi.pkg_config_name for pi in descriptors ])
     cflags = pkg_config.cflags(pkg_config_names, PKG_CONFIG_PATH = pkg_config_path)
     libs = pkg_config.libs(pkg_config_names, PKG_CONFIG_PATH = pkg_config_path, static = static)
     return ( cflags, libs )
@@ -120,8 +120,8 @@ class package_manager(object):
     #for inst in 
     
 #    pkg_config_path = self.pkg_config_path
-#    infos = [ self.info_for_name(pkg_name) for pkg_name in pkg_names ]
-#    pkg_config_names = object_util.flatten_list_of_lists([ pi.pkg_config_name for pi in infos ])
+#    descriptors = [ self.descriptor_for_name(pkg_name) for pkg_name in pkg_names ]
+#    pkg_config_names = object_util.flatten_list_of_lists([ pi.pkg_config_name for pi in descriptors ])
 #    cflags = pkg_config.cflags(pkg_config_names, PKG_CONFIG_PATH = pkg_config_path)
 #    libs = pkg_config.libs(pkg_config_names, PKG_CONFIG_PATH = pkg_config_path, static = static)
     return None # ( cflags, libs )
@@ -130,25 +130,25 @@ class package_manager(object):
 
     pkg = package(pkg_tarball)
 
-    if self.is_installed(pkg.info.name):
-      raise PackageAlreadyInstallededError('package %s already installed' % (pkg.info.name))
+    if self.is_installed(pkg.descriptor.name):
+      raise PackageAlreadyInstallededError('package %s already installed' % (pkg.descriptor.name))
     missing_requirements = self._missing_requirements(pkg, pkg.build_target, hardness)
     
     if missing_requirements:
-      raise PackageMissingRequirementsError('package %s missing requirements: %s' % (pkg.info.name, ', '.join(missing_requirements)))
+      raise PackageMissingRequirementsError('package %s missing requirements: %s' % (pkg.descriptor.name, ', '.join(missing_requirements)))
       
     conflicts = self._find_conflicts(pkg.files)
     if conflicts:
       conflict_packages = self._db.packages_with_files(conflicts)
       conflict_packages_str = ' '.join(conflict_packages)
       conflicts_str = ' '.join(conflicts)
-      raise PackageFilesConflictError('conflicts found between \"%s\" and \"%s\": %s' % (pkg.info.name,
+      raise PackageFilesConflictError('conflicts found between \"%s\" and \"%s\": %s' % (pkg.descriptor.name,
                                                                                          conflict_packages_str,
                                                                                          conflicts_str))
     pkg.extract_files(self._installation_dir)
     pkg.extract_env_files(self._env_dir, self._installation_dir)
 
-    self._db.add_package(pkg.info, pkg.files)
+    self._db.add_package(pkg.descriptor, pkg.files)
 
   def uninstall_package(self, pkg_name):
     pkg = self._db.find_package(pkg_name)
@@ -172,7 +172,7 @@ class package_manager(object):
     return sorted(conflicts)
 
   def _missing_requirements(self, pkg, build_target, hardness):
-    requirements = pkg.info.requirements.filter_by_system(build_target.system).filter_by_hardness(hardness).names()
+    requirements = pkg.descriptor.requirements.filter_by_system(build_target.system).filter_by_hardness(hardness).names()
     resolved_deps = self._artifact_manager.resolve_deps_caca_run_build(requirements, build_target)
     if not resolved_deps:
       return []
@@ -184,7 +184,7 @@ class package_manager(object):
   
   @classmethod
   def pkg_desc(clazz, tarball):
-    return package(tarball).info
+    return package(tarball).descriptor
 
   @classmethod
   def package_files(clazz, tarball):
@@ -195,20 +195,20 @@ class package_manager(object):
     check.check_package_descriptor(pkg_desc)
     pkg = self._artifact_manager.package(pkg_desc, build_target)
 
-    if self.is_installed(pkg.info.name):
-      old_pkg_desc = self._db.find_package(pkg.info.name).info
+    if self.is_installed(pkg.descriptor.name):
+      old_pkg_desc = self._db.find_package(pkg.descriptor.name).descriptor
       comparison = package_descriptor.full_name_cmp(old_pkg_desc, pkg_desc)
       if force_install:
         comparison = -1
       if comparison == 0:
         return False
       elif comparison < 0:
-        self.uninstall_package(pkg.info.name)
+        self.uninstall_package(pkg.descriptor.name)
         self.install_tarball(pkg.tarball, hardness)
         return True
       else:
         if allow_downgrade:
-          self.uninstall_package(pkg.info.name)
+          self.uninstall_package(pkg.descriptor.name)
           self.install_tarball(pkg.tarball, hardness)
           return True
         else:
@@ -235,9 +235,9 @@ class package_manager(object):
   def env_vars(self, pkg_names):
     'Return the environment variables for the given package names.'
     pkg_names = object_util.listify(pkg_names)
-    infos = [ self.info_for_name(pkg_name) for pkg_name in pkg_names ]
+    descriptors = [ self.descriptor_for_name(pkg_name) for pkg_name in pkg_names ]
     result = {}
-    for pkg_desc in infos:
+    for pkg_desc in descriptors:
       os_env.update(result, self.__env_vars_for_one_package(pkg_desc))
     return result
 

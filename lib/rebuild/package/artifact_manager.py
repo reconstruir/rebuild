@@ -50,13 +50,13 @@ class artifact_manager(object):
     self._available_packages_map = {}
     self._requirement_managers = {}
     
-  def artifact_path(self, package_info, build_target):
-    filename = '%s.tar.gz' % (package_info.full_name)
+  def artifact_path(self, package_descriptor, build_target):
+    filename = '%s.tar.gz' % (package_descriptor.full_name)
     return path.join(self.publish_dir, build_target.build_path, filename)
 
   def publish(self, tarball, build_target):
     pkg = package(tarball)
-    pkg_info = pkg.info
+    pkg_info = pkg.descriptor
     artifact_path = self.artifact_path(pkg_info, build_target)
     file_util.copy(tarball, artifact_path)
     if not self.no_git:
@@ -102,18 +102,18 @@ class artifact_manager(object):
   def _find_package_by_name(self, package_name, available_packages):
     candidates = []
     for available_package in available_packages:
-      if package_name == available_package.info.name:
+      if package_name == available_package.descriptor.name:
         candidates.append(available_package)
     if not candidates:
       return None
     if len(candidates) > 1:
-      candidates = sorted(candidates, cmp = package.info_cmp)
+      candidates = sorted(candidates, cmp = package.descriptor_cmp)
     return candidates[-1]
 
-  def package(self, package_info, build_target):
-    tarball = self.artifact_path(package_info, build_target)
+  def package(self, package_descriptor, build_target):
+    tarball = self.artifact_path(package_descriptor, build_target)
     if not path.isfile(tarball):
-      raise ArtifactNotFoundError('Artifact \"%s\" not found for %s' % (tarball, package_info.full_name))
+      raise ArtifactNotFoundError('Artifact \"%s\" not found for %s' % (tarball, package_descriptor.full_name))
     return self._get_package(tarball)
 
   def _get_package(self, tarball):
@@ -153,7 +153,7 @@ class artifact_manager(object):
   def _make_requirement_manager(self, build_target):
     rm = requirement_manager()
     for package in self.latest_available_packages(build_target):
-      rm.add_package(package.info)
+      rm.add_package(package.descriptor)
     return rm
   
 check.register_class(artifact_manager, include_seq = False)

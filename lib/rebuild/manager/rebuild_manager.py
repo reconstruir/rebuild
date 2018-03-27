@@ -48,12 +48,12 @@ class rebuild_manager(object):
   def resolve_packages(self, packages, build_target):
     resolved_names = algorithm.unique(self.artifact_manager.resolve_deps_caca_run(packages, build_target) + packages)
     available_packages = self.artifact_manager.available_packages(build_target)
-    available_names = [ p.info.name for p in available_packages ]
+    available_names = [ p.descriptor.name for p in available_packages ]
     missing_packages = dependency_resolver.check_missing(available_names, packages)
     if missing_packages:
       return self.ResolveResult(available_packages, missing_packages, [])
     resolved = self.artifact_manager.resolve_packages(resolved_names, build_target)
-    resolved_infos = [ r.info for r in resolved ]
+    resolved_infos = [ r.descriptor for r in resolved ]
     return self.ResolveResult(available_packages, [], resolved_infos)
 
   def resolve_and_update_packages(self, project_name, packages, build_target, allow_downgrade = False, force_install = False):
@@ -93,7 +93,6 @@ class rebuild_manager(object):
       return True
   
   def _update_project_from_config(self, build_target, values, project_name, allow_downgrade, force_install):
-    print('project_name: %s; values: %s' % (project_name, values))
     resolved_packages = self.resolve_and_update_packages(project_name,
                                                          values['packages'],
                                                          build_target,
@@ -166,14 +165,16 @@ exec ${1+"$@"}
     checksum_dirs = [ self.checksum_dir(package_info, build_target) for package_info in packages ]
     file_util.remove(checksum_dirs)
 
+  '''
   def dep_map(self, build_target):
     'Return a map of dependencies for the given build_target.'
     available_packages = self.artifact_manager.available_packages(build_target)
     available_packages = package_list.latest_versions(available_packages)
     dep_map = {}
     for package in available_packages:
-      existing_package = dep_map.get(package.info.name, None)
+      existing_package = dep_map.get(package.descriptor.name, None)
       if existing_package:
-        raise RuntimeError('package \"%s\" is already in dep_map (multiple versions) as \"%s\""' % (package.info, existing_package))
-      dep_map[package.info.name] = package.info.requirements_names_for_system(build_target.system)
+        raise RuntimeError('package \"%s\" is already in dep_map (multiple versions) as \"%s\""' % (package.descriptor, existing_package))
+      dep_map[package.descriptor.name] = package.descriptor.requirements_names_for_system(build_target.system)
     return dep_map
+'''

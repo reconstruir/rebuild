@@ -7,14 +7,14 @@ from rebuild.base import package_descriptor
 
 class package_db_entry(object):
 
-  def __init__(self, info, files):
-    assert isinstance(info, package_descriptor)
+  def __init__(self, descriptor, files):
+    assert isinstance(descriptor, package_descriptor)
     assert isinstance(files, list)
-    self.info = info
+    self.descriptor = descriptor
     self.files = files
 
   def __str__(self):
-    return '%s[%s]' % (str(self.info), ', '.join(self.files))
+    return '%s[%s]' % (str(self.descriptor), ', '.join(self.files))
 
   def __eq__(self, other):
     if not other:
@@ -23,20 +23,20 @@ class package_db_entry(object):
 
   def to_dict(self):
     return {
-      'info': self.info.to_dict(),
+      'descriptor': self.descriptor.to_dict(),
       'files': self.files,
     }
 
   @classmethod
   def parse_dict(clazz, d):
-    assert 'info' in d
+    assert 'descriptor' in d
     assert 'files' in d
-    info = d['info']
-    assert isinstance(info, dict)
-    info = package_descriptor.parse_dict(info)
+    descriptor = d['descriptor']
+    assert isinstance(descriptor, dict)
+    descriptor = package_descriptor.parse_dict(descriptor)
     files = d['files']
     assert isinstance(files, list)
-    return package_db_entry(info, files)
+    return package_db_entry(descriptor, files)
   
   def to_json(self):
     return json.dumps(self.to_dict(), indent = 2, sort_keys = True)

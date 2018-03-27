@@ -127,7 +127,7 @@ class package_tester(object):
     pm = package_manager(pm_root_dir, config.artifact_manager)
 
     package = pm.load_tarball(config.package_tarball, config.script.build_target)
-    pd = package.info
+    pd = package.descriptor
     
     deps_packages = config.script.resolve_deps(['RUN'], False)
     all_packages = deps_packages + [ pd ]
@@ -162,7 +162,7 @@ class package_tester(object):
       
     file_replace.copy_with_substitute(test_source, test_source_with_replacements,
                                       replacements, backup = False)
-    return clazz._test_context(package.info, shell_env, saved_env,
+    return clazz._test_context(package.descriptor, shell_env, saved_env,
                                test_root_dir, test_name,
                                test_source_with_replacements,
                                pm)

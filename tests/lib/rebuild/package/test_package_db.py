@@ -35,8 +35,8 @@ class test_package_db(unittest.TestCase):
     self.assertFalse( db.has_package('foo') )
     files = [ 'lib/libfoo.a', 'include/libfoo.h' ]
     reqs = None
-    info = package_descriptor('foo', '1.2.3-1', reqs)
-    db.add_package(info, files)
+    descriptor = package_descriptor('foo', '1.2.3-1', reqs)
+    db.add_package(descriptor, files)
     self.assertTrue( db.has_package('foo') )
     self.assertEqual( [ 'foo' ], db.list_all() )
     self.assertEqual( package_db_entry(package_descriptor('foo', '1.2.3-1', reqs), files), db.find_package('foo') )
@@ -55,8 +55,8 @@ class test_package_db(unittest.TestCase):
     self.assertFalse( db.has_package('foo') )
     files = [ 'lib/libfoo.a', 'include/libfoo.h' ]
     reqs = None
-    info = package_descriptor('foo', '1.2.3-1', reqs)
-    db.add_package(info, files)
+    descriptor = package_descriptor('foo', '1.2.3-1', reqs)
+    db.add_package(descriptor, files)
     self.assertTrue( db.has_package('foo') )
     self.assertEqual( [ 'foo' ], db.list_all() )
     self.assertEqual( package_db_entry(package_descriptor('foo', '1.2.3-1', reqs), files), db.find_package('foo') )

@@ -693,10 +693,7 @@ mar 19
  - when resolving values use a standard list with overritten methods for get that set defaults correctly
 
 mar 20
-- s/package.info/package.descriptor
-- lots of other package fields have old names
 - test_package_manager.py might be recreating the test artifact manager over and over
-- add environment var for changing DEBUG on off in tests that do droppings
 - package_manager doesn do anything about satisfying version or revision in _missing_requirements() and in general
 - requirement_manager has a lot of cut-n-paste code in the resolve_ methods
 - theres no unit test for export_compilation_flags_requirements and also not one where its system masked

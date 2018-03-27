@@ -162,33 +162,15 @@ class step(with_metaclass(step_register_meta, object)):
     env['REBUILD_REQUIREMENTS_CXXFLAGS'] = ' '.join(cflags)
     env['REBUILD_REQUIREMENTS_LDFLAGS'] = ' '.join(libs)
 
-    env['REBUILD_REQUIREMENTS_DIR'] = script.requirements_manager.installation_dir
-    env['REBUILD_REQUIREMENTS_BIN_DIR'] = script.requirements_manager.bin_dir
-    env['REBUILD_REQUIREMENTS_INCLUDE_DIR'] = script.requirements_manager.include_dir
-    env['REBUILD_REQUIREMENTS_LIB_DIR'] = script.requirements_manager.lib_dir
-    env['REBUILD_REQUIREMENTS_SHARE_DIR'] = script.requirements_manager.share_dir
-
-    env['REBUILD_BUILD_DIR'] = script.build_dir
-    env['REBUILD_SOURCE_DIR'] = script.source_dir
-    env['REBUILD_TEST_DIR'] = script.test_dir
-
-    env['REBUILD_STAGE_PREFIX_DIR'] = script.stage_dir
-    env['REBUILD_STAGE_BIN_DIR'] = path.join(script.stage_dir, 'bin')
-    env['REBUILD_STAGE_PYTHON_LIB_DIR'] = path.join(script.stage_dir, 'lib/python')
-    env['REBUILD_STAGE_FRAMEWORKS_DIR'] = path.join(script.stage_dir, 'frameworks')
-
+    env.update(script.substitutions)
+    
     os_env.update(env, script.env.tools_manager.shell_env(script.resolve_deps_caca_tool(False)))
     os_env.update(env, script.requirements_manager.shell_env(script.resolve_deps_poto_run(False)))
     os_env.update(env, os_env.make_shell_env(script.stage_dir))
 
     env['REBUILD_PYTHON_VERSION'] = '2.7'
     env['PYTHON'] = 'python%s' % (env['REBUILD_PYTHON_VERSION'])
-    env['REBUILD_PYTHON_PLATFORM_NAME'] =  script.build_target.system
-
-    env['REBUILD_PACKAGE_NAME'] = script.descriptor.name
-    env['REBUILD_PACKAGE_DESCRIPTION'] = script.descriptor.name
-    env['REBUILD_PACKAGE_VERSION'] = str(script.descriptor.version)
-
+    
     tc = toolchain.get_toolchain(script.build_target)
     compiler_flags = tc.compiler_flags()
     env['REBUILD_COMPILE_CFLAGS'] = ' '.join(compiler_flags.get('CFLAGS', []))

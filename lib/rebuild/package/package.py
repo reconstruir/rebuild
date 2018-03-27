@@ -21,7 +21,7 @@ class package(object):
     assert string_util.is_string(tarball)
     assert archiver.is_valid(tarball)
     self.tarball = tarball
-    self._info = None
+    self._descriptor = None
     self._files = None
     self._metadata = None
 
@@ -32,10 +32,10 @@ class package(object):
     return self._metadata
     
   @property
-  def info(self):
-    if not self._info:
-      self._info = self._load_descriptor()
-    return self._info
+  def descriptor(self):
+    if not self._descriptor:
+      self._descriptor = self._load_descriptor()
+    return self._descriptor
 
   @property
   def system(self):
@@ -87,10 +87,10 @@ class package(object):
   def _variable_substitution_hook(self, where, installation_dir):
     replacements = {
       '${REBUILD_PACKAGE_PREFIX}': installation_dir,
-      '${REBUILD_PACKAGE_NAME}': self.info.name,
-      '${REBUILD_PACKAGE_DESCRIPTION}': self.info.name,
-      '${REBUILD_PACKAGE_VERSION}': str(self.info.version),
-      '${REBUILD_PACKAGE_FULL_NAME}': self.info.full_name,
+      '${REBUILD_PACKAGE_NAME}': self.descriptor.name,
+      '${REBUILD_PACKAGE_DESCRIPTION}': self.descriptor.name,
+      '${REBUILD_PACKAGE_VERSION}': str(self.descriptor.version),
+      '${REBUILD_PACKAGE_FULL_NAME}': self.descriptor.full_name,
     }
     file_search.search_replace(where,
                                replacements,
@@ -116,15 +116,15 @@ class package(object):
     return archiver.is_valid(tarball)
 
   @classmethod
-  def info_cmp(clazz, p1, p2):
-    'Compare info and return an int either -1, 0, or 1'
+  def descriptor_cmp(clazz, p1, p2):
+    'Compare descriptor and return an int either -1, 0, or 1'
     assert isinstance(p1, package)
     assert isinstance(p2, package)
-    return package_descriptor.full_name_cmp(p1.info, p2.info)
+    return package_descriptor.full_name_cmp(p1.descriptor, p2.descriptor)
 
   @classmethod
-  def package_info(clazz, tarball):
-    return package(tarball).info
+  def package_descriptor(clazz, tarball):
+    return package(tarball).descriptor
 
   @classmethod
   def package_files(clazz, tarball):

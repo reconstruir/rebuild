@@ -20,11 +20,7 @@ class test_database_entry(unit_test):
     e = package_db_entry(package_descriptor('kiwi', '6.7.8-2', requirements = self.TEST_REQUIREMENTS), self.TEST_FILES)
     expected_json='''\
 {
-  "files": [
-    "f1", 
-    "f2"
-  ], 
-  "info": { 
+  "descriptor": { 
     "name": "kiwi", 
     "properties": {}, 
     "requirements": [ 
@@ -32,7 +28,11 @@ class test_database_entry(unit_test):
       "all: bar >= 6.6.6-1" 
     ], 
     "version": "6.7.8-2"
-  }
+  },
+  "files": [
+    "f1", 
+    "f2"
+  ] 
 }'''
 
     self.assert_string_equal_ws( expected_json, e.to_json() )
@@ -44,7 +44,7 @@ class test_database_entry(unit_test):
     "f1", 
     "f2"
   ],
-  "info": {
+  "descriptor": {
     "version": "6.7.8-2", 
     "name": "kiwi", 
     "requirements": [

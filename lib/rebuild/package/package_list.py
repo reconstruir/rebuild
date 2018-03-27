@@ -10,7 +10,7 @@ class package_list(object):
   def sort_by_descriptor(clazz, packages):
     'Sort a list of packages in ascending order using package info.'
     check.check_package_seq(packages)
-    return sorted(packages, key = lambda package: package.info)
+    return sorted(packages, key = lambda package: package.descriptor)
 
   @classmethod
   def latest_versions(clazz, packages):
@@ -19,11 +19,11 @@ class package_list(object):
     packages = clazz.sort_by_descriptor(packages)
     d = {}
     for package in packages:
-      d[package.info.name] = package
+      d[package.descriptor.name] = package
     return clazz.sort_by_descriptor(d.values())
 
   @classmethod
   def descriptors(clazz, packages):
     'Return a list of descriptors for the given list of packages.'
     check.check_package_seq(packages)
-    return [ package.info for package in packages ]
+    return [ package.descriptor for package in packages ]

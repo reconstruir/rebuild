@@ -23,9 +23,9 @@ class tools_package_manager(object):
 
   def install_tarball(self, package_tarball):
     pkg = package(package_tarball)
-    if self.is_installed(pkg.info):
+    if self.is_installed(pkg.descriptor):
       return
-    pkg_dir = self._package_dir(pkg.info)
+    pkg_dir = self._package_dir(pkg.descriptor)
     pkg.extract_files(pkg_dir)
     replacements = {
       '@REBUILD_PACKAGE_PREFIX@': pkg_dir,
@@ -110,8 +110,8 @@ class tools_package_manager(object):
     return result
 
   def find_package(self, package_name):
-    infos = self.list_all()
-    named_packages = [ pi for pi in infos if pi.name == package_name ]
+    descriptors = self.list_all()
+    named_packages = [ pi for pi in descriptors if pi.name == package_name ]
     assert len(named_packages) == 1
     return named_packages[0]
 

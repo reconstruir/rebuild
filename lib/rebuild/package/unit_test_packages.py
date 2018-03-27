@@ -82,7 +82,7 @@ class unit_test_packages(object):
     props = template.get('properties', {})
     pi = package_descriptor.parse(k)
     pi = package_descriptor(pi.name, pi.version, requirements = reqs, properties = props)
-    template['package_info'] = pi
+    template['package_descriptor'] = pi
   
   def __init__(self, desc, requirements = None,
                system = 'macos', level = 'release',
@@ -103,14 +103,14 @@ class unit_test_packages(object):
                                      self.system, self.level,
                                      name_override = self.name_override,
                                      debug = self.debug)
-    artifact_path = package.package_info.artifact_path(package.build_target)
+    artifact_path = package.package_descriptor.artifact_path(package.build_target)
     target_path = path.join(root_dir, artifact_path)
     file_util.rename(package.tarball, target_path)
     if self.debug:
       print(('DEBUG: test_package.create_tarball() package=%s' % (target_path)))
     return target_path
 
-  test_package = namedtuple('test_package', 'tarball,package_info,build_target')
+  test_package = namedtuple('test_package', 'tarball,package_descriptor,build_target')
 
   @classmethod
   def make_test_package(clazz, name, version, requirements,
