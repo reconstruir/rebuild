@@ -188,8 +188,8 @@ int main(int real_argc, char **real_argv)
 {
   const char* argv[] = {
     "${REBUILDER_TEST_NAME}",
-    "${REBUILDER_SOURCE_DIR}/reb-libpng-test.png",
-    "${REBUILDER_TEST_DIR}/${REBUILDER_TEST_NAME}/${REBUILDER_TEST_NAME}.png.ouput"
+    "${REBUILD_SOURCE_DIR}/reb-libpng-test.png",
+    "${REBUILD_TEST_DIR}/${REBUILDER_TEST_NAME}/${REBUILDER_TEST_NAME}.png.ouput"
   };
   return real_main(3, (char**)argv);
 }

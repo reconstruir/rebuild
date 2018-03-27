@@ -151,12 +151,12 @@ class package_tester(object):
     
     test_source_with_replacements = path.join(test_root_dir, path.basename(test_source))
     replacements = {
-      'REBUILDER_SOURCE_DIR': config.script.source_dir,
-      'REBUILDER_TEST_DIR': config.script.test_dir,
+      'REBUILD_SOURCE_DIR': config.script.source_dir,
+      'REBUILD_TEST_DIR': config.script.test_dir,
       'REBUILDER_TEST_NAME': test_name,
     }
     substitutions = {}
-    substitutions['REBUILDER_BUILD_DIR'] = config.script.build_dir
+    substitutions['REBUILD_BUILD_DIR'] = config.script.build_dir
     for kv in config.extra_env:
       shell_env[kv.key] = variable.substitute(kv.value, substitutions)
       
