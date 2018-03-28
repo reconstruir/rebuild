@@ -13,4 +13,7 @@ class requirement_hardness(enum):
   # Requirement needed only at build time.  For example a statically linked library.
   BUILD = 3
     
+  # Requirement needed only for testing.
+  TEST = 4
+    
   DEFAULT = RUN

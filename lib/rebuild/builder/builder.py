@@ -185,8 +185,8 @@ class builder(object):
     # If no package names are given we want them all
     package_names = package_names or self.package_names()
 
-    tools_to_build = self._env.requirement_manager.resolve_tools(package_names, self._env.config.host_build_target.system)
-    to_build = self._env.requirement_manager.resolve(package_names, self._env.config.host_build_target.system)
+    tools_to_build = self._env.requirement_manager.CACA_resolve_tools(package_names, self._env.config.host_build_target.system)
+    to_build = self._env.requirement_manager.CACA_resolve(package_names, self._env.config.host_build_target.system)
 
     tools_to_build_names = [ pd.name for pd in tools_to_build ]
     to_build_names = [ pd.name for pd in to_build ]

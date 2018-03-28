@@ -129,11 +129,11 @@ class package_tester(object):
     package = pm.load_tarball(config.package_tarball, config.script.build_target)
     pd = package.descriptor
     
-    deps_packages = config.script.resolve_deps(['RUN'], False)
+    deps_packages = config.script.resolve_deps(['RUN', 'TEST'], False)
     all_packages = deps_packages + [ pd ]
 
-    pm.install_packages(deps_packages, config.script.build_target, ['RUN'])
-    pm.install_tarball(config.package_tarball, ['RUN'])
+    pm.install_packages(deps_packages, config.script.build_target, ['RUN', 'TEST'])
+    pm.install_tarball(config.package_tarball, ['RUN', 'TEST'])
 
     tool_reqs = pd.requirements.filter_by_hardness(['TOOL'])
     tool_reqs_names = tool_reqs.names()

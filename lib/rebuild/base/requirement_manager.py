@@ -65,62 +65,36 @@ class requirement_manager(object):
   def _normalize_hardness(clazz, hardness):
     return sorted(object_util.listify(hardness))
 
-  def resolve_tools(self, names, system):
+  def CACA_resolve_tools(self, names, system):
     'Resolve what tools are needed for names and return the names in build order.'
     check.check_string_seq(names)
-    just_deps = self._resolve_deps(names, [ 'BUILD', 'RUN', 'TOOL' ], system)
+    hardness = [ 'BUILD', 'RUN', 'TOOL' ]
+    just_deps = self._resolve_deps(names, hardness, system)
     just_deps_names = [ req.name for req in just_deps ]
     everything_names = algorithm.unique(just_deps_names + names)
-    only_tool_names = [ dep for dep in everything_names if self.is_tool(dep) ]
-    tool_just_deps = self._resolve_deps(only_tool_names, [ 'BUILD', 'RUN', 'TOOL' ], system)
-    tool_just_deps_names = [ req.name for req in tool_just_deps ]
-    tool_everything_names = algorithm.unique(tool_just_deps_names + only_tool_names)
-    all_dep_map = self._dependency_map([ 'BUILD', 'RUN', 'TOOL' ], system)
-    resolved_map = dict_util.filter_with_keys(all_dep_map, tool_everything_names)
+    only_wanted_names = [ dep for dep in everything_names if self.is_tool(dep) ]
+    only_wanted_deps = self._resolve_deps(only_wanted_names, hardness, system)
+    only_wanted_deps_names = [ req.name for req in only_wanted_deps ]
+    wanted_everything_names = algorithm.unique(only_wanted_deps_names + only_wanted_names)
+    all_dep_map = self._dependency_map(hardness, system)
+    resolved_map = dict_util.filter_with_keys(all_dep_map, wanted_everything_names)
     return self.descriptors(dependency_resolver.build_order_flat(resolved_map))
 
-  def resolve(self, names, system):
+  def CACA_resolve(self, names, system):
     'Resolve packages without tools return the names in build order.'
     check.check_string_seq(names)
-    just_deps = self._resolve_deps(names, [ 'BUILD', 'RUN' ], system)
+    hardness = [ 'BUILD', 'RUN' ]
+    just_deps = self._resolve_deps(names, hardness, system)
     just_deps_names = [ req.name for req in just_deps ]
     everything_names = algorithm.unique(just_deps_names + names)
-    only_non_tool_names = [ dep for dep in everything_names if not self.is_tool(dep) ]
-    non_tool_just_deps = self._resolve_deps(only_non_tool_names, [ 'BUILD', 'RUN' ], system)
-    non_tool_just_deps_names = [ req.name for req in non_tool_just_deps ]
-    non_tool_everything_names = algorithm.unique(non_tool_just_deps_names + only_non_tool_names)
-    all_dep_map = self._dependency_map([ 'BUILD', 'RUN' ], system)
-    resolved_map = dict_util.filter_with_keys(all_dep_map, non_tool_everything_names)
+    only_wanted_names = [ dep for dep in everything_names if not self.is_tool(dep) ]
+    only_wanted_deps = self._resolve_deps(only_wanted_names, hardness, system)
+    only_wanted_deps_names = [ req.name for req in only_wanted_deps ]
+    wanted_everything_names = algorithm.unique(only_wanted_deps_names + only_wanted_names)
+    all_dep_map = self._dependency_map(hardness, system)
+    resolved_map = dict_util.filter_with_keys(all_dep_map, wanted_everything_names)
     return self.descriptors(dependency_resolver.build_order_flat(resolved_map))
-
-  def resolve_tools_deps(self, names, system):
-    'Resolve what tools are needed for names and return the names in build order.'
-    check.check_string_seq(names)
-    just_deps = self._resolve_deps(names, [ 'BUILD', 'RUN', 'TOOL' ], system)
-    just_deps_names = [ req.name for req in just_deps ]
-    everything_names = algorithm.unique(just_deps_names)
-    only_tool_names = [ dep for dep in everything_names if self.is_tool(dep) ]
-    tool_just_deps = self._resolve_deps(only_tool_names, [ 'BUILD', 'RUN', 'TOOL' ], system)
-    tool_just_deps_names = [ req.name for req in tool_just_deps ]
-    tool_everything_names = algorithm.unique(tool_just_deps_names)
-    all_dep_map = self._dependency_map([ 'BUILD', 'RUN', 'TOOL' ], system)
-    resolved_map = dict_util.filter_with_keys(all_dep_map, tool_everything_names)
-    return self.descriptors(dependency_resolver.build_order_flat(resolved_map))
-
-  def resolve_deps(self, names, system):
-    'Resolve packages without tools return the names in build order.'
-    check.check_string_seq(names)
-    just_deps = self._resolve_deps(names, [ 'BUILD', 'RUN' ], system)
-    just_deps_names = [ req.name for req in just_deps ]
-    everything_names = algorithm.unique(just_deps_names)
-    only_non_tool_names = [ dep for dep in everything_names if not self.is_tool(dep) ]
-    non_tool_just_deps = self._resolve_deps(only_non_tool_names, [ 'BUILD', 'RUN' ], system)
-    non_tool_just_deps_names = [ req.name for req in non_tool_just_deps ]
-    non_tool_everything_names = algorithm.unique(non_tool_just_deps_names)
-    all_dep_map = self._dependency_map([ 'BUILD', 'RUN' ], system)
-    resolved_map = dict_util.filter_with_keys(all_dep_map, non_tool_everything_names)
-    return self.descriptors(dependency_resolver.build_order_flat(resolved_map))
-
+  
   def resolve_deps_poto(self, names, system, hadrness, include_names):
     'Resolve dependencies.'
     check.check_string_seq(names)
