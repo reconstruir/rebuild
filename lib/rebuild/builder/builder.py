@@ -187,14 +187,18 @@ class builder(object):
 
     req_manager = self._env.requirement_manager
 
+    test_hardness = []
+    if not self._env.config.skip_tests:
+      test_hardness += [ 'TEST' ]
+    
     to_build = req_manager.resolve_and_order(package_names,
                                              self._env.config.host_build_target.system,
-                                             [ 'BUILD', 'RUN' ],
+                                             [ 'BUILD', 'RUN' ] + test_hardness,
                                              lambda dep: not req_manager.is_tool(dep))
 
     tools_to_build = req_manager.resolve_and_order(package_names,
                                                    self._env.config.host_build_target.system,
-                                                   [ 'BUILD', 'RUN', 'TOOL' ],
+                                                   [ 'BUILD', 'RUN', 'TOOL' ] + test_hardness,
                                                    lambda dep: req_manager.is_tool(dep))
     
     save_build_target = self._env.config.build_target
