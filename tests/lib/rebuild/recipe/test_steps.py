@@ -135,16 +135,21 @@ class step_takes_all(step):
   @classmethod
   def define_args(clazz):
     return '''
-      bool_value         bool
-      int_value          int
-      string_value       string
-      string_list_value  string_list
-      key_values_value   key_values
+      bool_value              bool
+      file_value              file
+      file_install_list_value file_install_list
+      file_list_value         file_list
+      hook_list_value         hook_list
+      int_value               int
+      key_values_value        key_values
+      string_value            string
+      string_list_value       string_list
     '''
   
   def execute(self, script, env, args):
     return step_result(True)
 
+  
 class step_compound(compound_step):
   __steps__ = [
     step_takes_bool,

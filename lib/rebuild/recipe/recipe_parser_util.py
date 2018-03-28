@@ -7,8 +7,8 @@ from bes.key_value import key_value, key_value_list
 from rebuild.step import hook_registry
 from rebuild.value import value_type
 from bes.text import comments, string_list
-from .recipe_file import recipe_file
-from .recipe_install_file import recipe_install_file
+from .recipe_file import recipe_file, recipe_file_list
+from .recipe_install_file import recipe_install_file, recipe_install_file_list
 
 class recipe_parser_util(object):
 
@@ -77,11 +77,11 @@ class recipe_parser_util(object):
     elif arg_type == value_type.HOOK_LIST:
       return []
     elif arg_type == value_type.FILE_LIST:
-      return []
+      return recipe_file_list()
     elif arg_type == value_type.FILE:
       return None
     elif arg_type == value_type.FILE_INSTALL_LIST:
-      return []
+      return recipe_install_file_list()
     raise ValueError('unknown arg_type: %s' % (str(arg_type)))
 
   @classmethod
@@ -104,14 +104,14 @@ class recipe_parser_util(object):
 
   @classmethod
   def _parse_file_list(clazz, value, base):
-    files = []
+    result = recipe_file_list()
     filenames = clazz._parse_string_list(value)
     for filename in filenames:
       filename_abs = path.join(base, filename)
       if not path.isfile(filename_abs):
         raise RuntimeError('not found: %s' % (filename_abs))
-      files.append(recipe_file(filename_abs))
-    return files
+      result.append(recipe_file(filename_abs))
+    return result
 
   @classmethod
   def _parse_file(clazz, value, base):
@@ -122,7 +122,7 @@ class recipe_parser_util(object):
 
   @classmethod
   def _parse_file_install_list(clazz, value, base):
-    result = []
+    result = recipe_install_file_list()
     data = clazz._parse_string_list(value)
     if (len(data) % 2) != 0:
       raise RuntimeError('invalid non even list: %s' % (data))

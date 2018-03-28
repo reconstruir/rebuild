@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.common import algorithm, check
+from bes.common import algorithm, check, type_checked_list
 from bes.compat import StringIO
 from rebuild.base import build_system
 from bes.key_value import key_value, key_value_list
 from bes.text import string_list
+from .recipe_file import recipe_file_list
+from .recipe_install_file import recipe_install_file_list
 
 class masked_value_list(object):
 
@@ -73,10 +75,10 @@ class masked_value_list(object):
       return self._resolve_key_values(values)
     elif check.is_string_list(values[0]):
       return self._resolve_string_list(values)
-    elif check.is_recipe_file_seq(values[0]):
-      return self._resolve_list(values)
-    elif check.is_recipe_install_file_seq(values[0]):
-      return self._resolve_list(values)
+    elif check.is_recipe_file_list(values[0]):
+      return self._resolve_typed_list(values, recipe_file_list)
+    elif check.is_recipe_install_file_list(values[0]):
+      return self._resolve_typed_list(values, recipe_install_file_list)
     raise TypeError('unknown value type: %s - %s' % (str(values[0]), type(values[0])))
 
   def _resolve_values(self, system):
@@ -89,9 +91,18 @@ class masked_value_list(object):
   def _resolve_list(self, values):
     result = []
     for value in values:
+      print('type list %s' % (type(value)))
       assert isinstance(value, list)
       result.extend(value)
     return algorithm.unique(result)
+
+  def _resolve_typed_list(self, values, list_type):
+    result = list_type()
+    for value in values:
+      assert isinstance(value, type_checked_list)
+      result.extend(value)
+    result.remove_dups()
+    return result
 
   def _resolve_string_list(self, values):
     result = string_list()

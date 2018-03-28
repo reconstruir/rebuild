@@ -41,9 +41,9 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
       return self.value.to_string(delimiter = ' ', quote = quote)
     elif check.is_hook_seq(self.value):
       return ' '.join([ h.value_to_string() for h in self.value ])
-    elif check.is_recipe_install_file_seq(self.value):
+    elif check.is_recipe_install_file_list(self.value):
       return ' '.join([ h.value_to_string() for h in self.value ])
-    elif check.is_recipe_file_seq(self.value):
+    elif check.is_recipe_file_list(self.value):
       return ' '.join([ h.value_to_string() for h in self.value ])
     elif check.is_recipe_file(self.value):
       return self.value.value_to_string()
@@ -58,8 +58,8 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
     check.is_string_list,
     check.is_hook_seq,
     check.is_recipe_file,
-    check.is_recipe_file_seq,
-    check.is_recipe_install_file_seq,
+    check.is_recipe_file_list,
+    check.is_recipe_install_file_list,
   ]
       
   @classmethod

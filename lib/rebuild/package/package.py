@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+5#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import json, os.path as path, re
@@ -134,6 +134,13 @@ class package(object):
   def create_tarball(clazz, tarball_path, pkg_desc, build_target, stage_dir, env_dir):
     metadata_dict = dict_util.combine(pkg_desc.to_dict(), build_target.to_dict())
     assert 'properties' in metadata_dict
+    properties = metadata_dict['properties']
+    for key, value in properties.items():
+      if key == 'export_compilation_flags_requirements':
+        new_value = []
+        for x in value:
+          new_value.append(str(x))
+        properties['export_compilation_flags_requirements'] = new_value
     metadata = json_util.to_json(metadata_dict, indent = 2)
     metadata_filename = temp_file.make_temp_file(suffix = '.json')
     file_util.save(metadata_filename, content = metadata)

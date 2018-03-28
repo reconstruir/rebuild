@@ -15,10 +15,27 @@ class step_python_egg_build(step):
   def __init__(self):
     super(step_python_egg_build, self).__init__()
 
+  @classmethod
+  def define_args(clazz):
+    return '''
+    shell_flags     string_list
+    shell_env       key_values
+    '''
+    
   def execute(self, script, env, args):
     tarball_address = args.get('tarball_address', ( None, None ))
     update_version_tag = args.get('update_version_tag', None)
 
+    if self._recipe:
+      values = self.recipe.resolve_values(env.config.build_target.system)
+      shell_flags = values.get('shell_flags')
+      shell_env = values.get('shell_env')
+    else:
+      shell_flags = self.args_get_string_list(args, 'shell_flags')
+      shell_env = self.args_get_key_value_list(args, 'shell_env')
+
+    print('FUCK: step_python_egg - %s: shell_env=%s' % (script.descriptor.name, shell_env))
+    
     if update_version_tag:
       assert tarball_address
       filename = path.join(script.build_dir, update_version_tag)
@@ -30,9 +47,7 @@ class step_python_egg_build(step):
     setup_script = args.get('setup_script', self.DEFAULT_SETUP_SCRIPT)
     setup_dir = args.get('setup_dir', None)
     cmd = '${PYTHON} %s bdist_egg --plat-name=${REBUILD_PYTHON_PLATFORM_NAME}' % (setup_script)
-    return self.call_shell(cmd, script, env, args,
-                           extra_env = self.args_get_key_value_list(args, 'shell_env'),
-                           execution_dir = setup_dir)
+    return self.call_shell(cmd, script, env, args, extra_env = shell_env, execution_dir = setup_dir)
 
   @classmethod
   def parse_step_args(clazz, script, env, args):

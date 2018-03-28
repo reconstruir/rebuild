@@ -2,12 +2,35 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from rebuild.recipe import recipe_parser
+from rebuild.recipe import recipe_parser, recipe_file_list, recipe_install_file_list
 from bes.key_value import key_value as KV, key_value_list as KVL
+from bes.text import string_list
 from test_steps import *
 
 class test_recipe_step(unit_test):
 
+  def test_empty_defaults(self):
+    text = '''\
+'''
+    step = self._parse(text)
+    r = step.resolve_values('linux')
+    expected = {
+      'bool_value': False,
+      'file_install_list_value': recipe_install_file_list(),
+      'file_list_value': recipe_file_list(),
+      'file_value': None,
+      'hook_list_value': [],
+      'int_value': None,
+      'key_values_value': KVL(),
+      'string_list_value': string_list(),
+      'string_value': None,
+    }
+    self.assertEqual( expected, r )
+
+    r = step.resolve_values('macos')
+    self.assertEqual( expected, r )
+
+  
   def test_takes_all(self):
     text = '''\
 bool_value:
@@ -25,29 +48,40 @@ key_values_value
     step = self._parse(text)
     r = step.resolve_values('linux')
     expected = {
+      'bool_value': True,
+      'file_install_list_value': [],
+      'file_list_value': [],
+      'file_value': None,
+      'hook_list_value': [],
+      'int_value': None,
       'key_values_value': KVL([ ( 'a', 'forlinux' ), ( 'b', '6' ) ]),
       'string_list_value': ['a', 'b', '"x y"'],
-      'bool_value': True,
-      'int_value': None,
-      'string_value': None,
       'string_value': None,
     }
     self.assertEqual( expected, r )
     r = step.resolve_values('macos')
     expected = {
+      'bool_value': True,
+      'file_install_list_value': [],
+      'file_list_value': [],
+      'file_value': None,
+      'hook_list_value': [],
+      'int_value': None,
       'key_values_value': KVL([ ( 'a', 'formacos' ), ( 'b', '6' ) ]),
       'string_list_value': ['a', 'b', '"x y"'],
-      'bool_value': True,
-      'int_value': None,
       'string_value': None,
     }
     self.assertEqual( expected, r )
     r = step.resolve_values('android')
     expected = {
+      'bool_value': True,
+      'file_install_list_value': [],
+      'file_list_value': [],
+      'file_value': None,
+      'hook_list_value': [],
+      'int_value': None,
       'key_values_value': KVL([ ( 'a', 'forandroid' ), ( 'b', '6' ) ]),
       'string_list_value': ['a', 'b', '"x y"'],
-      'bool_value': True,
-      'int_value': None,
       'string_value': None,
     }
     self.assertEqual( expected, r )

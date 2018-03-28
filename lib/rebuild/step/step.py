@@ -152,6 +152,7 @@ class step(with_metaclass(step_register_meta, object)):
       
     if export_compilation_flags_requirements:
       cflags, libs = script.requirements_manager.compilation_flags(export_compilation_flags_requirements, static = STATIC)
+      print('FUCK: step - %s: cflags=%s' % (script.descriptor.name, cflags))
     else:
       cflags = []
       libs = []
@@ -376,7 +377,12 @@ class step(with_metaclass(step_register_meta, object)):
   @classmethod
   def export_compilation_flags_requirements(clazz, script, system):
     config = script.descriptor.properties.get('export_compilation_flags_requirements', [])
-    resolved = reitred_masked_config.resolve_list(config, system)
+    if check.is_masked_value_list(config):
+      resolved = config.resolve(system)
+      print('FUCK export_compilation_flags_requirements(): %s DO NEW THING config=%s; resolved=%s' % (script.descriptor.name, config, resolved))
+    else:
+      resolved = reitred_masked_config.resolve_list(config, system)
+      print('FUCK export_compilation_flags_requirements(): %s resolved=%s' % (script.descriptor.name, resolved))
     requirements = script.descriptor.requirements.filter_by_hardness(['RUN', 'BUILD']).filter_by_system(system)
     deps_names = requirements.names()
     export_names = resolved

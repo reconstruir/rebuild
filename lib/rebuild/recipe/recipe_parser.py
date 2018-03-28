@@ -97,6 +97,12 @@ class recipe_parser(object):
         env_vars = self._parse_env_vars(child)
       elif text.startswith('instructions'):
         instructions = self._parse_instructions(child)
+      elif text.startswith('export_compilation_flags_requirements'):
+        export_compilation_flags_requirements = self._parse_export_compilation_flags_requirements(child)
+        print('FUCK: recipe_parser %s export_compilation_flags_requirements=%s' % (self.filename, export_compilation_flags_requirements))
+        properties['export_compilation_flags_requirements'] = export_compilation_flags_requirements
+      else:
+        self._error('unknown recipe section: \"%s\"' % (text), node)
     if env_vars:
       poto1 = env_vars.resolve('macos')
       poto2 = env_vars.resolve('linux')
@@ -148,6 +154,14 @@ class recipe_parser(object):
       value = masked_value.parse_mask_and_value(text, self.filename, value_type.KEY_VALUES)
       env_vars.append(value)
     return masked_value_list(env_vars)
+
+  def _parse_export_compilation_flags_requirements(self, node):
+    export_compilation_flags_requirements = []
+    for child in node.children:
+      text = tree_text_parser.node_text_flat(child)
+      value = masked_value.parse_mask_and_value(text, self.filename, value_type.STRING_LIST)
+      export_compilation_flags_requirements.append(value)
+    return masked_value_list(export_compilation_flags_requirements)
 
   def _parse_instructions(self, node):
     text = tree_text_parser.node_text(node, include_root = False)

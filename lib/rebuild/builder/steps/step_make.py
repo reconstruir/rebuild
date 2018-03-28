@@ -87,20 +87,15 @@ class step_make_install(step):
     else:
       makefile = args.get('makefile', None)
       install_target = args.get('install_target', 'install')
-      make_install_flags = self.args_get_string_list(args, 'make_install_flags')
+      make_install_flags = self.args_get_string_list(args, 'make_install_flags').to_list()
       make_install_env = self.args_get_key_value_list(args, 'make_install_env')
     
-    install_target = args.get('install_target', 'install')
-    make_install_flags = args.get('make_install_flags', [])
-
     makefile = args.get('makefile', None)
     if makefile:
       makefile_flags = '-f %s' % (makefile)
     else:
       makefile_flags = ''
 
-    print('FUCK INSTALL: install_target=%s' % (install_target))
-      
     cmd = [
       'make',
       makefile_flags,
@@ -108,7 +103,6 @@ class step_make_install(step):
       'prefix=%s' % (script.stage_dir),
       'V=1',
     ] + make_install_flags
-    print('FUCK INSTALL: cmd="%s"' % (str(cmd)))
     return self.call_shell(cmd, script, env, args, extra_env = self.args_get_key_value_list(args, 'make_install_env'))
 
   @classmethod

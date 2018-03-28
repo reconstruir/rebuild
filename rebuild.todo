@@ -719,3 +719,6 @@ mar 27
 - rebuilder.py -w will kill stuff like -n but it shouldnt
 
 install_target should be make_install_target
+when the name of the makefile changes from build.py to build.rebc it doesnt recompile checkout checksums
+
+when done converting builder scripts retire the properties hacks in recipe_parser (for env_vars and export_compilation_flags_requirements)

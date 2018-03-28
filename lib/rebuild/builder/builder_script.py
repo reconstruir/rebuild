@@ -4,7 +4,7 @@
 import copy, os.path as path
 from collections import namedtuple
 
-from bes.common import algorithm, check, variable
+from bes.common import algorithm, check, variable, type_checked_list
 from bes.fs import file_checksum, file_util
 from bes.system import log
 from rebuild.base import build_blurb
@@ -133,9 +133,9 @@ class builder_script(object):
       for sources_key in step.sources_keys():
         caca = args.get(sources_key, []) or []
         if caca:
-          assert isinstance(caca, list)
+          assert isinstance(caca, ( list, type_checked_list ))
           from rebuild.recipe import recipe_install_file
-          if check.is_recipe_install_file_seq(caca):
+          if check.is_recipe_install_file_list(caca):
             sources.extend([ x.filename for x in caca])
           else:
             sources.extend(caca)
