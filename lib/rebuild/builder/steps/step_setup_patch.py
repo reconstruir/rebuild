@@ -19,7 +19,7 @@ class step_setup_patch(step):
   def execute(self, script, env, args):
     if self._recipe:
       values = self.recipe.resolve_values(env.config.build_target.system)
-      patches = [ f.filename for f in values.get('patches') ]
+      patches = [ f.filename for f in values.get('patches') or [] ]
     else:
       patches = args.get('patches', None)
 

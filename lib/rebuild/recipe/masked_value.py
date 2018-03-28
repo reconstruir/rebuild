@@ -45,6 +45,8 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
       return ' '.join([ h.value_to_string() for h in self.value ])
     elif check.is_recipe_file_seq(self.value):
       return ' '.join([ h.value_to_string() for h in self.value ])
+    elif check.is_recipe_file(self.value):
+      return self.value.value_to_string()
     else:
       assert False
 
@@ -55,6 +57,7 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
     check.is_key_value_list,
     check.is_string_list,
     check.is_hook_seq,
+    check.is_recipe_file,
     check.is_recipe_file_seq,
     check.is_recipe_install_file_seq,
   ]

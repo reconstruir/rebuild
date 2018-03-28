@@ -717,3 +717,5 @@ mar 23
 mar 27
 - retire in rebuild/package/package_db_entry.py key = 'info'
 - rebuilder.py -w will kill stuff like -n but it shouldnt
+
+install_target should be make_install_target

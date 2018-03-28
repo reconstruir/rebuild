@@ -52,6 +52,8 @@ class recipe_parser_util(object):
       return clazz._parse_hook_list(value)
     elif arg_type == value_type.FILE_LIST:
       return clazz._parse_file_list(value, path.dirname(filename))
+    elif arg_type == value_type.FILE:
+      return clazz._parse_file(value, path.dirname(filename))
     elif arg_type == value_type.FILE_INSTALL_LIST:
       if filename:
         base = path.dirname(filename)
@@ -76,6 +78,8 @@ class recipe_parser_util(object):
       return []
     elif arg_type == value_type.FILE_LIST:
       return []
+    elif arg_type == value_type.FILE:
+      return None
     elif arg_type == value_type.FILE_INSTALL_LIST:
       return []
     raise ValueError('unknown arg_type: %s' % (str(arg_type)))
@@ -108,6 +112,13 @@ class recipe_parser_util(object):
         raise RuntimeError('not found: %s' % (filename_abs))
       files.append(recipe_file(filename_abs))
     return files
+
+  @classmethod
+  def _parse_file(clazz, value, base):
+    filename_abs = path.join(base, value)
+    if not path.isfile(filename_abs):
+      raise RuntimeError('not found: %s' % (filename_abs))
+    return recipe_file(filename_abs)
 
   @classmethod
   def _parse_file_install_list(clazz, value, base):

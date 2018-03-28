@@ -105,6 +105,17 @@ class step_takes_file_list(step):
   
   def execute(self, script, env, args):
     return step_result(True)
+
+class step_takes_file(step):
+  def __init__(self):
+    super(step_takes_file, self).__init__()
+    
+  @classmethod
+  def define_args(clazz):
+    return 'file_value file'
+  
+  def execute(self, script, env, args):
+    return step_result(True)
   
 class step_takes_file_install_list(step):
   def __init__(self):
@@ -124,11 +135,11 @@ class step_takes_all(step):
   @classmethod
   def define_args(clazz):
     return '''
-      bool_value bool
-      int_value int
-      string_value string
-      string_list_value string_list
-      key_values_value key_values
+      bool_value         bool
+      int_value          int
+      string_value       string
+      string_list_value  string_list
+      key_values_value   key_values
     '''
   
   def execute(self, script, env, args):
