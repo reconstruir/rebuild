@@ -28,20 +28,17 @@ class step_make(step):
   def execute(self, script, env, args):
     if self._recipe:
       values = self.recipe.resolve_values(env.config.build_target.system)
-      makefile = values.get('makefile')
-      make_flags = values.get('make_flags')
       make_env = values.get('make_env')
-      make_target = values.get('make_target')
       make_flags = values.get('make_flags')
-      make_env = values.get('make_env')
       make_num_jobs = values.get('make_num_jobs')
+      make_target = values.get('make_target')
+      makefile = values.get('makefile')
     else:
-      makefile = args.get('makefile', None)
-      make_flags = args.get('make_flags', [])
+      make_env = self.args_get_key_value_list(args, 'make_env')
+      make_flags = self.args_get_string_list(args, 'make_flags')
       make_num_jobs = int(args.get('make_num_jobs', self.DEFAULT_NUM_JOBS))
       make_target = args.get('make_target', None)
-      make_flags = self.args_get_string_list(args, 'make_flags')
-      make_env = self.args_get_key_value_list(args, 'make_env')
+      makefile = args.get('makefile', None)
       
     if make_num_jobs < 1:
       raise RuntimeError('make_num_jobs should be between 1 and %d instead of %s' % (self.MAX_NUM_JOBS, make_num_jobs))

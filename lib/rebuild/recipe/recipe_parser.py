@@ -99,7 +99,6 @@ class recipe_parser(object):
         instructions = self._parse_instructions(child)
       elif text.startswith('export_compilation_flags_requirements'):
         export_compilation_flags_requirements = self._parse_export_compilation_flags_requirements(child)
-        print('FUCK: recipe_parser %s export_compilation_flags_requirements=%s' % (self.filename, export_compilation_flags_requirements))
         properties['export_compilation_flags_requirements'] = export_compilation_flags_requirements
       else:
         self._error('unknown recipe section: \"%s\"' % (text), node)

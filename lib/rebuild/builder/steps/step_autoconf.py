@@ -21,24 +21,21 @@ class step_autoconf_configure(step):
     '''
     
   def execute(self, script, env, args):
-    '''
-    if False and script.recipe.format_version == 2:
-      print('CACA: RECIPE VERSION: %s' % (script.recipe.format_version))
-      print('CACA: build_target: %s' % (str(script.build_target)))
-      print('CACA: step recipe: %s' % (str(self.recipe.name)))
-      caca_values = self.recipe.resolve_values(script.build_target.system)
-      print('CACA: values: %s' % (str(caca_values)))
-      #caca_configure_env = self.recipe.resolve_values(script.build_target)
-    '''
-    configure_flags = self.args_get_string_list(args, 'configure_flags')
+    if self._recipe:
+      values = self.recipe.resolve_values(env.config.build_target.system)
+      configure_env = values.get('configure_env')
+      configure_flags = values.get('configure_flags')
+      configure_script = values.get('configure_script')
+      need_autoreconf = values.get('need_autoreconf')
+    else:
+      configure_env = self.args_get_key_value_list(args, 'configure_env')
+      configure_flags = self.args_get_string_list(args, 'configure_flags')
+      configure_script = args.get('configure_script', 'configure')
+      need_autoreconf = args.get('need_autoreconf', False)
+
     check.check_string_list(configure_flags)
     configure_flags = configure_flags.to_list()
-    configure_env = self.args_get_key_value_list(args, 'configure_env')
 
-    configure_script = args.get('configure_script', 'configure')
-    
-    need_autoreconf = args.get('need_autoreconf', False)
-    
     if need_autoreconf:
       autoreconf_cmd = [ 'autoreconf', '-i' ]
     else:
