@@ -22,7 +22,7 @@ class builder_env(object):
     self.tools_manager = self._make_tools_manager(config.build_root)
     self.downloads_manager = self._make_downloads_manager(config.build_root)
     self.artifact_manager = self._make_artifact_manager(config.build_root)
-    self.script_manager = builder_script_manager(filenames, self)
+    self.script_manager = builder_script_manager(filenames, self.config.build_target, self)
     self.requirement_manager = requirement_manager()
     for script in self.script_manager.scripts.values():
       self.requirement_manager.add_package(script.descriptor)

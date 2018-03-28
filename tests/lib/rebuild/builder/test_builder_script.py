@@ -65,7 +65,7 @@ class test_builder_script(unit_test):
     config.source_dir = path.dirname(filename)
     config.verbose = True
     env = builder_env(config, [ filename ])
-    sm = builder_script_manager([ filename ], env)
+    sm = builder_script_manager([ filename ], bt, env)
     self.assertEqual( 1, len(sm.scripts) )
     return sm.scripts.values()[0]
     

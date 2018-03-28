@@ -202,20 +202,26 @@ class builder(object):
                                                    lambda dep: req_manager.is_tool(dep))
     
     save_build_target = self._env.config.build_target
+
     self._env.config.build_target = self._env.config.host_build_target
-    exit_code = self._build_packages(tools_to_build.names(), 'tools')
+    exit_code = self._build_packages(self._env.script_manager.scripts,
+                                     tools_to_build.names(),
+                                     'tools')
     self._env.config.build_target = save_build_target
+
     if exit_code != self.EXIT_CODE_SUCCESS:
       return exit_code
 
-    return self._build_packages(to_build.names(), 'packages')
+    return self._build_packages(self._env.script_manager.scripts,
+                                to_build.names(),
+                                'packages')
 
-  def _build_packages(self, packages_to_build, label):
+  def _build_packages(self, scripts_map, packages_to_build, label):
     self.blurb('building %s: %s' % (label, ' '.join(packages_to_build)), fit = True)
     exit_code = self.EXIT_CODE_SUCCESS
     failed_packages = []
     for name in  packages_to_build:
-      script = self._env.script_manager.scripts[name]
+      script = scripts_map[name]
       filename = file_util.remove_head(script.filename, os.getcwd())
       if not script.enabled and not self._env.config.disabled:
         self.blurb('disabled: %s' % (filename))

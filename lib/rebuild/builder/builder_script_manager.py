@@ -11,12 +11,12 @@ from .builder_script import builder_script
 
 class builder_script_manager(object):
 
-  def __init__(self, filenames, env):
+  def __init__(self, filenames, build_target, env):
     # Load all the scripts
     self.scripts = {}
     for filename in filenames:
       build_blurb.blurb_verbose('build', 'loading %s' % (filename))
-      builder_scripts = self._load_scripts(filename, env)
+      builder_scripts = self._load_scripts(filename, build_target, env)
       for script in builder_scripts:
         #print('%s: requirements=%s' % (script.descriptor.name, str(script.descriptor.requirements)))
         self.scripts[script.descriptor.name] = script
@@ -76,8 +76,8 @@ class builder_script_manager(object):
     return sorted(self.scripts.keys())
         
   @classmethod
-  def _load_scripts(clazz, filename, env):
+  def _load_scripts(clazz, filename, build_target, env):
     scripts = []
     recipes = builder_recipe_loader.load(filename)
-    scripts = [ builder_script(recipe, env) for recipe in recipes ]
+    scripts = [ builder_script(recipe, build_target, env) for recipe in recipes ]
     return scripts
