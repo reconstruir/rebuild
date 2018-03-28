@@ -3,8 +3,10 @@
 
 from bes.common import algorithm, check, dict_util, object_util
 from bes.dependency import dependency_resolver, missing_dependency_error
-from .requirement_list import requirement_list
+
+from .package_descriptor_list import package_descriptor_list
 from .requirement import requirement
+from .requirement_list import requirement_list
 
 class requirement_manager(object):
 
@@ -30,7 +32,7 @@ class requirement_manager(object):
 
   def descriptors(self, names):
     check.check_string_seq(names)
-    result = []
+    result = package_descriptor_list()
     for name in names:
       desc = self._descriptor_map.get(name, None)
       if not desc:
@@ -53,7 +55,7 @@ class requirement_manager(object):
         raise KeyError('Not found in packages: %s' % (name))
       reqs.extend(desc.requirements.filter_by_hardness(hardness).filter_by_system(system))
     dep_map = self._dependency_map(hardness, system)
-    return dependency_resolver.resolve_and_order_deps(reqs.names(), self._descriptor_map, dep_map)
+    return package_descriptor_list(dependency_resolver.resolve_and_order_deps(reqs.names(), self._descriptor_map, dep_map))
 
   def _dependency_map(self, hardness, system):
     dep_map = {}
