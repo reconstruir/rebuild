@@ -5,7 +5,10 @@ from bes.common import check
 from .package_descriptor import package_descriptor
 
 class package_descriptor_list(object):
-  
+
+  FOO = 'ununsed'
+
+  '''
   @classmethod
   def sort_by_name(clazz, descriptors):
     'Sort a list of descriptors in ascending order using package info.'
@@ -27,3 +30,5 @@ class package_descriptor_list(object):
     'Return a list of only the descriptors that dont match name.'
     check.check_package_descriptor_seq(descriptors)
     return [ pd for pd in descriptors if pd.name != name ]
+'''
+  
