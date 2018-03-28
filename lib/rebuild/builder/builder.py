@@ -7,8 +7,9 @@ from bes.thread import thread_pool
 from bes.fs import dir_util, file_util
 from collections import namedtuple
 from rebuild.step import step_aborted
-
 from rebuild.base import build_blurb
+
+from .builder_script import builder_script
 
 class builder(object):
 
@@ -203,8 +204,14 @@ class builder(object):
     
     save_build_target = self._env.config.build_target
 
+    if self._env.config.host_build_target != self._env.config.build_target:
+      host_scripts = self._scripts_clone_for_host_build_target(self._env.script_manager.scripts,
+                                                               self._env.config.host_build_target,
+                                                               self._env)
+    else:
+      host_scripts = self._env.script_manager.scripts
     self._env.config.build_target = self._env.config.host_build_target
-    exit_code = self._build_packages(self._env.script_manager.scripts,
+    exit_code = self._build_packages(host_scripts,
                                      tools_to_build.names(),
                                      'tools')
     self._env.config.build_target = save_build_target
@@ -216,12 +223,20 @@ class builder(object):
                                 to_build.names(),
                                 'packages')
 
-  def _build_packages(self, scripts_map, packages_to_build, label):
+  @classmethod
+  def _scripts_clone_for_host_build_target(clazz, scripts, host_build_target, env):
+    result = {}
+    for name, script in scripts.items():
+      host_script = builder_script(script.recipe, host_build_target, env)
+      result[name] = host_script
+    return result
+  
+  def _build_packages(self, scripts, packages_to_build, label):
     self.blurb('building %s: %s' % (label, ' '.join(packages_to_build)), fit = True)
     exit_code = self.EXIT_CODE_SUCCESS
     failed_packages = []
     for name in  packages_to_build:
-      script = scripts_map[name]
+      script = scripts[name]
       filename = file_util.remove_head(script.filename, os.getcwd())
       if not script.enabled and not self._env.config.disabled:
         self.blurb('disabled: %s' % (filename))
