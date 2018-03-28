@@ -26,5 +26,5 @@ class package_descriptor_list(type_checked_list):
   def names(self):
     'Return the names for all the descriptors.'
     return [ pd.name for pd in self ]
-  
+
 check.register_class(package_descriptor_list, include_seq = False)

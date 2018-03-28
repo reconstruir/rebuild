@@ -66,33 +66,16 @@ class requirement_manager(object):
   @classmethod
   def _normalize_hardness(clazz, hardness):
     return sorted(object_util.listify(hardness))
-
-  def CACA_resolve_tools(self, names, system):
-    'Resolve what tools are needed for names and return the names in build order.'
-    check.check_string_seq(names)
-    hardness = [ 'BUILD', 'RUN', 'TOOL' ]
-    just_deps = self._resolve_deps(names, hardness, system)
-    just_deps_names = [ req.name for req in just_deps ]
-    everything_names = algorithm.unique(just_deps_names + names)
-    only_wanted_names = [ dep for dep in everything_names if self.is_tool(dep) ]
-    only_wanted_deps = self._resolve_deps(only_wanted_names, hardness, system)
-    only_wanted_deps_names = [ req.name for req in only_wanted_deps ]
-    wanted_everything_names = algorithm.unique(only_wanted_deps_names + only_wanted_names)
-    all_dep_map = self._dependency_map(hardness, system)
-    resolved_map = dict_util.filter_with_keys(all_dep_map, wanted_everything_names)
-    return self.descriptors(dependency_resolver.build_order_flat(resolved_map))
-
-  def CACA_resolve(self, names, system):
+  
+  def resolve_and_order(self, names, system, hardness, name_filter):
     'Resolve packages without tools return the names in build order.'
+    assert callable(name_filter)
     check.check_string_seq(names)
-    hardness = [ 'BUILD', 'RUN' ]
     just_deps = self._resolve_deps(names, hardness, system)
-    just_deps_names = [ req.name for req in just_deps ]
-    everything_names = algorithm.unique(just_deps_names + names)
-    only_wanted_names = [ dep for dep in everything_names if not self.is_tool(dep) ]
+    everything_names = algorithm.unique(just_deps.names() + names)
+    only_wanted_names = [ dep for dep in everything_names if name_filter(dep) ]
     only_wanted_deps = self._resolve_deps(only_wanted_names, hardness, system)
-    only_wanted_deps_names = [ req.name for req in only_wanted_deps ]
-    wanted_everything_names = algorithm.unique(only_wanted_deps_names + only_wanted_names)
+    wanted_everything_names = algorithm.unique(only_wanted_deps.names() + only_wanted_names)
     all_dep_map = self._dependency_map(hardness, system)
     resolved_map = dict_util.filter_with_keys(all_dep_map, wanted_everything_names)
     return self.descriptors(dependency_resolver.build_order_flat(resolved_map))
@@ -102,9 +85,8 @@ class requirement_manager(object):
     check.check_string_seq(names)
     just_deps = self._resolve_deps(names, hadrness, system)
     if include_names:
-      all_deps = algorithm.unique(just_deps + self.descriptors(names))
-    else:
-      all_deps = just_deps
-    return all_deps
+      just_deps += self.descriptors(names)
+    just_deps.remove_dups()
+    return just_deps
 
 check.register_class(requirement_manager, include_seq = False)

@@ -185,20 +185,26 @@ class builder(object):
     # If no package names are given we want them all
     package_names = package_names or self.package_names()
 
-    tools_to_build = self._env.requirement_manager.CACA_resolve_tools(package_names, self._env.config.host_build_target.system)
-    to_build = self._env.requirement_manager.CACA_resolve(package_names, self._env.config.host_build_target.system)
+    req_manager = self._env.requirement_manager
 
-    tools_to_build_names = [ pd.name for pd in tools_to_build ]
-    to_build_names = [ pd.name for pd in to_build ]
+    to_build = req_manager.resolve_and_order(package_names,
+                                             self._env.config.host_build_target.system,
+                                             [ 'BUILD', 'RUN' ],
+                                             lambda dep: not req_manager.is_tool(dep))
+
+    tools_to_build = req_manager.resolve_and_order(package_names,
+                                                   self._env.config.host_build_target.system,
+                                                   [ 'BUILD', 'RUN', 'TOOL' ],
+                                                   lambda dep: req_manager.is_tool(dep))
     
     save_build_target = self._env.config.build_target
     self._env.config.build_target = self._env.config.host_build_target
-    exit_code = self._build_packages(tools_to_build_names, 'tools')
+    exit_code = self._build_packages(tools_to_build.names(), 'tools')
     self._env.config.build_target = save_build_target
     if exit_code != self.EXIT_CODE_SUCCESS:
       return exit_code
 
-    return self._build_packages(to_build_names, 'packages')
+    return self._build_packages(to_build.names(), 'packages')
 
   def _build_packages(self, packages_to_build, label):
     self.blurb('building %s: %s' % (label, ' '.join(packages_to_build)), fit = True)
