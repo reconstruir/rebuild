@@ -42,8 +42,6 @@ class step_make(step):
       make_target = args.get('make_target', None)
       make_flags = self.args_get_string_list(args, 'make_flags')
       make_env = self.args_get_key_value_list(args, 'make_env')
-
-    print('FUCK MAKE: make_target=%s' % (make_target))
       
     if make_num_jobs < 1:
       raise RuntimeError('make_num_jobs should be between 1 and %d instead of %s' % (self.MAX_NUM_JOBS, make_num_jobs))
@@ -73,6 +71,7 @@ class step_make_install(step):
   @classmethod
   def define_args(clazz):
     return '''
+    makefile             file
     make_install_flags   string_list
     make_install_env     key_values
     install_target       string       install
@@ -83,7 +82,7 @@ class step_make_install(step):
       values = self.recipe.resolve_values(env.config.build_target.system)
       makefile = values.get('makefile')
       install_target = values.get('install_target')
-      make_install_flags = values.get('make_install_flags')
+      make_install_flags = values.get('make_install_flags').to_list()
       make_install_env = values.get('make_install_env')
     else:
       makefile = args.get('makefile', None)
@@ -108,7 +107,7 @@ class step_make_install(step):
       install_target,
       'prefix=%s' % (script.stage_dir),
       'V=1',
-    ] + list(make_install_flags),
+    ] + make_install_flags
     print('FUCK INSTALL: cmd="%s"' % (str(cmd)))
     return self.call_shell(cmd, script, env, args, extra_env = self.args_get_key_value_list(args, 'make_install_env'))
 
