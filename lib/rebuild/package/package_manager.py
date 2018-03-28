@@ -173,8 +173,7 @@ class package_manager(object):
 
   def _missing_requirements(self, pkg, build_target, hardness):
     requirements = pkg.descriptor.requirements.filter_by_system(build_target.system).filter_by_hardness(hardness).names()
-
-    resolved_deps = self._artifact_manager.resolve_deps_poto(requirements, build_target, [ 'BUILD', 'RUN' ], False)
+    resolved_deps = self._artifact_manager.resolve_deps_poto(requirements, build_target, hardness, False)
 
     if not resolved_deps:
       return []
