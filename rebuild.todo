@@ -730,3 +730,11 @@ this doenst work:
 instead need to      
       patch_strip_depth
         all: 0
+
+step_autoconf:
+instead of:
+  configure_script  string      configure
+shoule be:
+  configure_script  file      configure
+but its broken  
+
