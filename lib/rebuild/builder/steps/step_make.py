@@ -15,7 +15,7 @@ class step_make(step):
   @classmethod
   def define_args(clazz):
     return '''
-    makefile       file
+    makefile       string
     make_flags     string_list
     make_env       key_values
     make_target    string
