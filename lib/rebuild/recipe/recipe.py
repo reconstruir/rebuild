@@ -30,6 +30,9 @@ class recipe(namedtuple('recipe', 'format_version,filename,enabled,properties,re
     if self.enabled != '':
       root.add_child('enabled=%s' % (self.enabled))
       root.add_child('')
+    if self.env_vars:
+      root.children.append(self._env_vars_to_node(self.env_vars))
+      root.add_child('')
     root.children.append(self._properties_to_node(self.properties))
     root.add_child('')
     if self.requirements:
@@ -94,6 +97,13 @@ class recipe(namedtuple('recipe', 'format_version,filename,enabled,properties,re
           for masked_value in value.values:
             masked_value_node = value_node.add_child(masked_value.to_string(quote = False))
       result.add_child('')
+    return result
+
+  @classmethod
+  def _env_vars_to_node(clazz, env_vars):
+    result = node('env_vars')
+    for env_var in env_vars:
+      result.add_child(env_var.to_string())
     return result
 
   @classmethod
