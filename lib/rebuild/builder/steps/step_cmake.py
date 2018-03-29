@@ -11,9 +11,26 @@ class step_cmake_configure(step):
   def __init__(self):
     super(step_cmake_configure, self).__init__()
 
+  @classmethod
+  def define_args(clazz):
+    return '''
+    cmake_flags   string_list
+    cmake_env     key_values
+    '''
+    
   def execute(self, script, env, args):
-    cmake_flags = self.args_get_string_list(args, 'cmake_flags')
-    cmake_env = self.args_get_key_value_list(args, 'cmake_env')
+    if self._recipe:
+      values = self.recipe.resolve_values(env.config.build_target.system)
+      cmake_env = values.get('cmake_env')
+      cmake_flags = values.get('cmake_flags')
+    else:
+      cmake_env = self.args_get_key_value_list(args, 'cmake_env')
+      cmake_flags = self.args_get_string_list(args, 'cmake_flags')
+
+    if check.is_string_list(cmake_flags):
+      cmake_flags = cmake_flags.to_list()
+    else:
+      assert isinstance(cmake_flags, list)
 
     cmd = [ 'cmake' ]
     if env.config.verbose:

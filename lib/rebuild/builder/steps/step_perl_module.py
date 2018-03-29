@@ -6,6 +6,7 @@ from rebuild.step import compound_step, step, step_result
 from rebuild.base import build_system
 from bes.python import setup_tools
 from bes.system import execute
+from bes.common import check
 
 class step_perl_module_setup(step):
   'Setup a perl module for compilation.'
@@ -13,14 +14,36 @@ class step_perl_module_setup(step):
   def __init__(self):
     super(step_perl_module_setup, self).__init__()
 
+  @classmethod
+  def define_args(clazz):
+    return '''
+    perl_module_setup_flags   string_list
+    perl_module_setup_env     key_values
+    makefile                  file         Makefile.PL
+    '''
+    
   def execute(self, script, env, args):
-    makefile = args.get('makefile', 'Makefile.PL')
+    if self._recipe:
+      values = self.recipe.resolve_values(env.config.build_target.system)
+      perl_module_setup_env = values.get('perl_module_setup_env')
+      perl_module_setup_flags = values.get('perl_module_setup_flags')
+      makefile = values.get('makefile')
+    else:
+      perl_module_setup_env = self.args_get_key_value_list(args, 'perl_module_setup_env')
+      perl_module_setup_flags = self.args_get_string_list(args, 'perl_module_setup_flags')
+      makefile = args.get('makefile', 'Makefile.PL')
+
+    makefile = makefile or 'Makefile.PL'
+      
+    if check.is_string_list(perl_module_setup_flags):
+      perl_module_setup_flags = perl_module_setup_flags.to_list()
+    else:
+      assert isinstance(perl_module_setup_flags, list)
+
     mkdir_cmd = 'mkdir -p ${REBUILD_STAGE_PYTHON_LIB_DIR}'
     perl_cmd = '${PERL} %s PREFIX=${REBUILD_STAGE_PREFIX_DIR} INSTALLDIRS=perl' % (makefile)
-    perl_env_args = args.get('perl_module_setup_flags', '')
-    assert isinstance(perl_env_args, list)
-    cmd = '%s && %s %s' % (mkdir_cmd, perl_cmd, ' '.join(perl_env_args))
-    return self.call_shell(cmd, script, env, args, extra_env = self.args_get_key_value_list(args, 'perl_module_setup_env'))
+    cmd = '%s && %s %s' % (mkdir_cmd, perl_cmd, ' '.join(perl_module_setup_flags))
+    return self.call_shell(cmd, script, env, args, extra_env = perl_module_setup_env)
 
   @classmethod
   def parse_step_args(clazz, script, env, args):

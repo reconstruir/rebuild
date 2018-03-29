@@ -33,8 +33,10 @@ class step_autoconf_configure(step):
       configure_script = args.get('configure_script', 'configure')
       need_autoreconf = args.get('need_autoreconf', False)
 
-    check.check_string_list(configure_flags)
-    configure_flags = configure_flags.to_list()
+    if check.is_string_list(configure_flags):
+      configure_flags = configure_flags.to_list()
+    else:
+      assert isinstance(configure_flags, list)
 
     if need_autoreconf:
       autoreconf_cmd = [ 'autoreconf', '-i' ]

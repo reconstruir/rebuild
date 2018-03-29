@@ -738,3 +738,8 @@ shoule be:
   configure_script  file      configure
 but its broken  
 
+
+this didnt work
+linux: CFLAGS=-std\=c99
+had to do
+linux: CFLAGS="-std=c99"

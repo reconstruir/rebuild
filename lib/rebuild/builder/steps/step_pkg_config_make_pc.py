@@ -15,20 +15,29 @@ class step_pkg_config_make_pc(step):
   def __init__(self):
     super(step_pkg_config_make_pc, self).__init__()
 
+  @classmethod
+  def define_args(clazz):
+    return '''
+    pc_files           file_list  
+    pc_file_variables  key_values
+    '''
+    
   def execute(self, script, env, args):
-    pc_files = args.get('pc_files', [])
+    if self._recipe:
+      values = self.recipe.resolve_values(env.config.build_target.system)
+      pc_files = [ f.filename for f in values.get('pc_files') or [] ]
+      pc_file_variables = values.get('pc_file_variables')
+    else:
+      pc_files = args.get('pc_files', None)
+      pc_file_variables = self.args_get_key_value_list(args, 'pc_file_variables')
+
     if not pc_files:
       message = 'No .pc files for %s' % (script.descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
 
-    replacements = {
-      'REBUILD_PACKAGE_NAME': script.descriptor.name,
-      'REBUILD_PACKAGE_DESCRIPTION': script.descriptor.name,
-      'REBUILD_PACKAGE_VERSION': str(script.descriptor.version),
-    }
-
-    pc_file_variables = args.get('pc_file_variables', None)
+    replacements = {}
+    replacements.update(script.substitutions)
     if pc_file_variables:
       pc_file_variables.unquote_strings()
       replacements.update(pc_file_variables.to_dict())
@@ -39,8 +48,8 @@ class step_pkg_config_make_pc(step):
 
     return step_result(True, None)
 
-  def sources_keys(self):
-    return [ 'pc_files' ]
+#  def sources_keys(self):
+#    return [ 'pc_files' ]
 
   @classmethod
   def parse_step_args(clazz, script, env, args):

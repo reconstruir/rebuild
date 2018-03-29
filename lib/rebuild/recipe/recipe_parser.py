@@ -201,7 +201,10 @@ class recipe_parser(object):
 #      assert node.children
       for child in node.children:
         text = tree_text_parser.node_text_flat(child)
-        value = masked_value.parse_mask_and_value(text, self.filename, args_definition[key].atype)
+        try:
+          value = masked_value.parse_mask_and_value(text, self.filename, args_definition[key].atype)
+        except RuntimeError as ex:
+          self._error('fucked in the asshole: %s' % (text), node)
         values.append(value)
     return recipe_value(key, values)
 
