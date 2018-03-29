@@ -18,17 +18,28 @@ class step_setup_unpack(step):
   def define_args(clazz):
     return '''
     no_tarballs   bool        False
+    extra_tarballs string_list
+    tarball_name string
     '''
 
   def execute(self, script, env, args):
-    if args.get('no_tarballs', False):
+    if self._recipe:
+      values = self.recipe.resolve_values(env.config.build_target.system)
+      no_tarballs = values.get('no_tarballs')
+      extra_tarballs = values.get('extra_tarballs').to_list()
+      tarball_name = values.get('tarball_name')
+    else:
+      no_tarballs = args.get('no_tarballs', False)
+      extra_tarballs = self.args_get_string_list(args, 'extra_tarballs').to_list()
+      tarball_name = args.get('tarball_name', None)
+      
+    if no_tarballs:
       return step_result(True, None)
 
     downloaded_tarballs = args.get('downloaded_tarballs', [])
-    extra_tarballs = args.get('extra_tarballs', [])
     tarballs = args.get('tarballs', []) + extra_tarballs + downloaded_tarballs
     if not tarballs:
-      tarball_name = args.get('tarball_name', None)
+      #tarball_name = args.get('tarball_name', None)
       blurb = 'No tarballs found for %s' % (script.descriptor.full_name)
       if tarball_name:
         blurb = '%s (tarball_name=\"%s\")' % (blurb, tarball_name)
@@ -47,6 +58,13 @@ class step_setup_unpack(step):
 
   @classmethod
   def parse_step_args(clazz, script, env, args):
+    recipe = args.get('_CACA_REMOVE_ME_recipe', None)
+    if recipe:
+      values = recipe.resolve_values(env.config.build_target.system)
+      tarball_name = values.get('tarball_name')
+    else:
+      tarball_name = args.get('tarball_name', None)
+      
     tarball_source_dir_override_args = clazz.resolve_step_args_dir(script, args, 'tarball_source_dir_override')
     if tarball_source_dir_override_args:
       tarball_source_dir_override = tarball_source_dir_override_args['tarball_source_dir_override']
@@ -57,7 +75,6 @@ class step_setup_unpack(step):
     else:
       tarballs_dict = clazz.resolve_step_args_list(script, args, 'tarballs')
     if not tarballs_dict or 'tarballs' not in tarballs_dict:
-      tarball_name = args.get('tarball_name', None)
       if tarball_name:
         clazz.blurb_verbose('Using tarball name \"%s\" instead of \"%s\" for %s' % (tarball_name, script.descriptor.name, script.descriptor.full_name))
       else:

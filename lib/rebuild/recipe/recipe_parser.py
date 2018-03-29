@@ -134,8 +134,12 @@ class recipe_parser(object):
     properties = {}
     for child in node.children:
       property_text = tree_text_parser.node_text_flat(child)
-      values = key_value_parser.parse_to_dict(property_text, options = key_value_parser.KEEP_QUOTES)
-      properties.update(values)
+      try:
+        values = key_value_parser.parse_to_dict(property_text, options = key_value_parser.KEEP_QUOTES)
+        properties.update(values)
+      except RuntimeError as ex:
+        self._error('error parsing properties: %s' % (property_text), node)
+  
     return properties
   
   def _parse_requirements(self, node):

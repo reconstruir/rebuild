@@ -17,10 +17,6 @@ class step_artifact_create_make_package(step):
   def __init__(self):
     super(step_artifact_create_make_package, self).__init__()
 
-  @classmethod
-  def define_args(clazz):
-    return 'delete_files string_list'
-  
   def execute(self, script, env, args):
     tarball_name = '%s.tar.gz' % (script.descriptor.full_name)
     assert tarball_name == script.descriptor.tarball_filename

@@ -722,3 +722,11 @@ install_target should be make_install_target
 when the name of the makefile changes from build.py to build.rebc it doesnt recompile checkout checksums
 
 when done converting builder scripts retire the properties hacks in recipe_parser (for env_vars and export_compilation_flags_requirements)
+figure out the check_python_eggs mess
+env_vars should always default to empty being '' instead of None.  check package_manager.__env_vars_for_one_package
+
+this doenst work:
+      patch_strip_depth: 0
+instead need to      
+      patch_strip_depth
+        all: 0

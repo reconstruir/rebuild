@@ -14,23 +14,28 @@ class step_setup_patch(step):
 
   @classmethod
   def define_args(clazz):
-    return 'patches file_list'
+    return '''
+    patches            file_list  
+    patch_strip_depth  int        1
+    patch_program      string     patch
+    '''
     
   def execute(self, script, env, args):
     if self._recipe:
       values = self.recipe.resolve_values(env.config.build_target.system)
       patches = [ f.filename for f in values.get('patches') or [] ]
+      patch_strip_depth = values.get('patch_strip_depth')
+      patch_program = values.get('patch_program') or 'patch'
     else:
       patches = args.get('patches', None)
-
+      patch_strip_depth = args.get('patch_strip_depth', self.DEFAULT_PATCH_STRIP_DEPTH)
+      patch_program = args.get('patch_program', 'patch')
+      
     if not patches:
       message = 'No patches for %s' % (script.descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
 
-    patch_strip_depth = args.get('patch_strip_depth', self.DEFAULT_PATCH_STRIP_DEPTH)
-    patch_program = args.get('patch_program', None)
-    
     for p in patches:
       self.blurb('Patching with %s at %s' % (p, script.source_unpacked_dir))
 

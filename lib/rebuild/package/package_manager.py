@@ -251,7 +251,7 @@ class package_manager(object):
     }
     
     for key, value in result.items():
-      result[key] = variable.substitute(value, variables)
+      result[key] = variable.substitute(value or '', variables)
     return result
 
   def shell_env(self, packages):

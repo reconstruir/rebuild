@@ -15,12 +15,19 @@ class step_shell(step):
   def define_args(clazz):
     return '''
     cmd   string
+    shell_env     key_values
     '''
   
   def execute(self, script, env, args):
-    cmd = args.get('cmd', None)
+    if self._recipe:
+      values = self.recipe.resolve_values(env.config.build_target.system)
+      shell_env = values.get('shell_env')
+      cmd = values.get('cmd')
+    else:
+      shell_env = self.args_get_key_value_list(args, 'shell_env')
+      cmd = args.get('cmd', None)
+
     assert string_util.is_string(cmd)
-    shell_env = self.args_get_key_value_list(args, 'shell_env')
     self.log_d('step_shell.execute() cmd=%s; shell_env=%s' % (cmd, shell_env))
     return self.call_shell(cmd, script, env, args, extra_env = shell_env)
 
