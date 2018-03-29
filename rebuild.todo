@@ -745,3 +745,4 @@ had to do
 linux: CFLAGS="-std=c99"
 
 step_python_egg update_version_tag should be a file type instead of string
+step_make accepts shell_env
