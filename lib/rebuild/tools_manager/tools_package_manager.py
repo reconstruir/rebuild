@@ -73,7 +73,7 @@ class tools_package_manager(object):
       'REBUILD_PACKAGE_NAME': pkg_desc.name,
     }
     for key, value in env_vars.items():
-      env_vars[key] = variable.substitute(value, variables)
+      env_vars[key] = variable.substitute(value or '', variables)
     return env_vars
 
   def python_lib_dir(self, pkg_desc):
