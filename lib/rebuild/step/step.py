@@ -21,7 +21,6 @@ from .hook_poto import hook_poto
 from .hook_extra_code import HOOK_EXTRA_CODE
 from .step_registry import step_registry
 from .step_result import step_result
-from .variable_manager import variable_manager
 from .step_arg_spec import step_arg_spec
 
 class step_register_meta(ABCMeta, value_type.CONSTANTS):
@@ -182,8 +181,6 @@ class step(with_metaclass(step_register_meta, object)):
     os_env.update(env, ce)
     env['REBUILD_COMPILE_ENVIRONMENT'] = toolchain.flatten_for_shell(ce)
 
-    env.update(variable_manager.get_variables())
-      
     return env
 
   @classmethod
