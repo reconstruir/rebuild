@@ -66,10 +66,10 @@ class step_artifact_create_test_package(step):
     if self._recipe:
       values = self.recipe.resolve_values(env.config.build_target.system)
       tests = values.get('tests', [])
-      extra_env = values.get('package_test_env', key_value_list()) or key_value_list()
+      package_test_env = values.get('package_test_env', key_value_list()) or key_value_list()
     else:
       tests = args.get('tests', [])
-      extra_env = self.args_get_key_value_list(args, 'package_test_env')
+      package_test_env = self.args_get_key_value_list(args, 'package_test_env')
     
     if not tests:
       message = 'No tests for %s' % (script.descriptor.full_name)
@@ -95,7 +95,7 @@ class step_artifact_create_test_package(step):
                                           staged_tarball,
                                           env.artifact_manager,
                                           env.tools_manager,
-                                          extra_env)
+                                          package_test_env)
       tester = package_tester(config, test)
       result =  tester.run()
       if not result.success:

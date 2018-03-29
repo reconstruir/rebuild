@@ -9,6 +9,12 @@ class step_setup_tarball_download(step):
   def __init__(self):
     super(step_setup_tarball_download, self).__init__()
 
+  @classmethod
+  def define_args(clazz):
+    return '''
+    tarball_address     string_list
+    '''
+    
   def execute(self, script, env, args):
     return step_result(True, None)
 
@@ -17,14 +23,30 @@ class step_setup_tarball_download(step):
 
   @classmethod
   def parse_step_args(clazz, script, env, args):
-    result = {}
-    tarball_address, tarball_revision = args.get('tarball_address', ( None, None ))
+    recipe = args.get('_CACA_REMOVE_ME_recipe', None)
+    if recipe:
+      values = recipe.resolve_values(env.config.build_target.system)
+      tarball_address = values.get('tarball_address')
+    else:
+      tarball_address = args.get('tarball_address', None)
+
     if tarball_address:
+      tarball_address_address = tarball_address[0]
+      tarball_address_revision = tarball_address[1]
+    else:
+      tarball_address_address = None
+      tarball_address_revision = None
+
+    #print('FUCK: name=%s; tarball_address=%s;  address=%s;  revision=%s' % (script.descriptor.name, tarball_address, tarball_address_address, tarball_address_revision))
+      
+    result = {}
+    #tarball_address, tarball_revision = args.get('tarball_address', ( None, None ))
+    if tarball_address_address:
       dm = env.downloads_manager
-      assert tarball_revision
-      if not dm.has_tarball(tarball_address, tarball_revision):
-        tarball_path = dm.tarball_path(tarball_address, tarball_revision)
-        clazz.blurb('Downloading %s@%s to %s' % (tarball_address, tarball_revision, tarball_path))
-      downloaded_path = dm.get_tarball(tarball_address, tarball_revision)
+      assert tarball_address_revision
+      if not dm.has_tarball(tarball_address_address, tarball_address_revision):
+        tarball_path = dm.tarball_path(tarball_address_address, tarball_address_revision)
+        clazz.blurb('Downloading %s@%s to %s' % (tarball_address_address, tarball_address_revision, tarball_path))
+      downloaded_path = dm.get_tarball(tarball_address_address, tarball_address_revision)
       result = { 'downloaded_tarballs': [ downloaded_path ] }
     return result

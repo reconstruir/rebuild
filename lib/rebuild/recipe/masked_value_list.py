@@ -79,6 +79,8 @@ class masked_value_list(object):
       return self._resolve_typed_list(values, recipe_file_list)
     elif check.is_recipe_install_file_list(values[0]):
       return self._resolve_typed_list(values, recipe_install_file_list)
+    elif check.is_hook_seq(values[0]):
+      return self._resolve_hook_list(values)
     raise TypeError('unknown value type: %s - %s' % (str(values[0]), type(values[0])))
 
   def _resolve_values(self, system):
@@ -127,4 +129,12 @@ class masked_value_list(object):
           result.append(next_value)
           seen[next_value.key] = i
     return result
+
+  def _resolve_hook_list(self, values):
+    result = []
+    for value in values:
+      check.check_hook_seq(value)
+      result.extend(value)
+    return result
+  
 check.register_class(masked_value_list, include_seq = False)

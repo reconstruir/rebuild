@@ -8,6 +8,8 @@ from bes.fs import file_util
 from bes.system import execute
 from rebuild.step import compound_step, step, step_result
 from rebuild.tools import install
+from rebuild.recipe import recipe_parser_util
+from rebuild.value import value_type
 
 class step_python_make_standalone_program(step):
   'A step to make standalone python programs using pyinstaller.'
@@ -15,14 +17,27 @@ class step_python_make_standalone_program(step):
   def __init__(self):
     super(step_python_make_standalone_program, self).__init__()
 
+  @classmethod
+  def define_args(clazz):
+    return '''
+    standalone_programs   file_install_list
+    '''
+    
   def execute(self, script, env, args):
-    standalone_programs = args.get('standalone_programs', [])
+    if self._recipe:
+      values = self.recipe.resolve_values(env.config.build_target.system)
+      standalone_programs = values.get('standalone_programs', [])
+    else:
+      standalone_programs = args.get('standalone_programs', [])
+      value = ' '.join(standalone_programs)
+      standalone_programs = recipe_parser_util.parse_value(value, None, value_type.FILE_INSTALL_LIST)
+      
     if not standalone_programs:
       return step_result(True)
 
     file_util.mkdir(script.stage_bin_dir)
     for program in standalone_programs:
-      src_program = path.join(script.build_dir, program[0])
+      src_program = path.join(script.build_dir, program.filename)
       if src_program.lower().endswith('.py'):
         rv = self._make_standalone_python(program, script, env, args)
         if not rv.success:
@@ -36,11 +51,11 @@ class step_python_make_standalone_program(step):
     return step_result(True, None)
 
   def _make_standalone_python(self, program, script, env, args):
-    src_basename = path.basename(program[0])
-    dst_basename = path.basename(program[1])
+    src_basename = path.basename(program.filename)
+    dst_basename = path.basename(program.dst_filename)
     if dst_basename.endswith('.py'):
       return step_result(False, 'dst program should not end in .py: %s' % (dst_basename))
-    src_program = variable.substitute(program[0], script.substitutions)
+    src_program = variable.substitute(program.filename, script.substitutions)
     if not path.isabs(src_program):
       src_program = path.join(script.build_dir, src_program)
     if not path.isfile(src_program):
@@ -55,23 +70,23 @@ class step_python_make_standalone_program(step):
       return rv
     if not path.isfile(dst_program):
       return step_result(False, 'dst program not found: %s' % (dst_program))
-    installed_program = path.join(script.stage_dir, program[1])
+    installed_program = path.join(script.stage_dir, program.dst_filename)
     file_util.mkdir(path.dirname(installed_program))
     file_util.copy(dst_program, installed_program)
     os.chmod(installed_program, 0o755)
     return step_result(True, None)
   
   def _make_standalone_shell_script(self, program, script, env, args):
-    src_basename = path.basename(program[0])
-    dst_basename = path.basename(program[1])
+    src_basename = path.basename(program.filename)
+    dst_basename = path.basename(program.dst_filename)
     if dst_basename.endswith('.sh'):
       return step_result(False, 'dst program should not end in .sh: %s' % (dst_basename))
-    src_program = variable.substitute(program[0], script.substitutions)
+    src_program = variable.substitute(program.filename, script.substitutions)
     if not path.isabs(src_program):
       src_program = path.join(script.build_dir, src_program)
     if not path.isfile(src_program):
       return step_result(False, 'src program not found: %s' % (src_program))
-    installed_program = path.join(script.stage_dir, program[1])
+    installed_program = path.join(script.stage_dir, program.dst_filename)
     file_util.mkdir(path.dirname(installed_program))
     file_util.copy(src_program, installed_program)
     os.chmod(installed_program, 0o755)

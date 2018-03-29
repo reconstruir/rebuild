@@ -24,7 +24,7 @@ class step_autoconf_configure(step):
     if self._recipe:
       values = self.recipe.resolve_values(env.config.build_target.system)
       configure_env = values.get('configure_env')
-      configure_flags = values.get('configure_flags')
+      configure_flags = values.get('configure_flags') or []
       configure_script = values.get('configure_script')
       need_autoreconf = values.get('need_autoreconf')
     else:

@@ -192,7 +192,7 @@ class recipe_parser(object):
     key = recipe_parser_util.parse_key(node.data.text)
     args_definition = description.step_class.args_definition()
     if not key in args_definition:
-      self._error('invalid config \"%s\" instead of: %s' % (key, ' '.join(args_definition.keys())))
+      self._error('invalid config \"%s\" instead of: %s' % (key, ' '.join(args_definition.keys())), node)
     value = recipe_parser_util.parse_key_and_value(node.data.text, self.filename, args_definition[key].atype)
     if value.value:
       assert not node.children

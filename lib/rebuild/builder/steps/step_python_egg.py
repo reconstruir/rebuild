@@ -4,7 +4,7 @@
 import os.path as path
 from rebuild.step import compound_step, step, step_result
 from bes.python import setup_tools
-from bes.common import time_util
+from bes.common import string_util, time_util 
 from bes.version import version_info
 
 class step_python_egg_build(step):
@@ -18,24 +18,25 @@ class step_python_egg_build(step):
   @classmethod
   def define_args(clazz):
     return '''
-    shell_flags     string_list
-    shell_env       key_values
+    shell_flags         string_list
+    shell_env           key_values
+    update_version_tag  string
+    tarball_address     string_list
     '''
     
   def execute(self, script, env, args):
-    tarball_address = args.get('tarball_address', ( None, None ))
-    update_version_tag = args.get('update_version_tag', None)
-
     if self._recipe:
       values = self.recipe.resolve_values(env.config.build_target.system)
       shell_flags = values.get('shell_flags')
       shell_env = values.get('shell_env')
+      update_version_tag = values.get('update_version_tag')
+      tarball_address = values.get('tarball_address')
     else:
       shell_flags = self.args_get_string_list(args, 'shell_flags')
       shell_env = self.args_get_key_value_list(args, 'shell_env')
+      tarball_address = args.get('tarball_address', ( None, None ))
+      update_version_tag = args.get('update_version_tag', None)
 
-    print('FUCK: step_python_egg - %s: shell_env=%s' % (script.descriptor.name, shell_env))
-    
     if update_version_tag:
       assert tarball_address
       filename = path.join(script.build_dir, update_version_tag)

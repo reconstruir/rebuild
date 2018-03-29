@@ -127,7 +127,7 @@ class recipe_parser_util(object):
     if (len(data) % 2) != 0:
       raise RuntimeError('invalid non even list: %s' % (data))
     for filename, dst_filename in object_util.chunks(data, 2):
-      if base:
+      if False: #base:
         filename_abs = path.abspath(path.join(base, filename))
       else:
         filename_abs = filename

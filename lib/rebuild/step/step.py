@@ -18,7 +18,6 @@ from rebuild.toolchain import toolchain
 from rebuild.value import value_type
 
 from .hook_poto import hook_poto
-from .hook_extra_code import HOOK_EXTRA_CODE
 from .step_registry import step_registry
 from .step_result import step_result
 from .step_arg_spec import step_arg_spec
@@ -354,7 +353,7 @@ class step(with_metaclass(step_register_meta, object)):
     if not hooks:
       return step_result(True, None)
     for h in hooks:
-      hook_result = h.execute(script, env, args, extra_code = HOOK_EXTRA_CODE)
+      hook_result = h.execute(script, env, args) 
       if not isinstance(hook_result, step_result):
         raise RuntimeError('hook did not return step_result: %s' % (h))
       if not hook_result.success:
