@@ -9,7 +9,7 @@ def rebuild_subdirs():
     'libs/libstarch/build.rebc',
     'orange/build.rebc',
     'tools/tbar/build_100.rebc',
-#    'tools/tbar/build_101.py',
+#    'tools/tbar/build_101.rebc',
     'tools/tfoo/build.rebc',
     'tools/tbaz/build.rebc',
   ]
