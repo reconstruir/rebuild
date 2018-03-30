@@ -1,0 +1,13 @@
+!rebuildrecipe!
+
+package libopenjpeg-2.1-1
+  requirements = [ 
+    #all: cmake >= 3.3.1-1
+
+  steps  
+    step_setup
+    step_cmake_configure
+    step_cmake_make
+    step_cmake_install
+    step_cleanup
+    step_artifact_create

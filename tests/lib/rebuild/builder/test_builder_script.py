@@ -32,7 +32,7 @@ class test_builder_script(unit_test):
     self.assertEqual( [], script.descriptor.requirements )
 
   def test_libopenjpeg(self):
-    filename = self.data_path('build_libopenjpeg.py')
+    filename = self.data_path('build_libopenjpeg.rebc')
     script = self._load_builder_script(filename)
 
     expected_requirements = requirement.parse('cmake(all) >= 3.3.1-1')
