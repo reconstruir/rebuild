@@ -16,7 +16,7 @@ class test_builder_script(unit_test):
     unit_test.raise_skip('broken')
   
   def test_zlib(self):
-    filename = self.data_path('build_zlib.py')
+    filename = self.data_path('build_zlib.rebc')
     script = self._load_builder_script(filename)
     expected_requirements = []
     expected_properties = {}

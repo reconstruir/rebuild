@@ -1,0 +1,12 @@
+!rebuildrecipe!
+
+package zlib-1.2.8-1
+  properties
+
+  steps  
+    step_autoconf
+      configure_env
+        all: CFLAGS=${REBUILD_COMPILE_CFLAGS}
+      configure_flags
+        all: --static
+      copy_source_to_build_dir: True
