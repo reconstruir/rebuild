@@ -4,6 +4,7 @@
 import os.path as path
 from bes.testing.unit_test import script_unit_test
 from bes.fs import file_find, temp_file
+from bes.archive import archiver
 from bes.system import host
 from collections import namedtuple
 
@@ -24,8 +25,8 @@ class test_rebuilder_script(script_unit_test):
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
 
-  def test_fructose_recipe_v2(self):
-    test = self._run_test('recipe_v2', 'fructose')
+  def test_one_project(self):
+    test = self._run_test('one_project', 'fructose')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
     
@@ -63,6 +64,17 @@ class test_rebuilder_script(script_unit_test):
     test = self._run_test('basic', 'libpotato')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libpotato-1.0.0.tar.gz', 'libstarch-1.0.0.tar.gz', 'tbar-1.0.0.tar.gz', 'tfoo-1.0.0.tar.gz' ], test.artifacts )
+
+  def test_extra_tarballs(self):
+    test = self._run_test('extra_tarballs', 'foo', '--source-dir', path.join(self.data_dir(), 'extra_tarballs/source'))
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'foo-1.0.0.tar.gz' ], test.artifacts )
+    tgz = path.join(test.artifacts_dir, 'foo-1.0.0.tar.gz')
+    self.assertEqual( [
+      'files/foo-1.0.0/bin/bar.sh',
+      'files/foo-1.0.0/usr/bin/foo.sh',
+      'metadata/info.json',
+    ], archiver.members(tgz) )
     
   def _make_temp_dir(self):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)

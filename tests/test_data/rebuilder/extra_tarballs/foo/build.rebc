@@ -1,0 +1,13 @@
+!rebuildrecipe!
+
+package foo-1.0.0
+  steps  
+    step_setup
+      extra_tarballs
+        all: foo-extra-stuff
+      skip_unpack
+        all: True
+
+    step_extract_tarballs_to_stage_dir
+
+    step_post_install
