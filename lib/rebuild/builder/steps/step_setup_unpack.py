@@ -3,6 +3,7 @@
 
 import os.path as path
 
+from bes.common import check
 from bes.archive import archiver
 from rebuild.step import step, step_result
 from rebuild.base import build_blurb
@@ -28,7 +29,7 @@ class step_setup_unpack(step):
     if self._recipe:
       values = self.recipe.resolve_values(env.config.build_target.system)
       no_tarballs = values.get('no_tarballs')
-      extra_tarballs = values.get('extra_tarballs').to_list()
+      extra_tarballs = values.get('extra_tarballs')
       tarball_name = values.get('tarball_name')
       skip_unpack = values.get('skip_unpack')
     else:
@@ -40,6 +41,11 @@ class step_setup_unpack(step):
     if no_tarballs:
       return step_result(True, None)
 
+    if check.is_string_list(extra_tarballs):
+      extra_tarballs = extra_tarballs.to_list()
+    else:
+      assert isinstance(extra_tarballs, list)
+    
     downloaded_tarballs = args.get('downloaded_tarballs', [])
     tarballs = args.get('tarballs', []) + extra_tarballs + downloaded_tarballs
     if not tarballs:
