@@ -7,7 +7,7 @@ def rebuild_subdirs():
     'fructose/build.rebc',
     'libs/libpotato/build.rebc',
     'libs/libstarch/build.rebc',
-    'orange/build.py',
+    'orange/build.rebc',
     'tools/tbar/build_100.rebc',
 #    'tools/tbar/build_101.py',
     'tools/tfoo/build.rebc',
