@@ -64,11 +64,11 @@ class test_builder(unit_test):
     
   def test_fructose_recipe_v2(self):
     rv = self._build_project([
-      'build_fructose.rrecipe',
+      'build_fructose.rebc',
       'fructose-3.4.5.tar.gz',
       'fructose-test.c',
     ], [
-      'build_fructose.rrecipe',
+      'build_fructose.rebc',
     ], [
       'fructose',
     ])
