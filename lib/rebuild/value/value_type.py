@@ -8,14 +8,15 @@ from collections import namedtuple
 
 class value_type(enum):
   BOOL = 1
-  FILE = 2
-  FILE_INSTALL_LIST = 3
-  FILE_LIST = 4
-  HOOK_LIST = 5
-  INT = 6
-  KEY_VALUES = 7
-  STRING = 8
-  STRING_LIST = 9
+  DIR = 2
+  FILE = 3
+  FILE_INSTALL_LIST = 4
+  FILE_LIST = 5
+  HOOK_LIST = 6
+  INT = 7
+  KEY_VALUES = 8
+  STRING = 9
+  STRING_LIST = 10
     
   DEFAULT = STRING
 

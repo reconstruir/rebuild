@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+from bes.common import check
 from rebuild.step import compound_step, step, step_result
 
 class step_make(step):
@@ -79,14 +80,19 @@ class step_make_install(step):
       values = self.recipe.resolve_values(env.config.build_target.system)
       makefile = values.get('makefile')
       install_target = values.get('install_target')
-      make_install_flags = values.get('make_install_flags').to_list()
+      make_install_flags = values.get('make_install_flags')
       make_install_env = values.get('make_install_env')
     else:
       makefile = args.get('makefile', None)
       install_target = args.get('install_target', 'install')
       make_install_flags = self.args_get_string_list(args, 'make_install_flags').to_list()
       make_install_env = self.args_get_key_value_list(args, 'make_install_env')
-    
+
+    if check.is_string_list(make_install_flags):
+      make_install_flags = make_install_flags.to_list()
+    else:
+      assert isinstance(make_install_flags, list)
+      
     makefile = args.get('makefile', None)
     if makefile:
       makefile_flags = '-f %s' % (makefile)

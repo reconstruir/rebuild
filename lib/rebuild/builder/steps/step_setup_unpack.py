@@ -17,10 +17,11 @@ class step_setup_unpack(step):
   @classmethod
   def define_args(clazz):
     return '''
-    no_tarballs     bool         False
-    extra_tarballs  string_list
-    tarball_name    string
-    skip_unpack     bool         False
+    no_tarballs                  bool         False
+    extra_tarballs               string_list
+    tarball_name                 string
+    skip_unpack                  bool         False
+    tarball_source_dir_override  dir
     '''
 
   def execute(self, script, env, args):
@@ -65,12 +66,19 @@ class step_setup_unpack(step):
     if recipe:
       values = recipe.resolve_values(env.config.build_target.system)
       tarball_name = values.get('tarball_name')
+      tarball_source_dir_override = values.get('tarball_source_dir_override')
+      if tarball_source_dir_override:
+        tarball_source_dir_override = tarball_source_dir_override.filename
+        
     else:
       tarball_name = args.get('tarball_name', None)
-      
-    tarball_source_dir_override_args = clazz.resolve_step_args_dir(script, args, 'tarball_source_dir_override')
-    if tarball_source_dir_override_args:
-      tarball_source_dir_override = tarball_source_dir_override_args['tarball_source_dir_override']
+      tarball_source_dir_override_args = clazz.resolve_step_args_dir(script, args, 'tarball_source_dir_override')
+      if tarball_source_dir_override_args:
+        tarball_source_dir_override = tarball_source_dir_override_args['tarball_source_dir_override']
+      else:
+        tarball_source_dir_override = None
+    
+    if tarball_source_dir_override:
       tmp_tarball_filename = '%s.tar.gz' % (script.descriptor.full_name)
       tmp_tarball_path = path.join(script.working_dir, tmp_tarball_filename)
       archiver.create(tmp_tarball_path, tarball_source_dir_override, base_dir = script.descriptor.full_name)

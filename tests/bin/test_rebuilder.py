@@ -90,7 +90,7 @@ class test_rebuilder_script(script_unit_test):
     result = self.run_script(command, cwd = cwd)
     artifacts = file_find.find(artifacts_dir)
     droppings = file_find.find(tmp_dir)
-    if result.exit_code != 0:
+    if result.exit_code != 0 or self.DEBUG:
       print(result.stdout)
     return self._test_context(tmp_dir, command, result, artifacts_dir, artifacts, droppings)
   
