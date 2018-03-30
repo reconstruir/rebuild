@@ -37,7 +37,7 @@ class step_setup_patch(step):
       return step_result(True, message)
 
     for p in patches:
-      self.blurb('Patching with %s at %s' % (p, script.source_unpacked_dir))
+      self.blurb('Patching with %s at %s' % (p, path.relpath(script.source_unpacked_dir)))
 
     exit_code, msg = patch.patch(patches,
                                  script.source_unpacked_dir,

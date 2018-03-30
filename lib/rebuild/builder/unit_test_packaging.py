@@ -47,40 +47,6 @@ class unit_test_packaging(object):
     return package
     
   @classmethod
-  def make_recipe_v1_content(clazz, name, version, revision, requirements = None, tests = None):
-    requirements = requirements or []
-    assert isinstance(requirements, list)
-    requirements = [ string_util.quote(req) for req in requirements ]
-    tests = tests or []
-    assert isinstance(tests, list)
-    tests = [ string_util.quote(test) for test in tests ]
-    return '''
-def rebuild_recipes(env):
-  configure_env = [
-    'all: CFLAGS=-I${REBUILD_REQUIREMENTS_INCLUDE_DIR} LDFLAGS=\"-L${REBUILD_REQUIREMENTS_LIB_DIR}\"',
-    'linux: CFLAGS="-I${REBUILD_REQUIREMENTS_INCLUDE_DIR} -std=gnu99" LDFLAGS=\"-L${REBUILD_REQUIREMENTS_LIB_DIR}\"',
-  ]
-  tests = [
-    %s
-  ]
-  return env.args(
-    properties = env.args(
-      name = '%s',
-      version = '%s-%s',
-    ),
-    requirements = [
-      %s
-    ],
-    steps = [
-      'step_autoconf', {
-        'configure_env': configure_env,
-        'tests': tests,
-      }
-    ],
-  )
-''' % ('\n,'.join(tests), name, version, revision, '\n,'.join(requirements))
-    
-  @classmethod
   def make_recipe(clazz, recipe_version, tmp_dir, filename, name, version, revision, requirements = None, tests = None):
     content = clazz.make_recipe_content(recipe_version, name, version, revision, requirements = requirements, tests = tests)
     filepath = path.join(tmp_dir, filename)
@@ -95,11 +61,10 @@ def rebuild_recipes(env):
     tests = tests or []
     assert isinstance(tests, list)
     tests = [ string_util.quote(test) for test in tests ]
-    return '''
-!rebuildrecipe!
+    return '''!rebuildrecipe!
 
 package %s-%s-%s
-  build_tool_requirements
+  requirements
     %s
   steps
     step_autoconf

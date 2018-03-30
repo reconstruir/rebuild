@@ -12,6 +12,7 @@ class recipe(namedtuple('recipe', 'format_version,filename,enabled,properties,re
   
   def __new__(clazz, format_version, filename, enabled, properties, requirements,
               descriptor, instructions, steps, load, env_vars):
+    assert format_version == 2
     if env_vars:
       check.check_masked_value_list(env_vars)
     return clazz.__bases__[0].__new__(clazz, format_version, filename, enabled, properties,
@@ -33,8 +34,9 @@ class recipe(namedtuple('recipe', 'format_version,filename,enabled,properties,re
     if self.env_vars:
       root.children.append(self._env_vars_to_node(self.env_vars))
       root.add_child('')
-    root.children.append(self._properties_to_node(self.properties))
-    root.add_child('')
+    if self.properties:
+      root.children.append(self._properties_to_node(self.properties))
+      root.add_child('')
     if self.requirements:
       root.children.append(self._requirements_to_node('requirements', self.requirements))
       root.add_child('')

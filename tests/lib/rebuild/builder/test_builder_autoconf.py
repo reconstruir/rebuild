@@ -82,8 +82,8 @@ class test_builder_autoconf(unit_test):
     tmp_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
     if clazz.DEBUG:
       print('_build_autoconf_package() tmp_dir=%s; version=%s' % (tmp_dir, version))
-    builder_script_content = unit_test_packaging.make_recipe_v1_content(name, version, revision)
-    builder_script = file_util.save(path.join(tmp_dir, 'build.py'), content = builder_script_content)
+    builder_script_content = unit_test_packaging.make_recipe_v2_content(name, version, revision)
+    builder_script = file_util.save(path.join(tmp_dir, 'build.rebc'), content = builder_script_content)
     tarball_filename = '%s-%s.tar.gz' % (name, version)
     tarball_path = path.join(tarball_dir, tarball_filename)
     file_util.copy(path.join(tarball_dir, tarball_filename), tmp_dir)

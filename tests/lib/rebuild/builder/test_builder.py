@@ -23,7 +23,7 @@ class test_builder(unit_test):
 
   def test_amhello(self):
     tmp_dir = temp_file.make_temp_dir()
-    amhello_builder_script = unit_test_packaging.make_recipe(1, tmp_dir, 'build_amhello.py', 'amhello', '1.0', 0)
+    amhello_builder_script = unit_test_packaging.make_recipe(2, tmp_dir, 'build_amhello.rebc', 'amhello', '1.0', 0)
     file_util.copy(self.data_path('amhello-1.0.tar.gz'), tmp_dir)
     filenames = [ amhello_builder_script ]
     config = builder_config()
