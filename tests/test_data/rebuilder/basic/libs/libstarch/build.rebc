@@ -1,0 +1,17 @@
+!rebuildrecipe!
+
+package libstarch-1.0.0
+
+  steps  
+    step_setup
+      copy_source_to_build_dir: True
+      tarball_source_dir_override
+        all: src
+    step_make
+    step_make_install
+    step_post_install
+      pc_files
+        all: libstarch.pc
+      skip_binary_third_party_prefix: True
+      tests
+        all: test-libstarch.c
