@@ -52,18 +52,6 @@ class test_builder(unit_test):
 
   def test_fructose(self):
     rv = self._build_project([
-      'build_fructose.py',
-      'fructose-3.4.5.tar.gz',
-      'fructose-test.c',
-    ], [
-      'build_fructose.py',
-    ], [
-      'fructose',
-    ])
-    self.assertEqual( builder.EXIT_CODE_SUCCESS, rv.exit_code )
-    
-  def test_fructose_recipe_v2(self):
-    rv = self._build_project([
       'build_fructose.rebc',
       'fructose-3.4.5.tar.gz',
       'fructose-test.c',
@@ -102,45 +90,6 @@ class test_builder(unit_test):
     root_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     pm_dir = path.join(root_dir, 'package_manager')
     return package_manager(pm_dir, am)
-    
-  def xxxtest_orange(self):
-    tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
-    if self.DEBUG:
-      print("tmp_dir: ", tmp_dir)
-    orange_requirements = [
-      'all: fructose >= 3.4.5-6',
-      'all: fiber >= 1.0.0-0',
-    ]
-    orange_builder_script = unit_test_packaging.make_recipe(1, tmp_dir, 'build_orange.py', 'orange', '6.5.4', 3,
-                                                            requirements = orange_requirements,
-                                                            tests = [ 'all: orange-test.c' ])
-    fructose_builder_script = unit_test_packaging.make_recipe(1, tmp_dir, 'build_fructose.py', 'fructose', '3.4.5', 6,
-                                                              tests = [ 'all: fructose-test.c' ])
-    fiber_builder_script = unit_test_packaging.make_recipe(1, tmp_dir, 'build_fiber.py', 'fiber', '1.0.0', 0,
-                                                           tests = [ 'all: fiber-test.c' ])
-
-    data_files = [
-      'fiber-1.0.0.tar.gz',
-      'fructose-3.4.5.tar.gz',
-      'orange-6.5.4.tar.gz',
-      'fiber-test.c',
-      'fructose-test.c',
-      'orange-test.c',
-    ]
-
-    for f in data_files:
-      file_util.copy(self.data_path(f), tmp_dir)
-
-    filenames = [ orange_builder_script, fructose_builder_script, fiber_builder_script ]
-    config = builder_config()
-    config.build_root = path.join(tmp_dir, 'BUILD')
-    config.no_network = True
-    config.source_dir = self.data_dir()
-    env = builder_env(config, filenames)
-    bldr = builder(env)
-    packages_to_build = [ 'orange' ]
-    rv = bldr.build_many_scripts(packages_to_build)
-    self.assertEqual( builder.EXIT_CODE_SUCCESS, rv )
 
   _build_result = namedtuple('build_result', 'exit_code,tmp_dir')
     
