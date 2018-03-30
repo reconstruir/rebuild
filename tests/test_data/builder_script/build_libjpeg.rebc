@@ -1,0 +1,14 @@
+!rebuildrecipe!
+
+package libjpeg-9a-1
+  properties
+
+  steps  
+    step_autoconf
+      configure_env
+        all: CFLAGS=${REBUILD_COMPILE_CFLAGS}
+      configure_flags
+        all: --enable-static --disable-shared
+        linux: --with-pic
+      patches
+      pc_files

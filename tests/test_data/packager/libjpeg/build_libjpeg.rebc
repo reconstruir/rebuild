@@ -1,0 +1,13 @@
+!rebuildrecipe!
+
+package libjpeg-9a-1
+  properties
+
+  steps  
+    step_setup
+    step_autoconf_configure
+    step_shell
+      cmd: make V=1
+    step_shell
+      cmd: make install prefix=$REBUILD_STAGE_PREFIX_DIR V=1
+    step_artifact_create

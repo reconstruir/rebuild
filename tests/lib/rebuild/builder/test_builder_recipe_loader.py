@@ -11,7 +11,7 @@ class test_builder_recipe_loader(unit_test):
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/builder_script'
 
   def test_load_libjpeg(self):
-    filenames = [ self.data_path('build_libjpeg.py') ]
+    filenames = [ self.data_path('build_libjpeg.rebc') ]
     recipes = builder_recipe_loader.load(filenames[0])
     self.assertEqual( 1, len(recipes) )
     self.assertEqual( 'libjpeg', recipes[0].descriptor.name )
