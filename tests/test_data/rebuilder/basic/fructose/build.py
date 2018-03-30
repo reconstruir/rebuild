@@ -7,18 +7,6 @@ def rebuild_recipes(env):
     'all: fructose-1and2-test.c',
   ]
 
-  """
-  caca_tests = '''
-#source: fructose1-test.c
-#requires: libfructose1
-#system: all
-
-source: fructose2-test.c
-requires: libfructose2
-system: all
-'''
-"""
-
   configure_env = [
     'linux: CFLAGS="-I${REBUILD_REQUIREMENTS_INCLUDE_DIR} -std=gnu99" LDFLAGS=\"-L${REBUILD_REQUIREMENTS_LIB_DIR}\"',
   ]
