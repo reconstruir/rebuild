@@ -44,7 +44,7 @@ class test_builder_script(unit_test):
     self.assertEqual( expected_requirements, script.descriptor.requirements )
 
   def test_libpng(self):
-    filename = self.data_path('build_libpng.py')
+    filename = self.data_path('build_libpng.rebc')
     script = self._load_builder_script(filename)
 
     expected_requirements = requirement.parse('zlib(all) >= 1.2.8-1')
