@@ -6,10 +6,10 @@ def rebuild_recipes(env):
       revision = '1',
     ),
     steps = [
-      step_setup,
-      step_autoconf_configure,
-      step_shell, { 'cmd': 'make V=1' },
-      step_shell, { 'cmd': 'make install prefix=$REBUILD_STAGE_PREFIX_DIR V=1' },
-      step_artifact_create,
+      'step_setup',
+      'step_autoconf_configure',
+      'step_shell', { 'cmd': 'make V=1' },
+      'step_shell', { 'cmd': 'make install prefix=$REBUILD_STAGE_PREFIX_DIR V=1' },
+      'step_artifact_create',
     ],
   )
