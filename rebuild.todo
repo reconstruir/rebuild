@@ -559,7 +559,6 @@ nov 23
 
 nov 30
 - use class registry and parsing scheme for hooks and checks
-- remove step_register usage from step_description probably once new text recipe lives
 - REBUILD_PACKAGE_VERSION insconsisent maybe should be REBUILDER_PACKAGE_VERSION
 - write unit tests for features used in
   proj/third_party/python/python_setuptools/build.py
@@ -752,7 +751,3 @@ march 30
 - missing env_files unit tests
 - missing unit test for a lot of args
 - make steps be pluggins
-
-march 31
-- things to check for v1 to v2 migration
-step_description.parse_descriptions
