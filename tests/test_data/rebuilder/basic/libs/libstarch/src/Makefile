@@ -5,7 +5,7 @@ AR_FLAGS=r
 LOCAL_CFLAGS=-I.
 
 %.o: %.c
-	$(CC) $(LOCAL_CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(LOCAL_CFLAGS) -c $< -o $@
 
 all: libstarch.a starch_prog1_main
 
