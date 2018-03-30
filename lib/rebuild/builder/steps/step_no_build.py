@@ -5,7 +5,6 @@ import os.path as path
 from rebuild.step import compound_step, step, step_call_hooks, step_result
 
 class step_no_build(compound_step):
-  'A simple uber step for autoconf projects.'
   from .step_artifact_create import step_artifact_create
 
   __steps__ = [

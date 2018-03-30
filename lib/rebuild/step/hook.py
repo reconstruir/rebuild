@@ -6,6 +6,7 @@ from bes.system.compat import with_metaclass
 from bes.common import check
 from bes.dependency import dependency_provider
 from .hook_registry import hook_registry
+from .step_result import step_result
 
 class hook_register_meta(ABCMeta):
 
@@ -16,6 +17,8 @@ class hook_register_meta(ABCMeta):
 
 class hook(with_metaclass(hook_register_meta, dependency_provider)):
 
+  step_result = step_result
+  
   def __init__(self):
     'Create a new hook.'
     pass

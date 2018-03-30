@@ -1,0 +1,21 @@
+!rebuildrecipe!
+
+package foo-1.0.0
+  load
+    hooks.py
+
+  steps
+    step_setup
+      no_tarballs: True
+      
+    step_post_install
+      install_files
+        all: ${REBUILD_SOURCE_DIR}/files/bin/foo.py bin/foo.py
+        
+#      tests
+#        all: test-foo.sh test-foo-env-var.sh
+        
+      skip_binary_third_party_prefix: True
+
+      post_install_hooks
+        all: _test_hook1 _test_hook2

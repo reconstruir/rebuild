@@ -76,6 +76,21 @@ class test_rebuilder_script(script_unit_test):
       'metadata/info.json',
     ], archiver.members(tgz) )
     
+  def test_hooks(self):
+    test = self._run_test('hooks', 'foo')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'foo-1.0.0.tar.gz' ], test.artifacts )
+    tgz = path.join(test.artifacts_dir, 'foo-1.0.0.tar.gz')
+    self.assertEqual( [
+      'files/bin/foo.py',
+      'metadata/info.json',
+    ], archiver.members(tgz) )
+    expected = '''#!/usr/bin/env python
+print("hook1 hook2")
+'''
+
+    self.assertMultiLineEqual(expected, archiver.extract_member_to_string(tgz, 'files/bin/foo.py') )
+    
   def _make_temp_dir(self):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     if self.DEBUG:

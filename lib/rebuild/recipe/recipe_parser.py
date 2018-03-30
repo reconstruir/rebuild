@@ -204,7 +204,7 @@ class recipe_parser(object):
         try:
           value = masked_value.parse_mask_and_value(text, self.filename, args_definition[key].atype)
         except RuntimeError as ex:
-          self._error('fucked in the asshole: %s - %s' % (text, str(ex)), node)
+          self._error('error: %s - %s' % (text, str(ex)), node)
         values.append(value)
     return recipe_value(key, values)
 
