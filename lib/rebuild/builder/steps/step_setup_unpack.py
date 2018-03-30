@@ -17,9 +17,10 @@ class step_setup_unpack(step):
   @classmethod
   def define_args(clazz):
     return '''
-    no_tarballs   bool        False
-    extra_tarballs string_list
-    tarball_name string
+    no_tarballs     bool         False
+    extra_tarballs  string_list
+    tarball_name    string
+    skip_unpack     bool         False
     '''
 
   def execute(self, script, env, args):
@@ -28,10 +29,12 @@ class step_setup_unpack(step):
       no_tarballs = values.get('no_tarballs')
       extra_tarballs = values.get('extra_tarballs').to_list()
       tarball_name = values.get('tarball_name')
+      skip_unpack = values.get('skip_unpack')
     else:
       no_tarballs = args.get('no_tarballs', False)
       extra_tarballs = self.args_get_string_list(args, 'extra_tarballs').to_list()
       tarball_name = args.get('tarball_name', None)
+      skip_unpack = args.get('skip_unpack', False)
       
     if no_tarballs:
       return step_result(True, None)

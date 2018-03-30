@@ -22,6 +22,8 @@ class step_python_egg_build(step):
     shell_env           key_values
     update_version_tag  string
     tarball_address     string_list
+    setup_script        string       setup.py
+    setup_dir           string
     '''
     
   def execute(self, script, env, args):
@@ -31,11 +33,15 @@ class step_python_egg_build(step):
       shell_env = values.get('shell_env')
       update_version_tag = values.get('update_version_tag')
       tarball_address = values.get('tarball_address')
+      setup_script = values.get('setup_script')
+      setup_dir = values.get('setup_dir')
     else:
       shell_flags = self.args_get_string_list(args, 'shell_flags')
       shell_env = self.args_get_key_value_list(args, 'shell_env')
       tarball_address = args.get('tarball_address', ( None, None ))
       update_version_tag = args.get('update_version_tag', None)
+      setup_script = args.get('setup_script', self.DEFAULT_SETUP_SCRIPT)
+      setup_dir = args.get('setup_dir', None)
 
     if update_version_tag:
       assert tarball_address
@@ -45,8 +51,6 @@ class step_python_egg_build(step):
       v2 = v1.change(address = tarball_address[0], tag = tarball_address[1], timestamp = time_util.timestamp(timezone = True))
       v2.save_file(filename)
     
-    setup_script = args.get('setup_script', self.DEFAULT_SETUP_SCRIPT)
-    setup_dir = args.get('setup_dir', None)
     cmd = '${PYTHON} %s bdist_egg --plat-name=${REBUILD_PYTHON_PLATFORM_NAME}' % (setup_script)
     return self.call_shell(cmd, script, env, args, extra_env = shell_env, execution_dir = setup_dir)
 

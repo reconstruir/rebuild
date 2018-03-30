@@ -13,6 +13,12 @@ class step_check_darwin_archs(step):
 
   def __init__(self):
     super(step_check_darwin_archs, self).__init__()
+    
+  @classmethod
+  def define_args(clazz):
+    return '''
+    ignore_check_darwin_archs   bool        False
+    '''
 
   def __matches(self, expected, actual):
     for arch in actual:
