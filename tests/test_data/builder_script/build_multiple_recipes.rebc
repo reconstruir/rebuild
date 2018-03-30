@@ -1,0 +1,76 @@
+!rebuildrecipe!
+
+package libsdl2-2.0.5
+  enabled=$system is MACOS
+
+  properties
+    pkg_config_name=sdl2
+
+  steps  
+    step_autoconf
+      configure_env
+        all: CPPFLAGS="-I${REBUILD_REQUIREMENTS_DIR}/include ${REBUILD_COMPILE_CFLAGS}"
+             LDFLAGS=-L${REBUILD_REQUIREMENTS_DIR}/lib
+             CFLAGS="-I${REBUILD_REQUIREMENTS_DIR}/include ${REBUILD_COMPILE_CFLAGS}"
+      configure_flags
+        all: --enable-static --disable-shared
+        linux: --with-pic
+
+package libsdl2_image-2.0.1
+  enabled=$system is MACOS
+
+  properties
+    pkg_config_name=SDL2_image
+
+  export_compilation_flags_requirements
+    all: ALL_DEPS
+
+  requirements
+    all: libsdl2 >= 2.0.5
+
+  steps  
+    step_autoconf
+      configure_env
+        all: LDFLAGS=${REBUILD_REQUIREMENTS_LDFLAGS}
+             CFLAGS="${REBUILD_REQUIREMENTS_CFLAGS} ${REBUILD_COMPILE_CFLAGS}"
+      configure_flags
+        all: --with-sdl-prefix=$REBUILD_REQUIREMENTS_DIR --enable-jpg
+             --disable-jpg-shared --disable-png-shared --disable-tif-shared
+             --disable-webp-shared --enable-png --enable-tif --enable-webp
+             --enable-static --disable-shared
+        linux: --with-pic
+
+package libsdl2_mixer-2.0.1
+  enabled=$system is MACOS
+
+  requirements
+    all: libsdl2 >= 2.0.5
+
+  steps  
+    step_autoconf
+      configure_env
+        all: CFLAGS=${REBUILD_COMPILE_CFLAGS}
+      configure_flags
+        all: --with-sdl-prefix=$REBUILD_REQUIREMENTS_DIR --enable-static
+             --disable-shared
+        linux: --with-pic
+        darwin: --disable-music-midi-native
+
+package libsdl2_ttf-2.0.13
+  enabled=$system is MACOS
+
+  properties
+    pkg_config_name=SDL2_ttf
+
+  requirements
+    all: libsdl2 >= 2.0.5
+
+  steps  
+    step_autoconf
+      configure_env
+        all: CFLAGS=${REBUILD_COMPILE_CFLAGS}
+      configure_flags
+        all: --with-sdl-prefix=$REBUILD_REQUIREMENTS_DIR
+             --with-freetype-prefix=$REBUILD_REQUIREMENTS_DIR --enable-static
+             --disable-shared
+        linux: --with-pic

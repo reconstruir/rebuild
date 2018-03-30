@@ -18,7 +18,7 @@ class test_builder_recipe_loader(unit_test):
     self.assertEqual( ( '9a', 1, 0), recipes[0].descriptor.version )
 
   def test_multiple_recipes(self):
-    filenames = [ self.data_path('build_multiple_recipes.py') ]
+    filenames = [ self.data_path('build_multiple_recipes.rebc') ]
     recipes = builder_recipe_loader.load(filenames[0])
     self.assertEqual( 4, len(recipes) )
 
