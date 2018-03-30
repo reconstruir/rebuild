@@ -3,7 +3,7 @@
 
 def rebuild_subdirs():
   return [
-    'fiber/build.py',
+    'fiber/build.rebc',
     'fructose/build.rebc',
     'libs/libpotato/build.rebc',
     'libs/libstarch/build.rebc',
