@@ -9,7 +9,13 @@ class step_extract_tarballs_to_stage_dir(step):
   
   def __init__(self):
     super(self.__class__, self).__init__()
-  
+
+  @classmethod
+  def define_args(clazz):
+    return '''
+    tarballs_strip_common_base bool False
+    '''
+    
   def execute(self, script, env, args):
     tarballs = args.get('tarballs', [])
     strip_common_base = args.get('tarballs_strip_common_base', False)

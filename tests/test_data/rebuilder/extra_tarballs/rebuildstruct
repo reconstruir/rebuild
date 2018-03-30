@@ -3,5 +3,5 @@
 
 def rebuild_subdirs():
   return [
-    'foo/build.py',
+    'foo/build.rebc',
   ]
