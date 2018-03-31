@@ -94,6 +94,8 @@ class builder_script(object):
     return path.join(build_dir, base_dir)
     
   def _add_steps_v2(self):
+    if not self.enabled:
+      return
     try:
       self._step_manager.add_steps_v2(self.steps, self, self.env)
     except Exception as ex:
