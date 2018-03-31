@@ -64,7 +64,8 @@ class test_rebuilder_script(script_unit_test):
     test = self._run_test(False, 'basic', 'libpotato')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libpotato-1.0.0.tar.gz', 'libstarch-1.0.0.tar.gz', 'tbar-1.0.0.tar.gz', 'tfoo-1.0.0.tar.gz' ], test.artifacts )
-
+    self.assertTrue( 'files/lib/pkgconfig/libpotato.pc' in test.artifacts_members['libpotato-1.0.0.tar.gz'] )
+    
   def test_extra_tarballs(self):
     test = self._run_test(False, 'extra_tarballs', 'foo', '--source-dir', path.join(self.data_dir(), 'extra_tarballs/source'))
     self.assertEqual( 0, test.result.exit_code )
@@ -116,15 +117,15 @@ print("hook1 hook2")
     result = self.run_script(command, cwd = cwd)
     artifacts = file_find.find(artifacts_dir)
     droppings = file_find.find(tmp_dir)
+    artifacts_members = {}
+    artifacts_contents = {}
     if result.exit_code == 0:
-      artifacts_members = {}
-      artifacts_contents = {}
       for artifact in artifacts:
         artifact_path = path.join(artifacts_dir, artifact)
         artifacts_members[artifact] = archiver.members(artifact_path)
         if read_contents:
           artifacts_contents[artifact] = self._artifact_contents(artifact_path)
-
+      
     if result.exit_code != 0 or self.DEBUG:
       print(result.stdout)
       

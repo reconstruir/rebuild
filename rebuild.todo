@@ -750,3 +750,8 @@ march 30
 - missing env_files unit tests
 - missing unit test for a lot of args
 - make steps be pluggins
+
+broken:
+step_pkg_config_make_pc.py
+def sources_keys(self):
+    return [ 'pc_files' ]

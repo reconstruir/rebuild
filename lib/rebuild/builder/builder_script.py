@@ -11,6 +11,7 @@ from rebuild.base import build_blurb
 from bes.dependency import dependency_provider
 from rebuild.step import step_description, step_manager
 from rebuild.package import package_manager
+from rebuild.recipe import recipe_file
 
 class builder_script(object):
 
@@ -142,8 +143,16 @@ class builder_script(object):
       for k, v in args.items():
         sources.extend(dependency_provider.determine_provided(v))
     sources.append(self.filename)
-    sources = [ path.relpath(f) for f in sources ]
-    return sorted(algorithm.unique(sources))
+    caca_sources = []
+    for source in sources:
+      if check.is_recipe_file(source):
+        caca_sources.append(source.filename)
+      elif check.is_string(source):
+        caca_sources.append(source)
+      else:
+        raise ValueError('unknown source type: %s - %s' % (str(source), type(source)))
+    caca_sources = [ path.relpath(f) for f in caca_sources ]
+    return sorted(algorithm.unique(caca_sources))
 
   def _dep_sources(self, all_scripts):
     'Return a list of dependency sources for this script.'

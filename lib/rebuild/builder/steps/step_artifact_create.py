@@ -63,13 +63,9 @@ class step_artifact_create_test_package(step):
     '''
   
   def execute(self, script, env, args):
-    if self._recipe:
-      values = self.recipe.resolve_values(env.config.build_target.system)
-      tests = values.get('tests', [])
-      package_test_env = values.get('package_test_env', key_value_list()) or key_value_list()
-    else:
-      tests = args.get('tests', [])
-      package_test_env = self.args_get_key_value_list(args, 'package_test_env')
+    values = self.recipe.resolve_values(env.config.build_target.system)
+    tests = values.get('tests', [])
+    package_test_env = values.get('package_test_env', key_value_list()) or key_value_list()
     
     if not tests:
       message = 'No tests for %s' % (script.descriptor.full_name)
@@ -105,11 +101,6 @@ class step_artifact_create_test_package(step):
   def sources_keys(self):
     return [ 'tests' ]
 
-  @classmethod
-  def parse_step_args(clazz, script, env, args):
-    return dict_util.combine(clazz.resolve_step_args_files(script, args, 'tests'),
-                             clazz.resolve_step_args_key_values(script, args, 'package_test_env'))
-  
 class step_artifact_create_publish_package(step):
   'Publish the package created by step_artifact_create_make_package.'
 
