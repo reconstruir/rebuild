@@ -8,7 +8,6 @@ from .hook_registry import hook_registry
 from .step import step, step_result
 from .step_aborted import step_aborted
 from .step_arg_spec import step_arg_spec
-from .step_call_hooks import step_call_hooks
 from .step_description import step_description
 from .step_manager import step_manager
 from .step_registry import step_registry

@@ -3,7 +3,7 @@
 
 import os.path as path
 from bes.common import check
-from rebuild.step import compound_step, step, step_call_hooks, step_result
+from rebuild.step import compound_step, step, step_result
 from rebuild.toolchain import toolchain
 
 class step_autoconf_configure(step):
@@ -64,17 +64,35 @@ class step_autoconf_configure(step):
   def parse_step_args(clazz, script, env, args):
     return clazz.resolve_step_args_env_and_flags(script, args, 'configure_env', 'configure_flags')
 
-class step_autoconf_pre_configure_hooks(step_call_hooks):
+class step_autoconf_pre_configure_hooks(step):
   'Run hooks before configure.'
-  __hook_names__ = 'pre_configure_hooks'
+
   def __init__(self):
     super(step_autoconf_pre_configure_hooks, self).__init__()
 
-class step_autoconf_post_configure_hooks(step_call_hooks):
+  @classmethod
+  def define_args(clazz):
+    return 'pre_configure_hooks hook_list'
+    
+  def execute(self, script, env, args):
+    values = self.recipe.resolve_values(script.build_target.system)
+    post_install_hooks = values.get('pre_configure_hooks')
+    return self.NEW_call_hooks(values.get('pre_configure_hooks'), script, env, args)
+
+class step_autoconf_post_configure_hooks(step):
   'Run hooks before configure.'
-  __hook_names__ = 'post_configure_hooks'
+
   def __init__(self):
     super(step_autoconf_post_configure_hooks, self).__init__()
+
+  @classmethod
+  def define_args(clazz):
+    return 'post_configure_hooks hook_list'
+    
+  def execute(self, script, env, args):
+    values = self.recipe.resolve_values(script.build_target.system)
+    post_install_hooks = values.get('post_configure_hooks')
+    return self.NEW_call_hooks(values.get('post_configure_hooks'), script, env, args)
 
 class step_autoconf(compound_step):
   'A compound step for autoconf projects.'
