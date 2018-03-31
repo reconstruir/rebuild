@@ -20,13 +20,9 @@ class step_install_delete_files(step):
     '''
   
   def execute(self, script, env, args):
-    if self._recipe:
-      values = self.recipe.resolve_values(env.config.build_target.system)
-      delete_files = values.get('delete_files')
-      ignore_missing = values.get('delete_files_ignore_missing')
-    else:
-      delete_files = args.get('delete_files', [])
-      ignore_missing = args.get('delete_files_ignore_missing', False)
+    values = self.recipe.resolve_values(env.config.build_target.system)
+    delete_files = values.get('delete_files')
+    ignore_missing = values.get('delete_files_ignore_missing')
 
     if not delete_files:
       message = 'No delete_files for %s' % (script.descriptor.full_name)
@@ -38,7 +34,3 @@ class step_install_delete_files(step):
       return step_result(False, 'File(s) to delete not found: %s' % (' '.join(missing_files)))
     file_util.remove(delete_files_in_stage_dir)
     return step_result(True, None)
-
-  @classmethod
-  def parse_step_args(clazz, script, env, args):
-    return clazz.resolve_step_args_list(script, args, 'delete_files')

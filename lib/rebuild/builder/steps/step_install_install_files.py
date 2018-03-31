@@ -24,13 +24,8 @@ class step_install_install_files(step):
     '''
     
   def execute(self, script, env, args):
-    if self._recipe:
-      values = self.recipe.resolve_values(env.config.build_target.system)
-      install_files = values.get('install_files', [])
-    else:
-      install_files = args.get('install_files', [])
-      value = ' '.join(install_files)
-      install_files = recipe_parser_util.parse_value(value, None, value_type.FILE_INSTALL_LIST)
+    values = self.recipe.resolve_values(env.config.build_target.system)
+    install_files = values.get('install_files', [])
       
     if not install_files:
       message = 'No install_files for %s' % (script.descriptor.full_name)
@@ -55,7 +50,3 @@ class step_install_install_files(step):
 
   def sources_keys(self):
     return [ 'install_files' ]
-
-  @classmethod
-  def parse_step_args(clazz, script, env, args):
-    return clazz.resolve_step_args_list(script, args, 'install_files')
