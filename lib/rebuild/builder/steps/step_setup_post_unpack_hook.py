@@ -9,9 +9,10 @@ class step_setup_post_unpack_hook(step):
   def __init__(self):
     super(step_setup_post_unpack_hook, self).__init__()
 
-  def execute(self, script, env, args):
-    return self.call_hooks(script, env, args, 'post_unpack_hooks')
-
   @classmethod
-  def parse_step_args(clazz, script, env, args):
-    return clazz.resolve_step_args_hooks(script, args, 'post_unpack_hooks')
+  def define_args(clazz):
+    return 'post_unpack_hooks hook_list'
+    
+  def execute(self, script, env, args):
+    values = self.recipe.resolve_values(script.build_target.system)
+    return self.call_hooks(values.get('post_unpack_hooks'), script, env, args)

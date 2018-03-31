@@ -17,7 +17,6 @@ from bes.dependency import dependency_resolver
 from rebuild.toolchain import toolchain
 from rebuild.value import value_type
 
-from .hook_poto import hook_poto
 from .step_registry import step_registry
 from .step_result import step_result
 from .step_arg_spec import step_arg_spec
@@ -340,28 +339,7 @@ class step(with_metaclass(step_register_meta, object)):
     return result
 
   @classmethod
-  def resolve_step_args_hooks(clazz, script, args, name):
-    d = clazz.resolve_step_args_list(script, args, name)
-    hooks = hook_poto.parse_list(d.get(name, []))
-    for h in hooks:
-      h.root_dir = script.source_dir
-    return { name: hooks }
-  
-  @classmethod
-  def call_hooks(clazz, script, env, args, name):
-    hooks = args.get(name, [])
-    if not hooks:
-      return step_result(True, None)
-    for h in hooks:
-      hook_result = h.execute(script, env, args) 
-      if not isinstance(hook_result, step_result):
-        raise RuntimeError('hook did not return step_result: %s' % (h))
-      if not hook_result.success:
-        return hook_result
-    return step_result(True, None)
-
-  @classmethod
-  def NEW_call_hooks(clazz, hooks, script, env, args):
+  def call_hooks(clazz, hooks, script, env, args):
     check.check_hook_seq(hooks)
     for hook in hooks:
       hook_result = hook.execute(script, env, args) 

@@ -76,8 +76,7 @@ class step_autoconf_pre_configure_hooks(step):
     
   def execute(self, script, env, args):
     values = self.recipe.resolve_values(script.build_target.system)
-    post_install_hooks = values.get('pre_configure_hooks')
-    return self.NEW_call_hooks(values.get('pre_configure_hooks'), script, env, args)
+    return self.call_hooks(values.get('pre_configure_hooks'), script, env, args)
 
 class step_autoconf_post_configure_hooks(step):
   'Run hooks before configure.'
@@ -91,8 +90,7 @@ class step_autoconf_post_configure_hooks(step):
     
   def execute(self, script, env, args):
     values = self.recipe.resolve_values(script.build_target.system)
-    post_install_hooks = values.get('post_configure_hooks')
-    return self.NEW_call_hooks(values.get('post_configure_hooks'), script, env, args)
+    return self.call_hooks(values.get('post_configure_hooks'), script, env, args)
 
 class step_autoconf(compound_step):
   'A compound step for autoconf projects.'
