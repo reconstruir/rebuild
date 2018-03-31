@@ -30,11 +30,12 @@ class step_make(step):
     if self._recipe:
       values = self.recipe.resolve_values(env.config.build_target.system)
       make_env = values.get('make_env')
-      make_flags = values.get('make_flags')
+      make_flags = values.get('make_flags') or []
       make_num_jobs = values.get('make_num_jobs')
       make_target = values.get('make_target')
       makefile = values.get('makefile')
     else:
+      assert False
       make_env = self.args_get_key_value_list(args, 'make_env')
       make_flags = self.args_get_string_list(args, 'make_flags')
       make_num_jobs = int(args.get('make_num_jobs', self.DEFAULT_NUM_JOBS))

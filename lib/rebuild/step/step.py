@@ -361,6 +361,17 @@ class step(with_metaclass(step_register_meta, object)):
     return step_result(True, None)
 
   @classmethod
+  def NEW_call_hooks(clazz, hooks, script, env, args):
+    check.check_hook_seq(hooks)
+    for hook in hooks:
+      hook_result = hook.execute(script, env, args) 
+      if not isinstance(hook_result, step_result):
+        raise RuntimeError('hook did not return step_result: %s' % (h))
+      if not hook_result.success:
+        return hook_result
+    return step_result(True, None)
+  
+  @classmethod
   def save_build_dir_logs(clazz, env, filenames):
     'Save any logs that exists to the logs/ dir'
     for filename in filenames:

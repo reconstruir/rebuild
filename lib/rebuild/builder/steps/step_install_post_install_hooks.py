@@ -15,15 +15,6 @@ class step_install_post_install_hooks(step):
     return 'post_install_hooks hook_list'
     
   def execute(self, script, env, args):
-    if self._recipe:
-      values = self.recipe.resolve_values(env.config.build_target.system)
-      post_install_hooks = values.get('post_install_hooks')
-      args = copy.deepcopy(args)
-      args['post_install_hooks'] = post_install_hooks
-    else:
-      pass
-    return self.call_hooks(script, env, args, 'post_install_hooks')
-
-  @classmethod
-  def parse_step_args(clazz, script, env, args):
-    return clazz.resolve_step_args_hooks(script, args, 'post_install_hooks')
+    values = self.recipe.resolve_values(script.build_target.system)
+    post_install_hooks = values.get('post_install_hooks')
+    return self.NEW_call_hooks(values.get('post_install_hooks'), script, env, args)

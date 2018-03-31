@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import os.path as path
-from rebuild.step import compound_step, step, step_call_hooks, step_result
+from rebuild.step import compound_step
 
 class step_no_build(compound_step):
   from .step_artifact_create import step_artifact_create
