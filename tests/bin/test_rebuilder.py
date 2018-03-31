@@ -18,55 +18,55 @@ class test_rebuilder_script(script_unit_test):
 
   BUILD_LEVEL = 'release'
 
-  _test_context = namedtuple('_test_context', 'tmp_dir,command,result,artifacts_dir,artifacts,droppings')
+  _test_context = namedtuple('_test_context', 'tmp_dir,command,result,artifacts_dir,artifacts,artifacts_members,artifacts_contents,droppings')
 
   def test_basic_fructose(self):
-    test = self._run_test('basic', 'fructose')
+    test = self._run_test(False, 'basic', 'fructose')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
 
   def test_one_project(self):
-    test = self._run_test('one_project', 'fructose')
+    test = self._run_test(False, 'one_project', 'fructose')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
     
   def test_fructose_and_fiber(self):
-    test = self._run_test('basic', 'fructose', 'fiber')
+    test = self._run_test(False, 'basic', 'fructose', 'fiber')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fiber-1.0.0.tar.gz', 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
     
   def xxxtest_orange(self):
-    test = self._run_test('basic', 'fructose', 'fiber')
+    test = self._run_test(False, 'basic', 'fructose', 'fiber')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fiber-1.0.0.tar.gz', 'fiber-orange-6.5.4-3.tar.gz', 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
 
   def test_tool_tfoo(self):
-    test = self._run_test('basic', 'tfoo')
+    test = self._run_test(False, 'basic', 'tfoo')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'tfoo-1.0.0.tar.gz' ], test.artifacts )
     
   def test_tool_tbar_depends_on_tfoo(self):
-    test = self._run_test('basic', 'tbar')
+    test = self._run_test(False, 'basic', 'tbar')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'tbar-1.0.0.tar.gz', 'tfoo-1.0.0.tar.gz' ], test.artifacts )
 
   def test_tool_tbaz(self):
-    test = self._run_test('basic', 'tbaz')
+    test = self._run_test(False, 'basic', 'tbaz')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'tbaz-1.0.0.tar.gz' ], test.artifacts )
     
   def test_lib_libstarch(self):
-    test = self._run_test('basic', 'libstarch')
+    test = self._run_test(False, 'basic', 'libstarch')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libstarch-1.0.0.tar.gz' ], test.artifacts )
 
   def test_lib_libpotato_depends_on_libstarch(self):
-    test = self._run_test('basic', 'libpotato')
+    test = self._run_test(False, 'basic', 'libpotato')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libpotato-1.0.0.tar.gz', 'libstarch-1.0.0.tar.gz', 'tbar-1.0.0.tar.gz', 'tfoo-1.0.0.tar.gz' ], test.artifacts )
 
   def test_extra_tarballs(self):
-    test = self._run_test('extra_tarballs', 'foo', '--source-dir', path.join(self.data_dir(), 'extra_tarballs/source'))
+    test = self._run_test(False, 'extra_tarballs', 'foo', '--source-dir', path.join(self.data_dir(), 'extra_tarballs/source'))
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'foo-1.0.0.tar.gz' ], test.artifacts )
     tgz = path.join(test.artifacts_dir, 'foo-1.0.0.tar.gz')
@@ -74,22 +74,21 @@ class test_rebuilder_script(script_unit_test):
       'files/foo-1.0.0/bin/bar.sh',
       'files/foo-1.0.0/usr/bin/foo.sh',
       'metadata/info.json',
-    ], archiver.members(tgz) )
+    ], test.artifacts_members['foo-1.0.0.tar.gz'])
     
   def test_hooks(self):
-    test = self._run_test('hooks', 'foo')
+    test = self._run_test(True, 'hooks', 'foo')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'foo-1.0.0.tar.gz' ], test.artifacts )
     tgz = path.join(test.artifacts_dir, 'foo-1.0.0.tar.gz')
     self.assertEqual( [
       'files/bin/foo.py',
       'metadata/info.json',
-    ], archiver.members(tgz) )
+    ], test.artifacts_members['foo-1.0.0.tar.gz'])
     expected = '''#!/usr/bin/env python
 print("hook1 hook2")
 '''
-
-    self.assertMultiLineEqual(expected, archiver.extract_member_to_string(tgz, 'files/bin/foo.py') )
+    self.assertMultiLineEqual( expected, test.artifacts_contents['foo-1.0.0.tar.gz']['files/bin/foo.py'] )
     
   def _make_temp_dir(self):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
@@ -109,7 +108,7 @@ print("hook1 hook2")
     ] + list(args)
     return cmd
 
-  def _run_test(self, cwd_subdir, *args):
+  def _run_test(self, read_contents, cwd_subdir, *args):
     tmp_dir = self._make_temp_dir()
     command = self._make_command(tmp_dir, *args)
     cwd = path.join(self.data_dir(), cwd_subdir)
@@ -117,9 +116,34 @@ print("hook1 hook2")
     result = self.run_script(command, cwd = cwd)
     artifacts = file_find.find(artifacts_dir)
     droppings = file_find.find(tmp_dir)
+    if result.exit_code == 0:
+      artifacts_members = {}
+      artifacts_contents = {}
+      for artifact in artifacts:
+        artifact_path = path.join(artifacts_dir, artifact)
+        artifacts_members[artifact] = archiver.members(artifact_path)
+        if read_contents:
+          artifacts_contents[artifact] = self._artifact_contents(artifact_path)
+
     if result.exit_code != 0 or self.DEBUG:
       print(result.stdout)
-    return self._test_context(tmp_dir, command, result, artifacts_dir, artifacts, droppings)
+      
+    return self._test_context(tmp_dir, command, result, artifacts_dir, artifacts, artifacts_members, artifacts_contents, droppings)
+
+  @classmethod
+  def _blacklist(clazz, member, patterns):
+    for pattern in patterns:
+      if pattern in member:
+        return True
+    return False
+  
+  @classmethod
+  def _artifact_contents(clazz, artifact):
+    result = {}
+    for member in archiver.members(artifact):
+      if not clazz._blacklist(member, [ 'bin/rebbe_', 'lib/librebbe_' ]):
+        result[member] = archiver.extract_member_to_string(artifact, member)
+    return result
   
 if __name__ == '__main__':
   script_unit_test.main()
