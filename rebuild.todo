@@ -77,11 +77,6 @@ jan 14
 - fix disaled handing in BuildScriptManager.
 - print decent error when a dependency is disabled
 
-jan 15
-- fix issue when tarballs are specified like in python_pil it dont work.
-- add a DependencyManager
-- remove disabled packages from all_scripts instead of just skipping them
-
 jan 19
 - rebbe.py packages install -a ~/software/tmp/artifacts /tmp/v v python_virtualenv fails because of a missing dir
 - add more unit tests
@@ -738,7 +733,6 @@ march 30
 - missing unit test for a lot of args
 - make steps be pluggins
 
-broken:
-step_pkg_config_make_pc.py
-def sources_keys(self):
-    return [ 'pc_files' ]
+jan 15
+- remove disabled packages from all_scripts instead of just skipping them but first check nothing depends on it
+
