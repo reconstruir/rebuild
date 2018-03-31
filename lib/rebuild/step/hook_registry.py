@@ -12,7 +12,7 @@ class hook_registry(object):
     name = registree.__name__
     existing = clazz._registry.get(name, None)
     if existing:
-      return
+      raise ValueError('hook with name \"%s\" already registered: %s' % (name, registree))
     clazz._registry[name] = registree
     if name.startswith('hook_'):
       name_no_hook = string_util.remove_head(name, 'hook_')
