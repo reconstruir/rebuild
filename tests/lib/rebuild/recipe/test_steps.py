@@ -19,15 +19,10 @@ class step_foo(step):
     '''
     
   def execute(self, script, env, args):
-    foo_flags = args.get('foo_flags', [])
-    assert isinstance(foo_flags, list)
-    foo_env = args.get('foo_env', {})
-    assert isinstance(configure_env, dict)
+    values = self.recipe.resolve_values(env.config.build_target.system)
+    foo_flags = values.get('foo_flags')
+    foo_env = values.get('foo_env')
     return step_result(True)
-
-  @classmethod
-  def parse_step_args(clazz, script, env, args):
-    return clazz.resolve_step_args_env_and_flags(script, args, 'foo_env', 'foo_flags')
 
 class step_takes_bool(step):
   def __init__(self):

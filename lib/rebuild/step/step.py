@@ -309,26 +309,6 @@ class step(with_metaclass(step_register_meta, object)):
     return { name: d }
 
   @classmethod
-  def resolve_step_args_env_and_flags(clazz, script, args, env_name, flags_name):
-    assert env_name or flags_name
-
-    env_dict = {}
-    if env_name and env_name in args:
-      config = args[env_name]
-      resolved = reitred_masked_config.resolve_key_values(config, script.build_target.system)
-      check.check_key_value_list(resolved)
-      env_dict = { env_name: resolved }
-
-    flags_dict = {}
-    if flags_name and flags_name in args:
-      config = args[flags_name]
-      resolved = reitred_masked_config.resolve_list(config, script.build_target.system)
-      check.check_list(resolved)
-      flags_dict = { flags_name: resolved }
-
-    return dict_util.combine(env_dict, flags_dict)
-  
-  @classmethod
   def call_hooks(clazz, hooks, script, env, args):
     check.check_hook_seq(hooks)
     for hook in hooks:
@@ -374,13 +354,6 @@ class step(with_metaclass(step_register_meta, object)):
     if check.is_string_seq(result):
       result = string_list(result)
     check.check_string_list(result)
-    return result
-
-  @classmethod
-  def args_get_key_value_list(clazz, args, key):
-    check.check_dict(args)
-    result = args.get(key, None) or key_value_list()
-    check.check_key_value_list(result)
     return result
 
   @classmethod

@@ -19,20 +19,12 @@ class step_python_lib_build(step):
     '''
 
   def execute(self, script, env, args):
-    if self._recipe:
-      values = self.recipe.resolve_values(env.config.build_target.system)
-      python_lib_build_env = values.get('python_lib_build_env')
-      python_lib_build_flags = values.get('python_lib_build_flags')
-    else:
-      python_lib_build_env = self.args_get_key_value_list(args, 'python_lib_build_env')
-      python_lib_build_flags = self.args_get_string_list(args, 'python_lib_build_flags')
+    values = self.recipe.resolve_values(env.config.build_target.system)
+    python_lib_build_env = values.get('python_lib_build_env')
+    python_lib_build_flags = values.get('python_lib_build_flags')
 
     cmd = '${PYTHON} setup.py build %s' % (' '.join(python_lib_build_flags))
     return self.call_shell(cmd, script, env, args, extra_env = python_lib_build_env)
-
-  @classmethod
-  def parse_step_args(clazz, script, env, args):
-    return clazz.resolve_step_args_env_and_flags(script, args, 'python_lib_build_env', 'python_lib_build_flags')
 
 class step_python_lib_install(step):
   'Install the dist produced by setuptools install.'
@@ -48,20 +40,12 @@ class step_python_lib_install(step):
     '''
 
   def execute(self, script, env, args):
-    if self._recipe:
-      values = self.recipe.resolve_values(env.config.build_target.system)
-      python_lib_install_env = values.get('python_lib_install_env')
-      python_lib_install_flags = values.get('python_lib_install_flags')
-    else:
-      python_lib_install_env = self.args_get_key_value_list(args, 'python_lib_install_env')
-      python_lib_install_flags = self.args_get_string_list(args, 'python_lib_install_flags')
+    values = self.recipe.resolve_values(env.config.build_target.system)
+    python_lib_install_env = values.get('python_lib_install_env')
+    python_lib_install_flags = values.get('python_lib_install_flags')
 
     cmd = 'mkdir -p ${REBUILD_STAGE_PYTHON_LIB_DIR} && ${PYTHON} setup.py install --home=${REBUILD_STAGE_PREFIX_DIR} --install-lib=${REBUILD_STAGE_PYTHON_LIB_DIR} %s' % (' '.join(python_lib_install_flags))
     return self.call_shell(cmd, script, env, args, extra_env = python_lib_install_env)
-
-  @classmethod
-  def parse_step_args(clazz, script, env, args):
-    return clazz.resolve_step_args_env_and_flags(script, args, 'python_lib_install_env', 'python_lib_install_flags')
 
 class step_python_lib(compound_step):
   'A complete step to make python libs using the "build" target of setuptools.'

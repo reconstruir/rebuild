@@ -1,9 +1,8 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
-#
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from rebuild.step import step, step_result
-from bes.common import string_util
+from bes.common import check
 
 class step_shell(step):
   'A build step that is a shell command.'
@@ -19,22 +18,9 @@ class step_shell(step):
     '''
   
   def execute(self, script, env, args):
-    if self._recipe:
-      values = self.recipe.resolve_values(env.config.build_target.system)
-      shell_env = values.get('shell_env')
-      cmd = values.get('cmd')
-    else:
-      shell_env = self.args_get_key_value_list(args, 'shell_env')
-      cmd = args.get('cmd', None)
-
-    assert string_util.is_string(cmd)
+    values = self.recipe.resolve_values(env.config.build_target.system)
+    shell_env = values.get('shell_env')
+    cmd = values.get('cmd')
+    check.check_string(cmd)
     self.log_d('step_shell.execute() cmd=%s; shell_env=%s' % (cmd, shell_env))
     return self.call_shell(cmd, script, env, args, extra_env = shell_env)
-
-  @classmethod
-  def parse_step_args(clazz, script, env, args):
-    result = clazz.resolve_step_args_env_and_flags(script, args, 'shell_env', None)
-    if not 'cmd' in args:
-      return {}
-    result['cmd'] = args['cmd']
-    return result

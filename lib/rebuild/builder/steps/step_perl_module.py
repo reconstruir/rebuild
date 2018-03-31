@@ -23,15 +23,10 @@ class step_perl_module_setup(step):
     '''
     
   def execute(self, script, env, args):
-    if self._recipe:
-      values = self.recipe.resolve_values(env.config.build_target.system)
-      perl_module_setup_env = values.get('perl_module_setup_env')
-      perl_module_setup_flags = values.get('perl_module_setup_flags')
-      makefile = values.get('makefile')
-    else:
-      perl_module_setup_env = self.args_get_key_value_list(args, 'perl_module_setup_env')
-      perl_module_setup_flags = self.args_get_string_list(args, 'perl_module_setup_flags')
-      makefile = args.get('makefile', 'Makefile.PL')
+    values = self.recipe.resolve_values(env.config.build_target.system)
+    perl_module_setup_env = values.get('perl_module_setup_env')
+    perl_module_setup_flags = values.get('perl_module_setup_flags')
+    makefile = values.get('makefile')
 
     makefile = makefile or 'Makefile.PL'
       
@@ -44,10 +39,6 @@ class step_perl_module_setup(step):
     perl_cmd = '${PERL} %s PREFIX=${REBUILD_STAGE_PREFIX_DIR} INSTALLDIRS=perl' % (makefile)
     cmd = '%s && %s %s' % (mkdir_cmd, perl_cmd, ' '.join(perl_module_setup_flags))
     return self.call_shell(cmd, script, env, args, extra_env = perl_module_setup_env)
-
-  @classmethod
-  def parse_step_args(clazz, script, env, args):
-    return clazz.resolve_step_args_env_and_flags(script, args, 'perl_module_setup_env', 'perl_module_setup_flags')
 
 class step_perl_module_post_install_cleanup(step):
   'Cleanup some stuff about the perl module.'

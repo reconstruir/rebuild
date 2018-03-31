@@ -21,17 +21,11 @@ class step_autoconf_configure(step):
     '''
     
   def execute(self, script, env, args):
-    if self._recipe:
-      values = self.recipe.resolve_values(env.config.build_target.system)
-      configure_env = values.get('configure_env')
-      configure_flags = values.get('configure_flags') or []
-      configure_script = values.get('configure_script')
-      need_autoreconf = values.get('need_autoreconf')
-    else:
-      configure_env = self.args_get_key_value_list(args, 'configure_env')
-      configure_flags = self.args_get_string_list(args, 'configure_flags')
-      configure_script = args.get('configure_script', 'configure')
-      need_autoreconf = args.get('need_autoreconf', False)
+    values = self.recipe.resolve_values(env.config.build_target.system)
+    configure_env = values.get('configure_env')
+    configure_flags = values.get('configure_flags') or []
+    configure_script = values.get('configure_script')
+    need_autoreconf = values.get('need_autoreconf')
 
     if check.is_string_list(configure_flags):
       configure_flags = configure_flags.to_list()
@@ -59,10 +53,6 @@ class step_autoconf_configure(step):
     return self.call_shell(cmd, script, env, args,
                            extra_env = configure_env,
                            save_logs = [ 'config.log', 'config.status' ])
-
-  @classmethod
-  def parse_step_args(clazz, script, env, args):
-    return clazz.resolve_step_args_env_and_flags(script, args, 'configure_env', 'configure_flags')
 
 class step_autoconf_pre_configure_hooks(step):
   'Run hooks before configure.'

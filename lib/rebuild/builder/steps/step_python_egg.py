@@ -27,22 +27,14 @@ class step_python_egg_build(step):
     '''
     
   def execute(self, script, env, args):
-    if self._recipe:
-      values = self.recipe.resolve_values(env.config.build_target.system)
-      shell_flags = values.get('shell_flags')
-      shell_env = values.get('shell_env')
-      update_version_tag = values.get('update_version_tag')
-      tarball_address = values.get('tarball_address')
-      setup_script = values.get('setup_script')
-      setup_dir = values.get('setup_dir')
-    else:
-      shell_flags = self.args_get_string_list(args, 'shell_flags')
-      shell_env = self.args_get_key_value_list(args, 'shell_env')
-      tarball_address = args.get('tarball_address', ( None, None ))
-      update_version_tag = args.get('update_version_tag', None)
-      setup_script = args.get('setup_script', self.DEFAULT_SETUP_SCRIPT)
-      setup_dir = args.get('setup_dir', None)
-
+    values = self.recipe.resolve_values(env.config.build_target.system)
+    shell_flags = values.get('shell_flags')
+    shell_env = values.get('shell_env')
+    update_version_tag = values.get('update_version_tag')
+    tarball_address = values.get('tarball_address')
+    setup_script = values.get('setup_script')
+    setup_dir = values.get('setup_dir')
+    
     if update_version_tag:
       assert tarball_address
       filename = path.join(script.build_dir, update_version_tag)
@@ -53,10 +45,6 @@ class step_python_egg_build(step):
     
     cmd = '${PYTHON} %s bdist_egg --plat-name=${REBUILD_PYTHON_PLATFORM_NAME}' % (setup_script)
     return self.call_shell(cmd, script, env, args, extra_env = shell_env, execution_dir = setup_dir)
-
-  @classmethod
-  def parse_step_args(clazz, script, env, args):
-    return clazz.resolve_step_args_env_and_flags(script, args, 'shell_env', None)
 
 class step_python_egg_install(step):
   'Install the egg file produced by step_bdist_egg_build.'

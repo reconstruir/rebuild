@@ -27,20 +27,12 @@ class step_make(step):
     return []
 
   def execute(self, script, env, args):
-    if self._recipe:
-      values = self.recipe.resolve_values(env.config.build_target.system)
-      make_env = values.get('make_env')
-      make_flags = values.get('make_flags') or []
-      make_num_jobs = values.get('make_num_jobs')
-      make_target = values.get('make_target')
-      makefile = values.get('makefile')
-    else:
-      assert False
-      make_env = self.args_get_key_value_list(args, 'make_env')
-      make_flags = self.args_get_string_list(args, 'make_flags')
-      make_num_jobs = int(args.get('make_num_jobs', self.DEFAULT_NUM_JOBS))
-      make_target = args.get('make_target', None)
-      makefile = args.get('makefile', None)
+    values = self.recipe.resolve_values(env.config.build_target.system)
+    make_env = values.get('make_env')
+    make_flags = values.get('make_flags') or []
+    make_num_jobs = values.get('make_num_jobs')
+    make_target = values.get('make_target')
+    makefile = values.get('makefile')
       
     if make_num_jobs < 1:
       raise RuntimeError('make_num_jobs should be between 1 and %d instead of %s' % (self.MAX_NUM_JOBS, make_num_jobs))
@@ -56,10 +48,6 @@ class step_make(step):
       cmd += [ make_target ]
     
     return self.call_shell(cmd, script, env, args, extra_env = make_env)
-
-  @classmethod
-  def parse_step_args(clazz, script, env, args):
-    return clazz.resolve_step_args_env_and_flags(script, args, 'make_env', 'make_flags')
 
 class step_make_install(step):
   'make install phase of make.'
@@ -77,17 +65,11 @@ class step_make_install(step):
     '''
     
   def execute(self, script, env, args):
-    if self._recipe:
-      values = self.recipe.resolve_values(env.config.build_target.system)
-      makefile = values.get('makefile')
-      install_target = values.get('install_target')
-      make_install_flags = values.get('make_install_flags')
-      make_install_env = values.get('make_install_env')
-    else:
-      makefile = args.get('makefile', None)
-      install_target = args.get('install_target', 'install')
-      make_install_flags = self.args_get_string_list(args, 'make_install_flags').to_list()
-      make_install_env = self.args_get_key_value_list(args, 'make_install_env')
+    values = self.recipe.resolve_values(env.config.build_target.system)
+    makefile = values.get('makefile')
+    install_target = values.get('install_target')
+    make_install_flags = values.get('make_install_flags')
+    make_install_env = values.get('make_install_env')
 
     if check.is_string_list(make_install_flags):
       make_install_flags = make_install_flags.to_list()
@@ -107,11 +89,7 @@ class step_make_install(step):
       'prefix=%s' % (script.stage_dir),
       'V=1',
     ] + make_install_flags
-    return self.call_shell(cmd, script, env, args, extra_env = self.args_get_key_value_list(args, 'make_install_env'))
-
-  @classmethod
-  def parse_step_args(clazz, script, env, args):
-    return clazz.resolve_step_args_env_and_flags(script, args, 'make_install_env', 'make_install_flags')
+    return self.call_shell(cmd, script, env, args, extra_env = make_install_env)
 
 class step_make_test(step):
   'make test phase of make.'
@@ -119,10 +97,20 @@ class step_make_test(step):
   def __init__(self):
     super(step_make_test, self).__init__()
 
+  @classmethod
+  def define_args(clazz):
+    return '''
+    makefile         string
+    make_test_flags  string_list
+    make_test_env     key_values
+    '''
+    
   def execute(self, script, env, args):
-    make_test_flags = args.get('make_test_flags', [])
+    values = self.recipe.resolve_values(env.config.build_target.system)
+    make_test_flags = values.get('make_test_flags')
+    make_test_env = values.get('make_test_env')
+    makefile = values.get('makefile')
 
-    makefile = args.get('makefile', None)
     if makefile:
       makefile_flags = '-f %s' % (makefile)
     else:
@@ -134,11 +122,7 @@ class step_make_test(step):
       'test',
       'V=1',
     ] + make_test_flags
-    return self.call_shell(cmd, script, env, args, extra_env = self.args_get_key_value_list(args, 'make_test_env'))
-
-  @classmethod
-  def parse_step_args(clazz, script, env, args):
-    return clazz.resolve_step_args_env_and_flags(script, args, 'make_test_env', 'make_test_flags')
+    return self.call_shell(cmd, script, env, args, extra_env = make_test_env)
 
 class step_make_caca(compound_step):
   'A simple uber step for autoconf projects.'
