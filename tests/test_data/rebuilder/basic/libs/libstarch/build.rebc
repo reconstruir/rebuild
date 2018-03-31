@@ -8,6 +8,8 @@ package libstarch-1.0.0
       tarball_source_dir_override
         all: src
     step_make
+      make_flags
+        linux: CC=gcc CFLAGS=-std=c99
     step_make_install
     step_post_install
       pc_files
