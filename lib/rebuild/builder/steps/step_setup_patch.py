@@ -22,15 +22,10 @@ class step_setup_patch(step):
     '''
     
   def execute(self, script, env, args):
-    if self._recipe:
-      values = self.recipe.resolve_values(env.config.build_target.system)
-      patches = [ f.filename for f in values.get('patches') or [] ]
-      patch_strip_depth = values.get('patch_strip_depth')
-      patch_program = values.get('patch_program') or 'patch'
-    else:
-      patches = args.get('patches', None)
-      patch_strip_depth = args.get('patch_strip_depth', self.DEFAULT_PATCH_STRIP_DEPTH)
-      patch_program = args.get('patch_program', 'patch')
+    values = self.recipe.resolve_values(env.config.build_target.system)
+    patches = [ f.filename for f in values.get('patches') or [] ]
+    patch_strip_depth = values.get('patch_strip_depth')
+    patch_program = values.get('patch_program') or 'patch'
       
     if not patches:
       message = 'No patches for %s' % (script.descriptor.full_name)
@@ -50,7 +45,3 @@ class step_setup_patch(step):
 
   def sources_keys(self):
     return [ 'patches' ]
-
-  @classmethod
-  def parse_step_args(clazz, script, env, args):
-    return clazz.resolve_step_args_files(script, args, 'patches')

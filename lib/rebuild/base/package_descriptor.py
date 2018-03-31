@@ -7,7 +7,6 @@ from bes.compat import cmp
 
 from .build_system import build_system
 from .build_version import build_version
-from .reitred_masked_config import reitred_masked_config
 from .requirement import requirement
 from .requirement_list import requirement_list
 
@@ -185,9 +184,10 @@ class package_descriptor(object):
     return True
 
   def extra_cflags(self, system):
-    config = self.properties.get('extra_cflags', [])
-    return reitred_masked_config.resolve_list(config, system)
-      
+    #config = self.properties.get('extra_cflags', [])
+    #return reitred_masked_config.resolve_list(config, system)
+    return []
+    
   @property
   def env_vars(self):
     return self.properties.get('env_vars', {})

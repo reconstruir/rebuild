@@ -12,7 +12,7 @@ from bes.key_value import key_value_list
 from bes.system import os_env, execute, log
 from bes.system.compat import with_metaclass
 from bes.text import string_list
-from rebuild.base import build_blurb, build_target, reitred_masked_config
+from rebuild.base import build_blurb, build_target
 from bes.dependency import dependency_resolver
 from rebuild.toolchain import toolchain
 from rebuild.value import value_type
@@ -275,25 +275,6 @@ class step(with_metaclass(step_register_meta, object)):
     return file_path
 
   @classmethod
-  def resolve_step_args_list(clazz, script, args, name):
-    if not name or not name in args:
-      return {}
-    config = args[name]
-    resolved = reitred_masked_config.resolve_list(config, script.build_target.system)
-    return { name: resolved }
-      
-  @classmethod
-  def resolve_step_args_files(clazz, script, args, name):
-    d = clazz.resolve_step_args_list(script, args, name)
-    filenames = d.get(name, [])
-    files = [ path.join(script.source_dir, f) for f in filenames ]
-    import os
-    for f in files:
-      if not path.isfile(f):
-        raise RuntimeError('Not found for \"%s\": %s' % (name, f))
-    return { name: files }
-  
-  @classmethod
   def resolve_step_args_dir(clazz, script, args, name):
     if not name in args:
       return {}
@@ -331,10 +312,13 @@ class step(with_metaclass(step_register_meta, object)):
   @classmethod
   def export_compilation_flags_requirements(clazz, script, system):
     config = script.descriptor.properties.get('export_compilation_flags_requirements', [])
-    if check.is_masked_value_list(config):
-      resolved = config.resolve(system)
+    if config:
+      if check.is_masked_value_list(config):
+        resolved = config.resolve(system)
+      else:
+        raise RuntimeError('fuck you in the ass: %s - %s' % (config))
     else:
-      resolved = reitred_masked_config.resolve_list(config, system)
+      resolved = []
     requirements = script.descriptor.requirements.filter_by_hardness(['RUN', 'BUILD']).filter_by_system(system)
     deps_names = requirements.names()
     export_names = resolved

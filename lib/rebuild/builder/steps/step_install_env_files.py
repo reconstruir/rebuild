@@ -22,13 +22,10 @@ class step_install_env_files(step):
     '''
     
   def execute(self, script, env, args):
-    if self._recipe:
-      values = self.recipe.resolve_values(env.config.build_target.system)
-      env_files = values.get('env_files')
-      if env_files:
-        env_files = [ f.filename for f in env_files ]
-    else:
-      env_files = args.get('env_files', [])
+    values = self.recipe.resolve_values(env.config.build_target.system)
+    env_files = values.get('env_files')
+    if env_files:
+      env_files = [ f.filename for f in env_files ]
 
     if not env_files:
       message = 'No env files for %s' % (script.descriptor.full_name)
@@ -51,7 +48,3 @@ class step_install_env_files(step):
 
   def sources_keys(self):
     return [ 'env_files' ]
-
-  @classmethod
-  def parse_step_args(clazz, script, env, args):
-    return clazz.resolve_step_args_files(script, args, 'env_files')

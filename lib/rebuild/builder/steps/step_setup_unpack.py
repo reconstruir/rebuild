@@ -26,16 +26,10 @@ class step_setup_unpack(step):
     '''
 
   def execute(self, script, env, args):
-    if self._recipe:
-      values = self.recipe.resolve_values(env.config.build_target.system)
-      no_tarballs = values.get('no_tarballs')
-      tarball_name = values.get('tarball_name')
-      skip_unpack = values.get('skip_unpack')
-    else:
-      no_tarballs = args.get('no_tarballs', False)
-      tarball_name = args.get('tarball_name', None)
-      skip_unpack = args.get('skip_unpack', False)
-
+    values = self.recipe.resolve_values(env.config.build_target.system)
+    no_tarballs = values.get('no_tarballs')
+    tarball_name = values.get('tarball_name')
+    skip_unpack = values.get('skip_unpack')
       
     if no_tarballs:
       return step_result(True, None)
@@ -73,26 +67,12 @@ class step_setup_unpack(step):
   @classmethod
   def parse_step_args(clazz, script, env, args):
     recipe = args.get('_CACA_REMOVE_ME_recipe', None)
-    if recipe:
-      values = recipe.resolve_values(env.config.build_target.system)
-      tarball_name = values.get('tarball_name')
-      tarball_source_dir_override = values.get('tarball_source_dir_override')
-      if tarball_source_dir_override:
-        tarball_source_dir_override = tarball_source_dir_override.filename
-      extra_tarballs = values.get('extra_tarballs')
-        
-    else:
-      tarball_name = args.get('tarball_name', None)
-      tarball_source_dir_override_args = clazz.resolve_step_args_dir(script, args, 'tarball_source_dir_override')
-      if tarball_source_dir_override_args:
-        tarball_source_dir_override = tarball_source_dir_override_args['tarball_source_dir_override']
-      else:
-        tarball_source_dir_override = None
-      extra_tarballs_dict = clazz.resolve_step_args_list(script, args, 'extra_tarballs')
-      if extra_tarballs_dict:
-        extra_tarballs = extra_tarballs_dict['extra_tarballs']
-      else:
-        extra_tarballs = []
+    values = recipe.resolve_values(env.config.build_target.system)
+    tarball_name = values.get('tarball_name')
+    tarball_source_dir_override = values.get('tarball_source_dir_override')
+    if tarball_source_dir_override:
+      tarball_source_dir_override = tarball_source_dir_override.filename
+    extra_tarballs = values.get('extra_tarballs')
 
     if check.is_string_list(extra_tarballs):
       extra_tarballs = extra_tarballs.to_list()
@@ -105,7 +85,7 @@ class step_setup_unpack(step):
       archiver.create(tmp_tarball_path, tarball_source_dir_override, base_dir = script.descriptor.full_name)
       tarballs_dict = { 'tarballs': [ tmp_tarball_path ] }
     else:
-      tarballs_dict = clazz.resolve_step_args_list(script, args, 'tarballs')
+      tarballs_dict = {}
     if not tarballs_dict or 'tarballs' not in tarballs_dict:
       if tarball_name:
         clazz.blurb_verbose('Using tarball name \"%s\" instead of \"%s\" for %s' % (tarball_name, script.descriptor.name, script.descriptor.full_name))
