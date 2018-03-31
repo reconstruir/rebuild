@@ -117,18 +117,6 @@ class step(with_metaclass(step_register_meta, object)):
       raise RuntimeError('args needs to be a dict')
     self._args = args
 
-  ENV_VARS = [
-    'HOME',
-    'LANG',
-    'SHELL',
-    'TERM',
-    'TERM_PROGRAM',
-    'TMOUT',
-    'TMPDIR',
-    'USER',
-    '__CF_USER_TEXT_ENCODING',
-   ]
-
   @classmethod
   def create_command_env(clazz, script):
     #env = os_env.make_clean_env()
