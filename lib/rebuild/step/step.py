@@ -11,7 +11,6 @@ from bes.fs import file_util
 from bes.key_value import key_value_list
 from bes.system import os_env, execute, log
 from bes.system.compat import with_metaclass
-from bes.text import string_list
 from rebuild.base import build_blurb, build_target
 from bes.dependency import dependency_resolver
 from rebuild.toolchain import toolchain
@@ -33,8 +32,7 @@ class step(with_metaclass(step_register_meta, object)):
 
   def __init__(self):
     self._recipe = None
-    self._args = copy.deepcopy(getattr(self, '__step_global_args__', {}))
-#    self.log_d('%s: step.__init__() args=%s' % (self, self._args))
+    self._args = {}
 
   @classmethod
   def args_definition(clazz):
@@ -76,17 +74,11 @@ class step(with_metaclass(step_register_meta, object)):
   
   @classmethod
   def parse_step_args(clazz, script, env, args):
-    result = copy.deepcopy(clazz.global_args())
-#    self.log_d('%s: step.parse_step_args() global_args=%s' % (clazz, result))
+    result = {}
     if args:
       assert isinstance(args, dict)
       result.update(args)
-#    self.log_d('%s: step.parse_step_args() result=%s' % (clazz, result))
     return result
-
-  @classmethod
-  def global_args(clazz):
-    return getattr(clazz, '__step_global_args__', {})
 
   def sources_keys(self):
     return []
@@ -275,21 +267,6 @@ class step(with_metaclass(step_register_meta, object)):
     return file_path
 
   @classmethod
-  def resolve_step_args_dir(clazz, script, args, name):
-    if not name in args:
-      return {}
-    d = args.get(name, None)
-    if not d:
-      return {}
-    if path.isdir(d):
-      d = path.abspath(d)
-    else:
-      d = path.join(script.source_dir, d)
-    if not path.isdir(d):
-      raise RuntimeError('Dir not found for \"%s\": %s' % (name, d))
-    return { name: d }
-
-  @classmethod
   def call_hooks(clazz, hooks, script, env, args):
     check.check_hook_seq(hooks)
     for hook in hooks:
@@ -329,17 +306,6 @@ class step(with_metaclass(step_register_meta, object)):
       raise RuntimeError('Trying to export deps that are not specified by %s: %s' % (script.descriptor.name, ' '.join(delta)))
     return export_names
         
-  @classmethod
-  def args_get_string_list(clazz, args, key):
-    check.check_dict(args)
-    result = args.get(key, string_list())
-    if not result:
-      return string_list()
-    if check.is_string_seq(result):
-      result = string_list(result)
-    check.check_string_list(result)
-    return result
-
   @classmethod
   def _env_find_roque_dollar_sign(clazz, env):
     for key in sorted(env.keys()):

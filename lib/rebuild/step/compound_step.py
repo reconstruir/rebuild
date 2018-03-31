@@ -14,8 +14,6 @@ class compound_step(step):
     for step_class in self.__steps__:
       step = step_class()
 #      self.log_d('%s: compound_step.__init__() created %s' % (self, step))
-#      step.update_args(copy.deepcopy(super(compound_step, self).global_args()))
-      step.update_args(step.global_args())
       step.update_args(self.args)
       self.steps.append(step)
 
@@ -34,13 +32,6 @@ class compound_step(step):
       defs = step_class.args_definition()
       result.update(defs)
     return result
-
-  @classmethod
-  def global_args(clazz):
-    args = copy.deepcopy(super(compound_step, clazz).global_args())
-    for step_class in clazz.__steps__:
-      args.update(step_class.global_args())
-    return args
 
   def prepare(self, script, env, args):
     assert self.steps

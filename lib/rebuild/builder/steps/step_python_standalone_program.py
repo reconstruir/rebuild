@@ -8,7 +8,6 @@ from bes.fs import file_util
 from bes.system import execute
 from rebuild.step import compound_step, step, step_result
 from rebuild.tools import install
-from rebuild.recipe import recipe_parser_util
 from rebuild.value import value_type
 
 class step_python_make_standalone_program(step):
@@ -24,13 +23,8 @@ class step_python_make_standalone_program(step):
     '''
     
   def execute(self, script, env, args):
-    if self._recipe:
-      values = self.recipe.resolve_values(env.config.build_target.system)
-      standalone_programs = values.get('standalone_programs', [])
-    else:
-      standalone_programs = args.get('standalone_programs', [])
-      value = ' '.join(standalone_programs)
-      standalone_programs = recipe_parser_util.parse_value(value, None, value_type.FILE_INSTALL_LIST)
+    values = self.recipe.resolve_values(env.config.build_target.system)
+    standalone_programs = values.get('standalone_programs', [])
       
     if not standalone_programs:
       return step_result(True)
@@ -96,10 +90,6 @@ class step_python_standalone_program(compound_step):
   'A complete step to make python libs using the "build" target of setuptools.'
   from .step_setup import step_setup
   from .step_post_install import step_post_install
-
-  __step_global_args__ = {
-    'copy_source_to_build_dir': True,
-  }
 
   __steps__ = [
     step_setup,

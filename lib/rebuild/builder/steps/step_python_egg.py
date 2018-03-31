@@ -103,11 +103,6 @@ class step_python_egg(compound_step):
   from .step_setup import step_setup
   from .step_post_install import step_post_install
 
-  __step_global_args__ = {
-    #'FUCKFUCKFUCKFUCKFUCKFUCKFUCKFUCKFUCKFUCKFUCKFUCKFUCKFUCKFUCK': 666,
-    #'copy_source_to_build_dir': True,
-  }
-  
   __steps__ = [
     step_setup,
     step_python_egg_build,

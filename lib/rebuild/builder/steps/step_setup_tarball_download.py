@@ -24,11 +24,8 @@ class step_setup_tarball_download(step):
   @classmethod
   def parse_step_args(clazz, script, env, args):
     recipe = args.get('_CACA_REMOVE_ME_recipe', None)
-    if recipe:
-      values = recipe.resolve_values(env.config.build_target.system)
-      tarball_address = values.get('tarball_address')
-    else:
-      tarball_address = args.get('tarball_address', None)
+    values = recipe.resolve_values(env.config.build_target.system)
+    tarball_address = values.get('tarball_address')
 
     if tarball_address:
       tarball_address_address = tarball_address[0]
@@ -37,10 +34,7 @@ class step_setup_tarball_download(step):
       tarball_address_address = None
       tarball_address_revision = None
 
-    #print('FUCK: name=%s; tarball_address=%s;  address=%s;  revision=%s' % (script.descriptor.name, tarball_address, tarball_address_address, tarball_address_revision))
-      
     result = {}
-    #tarball_address, tarball_revision = args.get('tarball_address', ( None, None ))
     if tarball_address_address:
       dm = env.downloads_manager
       assert tarball_address_revision

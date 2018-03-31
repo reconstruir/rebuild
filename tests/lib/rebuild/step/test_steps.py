@@ -90,30 +90,6 @@ class sample_step_fake_output3(step):
     fake_output = args.get('fake_output3', None)
     return step_result(True, output = fake_output)
 
-class sample_step_save_args_with_global_args1(sample_step_save_args1):
-  __step_global_args__ = {
-    'global_arg10': '10',
-    'global_arg11': '11',
-  }
-  def __init__(self):
-    super(sample_step_save_args_with_global_args1, self).__init__()
-    
-class sample_step_save_args_with_global_args2(sample_step_save_args2):
-  __step_global_args__ = {
-    'global_arg12': '12',
-    'global_arg13': '13',
-  }
-  def __init__(self):
-    super(sample_step_save_args_with_global_args2, self).__init__()
-    
-class sample_step_save_args_with_global_args3(sample_step_save_args3):
-  __step_global_args__ = {
-    'global_arg14': '14',
-    'global_arg15': '15',
-  }
-  def __init__(self):
-    super(sample_step_save_args_with_global_args3, self).__init__()
-
 class step_with_output1(step):
   def __init__(self):
     super(step_with_output1, self).__init__()

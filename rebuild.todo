@@ -529,8 +529,6 @@ nov 4
 
 nov 5
 - pc_file_variables should use the masked config resolve strategy
-- fix all parse_step_args to pass through the untouched args like step_pkg_config_make_pc.py does
-- change all parse_step_args to not do copy. since step_manager does
 - more tarball finder tests with platform speific tarballs that match and miss different platforms
 - get rid of builder_script.env
 - deal with dup classes in step_registry
@@ -568,22 +566,11 @@ nov 30
 dec 7
 - make sure all steps define argspec.  make it abstract.  change step_registry 'registree.argspec() or {}' to just registree.argspec()
 - fix symlinks in /Users/ramiro/proj/rebuild/lib/rebuild/test_data/rebuilder/fructose
-- retire test_step_manager._make_step_class doesnt appear to be used
 
 dec 8
 - step_check_hard_coded_paths maybe needs to be in a uber step check step same with step_check_darwin_archs
 
-dec 12
-- parse_step_args that are complex
-
-lib/rebuild/builder/steps/step_pkg_config_make_pc.py - easy
-lib/rebuild/builder/steps/step_shell.py - easy
-
-lib/rebuild/builder/steps/step_setup_tarball_download.py
-lib/rebuild/builder/steps/step_setup_unpack.py
-
 dec 19
-- __step_global_args__ is not really used and needs to be converted to be platform specific
 - step_arg_spec check does not work with lower case
 
 dec 21

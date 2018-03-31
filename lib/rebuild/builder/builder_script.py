@@ -43,10 +43,7 @@ class builder_script(object):
     self.stage_lib_dir = path.join(self.stage_dir, 'lib')
     self.stage_bin_dir = path.join(self.stage_dir, 'bin')
     self.stage_compile_instructions_dir = path.join(self.stage_lib_dir, 'rebuild_instructions')
-    if self.recipe.format_version == 1:
-      self._add_steps_v1()
-    else:
-      self._add_steps_v2()
+    self._add_steps_v2()
     self.substitutions = {
       'REBUILD_BUILD_DIR': self.build_dir,
       'REBUILD_PACKAGE_DESCRIPTION':  self.descriptor.name,
@@ -96,18 +93,11 @@ class builder_script(object):
     base_dir = '%s_%s' % (full_name, timestamp)
     return path.join(build_dir, base_dir)
     
-  def _add_steps_v1(self):
-    try:
-      self._step_manager.add_steps(self.steps, self, self.env)
-    except Exception as ex:
-      print(('Caught exception loading script: %s' % (self.filename)))
-      raise
-
   def _add_steps_v2(self):
     try:
       self._step_manager.add_steps_v2(self.steps, self, self.env)
     except Exception as ex:
-      print(('Caught exception loading script: %s' % (self.filename)))
+      print(('Caught exception adding steps to script: %s' % (self.filename)))
       raise
 
   def step_list(self, args):

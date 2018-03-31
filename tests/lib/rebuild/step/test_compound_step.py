@@ -18,9 +18,9 @@ class test_compound_step(unittest.TestCase):
     three_steps = ThreeSteps()
 
     script = { 'foo': 'hi', 'bar': 666 }
-    global_args = { 'food': 'steak', 'drink': 'wine' }
+    common_args = { 'food': 'steak', 'drink': 'wine' }
     env = { 'fruit': 'kiwi' }
-    result = three_steps.execute(script, env, args = global_args)
+    result = three_steps.execute(script, env, args = common_args)
     self.assertTrue( result.success )
     self.assertEqual( None, result.message )
     self.assertEqual( None, result.failed_step )
