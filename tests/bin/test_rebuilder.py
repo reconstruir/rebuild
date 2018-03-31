@@ -91,6 +91,23 @@ print("hook1 hook2")
 '''
     self.assertMultiLineEqual( expected, test.artifacts_contents['foo-1.0.0.tar.gz']['files/bin/foo.py'] )
     
+  def test_env_files(self):
+    test = self._run_test(True, 'env_files', 'foo')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'foo-1.0.0.tar.gz' ], test.artifacts )
+    tgz = path.join(test.artifacts_dir, 'foo-1.0.0.tar.gz')
+    self.assertEqual( [
+      'env/foo_env1.sh',
+      'env/foo_env2.sh',
+      'files/bin/foo.py',
+      'metadata/info.json',
+    ], test.artifacts_members['foo-1.0.0.tar.gz'])
+
+    expected = '''#!/usr/bin/env python
+print("hook1 hook2")
+'''
+#    self.assertMultiLineEqual( expected, test.artifacts_contents['foo-1.0.0.tar.gz']['files/bin/foo.py'] )
+    
   def _make_temp_dir(self):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     if self.DEBUG:
