@@ -39,9 +39,7 @@ class step_manager(object):
     s.recipe = recipe_step
     resolved_args = recipe_step.resolve_values(script.build_target.system)
     check.check_dict(resolved_args)
-    caca_args = copy.deepcopy(recipe_step.description.args)
-    caca_args['_CACA_REMOVE_ME_recipe'] = recipe_step
-    parsed_args = recipe_step.description.step_class.parse_step_args(script, env, caca_args)
+    parsed_args = recipe_step.description.step_class.parse_step_args(script, env, resolved_args)
     check.check_dict(parsed_args)
     s.args = dict_util.combine(resolved_args, parsed_args)
     return self._add_step(s)

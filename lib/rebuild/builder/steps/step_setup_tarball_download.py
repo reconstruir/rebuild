@@ -22,9 +22,7 @@ class step_setup_tarball_download(step):
     return [ 'downloaded_tarballs' ]
 
   @classmethod
-  def parse_step_args(clazz, script, env, args):
-    recipe = args.get('_CACA_REMOVE_ME_recipe', None)
-    values = recipe.resolve_values(env.config.build_target.system)
+  def parse_step_args(clazz, script, env, values):
     tarball_address = values.get('tarball_address')
 
     if tarball_address:

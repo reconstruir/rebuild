@@ -65,9 +65,7 @@ class step_setup_unpack(step):
     return [ 'tarballs', 'extra_tarballs' ]
 
   @classmethod
-  def parse_step_args(clazz, script, env, args):
-    recipe = args.get('_CACA_REMOVE_ME_recipe', None)
-    values = recipe.resolve_values(env.config.build_target.system)
+  def parse_step_args(clazz, script, env, values):
     tarball_name = values.get('tarball_name')
     tarball_source_dir_override = values.get('tarball_source_dir_override')
     if tarball_source_dir_override:

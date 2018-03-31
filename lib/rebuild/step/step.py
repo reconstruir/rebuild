@@ -73,11 +73,11 @@ class step(with_metaclass(step_register_meta, object)):
     return {}
   
   @classmethod
-  def parse_step_args(clazz, script, env, args):
+  def parse_step_args(clazz, script, env, values):
     result = {}
-    if args:
-      assert isinstance(args, dict)
-      result.update(args)
+    if values:
+      check.check_dict(values)
+      result.update(values)
     return result
 
   def sources_keys(self):

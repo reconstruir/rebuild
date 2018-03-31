@@ -18,12 +18,12 @@ class compound_step(step):
       self.steps.append(step)
 
   @classmethod
-  def parse_step_args(clazz, script, env, args):
-    args = copy.deepcopy(args)
+  def parse_step_args(clazz, script, env, values):
+    values = copy.deepcopy(values)
     for step_class in clazz.__steps__:
-      parsed_args = step_class.parse_step_args(script, env, args)
-      args.update(parsed_args)
-    return args
+      parsed_args = step_class.parse_step_args(script, env, values)
+      values.update(parsed_args)
+    return values
 
   @classmethod
   def define_args(clazz):
