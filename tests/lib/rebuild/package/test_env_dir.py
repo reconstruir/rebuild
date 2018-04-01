@@ -1,11 +1,9 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
-#
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 import os, os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import file_util, temp_file
 from rebuild.package.env_dir import env_dir, action
-from rebuild.package.package_db_entry import package_db_entry
 
 class test_env_dir(unit_test):
 
