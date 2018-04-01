@@ -26,6 +26,7 @@ class test_new_package_db_entry(unit_test):
     self.maxDiff = None
     expected_json = '''\
 {
+ "_format_version": 2,
  "arch": "x86_64",
  "checksum": "",
  "distro": null,
@@ -38,9 +39,10 @@ class test_new_package_db_entry(unit_test):
 }'''
     self.assert_string_equal_ws( expected_json, self.TEST_ENTRY.to_json() )
 
-  def test_parse_json(self):
+  def test_parse_json_v2(self):
     json = '''\
 {
+ "_format_version": 2,
  "arch": "x86_64",
  "checksum": "",
  "distro": null,
@@ -53,6 +55,28 @@ class test_new_package_db_entry(unit_test):
 }'''
     actual_entry = PE.parse_json(json)
     self.assertEqual( self.TEST_ENTRY, actual_entry )
+
+  def test_parse_json_v1(self):
+    json = '''\
+{
+  "files": [
+    "f1", 
+    "f2"
+  ],
+  "descriptor": {
+    "version": "6.7.8-2", 
+    "name": "kiwi", 
+    "requirements": [
+      "all: foo >= 1.2.3-1", 
+      "all: bar >= 6.6.6-1"
+    ] ,
+  "properties": { "p1": "v1", "p2": 6 }
+  }
+}'''
+    expected_entry = PE('', '', 'kiwi', '6.7.8-2', '', '', '', None,
+                        self.TEST_REQUIREMENTS, self.TEST_PROPERTIES, self.TEST_FILES)
+    actual_entry = PE.parse_json(json)
+    self.assertEqual( expected_entry, actual_entry )
 
 if __name__ == '__main__':
   unit_test.main()

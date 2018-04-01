@@ -5,7 +5,7 @@ from collections import namedtuple
 from bes.common import check
 from rebuild.base import build_target, package_descriptor, requirement_list
 
-class new_package_db_entry(namedtuple('new_package_db_entry', 'filename,checksum,name,version,system,level,arch,distro,requirements,properties,files')):
+class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,filename,checksum,name,version,system,level,arch,distro,requirements,properties,files')):
 
   def __new__(clazz, filename, checksum, name, version, system, level, arch, distro, requirements, properties, files):
     if filename:
@@ -22,7 +22,7 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'filename,checksum
     check.check_requirement_list(requirements)
     check.check_dict(properties)
     check.check_string_seq(files)
-    return clazz.__bases__[0].__new__(clazz, filename, checksum, name, version, system, level, arch, distro, requirements, properties, files)
+    return clazz.__bases__[0].__new__(clazz, 2, filename, checksum, name, version, system, level, arch, distro, requirements, properties, files)
 
   @property
   def descriptor(self):
@@ -34,6 +34,7 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'filename,checksum
     
   def to_json(self):
     d = {
+      '_format_version': self.format_version,
       'filename': self.filename,
       'checksum': self.checksum,
       'name': self.name,
@@ -51,7 +52,39 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'filename,checksum
   @classmethod
   def parse_json(clazz, text):
     o = json.loads(text)
-    requirements = clazz._parse_requirements(o['requirements'])
+    format_version = o.get('_format_version', 1)
+    if format_version == 1:
+      return clazz._parse_json_v1(o)
+    elif format_version == 2:
+      return clazz._parse_json_v2(o)
+    else:
+      raise ValueError('invalid format_version: %s' % (format_version))
+
+  @classmethod
+  def _parse_json_v1(clazz, o):
+    if 'descriptor' in o:
+      key = 'descriptor'
+    else:
+      key = 'info'
+    assert key in o
+    assert 'files' in o
+    dd = o[key]
+    check.check_dict(dd)
+    descriptor = package_descriptor.parse_dict(dd)
+    return clazz('',
+                 '',
+                 descriptor.name,
+                 str(descriptor.version),
+                 '',
+                 '',
+                 '',
+                 None,
+                 descriptor.requirements,
+                 descriptor.properties,
+                 o['files'])
+  
+  @classmethod
+  def _parse_json_v2(clazz, o):
     return clazz(o['filename'],
                  o['checksum'],
                  o['name'],
@@ -63,6 +96,7 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'filename,checksum
                  clazz._parse_requirements(o['requirements']),
                  o['properties'],
                  o['files'])
+  
   
   @classmethod
   def _parse_requirements(clazz, l):
