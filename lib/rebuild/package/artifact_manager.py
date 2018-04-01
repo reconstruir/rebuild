@@ -8,16 +8,15 @@ from rebuild.base import build_blurb
 from bes.git import git
 from bes.fs import dir_util, file_util
 
+from rebuild.base import package_descriptor, package_descriptor_list, requirement_manager
+
 from .package import package
 from .package_list import package_list
-from rebuild.base import package_descriptor, package_descriptor_list, requirement_manager
 
 class ArtifactNotFoundError(Exception):
   pass
 
 #log.configure('artifact_manager=debug')
-
-#FIXME: make publish_dir be immutable
 
 class artifact_manager(object):
 
@@ -30,21 +29,25 @@ class artifact_manager(object):
     if publish_dir:
       assert string_util.is_string(publish_dir)
     
-    self.publish_dir = path.abspath(publish_dir or self.DEFAULT_PUBLISH_DIR)
+    self._publish_dir = path.abspath(publish_dir or self.DEFAULT_PUBLISH_DIR)
     self.no_git = no_git
     
-    file_util.mkdir(self.publish_dir)
-    #self.log_d('Creating instance with publish_dir=%s; address=%s' % (self.publish_dir, address))
-    #self.blurb('Creating instance with publish_dir=%s; address=%s' % (self.publish_dir, address))
+    file_util.mkdir(self._publish_dir)
+    #self.log_d('Creating instance with publish_dir=%s; address=%s' % (self._publish_dir, address))
+    #self.blurb('Creating instance with publish_dir=%s; address=%s' % (self._publish_dir, address))
 
     if not self.no_git:
       if address:
-        git.clone_or_pull(address, self.publish_dir, enforce_empty_dir = False)
-      if not git.is_repo(self.publish_dir):
-        git.init(self.publish_dir)
+        git.clone_or_pull(address, self._publish_dir, enforce_empty_dir = False)
+      if not git.is_repo(self._publish_dir):
+        git.init(self._publish_dir)
 
     self._package_cache = {}
     self._reset()
+
+  @property
+  def publish_dir(self):
+    return self._publish_dir
     
   def _reset(self):
     self._available_packages_map = {}
@@ -52,7 +55,7 @@ class artifact_manager(object):
     
   def artifact_path(self, package_descriptor, build_target):
     filename = '%s.tar.gz' % (package_descriptor.full_name)
-    return path.join(self.publish_dir, build_target.build_path, filename)
+    return path.join(self._publish_dir, build_target.build_path, filename)
 
   def publish(self, tarball, build_target):
     pkg = package(tarball)
@@ -60,7 +63,7 @@ class artifact_manager(object):
     artifact_path = self.artifact_path(pkg_info, build_target)
     file_util.copy(tarball, artifact_path)
     if not self.no_git:
-      git.add(self.publish_dir, pkg_info.artifact_path(build_target))
+      git.add(self._publish_dir, pkg_info.artifact_path(build_target))
     self._reset()
     return artifact_path
 
@@ -70,7 +73,7 @@ class artifact_manager(object):
     return self._available_packages_map[build_target.build_path]
 
   def _compute_available_packages(self, build_target):
-    d = path.join(self.publish_dir, build_target.build_path)
+    d = path.join(self._publish_dir, build_target.build_path)
     if not path.exists(d):
       return []
     if not path.isdir(d):
@@ -98,6 +101,14 @@ class artifact_manager(object):
         
     return result
 
+  def find_package(self, build_target, pkg_desc):
+    check.check_build_target(build_target)
+    check.check_package_descriptor(pkg_desc)
+    for p in self.available_packages(build_target):
+      if pkg_desc.name == p.descriptor.name and pkg_desc.version == p.descriptor.version:
+        return p
+    return None
+  
   @classmethod
   def _find_package_by_name(self, package_name, available_packages):
     candidates = []

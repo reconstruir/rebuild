@@ -4,19 +4,23 @@
 # FIXME: theres no notion of transactions or anything else robust in this nice code
 
 import copy, os.path as path, platform
-from bes.common import check, object_util, string_util, variable
-from bes.system import os_env, os_env_var
-from rebuild.instruction import instruction_list
-from rebuild.base import build_system, requirement
-from bes.dependency import dependency_resolver
-from rebuild.pkg_config import pkg_config
+
 from bes.archive import archive, archiver
+from bes.common import check, object_util, string_util, variable
+from bes.dependency import dependency_resolver
 from bes.fs import file_util
+from bes.system import os_env, os_env_var
+
+from rebuild.base import build_system, requirement
+from rebuild.base import package_descriptor, package_descriptor_list
+from rebuild.instruction import instruction_list
+from rebuild.pkg_config import pkg_config
+
 from .artifact_manager import artifact_manager, ArtifactNotFoundError
 from .package import package
 from .package_db import package_db
-from rebuild.base import package_descriptor, package_descriptor_list
 from .package_list import package_list
+from .env_dir import env_dir
 
 class PackageFilesConflictError(Exception):
   def __init__(self, message):
@@ -54,12 +58,12 @@ class package_manager(object):
 
   def __init__(self, root_dir, artifact_manager):
     check.check_artifact_manager(artifact_manager)
-    self.root_dir = root_dir
+    self._root_dir = root_dir
     self._artifact_manager = artifact_manager
-    self._database_path = path.join(self.root_dir, 'database/packages.json')
+    self._database_path = path.join(self._root_dir, 'database/packages.json')
     self._db = package_db(self._database_path)
-    self._installation_dir = path.join(self.root_dir, 'installation')
-    self._env_dir = path.join(self.root_dir, 'env')
+    self._installation_dir = path.join(self._root_dir, 'installation')
+    self._env_dir = path.join(self._root_dir, 'env')
     self._lib_dir = path.join(self._installation_dir, 'lib')
     self._bin_dir = path.join(self._installation_dir, 'bin')
     self._include_dir = path.join(self._installation_dir, 'include')
@@ -67,6 +71,10 @@ class package_manager(object):
     self._share_dir = path.join(self._installation_dir, 'share')
     self._compile_instructions_dir = path.join(self._installation_dir, 'lib/rebuild_instructions')
 
+  @property
+  def root_dir(self): 
+    return self._root_dir
+    
   @property
   def installation_dir(self): 
     return self._installation_dir
@@ -213,7 +221,7 @@ class package_manager(object):
           self.install_tarball(pkg.tarball, hardness)
           return True
         else:
-          print(('warning: installed package %s newer than available package %s' % (old_pkg_desc.full_name, pkg_desc.full_name)))
+          print('warning: installed package %s newer than available package %s' % (old_pkg_desc.full_name, pkg_desc.full_name))
         return False
     else:
       self.install_tarball(pkg.tarball, hardness)
@@ -264,6 +272,9 @@ class package_manager(object):
     all_env_vars = self.env_vars([ p.name for p in packages])
     os_env.update(env, all_env_vars)
     return env
+
+  def transform_env(self, env):
+    return env_dir(self._env_dir).transform_env(env)
   
   def export_variables_to_current_env(self, packages):
     all_env_vars = self.env_vars([ p.name for p in packages])

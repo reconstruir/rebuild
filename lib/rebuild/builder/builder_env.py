@@ -59,8 +59,3 @@ class builder_env(object):
   def update_tools(self, packages):
     check.check_package_descriptor_seq(packages)
     self.tools_manager.update(packages, self.artifact_manager)
-
-  def tool_exe(self, package_info, tool_name):
-    'Return an abs path to the given tool.'
-    return self.tools_manager.tool_exe(package_info, tool_name)
-    

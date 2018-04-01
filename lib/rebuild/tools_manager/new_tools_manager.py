@@ -4,27 +4,96 @@
 import os.path as path
 from bes.common import check
 from bes.system import host, os_env, os_env_var
-from .tools_package_manager import tools_package_manager
+from rebuild.base import build_target, build_level
+from rebuild.package import package_manager
+from bes.debug import debug_timer
 
 class new_tools_manager(object):
 
-  def __init__(self, tools_dir):
-    assert tools_dir
-    tools_dir = path.abspath(tools_dir)
-    self.tools_dir = path.join(tools_dir, host.SYSTEM)
-    self.package_manager = tools_package_manager(self.tools_dir)
-
-  def update(self, packages, am):
+  def __init__(self, root_dir, artifact_manager):
+    check.check_string(root_dir)
+    check.check_artifact_manager(artifact_manager)
+    self._build_target = build_target.make_host_build_target()
+    self._root_dir = path.join(path.abspath(root_dir), self._build_target.system)
+    self._artifact_manager = artifact_manager
+    self._timer = debug_timer('ntm', level = 'error')
+    self._package_managers = {}
+    
+  @property
+  def root_dir(self):
+    return self._root_dir
+    
+  def ensure_packages(self, packages):
     check.check_package_descriptor_seq(packages)
-    check.check_artifact_manager(am)
-    self.package_manager.install_packages(packages, am)
-    bin_dirs = self._all_bin_dirs(packages)
-    os_env.PATH.prepend(bin_dirs)
+    for package in packages:
+      self.ensure_package(package)
 
-  def tool_exe(self, package_info, tool_name):
-    'Return an abs path to the given tool.'
-    return self.package_manager.tool_exe(package_info, tool_name)
+  def ensure_package(self, pkg_desc):
+    check.check_package_descriptor(pkg_desc)
+    self._timer.start('%s: ensure_package()' % (pkg_desc.full_name))
+    package_root_dir = self._package_root_dir(pkg_desc)
+    if path.exists(package_root_dir):
+      self._timer.stop()
+      return
+    self._timer.start('%s: create package_manager' % (pkg_desc.full_name))
+    pm = self._get_package_manager(pkg_desc)
+    self._timer.stop()
 
+    self._timer.start('%s: compute run deps' % (pkg_desc.full_name))
+    run_deps = self._artifact_manager.resolve_deps_poto([ pkg_desc.name ], self._build_target, [ 'RUN' ], False)
+    self._timer.stop()
+
+    self._timer.start('%s: compute tool deps' % (pkg_desc.full_name))
+    tool_deps = self._artifact_manager.resolve_deps_poto([ pkg_desc.name ], self._build_target, [ 'TOOL' ], False)
+    self._timer.stop()
+
+    self._timer.start('%s: install dep run packages' % (pkg_desc.full_name))
+    pm.install_packages(run_deps, self._build_target, [ 'RUN' ])
+    self._timer.stop()
+
+    self._timer.start('%s: install package' % (pkg_desc.full_name))
+    pm.install_packages( [ pkg_desc ], self._build_target, [ 'RUN' ])
+    self._timer.stop()
+
+    self._ensure_tools(tool_deps)
+    self._timer.stop()
+
+  def _ensure_tools(self, tools):
+    self._timer.start('%s: ensure tools' % (' '.join([ t.name for t in tools ])))
+    check.check_package_descriptor_seq(tools)
+    for tool in tools:
+      self._ensure_tool(tool)
+    self._timer.stop()
+
+  def _ensure_tool(self, tool_pkg_desc):
+    self._timer.start('%s: ensure tool' % (tool_pkg_desc.full_name))
+    check.check_package_descriptor(tool_pkg_desc)
+    tool_root_dir = self._package_root_dir(tool_pkg_desc)
+    if path.exists(tool_root_dir):
+      return
+    pm = package_manager(tool_root_dir, self._artifact_manager)
+    pm.install_packages( [ tool_pkg_desc ], self._build_target, [ 'TOOL' ])
+    self._timer.stop()
+    
+  def _package_root_dir(self, pkg_desc):
+    return path.join(self._root_dir, pkg_desc.full_name)
+
+  def _get_package_manager(self, pkg_desc):
+    self._timer.start('%s: _get_package_manager()' % (pkg_desc.full_name))
+    root_dir = self._package_root_dir(pkg_desc)
+    if root_dir not in self._package_managers:
+      self._package_managers[root_dir] = package_manager(root_dir, self._artifact_manager)
+    self._timer.stop()
+    return self._package_managers[root_dir]
+  
+  def environment(self, tools):
+    self._timer.start('%s: _get_package_manager()' % (pkg_desc.full_name))
+    root_dir = self._package_root_dir(pkg_desc)
+    if root_dir not in self._package_managers:
+      self._package_managers[root_dir] = package_manager(root_dir, self._artifact_manager)
+    self._timer.stop()
+    return self._package_managers[root_dir]
+  
   def _all_bin_dirs(self, packages):
     return [ self.package_manager.bin_dir(p) for p in packages ]
 

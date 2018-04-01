@@ -33,7 +33,7 @@ class test_new_tools_manager(unit_test):
     unit_test_packages.make_test_packages(unit_test_packages.TEST_PACKAGES, am.publish_dir)
     return am
   
-  def test_update(self):
+  def xtest_update(self):
     tm = self._make_test_tm()
     am = self._make_test_artifact_manager()
     packages = [
@@ -43,7 +43,7 @@ class test_new_tools_manager(unit_test):
     ]
     tm.update(packages, am)
 
-  def test_install_and_use_a_tool(self):
+  def xtest_install_and_use_a_tool(self):
     tm = self._make_test_tm()
     am = self._make_test_artifact_manager()
     water_desc = package_descriptor.parse('water-1.0.0-0')

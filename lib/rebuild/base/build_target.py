@@ -111,5 +111,9 @@ class build_target(namedtuple('build_target', 'system,distro,level,archs,build_p
     if '-' in archs:
       archs = archs.split('-')
     return clazz(system = system, level = level, archs = archs, distro = distro)
-    
+
+  @classmethod
+  def make_host_build_target(clazz, level = build_level.RELEASE):
+    return clazz(system = host.SYSTEM, level = level)
+  
 check.register_class(build_target)

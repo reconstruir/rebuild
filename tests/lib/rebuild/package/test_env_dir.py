@@ -39,19 +39,19 @@ class test_env_dir(unit_test):
         'BAR': 'orange',
         'FOO': 'kiwi',
         'PATH': '/b/bin:/a/bin:/x/bin:/y/bin',
-      }, ed.modify_env({}) )
+      }, ed.transform_env({}) )
         
       self.assertEqual( {
         'BAR': 'orange',
         'FOO': 'kiwi',
         'PATH': '/b/bin:/a/bin:/x/bin:/y/bin',
-      }, ed.modify_env({ 'SOMETHINGIMADEUP': 'yes' }) )
+      }, ed.transform_env({ 'SOMETHINGIMADEUP': 'yes' }) )
         
       self.assertEqual( {
         'BAR': 'orange',
         'FOO': 'kiwi',
         'PATH': '/b/bin:/a/bin:/usr/local/bin:/usr/foo/bin:/x/bin:/y/bin',
-      }, ed.modify_env({ 'PATH': '/usr/local/bin:/usr/foo/bin' }) )
+      }, ed.transform_env({ 'PATH': '/usr/local/bin:/usr/foo/bin' }) )
         
     finally:
       os.environ['PATH'] = save_path

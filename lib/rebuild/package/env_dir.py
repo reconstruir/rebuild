@@ -26,7 +26,7 @@ class env_dir(object):
   def files(self, relative = True):
     return dir_util.list(self._where, relative = relative)
 
-  def modify_env(self, env):
+  def transform_env(self, env):
     new_env = copy.deepcopy(env)
     for inst in self.instructions():
       if inst.action == action.SET:
