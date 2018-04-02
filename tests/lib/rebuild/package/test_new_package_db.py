@@ -34,20 +34,19 @@ class test_package_db(unittest.TestCase):
     reqs = None
     descriptor = package_descriptor('foo', '1.2.3-1', reqs)
 
-#  def __new__(clazz, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files):
-#    PE('foo', '1.2.3', 1, 0, 'macos'reqs), files), db.find_package('foo') )
-    
-    db.add_package(descriptor, files)
+    e1 = PE('foo', '1.2.3', 1, 0, [], {}, files)
+
+    db.add_package(e1)
     self.assertTrue( db.has_package('foo') )
     self.assertEqual( [ 'foo' ], db.list_all() )
-    self.assertEqual( PE(package_descriptor('foo', '1.2.3-1', reqs), files), db.find_package('foo') )
-
+    self.assertEqual( PE('foo', '1.2.3', 1, 0, [], {}, files), db.find_package('foo') )
+  
     del db
     recreated_db = DB(tmp_db)
     self.assertTrue( recreated_db.has_package('foo') )
     self.assertEqual( [ 'foo' ], recreated_db.list_all() )
     actual_package = recreated_db.find_package('foo')
-    expected_package = PE(package_descriptor('foo', '1.2.3-1', reqs), files)
+    expected_package = PE('foo', '1.2.3', 1, 0, [], {}, files)
     self.assertEqual( expected_package, actual_package )
 
   def xtest_db_remove(self):

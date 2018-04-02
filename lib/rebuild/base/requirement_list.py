@@ -55,5 +55,9 @@ class requirement_list(type_checked_list):
   def names(self):
     'Return only the requirements that match system.'
     return [ req.name for req in self ]
+
+  @staticmethod
+  def _check_cast_func(clazz, obj):
+    return clazz([ x for x in obj ])
   
-check.register_class(requirement_list, include_seq = False)
+check.register_class(requirement_list, include_seq = False, cast_func = requirement_list._check_cast_func)

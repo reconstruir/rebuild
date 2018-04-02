@@ -35,7 +35,7 @@ CREATE TABLE packages(
     rows = self._db.select_namedtuples('''SELECT * FROM packages''')
     result = []
     for row in rows:
-      entry = new_package_db_entry.from_sql_dict(row)
+      entry = new_package_db_entry.from_sql_row(row)
       if include_version:
         result.append(entry.descriptor.full_name)
       else:
@@ -65,7 +65,7 @@ CREATE TABLE packages(
     t = ( name, )
     rows = self._db.select_namedtuples('''SELECT * FROM packages where name=?''', t)
     if rows:
-      return new_package_db_entry.from_sql_dict(row[0])
+      return new_package_db_entry.from_sql_row(rows[0])
     return None
 
   def packages_with_files(self, files):
