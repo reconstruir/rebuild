@@ -26,7 +26,7 @@ class test_package_db(unittest.TestCase):
     recreated_db = DB(tmp_db)
     self.assertEqual( [], recreated_db.list_all() )
 
-  def xtest_db_add(self):
+  def test_db_add(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
     self.assertFalse( db.has_package('foo') )

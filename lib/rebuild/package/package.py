@@ -26,13 +26,21 @@ class package(object):
     self._descriptor = None
     self._files = None
     self._metadata = None
+    self._raw_metadata = None
 
   @property
   def metadata(self):
     if not self._metadata:
-      self._metadata = self._load_metadata()
+      self._metadata = package_metadata.parse_json(self.raw_metadata)
     return self._metadata
-    
+
+  @property
+  def raw_metadata(self):
+    if not self._raw_metadata:
+      # FIXME: need to use a better root dir something that ends up in ~/.rebuild/tmp/package_members_cache or such
+      self._raw_metadata = archiver.extract_member_to_string_cached(self.tarball, self.INFO_FILENAME)
+    return self._raw_metadata
+  
   @property
   def descriptor(self):
     return self.metadata.descriptor
@@ -50,11 +58,6 @@ class package(object):
     if not self._files:
       self._files = self._read_files()
     return self._files
-
-  def _load_metadata(self):
-    # FIXME: need to use a better root dir something that ends up in ~/.rebuild/tmp/package_members_cache or such
-    content = archiver.extract_member_to_string_cached(self.tarball, self.INFO_FILENAME)
-    return package_metadata.parse_json(content)
 
   def _read_files(self):
     'Return the list of files in the package.  Only files no metadata.'
