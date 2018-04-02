@@ -5,13 +5,9 @@ from collections import namedtuple
 from bes.common import check, string_util
 from rebuild.base import build_target, build_version, package_descriptor, requirement_list
 
-class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,filename,checksum,name,version,revision,epoch,system,level,archs,distro,requirements,properties,files')):
+class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,name,version,revision,epoch,system,level,archs,distro,requirements,properties,files')):
 
-  def __new__(clazz, filename, checksum, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files):
-    if filename:
-      check.check_string(filename)
-    if checksum:
-      check.check_string(checksum)
+  def __new__(clazz, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files):
     check.check_string(name)
     check.check_string(version)
     check.check_int(revision)
@@ -24,7 +20,7 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,fi
     check.check_requirement_list(requirements)
     check.check_dict(properties)
     check.check_string_seq(files)
-    return clazz.__bases__[0].__new__(clazz, 2, filename, checksum, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files)
+    return clazz.__bases__[0].__new__(clazz, 2, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files)
 
   @property
   def build_version(self):
@@ -63,9 +59,7 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,fi
     dd = o[key]
     check.check_dict(dd)
     descriptor = package_descriptor.parse_dict(dd)
-    return clazz('',
-                 '',
-                 descriptor.name,
+    return clazz(descriptor.name,
                  descriptor.version.upstream_version,
                  descriptor.version.revision,
                  descriptor.version.epoch,
@@ -79,9 +73,7 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,fi
   
   @classmethod
   def _parse_json_v2(clazz, o):
-    return clazz(o['filename'],
-                 o['checksum'],
-                 o['name'],
+    return clazz(o['name'],
                  o['version'],
                  o['revision'],
                  o['epoch'],
@@ -104,8 +96,6 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,fi
   def to_simple_dict(self):
     return {
       '_format_version': self.format_version,
-      'filename': self.filename,
-      'checksum': self.checksum,
       'name': self.name,
       'version': self.version,
       'revision': self.revision,
@@ -121,8 +111,6 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,fi
   
   def to_sql_dict(self):
     d = {
-      'filename': self.filename,
-      'checksum': self.checksum,
       'name': self.name,
       'version': self.version,
       'revision': self.revision,

@@ -12,7 +12,7 @@ class test_new_package_db_entry(unit_test):
   TEST_FILES = [ 'f1', 'f2' ]
   TEST_PROPERTIES = { 'p1': 'v1', 'p2': 6 }
 
-  TEST_ENTRY = PE('kiwi-6.7.8-2.tar.gz', '', 'kiwi', '6.7.8', 2, 0, 'macos', 'release', [ 'x86_64' ], None,
+  TEST_ENTRY = PE('kiwi', '6.7.8', 2, 0, 'macos', 'release', [ 'x86_64' ], None,
                   TEST_REQUIREMENTS, TEST_PROPERTIES, TEST_FILES)
 
   def test_descriptor(self):
@@ -30,10 +30,8 @@ class test_new_package_db_entry(unit_test):
   "archs": [
     "x86_64"
   ], 
-  "checksum": "", 
   "distro": null, 
   "epoch": 0, 
-  "filename": "kiwi-6.7.8-2.tar.gz", 
   "files": [
     "f1", 
     "f2"
@@ -61,10 +59,8 @@ class test_new_package_db_entry(unit_test):
   "archs": [
     "x86_64"
   ], 
-  "checksum": "", 
   "distro": null, 
   "epoch": 0, 
-  "filename": "kiwi-6.7.8-2.tar.gz", 
   "files": [
     "f1", 
     "f2"
@@ -104,7 +100,7 @@ class test_new_package_db_entry(unit_test):
   "properties": { "p1": "v1", "p2": 6 }
   }
 }'''
-    expected_entry = PE('', '', 'kiwi', '6.7.8', 2, 0, '', '', '', None,
+    expected_entry = PE('kiwi', '6.7.8', 2, 0, '', '', '', None,
                         self.TEST_REQUIREMENTS, self.TEST_PROPERTIES, self.TEST_FILES)
     actual_entry = PE.parse_json(json)
     self.assertEqual( expected_entry, actual_entry )
