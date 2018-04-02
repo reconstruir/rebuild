@@ -35,29 +35,21 @@ class package(object):
     
   @property
   def descriptor(self):
-    if not self._descriptor:
-      self._descriptor = self._load_descriptor()
-    return self._descriptor
+    return self.metadata.descriptor
 
   @property
   def system(self):
-    return self.metadata['system']
+    return self.metadata.system
 
   @property
   def build_target(self):
-    return build_target(system = self.metadata['system'],
-                        level = self.metadata['level'],
-                        archs = self.metadata['archs'],
-                        distro = self.metadata['distro'])
+    return self.metadata.build_target
 
   @property
   def files(self):
     if not self._files:
       self._files = self._read_files()
     return self._files
-
-  def _load_descriptor(self):
-    return package_descriptor.parse_dict(self.metadata)
 
   def _load_metadata(self):
     # FIXME: need to use a better root dir something that ends up in ~/.rebuild/tmp/package_members_cache or such

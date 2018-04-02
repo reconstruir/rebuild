@@ -52,28 +52,20 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
 
   @classmethod
   def _parse_json_v1(clazz, o):
-    if 'descriptor' in o:
-      key = 'descriptor'
-    else:
-      key = 'info'
-    assert key in o
-    assert 'files' in o
-    dd = o[key]
-    check.check_dict(dd)
-    descriptor = package_descriptor.parse_dict(dd)
+    version = build_version.parse(o['version'])
     return clazz('',
                  '',
-                 descriptor.name,
-                 descriptor.version.upstream_version,
-                 descriptor.version.revision,
-                 descriptor.version.epoch,
-                 '',
-                 '',
-                 '',
-                 None,
-                 descriptor.requirements,
-                 descriptor.properties,
-                 o['files'])
+                 o['name'],
+                 version.upstream_version,
+                 version.revision,
+                 version.epoch,
+                 o['system'],
+                 o['level'],
+                 o['archs'],
+                 o['distro'],
+                 clazz._parse_requirements(o['requirements']),
+                 o['properties'],
+                 [])
   
   @classmethod
   def _parse_json_v2(clazz, o):

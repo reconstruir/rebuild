@@ -90,22 +90,26 @@ class test_package_metadata(unit_test):
   def test_parse_json_v1(self):
     json = '''\
 {
-  "files": [
-    "f1", 
-    "f2"
-  ],
-  "descriptor": {
-    "version": "6.7.8-2", 
-    "name": "kiwi", 
-    "requirements": [
-      "foo >= 1.2.3-1", 
-      "bar >= 6.6.6-1"
-    ] ,
-  "properties": { "p1": "v1", "p2": 6 }
-  }
-}'''
-    expected_entry = PM('', '', 'kiwi', '6.7.8', 2, 0, '', '', '', None,
-                        self.TEST_REQUIREMENTS, self.TEST_PROPERTIES, self.TEST_FILES)
+  "requirements": [
+    "foo >= 1.2.3-1", 
+    "bar >= 6.6.6-1"
+  ], 
+  "name": "kiwi", 
+  "level": "release", 
+  "system": "macos", 
+  "version": "6.7.8-2", 
+  "properties": {
+    "p1": "v1",
+    "p2": 6
+  }, 
+  "archs": [
+    "x86_64"
+  ], 
+  "distro": null
+}
+'''
+    expected_entry = PM('', '', 'kiwi', '6.7.8', 2, 0, 'macos', 'release', [ 'x86_64' ], None,
+                        self.TEST_REQUIREMENTS, self.TEST_PROPERTIES, [])
     actual_entry = PM.parse_json(json)
     self.assertEqual( expected_entry, actual_entry )
 
