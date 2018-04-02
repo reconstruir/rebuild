@@ -3,24 +3,19 @@
 import json, pickle
 from collections import namedtuple
 from bes.common import check, string_util
-from rebuild.base import build_target, build_version, package_descriptor, requirement_list
+from rebuild.base import build_version, package_descriptor, requirement_list
 
-class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,name,version,revision,epoch,system,level,archs,distro,requirements,properties,files')):
+class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,name,version,revision,epoch,requirements,properties,files')):
 
-  def __new__(clazz, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files):
+  def __new__(clazz, name, version, revision, epoch, requirements, properties, files):
     check.check_string(name)
     check.check_string(version)
     check.check_int(revision)
     check.check_int(epoch)
-    check.check_string(system)
-    check.check_string(level)
-    check.check_string_seq(archs)
-    if distro:
-      check.check_string(distro)
     check.check_requirement_list(requirements)
     check.check_dict(properties)
     check.check_string_seq(files)
-    return clazz.__bases__[0].__new__(clazz, 2, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files)
+    return clazz.__bases__[0].__new__(clazz, 2, name, version, revision, epoch, requirements, properties, files)
 
   @property
   def build_version(self):
@@ -30,10 +25,6 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,na
   def descriptor(self):
     return package_descriptor(self.name, str(self.build_version), properties = self.properties, requirements = self.requirements)
 
-  @property
-  def build_target(self):
-    return build_target(system = self.system, level = self.level, archs = self.archs, distro = self.distro)
-    
   def to_json(self):
     return json.dumps(self.to_simple_dict(), indent = 2, sort_keys = True)
 
@@ -63,10 +54,6 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,na
                  descriptor.version.upstream_version,
                  descriptor.version.revision,
                  descriptor.version.epoch,
-                 '',
-                 '',
-                 '',
-                 None,
                  descriptor.requirements,
                  descriptor.properties,
                  o['files'])
@@ -77,10 +64,6 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,na
                  o['version'],
                  o['revision'],
                  o['epoch'],
-                 o['system'],
-                 o['level'],
-                 o['archs'],
-                 o['distro'],
                  clazz._parse_requirements(o['requirements']),
                  o['properties'],
                  o['files'])
@@ -101,10 +84,6 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,na
       'version': self.version,
       'revision': self.revision,
       'epoch': self.epoch,
-      'system': self.system,
-      'level': self.level,
-      'archs': self.archs,
-      'distro': self.distro,
       'requirements': [ str(r) for r in self.requirements ],
       'properties': self.properties,
       'files': [ f for f in self.files ],
@@ -117,10 +96,6 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,na
       'version': string_util.quote(self.version, "'"),
       'revision': str(self.revision),
       'epoch': str(self.epoch),
-      'system': string_util.quote(self.system, "'"),
-      'level': string_util.quote(self.level, "'"),
-      'archs': string_util.quote(json.dumps(self.archs), "'"),
-      'distro': string_util.quote(self.distro or '', "'"),
       'requirements': string_util.quote(json.dumps([ str(r) for r in self.requirements ]), "'"),
       'properties': string_util.quote(json.dumps(self.properties), "'"),
       'files': string_util.quote(json.dumps([ f for f in self.files ]), "'"),
@@ -134,10 +109,6 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,na
                  row.version,
                  row.revision,
                  row.epoch,
-                 row.system,
-                 row.level,
-                 json.loads(row.archs),
-                 row.distro or None,
                  clazz._parse_requirements(json.loads(row.requirements)),
                  json.loads(row.properties),
                  json.loads(row.files))

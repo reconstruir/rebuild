@@ -14,31 +14,22 @@ class test_new_package_db_entry(unit_test):
   TEST_FILES = [ 'f1', 'f2' ]
   TEST_PROPERTIES = { 'p1': 'v1', 'p2': 6 }
 
-  TEST_ENTRY = PE('kiwi', '6.7.8', 2, 0, 'macos', 'release', [ 'x86_64' ], None,
-                  TEST_REQUIREMENTS, TEST_PROPERTIES, TEST_FILES)
+  TEST_ENTRY = PE('kiwi', '6.7.8', 2, 0, TEST_REQUIREMENTS, TEST_PROPERTIES, TEST_FILES)
 
   def test_descriptor(self):
     self.assertEqual( package_descriptor('kiwi', '6.7.8-2', self.TEST_PROPERTIES, self.TEST_REQUIREMENTS),
                       self.TEST_ENTRY.descriptor )
-
-  def test_build_target(self):
-    self.assertEqual( build_target('macos', 'release', [ 'x86_64' ], None), self.TEST_ENTRY.build_target )
 
   def test_to_json(self):
     self.maxDiff = None
     expected_json = '''\
 {
   "_format_version": 2, 
-  "archs": [
-    "x86_64"
-  ], 
-  "distro": null, 
   "epoch": 0, 
   "files": [
     "f1", 
     "f2"
   ], 
-  "level": "release", 
   "name": "kiwi", 
   "properties": {
     "p1": "v1", 
@@ -49,7 +40,6 @@ class test_new_package_db_entry(unit_test):
     "bar >= 6.6.6-1"
   ], 
   "revision": 2, 
-  "system": "macos", 
   "version": "6.7.8"
 }'''
     self.assertMultiLineEqual( expected_json, self.TEST_ENTRY.to_json() )
@@ -58,16 +48,11 @@ class test_new_package_db_entry(unit_test):
     json = '''\
 {
   "_format_version": 2, 
-  "archs": [
-    "x86_64"
-  ], 
-  "distro": null, 
   "epoch": 0, 
   "files": [
     "f1", 
     "f2"
   ], 
-  "level": "release", 
   "name": "kiwi", 
   "properties": {
     "p1": "v1", 
@@ -78,7 +63,6 @@ class test_new_package_db_entry(unit_test):
     "bar >= 6.6.6-1"
   ], 
   "revision": 2, 
-  "system": "macos", 
   "version": "6.7.8"
 }'''
     actual_entry = PE.parse_json(json)
@@ -102,40 +86,31 @@ class test_new_package_db_entry(unit_test):
   "properties": { "p1": "v1", "p2": 6 }
   }
 }'''
-    expected_entry = PE('kiwi', '6.7.8', 2, 0, '', '', '', None,
-                        self.TEST_REQUIREMENTS, self.TEST_PROPERTIES, self.TEST_FILES)
+    expected_entry = PE('kiwi', '6.7.8', 2, 0, self.TEST_REQUIREMENTS, self.TEST_PROPERTIES, self.TEST_FILES)
     actual_entry = PE.parse_json(json)
     self.assertEqual( expected_entry, actual_entry )
 
   def test_to_simple_dict(self):
     expected = {
       '_format_version': 2, 
-      'archs': [ 'x86_64' ], 
-      'distro': None,
       'epoch': 0, 
       'files': [ 'f1',  'f2' ], 
-      'level': 'release', 
       'name': 'kiwi', 
       'properties': { 'p1': 'v1',  'p2': 6 }, 
       'requirements': [ 'foo >= 1.2.3-1',  'bar >= 6.6.6-1' ], 
       'revision': 2, 
-      'system': 'macos', 
       'version': '6.7.8',
     }
     self.assertEqual( expected, self.TEST_ENTRY.to_simple_dict() )
     
   def test_to_sql_dict(self):
     expected = {
-      'archs': '\'["x86_64"]\'',
-      'distro': '\'\'',
       'epoch': '0',
       'files': '\'["f1", "f2"]\'',
-      'level': '\'release\'', 
       'name': '\'kiwi\'', 
       'properties': '\'{"p2": 6, "p1": "v1"}\'',
       'requirements': '\'["foo >= 1.2.3-1", "bar >= 6.6.6-1"]\'',
       'revision': '2',
-      'system': '\'macos\'',
       'version': '\'6.7.8\'',
     }
     self.assertEqual( expected, self.TEST_ENTRY.to_sql_dict() )
