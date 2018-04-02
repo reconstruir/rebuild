@@ -31,12 +31,13 @@ class package_cli(object):
   def _command_metadata(self, filename):
     p = package(filename)
     d = p.metadata.to_simple_dict()
+    del d['_format_version']
     d['archs'] = ' '.join(d['archs'])
     d['properties'] = str(key_value_list.from_dict(d['properties']))
     d['requirements'] = ' '.join(d['requirements'])
     d['files'] = ' '.join(d['files'])
     for key, value in sorted(d.items()):
-      print('%15s: %s' % (key, value))
+      print('%12s: %s' % (key, value))
     return 0
   
   @classmethod
