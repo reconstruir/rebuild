@@ -3,6 +3,7 @@
 
 from .artifact_manager import artifact_manager, ArtifactNotFoundError
 from .package import package
+from .package_cli import package_cli
 from .package_list import package_list
 from .package_manager import PackageFilesConflictError, PackageNotFoundError, PackageAlreadyInstallededError, PackageMissingRequirementsError
 from .package_manager import package_manager

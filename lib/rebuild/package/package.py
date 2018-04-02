@@ -1,14 +1,16 @@
-5#!/usr/bin/env python
+#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import json, os.path as path, re
+import copy, json, os.path as path, re
 
 from bes.archive import archive, archiver
 from bes.common import check, dict_util, json_util, string_util
-from bes.fs import dir_util, file_replace, file_search, file_mime, file_util, temp_file
+from bes.fs import dir_util, file_check, file_search, file_mime, file_util, temp_file
 from bes.match import matcher_filename
 from bes.python import setup_tools
 from rebuild.base import build_target, package_descriptor
+
+from .package_metadata import package_metadata
 
 class package(object):
 
@@ -18,7 +20,7 @@ class package(object):
   ENV_DIR = 'env'
 
   def __init__(self, tarball):
-    assert string_util.is_string(tarball)
+    file_check.check_file(tarball)
     assert archiver.is_valid(tarball)
     self.tarball = tarball
     self._descriptor = None
@@ -60,7 +62,7 @@ class package(object):
   def _load_metadata(self):
     # FIXME: need to use a better root dir something that ends up in ~/.rebuild/tmp/package_members_cache or such
     content = archiver.extract_member_to_string_cached(self.tarball, self.INFO_FILENAME)
-    return json.loads(content)
+    return package_metadata.parse_json(content)
 
   def _read_files(self):
     'Return the list of files in the package.  Only files no metadata.'
@@ -132,18 +134,25 @@ class package(object):
 
   @classmethod
   def create_tarball(clazz, tarball_path, pkg_desc, build_target, stage_dir, env_dir):
-    metadata_dict = dict_util.combine(pkg_desc.to_dict(), build_target.to_dict())
-    assert 'properties' in metadata_dict
-    properties = metadata_dict['properties']
-    for key, value in properties.items():
-      if key == 'export_compilation_flags_requirements':
-        new_value = []
-        for x in value:
-          new_value.append(str(x))
-        properties['export_compilation_flags_requirements'] = new_value
-    metadata = json_util.to_json(metadata_dict, indent = 2)
+    # Hack the export_compilation_flags_requirements property to be a plain string list instead of the masked config it is
+    properties = copy.deepcopy(pkg_desc.properties)
+    if 'export_compilation_flags_requirements' in properties:
+      properties['export_compilation_flags_requirements'] = [ str(x) for x in properties['export_compilation_flags_requirements'] ]
+    metadata = package_metadata('',
+                                '',
+                                pkg_desc.name,
+                                pkg_desc.version.upstream_version,
+                                pkg_desc.version.revision,
+                                pkg_desc.version.epoch,
+                                build_target.system,
+                                build_target.level,
+                                build_target.archs,
+                                build_target.distro,
+                                pkg_desc.requirements,
+                                properties,
+                                [])
     metadata_filename = temp_file.make_temp_file(suffix = '.json')
-    file_util.save(metadata_filename, content = metadata)
+    file_util.save(metadata_filename, content = metadata.to_json())
     extra_items = [
       archive.Item(metadata_filename, 'metadata/info.json'),
     ]
