@@ -94,6 +94,7 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,na
     return reqs
 
   def to_simple_dict(self):
+    'Return a simplified dict suitable for json encoding.'
     return {
       '_format_version': self.format_version,
       'name': self.name,
@@ -110,36 +111,35 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,na
     }
   
   def to_sql_dict(self):
-    d = {
-      'name': self.name,
-      'version': self.version,
-      'revision': self.revision,
-      'epoch': self.epoch,
-      'system': self.system,
-      'level': self.level,
-      'archs': ' '.join(self.archs),
-      'distro': self.distro,
-      'requirements': json.dumps([ str(r) for r in self.requirements ]),
-      'properties': json.dumps(self.properties),
-      'files': json.dumps([ f for f in self.files ]),
+    'Return a dict suitable to use directly with sqlite insert commands'
+    d =  {
+      'name': string_util.quote(self.name, "'"),
+      'version': string_util.quote(self.version, "'"),
+      'revision': str(self.revision),
+      'epoch': str(self.epoch),
+      'system': string_util.quote(self.system, "'"),
+      'level': string_util.quote(self.level, "'"),
+      'archs': string_util.quote(json.dumps(self.archs), "'"),
+      'distro': string_util.quote(self.distro or '', "'"),
+      'requirements': string_util.quote(json.dumps([ str(r) for r in self.requirements ]), "'"),
+      'properties': string_util.quote(json.dumps(self.properties), "'"),
+      'files': string_util.quote(json.dumps([ f for f in self.files ]), "'"),
     }
-    for key, value in d.iteritems():
-      if value is None:
-        d[key] = 'null'
-      elif check.is_string(value):
-        d[key] = string_util.quote(value, quote_char = '\'')
-      else:
-        d[key] = str(value)
     return d
-
+  
   @classmethod
   def from_sql_row(clazz, row):
-    row = list(row)
-    row[9] = row[9].split(' ')
-    row[11] = clazz._parse_requirements(json.loads(row[11]))
-    row[12] = json.loads(row[12])
-    row[13] = json.loads(row[13])
-    row.pop(0)
-    return clazz(*row)
-  
+    check.check_tuple(row)
+    return clazz(row.name,
+                 row.version,
+                 row.revision,
+                 row.epoch,
+                 row.system,
+                 row.level,
+                 json.loads(row.archs),
+                 row.distro or None,
+                 clazz._parse_requirements(json.loads(row.requirements)),
+                 json.loads(row.properties),
+                 json.loads(row.files))
+
 check.register_class(new_package_db_entry, include_seq = False)
