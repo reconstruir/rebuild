@@ -19,17 +19,18 @@ class package_cli(object):
     # Metadata
     metadata_parser = subparsers.add_parser('metadata', help = 'Print archive metadata')
     metadata_parser.add_argument('filename', action = 'store', help = 'The archive')
-    metadata_parser.add_argument('--raw', action = 'store_true', help = 'Print the raw metadata')
+    metadata_parser.add_argument('--raw', '-r', action = 'store_true', help = 'Print the raw metadata')
+    metadata_parser.add_argument('--checksums', '-c', action = 'store_true', help = 'Print file checksums')
 
   def main(self):
     args = self.parser.parse_args()
     if args.command == 'metadata':
-      return self._command_metadata(args.filename, args.raw)
+      return self._command_metadata(args.filename, args.raw, args.checksums)
     else:
       raise RuntimeError('Unknown command: %s' % (args.command))
     return 0
 
-  def _command_metadata(self, filename, raw):
+  def _command_metadata(self, filename, raw, checksums):
     p = package(filename)
     if raw:
       print(p.raw_metadata)
@@ -38,8 +39,13 @@ class package_cli(object):
       del d['_format_version']
       d['archs'] = ' '.join(d['archs'])
       d['properties'] = str(key_value_list.from_dict(d['properties']))
-      d['requirements'] = ' '.join(d['requirements'])
-      d['files'] = ' '.join(d['files'])
+      d['requirements'] = '\n              '.join(d['requirements'])
+      def _i(f):
+        if checksums:
+          return ' '.join(f)
+        else:
+          return f[0]
+      d['files'] = '\n              '.join([ _i(f) for f in d['files'] ])
       for key, value in sorted(d.items()):
         print('%12s: %s' % (key, value))
     return 0

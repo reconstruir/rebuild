@@ -2,6 +2,7 @@
 
 import json, pickle
 from collections import namedtuple
+from bes.fs import file_checksum_list
 from bes.common import check, json_util, string_util
 from rebuild.base import build_target, build_version, package_descriptor, requirement_list
 
@@ -19,9 +20,12 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
     check.check_string_seq(archs)
     if distro:
       check.check_string(distro)
+    requirements = requirements or requirement_list()
     check.check_requirement_list(requirements)
+    properties = properties or {}
     check.check_dict(properties)
-    check.check_string_seq(files)
+    files = files or file_checksum_list()
+    check.check_file_checksum_list(files)
     return clazz.__bases__[0].__new__(clazz, 2, filename, checksum, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files)
 
   @property
@@ -44,14 +48,14 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
     o = json.loads(text)
     format_version = o.get('_format_version', 1)
     if format_version == 1:
-      return clazz._parse_json_v1(o)
+      return clazz._parse_dict_v1(o)
     elif format_version == 2:
-      return clazz._parse_json_v2(o)
+      return clazz._parse_dict_v2(o)
     else:
       raise ValueError('invalid format_version: %s' % (format_version))
 
   @classmethod
-  def _parse_json_v1(clazz, o):
+  def _parse_dict_v1(clazz, o):
     version = build_version.parse(o['version'])
     return clazz('',
                  '',
@@ -68,7 +72,7 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
                  [])
   
   @classmethod
-  def _parse_json_v2(clazz, o):
+  def _parse_dict_v2(clazz, o):
     return clazz(o['filename'],
                  o['checksum'],
                  o['name'],
@@ -81,7 +85,7 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
                  o['distro'],
                  clazz._parse_requirements(o['requirements']),
                  o['properties'],
-                 o['files'])
+                 file_checksum_list.from_simple_list(o['files']))
   
   @classmethod
   def _parse_requirements(clazz, l):
@@ -107,7 +111,7 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
       'distro': self.distro,
       'requirements': [ str(r) for r in self.requirements ],
       'properties': self.properties,
-      'files': [ f for f in self.files ],
+      'files': self.files.to_simple_list(),
     }
   
   def to_sql_dict(self):
@@ -125,7 +129,7 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
       'distro': string_util.quote(self.distro or '', "'"),
       'requirements': string_util.quote(json_util.to_json([ str(r) for r in self.requirements ], sort_keys = True), "'"),
       'properties': string_util.quote(json_util.to_json(self.properties, sort_keys = True), "'"),
-      'files': string_util.quote(json_util.to_json([ f for f in self.files ], sort_keys = True), "'"),
+      'files': string_util.quote(json_util.to_json(self.files.to_simple_list()), "'"),
     }
     return d
   
@@ -144,6 +148,6 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
                  row.distro or None,
                  clazz._parse_requirements(json.loads(row.requirements)),
                  json.loads(row.properties),
-                 json.loads(row.files))
+                 file_checksum_list.from_json(row.files))
 
 check.register_class(package_metadata, include_seq = False)

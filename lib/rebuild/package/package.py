@@ -5,8 +5,8 @@ import copy, json, os.path as path, re
 
 from bes.archive import archive, archiver
 from bes.common import check, dict_util, json_util, string_util
-from bes.fs import dir_util, file_check, file_find, file_mime, file_search, file_util, temp_file
-from bes.match import matcher_filename
+from bes.fs import dir_util, file_check, file_checksum_list, file_find, file_mime, file_search, file_util, temp_file
+from bes.match import matcher_filename, matcher_multiple_filename
 from bes.python import setup_tools
 from rebuild.base import build_target, package_descriptor
 
@@ -134,6 +134,10 @@ class package(object):
     if 'export_compilation_flags_requirements' in properties:
       properties['export_compilation_flags_requirements'] = [ str(x) for x in properties['export_compilation_flags_requirements'] ]
     files = file_find.find(stage_dir, relative = True, file_type = file_find.FILE | file_find.LINK)
+    excludes = [
+      '*.pc.bak'
+    ]
+    files = matcher_multiple_filename(excludes, ignore_case = True).filter(files, negate = True)
     metadata = package_metadata('',
                                 '',
                                 pkg_desc.name,
@@ -146,7 +150,7 @@ class package(object):
                                 build_target.distro,
                                 pkg_desc.requirements,
                                 properties,
-                                files)
+                                file_checksum_list.from_files(files, root_dir = stage_dir))
     metadata_filename = temp_file.make_temp_file(suffix = '.json')
     file_util.save(metadata_filename, content = metadata.to_json())
     extra_items = [
@@ -159,7 +163,7 @@ class package(object):
     archiver.create(tarball_path, stage_dir,
                     base_dir = 'files',
                     extra_items = extra_items,
-                    exclude = '*.pc.bak')
+                    include = files)
     return tarball_path
   
 check.register_class(package)
