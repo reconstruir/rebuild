@@ -7,6 +7,5 @@ from .package_cli import package_cli
 from .package_list import package_list
 from .package_manager import PackageFilesConflictError, PackageNotFoundError, PackageAlreadyInstallededError, PackageMissingRequirementsError
 from .package_manager import package_manager
-from .new_package_manager import new_package_manager
 from .package_metadata import package_metadata
 from .package_tester import package_tester
