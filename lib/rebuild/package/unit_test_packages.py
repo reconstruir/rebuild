@@ -7,7 +7,7 @@ from bes.common import dict_util, json_util, string_util
 from bes.fs import file_util, temp_file, temp_item
 from bes.archive import archiver
 from rebuild.base import build_arch, build_system, build_target, package_descriptor, requirement, requirement_list
-from rebuild.package import package_metadata
+from rebuild.package import package
 from collections import namedtuple
 
 class unit_test_packages(object):
@@ -139,6 +139,8 @@ class unit_test_packages(object):
     package = clazz.test_package(tmp_tarball, pi, bt)
     return package
 
+#  package.create_tarball(clazz, tarball_path, pkg_desc, build_target, stage_dir, env_dir):
+  
   _PKG_CONFIG_PC_TEMPLATE = '''
 prefix=${REBUILD_PACKAGE_PREFIX}
 exec_prefix=${prefix}
