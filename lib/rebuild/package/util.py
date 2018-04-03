@@ -1,6 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-#import json, pickle
+import json
 #from collections import namedtuple
 #from bes.fs import file_checksum_list
 from bes.common import check, json_util, string_util

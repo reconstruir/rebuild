@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 #
 import os.path as path, unittest
-from bes.fs import temp_file
+from bes.fs import file_checksum_list, temp_file
 from rebuild.base import package_descriptor
 from rebuild.package.new_package_db import new_package_db as DB
 from rebuild.package.new_package_db_entry import new_package_db_entry as PE
@@ -30,7 +30,7 @@ class test_package_db(unittest.TestCase):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
     self.assertFalse( db.has_package('foo') )
-    files = [ 'lib/libfoo.a', 'include/libfoo.h' ]
+    files = file_checksum_list([ ( 'lib/libfoo.a', 'c1' ), ( 'include/libfoo.h', 'c2' ) ])
     reqs = None
     new_entry = PE('foo', '1.2.3', 1, 0, [], {}, files)
     db.add_package(new_entry)
@@ -50,7 +50,7 @@ class test_package_db(unittest.TestCase):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
     self.assertFalse( db.has_package('foo') )
-    files = [ 'lib/libfoo.a', 'include/libfoo.h' ]
+    files = file_checksum_list([ ( 'lib/libfoo.a', 'c1' ), ( 'include/libfoo.h', 'c2' ) ])
     reqs = None
     new_entry = PE('foo', '1.2.3', 1, 0, [], {}, files)
     db.add_package(new_entry)

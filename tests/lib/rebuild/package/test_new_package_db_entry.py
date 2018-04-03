@@ -3,6 +3,7 @@
 #
 import os.path as path
 from bes.testing.unit_test import unit_test
+from bes.fs import file_checksum_list
 from bes.sqlite import sqlite
 from rebuild.base import build_system, build_target, package_descriptor, requirement as R, requirement_list as RL
 from rebuild.package.new_package_db_entry import new_package_db_entry as PE
@@ -11,7 +12,10 @@ from rebuild.package.new_package_db import new_package_db as DB
 class test_new_package_db_entry(unit_test):
 
   TEST_REQUIREMENTS = RL.parse('foo >= 1.2.3-1 bar >= 6.6.6-1')
-  TEST_FILES = [ 'f1', 'f2' ]
+  TEST_FILES = file_checksum_list([
+    ( 'f1', 'chk1' ),
+    ( 'f2', 'chk2' ),
+  ])
   TEST_PROPERTIES = { 'p1': 'v1', 'p2': 6 }
 
   TEST_ENTRY = PE('kiwi', '6.7.8', 2, 0, TEST_REQUIREMENTS, TEST_PROPERTIES, TEST_FILES)
@@ -27,8 +31,14 @@ class test_new_package_db_entry(unit_test):
   "_format_version": 2, 
   "epoch": 0, 
   "files": [
-    "f1", 
-    "f2"
+    [
+      "f1", 
+      "chk1"
+    ], 
+    [
+      "f2", 
+      "chk2"
+    ]
   ], 
   "name": "kiwi", 
   "properties": {
@@ -50,8 +60,14 @@ class test_new_package_db_entry(unit_test):
   "_format_version": 2, 
   "epoch": 0, 
   "files": [
-    "f1", 
-    "f2"
+    [
+      "f1", 
+      "chk1"
+    ], 
+    [
+      "f2", 
+      "chk2"
+    ]
   ], 
   "name": "kiwi", 
   "properties": {
@@ -86,7 +102,9 @@ class test_new_package_db_entry(unit_test):
   "properties": { "p1": "v1", "p2": 6 }
   }
 }'''
-    expected_entry = PE('kiwi', '6.7.8', 2, 0, self.TEST_REQUIREMENTS, self.TEST_PROPERTIES, self.TEST_FILES)
+
+    expected_entry = PE('kiwi', '6.7.8', 2, 0, self.TEST_REQUIREMENTS, self.TEST_PROPERTIES,
+                        file_checksum_list([ ( 'f1', '' ), ( 'f2', '' ) ]))
     actual_entry = PE.parse_json(json)
     self.assertEqual( expected_entry, actual_entry )
 
@@ -94,7 +112,7 @@ class test_new_package_db_entry(unit_test):
     expected = {
       '_format_version': 2, 
       'epoch': 0, 
-      'files': [ 'f1',  'f2' ], 
+      'files': [['f1', 'chk1'], ['f2', 'chk2']], 
       'name': 'kiwi', 
       'properties': { 'p1': 'v1',  'p2': 6 }, 
       'requirements': [ 'foo >= 1.2.3-1',  'bar >= 6.6.6-1' ], 
@@ -106,7 +124,7 @@ class test_new_package_db_entry(unit_test):
   def test_to_sql_dict(self):
     expected = {
       'epoch': '0',
-      'files': '\'["f1", "f2"]\'',
+      'files': '\'[["f1", "chk1"], ["f2", "chk2"]]\'',
       'name': '\'kiwi\'', 
       'properties': '\'{"p1": "v1", "p2": 6}\'',
       'requirements': '\'["foo >= 1.2.3-1", "bar >= 6.6.6-1"]\'',

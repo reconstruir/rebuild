@@ -2,6 +2,7 @@
 
 import json, pickle
 from collections import namedtuple
+from bes.fs import file_checksum, file_checksum_list
 from bes.common import check, json_util, string_util
 from rebuild.base import build_version, package_descriptor, requirement_list
 from .util import util
@@ -15,7 +16,8 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,na
     check.check_int(epoch)
     check.check_requirement_list(requirements)
     check.check_dict(properties)
-    check.check_string_seq(files)
+    files = files or file_checksum_list()
+    check.check_file_checksum_list(files)
     return clazz.__bases__[0].__new__(clazz, 2, name, version, revision, epoch, requirements, properties, files)
 
   @property
@@ -34,40 +36,43 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,na
     o = json.loads(text)
     format_version = o.get('_format_version', 1)
     if format_version == 1:
-      return clazz._parse_json_v1(o)
+      return clazz._parse_dict_v1(o)
     elif format_version == 2:
-      return clazz._parse_json_v2(o)
+      return clazz._parse_dict_v2(o)
     else:
       raise ValueError('invalid format_version: %s' % (format_version))
 
   @classmethod
-  def _parse_json_v1(clazz, o):
+  def _parse_dict_v1(clazz, o):
     if 'descriptor' in o:
       key = 'descriptor'
     else:
       key = 'info'
     assert key in o
-    assert 'files' in o
     dd = o[key]
     check.check_dict(dd)
     descriptor = package_descriptor.parse_dict(dd)
+    files = file_checksum_list()
+    assert 'files' in o
+    for f in o['files']:
+      files.append(file_checksum(f, ''))
     return clazz(descriptor.name,
                  descriptor.version.upstream_version,
                  descriptor.version.revision,
                  descriptor.version.epoch,
                  descriptor.requirements,
                  descriptor.properties,
-                 o['files'])
+                 files)
   
   @classmethod
-  def _parse_json_v2(clazz, o):
+  def _parse_dict_v2(clazz, o):
     return clazz(o['name'],
                  o['version'],
                  o['revision'],
                  o['epoch'],
                  util.requirements_from_string_list(o['requirements']),
                  o['properties'],
-                 o['files'])
+                 file_checksum_list.from_simple_list(o['files']))
   
   @classmethod
   def _parse_requirements(clazz, l):
@@ -85,9 +90,9 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,na
       'version': self.version,
       'revision': self.revision,
       'epoch': self.epoch,
-      'requirements': [ str(r) for r in self.requirements ],
+      'requirements': util.requirements_to_string_list(self.requirements),
       'properties': self.properties,
-      'files': [ f for f in self.files ],
+      'files': self.files.to_simple_list(),
     }
   
   def to_sql_dict(self):
@@ -97,9 +102,9 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,na
       'version': util.sql_encode_string(self.version),
       'revision': str(self.revision),
       'epoch': str(self.epoch),
-      'requirements': string_util.quote(json_util.to_json([ str(r) for r in self.requirements ], sort_keys = True), "'"),
-      'properties': string_util.quote(json_util.to_json(self.properties, sort_keys = True), "'"),
-      'files': string_util.quote(json_util.to_json([ f for f in self.files ], sort_keys = True), "'"),
+      'requirements': util.sql_encode_requirements(self.requirements),
+      'properties': util.sql_encode_dict(self.properties),
+      'files': util.sql_encode_files(self.files),
     }
     return d
   
@@ -110,8 +115,8 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,na
                  row.version,
                  row.revision,
                  row.epoch,
-                 util.requirements_from_string_list(json.loads(row.requirements)),
+                 util.sql_decode_requirements(row.requirements),
                  json.loads(row.properties),
-                 json.loads(row.files))
+                 file_checksum_list.from_json(row.files))
 
 check.register_class(new_package_db_entry, include_seq = False)
