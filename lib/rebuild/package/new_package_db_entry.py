@@ -4,6 +4,7 @@ import json, pickle
 from collections import namedtuple
 from bes.common import check, json_util, string_util
 from rebuild.base import build_version, package_descriptor, requirement_list
+from .util import util
 
 class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,name,version,revision,epoch,requirements,properties,files')):
 
@@ -64,7 +65,7 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,na
                  o['version'],
                  o['revision'],
                  o['epoch'],
-                 clazz._parse_requirements(o['requirements']),
+                 util.requirements_from_string_list(o['requirements']),
                  o['properties'],
                  o['files'])
   
@@ -92,8 +93,8 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,na
   def to_sql_dict(self):
     'Return a dict suitable to use directly with sqlite insert commands'
     d =  {
-      'name': string_util.quote(self.name, "'"),
-      'version': string_util.quote(self.version, "'"),
+      'name': util.sql_encode_string(self.name),
+      'version': util.sql_encode_string(self.version),
       'revision': str(self.revision),
       'epoch': str(self.epoch),
       'requirements': string_util.quote(json_util.to_json([ str(r) for r in self.requirements ], sort_keys = True), "'"),
@@ -109,7 +110,7 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,na
                  row.version,
                  row.revision,
                  row.epoch,
-                 clazz._parse_requirements(json.loads(row.requirements)),
+                 util.requirements_from_string_list(json.loads(row.requirements)),
                  json.loads(row.properties),
                  json.loads(row.files))
 

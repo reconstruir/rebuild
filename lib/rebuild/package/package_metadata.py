@@ -5,6 +5,7 @@ from collections import namedtuple
 from bes.fs import file_checksum_list
 from bes.common import check, json_util, string_util
 from rebuild.base import build_target, build_version, package_descriptor, requirement_list
+from .util import util
 
 class package_metadata(namedtuple('package_metadata', 'format_version, filename, checksum, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files')):
 
@@ -67,7 +68,7 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
                  o['level'],
                  o['archs'],
                  o['distro'],
-                 clazz._parse_requirements(o['requirements']),
+                 util.requirements_from_string_list(o['requirements']),
                  o['properties'],
                  [])
   
@@ -83,18 +84,10 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
                  o['level'],
                  o['archs'],
                  o['distro'],
-                 clazz._parse_requirements(o['requirements']),
+                 util.requirements_from_string_list(o['requirements']),
                  o['properties'],
                  file_checksum_list.from_simple_list(o['files']))
   
-  @classmethod
-  def _parse_requirements(clazz, l):
-    check.check_string_seq(l)
-    reqs = requirement_list()
-    for n in l:
-      reqs.extend(requirement_list.parse(n))
-    return reqs
-
   def to_simple_dict(self):
     'Return a simplified dict suitable for json encoding.'
     return {
@@ -109,7 +102,7 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
       'level': self.level,
       'archs': self.archs,
       'distro': self.distro,
-      'requirements': [ str(r) for r in self.requirements ],
+      'requirements': util.requirements_to_string_list(self.requirements),
       'properties': self.properties,
       'files': self.files.to_simple_list(),
     }
@@ -117,19 +110,19 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
   def to_sql_dict(self):
     'Return a dict suitable to use directly with sqlite insert commands'
     d =  {
-      'name': string_util.quote(self.name, "'"),
-      'filename': string_util.quote(self.filename, "'"),
-      'checksum': string_util.quote(self.checksum, "'"),
-      'version': string_util.quote(self.version, "'"),
+      'name': util.sql_encode_string(self.name),
+      'filename': util.sql_encode_string(self.filename),
+      'checksum': util.sql_encode_string(self.checksum),
+      'version': util.sql_encode_string(self.version),
       'revision': str(self.revision),
       'epoch': str(self.epoch),
-      'system': string_util.quote(self.system, "'"),
-      'level': string_util.quote(self.level, "'"),
-      'archs': string_util.quote(json_util.to_json(self.archs, sort_keys = True), "'"),
-      'distro': string_util.quote(self.distro or '', "'"),
-      'requirements': string_util.quote(json_util.to_json([ str(r) for r in self.requirements ], sort_keys = True), "'"),
-      'properties': string_util.quote(json_util.to_json(self.properties, sort_keys = True), "'"),
-      'files': string_util.quote(json_util.to_json(self.files.to_simple_list()), "'"),
+      'system': util.sql_encode_string(self.system),
+      'level': util.sql_encode_string(self.level),
+      'archs': sql_encode_string_list(self.archs),
+      'distro': util.sql_encode_string(self.distro),
+      'requirements': sql_encode_requirements(self.requirements),
+      'properties': sql_encode_dict(self.properties),
+      'files': sql_encode_files(self.files),
     }
     return d
   
@@ -146,7 +139,7 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
                  row.level,
                  json.loads(row.archs),
                  row.distro or None,
-                 clazz._parse_requirements(json.loads(row.requirements)),
+                 util.sql_decode_requirements(row.requirements),
                  json.loads(row.properties),
                  file_checksum_list.from_json(row.files))
 
