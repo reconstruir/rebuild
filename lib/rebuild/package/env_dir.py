@@ -59,7 +59,7 @@ class env_dir(object):
     buf.write('echo "----4----"\n')
     script = temp_file.make_temp_file(content = buf.getvalue())
     os.chmod(script, 0o755)
-    rv = execute.execute(script, raise_error = True, shell = True)
+    rv = execute.execute(script, raise_error = True, shell = True, codec = 'utf8')
     parser = text_line_parser(rv.stdout)
     env1 = self._parse_env_lines(parser.cut_lines('----1----', '----2----'))
     env2 = self._parse_env_lines(parser.cut_lines('----3----', '----4----'))

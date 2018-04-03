@@ -5,7 +5,7 @@ import copy, json, os.path as path, re
 
 from bes.archive import archive, archiver
 from bes.common import check, dict_util, json_util, string_util
-from bes.fs import dir_util, file_check, file_search, file_mime, file_util, temp_file
+from bes.fs import dir_util, file_check, file_find, file_mime, file_search, file_util, temp_file
 from bes.match import matcher_filename
 from bes.python import setup_tools
 from rebuild.base import build_target, package_descriptor
@@ -133,6 +133,7 @@ class package(object):
     properties = copy.deepcopy(pkg_desc.properties)
     if 'export_compilation_flags_requirements' in properties:
       properties['export_compilation_flags_requirements'] = [ str(x) for x in properties['export_compilation_flags_requirements'] ]
+    files = file_find.find(stage_dir, relative = True, file_type = file_find.FILE | file_find.LINK)
     metadata = package_metadata('',
                                 '',
                                 pkg_desc.name,
@@ -145,7 +146,7 @@ class package(object):
                                 build_target.distro,
                                 pkg_desc.requirements,
                                 properties,
-                                [])
+                                files)
     metadata_filename = temp_file.make_temp_file(suffix = '.json')
     file_util.save(metadata_filename, content = metadata.to_json())
     extra_items = [

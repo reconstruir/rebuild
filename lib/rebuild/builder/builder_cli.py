@@ -61,6 +61,8 @@ class builder_cli(object):
                              help = 'Prefix for third party source binaries. [ %s _]' % (builder_config.DEFAULT_THIRD_PARTY_PREFIX))
     self.parser.add_argument('--timestamp', default = None, action = 'store', type = str,
                              help = 'Timestamp to use for build working build directory droppings.  For predictable unit tests. [ None]')
+    for g in self.parser._action_groups:
+      g._group_actions.sort(key = lambda x: x.dest)
     
   def main(self):
     args = self.parser.parse_args()

@@ -160,7 +160,7 @@ print("hook1 hook2")
     result = {}
     for member in archiver.members(artifact):
       if not clazz._blacklist(member, [ 'bin/rebbe_', 'lib/librebbe_' ]):
-        result[member] = archiver.extract_member_to_string(artifact, member)
+        result[member] = archiver.extract_member_to_string(artifact, member).decode('utf8')
     return result
   
 if __name__ == '__main__':

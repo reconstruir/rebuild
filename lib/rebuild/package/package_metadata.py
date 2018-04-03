@@ -2,7 +2,7 @@
 
 import json, pickle
 from collections import namedtuple
-from bes.common import check, string_util
+from bes.common import check, json_util, string_util
 from rebuild.base import build_target, build_version, package_descriptor, requirement_list
 
 class package_metadata(namedtuple('package_metadata', 'format_version, filename, checksum, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files')):
@@ -37,7 +37,7 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
     return build_target(system = self.system, level = self.level, archs = self.archs, distro = self.distro)
     
   def to_json(self):
-    return json.dumps(self.to_simple_dict(), indent = 2, sort_keys = True)
+    return json_util.to_json(self.to_simple_dict(), indent = 2, sort_keys = True)
 
   @classmethod
   def parse_json(clazz, text):
@@ -121,11 +121,11 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
       'epoch': str(self.epoch),
       'system': string_util.quote(self.system, "'"),
       'level': string_util.quote(self.level, "'"),
-      'archs': string_util.quote(json.dumps(self.archs), "'"),
+      'archs': string_util.quote(json_util.to_json(self.archs, sort_keys = True), "'"),
       'distro': string_util.quote(self.distro or '', "'"),
-      'requirements': string_util.quote(json.dumps([ str(r) for r in self.requirements ]), "'"),
-      'properties': string_util.quote(json.dumps(self.properties), "'"),
-      'files': string_util.quote(json.dumps([ f for f in self.files ]), "'"),
+      'requirements': string_util.quote(json_util.to_json([ str(r) for r in self.requirements ], sort_keys = True), "'"),
+      'properties': string_util.quote(json_util.to_json(self.properties, sort_keys = True), "'"),
+      'files': string_util.quote(json_util.to_json([ f for f in self.files ], sort_keys = True), "'"),
     }
     return d
   

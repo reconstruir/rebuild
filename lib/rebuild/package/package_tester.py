@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-#from package import package
-#from package_db import package_db
-
 import os, os.path as path
 from collections import namedtuple
 

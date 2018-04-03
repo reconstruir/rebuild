@@ -99,6 +99,9 @@ class package_descriptor(object):
     else:
       return part1
 
+  def __hash__(self):
+    return hash(str(self))
+    
   def properties_to_string(self):
     items = sorted(self.properties.items())
     return '; '.join([ '%s=%s' % (item[0], item[1]) for item in items ])

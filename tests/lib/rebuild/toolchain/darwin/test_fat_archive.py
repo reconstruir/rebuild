@@ -3,7 +3,7 @@
 #
 
 import os.path as path
-from bes.fs import file_checksum, file_util, temp_file
+from bes.fs import temp_file
 from bes.archive import archiver, archive_extension, temp_archive
 from rebuild.toolchain.darwin import fat_archive, lipo
 from bes.system import host

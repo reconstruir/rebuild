@@ -42,7 +42,7 @@ class test_package_descriptor(unit_test):
     pi = PD('foo', '1.2.3-1', requirements = self.TEST_REQUIREMENTS)
     actual_json = pi.to_json()
 
-    self.assert_string_equal_ws( expected_json, actual_json )
+    self.assertEqualIgnoreWhiteSpace( expected_json, actual_json )
 
   def test_parse_json(self):
     json = '''\

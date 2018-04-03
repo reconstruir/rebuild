@@ -108,7 +108,7 @@ class test_new_package_db_entry(unit_test):
       'epoch': '0',
       'files': '\'["f1", "f2"]\'',
       'name': '\'kiwi\'', 
-      'properties': '\'{"p2": 6, "p1": "v1"}\'',
+      'properties': '\'{"p1": "v1", "p2": 6}\'',
       'requirements': '\'["foo >= 1.2.3-1", "bar >= 6.6.6-1"]\'',
       'revision': '2',
       'version': '\'6.7.8\'',

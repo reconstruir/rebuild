@@ -32,11 +32,8 @@ class test_package_db(unittest.TestCase):
     self.assertFalse( db.has_package('foo') )
     files = [ 'lib/libfoo.a', 'include/libfoo.h' ]
     reqs = None
-    descriptor = package_descriptor('foo', '1.2.3-1', reqs)
-
-    e1 = PE('foo', '1.2.3', 1, 0, [], {}, files)
-
-    db.add_package(e1)
+    new_entry = PE('foo', '1.2.3', 1, 0, [], {}, files)
+    db.add_package(new_entry)
     self.assertTrue( db.has_package('foo') )
     self.assertEqual( [ 'foo' ], db.list_all() )
     self.assertEqual( PE('foo', '1.2.3', 1, 0, [], {}, files), db.find_package('foo') )
@@ -49,17 +46,17 @@ class test_package_db(unittest.TestCase):
     expected_package = PE('foo', '1.2.3', 1, 0, [], {}, files)
     self.assertEqual( expected_package, actual_package )
 
-  def xtest_db_remove(self):
+  def test_db_remove(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
     self.assertFalse( db.has_package('foo') )
     files = [ 'lib/libfoo.a', 'include/libfoo.h' ]
     reqs = None
-    descriptor = package_descriptor('foo', '1.2.3-1', reqs)
-    db.add_package(descriptor, files)
+    new_entry = PE('foo', '1.2.3', 1, 0, [], {}, files)
+    db.add_package(new_entry)
     self.assertTrue( db.has_package('foo') )
     self.assertEqual( [ 'foo' ], db.list_all() )
-    self.assertEqual( PE(package_descriptor('foo', '1.2.3-1', reqs), files), db.find_package('foo') )
+    self.assertEqual( PE('foo', '1.2.3', 1, 0, [], {}, files), db.find_package('foo') )
 
     db.remove_package('foo')
     self.assertFalse( db.has_package('foo') )
@@ -72,5 +69,8 @@ class test_package_db(unittest.TestCase):
     self.assertEqual( [], recreated_db.list_all() )
     self.assertEqual( None, recreated_db.find_package('foo') )
 
+  def test_packages_with_files(self):
+    pass
+  
 if __name__ == '__main__':
   unittest.main()

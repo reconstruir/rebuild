@@ -2,7 +2,7 @@
 
 import json, pickle
 from collections import namedtuple
-from bes.common import check, string_util
+from bes.common import check, json_util, string_util
 from rebuild.base import build_version, package_descriptor, requirement_list
 
 class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,name,version,revision,epoch,requirements,properties,files')):
@@ -26,7 +26,7 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,na
     return package_descriptor(self.name, str(self.build_version), properties = self.properties, requirements = self.requirements)
 
   def to_json(self):
-    return json.dumps(self.to_simple_dict(), indent = 2, sort_keys = True)
+    return json_util.to_json(self.to_simple_dict(), indent = 2, sort_keys = True)
 
   @classmethod
   def parse_json(clazz, text):
@@ -96,9 +96,9 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,na
       'version': string_util.quote(self.version, "'"),
       'revision': str(self.revision),
       'epoch': str(self.epoch),
-      'requirements': string_util.quote(json.dumps([ str(r) for r in self.requirements ]), "'"),
-      'properties': string_util.quote(json.dumps(self.properties), "'"),
-      'files': string_util.quote(json.dumps([ f for f in self.files ]), "'"),
+      'requirements': string_util.quote(json_util.to_json([ str(r) for r in self.requirements ], sort_keys = True), "'"),
+      'properties': string_util.quote(json_util.to_json(self.properties, sort_keys = True), "'"),
+      'files': string_util.quote(json_util.to_json([ f for f in self.files ], sort_keys = True), "'"),
     }
     return d
   
