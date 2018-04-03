@@ -3,7 +3,7 @@
 
 import os.path as path
 from bes.common import check, object_util
-from bes.fs import file_checksum, file_util
+from bes.fs import file_checksum_list, file_util
 from rebuild.base import build_blurb, build_target, package_descriptor
 from collections import namedtuple
 
@@ -67,13 +67,13 @@ class checksum_manager(object):
 
   def load_checksums(self, pd, level):
     d = self._checksum_dir(pd, level)
-    sources = file_checksum.load_checksums(path.join(d, self.CHECKSUMS_SOURCES_FILENAME))
-    targets = file_checksum.load_checksums(path.join(d, self.CHECKSUMS_TARGETS_FILENAME))
+    sources = file_checksum_list.load_checksums_file(path.join(d, self.CHECKSUMS_SOURCES_FILENAME))
+    targets = file_checksum_list.load_checksums_file(path.join(d, self.CHECKSUMS_TARGETS_FILENAME))
     if not sources and not targets:
       return None
     return self.file_checksums(sources, targets)
 
   def save_checksums(self, checksums, pd, level):
     d = self._checksum_dir(pd, level)
-    file_checksum.save_checksums(path.join(d, self.CHECKSUMS_SOURCES_FILENAME), checksums.sources)
-    file_checksum.save_checksums(path.join(d, self.CHECKSUMS_TARGETS_FILENAME), checksums.targets)
+    checksums.sources.save_checksums_file(path.join(d, self.CHECKSUMS_SOURCES_FILENAME))
+    checksums.targets.save_checksums_file(path.join(d, self.CHECKSUMS_TARGETS_FILENAME))

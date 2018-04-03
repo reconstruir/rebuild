@@ -5,7 +5,7 @@ import copy, os.path as path
 from collections import namedtuple
 
 from bes.common import algorithm, check, variable, type_checked_list
-from bes.fs import file_checksum, file_util
+from bes.fs import file_checksum_list, file_util
 from bes.system import log
 from rebuild.base import build_blurb
 from bes.dependency import dependency_provider
@@ -173,8 +173,8 @@ class builder_script(object):
     return [ self.env.artifact_manager.artifact_path(self.descriptor, self.build_target) ]
 
   def _current_checksums(self, all_scripts):
-    return self.file_checksums(file_checksum.checksums(self._sources(all_scripts)),
-                               file_checksum.checksums(self._targets()))
+    return self.file_checksums(file_checksum_list.from_files(self._sources(all_scripts)),
+                               file_checksum_list.from_files(self._targets()))
 
   def needs_rebuilding(self):
     try:
@@ -183,11 +183,11 @@ class builder_script(object):
       
       # If the stored checksums don't match the current checksums, then we 
       if loaded_checksums:
-        loaded_source_filenames = file_checksum.filenames(loaded_checksums.sources)
-        loaded_target_filenames = file_checksum.filenames(loaded_checksums.targets)
+        loaded_source_filenames = loaded_checksums.sources.filenames()
+        loaded_target_filenames = loaded_checksums.targets.filenames()
         current_checksums = self._current_checksums(self.env.script_manager.scripts)
-        current_source_filenames = file_checksum.filenames(current_checksums.sources)
-        current_target_filenames = file_checksum.filenames(current_checksums.targets)
+        current_source_filenames = current_checksums.sources.filenames()
+        current_target_filenames = current_checksums.targets.filenames()
         if current_source_filenames != current_source_filenames:
 #          self.blurb('%s needs rebuilding because loaded and current source filenames are different.')
           return True
@@ -197,7 +197,7 @@ class builder_script(object):
           
       if not loaded_checksums:
         return True
-      if not file_checksum.verify(loaded_checksums.sources):
+      if not loaded_checksums.sources.verify():
         return True
       return False
     except IOError as ex:

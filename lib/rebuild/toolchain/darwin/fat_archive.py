@@ -3,7 +3,7 @@
 
 import os.path as path
 from collections import namedtuple
-from bes.fs import new_file_checksum, file_util, temp_file
+from bes.fs import file_checksum, file_util, temp_file
 from bes.archive import archiver
 from .lipo import lipo
 
@@ -15,7 +15,7 @@ class fat_archive(object):
     def __init__(self, member, dest_dir):
       self.member = member
       self.filename = path.join(dest_dir, member)
-      self.checksum = new_file_checksum.file_checksum(self.filename)
+      self.checksum = file_checksum.file_checksum(self.filename)
 
     def __str__(self):
       return str(self.member)
