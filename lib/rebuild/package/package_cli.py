@@ -4,6 +4,9 @@
 import argparse, os.path as path
 from bes.key_value import key_value_list
 from rebuild.package import package
+from bes.unix import terminal
+from bes.compat import StringIO
+from bes.text import text_fit
 
 class package_cli(object):
 
@@ -45,10 +48,43 @@ class package_cli(object):
           return ' '.join(f)
         else:
           return f[0]
-      d['files'] = '\n              '.join([ _i(f) for f in d['files'] ])
+      d['files'] = self.fit_stuff('files', ' '.join([ _i(f) for f in d['files'] ]))
       for key, value in sorted(d.items()):
-        print('%12s: %s' % (key, value))
+        if key == 'files':
+          print(value)
+        else:
+          print('%12s: %s' % (key, value))
     return 0
+
+  @classmethod
+  def justified_label(clazz, label):
+    return label.rjust(12) #self.__get_label_length())
+  
+  @classmethod
+  def fit_stuff(clazz, label, message):
+    buf = StringIO()
+    justified_label = clazz.justified_label(label)
+    delimiter = ': '
+    left_width = len(justified_label) + len(delimiter)
+    buf.write(justified_label)
+    buf.write(delimiter)
+    lines = []
+    if True:
+      terminal_width = terminal.width()
+      width = terminal_width - left_width
+      if len(message) > width:
+        lines = text_fit.fit_text(message, width)
+    if lines:
+      first = True
+      for line in lines:
+        if not first:
+          buf.write(' ' * left_width)
+        buf.write(line)
+        buf.write('\n')
+        first = False
+    else:
+      buf.write(message)
+    return buf.getvalue().rstrip()
   
   @classmethod
   def run(clazz):

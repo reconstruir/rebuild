@@ -32,7 +32,7 @@ class new_package_manager(object):
     self._root_dir = root_dir
     self._artifact_manager = artifact_manager
     self._database_path = path.join(self._root_dir, 'database/packages.sqlite')
-    self._db = package_db(self._database_path)
+    self._db = None #package_db(self._database_path)
     self._installation_dir = path.join(self._root_dir, 'installation')
     self._env_dir = path.join(self._root_dir, 'env')
     self._lib_dir = path.join(self._installation_dir, 'lib')
@@ -77,9 +77,9 @@ class new_package_manager(object):
   @property
   def pkg_config_path(self):
     return pkg_config.make_pkg_config_path(self._installation_dir)
-
+  
   def descriptor_for_name(self, pkg_name):
-    entry = self._db.find_package(pkg_name)
+    entry = self.db.find_package(pkg_name)
     if not entry:
       raise PackageNotFoundError('package %s not found' % (pkg_name))
     return entry.descriptor
@@ -105,8 +105,14 @@ class new_package_manager(object):
 #    libs = pkg_config.libs(pkg_config_names, PKG_CONFIG_PATH = pkg_config_path, static = static)
     return None # ( cflags, libs )
 
+  @property
+  def db(self):
+    'Create the db on demand so that we dont put sqlite droppings all over if no transactions ever happen.'
+    if not self._db:
+      self._db = package_db(self._database_path)
+    return self._db
+  
   def install_tarball(self, pkg_tarball, hardness):
-
     pkg = package(pkg_tarball)
 
     if self.is_installed(pkg.descriptor.name):
@@ -117,9 +123,8 @@ class new_package_manager(object):
       raise PackageMissingRequirementsError('package %s missing requirements: %s' % (pkg.descriptor.name, ', '.join(missing_requirements)))
       
     conflicts = self._find_conflicts(pkg.files)
-    print('conflicts: %s' % (conflicts))
     if conflicts:
-      conflict_packages = self._db.packages_with_files(conflicts)
+      conflict_packages = self.db.packages_with_files(conflicts)
       conflict_packages_str = ' '.join(conflict_packages)
       conflicts_str = ' '.join(conflicts)
       raise PackageFilesConflictError('conflicts found between \"%s\" and \"%s\": %s' % (pkg.descriptor.name,
@@ -136,24 +141,23 @@ class new_package_manager(object):
                              pkg.metadata.properties,
                              pkg.metadata.files)
                              
-    self._db.add_package(entry)
+    self.db.add_package(entry)
 
   def uninstall_package(self, pkg_name):
-    pkg = self._db.find_package(pkg_name)
+    pkg = self.db.find_package(pkg_name)
     if not pkg:
       raise PackageNotFoundError('package %s not found' % (pkg_name))
-    paths = [ path.join(self._installation_dir, f) for f in pkg.files ]
+    paths = [ path.join(self._installation_dir, f) for f in pkg.files.filenames() ]
     file_util.remove(paths)
-    self._db.remove_package(pkg_name)
+    self.db.remove_package(pkg_name)
 
   def list_all(self, include_version = False):
-    return self._db.list_all(include_version = include_version)
+    return self.db.list_all(include_version = include_version)
 
   def is_installed(self, pkg_name):
-    return self._db.find_package(pkg_name) != None
+    return self.db.find_package(pkg_name) != None
 
   def _find_conflicts(self, files):
-    print('files; %s - %s' % (files, type(files)))
     conflicts = []
     for f in files:
       if path.isfile(path.join(self._installation_dir, f)):
@@ -168,7 +172,7 @@ class new_package_manager(object):
       return []
     missing_requirements = []
     for req in resolved_deps:
-      if not self._db.has_package(req.name):
+      if not self.db.has_package(req.name):
         missing_requirements.append(req.name)
     return missing_requirements
   
@@ -178,7 +182,7 @@ class new_package_manager(object):
 
   @classmethod
   def package_files(clazz, tarball):
-    return package(tarball).files
+    return package(tarball).files.filenames()
 
   def install_package(self, pkg_desc, build_target, hardness,
                       allow_downgrade = False, force_install = False):
@@ -186,7 +190,7 @@ class new_package_manager(object):
     pkg = self._artifact_manager.package(pkg_desc, build_target)
 
     if self.is_installed(pkg.descriptor.name):
-      old_pkg_desc = self._db.find_package(pkg.descriptor.name).descriptor
+      old_pkg_desc = self.db.find_package(pkg.descriptor.name).descriptor
       comparison = package_descriptor.full_name_cmp(old_pkg_desc, pkg_desc)
       if force_install:
         comparison = -1

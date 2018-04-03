@@ -25,7 +25,7 @@ class test_package_manager(unittest.TestCase):
   ]
 
   DEBUG = False
-  #DEBUG = True
+#  DEBUG = True
 
   @classmethod
   def _make_test_pm(clazz):

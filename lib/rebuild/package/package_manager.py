@@ -53,7 +53,9 @@ class PackageMissingRequirementsError(Exception):
 
   def __str__(self):
     return self.message
-  
+
+from .new_package_manager import new_package_manager as package_manager
+'''
 class package_manager(object):
 
   def __init__(self, root_dir, artifact_manager):
@@ -286,3 +288,4 @@ class package_manager(object):
     if not package.package_is_valid(filename):
       raise RuntimeError('Not a valid package: %s' % (filename))
     return package(filename)
+'''

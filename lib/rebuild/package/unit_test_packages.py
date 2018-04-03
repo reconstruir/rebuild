@@ -7,140 +7,72 @@ from bes.common import dict_util, json_util, string_util
 from bes.fs import file_util, temp_file, temp_item
 from bes.archive import archiver
 from rebuild.base import build_arch, build_system, build_target, package_descriptor, requirement, requirement_list
-from rebuild.package import package
+from rebuild.package import package, package_metadata as PM
 from collections import namedtuple
 
 class unit_test_packages(object):
 
   __test__ = False
-  
+
   TEST_PACKAGES = {
-    'water-1.0.0-0': {
-      'requirements': '',
-    },
-    'water-1.0.0-1': {
-      'requirements': '',
-    },
-    'water-1.0.0-2': {
-      'requirements': '',
-    },
-    'fiber-1.0.0-0': {
-      'requirements': '',
-    },
-    'citrus-1.0.0-0': {
-      'requirements': '',
-    },
-    'fructose-3.4.5-6': {
-      'requirements': '',
-    },
-    'mercury-1.2.8-0': {
-      'requirements': '',
-    },
-    'mercury-1.2.8-1': {
-      'requirements': '',
-    },
-    'mercury-1.2.9-0': {
-      'requirements': '',
-    },
-    'mercury_conflict-3.2.1-0': {
-      'requirements': '',
-      'name_override': 'mercury',
-    },
-    'arsenic-1.2.9-0': {
-      'requirements': '',
-    },
-    'arsenic-1.2.9-1': {
-      'requirements': '',
-    },
-    'arsenic-1.2.10-0': {
-      'requirements': '',
-    },
-    'apple-1.2.3-1': {
-      'requirements': 'fruit(all) >= 1.0.0',
-    },
-    'fruit-1.0.0': {
-      'requirements': 'fructose(all) >= 3.4.5-6 fiber(all) >= 1.0.0-0 water(all) >= 1.0.0-0',
-    },
-    'pear-1.2.3-1': {
-      'requirements': 'fruit(all) >= 1.0.0',
-    },
-    'orange-6.5.4-3': {
-      'requirements': 'fruit(all) >= 1.0.0-0 citrus(all) >= 1.0.0-0',
-    },
-    'orange_juice-1.4.5': {
-      'requirements': 'orange(all) >= 6.5.4-3',
-    },
-    'pear_juice-6.6.6': {
-      'requirements': 'pear(all) >= 1.2.3-1',
-    },
-    'smoothie-1.0.0': {
-      'requirements': 'orange(all) >= 6.5.4-3 pear(all) >= 1.2.3-1 apple(all) >= 1.2.3-1',
-    },
+    'water-1.0.0-0': PM('', '', 'water', '1.0.0', 0, 0, 'macos', 'release', [ 'x86_64' ], None, None, {}, []),
+    'water-1.0.0-1': PM('', '', 'water', '1.0.0', 1, 0, 'macos', 'release', [ 'x86_64' ], None, None, {}, []),
+    'water-1.0.0-2': PM('', '', 'water', '1.0.0', 2, 0, 'macos', 'release', [ 'x86_64' ], None, None, {}, []),
+    'fiber-1.0.0-0': PM('', '', 'fiber', '1.0.0', 2, 0, 'macos', 'release', [ 'x86_64' ], None, None, {}, []),
+    'citrus-1.0.0-0': PM('', '', 'citrus', '1.0.0', 2, 0, 'macos', 'release', [ 'x86_64' ], None, None, {}, []),
+    'fructose-3.4.5-6': PM('', '', 'fructose', '3.4.5', 6, 0, 'macos', 'release', [ 'x86_64' ], None, None, {}, []),
+    'mercury-1.2.8-0': PM('', '', 'mercury', '1.2.8', 0, 0, 'macos', 'release', [ 'x86_64' ], None, None, {}, []),
+    'mercury-1.2.8-1': PM('', '', 'mercury', '1.2.8', 1, 0, 'macos', 'release', [ 'x86_64' ], None, None, {}, []),
+    'mercury-1.2.9-0': PM('', '', 'mercury', '1.2.9', 0, 0, 'macos', 'release', [ 'x86_64' ], None, None, {}, []),
+    'mercury_conflict-3.2.1-0': PM('', '', 'mercury_conflict', '3.2.1', 0, 0, 'macos', 'release', [ 'x86_64' ], None, None, {}, []),
+    'arsenic-1.2.9-0': PM('', '', 'arsenic', '1.2.9', 0, 0, 'macos', 'release', [ 'x86_64' ], None, None, {}, []),
+    'arsenic-1.2.9-1': PM('', '', 'arsenic', '1.2.9', 1, 0, 'macos', 'release', [ 'x86_64' ], None, None, {}, []),
+    'arsenic-1.2.10-0': PM('', '', 'arsenic', '1.2.10', 0, 0, 'macos', 'release', [ 'x86_64' ], None, None, {}, []),
+    'apple-1.2.3-1': PM('', '', 'apple', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, 'fruit >= 1.0.0', {}, []),
+    'fruit-1.0.0-0': PM('', '', 'fruit', '1.0.0', 0, 0, 'macos', 'release', [ 'x86_64' ], None, 'fructose >= 3.4.5-6 fiber >= 1.0.0-0 water >= 1.0.0-0', {}, []),
+    'pear-1.2.3-1': PM('', '', 'pear', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, 'fruit >= 1.0.0', {}, []),
+    'orange-6.5.4-3': PM('', '', 'orange', '6.5.4', 3, 0, 'macos', 'release', [ 'x86_64' ], None, 'fruit >= 1.0.0-0 citrus >= 1.0.0-0', {}, []),
+    'orange_juice-1.4.5-0': PM('', '', 'orange_juice', '1.4.5', 0, 0, 'macos', 'release', [ 'x86_64' ], None, 'orange >= 6.5.4-3', {}, []),
+    'pear_juice-6.6.6-0': PM('', '', 'pear_juice', '6.6.6', 0, 0, 'macos', 'release', [ 'x86_64' ], None, 'pear >= 1.2.3-1', {}, []),
+    'smoothie-1.0.0-0': PM('', '', 'smoothie', '1.0.0', 0, 0, 'macos', 'release', [ 'x86_64' ], None, 'orange >= 6.5.4-3 pear >= 1.2.3-1 apple >= 1.2.3-1', {}, []),
    }
-  for k, v in TEST_PACKAGES.items():
-    template = TEST_PACKAGES[k]
-    reqs = requirement_list.parse(template.get('requirements', ''))
-    props = template.get('properties', {})
-    pi = package_descriptor.parse(k)
-    pi = package_descriptor(pi.name, pi.version, requirements = reqs, properties = props)
-    template['package_descriptor'] = pi
   
-  def __init__(self, desc, requirements = None,
-               system = 'macos', level = 'release',
-               properties = {}, name_override = None,
-               debug = False):
+  def __init__(self, desc, pm, system = 'macos', level = 'release', debug = False):
     self.desc = desc
-    self.requirements = requirements
+    self.pm = PM(pm.filename, pm.checksum, pm.name, pm.version, pm.revision, pm.epoch,
+                 system, level,
+                 pm.archs, pm.distro, pm.requirements, pm.properties, pm.files)
     self.system = system
     self.level = level
-    self.properties = properties
-    self.name_override = name_override
     self.debug = debug
 
   def create_tarball(self, root_dir):
-    pi = package_descriptor.parse(self.desc)
-    reqs = requirement_list.parse(self.requirements)
-    package = self.make_test_package(pi.name, pi.version, reqs,
-                                     self.system, self.level,
-                                     name_override = self.name_override,
-                                     debug = self.debug)
-    artifact_path = package.package_descriptor.artifact_path(package.build_target)
+    package = self.make_test_package(self.pm, debug = self.debug)
+    artifact_path = package.metadata.descriptor.artifact_path(package.metadata.build_target)
     target_path = path.join(root_dir, artifact_path)
     file_util.rename(package.tarball, target_path)
     if self.debug:
       print(('DEBUG: test_package.create_tarball() package=%s' % (target_path)))
     return target_path
 
-  test_package = namedtuple('test_package', 'tarball,package_descriptor,build_target')
+  test_package = namedtuple('test_package', 'tarball,metadata')
 
   @classmethod
-  def make_test_package(clazz, name, version, requirements,
-                        system, build_level, properties = None,
-                        name_override = None, debug = False):
-    props = {}
-    props.update(properties or {})
-    pi = package_descriptor(name, version, requirements = requirements, properties = props)
-    assert build_system.system_is_valid(system)
-    bt = build_target(system, build_level, build_arch.ARCHS[system])
-    metadata_dict = dict_util.combine(pi.to_dict(), bt.to_dict())
-    metadata = json_util.to_json(metadata_dict, indent = 2)
-    pkg_config_pc_contnet = clazz.make_pkg_config_pc_content(name, version)
-    script_content = '#!/bin/bash\necho %s-%s\nexit 0\n' % (name, version)
+  def make_test_package(clazz, pm, debug = False):
+    pkg_config_pc_contnet = clazz.make_pkg_config_pc_content(pm.name, pm.build_version)
+    script_content = '#!/bin/bash\necho %s-%s\nexit 0\n' % (pm.name, pm.build_version)
+    name = pm.name.replace('_conflict', '')
     items = [
-      temp_item('metadata/info.json', content = metadata),
-      clazz.make_temp_item(name_override or name, version, '_foo.txt', 'docs'),
-      clazz.make_temp_item(name_override or name, version, '_bar.txt', 'docs'),
-      clazz.make_temp_item(name_override or name, version, '_script.sh', 'bin', content = script_content, mode = 0o755),
-      temp_item('files/lib/pkgconfig/%s.pc' % (name), content = pkg_config_pc_contnet)
+      clazz.make_temp_item(name, pm.version, '_foo.txt', 'docs'),
+      clazz.make_temp_item(name, pm.version, '_bar.txt', 'docs'),
+      clazz.make_temp_item(name, pm.version, '_script.sh', 'bin', content = script_content, mode = 0o755),
+      temp_item('lib/pkgconfig/%s.pc' % (name), content = pkg_config_pc_contnet)
     ]
     tmp_dir = temp_file.make_temp_dir(items = items, delete = not debug)
-    tmp_tarball = temp_file.make_temp_file(prefix = pi.full_name, suffix = '.tar.gz', delete = not debug)
-    archiver.create(tmp_tarball, tmp_dir)
-    package = clazz.test_package(tmp_tarball, pi, bt)
-    return package
+    tmp_tarball = temp_file.make_temp_file(prefix = pm.descriptor.full_name, suffix = '.tar.gz', delete = not debug)
+    package.create_tarball(tmp_tarball, pm.descriptor, pm.build_target, tmp_dir, None)
+    return clazz.test_package(tmp_tarball, pm)
 
-#  package.create_tarball(clazz, tarball_path, pkg_desc, build_target, stage_dir, env_dir):
-  
   _PKG_CONFIG_PC_TEMPLATE = '''
 prefix=${REBUILD_PACKAGE_PREFIX}
 exec_prefix=${prefix}
@@ -167,7 +99,7 @@ Cflags: -I${includedir}
 
   @classmethod
   def make_temp_item(clazz, name, version, suffix, location, content = None, mode = None):
-    filename = 'files/%s/%s%s' % (location, name, suffix)
+    filename = '%s/%s%s' % (location, name, suffix)
     if not content:
       content = 'package=%s-%s\nfilename=%s' % (name, version, filename)
     return temp_item(filename, content = content, mode = mode)
@@ -175,19 +107,16 @@ Cflags: -I${includedir}
   @classmethod
   def make_simple_tarball(clazz, desc, templates, debug = False):
     tmp_dir = temp_file.make_temp_dir(delete = not debug)
-    name_override = templates[desc].get('name_override', None)
-    tp = clazz(desc, requirements = templates[desc]['requirements'],
-               system = 'macos', level = 'release',
-               name_override = name_override,
-               debug = debug)
+    pm = templates[desc]
+    tp = clazz(desc, pm, system = 'macos', level = 'release', debug = debug)
     return tp.create_tarball(tmp_dir)
 
   @classmethod
   def make_test_packages(clazz, packages, root_dir, debug = False):
     for system in [ 'macos', 'linux' ]:
-      for bt in [ 'release', 'debug' ]:
-        for desc, values in packages.items():
-          tp = clazz(desc, values['requirements'], system, bt, properties = {}, debug = debug)
+      for level in [ 'release', 'debug' ]:
+        for desc, pm in packages.items():
+          tp = clazz(desc, pm, system = system, level = level, debug = debug)
           tp.create_tarball(root_dir)
 
   @classmethod
@@ -204,7 +133,7 @@ Cflags: -I${includedir}
 
   @classmethod
   def make_fruit(clazz, debug = False):
-    return clazz.make_simple_tarball('fruit-1.0.0', clazz.TEST_PACKAGES, debug = debug)
+    return clazz.make_simple_tarball('fruit-1.0.0-0', clazz.TEST_PACKAGES, debug = debug)
 
   @classmethod
   def make_orange(clazz, debug = False):

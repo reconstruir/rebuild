@@ -30,7 +30,7 @@ class test_package(unittest.TestCase):
     p = package(tmp_tarball)
     self.assertEqual( 'orange', p.descriptor.name )
     self.assertEqual( build_version('6.5.4', '3', 0), p.descriptor.version )
-    self.assertEqual( requirement_list.parse('fruit(all) >= 1.0.0-0 citrus(all) >= 1.0.0-0'), p.descriptor.requirements )
+    self.assertEqual( requirement_list.parse('fruit >= 1.0.0-0 citrus >= 1.0.0-0'), p.descriptor.requirements )
     self.assertEqual( {}, p.descriptor.properties )
     self.assertEqual( [ 'bin/orange_script.sh', 'docs/orange_bar.txt', 'docs/orange_foo.txt', 'lib/pkgconfig/orange.pc' ], p.files )
     self.assertEqual( [ 'lib/pkgconfig/orange.pc' ], p.pkg_config_files )
@@ -42,7 +42,7 @@ class test_package(unittest.TestCase):
   def test_package_descriptor_orange(self):
     tmp_tarball = unit_test_packages.make_orange(debug = self.DEBUG)
     expected_pi = package_descriptor('orange', '6.5.4-3',
-                                     requirements = requirement_list.parse('fruit(all) >= 1.0.0-0 citrus(all) >= 1.0.0-0'),
+                                     requirements = requirement_list.parse('fruit >= 1.0.0-0 citrus >= 1.0.0-0'),
                                      properties = {})
     self.assertEqual( expected_pi, package.package_descriptor(tmp_tarball) )
 

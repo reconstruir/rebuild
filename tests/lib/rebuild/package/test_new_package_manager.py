@@ -26,7 +26,7 @@ class test_new_package_manager(unittest.TestCase):
   ]
 
   DEBUG = False
-  DEBUG = True
+  #DEBUG = True
 
   @classmethod
   def _make_test_pm(clazz):
@@ -155,7 +155,7 @@ class test_new_package_manager(unittest.TestCase):
     self.assertTrue( install_rv )
     self.assertEqual( [ 'water-1.0.0-1' ], pm.list_all(include_version = True) )
 
-  def xtest_install_package_same_version(self):
+  def test_install_package_same_version(self):
     pm = self._make_test_pm()
 
     old_pi = package_descriptor('water', '1.0.0')
@@ -168,13 +168,13 @@ class test_new_package_manager(unittest.TestCase):
     self.assertFalse( install_rv )
     self.assertEqual( [ 'water-1.0.0' ], pm.list_all(include_version = True) )
 
-  def xtest_install_package_unknown(self):
+  def test_install_package_unknown(self):
     pm = self._make_test_pm()
     pi = package_descriptor('notthere', '6.6.6-1')
     with self.assertRaises(ArtifactNotFoundError) as context:
       pm.install_package(pi, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
 
-  def xtest_install_packages(self):
+  def test_install_packages(self):
     pm = self._make_test_pm()
 
     packages = [
@@ -187,7 +187,7 @@ class test_new_package_manager(unittest.TestCase):
 
     self.assertEqual( [ 'arsenic-1.2.9', 'mercury-1.2.8', 'water-1.0.0' ], pm.list_all(include_version = True) )
 
-  def xtest_create_package(self):
+  def test_create_package(self):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     tarball_path = self._make_package(tmp_dir,
                                       'foo', '1.2.3-1',

@@ -741,3 +741,6 @@ apr 2
  
 
 package.create_tarball() ignore_case = True seems backwards but matcher seems to be fucked that way
+
+apr 3
+need a package unit test with symlinks
