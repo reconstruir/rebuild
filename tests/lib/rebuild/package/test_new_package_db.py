@@ -84,5 +84,19 @@ class test_package_db(unittest.TestCase):
     self.assertEqual( set([ 'p5/f1', 'p5/f2' ]), db.package_files('p5') )
     self.assertEqual( set([ 'p6/f1', 'p6/f2' ]), db.package_files('p6') )
   
+  def test_packages_with_files(self):
+    db = DB(self._make_tmp_db_path())
+    db.add_package(PE('p1', '1', 0, 0, [], {}, FCL([ ( 'p1/f1', 'c' ), ( 'p1/f2', 'c' ) ])))
+    db.add_package(PE('p2', '1', 0, 0, [], {}, FCL([ ( 'p2/f1', 'c' ), ( 'p2/f2', 'c' ) ])))
+    db.add_package(PE('p3', '1', 0, 0, [], {}, FCL([ ( 'p3/f1', 'c' ), ( 'p3/f2', 'c' ) ])))
+    db.add_package(PE('p4', '1', 0, 0, [], {}, FCL([ ( 'p4/f1', 'c' ), ( 'p4/f2', 'c' ) ])))
+    db.add_package(PE('p5', '1', 0, 0, [], {}, FCL([ ( 'p5/f1', 'c' ), ( 'p5/f2', 'c' ) ])))
+    db.add_package(PE('p6', '1', 0, 0, [], {}, FCL([ ( 'p6/f1', 'c' ), ( 'p6/f2', 'c' ) ])))
+
+    self.assertEqual( [], db.packages_with_files([ 'notthere' ]) )
+    self.assertEqual( [ 'p1' ], db.packages_with_files([ 'p1/f2' ]) )
+    self.assertEqual( [ 'p1', 'p2' ], db.packages_with_files([ 'p1/f2', 'p2/f1' ]) )
+    self.assertEqual( [ 'p1', 'p2', 'p6' ], db.packages_with_files([ 'p1/f2', 'p2/f1', 'p6/f1' ]) )
+  
 if __name__ == '__main__':
   unittest.main()
