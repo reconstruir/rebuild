@@ -162,8 +162,7 @@ class package(object):
         extra_items.append(archive.Item(path.join(env_dir, env_file), 'env' + '/' + env_file))
     archiver.create(tarball_path, stage_dir,
                     base_dir = 'files',
-                    extra_items = extra_items,
-                    include = files)
+                    extra_items = extra_items)
     return tarball_path
   
 check.register_class(package)
