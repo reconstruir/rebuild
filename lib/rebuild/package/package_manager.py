@@ -18,8 +18,9 @@ from rebuild.pkg_config import pkg_config
 
 from .artifact_manager import artifact_manager, ArtifactNotFoundError
 from .package import package
-from .package_db import package_db
-#from .new_package_db import new_package_db as package_db
+#from .package_db import package_db
+from .new_package_db import new_package_db as package_db
+from .new_package_db_entry import new_package_db_entry as package_db_entry
 from .package_list import package_list
 from .env_dir import env_dir
 
@@ -61,7 +62,7 @@ class package_manager(object):
     check.check_artifact_manager(artifact_manager)
     self._root_dir = root_dir
     self._artifact_manager = artifact_manager
-    self._database_path = path.join(self._root_dir, 'database/packages.json')
+    self._database_path = path.join(self._root_dir, 'database/packages.sqlite')
     self._db = package_db(self._database_path)
     self._installation_dir = path.join(self._root_dir, 'installation')
     self._env_dir = path.join(self._root_dir, 'env')
@@ -157,7 +158,15 @@ class package_manager(object):
     pkg.extract_files(self._installation_dir)
     pkg.extract_env_files(self._env_dir, self._installation_dir)
 
-    self._db.add_package(pkg.descriptor, pkg.files)
+    entry = package_db_entry(pkg.metadata.name,
+                             pkg.metadata.version,
+                             pkg.metadata.revision,
+                             pkg.metadata.epoch,
+                             pkg.metadata.requirements,
+                             pkg.metadata.properties,
+                             pkg.metadata.files)
+                             
+    self._db.add_package(entry)
 
   def uninstall_package(self, pkg_name):
     pkg = self._db.find_package(pkg_name)

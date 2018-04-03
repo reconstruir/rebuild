@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 #
 import os.path as path, unittest
-from bes.fs import file_checksum_list, temp_file
+from bes.fs import file_checksum_list as FCL, temp_file
 from rebuild.base import package_descriptor
 from rebuild.package.new_package_db import new_package_db as DB
 from rebuild.package.new_package_db_entry import new_package_db_entry as PE
@@ -30,7 +30,7 @@ class test_package_db(unittest.TestCase):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
     self.assertFalse( db.has_package('foo') )
-    files = file_checksum_list([ ( 'lib/libfoo.a', 'c1' ), ( 'include/libfoo.h', 'c2' ) ])
+    files = FCL([ ( 'lib/libfoo.a', 'c1' ), ( 'include/libfoo.h', 'c2' ) ])
     reqs = None
     new_entry = PE('foo', '1.2.3', 1, 0, [], {}, files)
     db.add_package(new_entry)
@@ -50,7 +50,7 @@ class test_package_db(unittest.TestCase):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
     self.assertFalse( db.has_package('foo') )
-    files = file_checksum_list([ ( 'lib/libfoo.a', 'c1' ), ( 'include/libfoo.h', 'c2' ) ])
+    files = FCL([ ( 'lib/libfoo.a', 'c1' ), ( 'include/libfoo.h', 'c2' ) ])
     reqs = None
     new_entry = PE('foo', '1.2.3', 1, 0, [], {}, files)
     db.add_package(new_entry)
@@ -69,8 +69,20 @@ class test_package_db(unittest.TestCase):
     self.assertEqual( [], recreated_db.list_all() )
     self.assertEqual( None, recreated_db.find_package('foo') )
 
-  def test_packages_with_files(self):
-    pass
+  def test_package_files(self):
+    db = DB(self._make_tmp_db_path())
+    db.add_package(PE('p1', '1', 0, 0, [], {}, FCL([ ( 'p1/f1', 'c' ), ( 'p1/f2', 'c' ) ])))
+    db.add_package(PE('p2', '1', 0, 0, [], {}, FCL([ ( 'p2/f1', 'c' ), ( 'p2/f2', 'c' ) ])))
+    db.add_package(PE('p3', '1', 0, 0, [], {}, FCL([ ( 'p3/f1', 'c' ), ( 'p3/f2', 'c' ) ])))
+    db.add_package(PE('p4', '1', 0, 0, [], {}, FCL([ ( 'p4/f1', 'c' ), ( 'p4/f2', 'c' ) ])))
+    db.add_package(PE('p5', '1', 0, 0, [], {}, FCL([ ( 'p5/f1', 'c' ), ( 'p5/f2', 'c' ) ])))
+    db.add_package(PE('p6', '1', 0, 0, [], {}, FCL([ ( 'p6/f1', 'c' ), ( 'p6/f2', 'c' ) ])))
+    self.assertEqual( set([ 'p1/f1', 'p1/f2' ]), db.package_files('p1') )
+    self.assertEqual( set([ 'p2/f1', 'p2/f2' ]), db.package_files('p2') )
+    self.assertEqual( set([ 'p3/f1', 'p3/f2' ]), db.package_files('p3') )
+    self.assertEqual( set([ 'p4/f1', 'p4/f2' ]), db.package_files('p4') )
+    self.assertEqual( set([ 'p5/f1', 'p5/f2' ]), db.package_files('p5') )
+    self.assertEqual( set([ 'p6/f1', 'p6/f2' ]), db.package_files('p6') )
   
 if __name__ == '__main__':
   unittest.main()
