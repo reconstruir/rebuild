@@ -8,6 +8,10 @@ from rebuild.base import package_descriptor_list
 
 from .new_package_db_entry import new_package_db_entry
 
+class PackageNotInstalledError(Exception):
+  def __init__(self, message, errors):
+    super(PackageNotInstalledError, self).__init__(message)
+    
 class new_package_db(object):
 
   SCHEMA_PACKAGES = '''
@@ -26,11 +30,31 @@ CREATE TABLE packages(
     self._filename = path.abspath(filename)
     self._db = sqlite(self._filename)
     self._db.ensure_table('packages', self.SCHEMA_PACKAGES)
+    self._files = {}
     
   @property
   def filename(self):
     return self._filename
+
+  def names(self):
+    rows = self._db.select('''SELECT name FROM packages ORDER by name ASC''')
+    return [ row[0] for row in rows ]
   
+  def package_files(self, name):
+    if not name in self._files:
+      p = self.find_package(name)
+      if not p:
+        raise PackageNotInstalledError('not installed: %s' % (name))
+      self._files[name] = set(p.files.filenames())
+    return self._files[name]
+  
+  def _list_all_entries(self):
+    rows = self._db.select_namedtuples('''SELECT * FROM packages ORDER by name ASC''')
+    return [ new_package_db_entry.from_sql_row(row) for row in rows ]
+  
+#  def package_files(self, include_version = False):
+
+    
   def list_all(self, include_version = False):
     rows = self._db.select_namedtuples('''SELECT * FROM packages''')
     result = []
@@ -69,11 +93,13 @@ CREATE TABLE packages(
     return None
 
   def packages_with_files(self, files):
-    assert False and 'FXIME'
-    files = object_util.listify(files)
+    'Return a list of package names for any packages that contain files. '
+    files = set(files)
     result = []
-    for name, entry in self.db.items():
-      if entry.has_any_files(files):
+    for name in self.names():
+      next_files = self.package_files(name)
+      common = files & next_files
+      if common:
         result.append(name)
     return result
 

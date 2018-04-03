@@ -20,6 +20,9 @@ class new_package_db_entry(namedtuple('new_package_db_entry', 'format_version,na
     check.check_file_checksum_list(files)
     return clazz.__bases__[0].__new__(clazz, 2, name, version, revision, epoch, requirements, properties, files)
 
+  def __hash__(self):
+    return hash(self.to_json())
+  
   @property
   def build_version(self):
     return build_version(self.version, self.revision, self.epoch)

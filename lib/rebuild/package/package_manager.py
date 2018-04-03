@@ -19,6 +19,7 @@ from rebuild.pkg_config import pkg_config
 from .artifact_manager import artifact_manager, ArtifactNotFoundError
 from .package import package
 from .package_db import package_db
+#from .new_package_db import new_package_db as package_db
 from .package_list import package_list
 from .env_dir import env_dir
 

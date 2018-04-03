@@ -29,6 +29,9 @@ class requirement_list(type_checked_list):
       buf.write(str(req))
     return buf.getvalue()
 
+  def __hash__(self):
+    return hash(str(self))
+  
   def __str__(self):
     return self.to_string()
 
