@@ -20,6 +20,7 @@ class _toolchain_darwin(_toolchain_base):
     
   def compiler_environment(self):
     env = {
+#      'CPP': xcrun.find_tool(self.sdk, 'cpp'),
       'CC': xcrun.find_tool(self.sdk, 'clang'),
       'CXX': xcrun.find_tool(self.sdk, 'clang++'),
       'RANLIB': xcrun.find_tool(self.sdk, 'ranlib'),
@@ -51,8 +52,9 @@ class _toolchain_darwin(_toolchain_base):
     cxxflags = sysroot_cxxflags + arch_flags + opt_flags
 
     ldflags = []
-      
+
     env = {
+#      'CPPFLAGS': sysroot_cflags,
       'CFLAGS': cflags,
       'LDFLAGS': ldflags,
       'CXXFLAGS': cxxflags,

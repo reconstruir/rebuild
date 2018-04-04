@@ -15,6 +15,7 @@ class _toolchain_linux(_toolchain_base):
     
   def compiler_environment(self):
     env = {
+      'CPP': 'cpp',
       'CC': 'gcc',
       'CXX': 'g++',
       'CC_GCC': 'gcc',
@@ -49,6 +50,7 @@ class _toolchain_linux(_toolchain_base):
     ldflags = []
       
     env = {
+      'CPPFLAGS': [],
       'CFLAGS': cflags,
       'LDFLAGS': ldflags,
       'CXXFLAGS': cflags,

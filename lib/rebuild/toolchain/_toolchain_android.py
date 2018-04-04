@@ -44,9 +44,9 @@ class _toolchain_android(_toolchain_base):
     
   def compiler_environment(self):
     env = {
+      'CPP': self._find_tool('cpp'),
       'CC': self._find_tool('gcc'),
       'CXX': self._find_tool('g++'),
-      'CPP': self._find_tool('cpp'),
       'RANLIB': self._find_tool('ranlib'),
       'STRIP': self._find_tool('strip'),
       'AR': 'ar', #self.ar_replacement_program_exe(),
@@ -76,6 +76,7 @@ class _toolchain_android(_toolchain_base):
     ldflags = sysroot_cflags
       
     env = {
+      'CPPFLAGS': [],
       'CFLAGS': cflags,
       'LDFLAGS': ldflags,
       'CXXFLAGS': cflags,
