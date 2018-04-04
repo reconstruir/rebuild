@@ -153,5 +153,4 @@ class package(object):
                     extra_items = extra_items)
     return tarball_path
   
-#check.register_class(package, include_seq = False)
-check.register_class(package)
+check.register_class(package, include_seq = False)

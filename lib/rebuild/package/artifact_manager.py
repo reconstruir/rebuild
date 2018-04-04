@@ -75,15 +75,14 @@ class artifact_manager(object):
   def _compute_available_packages(self, build_target):
     d = path.join(self._publish_dir, build_target.build_path)
     if not path.exists(d):
-      return []
+      return package_list()
     if not path.isdir(d):
       raise RuntimeError('Not a directory: %s' % (d))
     all_files = dir_util.list(d)
-    return [ self._get_package(f) for f in all_files ]
+    return package_list([ self._get_package(f) for f in all_files ])
   
   def latest_available_packages(self, build_target):
-    available = self.available_packages(build_target)
-    return package_list.latest_versions(available)
+    return self.available_packages(build_target).latest_versions()
 
   def resolve_packages(self, package_names, build_target):
     # FIXME: need to deal with multiple versions
@@ -133,7 +132,7 @@ class artifact_manager(object):
     return self._package_cache[tarball]
 
   def dependency_map(self, build_target):
-    available = package_list.descriptors(self.available_packages(build_target))
+    available = self.available_packages(build_target).descriptors()
     return package_descriptor_list.dependency_map(available)
 
   def get_requirement_manager(clazz, build_target):

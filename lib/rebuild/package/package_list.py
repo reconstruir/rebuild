@@ -5,34 +5,10 @@ from bes.common import check, type_checked_list
 from rebuild.base import package_descriptor_list
 from .package import package
 
-class package_list(object):
-
-  @classmethod
-  def sort_by_descriptor(clazz, packages):
-    'Sort a list of packages in ascending order using package info.'
-    check.check_package_seq(packages)
-    return sorted(packages, key = lambda package: package.descriptor)
-
-  @classmethod
-  def latest_versions(clazz, packages):
-    'Return a list of only the lastest version of any package with multiple versions.'
-    check.check_package_seq(packages)
-    packages = clazz.sort_by_descriptor(packages)
-    d = {}
-    for package in packages:
-      d[package.descriptor.name] = package
-    return clazz.sort_by_descriptor(d.values())
-
-  @classmethod
-  def descriptors(clazz, packages):
-    'Return a list of descriptors for the given list of packages.'
-    check.check_package_seq(packages)
-    return [ package.descriptor for package in packages ]
-
-class new_package_list(type_checked_list):
+class package_list(type_checked_list):
 
   def __init__(self, values = None):
-    super(new_package_list, self).__init__(package, values = values)
+    super(package_list, self).__init__(package, values = values)
 
   def sort_by_descriptor(self):
     self._values = sorted(self._values, key = lambda package: package.descriptor)
@@ -46,13 +22,13 @@ class new_package_list(type_checked_list):
     latest = {}
     for package in self:
       name = package.metadata.name
-      if not name in result:
+      if not name in latest:
         latest[name] = package
       else:
-        if package.metadata.build_version > result[name].metadata.build_version:
+        if package.metadata.build_version > latest[name].metadata.build_version:
           latest[name] = package
-    result = clazz(result.values())
+    result = package_list(latest.values())
     result.sort_by_descriptor()
     return result
   
-check.register_class(new_package_list, include_seq = False)
+check.register_class(package_list, include_seq = False)
