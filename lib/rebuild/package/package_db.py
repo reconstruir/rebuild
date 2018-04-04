@@ -25,6 +25,19 @@ CREATE TABLE packages(
   files           TEXT
 );
 '''
+
+  SCHEMA_PACKAGES = '''
+CREATE TABLE packages(
+  name            TEXT PRIMARY KEY NOT NULL, 
+  version         TEXT NOT NULL, 
+  revision        INTEGER NOT NULL, 
+  epoch           INTEGER NOT NULL, 
+  requirements    TEXT,
+  properties      TEXT,
+  files           TEXT
+);
+'''
+  
   
   def __init__(self, filename):
     self._filename = path.abspath(filename)
