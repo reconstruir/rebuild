@@ -107,19 +107,19 @@ class package_db_entry(namedtuple('package_db_entry', 'format_version,name,versi
       'epoch': str(self.epoch),
       'requirements': util.sql_encode_requirements(self.requirements),
       'properties': util.sql_encode_dict(self.properties),
-      'files': util.sql_encode_files(self.files),
     }
     return d
   
   @classmethod
-  def from_sql_row(clazz, row):
+  def from_sql_row(clazz, row, files_rows):
     check.check_tuple(row)
+    files = util.files_from_sql_rows(files_rows)
     return clazz(row.name,
                  row.version,
                  row.revision,
                  row.epoch,
                  util.sql_decode_requirements(row.requirements),
                  json.loads(row.properties),
-                 file_checksum_list.from_json(row.files))
+                 files)
 
 check.register_class(package_db_entry, include_seq = False)

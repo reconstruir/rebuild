@@ -55,15 +55,7 @@ class package(object):
 
   @property
   def files(self):
-    if not self._files:
-      self._files = self._read_files()
-    return self._files
-
-  def _read_files(self):
-    'Return the list of files in the package.  Only files no metadata.'
-    files = [ m for m in archiver.members(self.tarball) if m.startswith(self.FILES_DIR) ]
-    files = [ file_util.remove_head(f, self.FILES_DIR) for f in files ]
-    return files
+    return self.metadata.files.filenames()
 
   def extract_files(self, installation_dir):
     archiver.extract(self.tarball, installation_dir,

@@ -1,10 +1,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import json
-#from collections import namedtuple
-#from bes.fs import file_checksum_list
 from bes.common import check, json_util, string_util
-#from rebuild.base import build_target, build_version, package_descriptor, requirement_list
+from bes.fs import file_checksum, file_checksum_list
 from rebuild.base import requirement_list
 
 class util(object):
@@ -46,59 +44,9 @@ class util(object):
   def sql_encode_files(clazz, files):
     return clazz.sql_encode_string(json_util.to_json(files.to_simple_list()))
 
-'''
-  def to_simple_dict(self):
-    'Return a simplified dict suitable for json encoding.'
-    return {
-      '_format_version': self.format_version,
-      'name': self.name,
-      'filename': self.filename,
-      'checksum': self.checksum,
-      'version': self.version,
-      'revision': self.revision,
-      'epoch': self.epoch,
-      'system': self.system,
-      'level': self.level,
-      'archs': self.archs,
-      'distro': self.distro,
-      'requirements': [ str(r) for r in self.requirements ],
-      'properties': self.properties,
-      'files': self.files.to_simple_list(),
-    }
-  
-  def to_sql_dict(self):
-    'Return a dict suitable to use directly with sqlite insert commands'
-    d =  {
-      'name': string_util.quote(self.name, "'"),
-      'filename': string_util.quote(self.filename, "'"),
-      'checksum': string_util.quote(self.checksum, "'"),
-      'version': string_util.quote(self.version, "'"),
-      'revision': str(self.revision),
-      'epoch': str(self.epoch),
-      'system': string_util.quote(self.system, "'"),
-      'level': string_util.quote(self.level, "'"),
-      'archs': string_util.quote(json_util.to_json(self.archs, sort_keys = True), "'"),
-      'distro': string_util.quote(self.distro or '', "'"),
-      'requirements': string_util.quote(json_util.to_json([ str(r) for r in self.requirements ], sort_keys = True), "'"),
-      'properties': string_util.quote(json_util.to_json(self.properties, sort_keys = True), "'"),
-      'files': string_util.quote(json_util.to_json(self.files.to_simple_list()), "'"),
-    }
-    return d
-  
   @classmethod
-  def from_sql_row(clazz, row):
-    check.check_tuple(row)
-    return clazz(row.filename,
-                 row.checksum,
-                 row.name,
-                 row.version,
-                 row.revision,
-                 row.epoch,
-                 row.system,
-                 row.level,
-                 json.loads(row.archs),
-                 row.distro or None,
-                 clazz._requirements_from_string_list(json.loads(row.requirements)),
-                 json.loads(row.properties),
-                 file_checksum_list.from_json(row.files))
-'''
+  def files_from_sql_rows(clazz, rows):
+    result = file_checksum_list()
+    for row in rows:
+      result.append(file_checksum(row.filename, row.checksum))
+    return result

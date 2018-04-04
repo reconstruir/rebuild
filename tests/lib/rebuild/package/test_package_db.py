@@ -32,6 +32,7 @@ class test_package_db(unittest.TestCase):
     db = DB(tmp_db)
     self.assertFalse( db.has_package('foo') )
     files = FCL([ ( 'lib/libfoo.a', 'c1' ), ( 'include/libfoo.h', 'c2' ) ])
+    files.sort()
     reqs = None
     new_entry = PE('foo', '1.2.3', 1, 0, [], {}, files)
     db.add_package(new_entry)
@@ -52,6 +53,7 @@ class test_package_db(unittest.TestCase):
     db = DB(tmp_db)
     self.assertFalse( db.has_package('foo') )
     files = FCL([ ( 'lib/libfoo.a', 'c1' ), ( 'include/libfoo.h', 'c2' ) ])
+    files.sort()
     reqs = None
     new_entry = PE('foo', '1.2.3', 1, 0, [], {}, files)
     db.add_package(new_entry)
@@ -99,7 +101,7 @@ class test_package_db(unittest.TestCase):
     self.assertEqual( [ 'p1', 'p2' ], db.packages_with_files([ 'p1/f2', 'p2/f1' ]) )
     self.assertEqual( [ 'p1', 'p2', 'p6' ], db.packages_with_files([ 'p1/f2', 'p2/f1', 'p6/f1' ]) )
 
-  def test_xperformance(self):
+  def xtest_performance(self):
     db = DB(self._make_tmp_db_path())
     TEST_REQUIREMENTS = RL.parse('foo >= 1.2.3-1 bar >= 6.6.6-1', default_system_mask = build_system.ALL)
     TEST_FILES = FCL([ ( 'lib/libfoo.a', 'c1' ), ( 'include/libfoo.h', 'c2' ) ])
