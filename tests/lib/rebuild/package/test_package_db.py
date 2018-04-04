@@ -3,7 +3,7 @@
 #
 import os.path as path, unittest
 from bes.fs import file_checksum_list as FCL, temp_file
-from rebuild.base import build_system, package_descriptor, requirement_list as RL
+from rebuild.base import build_system, package_descriptor as PD, requirement_list as RL
 from rebuild.package.package_db import package_db as DB
 from rebuild.package.package_db_entry import package_db_entry as PE
 from bes.debug import debug_timer
@@ -38,6 +38,8 @@ class test_package_db(unittest.TestCase):
     db.add_package(new_entry)
     self.assertTrue( db.has_package('foo') )
     self.assertEqual( [ 'foo' ], db.list_all() )
+    self.assertEqual( [ 'foo-1.2.3-1' ], db.list_all(include_version = True) )
+    self.assertEqual( [ PD.parse('foo-1.2.3-1') ], db.list_all_descriptors() )
     self.assertEqual( PE('foo', '1.2.3', 1, 0, [], {}, files), db.find_package('foo') )
   
     del db
