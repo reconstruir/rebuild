@@ -61,6 +61,7 @@ class artifact_manager(object):
     pkg = package(tarball)
     pkg_info = pkg.descriptor
     artifact_path = self.artifact_path(pkg_info, build_target)
+    print('FUCK: publish %s to %s' % (tarball, artifact_path))
     file_util.copy(tarball, artifact_path)
     if not self.no_git:
       git.add(self._publish_dir, pkg_info.artifact_path(build_target))

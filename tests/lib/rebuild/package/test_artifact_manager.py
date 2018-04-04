@@ -2,16 +2,17 @@
 #-*- coding:utf-8 -*-
 #
 
-import os.path as path, unittest
+import os.path as path
+from bes.testing.unit_test import unit_test
 from bes.fs import temp_file
 from bes.git import git
 from rebuild.base import build_arch, build_blurb, build_system, build_target, build_level, package_descriptor
 from rebuild.package import artifact_manager
 from rebuild.package.unit_test_packages import unit_test_packages
 
-class test_artifact_manager(unittest.TestCase):
+class test_artifact_manager(unit_test):
 
-  DEBUG = False
+  DEBUG = unit_test.DEBUG
   #DEBUG = True
 
   @classmethod
@@ -84,4 +85,4 @@ class test_artifact_manager(unittest.TestCase):
 #    self.assertEqual( package_descriptor('foo', '1.2.3-1'), artifact_manager.parse_filename('foo-1.2.3-1.tar.gz') )
 
 if __name__ == '__main__':
-  unittest.main()
+  unit_test.main()

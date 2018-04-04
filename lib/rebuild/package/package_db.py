@@ -69,14 +69,14 @@ CREATE TABLE {files_table_name}(
     return [ package_db_entry.from_sql_row(row, self._files_table_rows(row.name)) for row in rows ]
   
   def list_all(self, include_version = False):
-    rows = self._db.select_namedtuples('''SELECT * FROM packages''')
+    if not include_version:
+      rows = self._db.select_namedtuples('''SELECT name FROM packages''')
+      return [ row.name for row in rows ]
+    rows = self._db.select_namedtuples('''SELECT name, version, revision, epoch FROM packages''')
     result = []
     for row in rows:
       entry = package_db_entry.from_sql_row(row, [])
-      if include_version:
-        result.append(entry.descriptor.full_name)
-      else:
-        result.append(entry.descriptor.name)
+      result.append(entry.descriptor.full_name)
     return sorted(result)
 
   def has_package(self, name):

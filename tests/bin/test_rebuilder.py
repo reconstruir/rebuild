@@ -7,6 +7,7 @@ from bes.fs import file_find, temp_file
 from bes.archive import archiver
 from bes.system import host
 from collections import namedtuple
+from rebuild.base import build_arch, build_level, build_system, build_target
 
 class test_rebuilder_script(script_unit_test):
 
@@ -18,6 +19,10 @@ class test_rebuilder_script(script_unit_test):
 
   BUILD_LEVEL = 'release'
 
+  BUILD_TARGET = build_target(system = build_system.HOST,
+                              level = build_level.RELEASE,
+                              archs = build_arch.DEFAULT_HOST_ARCHS)
+  
   _test_context = namedtuple('_test_context', 'tmp_dir,command,result,artifacts_dir,artifacts,artifacts_members,artifacts_contents,droppings')
 
   def test_basic_fructose(self):
@@ -130,7 +135,7 @@ print("hook1 hook2")
     tmp_dir = self._make_temp_dir()
     command = self._make_command(tmp_dir, *args)
     cwd = path.join(self.data_dir(), cwd_subdir)
-    artifacts_dir = path.join(tmp_dir, 'artifacts', host.SYSTEM, 'x86_64', self.BUILD_LEVEL)
+    artifacts_dir = path.join(tmp_dir, 'artifacts', self.BUILD_TARGET.build_path)
     result = self.run_script(command, cwd = cwd)
     artifacts = file_find.find(artifacts_dir)
     droppings = file_find.find(tmp_dir)

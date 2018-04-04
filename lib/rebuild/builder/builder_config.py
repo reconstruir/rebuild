@@ -16,7 +16,7 @@ class builder_config(object):
     self.build_target = build_target()
     self.host_build_target = build_target(system = build_system.HOST,
                                           level = build_level.RELEASE,
-                                          archs = build_arch.HOST_ARCH)
+                                          archs = build_arch.DEFAULT_HOST_ARCHS)
     self.root_dir = None
     self.deps_only = False
     self.disabled = False

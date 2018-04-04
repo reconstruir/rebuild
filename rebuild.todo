@@ -4,7 +4,6 @@ Use "reb" namespace for build
 Add pager support to build errors
 Add xcrun find support to use the right compilers on darwin
 Add c++ dialect support
-Add multi arch support
 
 Write a test android app
 Write a test ios app
@@ -744,3 +743,9 @@ package.create_tarball() ignore_case = True seems backwards but matcher seems to
 
 apr 3
 need a package unit test with symlinks
+
+
+build.rebc<libstarch>
+broken:
+  macos: CC=clang CFLAGS=${REBUILD_COMPILE_ARCH_FLAGS}
+works:  macos: CC=clang CFLAGS="${REBUILD_COMPILE_ARCH_FLAGS}"

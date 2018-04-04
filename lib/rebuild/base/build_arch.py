@@ -17,16 +17,14 @@ class build_arch(object):
   
   ARCHS = {
     build_system.ANDROID: [ ARMV7 ],
-    # FIXME: fix this when multiarch finally works
-    #build_system.MACOS: [ I386, X86_64 ],
-    build_system.MACOS: [ X86_64 ],
+    build_system.MACOS: [ I386, X86_64 ],
     build_system.IOS: [ ARM64, ARMV7 ],
     build_system.IOS_SIM: [ I386, X86_64 ],
     build_system.LINUX: [],
   }
 
-  DEFAULT_ARCHS = copy.deepcopy(ARCHS)
-
+  DEFAULT_HOST_ARCHS = ARCHS[build_system.HOST]
+  
   KNOWN_ARCHS = [ ARMV7, ARM64, I386, X86_64 ]
 
   HOST_ARCH = platform.machine()
@@ -69,7 +67,7 @@ class build_arch(object):
   @classmethod
   def parse_archs(clazz, system, s):
     if s.lower() == 'default':
-      return clazz.DEFAULT_ARCHS[system]
+      return clazz.ARCHS[system]
     archs = s.split(',')
     for arch in archs:
       if not clazz.arch_is_valid(arch, system):

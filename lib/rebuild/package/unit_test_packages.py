@@ -14,27 +14,30 @@ class unit_test_packages(object):
 
   __test__ = False
 
+  #ARCHS = [ 'x86_64' ]
+  ARCHS = build_arch.DEFAULT_HOST_ARCHS
+  
   TEST_PACKAGES = {
-    'water-1.0.0-0': PM('', '', 'water', '1.0.0', 0, 0, 'macos', 'release', [ 'x86_64' ], None, None, {}, []),
-    'water-1.0.0-1': PM('', '', 'water', '1.0.0', 1, 0, 'macos', 'release', [ 'x86_64' ], None, None, {}, []),
-    'water-1.0.0-2': PM('', '', 'water', '1.0.0', 2, 0, 'macos', 'release', [ 'x86_64' ], None, None, {}, []),
-    'fiber-1.0.0-0': PM('', '', 'fiber', '1.0.0', 2, 0, 'macos', 'release', [ 'x86_64' ], None, None, {}, []),
-    'citrus-1.0.0-0': PM('', '', 'citrus', '1.0.0', 2, 0, 'macos', 'release', [ 'x86_64' ], None, None, {}, []),
-    'fructose-3.4.5-6': PM('', '', 'fructose', '3.4.5', 6, 0, 'macos', 'release', [ 'x86_64' ], None, None, {}, []),
-    'mercury-1.2.8-0': PM('', '', 'mercury', '1.2.8', 0, 0, 'macos', 'release', [ 'x86_64' ], None, None, {}, []),
-    'mercury-1.2.8-1': PM('', '', 'mercury', '1.2.8', 1, 0, 'macos', 'release', [ 'x86_64' ], None, None, {}, []),
-    'mercury-1.2.9-0': PM('', '', 'mercury', '1.2.9', 0, 0, 'macos', 'release', [ 'x86_64' ], None, None, {}, []),
-    'mercury_conflict-3.2.1-0': PM('', '', 'mercury_conflict', '3.2.1', 0, 0, 'macos', 'release', [ 'x86_64' ], None, None, {}, []),
-    'arsenic-1.2.9-0': PM('', '', 'arsenic', '1.2.9', 0, 0, 'macos', 'release', [ 'x86_64' ], None, None, {}, []),
-    'arsenic-1.2.9-1': PM('', '', 'arsenic', '1.2.9', 1, 0, 'macos', 'release', [ 'x86_64' ], None, None, {}, []),
-    'arsenic-1.2.10-0': PM('', '', 'arsenic', '1.2.10', 0, 0, 'macos', 'release', [ 'x86_64' ], None, None, {}, []),
-    'apple-1.2.3-1': PM('', '', 'apple', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, 'fruit >= 1.0.0', {}, []),
-    'fruit-1.0.0-0': PM('', '', 'fruit', '1.0.0', 0, 0, 'macos', 'release', [ 'x86_64' ], None, 'fructose >= 3.4.5-6 fiber >= 1.0.0-0 water >= 1.0.0-0', {}, []),
-    'pear-1.2.3-1': PM('', '', 'pear', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, 'fruit >= 1.0.0', {}, []),
-    'orange-6.5.4-3': PM('', '', 'orange', '6.5.4', 3, 0, 'macos', 'release', [ 'x86_64' ], None, 'fruit >= 1.0.0-0 citrus >= 1.0.0-0', {}, []),
-    'orange_juice-1.4.5-0': PM('', '', 'orange_juice', '1.4.5', 0, 0, 'macos', 'release', [ 'x86_64' ], None, 'orange >= 6.5.4-3', {}, []),
-    'pear_juice-6.6.6-0': PM('', '', 'pear_juice', '6.6.6', 0, 0, 'macos', 'release', [ 'x86_64' ], None, 'pear >= 1.2.3-1', {}, []),
-    'smoothie-1.0.0-0': PM('', '', 'smoothie', '1.0.0', 0, 0, 'macos', 'release', [ 'x86_64' ], None, 'orange >= 6.5.4-3 pear >= 1.2.3-1 apple >= 1.2.3-1', {}, []),
+    'water-1.0.0-0': PM('', '', 'water', '1.0.0', 0, 0, 'macos', 'release', ARCHS, None, None, {}, []),
+    'water-1.0.0-1': PM('', '', 'water', '1.0.0', 1, 0, 'macos', 'release', ARCHS, None, None, {}, []),
+    'water-1.0.0-2': PM('', '', 'water', '1.0.0', 2, 0, 'macos', 'release', ARCHS, None, None, {}, []),
+    'fiber-1.0.0-0': PM('', '', 'fiber', '1.0.0', 2, 0, 'macos', 'release', ARCHS, None, None, {}, []),
+    'citrus-1.0.0-0': PM('', '', 'citrus', '1.0.0', 2, 0, 'macos', 'release', ARCHS, None, None, {}, []),
+    'fructose-3.4.5-6': PM('', '', 'fructose', '3.4.5', 6, 0, 'macos', 'release', ARCHS, None, None, {}, []),
+    'mercury-1.2.8-0': PM('', '', 'mercury', '1.2.8', 0, 0, 'macos', 'release', ARCHS, None, None, {}, []),
+    'mercury-1.2.8-1': PM('', '', 'mercury', '1.2.8', 1, 0, 'macos', 'release', ARCHS, None, None, {}, []),
+    'mercury-1.2.9-0': PM('', '', 'mercury', '1.2.9', 0, 0, 'macos', 'release', ARCHS, None, None, {}, []),
+    'mercury_conflict-3.2.1-0': PM('', '', 'mercury_conflict', '3.2.1', 0, 0, 'macos', 'release', ARCHS, None, None, {}, []),
+    'arsenic-1.2.9-0': PM('', '', 'arsenic', '1.2.9', 0, 0, 'macos', 'release', ARCHS, None, None, {}, []),
+    'arsenic-1.2.9-1': PM('', '', 'arsenic', '1.2.9', 1, 0, 'macos', 'release', ARCHS, None, None, {}, []),
+    'arsenic-1.2.10-0': PM('', '', 'arsenic', '1.2.10', 0, 0, 'macos', 'release', ARCHS, None, None, {}, []),
+    'apple-1.2.3-1': PM('', '', 'apple', '1.2.3', 1, 0, 'macos', 'release', ARCHS, None, 'fruit >= 1.0.0', {}, []),
+    'fruit-1.0.0-0': PM('', '', 'fruit', '1.0.0', 0, 0, 'macos', 'release', ARCHS, None, 'fructose >= 3.4.5-6 fiber >= 1.0.0-0 water >= 1.0.0-0', {}, []),
+    'pear-1.2.3-1': PM('', '', 'pear', '1.2.3', 1, 0, 'macos', 'release', ARCHS, None, 'fruit >= 1.0.0', {}, []),
+    'orange-6.5.4-3': PM('', '', 'orange', '6.5.4', 3, 0, 'macos', 'release', ARCHS, None, 'fruit >= 1.0.0-0 citrus >= 1.0.0-0', {}, []),
+    'orange_juice-1.4.5-0': PM('', '', 'orange_juice', '1.4.5', 0, 0, 'macos', 'release', ARCHS, None, 'orange >= 6.5.4-3', {}, []),
+    'pear_juice-6.6.6-0': PM('', '', 'pear_juice', '6.6.6', 0, 0, 'macos', 'release', ARCHS, None, 'pear >= 1.2.3-1', {}, []),
+    'smoothie-1.0.0-0': PM('', '', 'smoothie', '1.0.0', 0, 0, 'macos', 'release', ARCHS, None, 'orange >= 6.5.4-3 pear >= 1.2.3-1 apple >= 1.2.3-1', {}, []),
    }
   
   def __init__(self, desc, pm, system = 'macos', level = 'release', debug = False):

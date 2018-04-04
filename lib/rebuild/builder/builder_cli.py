@@ -25,8 +25,8 @@ class builder_cli(object):
   }
 
   def __init__(self):
-    all_archs = ','.join(build_arch.ARCHS[build_system.HOST])
-    default_archs = ','.join(build_arch.DEFAULT_ARCHS[build_system.HOST])
+    all_archs = ','.join(build_arch.DEFAULT_HOST_ARCHS)
+    default_archs = ','.join(build_arch.ARCHS[build_system.HOST])
     build_levels = ','.join(build_level.LEVELS)
     systems = ','.join(build_system.SYSTEMS)
     self.parser = argparse.ArgumentParser(description = 'Build packages.')

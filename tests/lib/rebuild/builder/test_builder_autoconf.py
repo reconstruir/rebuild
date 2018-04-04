@@ -13,7 +13,7 @@ class test_builder_autoconf(unit_test):
 
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/packager'
 
-  DEBUG = True
+  DEBUG = unit_test.DEBUG
   #DEBUG = False
   
   def test_amhello(self):

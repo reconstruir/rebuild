@@ -18,7 +18,7 @@ class test_builder(unit_test):
 
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/packager'
 
-  DEBUG = False
+  DEBUG = unit_test.DEBUG
   #DEBUG = True
 
   def test_amhello(self):
@@ -80,7 +80,7 @@ class test_builder(unit_test):
     pdesc = package_descriptor('fructose', '3.4.5-6')
     bt = build_target(system = build_system.HOST,
                       level = build_level.RELEASE,
-                      archs = build_arch.HOST_ARCH)
+                      archs = build_arch.DEFAULT_HOST_ARCHS)
     install_rv = pm.install_package(pdesc, bt, ['BUILD', 'RUN'])
     self.assertTrue( install_rv )
     self.assertEqual( [ 'fructose-3.4.5-6' ], pm.list_all(include_version = True) )

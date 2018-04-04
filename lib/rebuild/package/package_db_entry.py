@@ -114,12 +114,20 @@ class package_db_entry(namedtuple('package_db_entry', 'format_version,name,versi
   def from_sql_row(clazz, row, files_rows):
     check.check_tuple(row)
     files = util.files_from_sql_rows(files_rows)
+    if hasattr(row, 'requirements'):
+      requirements = util.sql_decode_requirements(row.requirements)
+    else:
+      requirements = []
+    if hasattr(row, 'properties'):
+      properties = json.loads(row.properties)
+    else:
+      properties = {}
     return clazz(row.name,
                  row.version,
                  row.revision,
                  row.epoch,
-                 util.sql_decode_requirements(row.requirements),
-                 json.loads(row.properties),
+                 requirements,
+                 properties,
                  files)
 
 check.register_class(package_db_entry, include_seq = False)

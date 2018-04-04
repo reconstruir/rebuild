@@ -7,21 +7,21 @@ from rebuild.base import build_arch as BA, build_system as BS, build_target as B
 class test_build_target(unit_test):
 
   def test_build_path(self):
-    self.assertEqual( 'macos/x86_64/release', BT(BS.MACOS).build_path )
-    self.assertEqual( 'macos/x86_64/debug', BT(BS.MACOS, BL.DEBUG).build_path )
-    self.assertEqual( 'macos/x86_64/release', BT(BS.MACOS, BT.DEFAULT).build_path )
+    self.assertEqual( 'macos/i386-x86_64/release', BT(BS.MACOS).build_path )
+    self.assertEqual( 'macos/i386-x86_64/debug', BT(BS.MACOS, BL.DEBUG).build_path )
+    self.assertEqual( 'macos/i386-x86_64/release', BT(BS.MACOS, BT.DEFAULT).build_path )
     self.assertEqual( 'linux/x86_64/release', BT(BS.LINUX).build_path )
     self.assertEqual( 'ios/arm64-armv7/release', BT(BS.IOS).build_path )
     self.assertEqual( 'ios/arm64/release', BT(BS.IOS, archs = [ BA.ARM64 ]).build_path )
 
   def test_parse_expression(self):
     F = self._parse_exp
-    self.assertTrue( F('macos/x86_64/release', '$system == MACOS and $level == RELEASE') )
-    self.assertFalse( F('macos/x86_64/release', '$system == MACOS and $level != RELEASE') )
+    self.assertTrue( F('macos/i386-x86_64/release', '$system == MACOS and $level == RELEASE') )
+    self.assertFalse( F('macos/i386-x86_64/release', '$system == MACOS and $level != RELEASE') )
     self.assertTrue( F('linux.raspbian/x86_64/release', '$system == LINUX and $distro == RASPBIAN') )
     self.assertFalse( F('linux.raspbian/x86_64/release', '$system is MACOS or ($system is LINUX and $distro is not RASPBIAN)') )
-    self.assertTrue( F('macos/x86_64/release', '$system is MACOS or ($system is LINUX and $distro is not RASPBIAN)') )
-    self.assertTrue( F('macos/x86_64/debug', '$system is MACOS or ($system is LINUX and $distro is not RASPBIAN)') )
+    self.assertTrue( F('macos/i386-x86_64/release', '$system is MACOS or ($system is LINUX and $distro is not RASPBIAN)') )
+    self.assertTrue( F('macos/i386-x86_64/debug', '$system is MACOS or ($system is LINUX and $distro is not RASPBIAN)') )
     self.assertTrue( F('linux/x86_64/release', '$system is MACOS or ($system is LINUX and $distro is not RASPBIAN)') )
     self.assertTrue( F('linux/x86_64/debug', '$system is MACOS or ($system is LINUX and $distro is not RASPBIAN)') )
     
@@ -29,8 +29,8 @@ class test_build_target(unit_test):
     return BT.parse_path(bt_path).parse_expression(exp)
 
   def test_parse_path(self):
-    self.assertEqual( BT(system = BS.MACOS, level = BL.RELEASE), BT.parse_path('macos/x86_64/release') )
-    self.assertEqual( BT(system = BS.MACOS, level = BL.DEBUG), BT.parse_path('macos/x86_64/debug') )
+    self.assertEqual( BT(system = BS.MACOS, level = BL.RELEASE), BT.parse_path('macos/i386-x86_64/release') )
+    self.assertEqual( BT(system = BS.MACOS, level = BL.DEBUG), BT.parse_path('macos/i386-x86_64/debug') )
     self.assertEqual( BT(system = BS.LINUX, level = BL.RELEASE), BT.parse_path('linux/x86_64/release') )
     self.assertEqual( BT(system = BS.LINUX, level = BL.DEBUG), BT.parse_path('linux/x86_64/debug') )
     self.assertEqual( BT(system = BS.LINUX, level = BL.DEBUG, distro = BS.RASPBIAN), BT.parse_path('linux.raspbian/x86_64/debug') )
