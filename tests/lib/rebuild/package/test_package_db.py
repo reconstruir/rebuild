@@ -102,7 +102,7 @@ class test_package_db(unittest.TestCase):
       files = FCL([ ( 'lib/libfoo%s.a' % (i), 'c1' ), ( 'include/libfoo%s.h' % (i), 'c2' ) ])
 
     
-  def test_performance(self):
+  def test_xperformance(self):
     db = DB(self._make_tmp_db_path())
     TEST_REQUIREMENTS = RL.parse('foo >= 1.2.3-1 bar >= 6.6.6-1', default_system_mask = build_system.ALL)
     TEST_FILES = FCL([ ( 'lib/libfoo.a', 'c1' ), ( 'include/libfoo.h', 'c2' ) ])
