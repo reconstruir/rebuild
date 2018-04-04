@@ -124,13 +124,21 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
       'distro': util.sql_encode_string(self.distro),
       'requirements': sql_encode_requirements(self.requirements),
       'properties': sql_encode_dict(self.properties),
-      'files': sql_encode_files(self.files),
     }
     return d
   
   @classmethod
-  def from_sql_row(clazz, row):
+  def from_sql_row(clazz, row, files_rows):
     check.check_tuple(row)
+    files = util.files_from_sql_rows(files_rows)
+    if hasattr(row, 'requirements'):
+      requirements = util.sql_decode_requirements(row.requirements)
+    else:
+      requirements = []
+    if hasattr(row, 'properties'):
+      properties = json.loads(row.properties)
+    else:
+      properties = {}
     return clazz(row.filename,
                  row.checksum,
                  row.name,
@@ -141,8 +149,8 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
                  row.level,
                  json.loads(row.archs),
                  row.distro or None,
-                 util.sql_decode_requirements(row.requirements),
-                 json.loads(row.properties),
-                 file_checksum_list.from_json(row.files))
+                 requirements,
+                 properties,
+                 files)
 
 check.register_class(package_metadata, include_seq = False)

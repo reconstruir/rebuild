@@ -4,11 +4,11 @@
 import os.path as path
 from bes.common import algorithm
 from bes.fs import file_util
-from bes.common import check, dict_util, object_util
+from bes.common import check, object_util
 from bes.system import os_env
-from rebuild.base import build_blurb, build_target, package_descriptor
+from rebuild.base import build_blurb
 from bes.dependency import dependency_resolver
-from rebuild.package import artifact_manager, package, package_manager, package_list
+from rebuild.package import package_manager
 from collections import namedtuple
 from .rebuild_manager_config import rebuild_manager_config
 from .rebuild_manager_script import rebuild_manager_script
@@ -165,17 +165,3 @@ exec ${1+"$@"}
     check.check_package_descriptor_seq(packages)
     checksum_dirs = [ self.checksum_dir(package_info, build_target) for package_info in packages ]
     file_util.remove(checksum_dirs)
-
-  '''
-  def dep_map(self, build_target):
-    'Return a map of dependencies for the given build_target.'
-    available_packages = self.artifact_manager.available_packages(build_target)
-    available_packages = package_list.latest_versions(available_packages)
-    dep_map = {}
-    for package in available_packages:
-      existing_package = dep_map.get(package.descriptor.name, None)
-      if existing_package:
-        raise RuntimeError('package \"%s\" is already in dep_map (multiple versions) as \"%s\""' % (package.descriptor, existing_package))
-      dep_map[package.descriptor.name] = package.descriptor.requirements_names_for_system(build_target.system)
-    return dep_map
-'''

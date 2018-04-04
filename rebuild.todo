@@ -662,7 +662,6 @@ mar 17
 mar 18
  - split build_sytem into build_os and build_os_mask
  - reorg value_type, masked_value and recipe_parser_util into a coherent class hierarchy for values
- - reimplement package_list as a proper typed_list subclass
  - make package_descriptor be a namedtuple and remove methods that check for immutable properties
  
 mar 19

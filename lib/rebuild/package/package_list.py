@@ -29,10 +29,10 @@ class package_list(object):
     check.check_package_seq(packages)
     return [ package.descriptor for package in packages ]
 
-class xpackage_list(type_checked_list):
+class new_package_list(type_checked_list):
 
   def __init__(self, values = None):
-    super(xpackage_list, self).__init__(package, values = values)
+    super(new_package_list, self).__init__(package, values = values)
 
   def sort_by_descriptor(self):
     self._values = sorted(self._values, key = lambda package: package.descriptor)
@@ -55,4 +55,4 @@ class xpackage_list(type_checked_list):
     result.sort_by_descriptor()
     return result
   
-#check.register_class(package_list, include_seq = False)
+check.register_class(new_package_list, include_seq = False)

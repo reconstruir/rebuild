@@ -134,7 +134,6 @@ CREATE TABLE {files_table_name}(
     return result
 
   def list_all_descriptors(self):
-    self._db.execute('SELECT * FROM packages')
     rows = self._db.select_namedtuples('''SELECT * FROM packages''')
     rows = [ package_db_entry.from_sql_row(row, []) for row in rows ]
     result = package_descriptor_list([ row.descriptor for row in rows ])
