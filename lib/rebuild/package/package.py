@@ -134,10 +134,6 @@ class package(object):
     if 'export_compilation_flags_requirements' in properties:
       properties['export_compilation_flags_requirements'] = [ str(x) for x in properties['export_compilation_flags_requirements'] ]
     files = file_find.find(stage_dir, relative = True, file_type = file_find.FILE | file_find.LINK)
-    excludes = [
-      '*.pc.bak'
-    ]
-    files = matcher_multiple_filename(excludes, ignore_case = True).filter(files, negate = True)
     metadata = package_metadata('',
                                 '',
                                 pkg_desc.name,

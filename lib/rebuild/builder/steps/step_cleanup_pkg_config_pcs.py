@@ -15,7 +15,7 @@ class step_cleanup_pkg_config_pcs(step):
   def execute(self, script, env, args):
     pc_files = pkg_config.find_pc_files(script.stage_dir)
     for pc_file in pc_files:
-      if pkg_config_file.rewrite_cleanup(pc_file, pc_file):
+      if pkg_config_file.rewrite_cleanup(pc_file, pc_file, backup = False):
         self.blurb('Cleaned %s' % (path.relpath(pc_file)))
 
     return step_result(True, None)

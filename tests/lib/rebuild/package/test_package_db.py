@@ -3,9 +3,10 @@
 #
 import os.path as path, unittest
 from bes.fs import file_checksum_list as FCL, temp_file
-from rebuild.base import package_descriptor
+from rebuild.base import build_system, package_descriptor, requirement_list as RL
 from rebuild.package.package_db import package_db as DB
 from rebuild.package.package_db_entry import package_db_entry as PE
+from bes.debug import debug_timer
 
 class test_package_db(unittest.TestCase):
 
@@ -97,6 +98,38 @@ class test_package_db(unittest.TestCase):
     self.assertEqual( [ 'p1' ], db.packages_with_files([ 'p1/f2' ]) )
     self.assertEqual( [ 'p1', 'p2' ], db.packages_with_files([ 'p1/f2', 'p2/f1' ]) )
     self.assertEqual( [ 'p1', 'p2', 'p6' ], db.packages_with_files([ 'p1/f2', 'p2/f1', 'p6/f1' ]) )
-  
+
+      files = FCL([ ( 'lib/libfoo%s.a' % (i), 'c1' ), ( 'include/libfoo%s.h' % (i), 'c2' ) ])
+
+    
+  def test_performance(self):
+    db = DB(self._make_tmp_db_path())
+    TEST_REQUIREMENTS = RL.parse('foo >= 1.2.3-1 bar >= 6.6.6-1', default_system_mask = build_system.ALL)
+    TEST_FILES = FCL([ ( 'lib/libfoo.a', 'c1' ), ( 'include/libfoo.h', 'c2' ) ])
+    TEST_PROPERTIES = { 'p1': 'v1', 'p2': 6 }
+
+    t = debug_timer('x', level = 'error')
+    n = 1000
+    t.start('insert %d ()' % (n))
+    for i in range(1, n + 1):
+      name = 'n%s' % (i)
+      version = '1.0.0'
+      files = FCL([ ( 'lib/libfoo%s.a' % (i), 'c1' ), ( 'include/libfoo%s.h' % (i), 'c2' ) ])
+      p = PE(name, version, 0, 0, TEST_REQUIREMENTS, TEST_PROPERTIES, files)
+      db.add_package(p)
+    t.stop()
+
+    t.start('%s: list_all()')
+    db.list_all()
+    t.stop()
+
+    t.start('%s: names()')
+    names = db.names()
+    print(len(names))
+    for name in names:
+      files = db.package_files(name)
+      #print('%s: %s' % (name, len(files)))
+    t.stop()
+
 if __name__ == '__main__':
   unittest.main()

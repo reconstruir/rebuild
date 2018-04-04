@@ -138,11 +138,11 @@ class pkg_config_file(object):
     return ' '.join(unique_v)
 
   @classmethod
-  def rewrite_cleanup(clazz, src_pc, dst_pc):
+  def rewrite_cleanup(clazz, src_pc, dst_pc, backup = True):
     cf = pkg_config_file()
     cf.parse_file(src_pc)
     cf.cleanup_duplicate_exports()
-    return cf.write_file(dst_pc)
+    return cf.write_file(dst_pc, backup = backup)
 
   @classmethod
   def is_pc_file(clazz, f):
