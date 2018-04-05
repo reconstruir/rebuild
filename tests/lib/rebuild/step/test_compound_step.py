@@ -4,6 +4,7 @@
 import unittest
 from test_steps import *
 from rebuild.step import compound_step
+from bes.debug import debug_timer
 
 class test_compound_step(unittest.TestCase):
 
@@ -17,10 +18,13 @@ class test_compound_step(unittest.TestCase):
 
     three_steps = ThreeSteps()
 
-    script = { 'foo': 'hi', 'bar': 666 }
+    class script(object):
+      def __init__(self):
+        self.timer = debug_timer('test_compound_step', 'info')
+    
     common_args = { 'food': 'steak', 'drink': 'wine' }
     env = { 'fruit': 'kiwi' }
-    result = three_steps.execute(script, env, args = common_args)
+    result = three_steps.execute(script(), env, args = common_args)
     self.assertTrue( result.success )
     self.assertEqual( None, result.message )
     self.assertEqual( None, result.failed_step )
