@@ -23,8 +23,8 @@ class builder_script(object):
     check.check_recipe(recipe)
     check.check_build_target(build_target)
 
-    #self.timer = debug_timer('script_timer', level = 'debug')
-    self.timer = debug_timer('script_timer', level = 'error')
+    self.timer = debug_timer('script_timer', level = 'debug')
+    #self.timer = debug_timer('script_timer', level = 'error')
 
     self.env = env
     self.recipe = recipe
