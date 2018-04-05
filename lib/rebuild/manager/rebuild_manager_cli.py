@@ -363,7 +363,7 @@ remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir @ROOT_DIR@ -
     return 0
 
   def _command_package_metadata(self, tarball):
-    content = archiver.extract_member_to_string(tarball, package.INFO_FILENAME)
+    content = archiver.extract_member_to_string(tarball, package.METADATA_FILENAME)
     print(content)
     return 0
 

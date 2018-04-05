@@ -145,7 +145,9 @@ packages: orange_juice pear_juice
     ]
     env = os_env.make_clean_env(keep_keys = [ 'PYTHONPATH' ],
                                 update = { 'PATH': path.dirname(self.script) })
-    rv = execute.execute(cmd, raise_error = False, env = env)
+    rv = execute.execute(cmd, raise_error = False, env = env, stderr_to_stdout = True)
+    if rv.exit_code != 0 or self.DEBUG:
+      self.spew(rv.stdout)
     self.assertEqual( 0, rv.exit_code )
     args = [
       'packages',

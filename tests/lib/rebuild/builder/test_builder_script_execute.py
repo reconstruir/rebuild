@@ -46,7 +46,7 @@ class test_builder_script_execute(unit_test):
       'files/bin/hello',
       'files/bin/rebbe_hello',
       'files/share/doc/amhello/README',
-      'metadata/info.json'
+      'metadata/metadata.json'
     ], archiver.members(artifact_path) )
     self.assertEqual( {
       u'archs': [u'x86_64'],
@@ -56,7 +56,7 @@ class test_builder_script_execute(unit_test):
       u'requirements': [],
       u'system': u''+host.SYSTEM,
       u'version': u'1.0'
-    }, json.loads(archiver.extract_member_to_string(artifact_path, 'metadata/info.json')) )
+    }, json.loads(archiver.extract_member_to_string(artifact_path, 'metadata/metadata.json')) )
 
   def _load_builder_script(self, filename):
     bt = build_target()

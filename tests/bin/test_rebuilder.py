@@ -79,7 +79,7 @@ class test_rebuilder_script(script_unit_test):
     self.assertEqual( [
       'files/foo-1.0.0/bin/bar.sh',
       'files/foo-1.0.0/usr/bin/foo.sh',
-      'metadata/info.json',
+      'metadata/metadata.json',
     ], test.artifacts_members['foo-1.0.0.tar.gz'])
     
   def test_hooks(self):
@@ -89,7 +89,7 @@ class test_rebuilder_script(script_unit_test):
     tgz = path.join(test.artifacts_dir, 'foo-1.0.0.tar.gz')
     self.assertEqual( [
       'files/bin/foo.py',
-      'metadata/info.json',
+      'metadata/metadata.json',
     ], test.artifacts_members['foo-1.0.0.tar.gz'])
     expected = '''#!/usr/bin/env python
 print("hook1 hook2")
@@ -105,7 +105,7 @@ print("hook1 hook2")
       'env/foo_env1.sh',
       'env/foo_env2.sh',
       'files/bin/foo.py',
-      'metadata/info.json',
+      'metadata/metadata.json',
     ], test.artifacts_members['foo-1.0.0.tar.gz'])
 
     expected = '''#!/usr/bin/env python
@@ -149,7 +149,7 @@ print("hook1 hook2")
           artifacts_contents[artifact] = self._artifact_contents(artifact_path)
       
     if result.exit_code != 0 or self.DEBUG:
-      print(result.stdout)
+      self.spew(result.stdout)
       
     return self._test_context(tmp_dir, command, result, artifacts_dir, artifacts, artifacts_members, artifacts_contents, droppings)
 

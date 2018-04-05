@@ -219,18 +219,16 @@ class package_manager(object):
     pkg = self._artifact_manager.package(pkg_desc, build_target)
 
     if self.is_installed(pkg.descriptor.name):
-      old_pkg_desc = self.db.find_package(pkg.descriptor.name).descriptor
-      comparison = package_descriptor.full_name_cmp(old_pkg_desc, pkg_desc)
+      old_pkg_entry = self.db.find_package(pkg.descriptor.name)
+      old_pkg_entry_desc = old_pkg_entry.descriptor
+      comparison = package_descriptor.full_name_cmp(old_pkg_entry_desc, pkg_desc)
       if force_install:
-        
-        comparison = -1
+        if old_pkg_entry.checksum != pkg.metadata.checksum:
+          comparison = -1
       if comparison == 0:
-        print('FUCK: force_install=True')
         return False
       elif comparison < 0:
-        print('FUCK: uninstall %s' % (pkg.descriptor.name))
         self.uninstall_package(pkg.descriptor.name)
-        print('FUCK: install %s' % (pkg.tarball))
         self.install_tarball(pkg.tarball, hardness)
         return True
       else:
@@ -239,7 +237,7 @@ class package_manager(object):
           self.install_tarball(pkg.tarball, hardness)
           return True
         else:
-          print('warning: installed package %s newer than available package %s' % (old_pkg_desc.full_name, pkg_desc.full_name))
+          print('warning: installed package %s newer than available package %s' % (old_pkg_entry_desc.full_name, pkg_desc.full_name))
         return False
     else:
       self.install_tarball(pkg.tarball, hardness)

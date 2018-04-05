@@ -15,7 +15,7 @@ from .package_metadata import package_metadata
 class package(object):
 
   METADATA_DIR = 'metadata'
-  INFO_FILENAME = METADATA_DIR + '/' + 'info.json'
+  METADATA_FILENAME = METADATA_DIR + '/' + 'metadata.json'
   FILES_DIR = 'files'
   ENV_DIR = 'env'
 
@@ -38,7 +38,7 @@ class package(object):
   def raw_metadata(self):
     if not self._raw_metadata:
       # FIXME: need to use a better root dir something that ends up in ~/.rebuild/tmp/package_members_cache or such
-      self._raw_metadata = archiver.extract_member_to_string_cached(self.tarball, self.INFO_FILENAME)
+      self._raw_metadata = archiver.extract_member_to_string_cached(self.tarball, self.METADATA_FILENAME)
     return self._raw_metadata
   
   @property
@@ -141,7 +141,7 @@ class package(object):
     metadata_filename = temp_file.make_temp_file(suffix = '.json')
     file_util.save(metadata_filename, content = metadata.to_json())
     extra_items = [
-      archive.Item(metadata_filename, 'metadata/info.json'),
+      archive.Item(metadata_filename, clazz.METADATA_FILENAME),
     ]
     if env_dir and path.isdir(env_dir):
       env_files = dir_util.list(env_dir, relative = True)

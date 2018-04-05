@@ -65,7 +65,7 @@ class test_package(unittest.TestCase):
       'env/foo.sh',
       'files/bar.txt',
       'files/foo.txt',
-      'metadata/info.json',
+      'metadata/metadata.json',
     ]
     self.assertEqual( expected_members, archiver.members(tarball_path) )
 
