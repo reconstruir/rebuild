@@ -21,20 +21,21 @@ class step_extract_tarballs_to_stage_dir(step):
   def execute(self, script, env, args):
     values = self.recipe.resolve_values(env.config.build_target.system)
     skip_unpack = values.get('skip_unpack')
+    tarballs_no_base_dir = values.get('tarballs_no_base_dir')
+    tarballs_strip_common_base = values.get('tarballs_strip_common_base')
     
-    if args.get('skip_unpack', False):
+    if skip_unpack:
       return step_result(True, None)
 
     tarballs = args.get('tarballs', [])
-    strip_common_base = args.get('tarballs_strip_common_base', False)
-    if args.get('tarballs_no_base_dir', False):
+    if tarballs_no_base_dir:
       base_dir = None
     else:
       base_dir = script.descriptor.full_name
-      
+
     for tarball in tarballs:
       self.blurb('Extracting(2) %s' % (tarball))
       archiver.extract(tarball, script.stage_dir,
                        base_dir = base_dir,
-                       strip_common_base = strip_common_base)
+                       strip_common_base = tarballs_strip_common_base)
     return step_result(True)
