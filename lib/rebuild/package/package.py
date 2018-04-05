@@ -160,8 +160,11 @@ class package(object):
   def _create_tarball(clazz, tarball_filename, stage_dir):
     'Return the list of files to package.  Maybe could do some filtering here.  Using find because its faster that bes.fs.file_find.'
     files_to_package = clazz._files_to_package(stage_dir)
-#    for f in files_to_package:
-#      print('FUCK: TO PACK: %s' % (f))
-    archiver.create(tarball_filename, stage_dir)
+    file_util.mkdir(path.dirname(tarball_filename))
+    manifest = temp_file.make_temp_file(content = '\n'.join(files_to_package))
+    tar_cmd = [ 'tar', 'cf', tarball_filename, '-C', stage_dir, '-T', manifest ]
+    #print('FUCK: tar_cmd=%s' % (tar_cmd))
+    execute.execute(tar_cmd)
+    #archiver.create(tarball_filename, stage_dir)
   
 check.register_class(package, include_seq = False)
