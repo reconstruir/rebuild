@@ -407,7 +407,7 @@ remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir @ROOT_DIR@ -
                           opts.get('build_target', build_target.DEFAULT),
                           opts.get('archs', build_target.DEFAULT))
 
-    build_blurb.blurb('tester', ' build_target: %s' % (target))
+    build_blurb.blurb('tester', ' build_target: %s' % (str(target)))
     build_blurb.blurb('tester', '      tmp_dir: %s' % (tmp_dir))
     build_blurb.blurb('tester', 'artifacts_dir: %s' % (artifacts_dir))
 
@@ -416,7 +416,8 @@ remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir @ROOT_DIR@ -
   
     test_dir = path.join(tmp_dir, 'test')
     source_dir = path.dirname(test)
-    test_config = package_tester.test_config(package_tarball, source_dir, test_dir, am, tm, target)
+    #test_config = namedtuple('test_config', 'script,package_tarball,artifact_manager,tools_manager,extra_env')
+    test_config = package_tester.test_config(None, package_tarball, am, tm, []) #     source_dir, test_dir, am, tm, target)
     tester = package_tester(test_config, test)
 
     result = tester.run()

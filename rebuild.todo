@@ -748,3 +748,6 @@ build.rebc<libstarch>
 broken:
   macos: CC=clang CFLAGS=${REBUILD_COMPILE_ARCH_FLAGS}
 works:  macos: CC=clang CFLAGS="${REBUILD_COMPILE_ARCH_FLAGS}"
+
+april 4
+- remanager.py test unit test
