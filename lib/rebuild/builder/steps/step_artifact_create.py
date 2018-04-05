@@ -21,11 +21,11 @@ class step_artifact_create_make_package(step):
     tarball_name = '%s.tar.gz' % (script.descriptor.full_name)
     assert tarball_name == script.descriptor.tarball_filename
     output_tarball_path = path.join(script.artifact_dir, script.descriptor.tarball_filename)
-    self.blurb('creating tarball %s from %s' % (output_tarball_path, script.stage_dir))
+    self.blurb('creating tarball %s from %s' % (output_tarball_path, script.staged_files_dir))
     staged_tarball = package.create_tarball(output_tarball_path,
                                             script.descriptor,
                                             script.build_target,
-                                            script.stage_dir,
+                                            script.staged_files_dir,
                                             script.env_dir)
     self.blurb('staged tarball: %s' % (staged_tarball))
     return step_result(True, None, output = { 'staged_tarball': staged_tarball })

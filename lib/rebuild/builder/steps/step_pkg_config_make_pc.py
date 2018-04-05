@@ -38,7 +38,7 @@ class step_pkg_config_make_pc(step):
       pc_file_variables.unquote_strings()
       replacements.update(pc_file_variables.to_dict())
     for src_pc in pc_files:
-      dst_dir = path.join(script.stage_dir, 'lib/pkgconfig')
+      dst_dir = path.join(script.staged_files_dir, 'lib/pkgconfig')
       dst_pc = path.join(dst_dir, path.basename(src_pc))
       file_replace.copy_with_substitute(src_pc, dst_pc, replacements, backup = False)
     return step_result(True, None)

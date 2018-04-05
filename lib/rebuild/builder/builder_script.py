@@ -38,9 +38,9 @@ class builder_script(object):
     self.source_unpacked_dir = path.join(self.working_dir, 'source')
     self.build_dir = path.join(self.working_dir, 'build')
 
-    self.stage_dir = path.join(self.working_dir, 'stage')
-    self.staged_files_lib_dir = path.join(self.stage_dir, 'lib')
-    self.staged_files_bin_dir = path.join(self.stage_dir, 'bin')
+    self.staged_files_dir = path.join(self.working_dir, 'stage')
+    self.staged_files_lib_dir = path.join(self.staged_files_dir, 'lib')
+    self.staged_files_bin_dir = path.join(self.staged_files_dir, 'bin')
     self.staged_files_instructions_dir = path.join(self.staged_files_lib_dir, 'rebuild_instructions')
 
     self.env_dir = path.join(self.working_dir, 'env')
@@ -62,9 +62,9 @@ class builder_script(object):
       'REBUILD_REQUIREMENTS_LIB_DIR': self.requirements_manager.lib_dir,
       'REBUILD_REQUIREMENTS_SHARE_DIR': self.requirements_manager.share_dir,
       'REBUILD_SOURCE_DIR': path.abspath(self.source_dir),
-      'REBUILD_STAGE_FRAMEWORKS_DIR':  path.join(self.stage_dir, 'frameworks'),
-      'REBUILD_STAGE_PREFIX_DIR':  self.stage_dir,
-      'REBUILD_STAGE_PYTHON_LIB_DIR':  path.join(self.stage_dir, 'lib/python'),
+      'REBUILD_STAGE_FRAMEWORKS_DIR':  path.join(self.staged_files_dir, 'frameworks'),
+      'REBUILD_STAGE_PREFIX_DIR':  self.staged_files_dir,
+      'REBUILD_STAGE_PYTHON_LIB_DIR':  path.join(self.staged_files_dir, 'lib/python'),
       'REBUILD_TEST_DIR': self.test_dir,
     }
       

@@ -6,7 +6,7 @@ from abc import abstractmethod
 class check(object):
 
   @abstractmethod
-  def check(self, stage_dir, env):
+  def check(self, staged_files_dir, env):
     pass
 
 class check_result(object):

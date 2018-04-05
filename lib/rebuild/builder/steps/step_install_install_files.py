@@ -36,7 +36,7 @@ class step_install_install_files(step):
       src = variable.substitute(install_file.filename, script.substitutions)
       if not path.isfile(src):
         return step_result(False, 'File not found: %s' % (src))
-      dst = path.join(script.stage_dir, install_file.dst_filename)
+      dst = path.join(script.staged_files_dir, install_file.dst_filename)
 #      if path.exists(dst):
 #        return step_result(False, 'File already exists: %s' % (dst))
       dst_dir = path.dirname(dst)

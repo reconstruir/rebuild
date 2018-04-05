@@ -36,7 +36,7 @@ class step_extract_tarballs_to_stage_dir(step):
 
     for tarball in tarballs:
       self.blurb('Extracting extra tarball %s' % (path.relpath(tarball)))
-      archiver.extract(tarball, script.stage_dir,
+      archiver.extract(tarball, script.staged_files_dir,
                        base_dir = base_dir,
                        strip_common_base = tarballs_strip_common_base)
     return step_result(True)

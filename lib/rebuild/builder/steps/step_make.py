@@ -86,7 +86,7 @@ class step_make_install(step):
       'make',
       makefile_flags,
       install_target,
-      'prefix=%s' % (script.stage_dir),
+      'prefix=%s' % (script.staged_files_dir),
       'V=1',
     ] + make_install_flags
     return self.call_shell(cmd, script, env, args, extra_env = make_install_env)

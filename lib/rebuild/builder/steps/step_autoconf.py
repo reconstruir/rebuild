@@ -42,7 +42,7 @@ class step_autoconf_configure(step):
     configure_script_path = path.join(script.source_unpacked_dir, configure_script)
     configure_cmd = [
       configure_script_path,
-      '--prefix=%s' % (script.stage_dir),
+      '--prefix=%s' % (script.staged_files_dir),
     ] + configure_flags + tc.autoconf_flags()
 
     if autoreconf_cmd:

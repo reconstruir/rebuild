@@ -13,10 +13,10 @@ class step_check_hard_coded_paths(step):
 
   def execute(self, script, env, args):
     replacements = {
-      script.stage_dir: '${REBUILD_PACKAGE_PREFIX}',
+      script.staged_files_dir: '${REBUILD_PACKAGE_PREFIX}',
       script.requirements_manager.installation_dir: '${REBUILD_PACKAGE_PREFIX}',
     }
-    file_search.search_replace(script.stage_dir,
+    file_search.search_replace(script.staged_files_dir,
                                replacements,
                                backup = False,
                                test_func = file_mime.is_text)

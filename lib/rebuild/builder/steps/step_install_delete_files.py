@@ -28,9 +28,9 @@ class step_install_delete_files(step):
       message = 'No delete_files for %s' % (script.descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
-    delete_files_in_stage_dir = [ path.join(script.stage_dir, f) for f in delete_files ]
-    missing_files = [ f for f in delete_files_in_stage_dir if not path.exists(f) ]
+    delete_files_in_staged_files_dir = [ path.join(script.staged_files_dir, f) for f in delete_files ]
+    missing_files = [ f for f in delete_files_in_staged_files_dir if not path.exists(f) ]
     if missing_files and not ignore_missing:
       return step_result(False, 'File(s) to delete not found: %s' % (' '.join(missing_files)))
-    file_util.remove(delete_files_in_stage_dir)
+    file_util.remove(delete_files_in_staged_files_dir)
     return step_result(True, None)

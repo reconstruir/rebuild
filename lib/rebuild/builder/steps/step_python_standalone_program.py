@@ -64,7 +64,7 @@ class step_python_make_standalone_program(step):
       return rv
     if not path.isfile(dst_program):
       return step_result(False, 'dst program not found: %s' % (dst_program))
-    installed_program = path.join(script.stage_dir, program.dst_filename)
+    installed_program = path.join(script.staged_files_dir, program.dst_filename)
     file_util.mkdir(path.dirname(installed_program))
     file_util.copy(dst_program, installed_program)
     os.chmod(installed_program, 0o755)
@@ -80,7 +80,7 @@ class step_python_make_standalone_program(step):
       src_program = path.join(script.build_dir, src_program)
     if not path.isfile(src_program):
       return step_result(False, 'src program not found: %s' % (src_program))
-    installed_program = path.join(script.stage_dir, program.dst_filename)
+    installed_program = path.join(script.staged_files_dir, program.dst_filename)
     file_util.mkdir(path.dirname(installed_program))
     file_util.copy(src_program, installed_program)
     os.chmod(installed_program, 0o755)

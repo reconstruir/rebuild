@@ -21,12 +21,12 @@ class step_cleanup_strip_binaries(step):
     else:
       if not args.get('strip_binaries', False):
         return step_result(True, None)
-    if not path.isdir(script.stage_dir):
+    if not path.isdir(script.staged_files_dir):
       return step_result(True, None)
     binary_format = script.build_target.binary_format
     if not binary_format:
       return step_result(True, 'Unknown binary format: %s' % (binary_format))
-    binaries = binary_detector.find_strippable_binaries(script.stage_dir, format_name = binary_format)
+    binaries = binary_detector.find_strippable_binaries(script.staged_files_dir, format_name = binary_format)
     for b in binaries:
       self.blurb('stripping binary: %s' % (path.relpath(b)))
       if not strip.strip(script.build_target, b):

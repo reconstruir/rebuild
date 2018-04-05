@@ -23,7 +23,7 @@ class step_cleanup_library_filenames(step):
         link_path = path.join(script.staged_files_lib_dir, link_filename)
         file_util.symlink(l, link_path)
 
-    pc_files = pkg_config.find_pc_files(script.stage_dir)
+    pc_files = pkg_config.find_pc_files(script.staged_files_dir)
     for pc_file in pc_files:
       pc_file_basename = path.basename(pc_file)
       new_pc_file = self._pc_file_add_third_party_prefix(script, env, pc_file)

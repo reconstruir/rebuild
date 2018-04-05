@@ -144,7 +144,7 @@ class step(with_metaclass(step_register_meta, object)):
     env.update(script.substitutions)
     os_env.update(env, script.env.tools_manager.shell_env(script.resolve_deps(['TOOL'], False)))
     os_env.update(env, script.requirements_manager.shell_env(script.resolve_deps(['RUN'], False)))
-    os_env.update(env, os_env.make_shell_env(script.stage_dir))
+    os_env.update(env, os_env.make_shell_env(script.staged_files_dir))
 
     env['REBUILD_PYTHON_VERSION'] = '2.7'
     env['PYTHON'] = 'python%s' % (env['REBUILD_PYTHON_VERSION'])
@@ -235,7 +235,7 @@ class step(with_metaclass(step_register_meta, object)):
     from bes.compat import StringIO
     s = StringIO()
     s.write('#!/bin/bash\n')
-    s.write('mkdir -p %s\n' % (script.stage_dir))
+    s.write('mkdir -p %s\n' % (script.staged_files_dir))
     items = sorted(env.items())
     last_item = items.pop(-1)
 
