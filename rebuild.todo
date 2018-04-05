@@ -751,7 +751,7 @@ works:  macos: CC=clang CFLAGS="${REBUILD_COMPILE_ARCH_FLAGS}"
 
 april 4
 - remanager.py test unit test
-
+- need to check for env_dir files conflicts
 
 before great commit
 - package rebc descriptions - vs space
