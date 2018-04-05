@@ -56,8 +56,6 @@ class step_setup_unpack(step):
     if args.get('skip_unpack', False):
       return step_result(True, None, output = { 'tarballs': tarballs })
     
-    for tarball in tarballs:
-      self.blurb('Extracting %s' % (tarball))
     self._extract(tarballs, script.working_dir, 'source', True)
     return step_result(True, None, output = { 'tarballs': tarballs })
 
@@ -118,6 +116,7 @@ class step_setup_unpack(step):
   def _extract(clazz, tarballs, dest_dir, base_dir, strip_common_base):
     tarballs = object_util.listify(tarballs)
     for tarball in tarballs:
+      self.blurb('Extracting(1) %s' % (tarball))
       archiver.extract(tarball,
                        dest_dir,
                        base_dir = base_dir,
