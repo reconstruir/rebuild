@@ -121,8 +121,8 @@ class test_package_descriptor(unit_test):
     self.assertEqual( 'foo-1.2.3-1.tar.gz', PD('foo', '1.2.3-1').tarball_filename )
 
   def test_artifact_path(self):
-    self.assertEqual( 'macos/i386-x86_64/release/foo-1.2.3-1.tar.gz', PD('foo', '1.2.3-1').artifact_path(build_target('macos', 'release')) )
-    self.assertEqual( 'macos/i386-x86_64/debug/foo-1.2.3-1.tar.gz', PD('foo', '1.2.3-1').artifact_path(build_target('macos', 'debug')) )
+    self.assertEqual( 'macos/x86_64/release/foo-1.2.3-1.tar.gz', PD('foo', '1.2.3-1').artifact_path(build_target('macos', 'release')) )
+    self.assertEqual( 'macos/x86_64/debug/foo-1.2.3-1.tar.gz', PD('foo', '1.2.3-1').artifact_path(build_target('macos', 'debug')) )
     self.assertEqual( 'linux/x86_64/release/foo-1.2.3-1.tar.gz', PD('foo', '1.2.3-1').artifact_path(build_target('linux', 'release')) )
     self.assertEqual( 'linux/x86_64/debug/foo-1.2.3-1.tar.gz', PD('foo', '1.2.3-1').artifact_path(build_target('linux', 'debug')) )
 

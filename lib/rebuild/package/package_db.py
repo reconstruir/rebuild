@@ -23,7 +23,8 @@ CREATE TABLE packages(
   revision        INTEGER NOT NULL, 
   epoch           INTEGER NOT NULL, 
   requirements    TEXT,
-  properties      TEXT
+  properties      TEXT,
+  checksum        TEXT NOT NULL
 );
 '''
   

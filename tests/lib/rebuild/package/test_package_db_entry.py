@@ -29,6 +29,7 @@ class test_package_db_entry(unit_test):
     expected_json = '''\
 {
   "_format_version": 2, 
+  "checksum": "b6e239213b95578407799e95174bbd47330b9a8c", 
   "epoch": 0, 
   "files": [
     [
@@ -58,6 +59,7 @@ class test_package_db_entry(unit_test):
     json = '''\
 {
   "_format_version": 2, 
+  "checksum": "b6e239213b95578407799e95174bbd47330b9a8c", 
   "epoch": 0, 
   "files": [
     [
@@ -111,6 +113,7 @@ class test_package_db_entry(unit_test):
   def test_to_simple_dict(self):
     expected = {
       '_format_version': 2, 
+      'checksum': 'b6e239213b95578407799e95174bbd47330b9a8c',
       'epoch': 0, 
       'files': [['f1', 'chk1'], ['f2', 'chk2']], 
       'name': 'kiwi', 
@@ -123,8 +126,8 @@ class test_package_db_entry(unit_test):
     
   def test_to_sql_dict(self):
     expected = {
+      'checksum': '\'b6e239213b95578407799e95174bbd47330b9a8c\'',
       'epoch': '0',
-#      'files': '\'[["f1", "chk1"], ["f2", "chk2"]]\'',
       'name': '\'kiwi\'', 
       'properties': '\'{"p1": "v1", "p2": 6}\'',
       'requirements': '\'["foo >= 1.2.3-1", "bar >= 6.6.6-1"]\'',
@@ -137,6 +140,7 @@ class test_package_db_entry(unit_test):
     db = sqlite(':memory:')
     db.execute(DB.SCHEMA_PACKAGES)
     d = self.TEST_ENTRY.to_sql_dict()
+    print('FUCK: %s' % (d)) 
     keys = ', '.join(d.keys())
     values = ', '.join(d.values())
     db.execute('''INSERT INTO packages (%s) values (%s)''' % (keys, values))

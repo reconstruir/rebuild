@@ -222,11 +222,15 @@ class package_manager(object):
       old_pkg_desc = self.db.find_package(pkg.descriptor.name).descriptor
       comparison = package_descriptor.full_name_cmp(old_pkg_desc, pkg_desc)
       if force_install:
+        
         comparison = -1
       if comparison == 0:
+        print('FUCK: force_install=True')
         return False
       elif comparison < 0:
+        print('FUCK: uninstall %s' % (pkg.descriptor.name))
         self.uninstall_package(pkg.descriptor.name)
+        print('FUCK: install %s' % (pkg.tarball))
         self.install_tarball(pkg.tarball, hardness)
         return True
       else:

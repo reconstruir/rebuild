@@ -1,15 +1,15 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import json, pickle
+import json
 from collections import namedtuple
 from bes.fs import file_checksum, file_checksum_list
 from bes.common import check, json_util, string_util
 from rebuild.base import build_version, package_descriptor, requirement_list
 from .util import util
 
-class package_db_entry(namedtuple('package_db_entry', 'format_version,name,version,revision,epoch,requirements,properties,files')):
+class package_db_entry(namedtuple('package_db_entry', 'format_version,name,version,revision,epoch,requirements,properties,files,checksum')):
 
-  def __new__(clazz, name, version, revision, epoch, requirements, properties, files):
+  def __new__(clazz, name, version, revision, epoch, requirements, properties, files, checksum = None):
     check.check_string(name)
     check.check_string(version)
     check.check_int(revision)
@@ -18,7 +18,8 @@ class package_db_entry(namedtuple('package_db_entry', 'format_version,name,versi
     check.check_dict(properties)
     files = files or file_checksum_list()
     check.check_file_checksum_list(files)
-    return clazz.__bases__[0].__new__(clazz, 2, name, version, revision, epoch, requirements, properties, files)
+    checksum = checksum or files.checksum()
+    return clazz.__bases__[0].__new__(clazz, 2, name, version, revision, epoch, requirements, properties, files, checksum)
 
   def __hash__(self):
     return hash(self.to_json())
@@ -75,7 +76,8 @@ class package_db_entry(namedtuple('package_db_entry', 'format_version,name,versi
                  o['epoch'],
                  util.requirements_from_string_list(o['requirements']),
                  o['properties'],
-                 file_checksum_list.from_simple_list(o['files']))
+                 file_checksum_list.from_simple_list(o['files']),
+                 o['checksum'])
   
   @classmethod
   def _parse_requirements(clazz, l):
@@ -96,6 +98,7 @@ class package_db_entry(namedtuple('package_db_entry', 'format_version,name,versi
       'requirements': util.requirements_to_string_list(self.requirements),
       'properties': self.properties,
       'files': self.files.to_simple_list(),
+      'checksum': self.checksum,
     }
   
   def to_sql_dict(self):
@@ -107,6 +110,7 @@ class package_db_entry(namedtuple('package_db_entry', 'format_version,name,versi
       'epoch': str(self.epoch),
       'requirements': util.sql_encode_requirements(self.requirements),
       'properties': util.sql_encode_dict(self.properties),
+      'checksum': util.sql_encode_string(self.checksum),
     }
     return d
   
@@ -122,12 +126,14 @@ class package_db_entry(namedtuple('package_db_entry', 'format_version,name,versi
       properties = json.loads(row.properties)
     else:
       properties = {}
+    checksum = getattr(row, 'checksum', None)
     return clazz(row.name,
                  row.version,
                  row.revision,
                  row.epoch,
                  requirements,
                  properties,
-                 files)
+                 files,
+                 checksum)
 
 check.register_class(package_db_entry, include_seq = False)

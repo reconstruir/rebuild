@@ -758,3 +758,7 @@ before great commit
 - rebuildstruct name
 ~/.rebuild/macos vs linux
 env_var fucking
+
+april 5
+- retire v1 format from package_db_entry
+- env files and metadata dont come into checksum computation
