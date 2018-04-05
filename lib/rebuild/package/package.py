@@ -125,7 +125,8 @@ class package(object):
     properties = copy.deepcopy(pkg_desc.properties)
     if 'export_compilation_flags_requirements' in properties:
       properties['export_compilation_flags_requirements'] = [ str(x) for x in properties['export_compilation_flags_requirements'] ]
-    files = file_find.find(stage_dir, relative = True, file_type = file_find.FILE | file_find.LINK)
+    files_dir = path.join(stage_dir, 'files')
+    files = file_find.find(files_dir, relative = True, file_type = file_find.FILE | file_find.LINK)
     metadata = package_metadata('',
                                 pkg_desc.name,
                                 pkg_desc.version.upstream_version,
@@ -137,7 +138,7 @@ class package(object):
                                 build_target.distro,
                                 pkg_desc.requirements,
                                 properties,
-                                file_checksum_list.from_files(files, root_dir = stage_dir))
+                                file_checksum_list.from_files(files, root_dir = files_dir))
     metadata_filename = temp_file.make_temp_file(suffix = '.json')
     file_util.save(metadata_filename, content = metadata.to_json())
     extra_items = [
@@ -147,7 +148,7 @@ class package(object):
       env_files = dir_util.list(env_dir, relative = True)
       for env_file in env_files:
         extra_items.append(archive.Item(path.join(env_dir, env_file), 'env' + '/' + env_file))
-    archiver.create(tarball_path, stage_dir,
+    archiver.create(tarball_path, files_dir,
                     base_dir = 'files',
                     extra_items = extra_items)
     return tarball_path

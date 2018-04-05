@@ -6,7 +6,7 @@ from bes.fs import temp_file
 from bes.system import host
 from rebuild.base import build_system, build_target, build_level, package_descriptor
 from rebuild.pkg_config import pkg_config
-from rebuild.package import artifact_manager, package, package_manager
+from rebuild.package import artifact_manager, package_manager
 from rebuild.package import PackageFilesConflictError, PackageAlreadyInstallededError, PackageMissingRequirementsError, ArtifactNotFoundError
 from bes.archive import archiver, temp_archive
 from rebuild.package.unit_test_packages import unit_test_packages
@@ -186,40 +186,6 @@ class test_package_manager(unittest.TestCase):
     pm.install_packages(packages, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
 
     self.assertEqual( [ 'arsenic-1.2.9', 'mercury-1.2.8', 'water-1.0.0' ], pm.list_all(include_version = True) )
-
-  def test_create_package(self):
-    tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
-    tarball_path = self._make_package(tmp_dir,
-                                      'foo', '1.2.3-1',
-                                      build_system.LINUX, build_level.RELEASE,
-                                      [
-                                        ( 'foo.txt', 'foo.txt\n' ),
-                                        ( 'bar.txt', 'bar.txt\n' ),
-                                      ],
-                                      [
-                                        ( 'foo.sh', 'echo foo.sh\n' ),
-                                        ( 'bar.sh', 'echo bar.sh\n' ),
-                                      ])
-    assert path.exists(tarball_path)
-    expected_members = [
-      'env/bar.sh',
-      'env/foo.sh',
-      'files/bar.txt',
-      'files/foo.txt',
-      'metadata/metadata.json',
-    ]
-    self.assertEqual( expected_members, archiver.members(tarball_path) )
-
-  def _make_package(self, dest_dir, name, version, system, build_level, items, env_items):
-    pi = package_descriptor(name, version)
-    tarball_path = path.join(dest_dir, pi.tarball_filename)
-    bi = build_target(system, build_level)
-    items = temp_archive.make_temp_item_list(items)
-    tmp_staged_files_dir = temp_archive.write_temp_items(items)
-    env_items = temp_archive.make_temp_item_list(env_items)
-    tmp_env_dir = temp_archive.write_temp_items(env_items)
-    package.create_tarball(tarball_path, pi, bi, tmp_staged_files_dir, tmp_env_dir)
-    return tarball_path
 
 if __name__ == '__main__':
   unittest.main()

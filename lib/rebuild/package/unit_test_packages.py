@@ -81,9 +81,11 @@ class unit_test_packages(object):
       clazz.make_temp_item(name, pm.version, '_script.sh', 'bin', content = script_content, mode = 0o755),
       temp_item('lib/pkgconfig/%s.pc' % (name), content = pkg_config_pc_contnet)
     ]
-    tmp_dir = temp_file.make_temp_dir(items = items, delete = not debug)
+    tmp_stage_dir = temp_file.make_temp_dir(delete = not debug)
+    tmp_stage_files_dir = path.join(tmp_stage_dir, 'files')
+    temp_file.write_temp_files(tmp_stage_files_dir, items)
     tmp_tarball = temp_file.make_temp_file(prefix = pm.descriptor.full_name, suffix = '.tar.gz', delete = not debug)
-    package.create_tarball(tmp_tarball, pm.descriptor, pm.build_target, tmp_dir, None)
+    package.create_tarball(tmp_tarball, pm.descriptor, pm.build_target, tmp_stage_dir, None)
     return clazz.test_package(tmp_tarball, pm)
 
   _PKG_CONFIG_PC_TEMPLATE = '''
