@@ -6,8 +6,10 @@ import copy, json, os.path as path, re
 from bes.archive import archive, archiver
 from bes.common import check, dict_util, json_util, string_util
 from bes.fs import dir_util, file_check, file_checksum_list, file_find, file_mime, file_search, file_util, temp_file
+from bes.text import text_line_parser
 from bes.match import matcher_filename, matcher_multiple_filename
 from bes.python import setup_tools
+from bes.system import execute
 from rebuild.base import build_target, package_descriptor
 
 from .package_metadata import package_metadata
@@ -141,7 +143,25 @@ class package(object):
                                 file_checksum_list.from_files(files, root_dir = files_dir))
     metadata_filename = path.join(stage_dir, clazz.METADATA_FILENAME)
     file_util.save(metadata_filename, content = metadata.to_json())
-    archiver.create(tarball_path, stage_dir)
+    clazz._create_tarball(tarball_path, stage_dir)
     return tarball_path
+
+  @classmethod
+  def _files_to_package(clazz, stage_dir):
+    'Return the list of files to package.  Maybe could do some filtering here.  Using find because its faster that bes.fs.file_find.'
+    stuff = dir_util.list(stage_dir, relative = True)
+    rv = execute.execute([ 'find' ] + stuff + ['-type', 'f' ], cwd = stage_dir)
+    files = text_line_parser.parse_lines(rv.stdout, strip_text = True, remove_empties = True)
+    rv = execute.execute([ 'find' ] + stuff + ['-type', 'l' ], cwd = stage_dir)
+    links = text_line_parser.parse_lines(rv.stdout, strip_text = True, remove_empties = True)
+    return sorted(files + links)
+  
+  @classmethod
+  def _create_tarball(clazz, tarball_filename, stage_dir):
+    'Return the list of files to package.  Maybe could do some filtering here.  Using find because its faster that bes.fs.file_find.'
+    files_to_package = clazz._files_to_package(stage_dir)
+#    for f in files_to_package:
+#      print('FUCK: TO PACK: %s' % (f))
+    archiver.create(tarball_filename, stage_dir)
   
 check.register_class(package, include_seq = False)
