@@ -19,17 +19,17 @@ class step_cleanup_binary_filenames(step):
     '''
     
   def execute(self, script, env, args):
-    if not path.isdir(script.stage_bin_dir):
+    if not path.isdir(script.staged_files_bin_dir):
       return step_result(True, None)
     if args.get('skip_binary_third_party_prefix', False):
       return step_result(True, None)
       
-    binaries = dir_util.list(script.stage_bin_dir)
+    binaries = dir_util.list(script.staged_files_bin_dir)
     for b in binaries:
       link_src = path.basename(b)
       if not link_src.startswith(env.config.third_party_prefix):
         link_filename = '%s%s' % (env.config.third_party_prefix, link_src)
-        link_dst = path.join(script.stage_bin_dir, link_filename)
+        link_dst = path.join(script.staged_files_bin_dir, link_filename)
         file_util.symlink(link_src, link_dst)
     return step_result(True, None)
 

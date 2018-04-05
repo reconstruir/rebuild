@@ -37,16 +37,18 @@ class builder_script(object):
                                               self.env.config.timestamp)
     self.source_unpacked_dir = path.join(self.working_dir, 'source')
     self.build_dir = path.join(self.working_dir, 'build')
+
     self.stage_dir = path.join(self.working_dir, 'stage')
+    self.staged_files_lib_dir = path.join(self.stage_dir, 'lib')
+    self.staged_files_bin_dir = path.join(self.stage_dir, 'bin')
+    self.staged_files_instructions_dir = path.join(self.staged_files_lib_dir, 'rebuild_instructions')
+
     self.env_dir = path.join(self.working_dir, 'env')
-    self.artifact_stage_dir = path.join(self.working_dir, 'artifact')
+    self.artifact_dir = path.join(self.working_dir, 'artifact')
     self.logs_dir = path.join(self.working_dir, 'logs')
     self.test_dir = path.join(self.working_dir, 'test')
     self.check_dir = path.join(self.working_dir, 'check')
     self.requirements_manager = package_manager(path.join(self.working_dir, 'requirements'), env.artifact_manager)
-    self.stage_lib_dir = path.join(self.stage_dir, 'lib')
-    self.stage_bin_dir = path.join(self.stage_dir, 'bin')
-    self.stage_compile_instructions_dir = path.join(self.stage_lib_dir, 'rebuild_instructions')
     self._add_steps_v2()
     self.substitutions = {
       'REBUILD_BUILD_DIR': self.build_dir,
@@ -60,10 +62,7 @@ class builder_script(object):
       'REBUILD_REQUIREMENTS_LIB_DIR': self.requirements_manager.lib_dir,
       'REBUILD_REQUIREMENTS_SHARE_DIR': self.requirements_manager.share_dir,
       'REBUILD_SOURCE_DIR': path.abspath(self.source_dir),
-      'REBUILD_STAGE_BIN_DIR': self.stage_bin_dir,
-      'REBUILD_STAGE_DIR': self.stage_dir,
       'REBUILD_STAGE_FRAMEWORKS_DIR':  path.join(self.stage_dir, 'frameworks'),
-      'REBUILD_STAGE_LIB_DIR': self.stage_lib_dir,
       'REBUILD_STAGE_PREFIX_DIR':  self.stage_dir,
       'REBUILD_STAGE_PYTHON_LIB_DIR':  path.join(self.stage_dir, 'lib/python'),
       'REBUILD_TEST_DIR': self.test_dir,

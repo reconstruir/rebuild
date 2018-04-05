@@ -51,10 +51,10 @@ class step_perl_module_post_install_cleanup(step):
     if not bt.system == build_system.LINUX:
       return step_result(True)
     return step_result(True)
-    new_path = path.join(script.stage_lib_dir, 'x86_64-linux-gnu')
+    new_path = path.join(script.staged_files_lib_dir, 'x86_64-linux-gnu')
     if not path.exists(new_path):
       cmd = 'mkdir x86_64-linux-gnu && mv perl x86_64-linux-gnu'
-      execute.execute(cmd, cwd = script.stage_lib_dir, shell = True)
+      execute.execute(cmd, cwd = script.staged_files_lib_dir, shell = True)
     return step_result(True)
 
 class step_perl_module(compound_step):

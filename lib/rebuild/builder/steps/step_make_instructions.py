@@ -18,7 +18,7 @@ class step_make_instructions(step):
       message = 'No build instructions for %s' % (script.descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
-    success, message = script.instructions.save(script.stage_compile_instructions_dir)
+    success, message = script.instructions.save(script.staged_files_instructions_dir)
     if not success:
       self.log_d(message)
       return step_result(False, message)

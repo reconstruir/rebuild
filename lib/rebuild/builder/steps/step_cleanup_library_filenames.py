@@ -16,11 +16,11 @@ class step_cleanup_library_filenames(step):
     super(step_cleanup_library_filenames, self).__init__()
 
   def execute(self, script, env, args):
-    if path.isdir(script.stage_lib_dir):
-      libraries = library.list_libraries(script.stage_lib_dir, relative = True)
+    if path.isdir(script.staged_files_lib_dir):
+      libraries = library.list_libraries(script.staged_files_lib_dir, relative = True)
       for l in libraries:
         link_filename = library.name_add_prefix(l, env.config.third_party_prefix)
-        link_path = path.join(script.stage_lib_dir, link_filename)
+        link_path = path.join(script.staged_files_lib_dir, link_filename)
         file_util.symlink(l, link_path)
 
     pc_files = pkg_config.find_pc_files(script.stage_dir)

@@ -29,9 +29,9 @@ class step_check_darwin_archs(step):
   def execute(self, script, env, args):
     if not script.build_target.is_darwin():
       return step_result(True, None)
-    if path.isdir(script.stage_lib_dir):
+    if path.isdir(script.staged_files_lib_dir):
       expected_archs = script.build_target.archs
-      for lib in library.list_libraries(script.stage_lib_dir, relative = False):
+      for lib in library.list_libraries(script.staged_files_lib_dir, relative = False):
         actual_archs = lipo.archs(lib)
         if not self.__matches(expected_archs, actual_archs):
           expected_label = ','.join(expected_archs)

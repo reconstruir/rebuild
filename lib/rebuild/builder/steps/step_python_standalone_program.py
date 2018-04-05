@@ -29,7 +29,7 @@ class step_python_make_standalone_program(step):
     if not standalone_programs:
       return step_result(True)
 
-    file_util.mkdir(script.stage_bin_dir)
+    file_util.mkdir(script.staged_files_bin_dir)
     for program in standalone_programs:
       src_program = path.join(script.build_dir, program.filename)
       if src_program.lower().endswith('.py'):
