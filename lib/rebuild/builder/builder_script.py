@@ -7,6 +7,7 @@ from collections import namedtuple
 from bes.common import algorithm, check, variable, type_checked_list
 from bes.fs import file_checksum_list, file_util
 from bes.system import log
+from bes.debug import debug_timer
 from rebuild.base import build_blurb
 from bes.dependency import dependency_provider
 from rebuild.step import step_description, step_manager
@@ -21,7 +22,10 @@ class builder_script(object):
 
     check.check_recipe(recipe)
     check.check_build_target(build_target)
-    
+
+    #self.timer = debug_timer('script_timer', level = 'debug')
+    self.timer = debug_timer('script_timer', level = 'error')
+
     self.env = env
     self.recipe = recipe
     self.build_target = build_target

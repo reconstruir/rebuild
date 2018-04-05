@@ -49,7 +49,9 @@ class compound_step(step):
     assert self.steps
     output = {}
     for step in self.steps:
+      script.timer.start('step %s' % (step.__class__.__name__))
       result = step.execute(script, env, dict_util.combine(args, output))
+      script.timer.stop()
       output.update(result.output or {})
       if not result.success:
         return step_result(False,

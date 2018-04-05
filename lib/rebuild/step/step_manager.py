@@ -50,13 +50,18 @@ class step_manager(object):
       self.add_step_v2(step, script, env)
 
   def execute(self, script, env, args):
+    script.timer.start('step_manager.execute()')
     output = {}
     for s in self._steps:
       step_args = dict_util.combine(args, s.args, output)
+      script.timer.start('step %s' % (s.__class__.__name__))
       result = s.execute(script, env, step_args)
+      script.timer.stop()
       output.update(result.output or {})
       if not result.success:
+        script.timer.stop()
         return step_result(False, message = result.message, failed_step = result.failed_step, output = output)
+    script.timer.stop()
     return step_result(True, output = output)
 
   def step_list(self, args):
