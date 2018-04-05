@@ -3,11 +3,12 @@
 
 import os.path as path
 
-from bes.common import check
+from bes.common import check, dict_util, object_util
 from bes.archive import archiver
+from bes.fs import file_util
+
 from rebuild.step import step, step_result
 from rebuild.base import build_blurb
-from bes.common import object_util, dict_util
 
 class step_setup_unpack(step):
   'Unpack.'

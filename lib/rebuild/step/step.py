@@ -30,6 +30,8 @@ class step_register_meta(ABCMeta, value_type.CONSTANTS):
 
 class step(with_metaclass(step_register_meta, object)):
 
+  step_result = step_result
+  
   def __init__(self):
     self._recipe = None
     self._args = {}

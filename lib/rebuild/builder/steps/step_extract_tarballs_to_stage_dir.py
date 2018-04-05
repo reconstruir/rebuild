@@ -15,9 +15,16 @@ class step_extract_tarballs_to_stage_dir(step):
     return '''
     tarballs_strip_common_base bool False
     tarballs_no_base_dir bool False
+    skip_unpack                  bool         False
     '''
     
   def execute(self, script, env, args):
+    values = self.recipe.resolve_values(env.config.build_target.system)
+    skip_unpack = values.get('skip_unpack')
+    
+    if args.get('skip_unpack', False):
+      return step_result(True, None)
+
     tarballs = args.get('tarballs', [])
     strip_common_base = args.get('tarballs_strip_common_base', False)
     if args.get('tarballs_no_base_dir', False):
