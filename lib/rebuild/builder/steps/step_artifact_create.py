@@ -21,12 +21,12 @@ class step_artifact_create_make_package(step):
     tarball_name = '%s.tar.gz' % (script.descriptor.full_name)
     assert tarball_name == script.descriptor.tarball_filename
     output_tarball_path = path.join(script.artifact_dir, script.descriptor.tarball_filename)
-    self.blurb('creating tarball %s from %s' % (output_tarball_path, script.stage_dir))
+    self.blurb('creating tarball %s from %s' % (path.relpath(output_tarball_path), path.relpath(script.stage_dir)))
     staged_tarball = package.create_tarball(output_tarball_path,
                                             script.descriptor,
                                             script.build_target,
                                             script.stage_dir)
-    self.blurb('staged tarball: %s' % (staged_tarball))
+    self.blurb('staged tarball: %s' % (path.relpath(staged_tarball)))
     return step_result(True, None, output = { 'staged_tarball': staged_tarball })
   
 class step_artifact_create_check_package(step):
@@ -36,13 +36,18 @@ class step_artifact_create_check_package(step):
     super(step_artifact_create_check_package, self).__init__()
 
   def execute(self, script, env, args):
+    checks = args.get('checks', [])
+    if not checks:
+      message = 'No checks for %s' % (script.descriptor.full_name)
+      return step_result(True, message)
+    
     staged_tarball = args.get('staged_tarball', None)
     assert staged_tarball
     assert archiver.is_valid(staged_tarball)
     unpack_dir = path.join(script.check_dir, 'unpacked')
     archiver.extract(staged_tarball, unpack_dir, strip_common_base = True)
 
-    for check_class in args.get('checks', []):
+    for check_class in checks:
       check = check_class()
       check_result = check.check(path.join(unpack_dir, 'files'), script)
       if not check_result.success:
@@ -112,7 +117,7 @@ class step_artifact_create_publish_package(step):
     assert staged_tarball
     assert archiver.is_valid(staged_tarball)
     published_tarball = env.artifact_manager.publish(staged_tarball, script.build_target)
-    self.blurb('published tarball: %s' % (published_tarball))
+    self.blurb('published tarball: %s' % (path.relpath(published_tarball)))
     return step_result(True, None, output = { 'published_tarball': published_tarball })
 
 class step_artifact_create(compound_step):

@@ -122,13 +122,17 @@ class package(object):
     return package(tarball).files
 
   @classmethod
-  def create_tarball(clazz, tarball_path, pkg_desc, build_target, stage_dir):
+  def create_tarball(clazz, tarball_path, pkg_desc, build_target, stage_dir, timer = None):
     # Hack the export_compilation_flags_requirements property to be a plain string list instead of the masked config it is
     properties = copy.deepcopy(pkg_desc.properties)
     if 'export_compilation_flags_requirements' in properties:
       properties['export_compilation_flags_requirements'] = [ str(x) for x in properties['export_compilation_flags_requirements'] ]
     files_dir = path.join(stage_dir, 'files')
+    if timer:
+      timer.start('create_tarball - find files')
     files = file_find.find(files_dir, relative = True, file_type = file_find.FILE | file_find.LINK)
+    if timer:
+      timer.stop()
     metadata = package_metadata('',
                                 pkg_desc.name,
                                 pkg_desc.version.upstream_version,
@@ -143,11 +147,11 @@ class package(object):
                                 file_checksum_list.from_files(files, root_dir = files_dir))
     metadata_filename = path.join(stage_dir, clazz.METADATA_FILENAME)
     file_util.save(metadata_filename, content = metadata.to_json())
-    clazz._create_tarball(tarball_path, stage_dir)
+    clazz._create_tarball(tarball_path, stage_dir, timer)
     return tarball_path
 
   @classmethod
-  def _files_to_package(clazz, stage_dir):
+  def _determine_manifest(clazz, stage_dir):
     'Return the list of files to package.  Maybe could do some filtering here.  Using find because its faster that bes.fs.file_find.'
     stuff = dir_util.list(stage_dir, relative = True)
     rv = execute.execute([ 'find' ] + stuff + ['-type', 'f' ], cwd = stage_dir)
@@ -157,14 +161,20 @@ class package(object):
     return sorted(files + links)
   
   @classmethod
-  def _create_tarball(clazz, tarball_filename, stage_dir):
+  def _create_tarball(clazz, tarball_filename, stage_dir, timer):
     'Return the list of files to package.  Maybe could do some filtering here.  Using find because its faster that bes.fs.file_find.'
-    files_to_package = clazz._files_to_package(stage_dir)
+    if timer:
+      timer.start('create_tarball - determine manifest')
+    files_to_package = clazz._determine_manifest(stage_dir)
+    if timer:
+      timer.stop()
     file_util.mkdir(path.dirname(tarball_filename))
     manifest = temp_file.make_temp_file(content = '\n'.join(files_to_package))
-    tar_cmd = [ 'tar', 'cf', tarball_filename, '-C', stage_dir, '-T', manifest ]
-    #print('FUCK: tar_cmd=%s' % (tar_cmd))
+    tar_cmd = [ 'tar', 'zcf', tarball_filename, '-C', stage_dir, '-T', manifest ]
+    if timer:
+      timer.start('create_tarball - execute %s' % (' '.join(tar_cmd)))
     execute.execute(tar_cmd)
-    #archiver.create(tarball_filename, stage_dir)
+    if timer:
+      timer.stop()
   
 check.register_class(package, include_seq = False)

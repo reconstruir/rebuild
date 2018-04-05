@@ -762,3 +762,6 @@ april 5
 
 
 s/step_extract_tarballs_to_stage_dir/step_extract_tarballs_to_staged_files_dir
+
+maybe use tar to extract tarballs
+maybe use hardlink when staging the tarball to prevent copying so much and disk space
