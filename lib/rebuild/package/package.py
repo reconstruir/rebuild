@@ -120,7 +120,7 @@ class package(object):
     return package(tarball).files
 
   @classmethod
-  def create_tarball(clazz, tarball_path, pkg_desc, build_target, stage_dir, env_dir):
+  def create_tarball(clazz, tarball_path, pkg_desc, build_target, stage_dir):
     # Hack the export_compilation_flags_requirements property to be a plain string list instead of the masked config it is
     properties = copy.deepcopy(pkg_desc.properties)
     if 'export_compilation_flags_requirements' in properties:
@@ -139,18 +139,9 @@ class package(object):
                                 pkg_desc.requirements,
                                 properties,
                                 file_checksum_list.from_files(files, root_dir = files_dir))
-    metadata_filename = temp_file.make_temp_file(suffix = '.json')
+    metadata_filename = path.join(stage_dir, clazz.METADATA_FILENAME)
     file_util.save(metadata_filename, content = metadata.to_json())
-    extra_items = [
-      archive.Item(metadata_filename, clazz.METADATA_FILENAME),
-    ]
-    if env_dir and path.isdir(env_dir):
-      env_files = dir_util.list(env_dir, relative = True)
-      for env_file in env_files:
-        extra_items.append(archive.Item(path.join(env_dir, env_file), 'env' + '/' + env_file))
-    archiver.create(tarball_path, files_dir,
-                    base_dir = 'files',
-                    extra_items = extra_items)
+    archiver.create(tarball_path, stage_dir)
     return tarball_path
   
 check.register_class(package, include_seq = False)

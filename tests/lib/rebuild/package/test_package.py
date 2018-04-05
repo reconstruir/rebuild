@@ -74,12 +74,13 @@ class test_package(unittest.TestCase):
     tarball_path = path.join(dest_dir, pi.tarball_filename)
     bi = build_target(system, build_level)
     items = temp_archive.make_temp_item_list(items)
+    env_items = temp_archive.make_temp_item_list(env_items)
     tmp_stage_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     tmp_staged_files_dir = path.join(tmp_stage_dir, 'files')
+    tmp_staged_env_dir = path.join(tmp_stage_dir, 'env')
     temp_archive.write_items(tmp_staged_files_dir, items)
-    env_items = temp_archive.make_temp_item_list(env_items)
-    tmp_env_dir = temp_archive.write_temp_items(env_items)
-    package.create_tarball(tarball_path, pi, bi, tmp_stage_dir, tmp_env_dir)
+    temp_archive.write_items(tmp_staged_env_dir, env_items)
+    package.create_tarball(tarball_path, pi, bi, tmp_stage_dir)
     return tarball_path
     
 if __name__ == '__main__':

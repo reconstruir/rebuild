@@ -85,7 +85,7 @@ class unit_test_packages(object):
     tmp_stage_files_dir = path.join(tmp_stage_dir, 'files')
     temp_file.write_temp_files(tmp_stage_files_dir, items)
     tmp_tarball = temp_file.make_temp_file(prefix = pm.descriptor.full_name, suffix = '.tar.gz', delete = not debug)
-    package.create_tarball(tmp_tarball, pm.descriptor, pm.build_target, tmp_stage_dir, None)
+    package.create_tarball(tmp_tarball, pm.descriptor, pm.build_target, tmp_stage_dir)
     return clazz.test_package(tmp_tarball, pm)
 
   _PKG_CONFIG_PC_TEMPLATE = '''

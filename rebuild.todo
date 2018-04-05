@@ -737,9 +737,6 @@ jan 15
 apr 2
  - package.create_tarball() does some weird shit with properties (export_compilation_flags_requirements)
   
-
-package.create_tarball() ignore_case = True seems backwards but matcher seems to be fucked that way fucked up ignore checks
-
 apr 3
 need a package unit test with symlinks
 

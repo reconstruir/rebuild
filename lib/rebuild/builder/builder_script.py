@@ -43,8 +43,8 @@ class builder_script(object):
     self.staged_files_lib_dir = path.join(self.staged_files_dir, 'lib')
     self.staged_files_bin_dir = path.join(self.staged_files_dir, 'bin')
     self.staged_files_instructions_dir = path.join(self.staged_files_lib_dir, 'rebuild_instructions')
+    self.stagged_env_dir = path.join(self.stage_dir, 'env')
 
-    self.env_dir = path.join(self.working_dir, 'env')
     self.artifact_dir = path.join(self.working_dir, 'artifact')
     self.logs_dir = path.join(self.working_dir, 'logs')
     self.test_dir = path.join(self.working_dir, 'test')
