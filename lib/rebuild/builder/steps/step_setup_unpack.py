@@ -116,7 +116,7 @@ class step_setup_unpack(step):
   def _extract(clazz, tarballs, dest_dir, base_dir, strip_common_base):
     tarballs = object_util.listify(tarballs)
     for tarball in tarballs:
-      self.blurb('Extracting(1) %s' % (tarball))
+      clazz.blurb('Extracting(1) %s' % (tarball))
       archiver.extract(tarball,
                        dest_dir,
                        base_dir = base_dir,
