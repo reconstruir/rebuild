@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+import os.path as path
 from rebuild.step import step, step_result
 from bes.archive import archiver
 
@@ -34,7 +35,7 @@ class step_extract_tarballs_to_stage_dir(step):
       base_dir = script.descriptor.full_name
 
     for tarball in tarballs:
-      self.blurb('Extracting(2) %s' % (tarball))
+      self.blurb('Extracting extra tarball %s' % (path.relpath(tarball)))
       archiver.extract(tarball, script.stage_dir,
                        base_dir = base_dir,
                        strip_common_base = tarballs_strip_common_base)
