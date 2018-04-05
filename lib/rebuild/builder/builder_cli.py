@@ -163,9 +163,9 @@ class builder_cli(object):
     tmp_globals = {}
     tmp_locals = {}
     code.execfile(filename, tmp_globals, tmp_locals)
-    if not 'rebuild_subdirs' in tmp_locals:
-      raise RuntimeError('rebuild_subdirs not defined: %s' % (filename))
-    func = tmp_locals['rebuild_subdirs']
+    if not 'rebuild_packages' in tmp_locals:
+      raise RuntimeError('rebuild_packages not defined: %s' % (filename))
+    func = tmp_locals['rebuild_packages']
     if not callable(func):
       raise RuntimeError('not callable: %s' % (func))
     return func()
