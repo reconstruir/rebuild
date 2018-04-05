@@ -26,6 +26,7 @@ class step_extract_tarballs_to_stage_dir(step):
       base_dir = script.descriptor.full_name
       
     for tarball in tarballs:
+      self.blurb('Extracting(2) %s' % (tarball))
       archiver.extract(tarball, script.stage_dir,
                        base_dir = base_dir,
                        strip_common_base = strip_common_base)
