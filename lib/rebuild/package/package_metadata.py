@@ -7,11 +7,10 @@ from bes.common import check, json_util, string_util
 from rebuild.base import build_target, build_version, package_descriptor, requirement_list
 from .util import util
 
-class package_metadata(namedtuple('package_metadata', 'format_version, filename, checksum, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files')):
+class package_metadata(namedtuple('package_metadata', 'format_version, filename, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files, checksum')):
 
-  def __new__(clazz, filename, checksum, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files):
+  def __new__(clazz, filename, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files, checksum = None):
     check.check_string(filename)
-    check.check_string(checksum)
     check.check_string(name)
     check.check_string(version)
     check.check_int(revision)
@@ -29,7 +28,10 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
     check.check_dict(properties)
     files = files or file_checksum_list()
     check.check_file_checksum_list(files)
-    return clazz.__bases__[0].__new__(clazz, 2, filename, checksum, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files)
+    if checksum:
+      check.check_string(checksum)
+    checksum = checksum or files.checksum()
+    return clazz.__bases__[0].__new__(clazz, 2, filename, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files, checksum)
 
   @property
   def build_version(self):
@@ -61,7 +63,6 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
   def _parse_dict_v1(clazz, o):
     version = build_version.parse(o['version'])
     return clazz('',
-                 '',
                  o['name'],
                  version.upstream_version,
                  version.revision,
@@ -77,7 +78,6 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
   @classmethod
   def _parse_dict_v2(clazz, o):
     return clazz(o['filename'],
-                 o['checksum'],
                  o['name'],
                  o['version'],
                  o['revision'],
@@ -88,7 +88,8 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
                  o['distro'],
                  util.requirements_from_string_list(o['requirements']),
                  o['properties'],
-                 file_checksum_list.from_simple_list(o['files']))
+                 file_checksum_list.from_simple_list(o['files']),
+                 o['checksum'])
   
   def to_simple_dict(self):
     'Return a simplified dict suitable for json encoding.'
@@ -96,7 +97,6 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
       '_format_version': self.format_version,
       'name': self.name,
       'filename': self.filename,
-      'checksum': self.checksum,
       'version': self.version,
       'revision': self.revision,
       'epoch': self.epoch,
@@ -107,6 +107,7 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
       'requirements': util.requirements_to_string_list(self.requirements),
       'properties': self.properties,
       'files': self.files.to_simple_list(),
+      'checksum': self.checksum,
     }
   
   def to_sql_dict(self):
@@ -114,7 +115,6 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
     d =  {
       'name': util.sql_encode_string(self.name),
       'filename': util.sql_encode_string(self.filename),
-      'checksum': util.sql_encode_string(self.checksum),
       'version': util.sql_encode_string(self.version),
       'revision': str(self.revision),
       'epoch': str(self.epoch),
@@ -124,6 +124,7 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
       'distro': util.sql_encode_string(self.distro),
       'requirements': sql_encode_requirements(self.requirements),
       'properties': sql_encode_dict(self.properties),
+      'checksum': util.sql_encode_string(self.checksum),
     }
     return d
   
@@ -139,8 +140,8 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
       properties = json.loads(row.properties)
     else:
       properties = {}
+    checksum = getattr(row, 'checksum', None)
     return clazz(row.filename,
-                 row.checksum,
                  row.name,
                  row.version,
                  row.revision,
@@ -151,6 +152,7 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
                  row.distro or None,
                  requirements,
                  properties,
-                 files)
+                 files,
+                 checksum)
 
 check.register_class(package_metadata, include_seq = False)

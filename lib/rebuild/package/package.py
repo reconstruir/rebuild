@@ -127,7 +127,6 @@ class package(object):
       properties['export_compilation_flags_requirements'] = [ str(x) for x in properties['export_compilation_flags_requirements'] ]
     files = file_find.find(stage_dir, relative = True, file_type = file_find.FILE | file_find.LINK)
     metadata = package_metadata('',
-                                '',
                                 pkg_desc.name,
                                 pkg_desc.version.upstream_version,
                                 pkg_desc.version.revision,
