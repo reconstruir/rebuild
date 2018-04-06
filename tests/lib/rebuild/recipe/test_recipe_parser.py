@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import os.path as path
+import inspect, os.path as path
 from bes.testing.unit_test import unit_test
 from rebuild.recipe import recipe, recipe_parser as P, recipe_parser_error as ERR, recipe_step as RS
 from rebuild.step import compound_step, step, step_result
@@ -14,8 +14,8 @@ class test_recipe_parser(unit_test):
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/recipe_parser'
   
   @classmethod
-  def _parse(self, text):
-    return P(text, '<test>').parse()
+  def _parse(self, text, starting_line_number = 0):
+    return P(text, path.basename(__file__), starting_line_number = starting_line_number).parse()
 
   @classmethod
   def setUpClass(clazz):
@@ -30,6 +30,25 @@ class test_recipe_parser(unit_test):
     with self.assertRaises(ERR) as context:
       self._parse('nomagic')
 
+  def test_package_version_dash(self):
+    text = '''!rebuildrecipe!
+package foo-1.2.3-4
+'''
+    r = self._parse(text)
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 'foo', r[0].descriptor.name )
+    self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
+
+  def test_package_version_space(self):
+    frame = inspect.getframeinfo(inspect.currentframe())
+    text = '''!rebuildrecipe!
+package foo 1.2.3-4
+'''
+    r = self._parse(text, frame.lineno)
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 'foo', r[0].descriptor.name )
+    self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
+    
   def test_step_value_bool(self):
     text = '''!rebuildrecipe!
 package foo-1.2.3-4

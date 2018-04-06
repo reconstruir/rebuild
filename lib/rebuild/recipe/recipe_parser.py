@@ -41,13 +41,14 @@ class recipe_parser(object):
 
   MAGIC = '!rebuildrecipe!'
 
-  def __init__(self, text, filename):
+  def __init__(self, text, filename, starting_line_number = 0):
     self.text = text
     self.filename = filename
+    self.starting_line_number = starting_line_number
 
   def _error(self, msg, pkg_node = None):
     if pkg_node:
-      line_number = pkg_node.data.line_number
+      line_number = pkg_node.data.line_number + self.starting_line_number
     else:
       line_number = None
     raise recipe_parser_error(msg, self.filename, line_number)
@@ -116,12 +117,18 @@ class recipe_parser(object):
 
   def _parse_package_header(self, node):
     parts = string_util.split_by_white_space(node.data.text, strip = True)
-    if len(parts) != 2:
-      self._error('package section should begin with \"package $name-$ver-$rev\" instead of \"%s\"' % (node.data.text), node)
+    num_parts = len(parts)
+    if num_parts not in [ 2, 3 ]:
+      self._error('package section should begin with \"package $name $ver-$rev\" instead of \"%s\"' % (node.data.text), node)
     if parts[0] != 'package':
-      self._error('package section should begin with \"package $name-$ver-$rev\" instead of \"%s\"' % (node.data.text), node)
-    desc = package_descriptor.parse(parts[1])
-    return desc.name, desc.version
+      self._error('package section should begin with \"package $name $ver-$rev\" instead of \"%s\"' % (node.data.text), node)
+    if num_parts == 2:
+      desc = package_descriptor.parse(parts[1])
+      return desc.name, desc.version
+    elif num_parts == 3:
+      return parts[1], parts[2]
+    else:
+      assert False
 
   def _parse_enabled(self, node):
     enabled_text = tree_text_parser.node_text_flat(node)
