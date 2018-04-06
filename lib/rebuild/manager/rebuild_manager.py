@@ -19,11 +19,13 @@ class rebuild_manager(object):
 
   CONFIG_FILENAME = 'config'
   
-  def __init__(self, artifact_manager, root_dir = None):
+  def __init__(self, artifact_manager, build_target, root_dir = None):
     log.add_logging(self, 'remanage')
     build_blurb.add_blurb(self, label = 'remanage')
     check.check_artifact_manager(artifact_manager)
+    check.check_build_target(build_target)
     self.root_dir = path.abspath(root_dir or self.DEFAULT_ROOT_DIR)
+    self.build_target = build_target
     self.artifact_manager = artifact_manager
     self.package_managers = {}
     self.config_filename = path.join(self.root_dir, self.CONFIG_FILENAME)
@@ -53,16 +55,18 @@ class rebuild_manager(object):
     return pm.list_all()
 
   ResolveResult = namedtuple('ResolveResult', 'available,missing,resolved')
-  def resolve_packages(self, packages, build_target):
-    resolved_deps = self.artifact_manager.resolve_deps_poto(packages, build_target, ['RUN'], True)
+  def resolve_packages(self, package_names, build_target):
+    self.log_i('resolving: %s' % (' '.join(package_names)))
+    resolved_deps = self.artifact_manager.resolve_deps_poto(package_names, build_target, ['RUN'], True)
     resolved_names = [ desc.name for desc in resolved_deps ]
     available_packages = self.artifact_manager.available_packages(build_target)
     available_names = [ p.descriptor.name for p in available_packages ]
-    missing_packages = dependency_resolver.check_missing(available_names, packages)
+    missing_packages = dependency_resolver.check_missing(available_names, package_names)
     if missing_packages:
       return self.ResolveResult(available_packages, missing_packages, [])
     resolved = self.artifact_manager.resolve_packages(resolved_names, build_target)
     resolved_infos = [ r.descriptor for r in resolved ]
+    self.log_i('done resolving')
     return self.ResolveResult(available_packages, [], resolved_infos)
 
   def resolve_and_update_packages(self, project_name, packages, build_target, allow_downgrade = False, force_install = False):
@@ -122,22 +126,26 @@ class rebuild_manager(object):
     self._save_system_setup_scripts(project_name, build_target)
     return True
   
-  SETUP_SCRIPT_TEMPLATE = '''
-@NAME@_@SYSTEM@_prefix()
-{
-  echo "@PREFIX@"
-  return 0
-}
+  SETUP_SYSTEM_SCRIPT_TEMPLATE = '''
+_this_file="$( command readlink "$BASH_SOURCE" )" || _this_file="$BASH_SOURCE"
+_root="${_this_file%/*}"
+if [ "$_root" == "$_this_file" ]; then
+  _root=.
+fi
+_@NAME@_root="$( command cd -P "$_root" > /dev/null && command pwd -P )"
+unset _this_file
+unset _root
 
-@NAME@_@SYSTEM@_setup()
+_@NAME@_setup()
 {
-  local _prefix=$(@NAME@_@SYSTEM@_prefix)
+  local _root=${_@NAME@_root}
+  local _prefix=${_root}/installation
   export PATH=${_prefix}/bin:${PATH}
   export PYTHONPATH=${_prefix}/lib/python:${PYTHONPATH}
   export PKG_CONFIG_PATH=${_prefix}/lib/pkgconfig:${PKG_CONFIG_PATH}
   export @LIBRARY_PATH@=${_prefix}/lib:${@LIBRARY_PATH@}
   export MANPATH=${_prefix}/man:${_prefix}/share/man:${MANPATH}
-  local _env_dir=$_prefix/../env
+  local _env_dir=$_root/env
   if [ -d $_env_dir -a -n "$(ls -A $_env_dir)" ]; then
     for f in $_env_dir/*; do
       source "$f"
@@ -146,31 +154,77 @@ class rebuild_manager(object):
 }
 '''
 
-  RUN_SCRIPT_TEMPLATE = '''#!/bin/bash
+  SETUP_SCRIPT_TEMPLATE = '''
+_this_file="$( command readlink "$BASH_SOURCE" )" || _this_file="$BASH_SOURCE"
+_root="${_this_file%/*}"
+if [ "$_root" == "$_this_file" ]; then
+  _root=.
+fi
+_@NAME@_root="$( command cd -P "$_root" > /dev/null && command pwd -P )"
+unset _this_file
+unset _root
+
+_rebuild_system_name()
+{
+  local _system='unknown'
+  case $(uname) in
+    Darwin)
+      _system=macos
+      ;;
+	  Linux)
+      _system=linux
+      ;;
+	esac
+  echo ${_system}
+}
+
+@NAME@_setup()
+{
+  local _system=$(_rebuild_system_name)
+  local _root=${_@NAME@_root}
+  local _system_root=${_root}/${_system}
+  local _prefix=${_system_root}/installation
+  export PATH=${_prefix}/bin:${PATH}
+  export PYTHONPATH=${_prefix}/lib/python:${PYTHONPATH}
+  export PKG_CONFIG_PATH=${_prefix}/lib/pkgconfig:${PKG_CONFIG_PATH}
+  export DYLD_LIBRARY_PATH=${_prefix}/lib:${DYLD_LIBRARY_PATH}
+  export MANPATH=${_prefix}/man:${_prefix}/share/man:${MANPATH}
+  local _env_dir=$_system_root/env
+  if [ -d $_env_dir -a -n "$(ls -A $_env_dir)" ]; then
+    for f in $_env_dir/*; do
+      source "$f"
+    done
+  fi  
+}
+'''
+
+  SYSTEM_RUN_SCRIPT_TEMPLATE = '''#!/bin/bash
 source "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/setup.sh"
-@NAME@_@SYSTEM@_setup
+@NAME@_setup
 exec ${1+"$@"}
 '''
 
   def _save_system_setup_scripts(self, project_name, build_target):
+    system_setup_script = rebuild_manager_script(self.SETUP_SYSTEM_SCRIPT_TEMPLATE, 'setup.sh')
+    system_run_script = rebuild_manager_script(self.SYSTEM_RUN_SCRIPT_TEMPLATE, 'run.sh')
     setup_script = rebuild_manager_script(self.SETUP_SCRIPT_TEMPLATE, 'setup.sh')
-    run_script = rebuild_manager_script(self.RUN_SCRIPT_TEMPLATE, 'run.sh')
     pm = self._package_manager(project_name, build_target.system)
     variables = {
-      '@PREFIX@': pm.installation_dir,
       '@LIBRARY_PATH@': os_env.LD_LIBRARY_PATH_VAR_NAME,
       '@NAME@': project_name,
       '@SYSTEM@': build_target.system,
     }
-    setup_script.save(pm.root_dir, variables)
-    run_script.save(pm.root_dir, variables)
+    system_setup_script.save(pm.root_dir, variables)
+    system_run_script.save(pm.root_dir, variables)
+    setup_script.save(path.join(pm.root_dir, '..'), variables)
   
   def config(self, build_target):
     return self._load_config(build_target)
 
   def wipe_project_dir(self, project_name, build_target):
-    project_root_dir = self.project_root_dir(project_name, build_target)
+    project_root_dir = self._project_root_dir(project_name, build_target.system)
     self.blurb('wiping root dir: %s' % (project_root_dir))
+    self.log_i('%s - wiping: %s' % (project_name, project_root_dir))
     file_util.remove(project_root_dir)
 
   def remove_checksums(self, packages, build_target):

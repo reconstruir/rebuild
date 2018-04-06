@@ -219,27 +219,33 @@ class package_manager(object):
 
   def install_package(self, pkg_desc, build_target, hardness,
                       allow_downgrade = False, force_install = False):
-    self.log_i('installing package: %s for %s' % (str(pkg_desc), ' '.join(hardness)))
+    self.log_i('install_package: %s for %s' % (pkg_desc.full_name, ' '.join(hardness)))
     check.check_package_descriptor(pkg_desc)
     pkg = self._artifact_manager.package(pkg_desc, build_target)
 
     if self.is_installed(pkg.descriptor.name):
+      self.log_i('install_package: %s for %s' % (pkg_desc.full_name, ' '.join(hardness)))
       old_pkg_entry = self.db.find_package(pkg.descriptor.name)
       old_pkg_entry_desc = old_pkg_entry.descriptor
       comparison = package_descriptor.full_name_cmp(old_pkg_entry_desc, pkg_desc)
-      self.log_d('installing package: comparison=%s' % (comparison))
+      self.log_d('install_package: comparison=%s' % (comparison))
       if force_install:
+        self.log_i('install_package: checking checksum old=%s new=%s' % (old_pkg_entry.checksum, pkg.metadata.checksum))
         if old_pkg_entry.checksum != pkg.metadata.checksum:
-          self.log_i('installing package: checksums changed: %s' % (str(pkg_desc)))
+          self.log_i('install_package: checksums changed: %s' % (str(pkg_desc)))
           comparison = -1
       if comparison == 0:
         return False
       elif comparison < 0:
+        self.log_i('install_package: upgrading from %s to %s' % (pkg.descriptor.full_name,
+                                                                 pkg.metadata.descriptor.full_name))
         self.uninstall_package(pkg.descriptor.name)
         self.install_tarball(pkg.tarball, hardness)
         return True
       else:
         if allow_downgrade:
+          self.log_i('install_package: downgrading from %s to %s' % (pkg.descriptor.full_name,
+                                                                     pkg.metadata.descriptor.full_name))
           self.uninstall_package(pkg.descriptor.name)
           self.install_tarball(pkg.tarball, hardness)
           return True
@@ -247,6 +253,7 @@ class package_manager(object):
           print('warning: installed package %s newer than available package %s' % (old_pkg_entry_desc.full_name, pkg_desc.full_name))
         return False
     else:
+      self.log_i('install_package: first install: %s' % (pkg.tarball))
       self.install_tarball(pkg.tarball, hardness)
       return True
 

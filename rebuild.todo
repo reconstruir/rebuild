@@ -770,3 +770,6 @@ before great commit
 ~/.rebuild/macos vs linux
 copy third_party/privworld to great/...
 
+- add db multi process lock
+- add a in db lock when a package is being modified to deal with crashes
+

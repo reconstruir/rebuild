@@ -214,7 +214,7 @@ class rebuild_manager_cli(object):
     self.verbose = getattr(args, 'verbose', False)
 
     if self.verbose:
-      log.configure('remanage*=info format=brief')
+      log.configure('remanage*=info format=brief width=10')
       
     if command == 'tools:update':
       return self._command_tools_update()
@@ -295,16 +295,16 @@ class rebuild_manager_cli(object):
     return 0
 
   def _command_packages_install(self, dest_dir, project_name, packages, wipe, bt):
-    rm = rebuild_manager(self.artifact_manager, dest_dir)
+    rm = rebuild_manager(self.artifact_manager, bt, dest_dir)
     return self._update_project(rm, project_name, packages, wipe, bt)
 
   def _command_packages_uninstall(self, dest_dir, project_name, packages, bt):
-    rm = rebuild_manager(self.artifact_manager, dest_dir)
+    rm = rebuild_manager(self.artifact_manager, bt, dest_dir)
     success = rm.uninstall_packages(project_name, packages, bt)
     return self.bool_to_exit_code(success)
 
   def _command_packages_print(self, root_dir, project_name, bt):
-    rm = rebuild_manager(self.artifact_manager, root_dir)
+    rm = rebuild_manager(self.artifact_manager, bt, root_dir)
     assert project_name
     packages = rm.installed_packages(project_name, bt)
     for p in packages:
@@ -312,7 +312,7 @@ class rebuild_manager_cli(object):
     return 0
 
   def _command_config_packages(self, root_dir, project_name, bt):
-    rm = rebuild_manager(self.artifact_manager, root_dir)
+    rm = rebuild_manager(self.artifact_manager, bt, root_dir)
     config = rm.config(bt)
     section = config.get(project_name, None)
     if not section:
@@ -329,7 +329,9 @@ remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir @ROOT_DIR@ -
 '''
 
   def _command_packages_update(self, root_dir, wipe, project_name, allow_downgrade, force_install, bt):
-    rm = rebuild_manager(self.artifact_manager, root_dir)
+    rm = rebuild_manager(self.artifact_manager, bt, root_dir)
+    if wipe:
+      rm.wipe_project_dir(project_name, bt)
     success = rm.update_from_config(bt,
                                     project_name = project_name,
                                     allow_downgrade = allow_downgrade,
