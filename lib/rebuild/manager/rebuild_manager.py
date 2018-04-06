@@ -26,22 +26,28 @@ class rebuild_manager(object):
     self.artifact_manager = artifact_manager
     self.package_managers = {}
     self.config_filename = path.join(self.root_dir, self.CONFIG_FILENAME)
+
+  @classmethod
+  def _project_subpath(clazz, project_name, system):
+    return path.join(project_name, system)
     
-  def _package_manager(self, project_name):
-    if project_name not in self.package_managers:
-      root_dir = path.join(self.root_dir, project_name)
-      self.package_managers[project_name] = package_manager(root_dir, self.artifact_manager)
+  def _project_root_dir(self, project_name, system):
+    subpath = self._project_subpath(project_name, system)
+    return path.join(self.root_dir, subpath)
+    
+  def _package_manager(self, project_name, system):
+    subpath = self._project_subpath(project_name, system)
+    if subpath not in self.package_managers:
+      self.package_managers[project_name] = package_manager(path.join(self.root_dir, subpath),
+                                                            self.artifact_manager)
     return self.package_managers[project_name]
 
-  def update_packages(self, project_name, packages, build_target, allow_downgrade = False, force_install= False):
-    pm = self._package_manager(project_name)
+  def update_packages(self, project_name, packages, build_target, allow_downgrade = False, force_install = False):
+    pm = self._package_manager(project_name, build_target.system)
     pm.install_packages(packages, build_target, [ 'RUN' ], allow_downgrade = allow_downgrade, force_install = force_install)
 
-  def project_root_dir(self, project_name):
-    return self._package_manager(project_name).root_dir
-
   def installed_packages(self, project_name, build_target):
-    pm = self._package_manager(project_name)
+    pm = self._package_manager(project_name, build_target.system)
     return pm.list_all()
 
   ResolveResult = namedtuple('ResolveResult', 'available,missing,resolved')
@@ -67,7 +73,7 @@ class rebuild_manager(object):
 
   def uninstall_packages(self, project_name, packages, build_target):
     # FIXME: no dependents handling
-    pm = self._package_manager(project_name)
+    pm = self._package_manager(project_name, build_target)
     pm.uninstall_packages(packages) #, build_target)
     return True
 
@@ -106,19 +112,19 @@ class rebuild_manager(object):
     removed_packages = list(set(installed_packages).difference(set(resolved_packages)))
     if removed_packages:
       self.uninstall_packages(project_name, removed_packages, build_target)
-    self._save_setup_scripts(project_name)
+    self._save_system_setup_scripts(project_name, build_target)
     return True
   
   SETUP_SCRIPT_TEMPLATE = '''
-@NAME@_prefix()
+@NAME@_@SYSTEM@_prefix()
 {
   echo "@PREFIX@"
   return 0
 }
 
-@NAME@_setup()
+@NAME@_@SYSTEM@_setup()
 {
-  local _prefix=$(@NAME@_prefix)
+  local _prefix=$(@NAME@_@SYSTEM@_prefix)
   export PATH=${_prefix}/bin:${PATH}
   export PYTHONPATH=${_prefix}/lib/python:${PYTHONPATH}
   export PKG_CONFIG_PATH=${_prefix}/lib/pkgconfig:${PKG_CONFIG_PATH}
@@ -135,18 +141,19 @@ class rebuild_manager(object):
 
   RUN_SCRIPT_TEMPLATE = '''#!/bin/bash
 source "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/setup.sh"
-@NAME@_setup
+@NAME@_@SYSTEM@_setup
 exec ${1+"$@"}
 '''
 
-  def _save_setup_scripts(self, project_name):
+  def _save_system_setup_scripts(self, project_name, build_target):
     setup_script = rebuild_manager_script(self.SETUP_SCRIPT_TEMPLATE, 'setup.sh')
     run_script = rebuild_manager_script(self.RUN_SCRIPT_TEMPLATE, 'run.sh')
-    pm = self._package_manager(project_name)
+    pm = self._package_manager(project_name, build_target.system)
     variables = {
       '@PREFIX@': pm.installation_dir,
       '@LIBRARY_PATH@': os_env.LD_LIBRARY_PATH_VAR_NAME,
       '@NAME@': project_name,
+      '@SYSTEM@': build_target.system,
     }
     setup_script.save(pm.root_dir, variables)
     run_script.save(pm.root_dir, variables)
@@ -154,8 +161,8 @@ exec ${1+"$@"}
   def config(self, build_target):
     return self._load_config(build_target)
 
-  def wipe_project_dir(self, project_name):
-    project_root_dir = self.project_root_dir(project_name)
+  def wipe_project_dir(self, project_name, build_target):
+    project_root_dir = self.project_root_dir(project_name, build_target)
     self.blurb('wiping root dir: %s' % (project_root_dir))
     file_util.remove(project_root_dir)
 

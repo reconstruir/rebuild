@@ -750,8 +750,6 @@ april 4
 - remanager.py test unit test
 - need to check for env_dir files conflicts
 
-before great commit
-~/.rebuild/macos vs linux
 env_var fucking
 
 april 5
@@ -765,3 +763,10 @@ maybe use tar to extract tarballs
 maybe use hardlink when staging the tarball to prevent copying so much and disk space
 
 uninstall a package with an egg might leave a fucked easy install file
+
+april 6
+
+before great commit
+~/.rebuild/macos vs linux
+copy third_party/privworld to great/...
+

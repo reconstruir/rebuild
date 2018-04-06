@@ -337,7 +337,7 @@ remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir @ROOT_DIR@ -
 
   def _update_project(self, rm, project_name, packages, wipe, bt):
     if wipe:
-      rm.wipe_project_dir(project_name)
+      rm.wipe_project_dir(project_name, bt)
     success = rm.resolve_and_update_packages(project_name, packages, bt)
     return self.bool_to_exit_code(success)
 
