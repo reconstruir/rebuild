@@ -60,8 +60,8 @@ class package_manager(object):
     check.check_artifact_manager(artifact_manager)
     self._root_dir = root_dir
     self._artifact_manager = artifact_manager
-    self._database_path = path.join(self._root_dir, 'database/packages.sqlite')
-    self._db = None #package_db(self._database_path)
+    self._database_path = path.join(self._root_dir, 'db/packages.db')
+    self._db = None
     self._installation_dir = path.join(self._root_dir, 'installation')
     self._env_dir = path.join(self._root_dir, 'env')
     self._lib_dir = path.join(self._installation_dir, 'lib')
