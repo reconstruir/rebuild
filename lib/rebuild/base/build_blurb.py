@@ -25,7 +25,7 @@ class build_blurb(object):
     clazz.verbose = verbose
 
   @classmethod
-  def blurb(clazz, label, message, output = sys.stdout, fit = True):
+  def blurb(clazz, label, message, output = sys.stdout, fit = False):
     assert label
     justified_label = clazz.justified_label(label)
     delimiter = ': '
@@ -34,7 +34,10 @@ class build_blurb(object):
     output.write(delimiter)
     lines = []
     if fit:
-      terminal_width = terminal.width()
+      try:
+        terminal_width = terminal.width()
+      except Exception as ex:
+        terminal_width = 80
       width = terminal_width - left_width
       if len(message) > width:
         lines = text_fit.fit_text(message, width)
