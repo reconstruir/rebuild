@@ -87,29 +87,6 @@ class test_package_db_entry(unit_test):
     self.maxDiff = None
     self.assertEqual( self.TEST_ENTRY, actual_entry )
 
-  def test_parse_json_v1(self):
-    json = '''\
-{
-  "files": [
-    "f1", 
-    "f2"
-  ],
-  "descriptor": {
-    "version": "6.7.8-2", 
-    "name": "kiwi", 
-    "requirements": [
-      "foo >= 1.2.3-1", 
-      "bar >= 6.6.6-1"
-    ] ,
-  "properties": { "p1": "v1", "p2": 6 }
-  }
-}'''
-
-    expected_entry = PE('kiwi', '6.7.8', 2, 0, self.TEST_REQUIREMENTS, self.TEST_PROPERTIES,
-                        file_checksum_list([ ( 'f1', '' ), ( 'f2', '' ) ]))
-    actual_entry = PE.parse_json(json)
-    self.assertEqual( expected_entry, actual_entry )
-
   def test_to_simple_dict(self):
     expected = {
       '_format_version': 2, 

@@ -3,5 +3,5 @@
 
 def rebuild_packages():
   return [
-    'foo/build.rebc',
+    'foo/rebuild.recipe',
   ]

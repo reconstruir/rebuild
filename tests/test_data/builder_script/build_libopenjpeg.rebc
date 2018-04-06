@@ -1,4 +1,4 @@
-!rebuildrecipe!
+!rebuild.recipe!
 
 package libopenjpeg-2.1-1
   requirements = [ 

@@ -39,7 +39,7 @@ class recipe_parser_error(Exception):
     
 class recipe_parser(object):
 
-  MAGIC = '!rebuildrecipe!'
+  MAGIC = '!rebuild.recipe!'
 
   def __init__(self, text, filename, starting_line_number = 0):
     self.text = text

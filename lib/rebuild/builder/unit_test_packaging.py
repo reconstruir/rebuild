@@ -61,7 +61,7 @@ class unit_test_packaging(object):
     tests = tests or []
     assert isinstance(tests, list)
     tests = [ string_util.quote(test) for test in tests ]
-    return '''!rebuildrecipe!
+    return '''!rebuild.recipe!
 
 package %s-%s-%s
   requirements

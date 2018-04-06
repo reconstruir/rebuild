@@ -88,7 +88,7 @@ key_values_value
 
   @classmethod
   def _parse(clazz, s):
-    recipe_template = '''!rebuildrecipe!
+    recipe_template = '''!rebuild.recipe!
 package foo-1.2.3-4
   steps
     step_takes_all

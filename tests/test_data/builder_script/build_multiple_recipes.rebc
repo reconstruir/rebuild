@@ -1,4 +1,4 @@
-!rebuildrecipe!
+!rebuild.recipe!
 
 package libsdl2-2.0.5
   enabled=$system is MACOS

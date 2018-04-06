@@ -649,7 +649,7 @@ mar 11
  - add test for pyinstaller that proves it wokrs.  it doesnt when python.h is missng
  
 mar 14
- - figure out why build.rebc in python_chardet does not deal with tests
+ - figure out why rebuild.recipe in python_chardet does not deal with tests
  - checksums might be fucked
  - add tools to checksums
  
@@ -678,7 +678,7 @@ mar 20
 mar 22
 - builder.wipe_build_dirs() doesnt deal with the host build target issue when building tool deps same with no checksums need to do resolutions before
 - depends_on is broken in builder
-- the steps loaded from third_party/lib/openssl/openssl_steps.py in third_party/lib/openssl/build.rebc dont end up
+- the steps loaded from third_party/lib/openssl/openssl_steps.py in third_party/lib/openssl/rebuild.recipe dont end up
   in checksum sources
 - prune the scripts tree to avoid crawing and downloading shit that is irrelevant
 
@@ -696,7 +696,7 @@ mar 27
 - rebuilder.py -w will kill stuff like -n but it shouldnt
 
 install_target should be make_install_target
-when the name of the makefile changes from build.py to build.rebc it doesnt recompile checkout checksums
+when the name of the makefile changes from build.py to rebuild.recipe it doesnt recompile checkout checksums
 
 when done converting builder scripts retire the properties hacks in recipe_parser (for env_vars and export_compilation_flags_requirements)
 figure out the check_python_eggs mess
@@ -741,7 +741,7 @@ apr 3
 need a package unit test with symlinks
 
 
-build.rebc<libstarch>
+rebuild.recipe<libstarch>
 broken:
   macos: CC=clang CFLAGS=${REBUILD_COMPILE_ARCH_FLAGS}
 works:  macos: CC=clang CFLAGS="${REBUILD_COMPILE_ARCH_FLAGS}"
@@ -751,8 +751,6 @@ april 4
 - need to check for env_dir files conflicts
 
 before great commit
-- package rebc descriptions - vs space
-- rebuildstruct name
 ~/.rebuild/macos vs linux
 env_var fucking
 

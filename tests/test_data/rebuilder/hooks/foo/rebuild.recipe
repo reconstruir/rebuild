@@ -1,6 +1,8 @@
-!rebuildrecipe!
+!rebuild.recipe!
 
 package foo-1.0.0
+  load
+    hooks.py
 
   steps
     step_setup
@@ -15,5 +17,5 @@ package foo-1.0.0
         
       skip_binary_third_party_prefix: True
 
-      env_files
-        all: foo_env1.sh foo_env2.sh
+      post_install_hooks
+        all: _test_hook1 _test_hook2

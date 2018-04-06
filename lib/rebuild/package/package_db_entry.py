@@ -41,35 +41,11 @@ class package_db_entry(namedtuple('package_db_entry', 'format_version,name,versi
   def parse_json(clazz, text):
     o = json.loads(text)
     format_version = o.get('_format_version', 1)
-    if format_version == 1:
-      return clazz._parse_dict_v1(o)
-    elif format_version == 2:
+    if format_version == 2:
       return clazz._parse_dict_v2(o)
     else:
       raise ValueError('invalid format_version: %s' % (format_version))
 
-  @classmethod
-  def _parse_dict_v1(clazz, o):
-    if 'descriptor' in o:
-      key = 'descriptor'
-    else:
-      key = 'info'
-    assert key in o
-    dd = o[key]
-    check.check_dict(dd)
-    descriptor = package_descriptor.parse_dict(dd)
-    files = file_checksum_list()
-    assert 'files' in o
-    for f in o['files']:
-      files.append(file_checksum(f, ''))
-    return clazz(descriptor.name,
-                 descriptor.version.upstream_version,
-                 descriptor.version.revision,
-                 descriptor.version.epoch,
-                 descriptor.requirements,
-                 descriptor.properties,
-                 files)
-  
   @classmethod
   def _parse_dict_v2(clazz, o):
     return clazz(o['name'],

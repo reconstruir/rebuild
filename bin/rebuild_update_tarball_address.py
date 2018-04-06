@@ -8,7 +8,7 @@ from bes.fs import file_replace, temp_file
 from rebuild.base import build_system
 
 def main():
-  filename = path.abspath('build.rebc')
+  filename = path.abspath('rebuild.recipe')
   recipes = builder_recipe_loader.load(filename)
   for recipe in recipes:
     values = recipe.steps[0].resolve_values(build_system.MACOS)
