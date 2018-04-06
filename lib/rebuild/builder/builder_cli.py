@@ -31,7 +31,7 @@ class builder_cli(object):
     systems = ','.join(build_system.SYSTEMS)
     self.parser = argparse.ArgumentParser(description = 'Build packages.')
     self.parser.add_argument('-o', '--opts', action = 'store', type = str, default = '')
-    self.parser.add_argument('-f', '--rebuildstruct', action = 'store', type = str, default = 'rebuildstruct')
+    self.parser.add_argument('-f', '--project-file', action = 'store', type = str, default = 'rebuild.project')
     self.parser.add_argument('-n', '--no-checksums', action = 'store_true')
     self.parser.add_argument('-v', '--verbose', action = 'store_true', default = False)
     self.parser.add_argument('-w', '--wipe', action = 'store_true')
@@ -75,7 +75,7 @@ class builder_cli(object):
     parsed_opts = key_value_parser.parse_to_dict(args.opts)
     opts.update(parsed_opts)
 
-    available_packages = self.load_structure_file(args.rebuildstruct)
+    available_packages = self.load_project_file(args.project_file)
 
     if args.filter:
       if path.isfile(args.filter[0]):
@@ -160,9 +160,9 @@ class builder_cli(object):
     raise SystemExit(builder_cli().main())
 
   @classmethod
-  def load_structure_file(clazz, filename):
+  def load_project_file(clazz, filename):
     if not path.exists(filename):
-      raise RuntimeError('rebuild structure file not found: %s' % (filename))
+      raise RuntimeError('rebuild project file not found: %s' % (filename))
     tmp_globals = {}
     tmp_locals = {}
     code.execfile(filename, tmp_globals, tmp_locals)
