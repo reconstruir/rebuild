@@ -92,23 +92,26 @@ class rebuild_manager(object):
     config.load_file(self.config_filename, build_target)
     return config
 
-  def update_from_config(self, build_target, project_name = None, allow_downgrade = False, force_install = False):
+  def update_from_config(self, build_target, wipe, project_name = None, allow_downgrade = False, force_install = False):
     config = self._load_config(build_target)
-
     want_specific_project = project_name is not None
-    if want_specific_project and project_name not in config.keys():
-      raise RuntimeError('Unknown project: %s' % (project_name))
+    valid_project_names = sorted(config.keys())
+    if want_specific_project and project_name not in valid_project_names:
+      self.blurb('invalid project \"%s\" - should be one of: %s' % (project_name, ' '.join(valid_project_names)), fit = True)
+      return False
 
     if want_specific_project:
-      return self._update_project_from_config(build_target, config[project_name], project_name, allow_downgrade, force_install)
+      return self._update_project_from_config(build_target, wipe, config[project_name], project_name, allow_downgrade, force_install)
     else:
       for project_name, values in config.items():
-        if not self._update_project_from_config(build_target, values, project_name, allow_downgrade, force_install):
+        if not self._update_project_from_config(build_target, wipe, values, project_name, allow_downgrade, force_install):
           return False
       return True
   
-  def _update_project_from_config(self, build_target, values, project_name, allow_downgrade, force_install):
+  def _update_project_from_config(self, build_target, wipe, values, project_name, allow_downgrade, force_install):
     self.log_i('%s - updating' % (project_name))
+    if wipe:
+      self._wipe_project_dir(project_name, build_target)
     resolved_packages = self.resolve_and_update_packages(project_name,
                                                          values['packages'],
                                                          build_target,
@@ -139,7 +142,7 @@ unset _root
 _@NAME@_setup()
 {
   local _root=${_@NAME@_root}
-  local _prefix=${_root}/installation
+  local _prefix=${_root}/stuff
   export PATH=${_prefix}/bin:${PATH}
   export PYTHONPATH=${_prefix}/lib/python:${PYTHONPATH}
   export PKG_CONFIG_PATH=${_prefix}/lib/pkgconfig:${PKG_CONFIG_PATH}
@@ -183,7 +186,7 @@ _rebuild_system_name()
   local _system=$(_rebuild_system_name)
   local _root=${_@NAME@_root}
   local _system_root=${_root}/${_system}
-  local _prefix=${_system_root}/installation
+  local _prefix=${_system_root}/stuff
   export PATH=${_prefix}/bin:${PATH}
   export PYTHONPATH=${_prefix}/lib/python:${PYTHONPATH}
   export PKG_CONFIG_PATH=${_prefix}/lib/pkgconfig:${PKG_CONFIG_PATH}
@@ -223,7 +226,7 @@ exec ${1+"$@"}
   def config(self, build_target):
     return self._load_config(build_target)
 
-  def wipe_project_dir(self, project_name, build_target):
+  def _wipe_project_dir(self, project_name, build_target):
     project_root_dir = self._project_root_dir(project_name, build_target.system)
     self.blurb('wiping root dir: %s' % (project_root_dir))
     self.log_i('%s - wiping: %s' % (project_name, project_root_dir))

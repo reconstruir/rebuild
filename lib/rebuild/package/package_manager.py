@@ -64,7 +64,7 @@ class package_manager(object):
     self._artifact_manager = artifact_manager
     self._database_path = path.join(self._root_dir, 'db/packages.db')
     self._db = None
-    self._installation_dir = path.join(self._root_dir, 'installation')
+    self._installation_dir = path.join(self._root_dir, 'stuff')
     self._env_dir = path.join(self._root_dir, 'env')
     self._lib_dir = path.join(self._installation_dir, 'lib')
     self._bin_dir = path.join(self._installation_dir, 'bin')

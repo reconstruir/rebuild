@@ -177,7 +177,6 @@ feb 21
 - make hooks be more generic
 
 feb 22
-- fix ~/.rettols/setup.sh to accept args and allow for wiping the installation first
 - write a check that makes sure no binary or shared libraries exist
 - cross process locking when building on separate terminals
 
@@ -772,4 +771,4 @@ copy third_party/privworld to great/...
 
 - add db multi process lock
 - add a in db lock when a package is being modified to deal with crashes
-
+- twisted might depend on hyperlink

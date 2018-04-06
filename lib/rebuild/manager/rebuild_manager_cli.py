@@ -54,7 +54,7 @@ class rebuild_manager_cli(object):
                                 '-w',
                                 action = 'store_true',
                                 default = False,
-                                help = 'Wipe the installation dir before installing [ False ]')
+                                help = 'Wipe the stuff dir before installing [ False ]')
     install_parser.add_argument('dest_dir',
                                 action = 'store',
                                 default = None,
@@ -325,21 +325,20 @@ class rebuild_manager_cli(object):
     return 0
   
   UPDATE_SCRIPT_TEMPLATE = '''#!/bin/bash
-remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir @ROOT_DIR@ --force ${1+"$@"}
+_root_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir ${_root_dir} --force ${1+"$@"}
 '''
 
   def _command_packages_update(self, root_dir, wipe, project_name, allow_downgrade, force_install, bt):
     rm = rebuild_manager(self.artifact_manager, bt, root_dir)
-    if wipe:
-      rm.wipe_project_dir(project_name, bt)
     success = rm.update_from_config(bt,
+                                    wipe,
                                     project_name = project_name,
                                     allow_downgrade = allow_downgrade,
                                     force_install = force_install)
     update_script = rebuild_manager_script(self.UPDATE_SCRIPT_TEMPLATE, 'update.sh')
     variables = {
       '@ARTIFACTS_DIR@': self.artifact_manager.publish_dir,
-      '@ROOT_DIR@': root_dir,
     }
     update_script.save(root_dir, variables)
     return self.bool_to_exit_code(success)
