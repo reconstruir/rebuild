@@ -5,6 +5,7 @@
 
 import copy, os.path as path, platform
 
+from bes.system import log
 from bes.archive import archive, archiver
 from bes.common import check, object_util, string_util, variable
 from bes.dependency import dependency_resolver
@@ -56,7 +57,8 @@ class PackageMissingRequirementsError(Exception):
 
 class package_manager(object):
 
-  def __init__(self, root_dir, artifact_manager):
+  def __init__(self, root_dir, artifact_manager, log_tag = 'package_manager'):
+    log.add_logging(self, log_tag)
     check.check_artifact_manager(artifact_manager)
     self._root_dir = root_dir
     self._artifact_manager = artifact_manager
@@ -142,6 +144,7 @@ class package_manager(object):
     return self._db
   
   def install_tarball(self, pkg_tarball, hardness):
+    self.log_i('installing tarball: %s for %s' % (pkg_tarball, ' '.join(hardness)))
     pkg = package(pkg_tarball)
 
     if self.is_installed(pkg.descriptor.name):
@@ -173,6 +176,7 @@ class package_manager(object):
     self.db.add_package(entry)
 
   def uninstall_package(self, pkg_name):
+    self.log_i('uninstalling package: %s' % (pkg_name))
     pkg = self.db.find_package(pkg_name)
     if not pkg:
       raise PackageNotFoundError('package %s not found' % (pkg_name))
@@ -215,6 +219,7 @@ class package_manager(object):
 
   def install_package(self, pkg_desc, build_target, hardness,
                       allow_downgrade = False, force_install = False):
+    self.log_i('installing package: %s for %s' % (str(pkg_desc), ' '.join(hardness)))
     check.check_package_descriptor(pkg_desc)
     pkg = self._artifact_manager.package(pkg_desc, build_target)
 
@@ -222,8 +227,10 @@ class package_manager(object):
       old_pkg_entry = self.db.find_package(pkg.descriptor.name)
       old_pkg_entry_desc = old_pkg_entry.descriptor
       comparison = package_descriptor.full_name_cmp(old_pkg_entry_desc, pkg_desc)
+      self.log_d('installing package: comparison=%s' % (comparison))
       if force_install:
         if old_pkg_entry.checksum != pkg.metadata.checksum:
+          self.log_i('installing package: checksums changed: %s' % (str(pkg_desc)))
           comparison = -1
       if comparison == 0:
         return False

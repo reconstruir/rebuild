@@ -5,7 +5,7 @@ import os.path as path
 from bes.common import algorithm
 from bes.fs import file_util
 from bes.common import check, object_util
-from bes.system import os_env
+from bes.system import log, os_env
 from rebuild.base import build_blurb
 from bes.dependency import dependency_resolver
 from rebuild.package import package_manager
@@ -20,8 +20,9 @@ class rebuild_manager(object):
   CONFIG_FILENAME = 'config'
   
   def __init__(self, artifact_manager, root_dir = None):
+    log.add_logging(self, 'remanage')
+    build_blurb.add_blurb(self, label = 'remanage')
     check.check_artifact_manager(artifact_manager)
-    build_blurb.add_blurb(self, label = 'rebuild')
     self.root_dir = path.abspath(root_dir or self.DEFAULT_ROOT_DIR)
     self.artifact_manager = artifact_manager
     self.package_managers = {}
@@ -39,7 +40,8 @@ class rebuild_manager(object):
     subpath = self._project_subpath(project_name, system)
     if subpath not in self.package_managers:
       self.package_managers[project_name] = package_manager(path.join(self.root_dir, subpath),
-                                                            self.artifact_manager)
+                                                            self.artifact_manager,
+                                                            log_tag = 'remanage.%s' % (project_name))
     return self.package_managers[project_name]
 
   def update_packages(self, project_name, packages, build_target, allow_downgrade = False, force_install = False):
@@ -72,12 +74,14 @@ class rebuild_manager(object):
     return [ pi.name for pi in resolve_rv.resolved ]
 
   def uninstall_packages(self, project_name, packages, build_target):
+    self.log_i('%s - uninstalling: %s' % (package_name, ' '.join(packages)))
     # FIXME: no dependents handling
     pm = self._package_manager(project_name, build_target)
     pm.uninstall_packages(packages) #, build_target)
     return True
 
   def _load_config(self, build_target):
+    self.log_i('loading config: %s' % (self.config_filename))
     if not path.exists(self.config_filename):
       raise RuntimeError('config file does not exist: %s' % (self.config_filename))
     config = rebuild_manager_config()
@@ -100,6 +104,7 @@ class rebuild_manager(object):
       return True
   
   def _update_project_from_config(self, build_target, values, project_name, allow_downgrade, force_install):
+    self.log_i('%s - updating' % (project_name))
     resolved_packages = self.resolve_and_update_packages(project_name,
                                                          values['packages'],
                                                          build_target,
@@ -110,6 +115,8 @@ class rebuild_manager(object):
       return False
     installed_packages = self.installed_packages(project_name, build_target)
     removed_packages = list(set(installed_packages).difference(set(resolved_packages)))
+    self.log_i('%s - installed packages: %s' % (project_name, ' '.join(installed_packages)))
+    self.log_i('%s - removed packages: %s' % (project_name, ' '.join(removed_packages)))
     if removed_packages:
       self.uninstall_packages(project_name, removed_packages, build_target)
     self._save_system_setup_scripts(project_name, build_target)

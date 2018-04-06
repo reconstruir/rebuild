@@ -4,6 +4,7 @@
 import argparse, copy, os, os.path as path
 from collections import namedtuple
 
+from bes.system import log
 from bes.archive import archiver
 from bes.key_value import key_value_parser
 from bes.system import host
@@ -22,6 +23,7 @@ class rebuild_manager_cli(object):
   DEFAULT_ROOT_DIR = path.expanduser('~/.rebuild')
   
   def __init__(self):
+    log.add_logging(self, 'remanage')
     self.parser = argparse.ArgumentParser()
     self.commands_subparser = self.parser.add_subparsers(help = 'commands',
                                                          dest = 'command')
@@ -208,6 +210,11 @@ class rebuild_manager_cli(object):
       self.artifact_manager = artifact_manager(args.artifacts, address = None, no_git = True)
     else:
       self.artifact_manager = artifact_manager(None)
+
+    self.verbose = getattr(args, 'verbose', False)
+
+    if self.verbose:
+      log.configure('remanage*=info format=brief')
       
     if command == 'tools:update':
       return self._command_tools_update()
