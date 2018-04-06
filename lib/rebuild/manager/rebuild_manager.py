@@ -216,7 +216,9 @@ exec ${1+"$@"}
     }
     system_setup_script.save(pm.root_dir, variables)
     system_run_script.save(pm.root_dir, variables)
-    setup_script.save(path.join(pm.root_dir, '..'), variables)
+    parent_dir = path.join(pm.root_dir, '..')
+    setup_script.save(parent_dir, variables)
+    system_run_script.save(parent_dir, variables)
   
   def config(self, build_target):
     return self._load_config(build_target)
