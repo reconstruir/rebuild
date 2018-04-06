@@ -21,7 +21,7 @@ class rebuild_manager(object):
   
   def __init__(self, artifact_manager, root_dir = None):
     check.check_artifact_manager(artifact_manager)
-    build_blurb.add_blurb(self, label = 'build')
+    build_blurb.add_blurb(self, label = 'rebuild')
     self.root_dir = path.abspath(root_dir or self.DEFAULT_ROOT_DIR)
     self.artifact_manager = artifact_manager
     self.package_managers = {}

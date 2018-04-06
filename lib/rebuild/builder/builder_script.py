@@ -17,8 +17,8 @@ from rebuild.recipe import recipe_file
 class builder_script(object):
 
   def __init__(self, recipe, build_target, env):
-    log.add_logging(self, 'build')
-    build_blurb.add_blurb(self, 'build')
+    log.add_logging(self, 'rebuild')
+    build_blurb.add_blurb(self, 'rebuild')
 
     check.check_recipe(recipe)
     check.check_build_target(build_target)
@@ -29,12 +29,12 @@ class builder_script(object):
     self.build_target = build_target
     self.enabled = self.build_target.parse_expression(recipe.enabled)
     self.source_dir = path.dirname(self.filename)
-    self._step_manager = step_manager('build')
+    self._step_manager = step_manager('rebuild')
     self.working_dir = self._make_working_dir(self.env.config.builds_dir(self.build_target),
                                               self.descriptor.full_name,
                                               self.env.config.timestamp)
     self.source_unpacked_dir = path.join(self.working_dir, 'source')
-    self.build_dir = path.join(self.working_dir, 'build')
+    self.build_dir = path.join(self.working_dir, 'rebuild')
 
     self.stage_dir = path.join(self.working_dir, 'stage')
     self.staged_files_dir = path.join(self.stage_dir, 'files')

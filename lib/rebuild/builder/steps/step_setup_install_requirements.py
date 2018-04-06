@@ -19,7 +19,7 @@ class step_setup_install_requirements(step):
                                                              env.config.build_target.system,
                                                              ['BUILD', 'RUN'],
                                                              False)
-    build_blurb.blurb('build', '%s - requirements: %s' % (package_desc.name, ' '.join([ p.name for p in requirements])))
+    build_blurb.blurb('rebuild', '%s - requirements: %s' % (package_desc.name, ' '.join([ p.name for p in requirements])))
 
     if not requirements:
       message = 'No requirements for %s' % (script.descriptor.full_name)

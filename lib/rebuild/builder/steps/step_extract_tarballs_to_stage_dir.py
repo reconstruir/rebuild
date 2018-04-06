@@ -34,14 +34,11 @@ class step_extract_tarballs_to_stage_dir(step):
     else:
       base_dir = script.descriptor.full_name
 
-    from bes.debug import debug_timer
-    t = debug_timer('foo', 'error')
-      
     for tarball in tarballs:
-      t.start('unpack %s' % (path.relpath(tarball)))
       self.blurb('Extracting extra tarball %s' % (path.relpath(tarball)))
+      script.timer.start('extracting %s' % (path.relpath(tarball)))
       archiver.extract(tarball, script.staged_files_dir,
                        base_dir = base_dir,
                        strip_common_base = tarballs_strip_common_base)
-      t.stop()
+      script.timer.stop()
     return step_result(True)

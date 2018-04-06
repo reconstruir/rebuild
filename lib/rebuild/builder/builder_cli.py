@@ -102,7 +102,7 @@ class builder_cli(object):
     opts['level'] = args.level
     opts['archs'] = args.archs
 
-    build_blurb.set_process_name('build')
+    build_blurb.set_process_name('rebuild')
     build_blurb.set_verbose(args.verbose)
 
     config = builder_config()
@@ -130,16 +130,16 @@ class builder_cli(object):
     config.performance = args.performance
     env = builder_env(config, available_packages)
     
-    build_blurb.blurb('build', 'target=%s; host=%s' % (config.build_target.build_path, config.host_build_target.build_path))
+    build_blurb.blurb('rebuild', 'target=%s; host=%s' % (config.build_target.build_path, config.host_build_target.build_path))
 
     bldr = builder(env)
 
     resolved_args = bldr.check_and_resolve_cmd_line_args(target_packages)
       
     if resolved_args.invalid_args:
-      build_blurb.blurb('build', 'Invalid targets: %s' % (' '.join(resolved_args.invalid_args)))
-      build_blurb.blurb('build', 'possible targets:')
-      build_blurb.blurb('build', ' '.join(bldr.package_names()), fit = True)
+      build_blurb.blurb('rebuild', 'Invalid targets: %s' % (' '.join(resolved_args.invalid_args)))
+      build_blurb.blurb('rebuild', 'possible targets:')
+      build_blurb.blurb('rebuild', ' '.join(bldr.package_names()), fit = True)
       return 1
 
     return bldr.build_many_scripts(resolved_args.package_names)

@@ -16,7 +16,7 @@ class builder(object):
   REBUILD_FILENAME = 'build.py'
   
   def __init__(self, env):
-    build_blurb.add_blurb(self, label = 'build')
+    build_blurb.add_blurb(self, label = 'rebuild')
     self._env = env
     self.thread_pool = thread_pool(1)
 
@@ -137,7 +137,7 @@ class builder(object):
         if path.exists(script.working_dir) and dir_util.is_empty(script.working_dir):
           file_util.remove(script.working_dir)
         return self._run_result(self.SCRIPT_CURRENT, None)
-      build_blurb.blurb('build', '%s - building' % (script.descriptor.name))
+      build_blurb.blurb('rebuild', '%s - building' % (script.descriptor.name))
       packager_result = script.execute({})
       if packager_result.success:
         return self._run_result(self.SCRIPT_SUCCESS, packager_result)

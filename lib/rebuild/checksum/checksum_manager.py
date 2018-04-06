@@ -17,7 +17,7 @@ class checksum_manager(object):
   
   def __init__(self, root_dir):
     check.check_string(root_dir)
-    build_blurb.add_blurb(self, label = 'build')
+    build_blurb.add_blurb(self, label = 'rebuild')
     self._root_dir = root_dir
     self._build_target = build_target
     self._ignored = set()

@@ -16,7 +16,7 @@ class CommandLineBuild(object):
   def main(clazz):
     exit_code, message = clazz.__main()
     if exit_code != 0:
-      build_blurb.blurb('build', message)
+      build_blurb.blurb('rebuild', message)
     raise SystemExit(exit_code)
 
   @classmethod

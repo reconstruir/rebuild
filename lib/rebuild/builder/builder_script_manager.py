@@ -15,7 +15,7 @@ class builder_script_manager(object):
     # Load all the scripts
     self.scripts = {}
     for filename in filenames:
-      build_blurb.blurb_verbose('build', 'loading %s' % (filename))
+      build_blurb.blurb_verbose('rebuild', 'loading %s' % (filename))
       builder_scripts = self._load_scripts(filename, build_target, env)
       for script in builder_scripts:
         #print('%s: requirements=%s' % (script.descriptor.name, str(script.descriptor.requirements)))

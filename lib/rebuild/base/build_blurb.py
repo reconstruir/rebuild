@@ -25,7 +25,7 @@ class build_blurb(object):
     clazz.verbose = verbose
 
   @classmethod
-  def blurb(clazz, label, message, output = sys.stdout, fit = False):
+  def blurb(clazz, label, message, output = sys.stdout, fit = True):
     assert label
     justified_label = clazz.justified_label(label)
     delimiter = ': '
@@ -39,12 +39,11 @@ class build_blurb(object):
       if len(message) > width:
         lines = text_fit.fit_text(message, width)
     if lines:
-      first = True
-      for line in lines:
-        if not first:
+      for i, line in enumerate(lines):
+        if i != 0:
+          output.write('\n')
           output.write(' ' * left_width)
         output.write(line)
-        output.write('\n')
         first = False
     else:
       output.write(message)

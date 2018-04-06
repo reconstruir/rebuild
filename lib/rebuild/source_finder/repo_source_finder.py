@@ -29,7 +29,7 @@ class repo_source_finder(source_finder):
 
   def _update(self):
     if self.no_network:
-      build_blurb.blurb('build', 'Repo source finder update disabled due to no_network: %s' % (path.relpath(self.repo.root)))
+      build_blurb.blurb('rebuild', 'Repo source finder update disabled due to no_network: %s' % (path.relpath(self.repo.root)))
     else:
-      build_blurb.blurb('build', 'Updating repo sources: %s' % (path.relpath(self.repo.root)))
+      build_blurb.blurb('rebuild', 'Updating repo sources: %s' % (path.relpath(self.repo.root)))
       self.repo.clone_or_pull()

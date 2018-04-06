@@ -166,7 +166,7 @@ class step(with_metaclass(step_register_meta, object)):
   @classmethod
   def env_dump(clazz, env, package_name, label):
     for key, value in sorted(env.items()):
-      build_blurb.blurb_verbose('build', '%s(%s): %s=%s' % (label, package_name, key, value))
+      build_blurb.blurb_verbose('rebuild', '%s(%s): %s=%s' % (label, package_name, key, value))
   
   @classmethod
   def call_shell(clazz, command, script, env, args, extra_env = None, save_logs = None, execution_dir = None):
@@ -176,8 +176,8 @@ class step(with_metaclass(step_register_meta, object)):
     save_logs = save_logs or []
     check.check_key_value_list(extra_env)
     
-    log.log_i('build', 'call_shell(cmd=%s, args=%s)' % (command, args))
-    build_blurb.blurb_verbose('build', 'call_shell(cmd=%s, args=%s, extra_env=%s)' % (command, args, extra_env))
+    log.log_i('rebuild', 'call_shell(cmd=%s, args=%s)' % (command, args))
+    build_blurb.blurb_verbose('rebuild', 'call_shell(cmd=%s, args=%s, extra_env=%s)' % (command, args, extra_env))
 
     env = clazz.create_command_env(script)
 
@@ -198,7 +198,7 @@ class step(with_metaclass(step_register_meta, object)):
       if variable.has_rogue_dollar_signs(part):
         raise RuntimeError('Rogue dollar sign (\"$\") found in: %s' % (part))
       
-    build_blurb.blurb('build', '%s - %s' % (script.descriptor.name, ' '.join(command)))
+    build_blurb.blurb('rebuild', '%s - %s' % (script.descriptor.name, ' '.join(command)))
 
 #    file_util.mkdir(script.build_dir)
     retry_script = clazz._write_retry_script(command, env, script)
