@@ -6,6 +6,7 @@ from rebuild.base import build_system
 from bes.compat import ConfigParser
 from bes.compat import StringIO
 from collections import OrderedDict
+from bes.text import comments
 
 class rebuild_manager_config(OrderedDict):
 
@@ -66,4 +67,5 @@ class rebuild_manager_config(OrderedDict):
     
   @classmethod
   def __parse_packages(clazz, s):
+    s = comments.strip_line(s, strip_head = True, strip_tail = True)
     return [ token.strip() for token in string_util.split_by_white_space(s) ]
