@@ -56,8 +56,17 @@ class source_finder(with_metaclass(ABCMeta, object)):
       if clazz._tarball_matches_system(tarball, system):
         return True
     return False
-    
+
+  _SYSTEM_ALIASES = {
+    build_system.MACOS: [ 'darwin' ],
+  }  
+  
   @classmethod
   def _tarball_matches_system(clazz, tarball, system):
-    pattern = '/%s/' % (system)
-    return pattern in tarball
+    v = set([ system ] + clazz._SYSTEM_ALIASES.get(system, []))
+    patterns = [ '%s' % (s) for s in v ]
+    for p in patterns:
+      if p in tarball:
+        return True
+    return False
+  
