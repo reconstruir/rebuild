@@ -123,17 +123,6 @@ class test_local_source_finder(unit_test):
     self.assertEqual( path.join(tmp_dir, 'a/macos/alpha-macos-1.2.3.tar.gz'),
                       finder.find_source('alpha', '1.2.3', 'macos') )
     
-  def test_local_finder_darwin_alias_for_macos(self):
-    tmp_dir = source_dir_maker.make([
-      'file a/alpha-linux-1.2.3.tar.gz "${tarball}" 644',
-      'file a/alpha-darwin-1.2.3.tar.gz "${tarball}" 644',
-    ])
-    finder = local_source_finder(tmp_dir)
-    self.assertEqual( path.join(tmp_dir, 'a/alpha-linux-1.2.3.tar.gz'),
-                      finder.find_source('alpha', '1.2.3', 'linux') )
-    self.assertEqual( path.join(tmp_dir, 'a/alpha-darwin-1.2.3.tar.gz'),
-                      finder.find_source('alpha', '1.2.3', 'macos') )
-    
   def test_local_finder_darwin_alias_for_macos_subdir(self):
     tmp_dir = source_dir_maker.make([
       'file a/linux/alpha-linux-1.2.3.tar.gz "${tarball}" 644',
@@ -144,6 +133,18 @@ class test_local_source_finder(unit_test):
                       finder.find_source('alpha', '1.2.3', 'linux') )
     self.assertEqual( path.join(tmp_dir, 'a/darwin/alpha-darwin-1.2.3.tar.gz'),
                       finder.find_source('alpha', '1.2.3', 'macos') )
+
+  def test_local_finder_darwin_alias_for_macos_mixed_case(self):
+    tmp_dir = source_dir_maker.make([
+      'file a/alpha-LINUX-1.2.3.tar.gz "${tarball}" 644',
+      'file a/alpha-Darwin-1.2.3.tar.gz "${tarball}" 644',
+    ])
+    finder = local_source_finder(tmp_dir)
+    self.assertEqual( path.join(tmp_dir, 'a/alpha-LINUX-1.2.3.tar.gz'),
+                      finder.find_source('alpha', '1.2.3', 'linux') )
+    self.assertEqual( path.join(tmp_dir, 'a/alpha-Darwin-1.2.3.tar.gz'),
+                      finder.find_source('alpha', '1.2.3', 'macos') )
+    
     
 if __name__ == '__main__':
   unit_test.main()

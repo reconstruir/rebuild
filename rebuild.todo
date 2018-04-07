@@ -772,3 +772,10 @@ copy third_party/privworld to great/...
 - add db multi process lock
 - add a in db lock when a package is being modified to deal with crashes
 - twisted might depend on hyperlink
+
+
+
+- major tasks
+- artifact factory db
+- env_dir loading in shell and in python
+- new tools manager

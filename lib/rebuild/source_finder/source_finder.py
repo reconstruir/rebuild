@@ -63,6 +63,7 @@ class source_finder(with_metaclass(ABCMeta, object)):
   
   @classmethod
   def _tarball_matches_system(clazz, tarball, system):
+    tarball = tarball.lower()
     v = set([ system ] + clazz._SYSTEM_ALIASES.get(system, []))
     patterns = [ '%s' % (s) for s in v ]
     for p in patterns:
