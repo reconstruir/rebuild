@@ -117,7 +117,6 @@ class test_package_db_entry(unit_test):
     db = sqlite(':memory:')
     db.execute(DB.SCHEMA_PACKAGES)
     d = self.TEST_ENTRY.to_sql_dict()
-    print('FUCK: %s' % (d)) 
     keys = ', '.join(d.keys())
     values = ', '.join(d.values())
     db.execute('''INSERT INTO packages (%s) values (%s)''' % (keys, values))

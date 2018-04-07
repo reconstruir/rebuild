@@ -120,10 +120,10 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
       'epoch': str(self.epoch),
       'system': util.sql_encode_string(self.system),
       'level': util.sql_encode_string(self.level),
-      'archs': sql_encode_string_list(self.archs),
+      'archs': util.sql_encode_string_list(self.archs),
       'distro': util.sql_encode_string(self.distro),
-      'requirements': sql_encode_requirements(self.requirements),
-      'properties': sql_encode_dict(self.properties),
+      'requirements': util.sql_encode_requirements(self.requirements),
+      'properties': util.sql_encode_dict(self.properties),
       'checksum': util.sql_encode_string(self.checksum),
     }
     return d

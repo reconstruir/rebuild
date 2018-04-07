@@ -1,0 +1,107 @@
+#!/usr/bin/env python
+#-*- coding:utf-8 -*-
+#
+import os.path as path, unittest
+from bes.fs import file_checksum_list as FCL, temp_file
+from rebuild.base import build_system, package_descriptor as PD, requirement_list as RL
+from rebuild.package.artifact_db import artifact_db as DB
+from rebuild.package.package_metadata import package_metadata as PM
+from bes.debug import debug_timer
+
+class test_package_db(unittest.TestCase):
+
+  def _make_tmp_db_path(self):
+    tmp_dir = temp_file.make_temp_dir()
+    return path.join(tmp_dir, 'db.sqlite')
+
+  def xtest_db_create_empty(self):
+    tmp_db = self._make_tmp_db_path()
+    db = DB(tmp_db)
+    self.assertEqual( [], db.list_all() )
+
+  def xtest_db_recreate_empty(self):
+    tmp_db = self._make_tmp_db_path()
+    db = DB(tmp_db)
+    self.assertEqual( [], db.list_all() )
+    del db
+    recreated_db = DB(tmp_db)
+    self.assertEqual( [], recreated_db.list_all() )
+
+  def xtest_db_add(self):
+    tmp_db = self._make_tmp_db_path()
+    db = DB(tmp_db)
+    self.assertFalse( db.has_package('foo') )
+    files = FCL([ ( 'lib/libfoo.a', 'c1' ), ( 'include/libfoo.h', 'c2' ) ])
+    files.sort()
+    reqs = None
+    new_entry = PM('foo', '1.2.3', 1, 0, [], {}, files)
+    db.add_package(new_entry)
+    self.assertTrue( db.has_package('foo') )
+    self.assertEqual( [ 'foo' ], db.list_all() )
+    self.assertEqual( [ 'foo-1.2.3-1' ], db.list_all(include_version = True) )
+    self.assertEqual( [ PD.parse('foo-1.2.3-1') ], db.list_all_descriptors() )
+    self.assertEqual( PM('foo', '1.2.3', 1, 0, [], {}, files), db.find_package('foo') )
+  
+    del db
+    recreated_db = DB(tmp_db)
+    self.assertTrue( recreated_db.has_package('foo') )
+    self.assertEqual( [ 'foo' ], recreated_db.list_all() )
+    actual_package = recreated_db.find_package('foo')
+    expected_package = PM('foo', '1.2.3', 1, 0, [], {}, files)
+    self.assertEqual( expected_package, actual_package )
+
+  def xtest_db_remove(self):
+    tmp_db = self._make_tmp_db_path()
+    db = DB(tmp_db)
+    self.assertFalse( db.has_package('foo') )
+    files = FCL([ ( 'lib/libfoo.a', 'c1' ), ( 'include/libfoo.h', 'c2' ) ])
+    files.sort()
+    reqs = None
+    new_entry = PM('foo', '1.2.3', 1, 0, [], {}, files)
+    db.add_package(new_entry)
+    self.assertTrue( db.has_package('foo') )
+    self.assertEqual( [ 'foo' ], db.list_all() )
+    self.assertEqual( PM('foo', '1.2.3', 1, 0, [], {}, files), db.find_package('foo') )
+
+    db.remove_package('foo')
+    self.assertFalse( db.has_package('foo') )
+    self.assertEqual( [], db.list_all() )
+    self.assertEqual( None, db.find_package('foo') )
+
+    del db
+    recreated_db = DB(tmp_db)
+    self.assertFalse( recreated_db.has_package('foo') )
+    self.assertEqual( [], recreated_db.list_all() )
+    self.assertEqual( None, recreated_db.find_package('foo') )
+
+  def xtest_package_files(self):
+    db = DB(self._make_tmp_db_path())
+    db.add_package(PM('p1', '1', 0, 0, [], {}, FCL([ ( 'p1/f1', 'c' ), ( 'p1/f2', 'c' ) ])))
+    db.add_package(PM('p2', '1', 0, 0, [], {}, FCL([ ( 'p2/f1', 'c' ), ( 'p2/f2', 'c' ) ])))
+    db.add_package(PM('p3', '1', 0, 0, [], {}, FCL([ ( 'p3/f1', 'c' ), ( 'p3/f2', 'c' ) ])))
+    db.add_package(PM('p4', '1', 0, 0, [], {}, FCL([ ( 'p4/f1', 'c' ), ( 'p4/f2', 'c' ) ])))
+    db.add_package(PM('p5', '1', 0, 0, [], {}, FCL([ ( 'p5/f1', 'c' ), ( 'p5/f2', 'c' ) ])))
+    db.add_package(PM('p6', '1', 0, 0, [], {}, FCL([ ( 'p6/f1', 'c' ), ( 'p6/f2', 'c' ) ])))
+    self.assertEqual( set([ 'p1/f1', 'p1/f2' ]), db.package_files('p1') )
+    self.assertEqual( set([ 'p2/f1', 'p2/f2' ]), db.package_files('p2') )
+    self.assertEqual( set([ 'p3/f1', 'p3/f2' ]), db.package_files('p3') )
+    self.assertEqual( set([ 'p4/f1', 'p4/f2' ]), db.package_files('p4') )
+    self.assertEqual( set([ 'p5/f1', 'p5/f2' ]), db.package_files('p5') )
+    self.assertEqual( set([ 'p6/f1', 'p6/f2' ]), db.package_files('p6') )
+  
+  def xtest_packages_with_files(self):
+    db = DB(self._make_tmp_db_path())
+    db.add_package(PM('p1', '1', 0, 0, [], {}, FCL([ ( 'p1/f1', 'c' ), ( 'p1/f2', 'c' ) ])))
+    db.add_package(PM('p2', '1', 0, 0, [], {}, FCL([ ( 'p2/f1', 'c' ), ( 'p2/f2', 'c' ) ])))
+    db.add_package(PM('p3', '1', 0, 0, [], {}, FCL([ ( 'p3/f1', 'c' ), ( 'p3/f2', 'c' ) ])))
+    db.add_package(PM('p4', '1', 0, 0, [], {}, FCL([ ( 'p4/f1', 'c' ), ( 'p4/f2', 'c' ) ])))
+    db.add_package(PM('p5', '1', 0, 0, [], {}, FCL([ ( 'p5/f1', 'c' ), ( 'p5/f2', 'c' ) ])))
+    db.add_package(PM('p6', '1', 0, 0, [], {}, FCL([ ( 'p6/f1', 'c' ), ( 'p6/f2', 'c' ) ])))
+
+    self.assertEqual( [], db.packages_with_files([ 'notthere' ]) )
+    self.assertEqual( [ 'p1' ], db.packages_with_files([ 'p1/f2' ]) )
+    self.assertEqual( [ 'p1', 'p2' ], db.packages_with_files([ 'p1/f2', 'p2/f1' ]) )
+    self.assertEqual( [ 'p1', 'p2', 'p6' ], db.packages_with_files([ 'p1/f2', 'p2/f1', 'p6/f1' ]) )
+
+if __name__ == '__main__':
+  unittest.main()

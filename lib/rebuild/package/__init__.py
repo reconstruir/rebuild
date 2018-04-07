@@ -2,6 +2,7 @@
 #-*- coding:utf-8 -*-
 
 from .artifact_manager import artifact_manager, ArtifactNotFoundError
+from .artifact_db import artifact_db
 from .package import package
 from .package_cli import package_cli
 from .package_list import package_list

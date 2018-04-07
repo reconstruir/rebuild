@@ -34,6 +34,14 @@ CREATE TABLE artifacts(
   properties      TEXT
 );
 '''
+
+  SCHEMA_FILES = '''
+CREATE TABLE {files_table_name}(
+  filename  TEXT PRIMARY KEY NOT NULL, 
+  checksum  TEXT
+);
+'''
+
   def __init__(self, filename):
     self._filename = path.abspath(filename)
     self._db = sqlite(self._filename)
