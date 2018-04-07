@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 
-from .artifact_manager import artifact_manager, ArtifactNotFoundError
 from .artifact_db import artifact_db
+from .artifact_descriptor import artifact_descriptor
+from .artifact_manager import artifact_manager, ArtifactNotFoundError
 from .package import package
 from .package_cli import package_cli
 from .package_list import package_list

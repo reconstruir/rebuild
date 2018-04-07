@@ -11,19 +11,23 @@ from .package_metadata import package_metadata
 from .util import util
 
 class ArtifactAlreadyInstalledError(Exception):
-  def __init__(self, message):
+  def __init__(self, message, adesc):
     super(ArtifactAlreadyInstalledError, self).__init__()
     self.message = message
+    self.adesc = adesc
 
   def __str__(self):
     return self.message
 
-class PackageNotInstalledError(Exception):
+class ArtifactNotInstalledError(Exception):
+  def __init__(self, message, adesc):
+    super(ArtifactNotInstalledError, self).__init__()
+    self.message = message
+    self.adesc = adesc
 
-  def __init__(self, message, name):
-    super(PackageNotInstalledError, self).__init__(message)
-    self.name = name
-    
+  def __str__(self):
+    return self.message
+  
 class artifact_db(object):
 
   SCHEMA_ARTIFACTS = '''
@@ -96,19 +100,32 @@ CREATE TABLE {files_table_name}(
       result.append(entry.descriptor.full_name)
     return sorted(result)
 
-  def has_artifact(self, name, version, revision, epoch, system, level, archs, distro):
-    t = ( name, version, revision, epoch, system, level, util.sql_encode_string_list(archs, quoted = False) )
-    row = self._db.select_one('''select count(name) from artifacts where name=? and version=? and revision=? and epoch=? and system=? and level=? and archs=?''', t)
+  def has_artifact(self, adesc):
+    sql = 'select count(name) from artifacts where {}'.format(adesc.WHERE_EXPRESSION)
+    print('sql: %s' % (sql))
+    t = adesc.to_sql_tuple()
+    print('archs: %s - %s' % (t[6], type(t[6])))
+    print('tup: %s' % (str(t)))
+    row = self._db.select_one(sql, adesc.to_sql_tuple())
+    print('row: %s' % (str(row)))
     return row[0] > 0
 
   def add_artifact(self, md):
     check.check_package_metadata(md)
-    if self.has_artifact(md.name, md.version, md.revision, md.epoch, md.system, md.level, md.archs, md.distro):
-      raise ArtifactAlreadyInstalledError('Already installed: %s' % (str(md)))
+    adesc = md.artifact_descriptor
+    if self.has_artifact(adesc):
+      raise ArtifactAlreadyInstalledError('Already installed: %s' % (str(adesc)), adesc)
     d = md.to_sql_dict()
     keys = ', '.join(d.keys())
     values = ', '.join(d.values())
-    self._db.execute('INSERT INTO artifacts(%s) values(%s)' % (keys, values))
+    self._db.execute('insert into artifacts(%s) values(%s)' % (keys, values))
+
+#    files_table_name = 'files_%s' % (md.name)
+#    schema = self.SCHEMA_FILES.format(files_table_name = files_table_name)
+#    self._db.execute(schema)
+#    for f in md.files:
+#      self._insert_file(files_table_name, f)
+
     self._db.commit()
 
 ###  def _insert_file(self, table_name, f):
@@ -121,13 +138,14 @@ CREATE TABLE {files_table_name}(
 ###    sql = """INSERT INTO %s (filename, checksum) values ('%s', %s)""" % (table_name, f.filename, checksum)
 ###    self._db.execute(sql)
     
-###  def remove_artifact(self, name):
-###    if not self.has_package(name):
-###      raise PackageNotInstalledError('not installed: %s' % (name), name)
-###    t = ( name, )
-###    self._db.execute('DELETE FROM artifacts WHERE name=?', t)
-###    self._db.execute('DROP TABLE %s' % (self._files_table_name(name)))
-###    self._db.commit()
+  def remove_artifact(self, adesc):
+    check.check_artifact_descriptor(adesc)
+    if not self.has_package(adesc):
+      raise ArtifactNotInstalledError('Not installed: %s' % (adesc), adesc)
+    sql = 'delete from artifacts {expression}'.format(adesc.WHERE_EXPRESSION)
+    self._db.execute(sql, adesc)
+    self._db.execute('DROP TABLE %s' % (self._files_table_name(name)))
+    self._db.commit()
 
 ###  def find_package(self, name):
 ###    t = ( name, )

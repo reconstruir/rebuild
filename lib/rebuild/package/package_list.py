@@ -11,7 +11,7 @@ class package_list(type_checked_list):
     super(package_list, self).__init__(package, values = values)
 
   def sort_by_descriptor(self):
-    self._values = sorted(self._values, key = lambda package: package.descriptor)
+    self._values = sorted(self._values, key = lambda package: package.package_descriptor)
     
   def descriptors(self):
     'Return the names for all the descriptors.'

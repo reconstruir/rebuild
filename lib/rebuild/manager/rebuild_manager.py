@@ -60,12 +60,12 @@ class rebuild_manager(object):
     resolved_deps = self.artifact_manager.resolve_deps_poto(package_names, build_target, ['RUN'], True)
     resolved_names = [ desc.name for desc in resolved_deps ]
     available_packages = self.artifact_manager.available_packages(build_target)
-    available_names = [ p.descriptor.name for p in available_packages ]
+    available_names = [ p.package_descriptor.name for p in available_packages ]
     missing_packages = dependency_resolver.check_missing(available_names, package_names)
     if missing_packages:
       return self.ResolveResult(available_packages, missing_packages, [])
     resolved = self.artifact_manager.resolve_packages(resolved_names, build_target)
-    resolved_infos = [ r.descriptor for r in resolved ]
+    resolved_infos = [ r.package_descriptor for r in resolved ]
     self.log_i('done resolving')
     return self.ResolveResult(available_packages, [], resolved_infos)
 

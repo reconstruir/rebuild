@@ -6,6 +6,7 @@ from bes.fs import file_checksum_list
 from bes.common import check, json_util, string_util
 from rebuild.base import build_target, build_version, package_descriptor, requirement_list
 from .util import util
+from .artifact_descriptor import artifact_descriptor
 
 class package_metadata(namedtuple('package_metadata', 'format_version, filename, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files, checksum')):
 
@@ -18,8 +19,7 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
     check.check_string(system)
     check.check_string(level)
     check.check_string_seq(archs)
-    if distro:
-      check.check_string(distro)
+    check.check_string(distro)
     if check.is_string(requirements):
       requirements = requirement_list.parse(requirements)
     requirements = requirements or requirement_list()
@@ -38,8 +38,12 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
     return build_version(self.version, self.revision, self.epoch)
   
   @property
-  def descriptor(self):
+  def package_descriptor(self):
     return package_descriptor(self.name, str(self.build_version), properties = self.properties, requirements = self.requirements)
+
+  @property
+  def artifact_descriptor(self):
+    return artifact_descriptor(self.name, self.version, self.revision, self.epoch, self.system, self.level, self.archs, self.distro)
 
   @property
   def build_target(self):
@@ -149,7 +153,7 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
                  row.system,
                  row.level,
                  json.loads(row.archs),
-                 row.distro or None,
+                 row.distro,
                  requirements,
                  properties,
                  files,

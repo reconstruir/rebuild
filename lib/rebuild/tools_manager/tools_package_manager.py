@@ -23,9 +23,9 @@ class tools_package_manager(object):
 
   def install_tarball(self, package_tarball):
     pkg = package(package_tarball)
-    if self.is_installed(pkg.descriptor):
+    if self.is_installed(pkg.package_descriptor):
       return
-    pkg_dir = self._package_dir(pkg.descriptor)
+    pkg_dir = self._package_dir(pkg.package_descriptor)
     pkg.extract_files(pkg_dir)
     replacements = {
       '@REBUILD_PACKAGE_PREFIX@': pkg_dir,

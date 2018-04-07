@@ -59,7 +59,7 @@ class artifact_manager(object):
 
   def publish(self, tarball, build_target):
     pkg = package(tarball)
-    pkg_info = pkg.descriptor
+    pkg_info = pkg.package_descriptor
     artifact_path = self.artifact_path(pkg_info, build_target)
     file_util.copy(tarball, artifact_path)
     if not self.no_git:
@@ -104,7 +104,7 @@ class artifact_manager(object):
     check.check_build_target(build_target)
     check.check_package_descriptor(pkg_desc)
     for p in self.available_packages(build_target):
-      if pkg_desc.name == p.descriptor.name and pkg_desc.version == p.descriptor.version:
+      if pkg_desc.name == p.package_descriptor.name and pkg_desc.version == p.package_descriptor.version:
         return p
     return None
   
@@ -112,7 +112,7 @@ class artifact_manager(object):
   def _find_package_by_name(self, package_name, available_packages):
     candidates = []
     for available_package in available_packages:
-      if package_name == available_package.descriptor.name:
+      if package_name == available_package.package_descriptor.name:
         candidates.append(available_package)
     if not candidates:
       return None
@@ -131,9 +131,9 @@ class artifact_manager(object):
       self._package_cache[tarball] = package(tarball)
     return self._package_cache[tarball]
 
-  def dependency_map(self, build_target):
-    available = self.available_packages(build_target).descriptors()
-    return package_descriptor_list.dependency_map(available)
+#  def dependency_map(self, build_target):
+#    available = self.available_packages(build_target).descriptors()
+#    return package_descriptor_list.dependency_map(available)
 
   def get_requirement_manager(clazz, build_target):
     if not build_target.build_path in self._requirement_managers:
@@ -157,7 +157,7 @@ class artifact_manager(object):
   def _make_requirement_manager(self, build_target):
     rm = requirement_manager()
     for package in self.latest_available_packages(build_target):
-      rm.add_package(package.descriptor)
+      rm.add_package(package.package_descriptor)
     return rm
   
 check.register_class(artifact_manager, include_seq = False)

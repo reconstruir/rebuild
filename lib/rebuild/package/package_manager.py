@@ -147,19 +147,19 @@ class package_manager(object):
     self.log_i('installing tarball: %s for %s' % (pkg_tarball, ' '.join(hardness)))
     pkg = package(pkg_tarball)
 
-    if self.is_installed(pkg.descriptor.name):
-      raise PackageAlreadyInstallededError('package %s already installed' % (pkg.descriptor.name))
+    if self.is_installed(pkg.package_descriptor.name):
+      raise PackageAlreadyInstallededError('package %s already installed' % (pkg.package_descriptor.name))
     missing_requirements = self._missing_requirements(pkg, pkg.build_target, hardness)
     
     if missing_requirements:
-      raise PackageMissingRequirementsError('package %s missing requirements: %s' % (pkg.descriptor.name, ', '.join(missing_requirements)))
+      raise PackageMissingRequirementsError('package %s missing requirements: %s' % (pkg.package_descriptor.name, ', '.join(missing_requirements)))
       
     conflicts = self._find_conflicts(pkg.files)
     if conflicts:
       conflict_packages = self.db.packages_with_files(conflicts)
       conflict_packages_str = ' '.join(conflict_packages)
       conflicts_str = ' '.join(conflicts)
-      raise PackageFilesConflictError('conflicts found between \"%s\" and \"%s\": %s' % (pkg.descriptor.name,
+      raise PackageFilesConflictError('conflicts found between \"%s\" and \"%s\": %s' % (pkg.package_descriptor.name,
                                                                                          conflict_packages_str,
                                                                                          conflicts_str))
     pkg.extract_files(self._installation_dir)
@@ -198,7 +198,7 @@ class package_manager(object):
     return sorted(conflicts)
 
   def _missing_requirements(self, pkg, build_target, hardness):
-    requirements = pkg.descriptor.requirements.filter_by_system(build_target.system).filter_by_hardness(hardness).names()
+    requirements = pkg.package_descriptor.requirements.filter_by_system(build_target.system).filter_by_hardness(hardness).names()
     resolved_deps = self._artifact_manager.resolve_deps_poto(requirements, build_target, hardness, False)
 
     if not resolved_deps:
@@ -223,9 +223,9 @@ class package_manager(object):
     check.check_package_descriptor(pkg_desc)
     pkg = self._artifact_manager.package(pkg_desc, build_target)
 
-    if self.is_installed(pkg.descriptor.name):
+    if self.is_installed(pkg.package_descriptor.name):
       self.log_i('install_package: %s for %s' % (pkg_desc.full_name, ' '.join(hardness)))
-      old_pkg_entry = self.db.find_package(pkg.descriptor.name)
+      old_pkg_entry = self.db.find_package(pkg.package_descriptor.name)
       old_pkg_entry_desc = old_pkg_entry.descriptor
       comparison = package_descriptor.full_name_cmp(old_pkg_entry_desc, pkg_desc)
       self.log_d('install_package: comparison=%s' % (comparison))
@@ -237,20 +237,21 @@ class package_manager(object):
       if comparison == 0:
         return False
       elif comparison < 0:
-        self.log_i('install_package: upgrading from %s to %s' % (pkg.descriptor.full_name,
-                                                                 pkg.metadata.descriptor.full_name))
-        self.uninstall_package(pkg.descriptor.name)
+        self.log_i('install_package: upgrading from %s to %s' % (old_pkg_entry_desc.full_name,
+                                                                 pkg.package_descriptor.full_name))
+        self.uninstall_package(pkg.package_descriptor.name)
         self.install_tarball(pkg.tarball, hardness)
         return True
       else:
         if allow_downgrade:
-          self.log_i('install_package: downgrading from %s to %s' % (pkg.descriptor.full_name,
-                                                                     pkg.metadata.descriptor.full_name))
-          self.uninstall_package(pkg.descriptor.name)
+          self.log_i('install_package: downgrading from %s to %s' % (old_pkg_entry_desc.full_name,
+                                                                     pkg.package_descriptor.full_name))
+          self.uninstall_package(pkg.package_descriptor.name)
           self.install_tarball(pkg.tarball, hardness)
           return True
         else:
-          print('warning: installed package %s newer than available package %s' % (old_pkg_entry_desc.full_name, pkg_desc.full_name))
+          print('warning: installed package %s newer than available package %s' % (old_pkg_entry_desc.full_name,
+                                                                                   pkg_desc.full_name))
         return False
     else:
       self.log_i('install_package: first install: %s' % (pkg.tarball))

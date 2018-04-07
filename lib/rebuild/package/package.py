@@ -44,8 +44,12 @@ class package(object):
     return self._raw_metadata
   
   @property
-  def descriptor(self):
-    return self.metadata.descriptor
+  def package_descriptor(self):
+    return self.metadata.package_descriptor
+
+  @property
+  def artifact_descriptor(self):
+    return self.metadata.artifact_descriptor
 
   @property
   def system(self):
@@ -78,10 +82,10 @@ class package(object):
   def _variable_substitution_hook(self, where, installation_dir):
     replacements = {
       '${REBUILD_PACKAGE_PREFIX}': installation_dir,
-      '${REBUILD_PACKAGE_NAME}': self.descriptor.name,
-      '${REBUILD_PACKAGE_DESCRIPTION}': self.descriptor.name,
-      '${REBUILD_PACKAGE_VERSION}': str(self.descriptor.version),
-      '${REBUILD_PACKAGE_FULL_NAME}': self.descriptor.full_name,
+      '${REBUILD_PACKAGE_NAME}': self.metadata.name,
+      '${REBUILD_PACKAGE_DESCRIPTION}': self.metadata.name,
+      '${REBUILD_PACKAGE_VERSION}': str(self.metadata.build_version),
+      '${REBUILD_PACKAGE_FULL_NAME}': self.package_descriptor.full_name,
     }
     file_search.search_replace(where,
                                replacements,
@@ -111,11 +115,7 @@ class package(object):
     'Compare descriptor and return an int either -1, 0, or 1'
     assert isinstance(p1, package)
     assert isinstance(p2, package)
-    return package_descriptor.full_name_cmp(p1.descriptor, p2.descriptor)
-
-  @classmethod
-  def package_descriptor(clazz, tarball):
-    return package(tarball).descriptor
+    return package_descriptor.full_name_cmp(p1.package_descriptor, p2.package_descriptor)
 
   @classmethod
   def package_files(clazz, tarball):
@@ -141,7 +141,7 @@ class package(object):
                                 build_target.system,
                                 build_target.level,
                                 build_target.archs,
-                                build_target.distro,
+                                build_target.distro or '',
                                 pkg_desc.requirements,
                                 properties,
                                 file_checksum_list.from_files(files, root_dir = files_dir))

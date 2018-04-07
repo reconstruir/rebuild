@@ -20,15 +20,15 @@ class test_package_metadata(unit_test):
   ])
   TEST_PROPERTIES = { 'p1': 'v1', 'p2': 6 }
 
-  TEST_ENTRY = PM('kiwi-6.7.8-2.tar.gz', 'kiwi', '6.7.8', 2, 0, 'macos', 'release', [ 'x86_64' ], None,
+  TEST_ENTRY = PM('kiwi-6.7.8-2.tar.gz', 'kiwi', '6.7.8', 2, 0, 'macos', 'release', [ 'x86_64' ], '',
                   TEST_REQUIREMENTS, TEST_PROPERTIES, TEST_FILES, 'chk')
 
   def test_descriptor(self):
     self.assertEqual( package_descriptor('kiwi', '6.7.8-2', self.TEST_PROPERTIES, self.TEST_REQUIREMENTS),
-                      self.TEST_ENTRY.descriptor )
+                      self.TEST_ENTRY.package_descriptor )
 
   def test_build_target(self):
-    self.assertEqual( build_target('macos', 'release', [ 'x86_64' ], None), self.TEST_ENTRY.build_target )
+    self.assertEqual( build_target('macos', 'release', [ 'x86_64' ], ''), self.TEST_ENTRY.build_target )
 
   def test_to_json(self):
     self.maxDiff = None
@@ -39,7 +39,7 @@ class test_package_metadata(unit_test):
     "x86_64"
   ], 
   "checksum": "chk", 
-  "distro": null, 
+  "distro": "", 
   "epoch": 0, 
   "filename": "kiwi-6.7.8-2.tar.gz", 
   "files": [
@@ -76,7 +76,7 @@ class test_package_metadata(unit_test):
     "x86_64"
   ], 
   "checksum": "chk", 
-  "distro": null, 
+  "distro": "", 
   "epoch": 0, 
   "filename": "kiwi-6.7.8-2.tar.gz", 
   "files": [
@@ -125,10 +125,10 @@ class test_package_metadata(unit_test):
   "archs": [
     "x86_64"
   ], 
-  "distro": null
+  "distro": ""
 }
 '''
-    expected_entry = PM('', 'kiwi', '6.7.8', 2, 0, 'macos', 'release', [ 'x86_64' ], None,
+    expected_entry = PM('', 'kiwi', '6.7.8', 2, 0, 'macos', 'release', [ 'x86_64' ], '',
                         self.TEST_REQUIREMENTS, self.TEST_PROPERTIES, None, '')
     actual_entry = PM.parse_json(json)
     self.assertEqual( expected_entry, actual_entry )
@@ -146,7 +146,7 @@ class test_package_metadata(unit_test):
       'version': "'6.7.8'",
       'revision': '2',
       'archs': '\'["x86_64"]\'',
-      'distro': "''"
+      'distro': '\'\'',
     }
     self.assertEqual( expected, self.TEST_ENTRY.to_sql_dict() )
 

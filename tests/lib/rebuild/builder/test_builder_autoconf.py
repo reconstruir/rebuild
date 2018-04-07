@@ -47,8 +47,8 @@ class test_builder_autoconf(unit_test):
       'share/doc/mercury/README',
     ]
     self.assertEqual( expected_files, pkg.files )
-    self.assertEqual( 'mercury', pkg.descriptor.name )
-    self.assertEqual( build_version('1.2.8', 0, 0), pkg.descriptor.version )
+    self.assertEqual( 'mercury', pkg.package_descriptor.name )
+    self.assertEqual( build_version('1.2.8', 0, 0), pkg.package_descriptor.version )
 
   def test_arsenic(self):
     pkg = self._build_autoconf_package(self, 'arsenic', '1.2.9', '0', self.data_dir())
@@ -74,8 +74,8 @@ class test_builder_autoconf(unit_test):
       'share/doc/arsenic/README',
     ]
     self.assertEqual( expected_files, pkg.files )
-    self.assertEqual( 'arsenic', pkg.descriptor.name )
-    self.assertEqual( build_version('1.2.9', 0, 0), pkg.descriptor.version )
+    self.assertEqual( 'arsenic', pkg.package_descriptor.name )
+    self.assertEqual( build_version('1.2.9', 0, 0), pkg.package_descriptor.version )
 
   @classmethod
   def _build_autoconf_package(clazz, asserter, name, version, revision, tarball_dir):
