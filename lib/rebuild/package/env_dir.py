@@ -59,7 +59,7 @@ class env_dir(object):
     buf.write('echo "----4----"\n')
     script = temp_file.make_temp_file(content = buf.getvalue())
     os.chmod(script, 0o755)
-    rv = execute.execute(script, raise_error = True, shell = True, codec = 'utf8')
+    rv = execute.execute(script, raise_error = True, shell = True)
     parser = text_line_parser(rv.stdout)
     env1 = self._parse_env_lines(parser.cut_lines('----1----', '----2----'))
     env2 = self._parse_env_lines(parser.cut_lines('----3----', '----4----'))
@@ -77,7 +77,7 @@ class env_dir(object):
       for inst in self._determine_change_instructions(key, value1, value2):
         instructions.append(inst)
         
-    return instructions
+    return sorted(instructions, key = lambda x: ( x.key, x.value ) )
       
   @classmethod
   def _parse_env_lines(clazz, lines):

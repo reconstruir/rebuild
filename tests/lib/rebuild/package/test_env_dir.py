@@ -25,14 +25,14 @@ class test_env_dir(unit_test):
       ed = env_dir(tmp_dir)
       self.assertEqual( [ '1.sh', '2.sh', '3.sh', '4.sh', '5.sh', '6.sh' ], ed.files() )
       self.assertEqual( [
-        ( 'FOO', 'kiwi', action.SET ),
         ( 'BAR', 'orange', action.SET ),
-        ( 'SOMETHINGIMADEUP', None, action.UNSET ),
+        ( 'FOO', 'kiwi', action.SET ),
         ( 'PATH', '/a/bin', action.PATH_PREPEND ),
         ( 'PATH', '/b/bin', action.PATH_PREPEND ),
         ( 'PATH', '/my/path', action.PATH_REMOVE ),
         ( 'PATH', '/x/bin', action.PATH_APPEND ),
         ( 'PATH', '/y/bin', action.PATH_APPEND ),
+        ( 'SOMETHINGIMADEUP', None, action.UNSET ),
       ], ed.instructions() )
 
       self.assertEqual( {
