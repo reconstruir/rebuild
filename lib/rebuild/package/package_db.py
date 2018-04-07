@@ -46,7 +46,7 @@ CREATE TABLE {files_table_name}(
     return self._filename
 
   def names(self):
-    rows = self._db.select('''SELECT name FROM packages ORDER by name ASC''')
+    rows = self._db.select_all('''SELECT name FROM packages ORDER by name ASC''')
     return [ row[0] for row in rows ]
   
   def package_files(self, name):
@@ -82,8 +82,8 @@ CREATE TABLE {files_table_name}(
 
   def has_package(self, name):
     t = ( name, )
-    rows = self._db.select('''SELECT count(*) FROM packages WHERE name=?''', t)
-    return rows[0][0] > 0
+    row = self._db.select_one('''SELECT count(*) FROM packages WHERE name=?''', t)
+    return row[0] > 0
 
   def add_package(self, entry):
     check.check_package_db_entry(entry)

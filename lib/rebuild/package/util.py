@@ -21,12 +21,16 @@ class util(object):
     return [ str(r) for r in reqs ]
 
   @classmethod
-  def sql_encode_string(clazz, s):
-    return string_util.quote(s or '', quote_char = "'")
+  def sql_encode_string(clazz, s, quoted = True):
+    if s is None:
+      return 'null'
+    if quoted:
+      return string_util.quote(s, quote_char = "'")
+    return s
 
   @classmethod
-  def sql_encode_string_list(clazz, l):
-    return clazz.sql_encode_string(json_util.to_json(l))
+  def sql_encode_string_list(clazz, l, quoted = True):
+    return clazz.sql_encode_string(json_util.to_json(l), quoted = quoted)
   
   @classmethod
   def sql_encode_requirements(clazz, reqs):

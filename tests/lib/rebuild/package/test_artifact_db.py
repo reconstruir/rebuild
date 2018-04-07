@@ -14,12 +14,12 @@ class test_package_db(unittest.TestCase):
     tmp_dir = temp_file.make_temp_dir()
     return path.join(tmp_dir, 'db.sqlite')
 
-  def xtest_db_create_empty(self):
+  def test_db_create_empty(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
     self.assertEqual( [], db.list_all() )
 
-  def xtest_db_recreate_empty(self):
+  def test_db_recreate_empty(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
     self.assertEqual( [], db.list_all() )
@@ -27,15 +27,28 @@ class test_package_db(unittest.TestCase):
     recreated_db = DB(tmp_db)
     self.assertEqual( [], recreated_db.list_all() )
 
+  def test_db_add(self):
+    tmp_db = self._make_tmp_db_path()
+    db = DB(tmp_db)
+    files = FCL([ ( 'lib/libfoo.a', 'c1' ), ( 'include/libfoo.h', 'c2' ) ])
+    files.sort()
+    new_entry = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, [], {}, files)
+    self.assertFalse( db.has_artifact('foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None) )
+    db.add_artifact(new_entry)
+    self.assertTrue( db.has_artifact('foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None) )
+    
   def xtest_db_add(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
-    self.assertFalse( db.has_package('foo') )
     files = FCL([ ( 'lib/libfoo.a', 'c1' ), ( 'include/libfoo.h', 'c2' ) ])
     files.sort()
-    reqs = None
-    new_entry = PM('foo', '1.2.3', 1, 0, [], {}, files)
-    db.add_package(new_entry)
+    #filename, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files, checksum = None):
+    new_entry = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, [], {}, files)
+    db.add_artifact(new_entry)
+
+#    name, version, revision, epoch, system, level, archs
+    db.has_artifact('foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None)
+    return 
     self.assertTrue( db.has_package('foo') )
     self.assertEqual( [ 'foo' ], db.list_all() )
     self.assertEqual( [ 'foo-1.2.3-1' ], db.list_all(include_version = True) )
@@ -57,11 +70,12 @@ class test_package_db(unittest.TestCase):
     files = FCL([ ( 'lib/libfoo.a', 'c1' ), ( 'include/libfoo.h', 'c2' ) ])
     files.sort()
     reqs = None
-    new_entry = PM('foo', '1.2.3', 1, 0, [], {}, files)
+    new_entry = PM('foo-1.2.3.tar.gz', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, [], {}, [])
     db.add_package(new_entry)
-    self.assertTrue( db.has_package('foo') )
-    self.assertEqual( [ 'foo' ], db.list_all() )
-    self.assertEqual( PM('foo', '1.2.3', 1, 0, [], {}, files), db.find_package('foo') )
+    self.assertTrue( db.has_package('1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None) )
+    return
+#    self.assertEqual( [ 'foo' ], db.list_all() )
+#    self.assertEqual( PM('foo', '1.2.3', 1, 0, [], {}, files), db.find_package('foo') )
 
     db.remove_package('foo')
     self.assertFalse( db.has_package('foo') )

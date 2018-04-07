@@ -8,6 +8,7 @@ from bes.sqlite import sqlite
 from rebuild.base import package_descriptor_list
 
 from .package_metadata import package_metadata
+from .util import util
 
 class PackageNotInstalledError(Exception):
 
@@ -29,7 +30,7 @@ CREATE TABLE artifacts(
   system          TEXT NOT NULL, 
   level           TEXT NOT NULL, 
   archs           TEXT NOT NULL, 
-  distro          TEXT NOT NULL, 
+  distro          TEXT, 
   requirements    TEXT,
   properties      TEXT
 );
@@ -72,29 +73,29 @@ CREATE TABLE {files_table_name}(
 ###    table_name = self._files_table_name(name)
 ###    return self._db.select_namedtuples('''SELECT * FROM %s ORDER by filename ASC''' % (table_name))
                         
-###  def _list_all_entries(self):
-###    rows = self._db.select_namedtuples('''SELECT * FROM artifacts ORDER by name ASC''')
-###    return [ package_metadata.from_sql_row(row, self._files_table_rows(row.name)) for row in rows ]
-###  
-###  def list_all(self, include_version = False):
-###    if not include_version:
-###      rows = self._db.select_namedtuples('''SELECT name FROM artifacts''')
-###      return [ row.name for row in rows ]
-###    rows = self._db.select_namedtuples('''SELECT name, version, revision, epoch FROM artifacts''')
-###    result = []
-###    for row in rows:
-###      entry = package_metadata.from_sql_row(row, [])
-###      result.append(entry.descriptor.full_name)
-###    return sorted(result)
-###
-###  def has_package(self, name):
-###    t = ( name, )
-###    rows = self._db.select('''SELECT count(*) FROM artifacts WHERE name=?''', t)
-###    return rows[0][0] > 0
+  def _list_all_entries(self):
+    rows = self._db.select_namedtuples('''SELECT * FROM artifacts ORDER by name ASC''')
+    return [ package_metadata.from_sql_row(row, self._files_table_rows(row.name)) for row in rows ]
+  
+  def list_all(self, include_version = False):
+    if not include_version:
+      rows = self._db.select_namedtuples('''SELECT name FROM artifacts''')
+      return [ row.name for row in rows ]
+    rows = self._db.select_namedtuples('''SELECT name, version, revision, epoch FROM artifacts''')
+    result = []
+    for row in rows:
+      entry = package_metadata.from_sql_row(row, [])
+      result.append(entry.descriptor.full_name)
+    return sorted(result)
 
-  def add_atifact(self, metadata):
+  def has_artifact(self, name, version, revision, epoch, system, level, archs, distro):
+    t = ( name, version, revision, epoch, system, level, util.sql_encode_string_list(archs, quoted = False) )
+    row = self._db.select_one('''select count(name) from artifacts where name=? and version=? and revision=? and epoch=? and system=? and level=? and archs=?''', t)
+    return row[0] > 0
+
+  def add_artifact(self, metadata):
     check.check_package_metadata(metadata)
-    file_check.check_file(metadata.filename)
+#    file_check.check_file(metadata.filename)
     d = metadata.to_sql_dict()
     keys = ', '.join(d.keys())
     values = ', '.join(d.values())
