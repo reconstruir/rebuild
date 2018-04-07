@@ -1,18 +1,29 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
-#
-import os.path as path, unittest
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
+
+import os.path as path
+from bes.testing.unit_test import unit_test
 from bes.fs import file_checksum_list as FCL, temp_file
 from rebuild.base import build_system, package_descriptor as PD, requirement_list as RL
-from rebuild.package.artifact_db import artifact_db as DB
+from rebuild.package.artifact_db import artifact_db as DB, ArtifactAlreadyInstalledError
+from rebuild.package.artifact_db import ArtifactAlreadyInstalledError
 from rebuild.package.package_metadata import package_metadata as PM
 from bes.debug import debug_timer
 
-class test_package_db(unittest.TestCase):
+class test_artifact_db(unit_test):
 
+  TEST_FILES = FCL([ ( 'lib/libfoo.a', 'c1' ), ( 'include/libfoo.h', 'c2' ) ])
+  TEST_FILES.sort()
+
+  DEBUG = unit_test.DEBUG
+  #DEBUG = True
+  
   def _make_tmp_db_path(self):
-    tmp_dir = temp_file.make_temp_dir()
-    return path.join(tmp_dir, 'db.sqlite')
+    tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
+    f = path.join(tmp_dir, 'db.sqlite')
+    if self.DEBUG:
+      self.spew('_make_tmp_db_path() => %s' % (f))
+    return f
 
   def test_db_create_empty(self):
     tmp_db = self._make_tmp_db_path()
@@ -30,12 +41,20 @@ class test_package_db(unittest.TestCase):
   def test_db_add(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
-    files = FCL([ ( 'lib/libfoo.a', 'c1' ), ( 'include/libfoo.h', 'c2' ) ])
-    files.sort()
-    new_entry = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, [], {}, files)
+    e = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, [], {}, self.TEST_FILES)
     self.assertFalse( db.has_artifact('foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None) )
-    db.add_artifact(new_entry)
+    db.add_artifact(e)
     self.assertTrue( db.has_artifact('foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None) )
+
+  def test_db_add_duplicate(self):
+    tmp_db = self._make_tmp_db_path()
+    db = DB(tmp_db)
+    e = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, [], {}, self.TEST_FILES)
+    db.add_artifact(e)
+    self.assertTrue( db.has_artifact('foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None) )
+    with self.assertRaises(ArtifactAlreadyInstalledError) as context:
+      db.add_artifact(e)
+    
     
   def xtest_db_add(self):
     tmp_db = self._make_tmp_db_path()
@@ -118,4 +137,4 @@ class test_package_db(unittest.TestCase):
     self.assertEqual( [ 'p1', 'p2', 'p6' ], db.packages_with_files([ 'p1/f2', 'p2/f1', 'p6/f1' ]) )
 
 if __name__ == '__main__':
-  unittest.main()
+  unit_test.main()

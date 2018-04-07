@@ -10,6 +10,14 @@ from rebuild.base import package_descriptor_list
 from .package_metadata import package_metadata
 from .util import util
 
+class ArtifactAlreadyInstalledError(Exception):
+  def __init__(self, message):
+    super(ArtifactAlreadyInstalledError, self).__init__()
+    self.message = message
+
+  def __str__(self):
+    return self.message
+
 class PackageNotInstalledError(Exception):
 
   def __init__(self, message, name):
@@ -93,18 +101,14 @@ CREATE TABLE {files_table_name}(
     row = self._db.select_one('''select count(name) from artifacts where name=? and version=? and revision=? and epoch=? and system=? and level=? and archs=?''', t)
     return row[0] > 0
 
-  def add_artifact(self, metadata):
-    check.check_package_metadata(metadata)
-#    file_check.check_file(metadata.filename)
-    d = metadata.to_sql_dict()
+  def add_artifact(self, md):
+    check.check_package_metadata(md)
+    if self.has_artifact(md.name, md.version, md.revision, md.epoch, md.system, md.level, md.archs, md.distro):
+      raise ArtifactAlreadyInstalledError('Already installed: %s' % (str(md)))
+    d = md.to_sql_dict()
     keys = ', '.join(d.keys())
     values = ', '.join(d.values())
     self._db.execute('INSERT INTO artifacts(%s) values(%s)' % (keys, values))
-#    files_table_name = 'files_%s' % (metadata.name)
-#    schema = self.SCHEMA_FILES.format(files_table_name = files_table_name)
-#    self._db.execute(schema)
-#    for f in metadata.files:
-#      self._insert_file(files_table_name, f)
     self._db.commit()
 
 ###  def _insert_file(self, table_name, f):
