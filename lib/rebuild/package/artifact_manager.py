@@ -49,7 +49,7 @@ class artifact_manager(object):
     self._sync_db()
 
   def _sync_db(self):
-    self._timer.start('finding')
+    return
     possible = self._find_possible_artifacts(self._root_dir)
     self._timer.stop()
     for f in possible:
