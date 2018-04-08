@@ -33,7 +33,7 @@ packages: apple pear_juice
     args = [
       'packages',
       'update',
-      '--artifacts', am.publish_dir,
+      '--artifacts', am.root_dir,
       '--root-dir', tmp_dir,
       'test1'
     ]
@@ -63,7 +63,7 @@ packages: orange_juice
     args = [
       'packages',
       'update',
-      '--artifacts', am.publish_dir,
+      '--artifacts', am.root_dir,
       '--root-dir', tmp_dir,
       'test1'
     ]
@@ -88,7 +88,7 @@ packages: orange_juice pear_juice
     args = [
       'packages',
       'update',
-      '--artifacts', am.publish_dir,
+      '--artifacts', am.root_dir,
       '--root-dir', tmp_dir,
       'test1'
     ]
@@ -117,7 +117,7 @@ packages: orange_juice
     args = [
       'packages',
       'update',
-      '--artifacts', am.publish_dir,
+      '--artifacts', am.root_dir,
       '--root-dir', tmp_dir,
       'test1'
     ]
@@ -166,11 +166,11 @@ packages: orange_juice pear_juice
 
   @classmethod
   def _make_test_artifact_manager(clazz):
-    publish_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
+    root_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
     if clazz.DEBUG:
-      print("publish_dir:\n%s\n" % (publish_dir))
-    am = artifact_manager(publish_dir, address = None, no_git = True)
-    unit_test_packages.make_test_packages(unit_test_packages.TEST_PACKAGES, am.publish_dir)
+      print("root_dir:\n%s\n" % (root_dir))
+    am = artifact_manager(root_dir, address = None, no_git = True)
+    unit_test_packages.make_test_packages(unit_test_packages.TEST_PACKAGES, am.root_dir)
     return am
   
 if __name__ == '__main__':

@@ -17,19 +17,19 @@ class test_artifact_manager(unit_test):
 
   @classmethod
   def _make_test_artifact_manager(clazz, address = None, items = None):
-    publish_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
+    root_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
     if clazz.DEBUG:
-      print("publish_dir:\n%s\n" % (publish_dir))
-    am = artifact_manager(publish_dir, address = address)
+      print("root_dir:\n%s\n" % (root_dir))
+    am = artifact_manager(root_dir, address = address)
     if items:
-      unit_test_packages.make_test_packages(items, am.publish_dir)
+      unit_test_packages.make_test_packages(items, am.root_dir)
     return am
 
   def test_artifact_path(self):
     manager = self._make_test_artifact_manager()
     pi = package_descriptor('foo', '1.2.34-1')
     bt = build_target(build_system.LINUX, build_level.RELEASE)
-    self.assertEqual( path.join(manager.publish_dir, pi.artifact_path(bt)), manager.artifact_path(pi, bt) )
+    self.assertEqual( path.join(manager.root_dir, pi.artifact_path(bt)), manager.artifact_path(pi, bt) )
 
   def test_publish(self):
     manager = self._make_test_artifact_manager()

@@ -73,9 +73,9 @@ class test_builder(unit_test):
       'fructose',
     ])
     self.assertEqual( builder.EXIT_CODE_SUCCESS, rv.exit_code )
-    publish_dir = path.join(rv.tmp_dir, 'BUILD/artifacts')
-    self.assertTrue( path.exists(publish_dir) )
-    am = artifact_manager(publish_dir, address = None, no_git = True)
+    root_dir = path.join(rv.tmp_dir, 'BUILD/artifacts')
+    self.assertTrue( path.exists(root_dir) )
+    am = artifact_manager(root_dir, address = None, no_git = True)
     pm = self._make_test_pm(am)
     pdesc = package_descriptor('fructose', '3.4.5-6')
     bt = build_target(system = build_system.HOST,

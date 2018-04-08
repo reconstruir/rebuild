@@ -338,7 +338,7 @@ remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir ${_root_dir}
                                     force_install = force_install)
     update_script = rebuild_manager_script(self.UPDATE_SCRIPT_TEMPLATE, 'update.sh')
     variables = {
-      '@ARTIFACTS_DIR@': self.artifact_manager.publish_dir,
+      '@ARTIFACTS_DIR@': self.artifact_manager.root_dir,
     }
     update_script.save(root_dir, variables)
     return self.bool_to_exit_code(success)

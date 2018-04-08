@@ -7,54 +7,63 @@ from bes.system import log
 from rebuild.base import build_blurb
 from bes.git import git
 from bes.fs import dir_util, file_find, file_util
-
 from rebuild.base import package_descriptor, package_descriptor_list, requirement_manager
 
 from .package import package
 from .package_list import package_list
 from .db_error import *
+from .artifact_db import artifact_db
 
 #log.configure('artifact_manager=debug')
 
 class artifact_manager(object):
 
-  DEFAULT_PUBLISH_DIR = path.expanduser('~/artifacts')
+  DEFAULT_ROOT_DIR = path.expanduser('~/artifacts')
 
-  def __init__(self, publish_dir, address = None, no_git = False):
+  def __init__(self, root_dir, address = None, no_git = False):
     log.add_logging(self, 'artifact_manager')
     build_blurb.add_blurb(self, 'artifact_manager')
 
-    if publish_dir:
-      assert string_util.is_string(publish_dir)
+    if root_dir:
+      assert string_util.is_string(root_dir)
     
-    self._publish_dir = path.abspath(publish_dir or self.DEFAULT_PUBLISH_DIR)
+    self._root_dir = path.abspath(root_dir or self.DEFAULT_ROOT_DIR)
     self.no_git = no_git
     
-    file_util.mkdir(self._publish_dir)
-    #self.log_d('Creating instance with publish_dir=%s; address=%s' % (self._publish_dir, address))
-    #self.blurb('Creating instance with publish_dir=%s; address=%s' % (self._publish_dir, address))
+    file_util.mkdir(self._root_dir)
+    #self.log_d('Creating instance with root_dir=%s; address=%s' % (self._root_dir, address))
+    #self.blurb('Creating instance with root_dir=%s; address=%s' % (self._root_dir, address))
 
     if not self.no_git:
       if address:
-        git.clone_or_pull(address, self._publish_dir, enforce_empty_dir = False)
-      if not git.is_repo(self._publish_dir):
-        git.init(self._publish_dir)
+        git.clone_or_pull(address, self._root_dir, enforce_empty_dir = False)
+      if not git.is_repo(self._root_dir):
+        git.init(self._root_dir)
 
     self._package_cache = {}
     self._reset()
-    self.caca()
+    self._sync_db()
 
-  def caca(self):
-    files = file_find.find(self._publish_dir, relative = True)
-    for f in files:
-      ff = path.join(self._publish_dir, f)
-      print('loading: %s' % (ff))
-      p = package(ff)
-      print('metadata: %d - %s' % (len(p.metadata.files), str(p.metadata.artifact_descriptor)))
-    
+  def _sync_db(self):
+    possible = self._find_possible_artifacts(self._root_dir)
+    for f in possible:
+      if package.is_package(f):
+        p = package(f)
+        print('metadata: %d - %s' % (len(p.metadata.files), str(p.metadata.artifact_descriptor)))
+      else:
+        print('invalid package: %s' % (f))
+
+  @classmethod
+  def _find_possible_artifacts(clazz, root_dir):
+    dirs = dir_util.list(root_dir, relative = False)
+    result = []
+    for d in dirs:
+      result.extend(file_find.find(d, relative = False))
+    return result
+                  
   @property
-  def publish_dir(self):
-    return self._publish_dir
+  def root_dir(self):
+    return self._root_dir
     
   def _reset(self):
     self._available_packages_map = {}
@@ -62,7 +71,7 @@ class artifact_manager(object):
     
   def artifact_path(self, package_descriptor, build_target):
     filename = '%s.tar.gz' % (package_descriptor.full_name)
-    return path.join(self._publish_dir, build_target.build_path, filename)
+    return path.join(self._root_dir, build_target.build_path, filename)
 
   def publish(self, tarball, build_target):
     pkg = package(tarball)
@@ -70,7 +79,7 @@ class artifact_manager(object):
     artifact_path = self.artifact_path(pkg_info, build_target)
     file_util.copy(tarball, artifact_path)
     if not self.no_git:
-      git.add(self._publish_dir, pkg_info.artifact_path(build_target))
+      git.add(self._root_dir, pkg_info.artifact_path(build_target))
     self._reset()
     return artifact_path
 
@@ -80,7 +89,7 @@ class artifact_manager(object):
     return self._available_packages_map[build_target.build_path]
 
   def _compute_available_packages(self, build_target):
-    d = path.join(self._publish_dir, build_target.build_path)
+    d = path.join(self._root_dir, build_target.build_path)
     if not path.exists(d):
       return package_list()
     if not path.isdir(d):

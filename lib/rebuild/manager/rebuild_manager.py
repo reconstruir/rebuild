@@ -72,7 +72,7 @@ class rebuild_manager(object):
   def resolve_and_update_packages(self, project_name, packages, build_target, allow_downgrade = False, force_install = False):
     resolve_rv = self.resolve_packages(packages, build_target)
     if resolve_rv.missing:
-      self.blurb('missing artifacts at %s: %s' % (self.artifact_manager.publish_dir, ' '.join(resolve_rv.missing)))
+      self.blurb('missing artifacts at %s: %s' % (self.artifact_manager.root_dir, ' '.join(resolve_rv.missing)))
       return []
     self.update_packages(project_name, resolve_rv.resolved, build_target, allow_downgrade = allow_downgrade, force_install = force_install)
     return [ pi.name for pi in resolve_rv.resolved ]

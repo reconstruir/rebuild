@@ -33,12 +33,12 @@ class test_builder_env(unit_test):
 
   @classmethod
   def __make_test_artifact_manager(clazz, address = None, items = None):
-    publish_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
+    root_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
     if clazz.DEBUG:
-      print("publish_dir:\n%s\n" % (publish_dir))
-    am = artifact_manager(publish_dir, address = address)
+      print("root_dir:\n%s\n" % (root_dir))
+    am = artifact_manager(root_dir, address = address)
     if items:
-      unit_test_packages.make_test_packages(items, am.publish_dir)
+      unit_test_packages.make_test_packages(items, am.root_dir)
     return am
 
   def test_update_tools(self):
