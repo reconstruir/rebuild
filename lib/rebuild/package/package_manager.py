@@ -307,6 +307,6 @@ class package_manager(object):
 
   def load_tarball(self, filename, build_target):
     'load a tarball and resturn a package object with requirements resolved according to packages currently installed.'
-    if not package.package_is_valid(filename):
+    if not package.is_package(filename):
       raise RuntimeError('Not a valid package: %s' % (filename))
     return package(filename)

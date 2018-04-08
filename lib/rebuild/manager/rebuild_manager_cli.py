@@ -419,7 +419,7 @@ remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir ${_root_dir}
     build_blurb.blurb('tester', '      tmp_dir: %s' % (tmp_dir))
     build_blurb.blurb('tester', 'artifacts_dir: %s' % (artifacts_dir))
 
-    if not package.package_is_valid(package_tarball):
+    if not package.is_package(package_tarball):
       raise RuntimeError('Not a valid package: %s' % (package_tarball))
   
     test_dir = path.join(tmp_dir, 'test')

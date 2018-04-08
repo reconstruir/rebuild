@@ -6,7 +6,7 @@ from bes.common import check, string_util
 from bes.system import log
 from rebuild.base import build_blurb
 from bes.git import git
-from bes.fs import dir_util, file_util
+from bes.fs import dir_util, file_find, file_util
 
 from rebuild.base import package_descriptor, package_descriptor_list, requirement_manager
 
@@ -45,10 +45,12 @@ class artifact_manager(object):
 
     self._package_cache = {}
     self._reset()
+    self.caca()
 
   def caca(self):
-    self._available_packages_map = {}
-    self._requirement_managers = {}
+    files = file_find.find(self._publish_dir, relative = True)
+    for f in files:
+      print('CACA: %s' % (f))
     
   @property
   def publish_dir(self):

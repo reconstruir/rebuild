@@ -72,6 +72,22 @@ class test_package(unittest.TestCase):
     ]
     self.assertEqual( expected_members, archiver.members(tarball_path) )
 
+  def test_is_package(self):
+    tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
+    tarball_path = self._make_package(tmp_dir,
+                                      'foo', '1.2.3-1',
+                                      build_system.LINUX, build_level.RELEASE,
+                                      [
+                                        ( 'foo.txt', 'foo.txt\n' ),
+                                        ( 'bar.txt', 'bar.txt\n' ),
+                                      ],
+                                      [
+                                        ( 'foo.sh', 'echo foo.sh\n' ),
+                                        ( 'bar.sh', 'echo bar.sh\n' ),
+                                      ])
+    self.assertTrue( package.is_package(tarball_path) )
+    self.assertFalse( package.is_package(temp_file.make_temp_file(content = 'notpackage')) )
+
   def _make_package(self, dest_dir, name, version, system, build_level, items, env_items):
     pi = package_descriptor(name, version)
     tarball_path = path.join(dest_dir, pi.tarball_filename)

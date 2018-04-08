@@ -105,10 +105,10 @@ class package(object):
     return matcher_filename('*-config').filter(self.files)
 
   @classmethod
-  def package_is_valid(clazz, tarball):
+  def is_package(clazz, tarball):
     'Return True if the given archive is a valid package.'
     # FIXME: Maybe check some more stuff
-    return archiver.is_valid(tarball)
+    return archiver.is_valid(tarball) and archiver.has_member(tarball, clazz.METADATA_FILENAME)
 
   @classmethod
   def descriptor_cmp(clazz, p1, p2):
