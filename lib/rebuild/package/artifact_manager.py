@@ -50,7 +50,7 @@ class artifact_manager(object):
       ff = path.join(self._publish_dir, f)
       print('loading: %s' % (ff))
       p = package(ff)
-      print('metadata: %s' % (str(p.metadata.artifact_descriptor)))
+      print('metadata: %d - %s' % (len(p.metadata.files), str(p.metadata.artifact_descriptor)))
     
   @property
   def publish_dir(self):
