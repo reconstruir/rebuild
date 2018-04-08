@@ -7,6 +7,7 @@ from bes.sqlite import sqlite
 from rebuild.base import package_descriptor_list
 
 from .package_db_entry import package_db_entry
+from .files_db import files_db
 
 class PackageNotInstalledError(Exception):
 
@@ -14,7 +15,7 @@ class PackageNotInstalledError(Exception):
     super(PackageNotInstalledError, self).__init__(message)
     self.name = name
     
-class package_db(object):
+class package_db(files_db):
 
   SCHEMA_PACKAGES = '''
 CREATE TABLE packages(
@@ -40,6 +41,7 @@ CREATE TABLE {files_table_name}(
     self._db = sqlite(self._filename)
     self._db.ensure_table('packages', self.SCHEMA_PACKAGES)
     self._files = {}
+    self.files_db = self._db
     
   @property
   def filename(self):
@@ -56,18 +58,10 @@ CREATE TABLE {files_table_name}(
         raise PackageNotInstalledError('not installed: %s' % (name), name)
       self._files[name] = set(p.files.filenames())
     return self._files[name]
-
-  @classmethod
-  def _files_table_name(clazz, name):
-    return 'files_%s' % (name)
-
-  def _files_table_rows(self, name):
-    table_name = self._files_table_name(name)
-    return self._db.select_namedtuples('''SELECT * FROM %s ORDER by filename ASC''' % (table_name))
                         
   def _list_all_entries(self):
     rows = self._db.select_namedtuples('''SELECT * FROM packages ORDER by name ASC''')
-    return [ package_db_entry.from_sql_row(row, self._files_table_rows(row.name)) for row in rows ]
+    return [ package_db_entry.from_sql_row(row, self.files_table_rows(row.name)) for row in rows ]
   
   def list_all(self, include_version = False):
     if not include_version:
@@ -91,36 +85,22 @@ CREATE TABLE {files_table_name}(
     keys = ', '.join(d.keys())
     values = ', '.join(d.values())
     self._db.execute('INSERT INTO packages(%s) values(%s)' % (keys, values))
-    files_table_name = 'files_%s' % (entry.name)
-    schema = self.SCHEMA_FILES.format(files_table_name = files_table_name)
-    self._db.execute(schema)
-    for f in entry.files:
-      self._insert_file(files_table_name, f)
+    self.add_files_table(entry.name, entry.files)
     self._db.commit()
 
-  def _insert_file(self, table_name, f):
-    check.check_string(table_name)
-    check.check_file_checksum(f)
-    if f.checksum is None:
-      checksum = 'null'
-    else:
-      checksum = string_util.quote(f.checksum, quote_char = "'")
-    sql = """INSERT INTO %s (filename, checksum) values ('%s', %s)""" % (table_name, f.filename, checksum)
-    self._db.execute(sql)
-    
   def remove_package(self, name):
     if not self.has_package(name):
       raise PackageNotInstalledError('not installed: %s' % (name), name)
     t = ( name, )
     self._db.execute('DELETE FROM packages WHERE name=?', t)
-    self._db.execute('DROP TABLE %s' % (self._files_table_name(name)))
+    self.remove_files_table(name)
     self._db.commit()
 
   def find_package(self, name):
     t = ( name, )
     rows = self._db.select_namedtuples('''SELECT * FROM packages where name=?''', t)
     if rows:
-      return package_db_entry.from_sql_row(rows[0], self._files_table_rows(rows[0].name))
+      return package_db_entry.from_sql_row(rows[0], self.files_table_rows(rows[0].name))
     return None
 
   def packages_with_files(self, files):
