@@ -42,6 +42,7 @@ class artifact_manager(object):
 
     self._package_cache = {}
     self._reset()
+    self._db = artifact_db(path.join(self._root_dir, 'artifacts.db'))
     self._sync_db()
 
   def _sync_db(self):
@@ -56,6 +57,7 @@ class artifact_manager(object):
   @classmethod
   def _find_possible_artifacts(clazz, root_dir):
     dirs = dir_util.list(root_dir, relative = False)
+    dirs = [ d for d in dirs if path.isdir(d) ]
     result = []
     for d in dirs:
       result.extend(file_find.find(d, relative = False))
