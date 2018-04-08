@@ -150,18 +150,16 @@ class package_tester(object):
     os_env.update(shell_env, pm.shell_env(all_packages), prepend = True)
     
     test_source_with_replacements = path.join(test_root_dir, path.basename(test_source))
-    replacements = {
-      'REBUILD_SOURCE_DIR': config.script.source_dir,
-      'REBUILD_TEST_DIR': config.script.test_dir,
-      'REBUILDER_TEST_NAME': test_name,
-    }
     substitutions = {}
-    substitutions['REBUILD_BUILD_DIR'] = config.script.build_dir
+    substitutions.update(config.script.substitutions)
+    substitutions.update({ 
+      'REBUILDER_TEST_NAME': test_name,
+    })
     for kv in config.extra_env:
       shell_env[kv.key] = variable.substitute(kv.value, substitutions)
       
     file_replace.copy_with_substitute(test_source, test_source_with_replacements,
-                                      replacements, backup = False)
+                                      substitutions, backup = False)
     return clazz._test_context(package.package_descriptor, shell_env, saved_env,
                                test_root_dir, test_name,
                                test_source_with_replacements,
