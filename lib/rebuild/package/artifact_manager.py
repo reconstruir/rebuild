@@ -12,6 +12,7 @@ from rebuild.base import package_descriptor, package_descriptor_list, requiremen
 
 from .package import package
 from .package_list import package_list
+from .db_error import *
 
 class ArtifactNotFoundError(Exception):
   pass

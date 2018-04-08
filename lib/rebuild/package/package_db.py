@@ -8,13 +8,8 @@ from rebuild.base import package_descriptor_list
 
 from .package_db_entry import package_db_entry
 from .files_db import files_db
+from .db_error import *
 
-class PackageNotInstalledError(Exception):
-
-  def __init__(self, message, name):
-    super(PackageNotInstalledError, self).__init__(message)
-    self.name = name
-    
 class package_db(files_db):
 
   SCHEMA_PACKAGES = '''
@@ -52,10 +47,11 @@ CREATE TABLE {files_table_name}(
     return [ row[0] for row in rows ]
   
   def package_files(self, name):
+    print('FUCK: %s' % (name))
     if not name in self._files:
       p = self.find_package(name)
       if not p:
-        raise PackageNotInstalledError('not installed: %s' % (name), name)
+        raise NotInstalledError('not installed: %s' % (name), name)
       self._files[name] = set(p.files.filenames())
     return self._files[name]
                         
@@ -90,7 +86,7 @@ CREATE TABLE {files_table_name}(
 
   def remove_package(self, name):
     if not self.has_package(name):
-      raise PackageNotInstalledError('not installed: %s' % (name), name)
+      raise NotInstalledError('not installed: %s' % (name), name)
     t = ( name, )
     self._db.execute('DELETE FROM packages WHERE name=?', t)
     self.remove_files_table(name)

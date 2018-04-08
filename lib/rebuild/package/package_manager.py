@@ -22,18 +22,11 @@ from .package import package
 from .package_db import package_db
 from .package_db_entry import package_db_entry
 from .env_dir import env_dir
+from .db_error import *
 
 class PackageFilesConflictError(Exception):
   def __init__(self, message):
     super(PackageFilesConflictError, self).__init__()
-    self.message = message
-
-  def __str__(self):
-    return self.message
-  
-class PackageNotFoundError(Exception):
-  def __init__(self, message):
-    super(PackageNotFoundError, self).__init__()
     self.message = message
 
   def __str__(self):
@@ -112,7 +105,7 @@ class package_manager(object):
   def descriptor_for_name(self, pkg_name):
     entry = self.db.find_package(pkg_name)
     if not entry:
-      raise PackageNotFoundError('package %s not found' % (pkg_name))
+      raise NotInstalledError('package %s not found' % (pkg_name))
     return entry.descriptor
 
   def compilation_flags(self, pkg_names, static = False):
@@ -179,7 +172,7 @@ class package_manager(object):
     self.log_i('uninstalling package: %s' % (pkg_name))
     pkg = self.db.find_package(pkg_name)
     if not pkg:
-      raise PackageNotFoundError('package %s not found' % (pkg_name))
+      raise NotInstalledError('package %s not found' % (pkg_name))
     paths = [ path.join(self._installation_dir, f) for f in pkg.files.filenames() ]
     file_util.remove(paths)
     self.db.remove_package(pkg_name)

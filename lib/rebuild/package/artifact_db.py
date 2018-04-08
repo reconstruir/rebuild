@@ -9,6 +9,7 @@ from rebuild.base import package_descriptor_list
 
 from .package_metadata import package_metadata
 from .util import util
+from .files_db import files_db
 
 class ArtifactAlreadyInstalledError(Exception):
   def __init__(self, message, adesc):
@@ -28,7 +29,7 @@ class ArtifactNotInstalledError(Exception):
   def __str__(self):
     return self.message
   
-class artifact_db(object):
+class artifact_db(files_db):
 
   SCHEMA_ARTIFACTS = '''
 CREATE TABLE artifacts(
@@ -60,6 +61,7 @@ CREATE TABLE {files_table_name}(
     self._db = sqlite(self._filename)
     self._db.ensure_table('artifacts', self.SCHEMA_ARTIFACTS)
     self._files = {}
+    self.files_db = files_db
     
   @property
   def filename(self):
