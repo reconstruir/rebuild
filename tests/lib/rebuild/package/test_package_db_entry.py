@@ -113,22 +113,5 @@ class test_package_db_entry(unit_test):
     }
     self.assertEqual( expected, self.TEST_ENTRY.to_sql_dict() )
 
-  def test_from_sql_row(self):
-    db = sqlite(':memory:')
-    db.execute(DB.SCHEMA_PACKAGES)
-    d = self.TEST_ENTRY.to_sql_dict()
-    keys = ', '.join(d.keys())
-    values = ', '.join(d.values())
-    db.execute('''INSERT INTO packages (%s) values (%s)''' % (keys, values))
-    db.execute('''CREATE TABLE kiwi_files (filename TEXT PRIMARY KEY NOT NULL, checksum TEXT);''')
-    db.execute('''INSERT INTO kiwi_files (filename, checksum) values ('f1', 'chk1');''')
-    db.execute('''INSERT INTO kiwi_files (filename, checksum) values ('f2', 'chk2');''')
-    db.commit()
-    rows = db.select_namedtuples("""SELECT * FROM packages where name='kiwi'""")
-    files_rows = db.select_namedtuples('SELECT * FROM kiwi_files')
-    self.assertEqual( 1, len(rows) )
-    self.assertEqual( 2, len(files_rows) )
-    self.assertEqual( self.TEST_ENTRY, PE.from_sql_row(rows[0], files_rows) )
-    
 if __name__ == '__main__':
   unit_test.main()

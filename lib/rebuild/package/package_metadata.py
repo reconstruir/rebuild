@@ -131,7 +131,8 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
       'checksum': util.sql_encode_string(self.checksum),
     }
     return d
-  
+
+  '''
   @classmethod
   def from_sql_row(clazz, row, files_rows):
     check.check_tuple(row)
@@ -158,5 +159,5 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
                  properties,
                  files,
                  checksum)
-
+'''
 check.register_class(package_metadata, include_seq = False)

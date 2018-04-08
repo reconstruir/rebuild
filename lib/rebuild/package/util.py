@@ -2,7 +2,6 @@
 
 import json
 from bes.common import check, json_util, string_util
-from bes.fs import file_checksum, file_checksum_list
 from rebuild.base import requirement_list
 
 class util(object):
@@ -47,10 +46,3 @@ class util(object):
   @classmethod
   def sql_encode_files(clazz, files):
     return clazz.sql_encode_string(json_util.to_json(files.to_simple_list()))
-
-  @classmethod
-  def files_from_sql_rows(clazz, rows):
-    result = file_checksum_list()
-    for row in rows:
-      result.append(file_checksum(row.filename, row.checksum))
-    return result

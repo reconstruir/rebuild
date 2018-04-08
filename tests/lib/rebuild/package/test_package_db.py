@@ -1,18 +1,24 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
-#
-import os.path as path, unittest
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
+
+import os.path as path
+from bes.testing.unit_test import unit_test
 from bes.fs import file_checksum_list as FCL, temp_file
 from rebuild.base import build_system, package_descriptor as PD, requirement_list as RL
 from rebuild.package.package_db import package_db as DB
 from rebuild.package.package_db_entry import package_db_entry as PE
 from bes.debug import debug_timer
 
-class test_package_db(unittest.TestCase):
+class test_package_db(unit_test):
 
+  DEBUG = unit_test.DEBUG
+  
   def _make_tmp_db_path(self):
-    tmp_dir = temp_file.make_temp_dir()
-    return path.join(tmp_dir, 'db.sqlite')
+    tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
+    f = path.join(tmp_dir, 'db.sqlite')
+    if self.DEBUG:
+      self.spew('_make_tmp_db_path() => %s' % (f))
+    return f
 
   def test_db_create_empty(self):
     tmp_db = self._make_tmp_db_path()
@@ -39,7 +45,7 @@ class test_package_db(unittest.TestCase):
     self.assertTrue( db.has_package('foo') )
     self.assertEqual( [ 'foo' ], db.list_all() )
     self.assertEqual( [ 'foo-1.2.3-1' ], db.list_all(include_version = True) )
-    self.assertEqual( [ PD.parse('foo-1.2.3-1') ], db.list_all_descriptors() )
+    self.assertEqual( [ PD.parse('foo-1.2.3-1') ], db.descriptors() )
     self.assertEqual( PE('foo', '1.2.3', 1, 0, [], {}, files), db.find_package('foo') )
   
     del db
@@ -76,18 +82,18 @@ class test_package_db(unittest.TestCase):
 
   def test_package_files(self):
     db = DB(self._make_tmp_db_path())
-    db.add_package(PE('p1', '1', 0, 0, [], {}, FCL([ ( 'p1/f1', 'c' ), ( 'p1/f2', 'c' ) ])))
-    db.add_package(PE('p2', '1', 0, 0, [], {}, FCL([ ( 'p2/f1', 'c' ), ( 'p2/f2', 'c' ) ])))
-    db.add_package(PE('p3', '1', 0, 0, [], {}, FCL([ ( 'p3/f1', 'c' ), ( 'p3/f2', 'c' ) ])))
-    db.add_package(PE('p4', '1', 0, 0, [], {}, FCL([ ( 'p4/f1', 'c' ), ( 'p4/f2', 'c' ) ])))
-    db.add_package(PE('p5', '1', 0, 0, [], {}, FCL([ ( 'p5/f1', 'c' ), ( 'p5/f2', 'c' ) ])))
-    db.add_package(PE('p6', '1', 0, 0, [], {}, FCL([ ( 'p6/f1', 'c' ), ( 'p6/f2', 'c' ) ])))
-    self.assertEqual( set([ 'p1/f1', 'p1/f2' ]), db.package_files('p1') )
-    self.assertEqual( set([ 'p2/f1', 'p2/f2' ]), db.package_files('p2') )
-    self.assertEqual( set([ 'p3/f1', 'p3/f2' ]), db.package_files('p3') )
-    self.assertEqual( set([ 'p4/f1', 'p4/f2' ]), db.package_files('p4') )
-    self.assertEqual( set([ 'p5/f1', 'p5/f2' ]), db.package_files('p5') )
-    self.assertEqual( set([ 'p6/f1', 'p6/f2' ]), db.package_files('p6') )
+    db.add_package(PE('p1', '1', 0, 0, [], {}, FCL([ ( 'p1/f1', 'c1' ), ( 'p1/f2', 'c2' ) ])))
+    db.add_package(PE('p2', '1', 0, 0, [], {}, FCL([ ( 'p2/f1', 'c1' ), ( 'p2/f2', 'c2' ) ])))
+    db.add_package(PE('p3', '1', 0, 0, [], {}, FCL([ ( 'p3/f1', 'c1' ), ( 'p3/f2', 'c2' ) ])))
+    db.add_package(PE('p4', '1', 0, 0, [], {}, FCL([ ( 'p4/f1', 'c1' ), ( 'p4/f2', 'c2' ) ])))
+    db.add_package(PE('p5', '1', 0, 0, [], {}, FCL([ ( 'p5/f1', 'c1' ), ( 'p5/f2', 'c2' ) ])))
+    db.add_package(PE('p6', '1', 0, 0, [], {}, FCL([ ( 'p6/f1', 'c1' ), ( 'p6/f2', 'c2' ) ])))
+    self.assertEqual( set([ 'p1/f1', 'p1/f2' ]), db.files('p1') )
+    self.assertEqual( set([ 'p2/f1', 'p2/f2' ]), db.files('p2') )
+    self.assertEqual( set([ 'p3/f1', 'p3/f2' ]), db.files('p3') )
+    self.assertEqual( set([ 'p4/f1', 'p4/f2' ]), db.files('p4') )
+    self.assertEqual( set([ 'p5/f1', 'p5/f2' ]), db.files('p5') )
+    self.assertEqual( set([ 'p6/f1', 'p6/f2' ]), db.files('p6') )
   
   def test_packages_with_files(self):
     db = DB(self._make_tmp_db_path())
@@ -128,9 +134,9 @@ class test_package_db(unittest.TestCase):
     names = db.names()
     print(len(names))
     for name in names:
-      files = db.package_files(name)
+      files = db.files(name)
       #print('%s: %s' % (name, len(files)))
     t.stop()
 
 if __name__ == '__main__':
-  unittest.main()
+  unit_test.main()

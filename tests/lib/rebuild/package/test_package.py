@@ -32,12 +32,15 @@ class test_package(unittest.TestCase):
     self.assertEqual( build_version('6.5.4', '3', 0), p.package_descriptor.version )
     self.assertEqual( requirement_list.parse('fruit >= 1.0.0-0 citrus >= 1.0.0-0'), p.package_descriptor.requirements )
     self.assertEqual( {}, p.package_descriptor.properties )
-    self.assertEqual( [ 'bin/orange_script.sh', 'docs/orange_bar.txt', 'docs/orange_foo.txt', 'lib/pkgconfig/orange.pc' ], p.files )
+    self.assertEqual( [ 'bin/orange_script.sh', 'docs/orange_bar.txt', 'docs/orange_foo.txt', 'lib/pkgconfig/orange.pc' ],
+                      p.files )
     self.assertEqual( [ 'lib/pkgconfig/orange.pc' ], p.pkg_config_files )
 
   def test_package_files(self):
     tmp_tarball = unit_test_packages.make_orange(debug = self.DEBUG)
-    self.assertEqual( [ 'bin/orange_script.sh', 'docs/orange_bar.txt', 'docs/orange_foo.txt', 'lib/pkgconfig/orange.pc' ], package.package_files(tmp_tarball) )
+    pkg = package(tmp_tarball)
+    self.assertEqual( [ 'bin/orange_script.sh', 'docs/orange_bar.txt', 'docs/orange_foo.txt', 'lib/pkgconfig/orange.pc' ],
+                      pkg.files )
 
   def test_package_descriptor_orange(self):
     tmp_tarball = unit_test_packages.make_orange(debug = self.DEBUG)
