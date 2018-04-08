@@ -47,4 +47,8 @@ class _toolchain_base(with_metaclass(ABCMeta, object)):
     return result
 
   def ar_replacement_program_exe(self):
-    return package.get_data_program_exe('programs/rebuild_ar_replacement.py', __file__, __name__)
+    for p in [ 'programs/rebuild_ar_replacement.pyc', 'programs/rebuild_ar_replacement.py' ]:
+      pexe = package.get_data_program_exe(p, __file__, __name__)
+      if pexe:
+        return pexe
+    return None
