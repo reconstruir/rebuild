@@ -14,9 +14,6 @@ from .package import package
 from .package_list import package_list
 from .db_error import *
 
-class ArtifactNotFoundError(Exception):
-  pass
-
 #log.configure('artifact_manager=debug')
 
 class artifact_manager(object):
@@ -99,7 +96,7 @@ class artifact_manager(object):
       available_package = self._find_package_by_name(package_name,
                                                      available_packages)
       if not available_package:
-        raise ArtifactNotFoundError('package \"%s\" not found' % (package_name))
+        raise NotInstalledError('package \"%s\" not found' % (package_name))
 
       result.append(available_package)
 
@@ -130,7 +127,8 @@ class artifact_manager(object):
   def package(self, package_descriptor, build_target):
     tarball = self.artifact_path(package_descriptor, build_target)
     if not path.isfile(tarball):
-      raise ArtifactNotFoundError('Artifact \"%s\" not found for %s' % (tarball, package_descriptor.full_name))
+      raise NotInstalledError('Artifact \"%s\" not found for %s' % (tarball, package_descriptor.full_name),
+                              package_descriptor)
     return self._get_package(tarball)
 
   def _get_package(self, tarball):

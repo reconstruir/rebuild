@@ -12,7 +12,7 @@ from bes.system import host
 from rebuild.base import build_target, build_system, build_level, package_descriptor
 from bes.fs import dir_util, file_search, file_util, file_path, temp_file
 
-from rebuild.package import artifact_manager, ArtifactNotFoundError, package
+from rebuild.package import artifact_manager, package
 
 class tools_package_manager(object):
 

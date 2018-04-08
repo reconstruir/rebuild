@@ -7,7 +7,8 @@ from bes.system import host
 from rebuild.base import build_system, build_target, build_level, package_descriptor
 from rebuild.pkg_config import pkg_config
 from rebuild.package import artifact_manager, package_manager
-from rebuild.package import PackageFilesConflictError, PackageAlreadyInstallededError, PackageMissingRequirementsError, ArtifactNotFoundError
+from rebuild.package import PackageFilesConflictError, PackageMissingRequirementsError
+from rebuild.package.db_error import *
 from bes.archive import archiver, temp_archive
 from rebuild.package.unit_test_packages import unit_test_packages
 
@@ -86,7 +87,7 @@ class test_package_manager(unittest.TestCase):
     pm = self._make_test_pm()
     water_tarball = unit_test_packages.make_water(debug = self.DEBUG)
     pm.install_tarball(water_tarball, ['BUILD', 'RUN'])
-    with self.assertRaises(PackageAlreadyInstallededError) as context:
+    with self.assertRaises(AlreadyInstalledError) as context:
       pm.install_tarball(water_tarball, ['BUILD', 'RUN'])
     self.assertEqual( 'package water already installed', context.exception.message )
 
@@ -171,7 +172,7 @@ class test_package_manager(unittest.TestCase):
   def test_install_package_unknown(self):
     pm = self._make_test_pm()
     pi = package_descriptor('notthere', '6.6.6-1')
-    with self.assertRaises(ArtifactNotFoundError) as context:
+    with self.assertRaises(NotInstalledError) as context:
       pm.install_package(pi, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
 
   def test_install_packages(self):

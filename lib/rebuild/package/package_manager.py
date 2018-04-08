@@ -17,7 +17,7 @@ from rebuild.base import package_descriptor, package_descriptor_list
 from rebuild.instruction import instruction_list
 from rebuild.pkg_config import pkg_config
 
-from .artifact_manager import artifact_manager, ArtifactNotFoundError
+from .artifact_manager import artifact_manager
 from .package import package
 from .package_db import package_db
 from .package_db_entry import package_db_entry
@@ -27,14 +27,6 @@ from .db_error import *
 class PackageFilesConflictError(Exception):
   def __init__(self, message):
     super(PackageFilesConflictError, self).__init__()
-    self.message = message
-
-  def __str__(self):
-    return self.message
-  
-class PackageAlreadyInstallededError(Exception):
-  def __init__(self, message):
-    super(PackageAlreadyInstallededError, self).__init__()
     self.message = message
 
   def __str__(self):
@@ -141,7 +133,7 @@ class package_manager(object):
     pkg = package(pkg_tarball)
 
     if self.is_installed(pkg.package_descriptor.name):
-      raise PackageAlreadyInstallededError('package %s already installed' % (pkg.package_descriptor.name))
+      raise AlreadyInstalledError('package %s already installed' % (pkg.package_descriptor.name), pkg)
     missing_requirements = self._missing_requirements(pkg, pkg.build_target, hardness)
     
     if missing_requirements:
