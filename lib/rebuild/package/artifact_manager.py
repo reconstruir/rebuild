@@ -46,9 +46,15 @@ class artifact_manager(object):
     self._sync_db()
 
   def _sync_db(self):
+    print('finding possible: %s ' % (self._root_dir))
     possible = self._find_possible_artifacts(self._root_dir)
+    print('done finding possible')
     for f in possible:
+      print('checking %s' % (path.relpath(f)))
       if package.is_package(f):
+        print('loading %s' % (path.relpath(f)))
+        import sys
+        sys.stdout.flush()
         p = package(f)
         print('metadata: %d - %s' % (len(p.metadata.files), str(p.metadata.artifact_descriptor)))
       else:
