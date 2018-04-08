@@ -33,7 +33,7 @@ class build_arch(object):
   if HOST_ARCH.startswith('armv7'):
     HOST_ARCH = ARMV7
   if not HOST_ARCH in KNOWN_ARCHS:
-    raise RuntimeError('Unknown host arch: %s' % (HOST_ARCH))
+    raise ValueError('Unknown host arch: %s' % (HOST_ARCH))
   
   @classmethod
   def determine_archs(clazz, system, tentative_archs):
@@ -52,13 +52,13 @@ class build_arch(object):
         return clazz.parse_archs(system, tentative_archs)
       for arch in tentative_archs:
         if not clazz.arch_is_valid(arch, system):
-          raise RuntimeError('Invalid arch: %s' % (arch))
+          raise ValueError('Invalid arch: %s' % (arch))
       return sorted(tentative_archs)
   
   @classmethod
   def arch_is_valid(clazz, arch, system):
     if system not in build_system.SYSTEMS:
-      raise RuntimeError('Unknown system: %d' % (system))
+      raise ValueError('Unknown system: %d' % (system))
     return arch in clazz.ARCHS[system]
 
   @classmethod
@@ -72,7 +72,7 @@ class build_arch(object):
     archs = s.split(',')
     for arch in archs:
       if not clazz.arch_is_valid(arch, system):
-        raise RuntimeError('Invalid arch \"%s\" for system \"%s\"' % (arch, build_system.system_to_string(system)))
+        raise ValueError('Invalid arch \"%s\" for system \"%s\"' % (arch, system))
     return sorted(archs)
 
   @classmethod

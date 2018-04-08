@@ -6,7 +6,8 @@ from bes.common import check, string_util
 from bes.system import log
 from rebuild.base import build_blurb
 from bes.git import git
-from bes.fs import dir_util, file_find, file_util
+from bes.fs import dir_util, file_checksum, file_find, file_util
+from bes.debug import debug_timer, noop_debug_timer
 from rebuild.base import package_descriptor, package_descriptor_list, requirement_manager
 
 from .package import package
@@ -43,21 +44,31 @@ class artifact_manager(object):
     self._package_cache = {}
     self._reset()
     self._db = artifact_db(path.join(self._root_dir, 'artifacts.db'))
+#    self._timer = debug_timer('am', 'error')
+    self._timer = noop_debug_timer('am', 'error')
     self._sync_db()
 
   def _sync_db(self):
-    print('finding possible: %s ' % (self._root_dir))
+    self._timer.start('finding')
     possible = self._find_possible_artifacts(self._root_dir)
-    print('done finding possible')
+    self._timer.stop()
     for f in possible:
-      print('checking %s' % (path.relpath(f)))
+      self._timer.start('checking %s' % (path.relpath(f)))
       if package.is_package(f):
-        print('loading %s' % (path.relpath(f)))
-        import sys
-        sys.stdout.flush()
+        self._timer.stop()
+        self._timer.start('loading %s' % (path.relpath(f)))
         p = package(f)
-        print('metadata: %d - %s' % (len(p.metadata.files), str(p.metadata.artifact_descriptor)))
+        self._timer.stop()
+
+        self._timer.start('checksum %s' % (path.relpath(f)))
+        chk = file_checksum.from_file(f)
+        self._timer.stop()
+        self._timer.start('loading metadata %s' % (path.relpath(f)))
+        md = p.metadata
+        self._timer.stop()
+        print('metadata: %d - %s' % (len(md.files), str(md.artifact_descriptor)))
       else:
+        self._timer.stop()
         print('invalid package: %s' % (f))
 
   @classmethod

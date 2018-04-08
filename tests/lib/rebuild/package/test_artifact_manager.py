@@ -81,8 +81,5 @@ class test_artifact_manager(unit_test):
     self.assertEqual( 'orange_juice-1.4.5', manager.package(package_descriptor('orange_juice', '1.4.5'), linux).package_descriptor.full_name )
     self.assertEqual( 'pear_juice-6.6.6', manager.package(package_descriptor('pear_juice', '6.6.6'), linux).package_descriptor.full_name )
 
-#  def test_parse_filename(self):
-#    self.assertEqual( package_descriptor('foo', '1.2.3-1'), artifact_manager.parse_filename('foo-1.2.3-1.tar.gz') )
-
 if __name__ == '__main__':
   unit_test.main()
