@@ -3,7 +3,7 @@
 import json
 from collections import namedtuple
 from bes.fs import file_checksum_list
-from bes.common import check, json_util, string_util
+from bes.common import cached_property, check, json_util, string_util
 from rebuild.base import build_target, build_version, package_descriptor, requirement_list
 from .util import util
 from .artifact_descriptor import artifact_descriptor
@@ -33,19 +33,19 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
     checksum = checksum or files.checksum()
     return clazz.__bases__[0].__new__(clazz, 2, filename, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files, checksum)
 
-  @property
+  @cached_property
   def build_version(self):
     return build_version(self.version, self.revision, self.epoch)
   
-  @property
+  @cached_property
   def package_descriptor(self):
     return package_descriptor(self.name, str(self.build_version), properties = self.properties, requirements = self.requirements)
 
-  @property
+  @cached_property
   def artifact_descriptor(self):
     return artifact_descriptor(self.name, self.version, self.revision, self.epoch, self.system, self.level, self.archs, self.distro)
 
-  @property
+  @cached_property
   def build_target(self):
     return build_target(system = self.system, level = self.level, archs = self.archs, distro = self.distro)
     

@@ -3,7 +3,7 @@
 import json
 from collections import namedtuple
 from bes.fs import file_checksum, file_checksum_list
-from bes.common import check, json_util, string_util
+from bes.common import cached_property, check, json_util, string_util
 from rebuild.base import build_version, package_descriptor, requirement_list
 from .util import util
 
@@ -26,11 +26,11 @@ class package_db_entry(namedtuple('package_db_entry', 'format_version,name,versi
   def __hash__(self):
     return hash(self.to_json())
   
-  @property
+  @cached_property
   def build_version(self):
     return build_version(self.version, self.revision, self.epoch)
   
-  @property
+  @cached_property
   def descriptor(self):
     return package_descriptor(self.name, str(self.build_version), properties = self.properties, requirements = self.requirements)
 
