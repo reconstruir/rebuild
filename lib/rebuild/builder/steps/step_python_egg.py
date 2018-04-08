@@ -42,8 +42,8 @@ class step_python_egg_build(step):
       v1 = version_info.read_file(filename)
       v2 = v1.change(address = tarball_address[0], tag = tarball_address[1], timestamp = time_util.timestamp(timezone = True))
       v2.save_file(filename)
-    
-    cmd = '${PYTHON} %s bdist_egg --plat-name=${REBUILD_PYTHON_PLATFORM_NAME}' % (setup_script)
+    flags = ' '.join(shell_flags)
+    cmd = '${PYTHON} %s bdist_egg --plat-name=${REBUILD_PYTHON_PLATFORM_NAME} %s' % (setup_script, flags)
     return self.call_shell(cmd, script, env, args, extra_env = shell_env, execution_dir = setup_dir)
 
 class step_python_egg_install(step):
@@ -79,7 +79,7 @@ class step_python_egg_install(step):
     return self.call_shell(cmd, script, env, args)
 
 class step_python_egg_check_downloaded_dependencies(step):
-  'Check that the egg build and install process does not Install the egg file produced by step_bdist_egg_build.'
+  'Check that the egg build and install process does not Install the egg file produced by step_python_egg_build.'
 
   def __init__(self):
     super(step_python_egg_check_downloaded_dependencies, self).__init__()
