@@ -47,7 +47,10 @@ class artifact_manager(object):
   def caca(self):
     files = file_find.find(self._publish_dir, relative = True)
     for f in files:
-      print('CACA: %s' % (f))
+      ff = path.join(self._publish_dir, f)
+      print('loading: %s' % (ff))
+      p = package(ff)
+      print('metadata: %s' % (str(p.metadata.artifact_descriptor)))
     
   @property
   def publish_dir(self):
