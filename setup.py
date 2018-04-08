@@ -16,7 +16,7 @@ setup(
   author = ver['BES_AUTHOR_NAME'],
   author_email = ver['BES_AUTHOR_EMAIL'],
   scripts = [
-#    'bin/rebuild_ar_replacement.py',
+    'bin/rebuild_ar_replacement.py',
 #    'bin/rebuild_jail.py',
 #    'bin/rebuild_ldd.py',
 #    'bin/rebuild_macho.py',
