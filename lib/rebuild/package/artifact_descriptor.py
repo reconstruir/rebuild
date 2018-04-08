@@ -1,7 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from collections import namedtuple
-from bes.common import check
+from bes.common import check, cached_property
 from rebuild.base import build_target, build_version
 from .util import util
 
@@ -24,11 +24,11 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
   def __str__(self):
     return '%s,%s,%s,%s,%s,%s,%s,%s' % (self.name, self.version, self.revision, self.epoch, self.system, self.level, self.archs, self.distro)
 
-  @property
+  @cached_property
   def build_version(self):
     return build_version(self.version, self.revision, self.epoch)
   
-  @property
+  @cached_property
   def build_target(self):
     return build_target(system = self.system, level = self.level, archs = self.archs, distro = self.distro)
 

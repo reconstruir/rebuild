@@ -46,6 +46,10 @@ class artifact_manager(object):
     self._package_cache = {}
     self._reset()
 
+  def caca(self):
+    self._available_packages_map = {}
+    self._requirement_managers = {}
+    
   @property
   def publish_dir(self):
     return self._publish_dir

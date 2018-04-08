@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import json, os.path as path
@@ -101,10 +100,10 @@ create table {files_table_name}(
     if not self.has_package(name):
       return None
     if name not in self._packages:
-      self._packages[name] = self._load_package(name)
+      self._packages[name] = self._load_package_db_entry(name)
     return self._packages[name]
 
-  def _load_package(self, name):
+  def _load_package_db_entry(self, name):
     rows = self._db.select_namedtuples('''select * from packages where name=?''', ( name, ))
     if not rows:
       raise NotInstalledError('not installed: %s' % (name), name)

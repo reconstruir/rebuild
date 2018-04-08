@@ -39,7 +39,7 @@ class test_artifact_db(unit_test):
     recreated_db = DB(tmp_db)
     self.assertEqual( [], recreated_db.list_all() )
 
-  def test_db_add(self):
+  def test_add(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
     e = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES)
@@ -48,6 +48,17 @@ class test_artifact_db(unit_test):
     db.add_artifact(e)
     self.assertTrue( db.has_artifact(adesc) )
 
+  def test_remove(self):
+    tmp_db = self._make_tmp_db_path()
+    db = DB(tmp_db)
+    e = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES)
+    adesc = e.artifact_descriptor
+    self.assertFalse( db.has_artifact(adesc) )
+    db.add_artifact(e)
+    self.assertTrue( db.has_artifact(adesc) )
+    db.remove_artifact(adesc)
+    self.assertFalse( db.has_artifact(adesc) )
+    
   def xtest_db_add_duplicate(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
