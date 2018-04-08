@@ -10,6 +10,7 @@ from rebuild.base import package_descriptor_list
 from .package_metadata import package_metadata
 from .util import util
 from .files_db import files_db
+from .db_error import *
 
 class ArtifactAlreadyInstalledError(Exception):
   def __init__(self, message, adesc):
@@ -20,15 +21,6 @@ class ArtifactAlreadyInstalledError(Exception):
   def __str__(self):
     return self.message
 
-class ArtifactNotInstalledError(Exception):
-  def __init__(self, message, adesc):
-    super(ArtifactNotInstalledError, self).__init__()
-    self.message = message
-    self.adesc = adesc
-
-  def __str__(self):
-    return self.message
-  
 class artifact_db(files_db):
 
   SCHEMA_ARTIFACTS = '''
@@ -143,7 +135,7 @@ CREATE TABLE {files_table_name}(
   def remove_artifact(self, adesc):
     check.check_artifact_descriptor(adesc)
     if not self.has_package(adesc):
-      raise ArtifactNotInstalledError('Not installed: %s' % (adesc), adesc)
+      raise NotInstalledError('Not installed: %s' % (adesc), adesc)
     sql = 'delete from artifacts {expression}'.format(adesc.WHERE_EXPRESSION)
     self._db.execute(sql, adesc)
     self._db.execute('DROP TABLE %s' % (self._files_table_name(name)))

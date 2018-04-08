@@ -5,8 +5,8 @@ import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import file_checksum_list as FCL, temp_file
 from rebuild.base import build_system, package_descriptor as PD, requirement_list as RL
-from rebuild.package.artifact_db import artifact_db as DB, ArtifactAlreadyInstalledError
-from rebuild.package.artifact_db import ArtifactAlreadyInstalledError, ArtifactNotInstalledError
+from rebuild.package.artifact_db import artifact_db as DB
+from rebuild.package.db_error import *
 from rebuild.package import artifact_descriptor as AD
 from rebuild.package.package_metadata import package_metadata as PM
 from bes.debug import debug_timer
@@ -55,7 +55,7 @@ class test_artifact_db(unit_test):
     adesc = e.artifact_descriptor
     db.add_artifact(e)
     self.assertTrue( db.has_artifact(adesc) )
-    with self.assertRaises(ArtifactAlreadyInstalledError) as context:
+    with self.assertRaises(AlreadyInstalledError) as context:
       db.add_artifact(e)
     
   def xtest_db_add(self):
