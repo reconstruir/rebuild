@@ -779,3 +779,6 @@ copy third_party/privworld to great/...
 - artifact factory db
 - env_dir loading in shell and in python
 - new tools manager
+
+april 7
+- get rid of artifact_manager.DEFAULT_PUBLISH_DIR
