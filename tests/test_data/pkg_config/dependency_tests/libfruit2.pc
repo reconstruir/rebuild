@@ -3,10 +3,10 @@ exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include
 
-Name: libtemplate2
+Name: libfruit2
 Version: 1.0.0
-Description: libtemplate2 is nice
-Requires: @template2_REQUIRES@
-Libs: -L${libdir} @template2_LIBS@
-Libs.private: @template2_LIBS_PRIVATE@
-Cflags: -I${includedir} @template2_CFLAGS@
+Description: libfruit2 is nice
+Requires: @fruit2_REQUIRES@
+Libs: -L${libdir} @fruit2_LIBS@
+Libs.private: @fruit2_LIBS_PRIVATE@
+Cflags: -I${includedir} @fruit2_CFLAGS@

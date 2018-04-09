@@ -3,10 +3,10 @@ exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include
 
-Name: libtemplate1
+Name: libapple1
 Version: 1.2.3
-Description: libtemplate1 is nice
-Requires: @template1_REQUIRES@
-Libs: -L${libdir} @template1_LIBS@
-Libs.private: @template1_LIBS_PRIVATE@
-Cflags: -I${includedir} @template1_CFLAGS@
+Description: libapple1 is nice
+Requires: @apple1_REQUIRES@
+Libs: -L${libdir} @apple1_LIBS@
+Libs.private: @apple1_LIBS_PRIVATE@
+Cflags: -I${includedir} @apple1_CFLAGS@

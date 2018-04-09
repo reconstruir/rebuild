@@ -3,10 +3,10 @@ exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include
 
-Name: libtemplate1
+Name: liborange1
 Version: 6.5.4
-Description: libtemplate1 is nice
-Requires: @template1_REQUIRES@
-Libs: -L${libdir} @template1_LIBS@
-Libs.private: @template1_LIBS_PRIVATE@
-Cflags: -I${includedir} @template1_CFLAGS@
+Description: liborange1 is nice
+Requires: @orange1_REQUIRES@
+Libs: -L${libdir} @orange1_LIBS@
+Libs.private: @orange1_LIBS_PRIVATE@
+Cflags: -I${includedir} @orange1_CFLAGS@

@@ -71,7 +71,7 @@ def main():
     } ),
    ]
 
-  PACKAGES = [
+  xPACKAGES = [
     ( 'pear-1.2.3-1', 'templatedepends', '1.2.3', {
       '/*@pear1_dot_c@*/': 'file:template/code/pear/pear1.c',
       '/*@pear1_dot_h@*/': 'file:template/code/pear/pear1.h',
