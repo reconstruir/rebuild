@@ -10,7 +10,7 @@ package libstarch-1.0.0
     step_make
       make_flags
         linux: CC=gcc CFLAGS=-std=c99
-        macos: AR=${AR_REPLACEMENT}
+        #macos: AR=${AR_REPLACEMENT}
         macos: CC=clang CFLAGS="${REBUILD_COMPILE_ARCH_FLAGS}"
     step_make_install
     step_post_install

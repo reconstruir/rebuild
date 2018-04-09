@@ -5,7 +5,7 @@ import os.path as path
 
 from bes.common import check, dict_util, object_util
 from bes.archive import archiver
-from bes.fs import file_util
+from bes.fs import file_util, temp_file
 
 from rebuild.step import step, step_result
 from rebuild.base import build_blurb
@@ -24,6 +24,7 @@ class step_setup_unpack(step):
     tarball_name                 string
     skip_unpack                  bool         False
     tarball_source_dir_override  dir
+    tarball_override             file
     '''
 
   def execute(self, script, env, args):
@@ -67,6 +68,7 @@ class step_setup_unpack(step):
   def parse_step_args(clazz, script, env, values):
     tarball_name = values.get('tarball_name')
     tarball_source_dir_override = values.get('tarball_source_dir_override')
+    tarball_override = values.get('tarball_override')
     if tarball_source_dir_override:
       tarball_source_dir_override = tarball_source_dir_override.filename
     extra_tarballs = values.get('extra_tarballs')
@@ -76,10 +78,14 @@ class step_setup_unpack(step):
     else:
       assert isinstance(extra_tarballs, list)
 
-    if tarball_source_dir_override:
+    if tarball_override:
+      tarballs_dict = { 'tarballs': [ tarball_override.filename ] }
+    elif tarball_source_dir_override:
+      tmp_dir = temp_file.make_temp_dir(delete = False)
       tmp_tarball_filename = '%s.tar.gz' % (script.descriptor.full_name)
-      tmp_tarball_path = path.join(script.working_dir, tmp_tarball_filename)
+      tmp_tarball_path = path.join(tmp_dir, tmp_tarball_filename)
       archiver.create(tmp_tarball_path, tarball_source_dir_override, base_dir = script.descriptor.full_name)
+      assert path.isfile(tmp_tarball_path)
       tarballs_dict = { 'tarballs': [ tmp_tarball_path ] }
     else:
       tarballs_dict = {}
@@ -117,7 +123,7 @@ class step_setup_unpack(step):
   def _extract(clazz, tarballs, dest_dir, base_dir, strip_common_base):
     tarballs = object_util.listify(tarballs)
     for tarball in tarballs:
-      clazz.blurb('Extracting source tarballs %s' % (path.relpath(tarball)))
+      clazz.blurb('Extracting source tarballs %s to %s' % (path.relpath(tarball), path.relpath(dest_dir)))
       archiver.extract(tarball,
                        dest_dir,
                        base_dir = base_dir,

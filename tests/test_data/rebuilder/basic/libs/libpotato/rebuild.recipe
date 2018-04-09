@@ -20,7 +20,7 @@ package libpotato-1.0.0
         all: CFLAGS="-std=c99 ${REBUILD_COMPILE_ARCH_FLAGS} ${REBUILD_REQUIREMENTS_CFLAGS}"
         linux: CC=gcc
         macos: CC=clang
-        macos: AR=${AR_REPLACEMENT}
+        #macos: AR=${AR_REPLACEMENT}
 
     step_make_install
 
