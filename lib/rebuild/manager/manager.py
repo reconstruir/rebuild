@@ -10,10 +10,10 @@ from rebuild.base import build_blurb
 from bes.dependency import dependency_resolver
 from rebuild.package import package_manager
 from collections import namedtuple
-from .rebuild_manager_config import rebuild_manager_config
-from .rebuild_manager_script import rebuild_manager_script
+from .manager_config import manager_config
+from .manager_script import manager_script
 
-class rebuild_manager(object):
+class manager(object):
 
   DEFAULT_ROOT_DIR = path.expanduser('~/.rebbe')
 
@@ -88,7 +88,7 @@ class rebuild_manager(object):
     self.log_i('loading config: %s' % (self.config_filename))
     if not path.exists(self.config_filename):
       raise RuntimeError('config file does not exist: %s' % (self.config_filename))
-    config = rebuild_manager_config()
+    config = manager_config()
     config.load_file(self.config_filename, build_target)
     return config
 
@@ -208,9 +208,9 @@ exec ${1+"$@"}
 '''
 
   def _save_system_setup_scripts(self, project_name, build_target):
-    system_setup_script = rebuild_manager_script(self.SETUP_SYSTEM_SCRIPT_TEMPLATE, 'setup.sh')
-    system_run_script = rebuild_manager_script(self.SYSTEM_RUN_SCRIPT_TEMPLATE, 'run.sh')
-    setup_script = rebuild_manager_script(self.SETUP_SCRIPT_TEMPLATE, 'setup.sh')
+    system_setup_script = manager_script(self.SETUP_SYSTEM_SCRIPT_TEMPLATE, 'setup.sh')
+    system_run_script = manager_script(self.SYSTEM_RUN_SCRIPT_TEMPLATE, 'run.sh')
+    setup_script = manager_script(self.SETUP_SCRIPT_TEMPLATE, 'setup.sh')
     pm = self._package_manager(project_name, build_target.system)
     variables = {
       '@LIBRARY_PATH@': os_env.LD_LIBRARY_PATH_VAR_NAME,

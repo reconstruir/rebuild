@@ -5,9 +5,9 @@
 import unittest
 from bes.fs import tar_util, temp_file
 from rebuild.base import build_system, build_target
-from rebuild.manager import rebuild_manager_config
+from rebuild.manager import manager_config
 
-class test_rebuild_manager_config(unittest.TestCase):
+class test_manager_config(unittest.TestCase):
 
   TEST_CONFIG_INI = '''
 [common]
@@ -30,7 +30,7 @@ packages: common10 common20
 
   def test_load_file(self):
     tmp_config_filename = self.__make_test_config(self.TEST_CONFIG_INI)
-    config = rebuild_manager_config()
+    config = manager_config()
 
     config.load_file(tmp_config_filename, build_target(build_system.MACOS))
     self.assertEqual( [ 'common1', 'common2', 'common3', 'common4', 'macos1', 'macos2' ], config['project1']['packages'] )
