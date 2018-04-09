@@ -6,11 +6,11 @@ from bes.fs import tar_util, temp_file
 from bes.system import execute
 from bes.git import git
 from rebuild.base import build_target, package_descriptor
-from rebuild.manager import rebuild_manager
+from rebuild.manager import manager
 from rebuild.package import artifact_manager
 from rebuild.package.unit_test_packages import unit_test_packages
 
-class test_rebuild_manager(unittest.TestCase):
+class test_manager(unittest.TestCase):
 
   DEBUG = False
   #DEBUG = True
@@ -40,7 +40,7 @@ class test_rebuild_manager(unittest.TestCase):
   def xxxtest_update_tools(self):
     am = self.__make_test_artifacts_git_repo()
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
-    rebbe = rebuild_manager(root_dir = tmp_dir, artifact_manager = am)
+    rebbe = manager(root_dir = tmp_dir, artifact_manager = am)
     if self.DEBUG:
       print("tmp_dir:\n%s\n" % (tmp_dir))
 

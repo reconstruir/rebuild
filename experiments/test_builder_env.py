@@ -6,7 +6,7 @@
 #from bes.system import execute
 #from bes.git import git
 #from rebuild.base import build_target, package_descriptor
-#from rebuild.builder import rebuild_manager
+#from rebuild.builder import manager
 #from rebuild.package import artifact_manager
 #from rebuild.package.unit_test_packages import unit_test_packages
 #
@@ -49,7 +49,7 @@ class test_builder_env(unit_test):
     
     am = self.__make_test_artifacts_git_repo()
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
-    rebbe = rebuild_manager(root_dir = tmp_dir, artifact_manager = am)
+    rebbe = manager(root_dir = tmp_dir, artifact_manager = am)
     if self.DEBUG:
       print("tmp_dir:\n%s\n" % (tmp_dir))
 

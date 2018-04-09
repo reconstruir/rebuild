@@ -13,7 +13,7 @@ from rebuild.base import build_arch, build_blurb, build_system, build_target, bu
 from rebuild.package import artifact_manager, package, package_tester
 from rebuild.tools_manager import tools_manager
 
-from .rebuild_manager import rebuild_manager
+from .manager import manager
 from .manager_script import manager_script
 
 class manager_cli(object):
@@ -291,21 +291,21 @@ class manager_cli(object):
 
   def _command_tools_install(self, dest_dir):
     assert False, 'implement me properly'
-    #am = artifact_manager(None, rebuild_manager.ARTIFACTS_GIT_ADDRESS)
-    #rm = rebuild_manager(am, dest_dir)
+    #am = artifact_manager(None, manager.ARTIFACTS_GIT_ADDRESS)
+    #rm = manager(am, dest_dir)
     return 0
 
   def _command_packages_install(self, dest_dir, project_name, packages, wipe, bt):
-    rm = rebuild_manager(self.artifact_manager, bt, dest_dir)
+    rm = manager(self.artifact_manager, bt, dest_dir)
     return self._update_project(rm, project_name, packages, wipe, bt)
 
   def _command_packages_uninstall(self, dest_dir, project_name, packages, bt):
-    rm = rebuild_manager(self.artifact_manager, bt, dest_dir)
+    rm = manager(self.artifact_manager, bt, dest_dir)
     success = rm.uninstall_packages(project_name, packages, bt)
     return self.bool_to_exit_code(success)
 
   def _command_packages_print(self, root_dir, project_name, bt):
-    rm = rebuild_manager(self.artifact_manager, bt, root_dir)
+    rm = manager(self.artifact_manager, bt, root_dir)
     assert project_name
     packages = rm.installed_packages(project_name, bt)
     for p in packages:
@@ -313,7 +313,7 @@ class manager_cli(object):
     return 0
 
   def _command_config_packages(self, root_dir, project_name, bt):
-    rm = rebuild_manager(self.artifact_manager, bt, root_dir)
+    rm = manager(self.artifact_manager, bt, root_dir)
     config = rm.config(bt)
     section = config.get(project_name, None)
     if not section:
@@ -331,7 +331,7 @@ remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir ${_root_dir}
 '''
 
   def _command_packages_update(self, root_dir, wipe, project_name, allow_downgrade, force_install, bt):
-    rm = rebuild_manager(self.artifact_manager, bt, root_dir)
+    rm = manager(self.artifact_manager, bt, root_dir)
     success = rm.update_from_config(bt,
                                     wipe,
                                     project_name = project_name,

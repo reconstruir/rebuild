@@ -13,7 +13,7 @@ from collections import namedtuple
 from .manager_config import manager_config
 from .manager_script import manager_script
 
-class rebuild_manager(object):
+class manager(object):
 
   DEFAULT_ROOT_DIR = path.expanduser('~/.rebbe')
 
