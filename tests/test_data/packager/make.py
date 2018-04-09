@@ -95,10 +95,12 @@ def main():
     tmp_dir = temp_file.make_temp_dir(delete = not DEBUG)
     if DEBUG:
       print('DEBUG1: tmp_dir=%s' % (tmp_dir))
+    print('FUCK: %s' % (package))
     desc = unit_test_packages.TEST_PACKAGES[package]
-    pi = desc['package_info']
+    print('desc: %s' % (str(desc)))
+    pi = desc #desc['package_info']
 
-    version_no_revision = '%s-%s' % (pi.name, pi.version.upstream_version)
+    version_no_revision = '%s-%s' % (pi.name, pi.version)
 
     archiver.extract(template_tarball, tmp_dir, base_dir = 'foo', strip_common_base = True)
     working_dir = path.join(tmp_dir, 'foo')
@@ -118,7 +120,7 @@ def main():
     print('FUCK: %s' % (default_replacements))
     replacements = {}
     replacements.update(default_replacements)
-    replacements.update({ '[%s]' % (template_version): '[%s]' % (pi.version.upstream_version) })
+    replacements.update({ '[%s]' % (template_version): '[%s]' % (pi.version) })
     replacements.update(more_replacements)
     for k, v in sorted(replacements.items()):
       print('REPLACEMENTS: %s: %s' % (k, v))
