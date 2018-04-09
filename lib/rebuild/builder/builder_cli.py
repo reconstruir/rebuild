@@ -30,6 +30,7 @@ class builder_cli(object):
     build_levels = ','.join(build_level.LEVELS)
     systems = ','.join(build_system.SYSTEMS)
     self.parser = argparse.ArgumentParser(description = 'Build packages.')
+    self.parser.add_argument('-C', '--change-dir', action = 'store', type = str, default = None)
     self.parser.add_argument('-o', '--opts', action = 'store', type = str, default = '')
     self.parser.add_argument('-f', '--project-file', action = 'store', type = str, default = 'rebuild.project')
     self.parser.add_argument('-n', '--no-checksums', action = 'store_true')
@@ -49,7 +50,7 @@ class builder_cli(object):
     self.parser.add_argument('--skip-tests', action = 'store_true', help = 'Skip the tests part of the build.')
     self.parser.add_argument('--scratch', action = 'store_true', help = 'Start from scratch by deleting existing data.')
     self.parser.add_argument('--filter', nargs = '+', default = None, help = 'filter the list of build files to the given list.')
-    self.parser.add_argument('-r', '--root', action = 'store', type = str, default = path.abspath('BUILD'), help = 'Root dir where to store the build.')
+    self.parser.add_argument('-r', '--root', action = 'store', type = str, default = 'BUILD', help = 'Root dir where to store the build.')
     self.parser.add_argument('target_packages', action = 'append', nargs = '*', type = str)
     self.parser.add_argument('--tps-address', default = builder_config.DEFAULT_THIRD_PARTY_ADDRESS,
                              action = 'store', type = str,
@@ -69,7 +70,10 @@ class builder_cli(object):
   def main(self):
     args = self.parser.parse_args()
     args.verbose = bool(args.verbose)
-    
+
+    if args.change_dir:
+      os.chdir(args.change_dir)
+
     target_packages = args.target_packages[0]
     opts = copy.deepcopy(self.DEFAULT_OPTIONS)
     parsed_opts = key_value_parser.parse_to_dict(args.opts)
@@ -106,7 +110,7 @@ class builder_cli(object):
     build_blurb.set_verbose(args.verbose)
 
     config = builder_config()
-    config.build_root = path.abspath(args.root)
+    config.build_root = path.abspath(path.abspath(args.root))
     config.build_target = build_target(opts.get('system', build_target.DEFAULT),
                                        opts.get('build_level', build_target.DEFAULT),
                                        opts.get('archs', build_target.DEFAULT))
