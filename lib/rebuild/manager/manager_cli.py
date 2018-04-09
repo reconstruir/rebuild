@@ -10,12 +10,13 @@ from bes.key_value import key_value_parser
 from bes.system import host
 from bes.fs import file_util, temp_file
 from rebuild.base import build_arch, build_blurb, build_system, build_target, build_level
-from rebuild.manager import rebuild_manager
 from rebuild.package import artifact_manager, package, package_tester
 from rebuild.tools_manager import tools_manager
-from .rebuild_manager_script import rebuild_manager_script
 
-class rebuild_manager_cli(object):
+from .rebuild_manager import rebuild_manager
+from .manager_script import manager_script
+
+class manager_cli(object):
 
   TOOLS = 'tools'
   UPDATE = 'update'
@@ -336,7 +337,7 @@ remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir ${_root_dir}
                                     project_name = project_name,
                                     allow_downgrade = allow_downgrade,
                                     force_install = force_install)
-    update_script = rebuild_manager_script(self.UPDATE_SCRIPT_TEMPLATE, 'update.sh')
+    update_script = manager_script(self.UPDATE_SCRIPT_TEMPLATE, 'update.sh')
     variables = {
       '@ARTIFACTS_DIR@': self.artifact_manager.root_dir,
     }
@@ -438,4 +439,4 @@ remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir ${_root_dir}
   
   @classmethod
   def run(clazz):
-    raise SystemExit(rebuild_manager_cli().main())
+    raise SystemExit(manager_cli().main())

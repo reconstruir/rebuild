@@ -8,13 +8,13 @@ from bes.compat import StringIO
 from collections import OrderedDict
 from bes.text import comments
 
-class rebuild_manager_config(OrderedDict):
+class manager_config(OrderedDict):
 
   KEY_PACKAGES = 'packages'
   COMMON_SECTION = 'common'
   
   def __init__(self):
-    super(rebuild_manager_config, self).__init__()
+    super(manager_config, self).__init__()
 
   def load_file(self, filename, build_target):
     parser = ConfigParser()

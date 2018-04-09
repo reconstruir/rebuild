@@ -6,7 +6,7 @@ import copy, os.path as path
 from bes.common import string_util
 from bes.fs import file_util
 
-class rebuild_manager_script(object):
+class manager_script(object):
 
   DEFAULT_ROOT_DIR = path.expanduser('~/.rebuild')
   

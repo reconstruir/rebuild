@@ -5,14 +5,14 @@ import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import file_util, temp_file
 
-from rebuild.manager import rebuild_manager_script
+from rebuild.manager import manager_script
 
-class test_rebuild_manager_script(unit_test):
+class test_manager_script(unit_test):
 
   def test_save_executable(self):
     template = '#!/bin/bash\necho @FOO@ @BAR@'
     basename = 'foo.sh'
-    script = rebuild_manager_script(template, basename)
+    script = manager_script(template, basename)
     tmp_root_dir = temp_file.make_temp_dir()
     variables = {
       '@FOO@': 'foo',
@@ -29,7 +29,7 @@ class test_rebuild_manager_script(unit_test):
   def test_save_not_executable(self):
     template = 'something @FOO@ and @BAR@'
     basename = 'foo.sh'
-    script = rebuild_manager_script(template, basename)
+    script = manager_script(template, basename)
     tmp_root_dir = temp_file.make_temp_dir()
     variables = {
       '@FOO@': 'foo',
