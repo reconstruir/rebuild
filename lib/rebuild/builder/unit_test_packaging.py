@@ -69,6 +69,7 @@ package %s-%s-%s
   steps
     step_autoconf
       configure_env
+        linux: CC=gcc CFLAGS="-fucku -std=c99 -I${REBUILD_REQUIREMENTS_INCLUDE_DIR}"
         all: CFLAGS=-I${REBUILD_REQUIREMENTS_INCLUDE_DIR} LDFLAGS=\"-L${REBUILD_REQUIREMENTS_LIB_DIR}\"
       tests
         %s

@@ -40,7 +40,8 @@ class package(object):
   def raw_metadata(self):
     if not self._raw_metadata:
       # FIXME: need to use a better root dir something that ends up in ~/.rebuild/tmp/package_members_cache or such
-      self._raw_metadata = archiver.extract_member_to_string_cached(self.tarball, self.METADATA_FILENAME)
+      content = archiver.extract_member_to_string_cached(self.tarball, self.METADATA_FILENAME)
+      self._raw_metadata = content.decode('utf-8')
     return self._raw_metadata
   
   @property
