@@ -7,9 +7,10 @@ from rebuild.package import artifact_descriptor as AD
 
 class test_artifact_descriptor(unit_test):
 
-  def xtest_parse_filename(self):
+  def test_parse_filename(self):
     f = AD.parse_artifact_filename
-    self.assertEqual( ( 'foo', ), f('macos/x86_64/release/gnu_libtool-2.4.6.tar.gz') )
+    self.assertEqual( ( 'gnu_libtool', '2.4.6', 0, 0, 'macos', 'release', [ 'x86_64' ], None ),
+                      f('macos/x86_64/release/gnu_libtool-2.4.6.tar.gz') )
     
 if __name__ == '__main__':
   unit_test.main()

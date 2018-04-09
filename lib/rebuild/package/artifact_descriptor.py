@@ -3,7 +3,7 @@
 import os
 from collections import namedtuple
 from bes.common import check, cached_property
-from rebuild.base import build_arch, build_level, build_system, build_target, build_version
+from rebuild.base import build_arch, build_level, build_system, build_target, build_version, package_descriptor
 from .util import util
 
 class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revision, epoch, system, level, archs, distro')):
@@ -53,15 +53,22 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
     system = parts[0]
     if not build_system.system_is_valid(system):
       raise ValueError('invalid system \"%s\" for %s' % (system, filename))
-    archs = parts[1]
-    if not build_level.level_is_valid(level):
-      raise ValueError('invalid level \"%s\" for %s' % (level, filename))
+    archs = parts[1].split('-')
+    for arch in archs:
+      if not build_arch.arch_is_valid(arch, system):
+        raise ValueError('invalid arch \"%s\" for %s' % (arch, filename))
     level = parts[2]
     if not build_level.level_is_valid(level):
       raise ValueError('invalid level \"%s\" for %s' % (level, filename))
-    fn = parts[3]
-    
-    print('parts: %s ' % (parts))
-    return None
+    desc = parts[3].replace('.tar.gz', '')
+    pdesc = package_descriptor.parse(desc)
+    return clazz(pdesc.name,
+                 pdesc.version.upstream_version,
+                 pdesc.version.revision,
+                 pdesc.version.epoch,
+                 system,
+                 level,
+                 archs,
+                 None)
   
 check.register_class(artifact_descriptor, include_seq = False)
