@@ -32,7 +32,7 @@ class unit_test_packages(object):
     'arsenic-1.2.9-1': PM('', 'arsenic', '1.2.9', 1, 0, 'macos', 'release', ARCHS, '', None, {}, []),
     'arsenic-1.2.10-0': PM('', 'arsenic', '1.2.10', 0, 0, 'macos', 'release', ARCHS, '', None, {}, []),
     'apple-1.2.3-1': PM('', 'apple', '1.2.3', 1, 0, 'macos', 'release', ARCHS, '', 'fruit >= 1.0.0', {}, []),
-    'fruit-1.0.0': PM('', 'fruit', '1.0.0', 0, 0, 'macos', 'release', ARCHS, '', 'fructose >= 3.4.5-6 fiber >= 1.0.0-0 water >= 1.0.0-0', {}, []),
+    'fruit-1.0.0-0': PM('', 'fruit', '1.0.0', 0, 0, 'macos', 'release', ARCHS, '', 'fructose >= 3.4.5-6 fiber >= 1.0.0-0 water >= 1.0.0-0', {}, []),
     'pear-1.2.3-1': PM('', 'pear', '1.2.3', 1, 0, 'macos', 'release', ARCHS, '', 'fruit >= 1.0.0', {}, []),
     'orange-6.5.4-3': PM('', 'orange', '6.5.4', 3, 0, 'macos', 'release', ARCHS, '', 'fruit >= 1.0.0-0 citrus >= 1.0.0-0', {}, []),
     'orange_juice-1.4.5-0': PM('', 'orange_juice', '1.4.5', 0, 0, 'macos', 'release', ARCHS, '', 'orange >= 6.5.4-3', {}, []),
