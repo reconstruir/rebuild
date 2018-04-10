@@ -789,4 +789,4 @@ april 9
 
 april 10
 - extra deps like stuff in shell scripts
-
+- unpack crazy slow use tar
