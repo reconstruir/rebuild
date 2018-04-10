@@ -80,6 +80,20 @@ class package(object):
     python_lib_dir = path.join(installation_dir, 'lib/python')
     setup_tools.update_egg_directory(python_lib_dir)
 
+  _ENV_FILE_HEAD_TEMPLATE = '''\
+_this_file="$( command readlink "$BASH_SOURCE" )" || _this_file="$BASH_SOURCE"
+_unresolved_root="${_this_file%/*}"
+_REBUILD_ENV_DIR="$( command cd -P "$_unresolved_root" > /dev/null && command pwd -P )"
+_REBUILD_STUFF_DIR="$( command cd -P "$_REBUILD_ENV_DIR/../stuff" > /dev/null && command pwd -P )"
+unset _this_file
+unset _unresolved_root
+'''
+
+  _ENV_FILE_TAIL_TEMPLATE = '''\
+unset _REBUILD_ENV_DIR
+unset _REBUILD_STUFF_DIR
+'''
+  
   def _variable_substitution_hook(self, where, installation_dir):
     replacements = {
       '${REBUILD_PACKAGE_PREFIX}': installation_dir,
@@ -87,6 +101,8 @@ class package(object):
       '${REBUILD_PACKAGE_DESCRIPTION}': self.metadata.name,
       '${REBUILD_PACKAGE_VERSION}': str(self.metadata.build_version),
       '${REBUILD_PACKAGE_FULL_NAME}': self.package_descriptor.full_name,
+      '#@REBUILD_HEAD@': self._ENV_FILE_HEAD_TEMPLATE,
+      '#@REBUILD_TAIL@': self._ENV_FILE_TAIL_TEMPLATE,
     }
     file_search.search_replace(where,
                                replacements,
