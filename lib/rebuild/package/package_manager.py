@@ -204,7 +204,6 @@ class package_manager(object):
 
   def install_package(self, pkg_desc, build_target, hardness,
                       allow_downgrade = False, force_install = False):
-    self.log_i('install_package: %s for %s' % (pkg_desc.full_name, ' '.join(hardness)))
     check.check_package_descriptor(pkg_desc)
     pkg = self._artifact_manager.package(pkg_desc, build_target)
 
@@ -213,13 +212,12 @@ class package_manager(object):
       old_pkg_entry = self.db.find_package(pkg.package_descriptor.name)
       old_pkg_entry_desc = old_pkg_entry.descriptor
       comparison = package_descriptor.full_name_cmp(old_pkg_entry_desc, pkg_desc)
-      self.log_d('install_package: comparison=%s' % (comparison))
       if force_install:
-        self.log_i('install_package: checking checksum old=%s new=%s' % (old_pkg_entry.checksum, pkg.metadata.checksum))
         if old_pkg_entry.checksum != pkg.metadata.checksum:
-          self.log_i('install_package: checksums changed: %s' % (str(pkg_desc)))
+          self.log_i('install_package: checksums changed: %s old=%s new=%s' % (pkg_desc.name, old_pkg_entry.checksum, pkg.metadata.checksum))
           comparison = -1
       if comparison == 0:
+        self.log_i('install_package: no change needed: %s' % (pkg_desc.name))
         return False
       elif comparison < 0:
         self.log_i('install_package: upgrading from %s to %s' % (old_pkg_entry_desc.full_name,
