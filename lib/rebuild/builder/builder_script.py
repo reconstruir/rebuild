@@ -52,6 +52,7 @@ class builder_script(object):
     self.substitutions = {
       'REBUILD_BUILD_DIR': self.build_dir,
       'REBUILD_PACKAGE_DESCRIPTION':  self.descriptor.name,
+      'REBUILD_PACKAGE_FULL_NAME':  self.descriptor.full_name,
       'REBUILD_PACKAGE_NAME':  self.descriptor.name,
       'REBUILD_PACKAGE_VERSION':  str(self.descriptor.version),
       'REBUILD_PYTHON_PLATFORM_NAME':   self.build_target.system,
