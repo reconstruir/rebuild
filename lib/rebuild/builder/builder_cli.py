@@ -134,7 +134,7 @@ class builder_cli(object):
     config.performance = args.performance
     env = builder_env(config, available_packages)
     
-    build_blurb.blurb('rebuild', 'FUCK target=%s; host=%s' % (config.build_target.build_path, config.host_build_target.build_path))
+    build_blurb.blurb('rebuild', 'target=%s; host=%s' % (config.build_target.build_path, config.host_build_target.build_path))
 
     bldr = builder(env)
 
