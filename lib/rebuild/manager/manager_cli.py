@@ -219,7 +219,7 @@ class manager_cli(object):
     self.verbose = getattr(args, 'verbose', False)
 
     if self.verbose:
-      log.configure('remanage*=info format=brief width=10')
+      log.configure('remanage*=info format=brief width=20')
       
     if command == 'tools:update':
       return self._command_tools_update()
