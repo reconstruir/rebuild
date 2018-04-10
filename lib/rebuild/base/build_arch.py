@@ -14,17 +14,25 @@ class build_arch(object):
 
 #  MIPS = 'mips'
 #  MIPS64 = 'mips64'
+
+  VALID_ARCHS = {
+    build_system.ANDROID: [ ARMV7 ],
+    build_system.MACOS: [ I386, X86_64 ],
+    build_system.IOS: [ ARM64, ARMV7 ],
+    build_system.IOS_SIM: [ I386, X86_64 ],
+    build_system.LINUX: [ I386, X86_64 ],
+  }
   
-  ARCHS = {
+  DEFAULT_ARCHS = {
     build_system.ANDROID: [ ARMV7 ],
     #build_system.MACOS: [ I386, X86_64 ],
     build_system.MACOS: [ X86_64 ],
     build_system.IOS: [ ARM64, ARMV7 ],
     build_system.IOS_SIM: [ I386, X86_64 ],
-    build_system.LINUX: [],
+    build_system.LINUX: [ X86_64 ],
   }
 
-  DEFAULT_HOST_ARCHS = ARCHS[build_system.HOST]
+  DEFAULT_HOST_ARCHS = DEFAULT_ARCHS[build_system.HOST]
   
   KNOWN_ARCHS = [ ARMV7, ARM64, I386, X86_64 ]
 
@@ -47,7 +55,7 @@ class build_arch(object):
       return sorted(result)
     else:
       if not tentative_archs or tentative_archs == 'default':
-        return clazz.ARCHS[system]
+        return clazz.DEFAULT_ARCHS[system]
       if string_util.is_string(tentative_archs):
         return clazz.parse_archs(system, tentative_archs)
       for arch in tentative_archs:
@@ -59,7 +67,7 @@ class build_arch(object):
   def arch_is_valid(clazz, arch, system):
     if system not in build_system.SYSTEMS:
       raise ValueError('Unknown system: %d' % (system))
-    return arch in clazz.ARCHS[system]
+    return arch in clazz.VALID_ARCHS[system]
 
   @classmethod
   def archs_to_string(clazz, archs, delimiter = ','):
@@ -68,7 +76,7 @@ class build_arch(object):
   @classmethod
   def parse_archs(clazz, system, s):
     if s.lower() == 'default':
-      return clazz.ARCHS[system]
+      return clazz.DEFAULT_ARCHS[system]
     archs = s.split(',')
     for arch in archs:
       if not clazz.arch_is_valid(arch, system):
