@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 
 from ._toolchain_base import _toolchain_base
-from rebuild.base import build_level
+from rebuild.base import build_arch, build_level
 import os.path as path
 
 class _toolchain_linux(_toolchain_base):
@@ -37,7 +37,7 @@ class _toolchain_linux(_toolchain_base):
   def compiler_flags(self):
     'Return the compiler flags for the given darwin.'
 
-    arch_flags = []
+    arch_flags = self._make_arch_flags(self.build_target.archs)
     pic_flags = [ '-fPIC' ]
 
     if self.build_target.level == build_level.RELEASE:
@@ -59,6 +59,17 @@ class _toolchain_linux(_toolchain_base):
       'REBUILD_COMPILE_ARCHS': [],
     }
     return env
+
+  @classmethod
+  def _make_arch_flags(clazz, archs):
+    'Return compiler flags for the given list of archs.'
+    assert len(archs) == 1
+    if archs[0] == build_arch.I386:
+      return [ '-m32' ]
+    elif archs[0] == build_arch.X86_64:
+      return [ '-m64' ]
+    else:
+      raise ValueError('Invalid archs: %s' % (archs))
 
   def sysroot(self):
     return '/'

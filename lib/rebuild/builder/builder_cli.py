@@ -101,7 +101,7 @@ class builder_cli(object):
     args.system = build_system.parse_system(args.system)
     args.level = build_level.parse_level(args.level)
     args.archs = build_arch.parse_archs(args.system, args.archs)
-
+    
     opts['system'] = args.system
     opts['level'] = args.level
     opts['archs'] = args.archs
@@ -134,7 +134,7 @@ class builder_cli(object):
     config.performance = args.performance
     env = builder_env(config, available_packages)
     
-    build_blurb.blurb('rebuild', 'target=%s; host=%s' % (config.build_target.build_path, config.host_build_target.build_path))
+    build_blurb.blurb('rebuild', 'FUCK target=%s; host=%s' % (config.build_target.build_path, config.host_build_target.build_path))
 
     bldr = builder(env)
 

@@ -23,17 +23,6 @@ class build_arch(object):
     build_system.LINUX: [ I386, X86_64 ],
   }
   
-  DEFAULT_ARCHS = {
-    build_system.ANDROID: [ ARMV7 ],
-    #build_system.MACOS: [ I386, X86_64 ],
-    build_system.MACOS: [ X86_64 ],
-    build_system.IOS: [ ARM64, ARMV7 ],
-    build_system.IOS_SIM: [ I386, X86_64 ],
-    build_system.LINUX: [ X86_64 ],
-  }
-
-  DEFAULT_HOST_ARCHS = DEFAULT_ARCHS[build_system.HOST]
-  
   KNOWN_ARCHS = [ ARMV7, ARM64, I386, X86_64 ]
 
   HOST_ARCH = platform.machine()
@@ -42,17 +31,23 @@ class build_arch(object):
     HOST_ARCH = ARMV7
   if not HOST_ARCH in KNOWN_ARCHS:
     raise ValueError('Unknown host arch: %s' % (HOST_ARCH))
-  
+
+  DEFAULT_ARCHS = {
+    build_system.ANDROID: [ ARMV7 ],
+    #build_system.MACOS: [ I386, X86_64 ],
+    build_system.MACOS: [ X86_64 ],
+    build_system.IOS: [ ARM64, ARMV7 ],
+    build_system.IOS_SIM: [ I386, X86_64 ],
+    build_system.LINUX: [ HOST_ARCH ],
+  }
+
+  DEFAULT_HOST_ARCHS = DEFAULT_ARCHS[build_system.HOST]
+
   @classmethod
   def determine_archs(clazz, system, tentative_archs):
     result = []
     if system == build_system.LINUX:
-      python_machine = platform.machine()
-      if python_machine in [ 'x86_64' ]:
-        result = [ clazz.X86_64 ]
-      elif python_machine.startswith('armv7'):
-        result = [ clazz.ARMV7 ]
-      return sorted(result)
+      return clazz._determine_archs_linux(system, tentative_archs)
     else:
       if not tentative_archs or tentative_archs == 'default':
         return clazz.DEFAULT_ARCHS[system]
@@ -62,7 +57,19 @@ class build_arch(object):
         if not clazz.arch_is_valid(arch, system):
           raise ValueError('Invalid arch: %s' % (arch))
       return sorted(tentative_archs)
-  
+
+  @classmethod
+  def _determine_archs_linux(clazz, system, tentative_archs):
+    if tentative_archs == 'default':
+      return clazz.DEFAULT_ARCHS[system]
+    if tentative_archs in clazz.VALID_ARCHS[system]:
+      return [ tentative_archs ]
+    if len(tentative_archs) != 1:
+      raise ValueError('Invalid linux arch: %s' % (str(tentative_archs)))
+    if tentative_archs[0] in clazz.VALID_ARCHS[system]:
+      return tentative_archs
+    raise ValueError('Invalid linux arch: %s' % (str(tentative_archs)))
+
   @classmethod
   def arch_is_valid(clazz, arch, system):
     if system not in build_system.SYSTEMS:
