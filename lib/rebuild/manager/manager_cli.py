@@ -343,6 +343,7 @@ remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir ${_root_dir}
                                     project_name = project_name,
                                     allow_downgrade = allow_downgrade,
                                     force_install = force_install)
+    print('FUCK: dont_touch_update_script=%s' % (dont_touch_update_script))
     if not dont_touch_update_script:
       update_script = manager_script(self.UPDATE_SCRIPT_TEMPLATE, 'update.sh')
       variables = {
