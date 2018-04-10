@@ -786,3 +786,7 @@ april 7
 april 9
 - ability to do a step only for a specific system
 - ability to load code only for a specific system
+
+april 10
+- extra deps like stuff in shell scripts
+

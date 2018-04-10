@@ -212,6 +212,7 @@ class package_manager(object):
       old_pkg_entry = self.db.find_package(pkg.package_descriptor.name)
       old_pkg_entry_desc = old_pkg_entry.descriptor
       comparison = package_descriptor.full_name_cmp(old_pkg_entry_desc, pkg_desc)
+      comparison = -1
       if force_install:
         if old_pkg_entry.checksum != pkg.metadata.checksum:
           self.log_i('install_package: checksums changed: %s old=%s new=%s' % (pkg_desc.name, old_pkg_entry.checksum, pkg.metadata.checksum))
