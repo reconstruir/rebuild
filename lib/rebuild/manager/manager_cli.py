@@ -104,6 +104,10 @@ class manager_cli(object):
                                action = 'store_true',
                                default = False,
                                help = 'Force update of packages even if the version is the same [ False ]')
+    update_parser.add_argument('--dont-touch-update-script',
+                               action = 'store_true',
+                               default = False,
+                               help = 'Dont touch the update.sh script when done updating packages. [ False ]')
     update_parser.add_argument('project_name',
                                action = 'store',
                                default = None,
@@ -237,6 +241,7 @@ class manager_cli(object):
                                              args.project_name,
                                              args.downgrade,
                                              args.force,
+                                             args.dont_touch_update_script,
                                              args.build_target)
     elif command in [ 'packages:uninstall' ]:
       return self._command_packages_uninstall(args.dest_dir,
@@ -330,18 +335,20 @@ _root_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir ${_root_dir} --force ${1+"$@"}
 '''
 
-  def _command_packages_update(self, root_dir, wipe, project_name, allow_downgrade, force_install, bt):
+  def _command_packages_update(self, root_dir, wipe, project_name, allow_downgrade,
+                               force_install, dont_touch_update_script, bt):
     rm = manager(self.artifact_manager, bt, root_dir)
     success = rm.update_from_config(bt,
                                     wipe,
                                     project_name = project_name,
                                     allow_downgrade = allow_downgrade,
                                     force_install = force_install)
-    update_script = manager_script(self.UPDATE_SCRIPT_TEMPLATE, 'update.sh')
-    variables = {
-      '@ARTIFACTS_DIR@': self.artifact_manager.root_dir,
-    }
-    update_script.save(root_dir, variables)
+    if not dont_touch_update_script:
+      update_script = manager_script(self.UPDATE_SCRIPT_TEMPLATE, 'update.sh')
+      variables = {
+        '@ARTIFACTS_DIR@': self.artifact_manager.root_dir,
+      }
+      update_script.save(root_dir, variables)
     return self.bool_to_exit_code(success)
 
   def _update_project(self, rm, project_name, packages, wipe, bt):

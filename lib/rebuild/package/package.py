@@ -83,15 +83,15 @@ class package(object):
   _ENV_FILE_HEAD_TEMPLATE = '''\
 _this_file="$( command readlink "$BASH_SOURCE" )" || _this_file="$BASH_SOURCE"
 _unresolved_root="${_this_file%/*}"
-_REBUILD_ENV_DIR="$( command cd -P "$_unresolved_root" > /dev/null && command pwd -P )"
-_REBUILD_STUFF_DIR="$( command cd -P "$_REBUILD_ENV_DIR/../stuff" > /dev/null && command pwd -P )"
+REBUILD_ENV_DIR="$( command cd -P "$_unresolved_root" > /dev/null && command pwd -P )"
+REBUILD_STUFF_DIR="$( command cd -P "$REBUILD_ENV_DIR/../stuff" > /dev/null && command pwd -P )"
 unset _this_file
 unset _unresolved_root
 '''
 
   _ENV_FILE_TAIL_TEMPLATE = '''\
-unset _REBUILD_ENV_DIR
-unset _REBUILD_STUFF_DIR
+unset REBUILD_ENV_DIR
+unset REBUILD_STUFF_DIR
 '''
   
   def _variable_substitution_hook(self, where, installation_dir):
