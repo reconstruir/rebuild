@@ -24,19 +24,20 @@ class artifact_db(object):
 
   SCHEMA_ARTIFACTS = '''
 create table artifacts(
-  id              integer primary key not null,
-  name            text not null, 
-  filename        text not null, 
-  checksum        text not null, 
-  version         text not null, 
-  revision        integer not null, 
-  epoch           integer not null, 
-  system          text not null, 
-  level           text not null, 
-  archs           text not null, 
-  distro          text, 
-  requirements    text,
-  properties      text
+  id                  integer primary key not null,
+  name                text not null, 
+  filename            text not null, 
+  files_checksum      text not null, 
+  env_files_checksum  text not null, 
+  version             text not null, 
+  revision            integer not null, 
+  epoch               integer not null, 
+  system              text not null, 
+  level               text not null, 
+  archs               text not null, 
+  distro              text, 
+  requirements        text,
+  properties          text
 );
 '''
 
@@ -70,7 +71,21 @@ create table {files_table_name}(
     adesc = md.artifact_descriptor
     if self.has_artifact(adesc):
       raise ArtifactAlreadyInstalledError('Already installed: %s' % (str(adesc)), adesc)
-    d = md.to_sql_dict()
+    d =  {
+      'name': util.sql_encode_string(md.name),
+      'filename': util.sql_encode_string(md.filename),
+      'version': util.sql_encode_string(md.version),
+      'revision': str(md.revision),
+      'epoch': str(md.epoch),
+      'system': util.sql_encode_string(md.system),
+      'level': util.sql_encode_string(md.level),
+      'archs': util.sql_encode_string_list(md.archs),
+      'distro': util.sql_encode_string(md.distro),
+      'requirements': util.sql_encode_requirements(md.requirements),
+      'properties': util.sql_encode_dict(md.properties),
+      'files_checksum': util.sql_encode_string(md.files.files_checksum),
+      'env_files_checksum': util.sql_encode_string(md.files.env_files_checksum),
+    }
     keys = ', '.join(d.keys())
     values = ', '.join(d.values())
     self._db.execute('insert into artifacts(%s) values(%s)' % (keys, values))

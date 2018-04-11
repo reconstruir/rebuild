@@ -7,6 +7,7 @@ from bes.fs import file_checksum_list as FCL, temp_file
 from rebuild.base import build_system, package_descriptor as PD, requirement_list as RL
 from rebuild.package.package_db import package_db as DB
 from rebuild.package.package_db_entry import package_db_entry as PE
+from rebuild.package import package_files
 from bes.debug import debug_timer
 
 class test_package_db(unit_test):
@@ -37,8 +38,7 @@ class test_package_db(unit_test):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
     self.assertFalse( db.has_package('foo') )
-    files = FCL([ ( 'lib/libfoo.a', 'c1' ), ( 'include/libfoo.h', 'c2' ) ])
-    files.sort()
+    files = package_files(FCL([ ( 'f1', 'c1' ), ( 'f2', 'c2' ) ]), FCL([ ( 'e1', 'ec1' ), ( 'e2', 'ec2' ) ]), 'f_chk', 'ef_chk')
     reqs = None
     new_entry = PE('foo', '1.2.3', 1, 0, [], {}, files)
     db.add_package(new_entry)
@@ -60,8 +60,7 @@ class test_package_db(unit_test):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
     self.assertFalse( db.has_package('foo') )
-    files = FCL([ ( 'lib/libfoo.a', 'c1' ), ( 'include/libfoo.h', 'c2' ) ])
-    files.sort()
+    files = package_files(FCL([ ( 'f1', 'c1' ), ( 'f2', 'c2' ) ]), FCL([ ( 'e1', 'ec1' ), ( 'e2', 'ec2' ) ]), 'f_chk', 'ef_chk')
     reqs = None
     new_entry = PE('foo', '1.2.3', 1, 0, [], {}, files)
     db.add_package(new_entry)
@@ -82,12 +81,12 @@ class test_package_db(unit_test):
 
   def test_package_files(self):
     db = DB(self._make_tmp_db_path())
-    db.add_package(PE('p1', '1', 0, 0, [], {}, FCL([ ( 'p1/f1', 'c1' ), ( 'p1/f2', 'c2' ) ])))
-    db.add_package(PE('p2', '1', 0, 0, [], {}, FCL([ ( 'p2/f1', 'c1' ), ( 'p2/f2', 'c2' ) ])))
-    db.add_package(PE('p3', '1', 0, 0, [], {}, FCL([ ( 'p3/f1', 'c1' ), ( 'p3/f2', 'c2' ) ])))
-    db.add_package(PE('p4', '1', 0, 0, [], {}, FCL([ ( 'p4/f1', 'c1' ), ( 'p4/f2', 'c2' ) ])))
-    db.add_package(PE('p5', '1', 0, 0, [], {}, FCL([ ( 'p5/f1', 'c1' ), ( 'p5/f2', 'c2' ) ])))
-    db.add_package(PE('p6', '1', 0, 0, [], {}, FCL([ ( 'p6/f1', 'c1' ), ( 'p6/f2', 'c2' ) ])))
+    db.add_package(PE('p1', '1', 0, 0, [], {}, package_files(FCL([ ( 'p1/f1', 'c1' ), ( 'p1/f2', 'c2' ) ]), FCL([ ( 'e1', 'ec1' ), ( 'e2', 'ec2' ) ]), 'f_chk', 'ef_chk')))
+    db.add_package(PE('p2', '1', 0, 0, [], {}, package_files(FCL([ ( 'p2/f1', 'c1' ), ( 'p2/f2', 'c2' ) ]), FCL([ ( 'e1', 'ec1' ), ( 'e2', 'ec2' ) ]), 'f_chk', 'ef_chk')))
+    db.add_package(PE('p3', '1', 0, 0, [], {}, package_files(FCL([ ( 'p3/f1', 'c1' ), ( 'p3/f2', 'c2' ) ]), FCL([ ( 'e1', 'ec1' ), ( 'e2', 'ec2' ) ]), 'f_chk', 'ef_chk')))
+    db.add_package(PE('p4', '1', 0, 0, [], {}, package_files(FCL([ ( 'p4/f1', 'c1' ), ( 'p4/f2', 'c2' ) ]), FCL([ ( 'e1', 'ec1' ), ( 'e2', 'ec2' ) ]), 'f_chk', 'ef_chk')))
+    db.add_package(PE('p5', '1', 0, 0, [], {}, package_files(FCL([ ( 'p5/f1', 'c1' ), ( 'p5/f2', 'c2' ) ]), FCL([ ( 'e1', 'ec1' ), ( 'e2', 'ec2' ) ]), 'f_chk', 'ef_chk')))
+    db.add_package(PE('p6', '1', 0, 0, [], {}, package_files(FCL([ ( 'p6/f1', 'c1' ), ( 'p6/f2', 'c2' ) ]), FCL([ ( 'e1', 'ec1' ), ( 'e2', 'ec2' ) ]), 'f_chk', 'ef_chk')))
     self.assertEqual( set([ 'p1/f1', 'p1/f2' ]), db.files('p1') )
     self.assertEqual( set([ 'p2/f1', 'p2/f2' ]), db.files('p2') )
     self.assertEqual( set([ 'p3/f1', 'p3/f2' ]), db.files('p3') )
@@ -97,12 +96,12 @@ class test_package_db(unit_test):
   
   def test_packages_with_files(self):
     db = DB(self._make_tmp_db_path())
-    db.add_package(PE('p1', '1', 0, 0, [], {}, FCL([ ( 'p1/f1', 'c' ), ( 'p1/f2', 'c' ) ])))
-    db.add_package(PE('p2', '1', 0, 0, [], {}, FCL([ ( 'p2/f1', 'c' ), ( 'p2/f2', 'c' ) ])))
-    db.add_package(PE('p3', '1', 0, 0, [], {}, FCL([ ( 'p3/f1', 'c' ), ( 'p3/f2', 'c' ) ])))
-    db.add_package(PE('p4', '1', 0, 0, [], {}, FCL([ ( 'p4/f1', 'c' ), ( 'p4/f2', 'c' ) ])))
-    db.add_package(PE('p5', '1', 0, 0, [], {}, FCL([ ( 'p5/f1', 'c' ), ( 'p5/f2', 'c' ) ])))
-    db.add_package(PE('p6', '1', 0, 0, [], {}, FCL([ ( 'p6/f1', 'c' ), ( 'p6/f2', 'c' ) ])))
+    db.add_package(PE('p1', '1', 0, 0, [], {}, package_files(FCL([ ( 'p1/f1', 'c1' ), ( 'p1/f2', 'c2' ) ]), FCL([ ( 'e1', 'ec1' ), ( 'e2', 'ec2' ) ]), 'f_chk', 'ef_chk')))
+    db.add_package(PE('p2', '1', 0, 0, [], {}, package_files(FCL([ ( 'p2/f1', 'c1' ), ( 'p2/f2', 'c2' ) ]), FCL([ ( 'e1', 'ec1' ), ( 'e2', 'ec2' ) ]), 'f_chk', 'ef_chk')))
+    db.add_package(PE('p3', '1', 0, 0, [], {}, package_files(FCL([ ( 'p3/f1', 'c1' ), ( 'p3/f2', 'c2' ) ]), FCL([ ( 'e1', 'ec1' ), ( 'e2', 'ec2' ) ]), 'f_chk', 'ef_chk')))
+    db.add_package(PE('p4', '1', 0, 0, [], {}, package_files(FCL([ ( 'p4/f1', 'c1' ), ( 'p4/f2', 'c2' ) ]), FCL([ ( 'e1', 'ec1' ), ( 'e2', 'ec2' ) ]), 'f_chk', 'ef_chk')))
+    db.add_package(PE('p5', '1', 0, 0, [], {}, package_files(FCL([ ( 'p5/f1', 'c1' ), ( 'p5/f2', 'c2' ) ]), FCL([ ( 'e1', 'ec1' ), ( 'e2', 'ec2' ) ]), 'f_chk', 'ef_chk')))
+    db.add_package(PE('p6', '1', 0, 0, [], {}, package_files(FCL([ ( 'p6/f1', 'c1' ), ( 'p6/f2', 'c2' ) ]), FCL([ ( 'e1', 'ec1' ), ( 'e2', 'ec2' ) ]), 'f_chk', 'ef_chk')))
 
     self.assertEqual( [], db.packages_with_files([ 'notthere' ]) )
     self.assertEqual( [ 'p1' ], db.packages_with_files([ 'p1/f2' ]) )

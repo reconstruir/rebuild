@@ -7,7 +7,7 @@ from bes.common import dict_util, json_util, string_util
 from bes.fs import file_util, temp_file, temp_item
 from bes.archive import archiver
 from rebuild.base import build_arch, build_system, build_target, package_descriptor, requirement, requirement_list
-from rebuild.package import package, package_metadata as PM
+from rebuild.package import package, package_files, package_metadata as PM
 from collections import namedtuple
 
 class unit_test_packages(object):
@@ -16,28 +16,28 @@ class unit_test_packages(object):
 
   #ARCHS = [ 'x86_64' ]
   ARCHS = build_arch.DEFAULT_HOST_ARCHS
-  
+  FILES = package_files([], [])
   TEST_PACKAGES = {
-    'water-1.0.0-0': PM('', 'water', '1.0.0', 0, 0, 'macos', 'release', ARCHS, '', None, {}, []),
-    'water-1.0.0-1': PM('', 'water', '1.0.0', 1, 0, 'macos', 'release', ARCHS, '', None, {}, []),
-    'water-1.0.0-2': PM('', 'water', '1.0.0', 2, 0, 'macos', 'release', ARCHS, '', None, {}, []),
-    'fiber-1.0.0-0': PM('', 'fiber', '1.0.0', 2, 0, 'macos', 'release', ARCHS, '', None, {}, []),
-    'citrus-1.0.0-0': PM('', 'citrus', '1.0.0', 2, 0, 'macos', 'release', ARCHS, '', None, {}, []),
-    'fructose-3.4.5-6': PM('', 'fructose', '3.4.5', 6, 0, 'macos', 'release', ARCHS, '', None, {}, []),
-    'mercury-1.2.8-0': PM('', 'mercury', '1.2.8', 0, 0, 'macos', 'release', ARCHS, '', None, {}, []),
-    'mercury-1.2.8-1': PM('', 'mercury', '1.2.8', 1, 0, 'macos', 'release', ARCHS, '', None, {}, []),
-    'mercury-1.2.9-0': PM('', 'mercury', '1.2.9', 0, 0, 'macos', 'release', ARCHS, '', None, {}, []),
-    'mercury_conflict-3.2.1-0': PM('', 'mercury_conflict', '3.2.1', 0, 0, 'macos', 'release', ARCHS, '', None, {}, []),
-    'arsenic-1.2.9-0': PM('', 'arsenic', '1.2.9', 0, 0, 'macos', 'release', ARCHS, '', None, {}, []),
-    'arsenic-1.2.9-1': PM('', 'arsenic', '1.2.9', 1, 0, 'macos', 'release', ARCHS, '', None, {}, []),
-    'arsenic-1.2.10-0': PM('', 'arsenic', '1.2.10', 0, 0, 'macos', 'release', ARCHS, '', None, {}, []),
-    'apple-1.2.3-1': PM('', 'apple', '1.2.3', 1, 0, 'macos', 'release', ARCHS, '', 'fruit >= 1.0.0', {}, []),
-    'fruit-1.0.0-0': PM('', 'fruit', '1.0.0', 0, 0, 'macos', 'release', ARCHS, '', 'fructose >= 3.4.5-6 fiber >= 1.0.0-0 water >= 1.0.0-0', {}, []),
-    'pear-1.2.3-1': PM('', 'pear', '1.2.3', 1, 0, 'macos', 'release', ARCHS, '', 'fruit >= 1.0.0', {}, []),
-    'orange-6.5.4-3': PM('', 'orange', '6.5.4', 3, 0, 'macos', 'release', ARCHS, '', 'fruit >= 1.0.0-0 citrus >= 1.0.0-0', {}, []),
-    'orange_juice-1.4.5-0': PM('', 'orange_juice', '1.4.5', 0, 0, 'macos', 'release', ARCHS, '', 'orange >= 6.5.4-3', {}, []),
-    'pear_juice-6.6.6-0': PM('', 'pear_juice', '6.6.6', 0, 0, 'macos', 'release', ARCHS, '', 'pear >= 1.2.3-1', {}, []),
-    'smoothie-1.0.0-0': PM('', 'smoothie', '1.0.0', 0, 0, 'macos', 'release', ARCHS, '', 'orange >= 6.5.4-3 pear >= 1.2.3-1 apple >= 1.2.3-1', {}, []),
+    'water-1.0.0-0': PM('', 'water', '1.0.0', 0, 0, 'macos', 'release', ARCHS, '', None, {}, FILES),
+    'water-1.0.0-1': PM('', 'water', '1.0.0', 1, 0, 'macos', 'release', ARCHS, '', None, {}, FILES),
+    'water-1.0.0-2': PM('', 'water', '1.0.0', 2, 0, 'macos', 'release', ARCHS, '', None, {}, FILES),
+    'fiber-1.0.0-0': PM('', 'fiber', '1.0.0', 2, 0, 'macos', 'release', ARCHS, '', None, {}, FILES),
+    'citrus-1.0.0-0': PM('', 'citrus', '1.0.0', 2, 0, 'macos', 'release', ARCHS, '', None, {}, FILES),
+    'fructose-3.4.5-6': PM('', 'fructose', '3.4.5', 6, 0, 'macos', 'release', ARCHS, '', None, {}, FILES),
+    'mercury-1.2.8-0': PM('', 'mercury', '1.2.8', 0, 0, 'macos', 'release', ARCHS, '', None, {}, FILES),
+    'mercury-1.2.8-1': PM('', 'mercury', '1.2.8', 1, 0, 'macos', 'release', ARCHS, '', None, {}, FILES),
+    'mercury-1.2.9-0': PM('', 'mercury', '1.2.9', 0, 0, 'macos', 'release', ARCHS, '', None, {}, FILES),
+    'mercury_conflict-3.2.1-0': PM('', 'mercury_conflict', '3.2.1', 0, 0, 'macos', 'release', ARCHS, '', None, {}, FILES),
+    'arsenic-1.2.9-0': PM('', 'arsenic', '1.2.9', 0, 0, 'macos', 'release', ARCHS, '', None, {}, FILES),
+    'arsenic-1.2.9-1': PM('', 'arsenic', '1.2.9', 1, 0, 'macos', 'release', ARCHS, '', None, {}, FILES),
+    'arsenic-1.2.10-0': PM('', 'arsenic', '1.2.10', 0, 0, 'macos', 'release', ARCHS, '', None, {}, FILES),
+    'apple-1.2.3-1': PM('', 'apple', '1.2.3', 1, 0, 'macos', 'release', ARCHS, '', 'fruit >= 1.0.0', {}, FILES),
+    'fruit-1.0.0-0': PM('', 'fruit', '1.0.0', 0, 0, 'macos', 'release', ARCHS, '', 'fructose >= 3.4.5-6 fiber >= 1.0.0-0 water >= 1.0.0-0', {}, FILES),
+    'pear-1.2.3-1': PM('', 'pear', '1.2.3', 1, 0, 'macos', 'release', ARCHS, '', 'fruit >= 1.0.0', {}, FILES),
+    'orange-6.5.4-3': PM('', 'orange', '6.5.4', 3, 0, 'macos', 'release', ARCHS, '', 'fruit >= 1.0.0-0 citrus >= 1.0.0-0', {}, FILES),
+    'orange_juice-1.4.5-0': PM('', 'orange_juice', '1.4.5', 0, 0, 'macos', 'release', ARCHS, '', 'orange >= 6.5.4-3', {}, FILES),
+    'pear_juice-6.6.6-0': PM('', 'pear_juice', '6.6.6', 0, 0, 'macos', 'release', ARCHS, '', 'pear >= 1.2.3-1', {}, FILES),
+    'smoothie-1.0.0-0': PM('', 'smoothie', '1.0.0', 0, 0, 'macos', 'release', ARCHS, '', 'orange >= 6.5.4-3 pear >= 1.2.3-1 apple >= 1.2.3-1', {}, FILES),
    }
   
   def __init__(self, desc, pm, system = 'macos', level = 'release', debug = False):
@@ -53,8 +53,7 @@ class unit_test_packages(object):
                  pm.distro,
                  pm.requirements,
                  pm.properties,
-                 pm.files,
-                 pm.checksum)
+                 pm.files)
     self.system = system
     self.level = level
     self.debug = debug

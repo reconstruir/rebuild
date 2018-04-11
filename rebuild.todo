@@ -790,3 +790,6 @@ april 9
 april 10
 - extra deps like stuff in shell scripts
 - unpack crazy slow use tar
+
+april 11
+- test of package upgrade because checksums changed missing

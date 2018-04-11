@@ -165,7 +165,8 @@ class package_manager(object):
     pkg = self.db.find_package(pkg_name)
     if not pkg:
       raise NotInstalledError('package %s not found' % (pkg_name))
-    paths = [ path.join(self._installation_dir, f) for f in pkg.files.filenames() ]
+    paths = [ path.join(self._installation_dir, f) for f in pkg.files.files.filenames() ]
+    paths.extend([ path.join(self._env_dir, f) for f in pkg.files.env_files.filenames() ])
     file_util.remove(paths)
     self.db.remove_package(pkg_name)
 
@@ -213,8 +214,7 @@ class package_manager(object):
       old_pkg_entry_desc = old_pkg_entry.descriptor
       comparison = package_descriptor.full_name_cmp(old_pkg_entry_desc, pkg_desc)
       if force_install:
-        if old_pkg_entry.checksum != pkg.metadata.checksum:
-          self.log_i('install_package: checksums changed: %s old=%s new=%s' % (pkg_desc.name, old_pkg_entry.checksum, pkg.metadata.checksum))
+        if self._file_checksums_changed(old_pkg_entry, pkg):
           comparison = -1
       if comparison == 0:
         self.log_i('install_package: no change needed: %s' % (pkg_desc.name))
@@ -241,6 +241,30 @@ class package_manager(object):
       self.install_tarball(pkg.tarball, hardness)
       return True
 
+  @classmethod
+  def _file_checksums_changed(clazz, old_pkg_entry, new_pkg):
+    check.check_package_db_entry(old_pkg_entry)
+    check.check_package(new_pkg)
+
+    old_desc = old_pkg_entry.descriptor
+
+    old_files_checksums = old_pkg_entry.files.files_checksum
+    new_files_checksums = new_pkg.metadata.files.files_checksum
+    files_checksums_changed = old_files_checksums != new_files_checksums
+    if files_checksums_changed:
+      clazz.log_i('install_package: files changed: %s old=%s new=%s' % (old_desc.name,
+                                                                        old_files_checksums,
+                                                                        new_files_checksums))
+
+    old_env_files_checksums = old_pkg_entry.files.env_files_checksum
+    new_env_files_checksums = new_pkg.metadata.files.env_files_checksum
+    env_files_checksums_changed = old_env_files_checksums != new_env_files_checksums
+    if env_files_checksums_changed:
+      clazz.log_i('install_package: env files changed: %s old=%s new=%s' % (old_desc.name,
+                                                                            old_env_files_checksums,
+                                                                            new_env_files_checksums))
+    return files_checksums_changed or env_files_checksums_changed
+      
   def install_packages(self, packages, build_target, hardness, allow_downgrade = False, force_install = False):
     check.check_package_descriptor_seq(packages)
     

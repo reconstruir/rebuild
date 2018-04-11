@@ -10,11 +10,21 @@ from rebuild.package.db_error import *
 from rebuild.package import artifact_descriptor as AD
 from rebuild.package.package_metadata import package_metadata as PM
 from bes.debug import debug_timer
+from rebuild.package import package_files
 
 class test_artifact_db(unit_test):
 
-  TEST_FILES = FCL([ ( 'lib/libfoo.a', 'c1' ), ( 'include/libfoo.h', 'c2' ) ])
-  TEST_FILES.sort()
+  TEST_FILES = package_files(FCL(
+    [
+      ( 'f1', 'fchk1' ),
+      ( 'f2', 'fchk2' ),
+    ]),
+    FCL([
+      ( 'e1', 'echk1' ),
+      ( 'e2', 'echk2' ),
+    ]),
+    'files_chk',
+    'env_files_chk')
 
   DEBUG = unit_test.DEBUG
   #DEBUG = True

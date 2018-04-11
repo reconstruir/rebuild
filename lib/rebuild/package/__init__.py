@@ -10,5 +10,6 @@ from .package_list import package_list
 from .package_manager import PackageFilesConflictError, PackageMissingRequirementsError
 from .package_manager import package_manager
 from .package_metadata import package_metadata
+from .package_files import package_files
 from .package_tester import package_tester
 

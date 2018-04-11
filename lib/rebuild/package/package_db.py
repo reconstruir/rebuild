@@ -6,6 +6,7 @@ from bes.sqlite import sqlite
 from rebuild.base import build_version, package_descriptor, package_descriptor_list
 
 from .package_db_entry import package_db_entry
+from .package_files import package_files
 from .files_db import files_db
 from .util import util
 from .db_error import *
@@ -14,13 +15,14 @@ class package_db(object):
 
   SCHEMA_PACKAGES = '''
 create table packages(
-  name            text primary key not null, 
-  version         text not null, 
-  revision        integer not null, 
-  epoch           integer not null, 
-  requirements    text,
-  properties      text,
-  checksum        text not null
+  name                text primary key not null, 
+  version             text not null, 
+  revision            integer not null, 
+  epoch               integer not null, 
+  requirements        text,
+  properties          text,
+  files_checksum      text not null,
+  env_files_checksum  text not null
 );
 '''
   
@@ -71,11 +73,21 @@ create table {files_table_name}(
 
   def add_package(self, entry):
     check.check_package_db_entry(entry)
-    d = entry.to_sql_dict()
+    d =  {
+      'name': util.sql_encode_string(entry.name),
+      'version': util.sql_encode_string(entry.version),
+      'revision': str(entry.revision),
+      'epoch': str(entry.epoch),
+      'requirements': util.sql_encode_requirements(entry.requirements),
+      'properties': util.sql_encode_dict(entry.properties),
+      'files_checksum': util.sql_encode_string(entry.files.files_checksum),
+      'env_files_checksum': util.sql_encode_string(entry.files.env_files_checksum),
+    }
     keys = ', '.join(d.keys())
     values = ', '.join(d.values())
     self._db.execute('insert into packages(%s) values(%s)' % (keys, values))
-    self._files_db.add_table(entry.name, entry.files)
+    self._files_db.add_table(entry.name, entry.files.files)
+    self._files_db.add_table(entry.name + '_env', entry.files.env_files)
     self._db.commit()
 
   def remove_package(self, name):
@@ -84,6 +96,7 @@ create table {files_table_name}(
     t = ( name, )
     self._db.execute('delete from packages where name=?', t)
     self._files_db.remove_table(name)
+    self._files_db.remove_table(name + '_env')
     self._db.commit()
 
   def packages_with_files(self, files):
@@ -109,11 +122,14 @@ create table {files_table_name}(
       raise NotInstalledError('not installed: %s' % (name), name)
     assert(len(rows) == 1)
     row = rows[0]
+    files = package_files(self._files_db.file_checksums(name),
+                          self._files_db.file_checksums(name + '_env'),
+                          row.files_checksum,
+                          row.env_files_checksum)
     return package_db_entry(row.name,
                             row.version,
                             row.revision,
                             row.epoch,
                             util.sql_decode_requirements(row.requirements),
                             json.loads(row.properties),
-                            self._files_db.file_checksums(name),
-                            row.checksum)
+                            files)

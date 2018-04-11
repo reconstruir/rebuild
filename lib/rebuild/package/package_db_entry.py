@@ -6,22 +6,19 @@ from bes.fs import file_checksum, file_checksum_list
 from bes.common import cached_property, check, json_util, string_util
 from rebuild.base import build_version, package_descriptor, requirement_list
 from .util import util
+from .package_files import package_files
 
-class package_db_entry(namedtuple('package_db_entry', 'format_version,name,version,revision,epoch,requirements,properties,files,checksum')):
+class package_db_entry(namedtuple('package_db_entry', 'format_version,name,version,revision,epoch,requirements,properties,files')):
 
-  def __new__(clazz, name, version, revision, epoch, requirements, properties, files, checksum = None):
+  def __new__(clazz, name, version, revision, epoch, requirements, properties, files):
     check.check_string(name)
     check.check_string(version)
     check.check_int(revision)
     check.check_int(epoch)
     check.check_requirement_list(requirements)
     check.check_dict(properties)
-    files = files or file_checksum_list()
-    check.check_file_checksum_list(files)
-    if checksum:
-      check.check_string(checksum)
-    checksum = checksum or files.checksum()
-    return clazz.__bases__[0].__new__(clazz, 2, name, version, revision, epoch, requirements, properties, files, checksum)
+    check.check_package_files(files)
+    return clazz.__bases__[0].__new__(clazz, 2, name, version, revision, epoch, requirements, properties, files)
 
   def __hash__(self):
     return hash(self.to_json())
@@ -54,8 +51,7 @@ class package_db_entry(namedtuple('package_db_entry', 'format_version,name,versi
                  o['epoch'],
                  util.requirements_from_string_list(o['requirements']),
                  o['properties'],
-                 file_checksum_list.from_simple_list(o['files']),
-                 o['checksum'])
+                 package_files.parse_dict(o['files']))
   
   @classmethod
   def _parse_requirements(clazz, l):
@@ -75,21 +71,7 @@ class package_db_entry(namedtuple('package_db_entry', 'format_version,name,versi
       'epoch': self.epoch,
       'requirements': util.requirements_to_string_list(self.requirements),
       'properties': self.properties,
-      'files': self.files.to_simple_list(),
-      'checksum': self.checksum,
+      'files': self.files.to_simple_dict(),
     }
-  
-  def to_sql_dict(self):
-    'Return a dict suitable to use directly with sqlite insert commands'
-    d =  {
-      'name': util.sql_encode_string(self.name),
-      'version': util.sql_encode_string(self.version),
-      'revision': str(self.revision),
-      'epoch': str(self.epoch),
-      'requirements': util.sql_encode_requirements(self.requirements),
-      'properties': util.sql_encode_dict(self.properties),
-      'checksum': util.sql_encode_string(self.checksum),
-    }
-    return d
   
 check.register_class(package_db_entry, include_seq = False)

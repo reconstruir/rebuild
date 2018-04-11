@@ -11,8 +11,10 @@ from bes.match import matcher_filename, matcher_multiple_filename
 from bes.python import setup_tools
 from bes.system import execute
 from rebuild.base import build_target, package_descriptor
+from bes.debug import noop_debug_timer
 
 from .package_metadata import package_metadata
+from .package_files import package_files
 
 class package(object):
 
@@ -62,7 +64,7 @@ class package(object):
 
   @property
   def files(self):
-    return self.metadata.files.filenames()
+    return self.metadata.files.files.filenames()
 
   def extract_files(self, installation_dir):
     archiver.extract(self.tarball, installation_dir,
@@ -140,16 +142,33 @@ unset REBUILD_STUFF_DIR
 
   @classmethod
   def create_tarball(clazz, tarball_path, pkg_desc, build_target, stage_dir, timer = None):
+    timer = timer or noop_debug_timer()
     # Hack the export_compilation_flags_requirements property to be a plain string list instead of the masked config it is
     properties = copy.deepcopy(pkg_desc.properties)
     if 'export_compilation_flags_requirements' in properties:
       properties['export_compilation_flags_requirements'] = [ str(x) for x in properties['export_compilation_flags_requirements'] ]
+      
     files_dir = path.join(stage_dir, 'files')
-    if timer:
-      timer.start('create_tarball - find files')
+    timer.start('create_tarball - find files')
     files = file_find.find(files_dir, relative = True, file_type = file_find.FILE | file_find.LINK)
-    if timer:
-      timer.stop()
+    timer.stop()
+    timer.start('create_tarball - files checksums')
+    files_checksum_list = file_checksum_list.from_files(files, root_dir = files_dir)
+    timer.stop()
+
+    env_files_dir = path.join(stage_dir, 'env')
+    timer.start('create_tarball - find env_files')
+    if path.isdir(env_files_dir):
+      env_files = file_find.find(env_files_dir, relative = True, file_type = file_find.FILE | file_find.LINK)
+    else:
+      env_files = []
+    timer.stop()
+    timer.start('create_tarball - env_files checksums')
+    env_files_checksum_list = file_checksum_list.from_files(env_files, root_dir = env_files_dir)
+    timer.stop()
+
+    pkg_files = package_files(files_checksum_list, env_files_checksum_list)
+    
     metadata = package_metadata('',
                                 pkg_desc.name,
                                 pkg_desc.version.upstream_version,
@@ -161,7 +180,7 @@ unset REBUILD_STUFF_DIR
                                 build_target.distro or '',
                                 pkg_desc.requirements,
                                 properties,
-                                file_checksum_list.from_files(files, root_dir = files_dir))
+                                pkg_files)
     metadata_filename = path.join(stage_dir, clazz.METADATA_FILENAME)
     file_util.save(metadata_filename, content = metadata.to_json())
     clazz._create_tarball(tarball_path, stage_dir, timer)
