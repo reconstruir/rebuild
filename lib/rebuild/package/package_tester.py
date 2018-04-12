@@ -154,10 +154,12 @@ class package_tester(object):
     substitutions.update(config.script.substitutions)
     substitutions.update({ 
       'REBUILDER_TEST_NAME': test_name,
+#      'REBUILDER_TEST_FILENAME': test_source,
     })
     for kv in config.extra_env:
       shell_env[kv.key] = variable.substitute(kv.value, substitutions)
-      
+    shell_env.update(substitutions)
+
     file_replace.copy_with_substitute(test_source, test_source_with_replacements,
                                       substitutions, backup = False)
     return clazz._test_context(package.package_descriptor, shell_env, saved_env,
