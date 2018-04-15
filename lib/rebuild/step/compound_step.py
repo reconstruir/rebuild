@@ -44,7 +44,7 @@ class compound_step(step):
     for step in self.steps:
       sources.append(step.sources())
     return sources
-  
+
   def execute(self, script, env, args):
     assert self.steps
     output = {}

@@ -49,11 +49,29 @@ class step_manager(object):
     for step in steps:
       self.add_step_v2(step, script, env)
 
-  def execute(self, script, env, args):
+  @classmethod
+  def _unroll_children_steps(clazz, step, result):
+    assert isinstance(result, list)
+    if isinstance(step, compound_step):
+      for child in step.steps:
+        clazz._unroll_children_steps(child, result)
+    else:
+      result.append(step)
+      
+  def _unroll_steps(self):
+    result = []
+    for s in self._steps:
+      self._unroll_children_steps(s, result)
+    return result
+      
+  def execute(self, script, env):
     script.timer.start('step_manager.execute()')
     output = {}
+#    self._steps = self._unroll_steps()
     for s in self._steps:
-      step_args = dict_util.combine(args, s.args, output)
+      print('FUCK: step=%s' % (str(s)))
+    for s in self._steps:
+      step_args = dict_util.combine(s.args, output)
       script.timer.start('step %s' % (s.__class__.__name__))
       result = s.execute(script, env, step_args)
       script.timer.stop()

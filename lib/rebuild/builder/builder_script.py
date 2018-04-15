@@ -108,8 +108,8 @@ class builder_script(object):
   def step_list(self, args):
     return self._step_manager.step_list(args)
 
-  def execute(self, args):
-    result = self._step_manager.execute(self, self.env, args)
+  def execute(self):
+    result = self._step_manager.execute(self, self.env)
     if result.success:
       self.env.checksum_manager.save_checksums(self._current_checksums(self.env.script_manager.scripts),
                                                self.descriptor,

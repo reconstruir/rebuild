@@ -138,7 +138,7 @@ class builder(object):
           file_util.remove(script.working_dir)
         return self._run_result(self.SCRIPT_CURRENT, None)
       build_blurb.blurb('rebuild', '%s - building' % (script.descriptor.name))
-      packager_result = script.execute({})
+      packager_result = script.execute()
       if packager_result.success:
         return self._run_result(self.SCRIPT_SUCCESS, packager_result)
       else:
