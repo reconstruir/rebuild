@@ -1,0 +1,18 @@
+!rebuild.recipe!
+
+package foo-1.0.0
+
+  steps
+    step_setup
+      no_tarballs: True
+      
+    step_run_script
+      script
+#        all: ${REBUILD_SOURCE_DIR}/foo_script1.sh
+        
+#    step_run_script
+#      script
+#
+#         all: ${REBUILD_SOURCE_DIR}/foo_script2.sh
+    step_post_install
+      skip_binary_third_party_prefix: True

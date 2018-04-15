@@ -307,3 +307,4 @@ class step(with_metaclass(step_register_meta, object)):
   def _env_substitite(clazz, env):
     for key in sorted(env.keys()):
       env[key] = variable.substitute(str(env[key]), env)
+      

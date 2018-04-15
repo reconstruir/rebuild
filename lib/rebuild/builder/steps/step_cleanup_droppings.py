@@ -12,6 +12,9 @@ class step_cleanup_droppings(step):
     super(step_cleanup_droppings, self).__init__()
 
   def execute(self, script, env, args):
+    if not script.has_staged_files_dir():
+      return step_result(True, script.format_message('No droppings to cleanup in {staged_files_dir}'))
+    
     droppings = file_find.find_fnmatch(script.staged_files_dir,
                                        [ '*.bak' ],
                                        relative = False)

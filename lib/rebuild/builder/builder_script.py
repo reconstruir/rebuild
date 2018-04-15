@@ -4,7 +4,7 @@
 import copy, os.path as path
 from collections import namedtuple
 
-from bes.common import algorithm, check, variable, type_checked_list
+from bes.common import algorithm, check, string_util, type_checked_list, variable
 from bes.fs import file_checksum_list, file_util
 from bes.system import log
 from bes.debug import debug_timer
@@ -205,3 +205,28 @@ class builder_script(object):
       return False
     except IOError as ex:
       return True
+
+  def format_message(self, message):
+    'Format a build message to be as pretty and compact as possible.'
+    format_vars = {
+      'staged_files_dir': self.staged_files_dir,
+      'stage_dir': self.stage_dir,
+    }
+    formatted_message = message.format(**format_vars)
+    replacemetns = {
+      self.working_dir: self._shorten_path(self.working_dir),
+    }
+    return string_util.replace(formatted_message, replacemetns)
+
+  def has_staged_files_dir(self):
+    return path.isdir(self.staged_files_dir)
+  
+  def has_stage_dir(self):
+    return path.isdir(self.stage_dir)
+
+  @classmethod
+  def _shorten_path(clazz, p):
+    relp = path.relpath(p)
+    if relp.startswith('..'):
+      return p
+    return relp

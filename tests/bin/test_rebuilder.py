@@ -112,7 +112,12 @@ print("hook1 hook2")
 print("hook1 hook2")
 '''
 #    self.assertMultiLineEqual( expected, test.artifacts_contents['foo-1.0.0.tar.gz']['files/bin/foo.py'] )
-    
+
+  def xtest_run_script(self):
+    test = self._run_test(False, 'run_script', 'foo')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'foo-1.0.0.tar.gz' ], test.artifacts )
+
   def _make_temp_dir(self):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     if self.DEBUG:

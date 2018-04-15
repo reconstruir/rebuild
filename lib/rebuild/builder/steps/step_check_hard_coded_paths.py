@@ -12,6 +12,9 @@ class step_check_hard_coded_paths(step):
     super(step_check_hard_coded_paths, self).__init__()
 
   def execute(self, script, env, args):
+    if not script.has_staged_files_dir():
+      return step_result(True, 'No files to check in %s' % (path.relpath(script.staged_files_dir)))
+    
     replacements = {
       script.staged_files_dir: '${REBUILD_PACKAGE_PREFIX}',
       script.requirements_manager.installation_dir: '${REBUILD_PACKAGE_PREFIX}',

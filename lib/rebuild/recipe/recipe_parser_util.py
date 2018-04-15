@@ -113,22 +113,22 @@ class recipe_parser_util(object):
     for filename in filenames:
       filename_abs = path.join(base, filename)
       if not path.isfile(filename_abs):
-        raise RuntimeError('not found: %s' % (filename_abs))
+        raise RuntimeError('file for file_list not found: %s' % (filename_abs))
       result.append(recipe_file(filename_abs))
     return result
 
   @classmethod
   def _parse_file(clazz, value, base):
     filename_abs = path.join(base, value)
-    if not path.isfile(filename_abs):
-      raise RuntimeError('not found: %s' % (filename_abs))
+#    if not path.isfile(filename_abs):
+#      raise RuntimeError('file not found: %s' % (filename_abs))
     return recipe_file(filename_abs)
 
   @classmethod
   def _parse_dir(clazz, value, base):
     filename_abs = path.join(base, value)
     if not path.isdir(filename_abs):
-      raise RuntimeError('not found: %s' % (filename_abs))
+      raise RuntimeError('dir not found: %s' % (filename_abs))
     return recipe_file(filename_abs)
 
   @classmethod
