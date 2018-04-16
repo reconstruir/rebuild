@@ -50,8 +50,8 @@ class step_autoconf_configure(step):
     else:
       cmd = configure_cmd
 
-    return self.call_shell(cmd, script, env, args,
-                           extra_env = configure_env,
+    return self.call_shell(cmd, script, env,
+                           shell_env = configure_env,
                            save_logs = [ 'config.log', 'config.status' ])
 
 class step_autoconf_pre_configure_hooks(step):

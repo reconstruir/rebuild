@@ -44,7 +44,7 @@ class step_python_egg_build(step):
       v2.save_file(filename)
     flags = ' '.join(shell_flags)
     cmd = '${PYTHON} %s bdist_egg --plat-name=${REBUILD_PYTHON_PLATFORM_NAME} %s' % (setup_script, flags)
-    return self.call_shell(cmd, script, env, args, extra_env = shell_env, execution_dir = setup_dir)
+    return self.call_shell(cmd, script, env, shell_env = shell_env, execution_dir = setup_dir)
 
 class step_python_egg_install(step):
   'Install the egg file produced by step_bdist_egg_build.'
@@ -76,7 +76,7 @@ class step_python_egg_install(step):
     easy_install_cmd = ' '.join(easy_install_cmd_parts)
     cmd_parts = [ mkdir_cmd, easy_install_cmd ]
     cmd = ' && '.join(cmd_parts)
-    return self.call_shell(cmd, script, env, args)
+    return self.call_shell(cmd, script, env)
 
 class step_python_egg_check_downloaded_dependencies(step):
   'Check that the egg build and install process does not Install the egg file produced by step_python_egg_build.'

@@ -24,7 +24,7 @@ class step_python_lib_build(step):
     python_lib_build_flags = values.get('python_lib_build_flags')
 
     cmd = '${PYTHON} setup.py build %s' % (' '.join(python_lib_build_flags))
-    return self.call_shell(cmd, script, env, args, extra_env = python_lib_build_env)
+    return self.call_shell(cmd, script, env, shell_env = python_lib_build_env)
 
 class step_python_lib_install(step):
   'Install the dist produced by setuptools install.'
@@ -45,7 +45,7 @@ class step_python_lib_install(step):
     python_lib_install_flags = values.get('python_lib_install_flags')
 
     cmd = 'mkdir -p ${REBUILD_STAGE_PYTHON_LIB_DIR} && ${PYTHON} setup.py install --home=${REBUILD_STAGE_PREFIX_DIR} --install-lib=${REBUILD_STAGE_PYTHON_LIB_DIR} %s' % (' '.join(python_lib_install_flags))
-    return self.call_shell(cmd, script, env, args, extra_env = python_lib_install_env)
+    return self.call_shell(cmd, script, env, shell_env = python_lib_install_env)
 
 class step_python_lib(compound_step):
   'A complete step to make python libs using the "build" target of setuptools.'

@@ -38,7 +38,7 @@ class step_perl_module_setup(step):
     mkdir_cmd = 'mkdir -p ${REBUILD_STAGE_PYTHON_LIB_DIR}'
     perl_cmd = '${PERL} %s PREFIX=${REBUILD_STAGE_PREFIX_DIR} INSTALLDIRS=perl' % (makefile)
     cmd = '%s && %s %s' % (mkdir_cmd, perl_cmd, ' '.join(perl_module_setup_flags))
-    return self.call_shell(cmd, script, env, args, extra_env = perl_module_setup_env)
+    return self.call_shell(cmd, script, env, shell_env = perl_module_setup_env)
 
 class step_perl_module_post_install_cleanup(step):
   'Cleanup some stuff about the perl module.'

@@ -47,7 +47,7 @@ class step_make(step):
     if make_target:
       cmd += [ make_target ]
     
-    return self.call_shell(cmd, script, env, args, extra_env = make_env)
+    return self.call_shell(cmd, script, env, shell_env = make_env)
 
 class step_make_install(step):
   'make install phase of make.'
@@ -89,7 +89,7 @@ class step_make_install(step):
       'prefix=%s' % (script.staged_files_dir),
       'V=1',
     ] + make_install_flags
-    return self.call_shell(cmd, script, env, args, extra_env = make_install_env)
+    return self.call_shell(cmd, script, env, shell_env = make_install_env)
 
 class step_make_test(step):
   'make test phase of make.'
@@ -122,7 +122,7 @@ class step_make_test(step):
       'test',
       'V=1',
     ] + make_test_flags
-    return self.call_shell(cmd, script, env, args, extra_env = make_test_env)
+    return self.call_shell(cmd, script, env, shell_env = make_test_env)
 
 class step_make_caca(compound_step):
   'A simple uber step for autoconf projects.'

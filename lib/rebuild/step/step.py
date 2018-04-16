@@ -170,19 +170,19 @@ class step(with_metaclass(step_register_meta, object)):
       build_blurb.blurb_verbose('rebuild', '%s(%s): %s=%s' % (label, package_name, key, value))
   
   @classmethod
-  def call_shell(clazz, command, script, env, args, extra_env = None, save_logs = None, execution_dir = None):
+  def call_shell(clazz, command, script, env, shell_env = None, save_logs = None, execution_dir = None):
     command = execute.listify_command(command)
     command = [ part for part in command if part ]
-    extra_env = extra_env or key_value_list()
+    shell_env = shell_env or key_value_list()
     save_logs = save_logs or []
-    check.check_key_value_list(extra_env)
+    check.check_key_value_list(shell_env)
     
-    log.log_i('rebuild', 'call_shell(cmd=%s, args=%s)' % (command, args))
-    build_blurb.blurb_verbose('rebuild', 'call_shell(cmd=%s, args=%s, extra_env=%s)' % (command, args, extra_env))
+    log.log_i('rebuild', 'call_shell(command=%s)' % (command))
+    build_blurb.blurb_verbose('rebuild', 'call_shell(cmd=%s, shell_env=%s)' % (command, shell_env))
 
     env = clazz.create_command_env(script)
 
-    env.update(extra_env)
+    env.update(shell_env)
 
     clazz.env_dump(env, script.descriptor.name, 'PRE ENVIRONMENT')
 

@@ -23,4 +23,4 @@ class step_shell(step):
     cmd = values.get('cmd')
     check.check_string(cmd)
     self.log_d('step_shell.execute() cmd=%s; shell_env=%s' % (cmd, shell_env))
-    return self.call_shell(cmd, script, env, args, extra_env = shell_env)
+    return self.call_shell(cmd, script, env, shell_env = shell_env)

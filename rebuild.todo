@@ -496,7 +496,6 @@ oct26
 ''' step_setup_patch, { 'patches': [ 'libpng-zlib.patch' ] } '''
 
 oct 31
-- change call_shell() extra_env to shell_env
 - not sure System.IOS_SIM is needd might be better to get rid and just use arch
 
 nov 2

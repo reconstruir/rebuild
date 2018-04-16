@@ -33,18 +33,18 @@ class step_python_make_standalone_program(step):
     for program in standalone_programs:
       src_program = path.join(script.build_dir, program.filename)
       if src_program.lower().endswith('.py'):
-        rv = self._make_standalone_python(program, script, env, args)
+        rv = self._make_standalone_python(program, script, env)
         if not rv.success:
           return rv
       elif src_program.lower().endswith('.sh'):
-        rv = self._make_standalone_shell_script(program, script, env, args)
+        rv = self._make_standalone_shell_script(program, script, env)
         if not rv.success:
           return rv
       else:
         raise RuntimeError('Unknown standalone program type: %s' % (src_program))
     return step_result(True, None)
 
-  def _make_standalone_python(self, program, script, env, args):
+  def _make_standalone_python(self, program, script, env):
     src_basename = path.basename(program.filename)
     dst_basename = path.basename(program.dst_filename)
     if dst_basename.endswith('.py'):
@@ -59,7 +59,7 @@ class step_python_make_standalone_program(step):
     
     dst_program = path.join(script.build_dir, 'dist', dst_basename)
     cmd = 'pyinstaller --log INFO -F %s' % (tmp_src_program)
-    rv = self.call_shell(cmd, script, env, args)
+    rv = self.call_shell(cmd, script, env)
     if not rv.success:
       return rv
     if not path.isfile(dst_program):
@@ -70,7 +70,7 @@ class step_python_make_standalone_program(step):
     os.chmod(installed_program, 0o755)
     return step_result(True, None)
   
-  def _make_standalone_shell_script(self, program, script, env, args):
+  def _make_standalone_shell_script(self, program, script, env):
     src_basename = path.basename(program.filename)
     dst_basename = path.basename(program.dst_filename)
     if dst_basename.endswith('.sh'):
