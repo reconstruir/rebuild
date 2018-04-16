@@ -794,3 +794,7 @@ april 10
 april 11
 - test of package upgrade because checksums changed missing
 - unroll steps
+
+
+april 16
+- control-c when in the middle of package_tester doesnt interrupt

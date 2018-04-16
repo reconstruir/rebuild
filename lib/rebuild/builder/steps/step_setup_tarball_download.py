@@ -23,6 +23,8 @@ class step_setup_tarball_download(step):
 
   @classmethod
   def parse_step_args(clazz, script, env, values):
+    #print('FUCK: %s: parse_step_args(%s, %s)' % (clazz, script.descriptor.name, values))
+    print('FUCK: %s: parse_step_args(%s)' % (clazz, script.descriptor.name))
     tarball_address = values.get('tarball_address')
 
     if tarball_address:
