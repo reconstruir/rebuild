@@ -15,5 +15,5 @@ class step_setup_post_setup_hook(step):
     
   def execute(self, script, env, args):
     values = self.recipe.resolve_values(script.build_target.system)
-    return self.call_hooks(values.get('post_setup_hooks'), script, env, args)
+    return self.call_hooks(values.get('post_setup_hooks'), script, env)
   

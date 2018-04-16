@@ -42,7 +42,7 @@ class step_setup_unpack(step):
       extra_tarballs = extra_tarballs.to_list()
     else:
       if extra_tarballs:
-        assert isinstance(extra_tarballs, list)
+        check.check_list(extra_tarballs)
       else:
         extra_tarballs = []
 
@@ -78,7 +78,8 @@ class step_setup_unpack(step):
     if check.is_string_list(extra_tarballs):
       extra_tarballs = extra_tarballs.to_list()
     else:
-      assert isinstance(extra_tarballs, list)
+      if extra_tarballs:
+        check.check_list(extra_tarballs)
 
     if tarball_override:
       tarballs_dict = { 'tarballs': [ tarball_override.filename ] }

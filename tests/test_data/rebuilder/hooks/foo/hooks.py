@@ -4,7 +4,7 @@ from rebuild.step import hook
 
 class _test_hook1(hook):
     
-  def execute(self, script, env, args):
+  def execute(self, script, env):
     import os.path as path
     from bes.fs import file_replace
     f = path.join(script.staged_files_bin_dir, 'foo.py')
@@ -13,7 +13,7 @@ class _test_hook1(hook):
   
 class _test_hook2(hook):
     
-  def execute(self, script, env, args):
+  def execute(self, script, env):
     import os.path as path
     from bes.fs import file_replace
     f = path.join(script.staged_files_bin_dir, 'foo.py')

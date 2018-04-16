@@ -258,10 +258,10 @@ class step(with_metaclass(step_register_meta, object)):
     return file_path
 
   @classmethod
-  def call_hooks(clazz, hooks, script, env, args):
+  def call_hooks(clazz, hooks, script, env):
     check.check_hook_seq(hooks)
     for hook in hooks:
-      hook_result = hook.execute(script, env, args) 
+      hook_result = hook.execute(script, env) 
       if not isinstance(hook_result, step_result):
         raise RuntimeError('hook did not return step_result: %s' % (h))
       if not hook_result.success:

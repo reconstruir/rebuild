@@ -38,7 +38,7 @@ class hook(with_metaclass(hook_register_meta, dependency_provider)):
     return [ self.filename ]
     
   @abstractmethod
-  def execute(self, script, env, args):
+  def execute(self, script, env):
     'Execute the hook.  Same semantics as step.execute.'
     pass
   
