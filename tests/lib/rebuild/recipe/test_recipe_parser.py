@@ -466,7 +466,7 @@ package foo-1.2.3-4
       bool_value: True
 '''
 
-    r = P(text, self.data_path('test_loaded_step1.py')).parse()
+    r = P(text, self._filename_for_parser()).parse()
     self.assertEqual( 1, len(r) )
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
@@ -484,7 +484,7 @@ package foo-1.2.3-4
     step_takes_hook_list
       hook_list_value: test_loaded_hook1 test_loaded_hook2
 '''
-    r = P(text, self.data_path('test_loaded_hook1.py')).parse()
+    r = P(text, self._filename_for_parser()).parse()
     self.assertEqual( 1, len(r) )
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
@@ -525,7 +525,7 @@ package foo-1.2.3-4
     step_takes_file_list
       file_list_value: test_file1.txt test_file2.txt
 '''
-    r = P(text, self.data_path('test_file1.txt')).parse()
+    r = P(text, '<test>').parse()
     self.assertEqual( 1, len(r) )
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_file_list\n    file_list_value: test_file1.txt test_file2.txt', str(r[0].steps[0]) )
@@ -538,7 +538,7 @@ package foo-1.2.3-4
     step_takes_file
       file_value: test_file1.txt
 '''
-    r = P(text, self.data_path('test_file1.txt')).parse()
+    r = P(text, self._filename_for_parser()).parse()
     self.assertEqual( 1, len(r) )
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_file\n    file_value: test_file1.txt', str(r[0].steps[0]) )
@@ -551,7 +551,7 @@ package foo-1.2.3-4
     step_takes_file_install_list
       file_install_list_value: test_file1.txt etc/foo/f1.txt test_file2.txt etc/foo/f2.txt
 '''
-    r = P(text, self.data_path('test_file1.txt')).parse()
+    r = P(text, self._filename_for_parser()).parse()
     self.assertEqual( 1, len(r) )
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_file_install_list\n    file_install_list_value: test_file1.txt etc/foo/f1.txt test_file2.txt etc/foo/f2.txt', str(r[0].steps[0]) )
@@ -599,11 +599,14 @@ package foo-1.2.3-4
     step_takes_file_list
       file_list_value: test_file1.txt test_file2.txt
 '''
-    r = P(text, self.data_path('test_file1.txt')).parse()
+    r = P(text, self._filename_for_parser()).parse()
     self.assertEqual( 1, len(r) )
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_file_list\n    file_list_value: test_file1.txt test_file2.txt', str(r[0].steps[0]) )
 
+  def _filename_for_parser(self):
+    'Return a fake filename for parser.  Some values need it to find files relatively to filename.'
+    return self.data_path('whatever')
     
 if __name__ == '__main__':
   unit_test.main()
