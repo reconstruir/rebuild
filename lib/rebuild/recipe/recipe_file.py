@@ -12,8 +12,8 @@ class recipe_file(dependency_provider):
   def __init__(self, filename, values = None):
     'Create a new hook.'
     check.check_string(filename)
-    if values:
-      check.check_key_value_list(values)
+    values = values or key_value_list()
+    check.check_key_value_list(values)
     self.filename = filename
     self.values = values
 

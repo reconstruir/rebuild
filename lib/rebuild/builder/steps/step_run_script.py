@@ -27,4 +27,6 @@ class step_run_script(step):
       self.log_d(message)
       return step_result(True, message)
 
+    script_env.extend(script_file.values)
+    
     return self.call_shell(path.abspath(script_file.filename), script, env, shell_env = script_env)
