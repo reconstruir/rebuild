@@ -59,6 +59,7 @@ class step_setup_unpack(step):
       return step_result(True, None, output = { 'tarballs': tarballs })
     
     self._extract(tarballs, script.working_dir, 'source', True)
+    
     return step_result(True, None, output = { 'tarballs': tarballs })
 
   def sources_keys(self):
@@ -66,8 +67,6 @@ class step_setup_unpack(step):
 
   @classmethod
   def parse_step_args(clazz, script, env, values):
-    #print('FUCK: %s: parse_step_args(%s, %s)' % (clazz, script.descriptor.name, values))
-    print('FUCK: %s: parse_step_args(%s)' % (clazz, script.descriptor.name))
     tarball_name = values.get('tarball_name')
     tarball_source_dir_override = values.get('tarball_source_dir_override')
     tarball_override = values.get('tarball_override')
