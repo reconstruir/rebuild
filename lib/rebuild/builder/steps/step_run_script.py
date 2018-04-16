@@ -21,12 +21,10 @@ class step_run_script(step):
     values = self.recipe.resolve_values(env.config.build_target.system)
     script_file = values.get('script')
     script_env = values.get('script_env')
-    print('script_file: %s - %s' % (script_file, type(script_file)))
-    print(' script_env: %s - %s' % (script_env, type(script_env)))
       
     if not script_file:
       message = 'No script for %s' % (script.descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
 
-    return step_result(True, '') #exit_code == 0, msg)
+    return self.call_shell(path.abspath(script_file.filename), script, env, shell_env = script_env)

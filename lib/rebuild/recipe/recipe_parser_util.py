@@ -120,8 +120,8 @@ class recipe_parser_util(object):
   @classmethod
   def _parse_file(clazz, value, base):
     filename_abs = path.join(base, value)
-#    if not path.isfile(filename_abs):
-#      raise RuntimeError('file not found: %s' % (filename_abs))
+    if not path.isfile(filename_abs):
+      raise RuntimeError('file not found: %s' % (filename_abs))
     return recipe_file(filename_abs)
 
   @classmethod
