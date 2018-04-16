@@ -3,16 +3,27 @@
 
 import os.path as path
 from bes.common import check, type_checked_list
+from bes.compat import StringIO
+from bes.key_value import key_value_list
 from bes.dependency import dependency_provider
 
 class recipe_file(dependency_provider):
 
-  def __init__(self, filename):
+  def __init__(self, filename, values = None):
     'Create a new hook.'
+    check.check_string(filename)
+    if values:
+      check.check_key_value_list(values)
     self.filename = filename
+    self.values = values
 
   def value_to_string(self):
-    return path.basename(self.filename)
+    buf = StringIO()
+    buf.write(path.basename(self.filename))
+    if self.values:
+      buf.write(' ')
+      buf.write(self.values.to_string(value_delimiter = ' ', quote = True))
+    return buf.getvalue()
     
   def provided(self):
     'Return a list of dependencies provided by this provider.'

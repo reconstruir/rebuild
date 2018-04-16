@@ -8,11 +8,11 @@ package foo-1.0.0
       
     step_run_script
       script
-        all: foo_script1.sh
+        all: foo_script1.sh FOO_VAR=\"this the foo1\"
         
     step_run_script
       script
-        all: foo_script2.sh
+        all: foo_script2.sh FOO_VAR=\"this the foo2\"
         
     step_post_install
       skip_binary_third_party_prefix: True

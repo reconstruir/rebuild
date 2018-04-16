@@ -543,6 +543,19 @@ package foo-1.2.3-4
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_file\n    file_value: test_file1.txt', str(r[0].steps[0]) )
 
+  def test_step_value_file_with_values(self):
+    text = '''!rebuild.recipe!
+package foo-1.2.3-4
+
+  steps
+    step_takes_file
+      file_value: test_file1.txt foo=1 bar=2 baz=\"hello kiwi\"
+'''
+    r = P(text, self._filename_for_parser()).parse()
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 1, len(r[0].steps) )
+    self.assertMultiLineEqual( 'step_takes_file\n    file_value: test_file1.txt foo=1 bar=2 baz=\"hello kiwi\"', str(r[0].steps[0]) )
+
   def test_step_value_file_install_list(self):
     text = '''!rebuild.recipe!
 package foo-1.2.3-4

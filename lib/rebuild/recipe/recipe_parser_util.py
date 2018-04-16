@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common import bool_util, check, object_util
+from bes.common import bool_util, check, object_util, string_util
 from bes.key_value import key_value, key_value_list
 from rebuild.step import hook_registry
 from rebuild.value import value_type
@@ -119,10 +119,12 @@ class recipe_parser_util(object):
 
   @classmethod
   def _parse_file(clazz, value, base):
-    filename_abs = path.join(base, value)
+    filename, _, rest = string_util.partition_by_white_space(value)
+    filename_abs = path.join(base, filename)
     if not path.isfile(filename_abs):
       raise RuntimeError('file not found: %s' % (filename_abs))
-    return recipe_file(filename_abs)
+    values = key_value_list.parse(rest, options = key_value_list.KEEP_QUOTES)
+    return recipe_file(filename_abs, values)
 
   @classmethod
   def _parse_dir(clazz, value, base):
