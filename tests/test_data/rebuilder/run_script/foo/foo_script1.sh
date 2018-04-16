@@ -1,5 +1,8 @@
+#!/bin/bash
 
-export REBUILD_ENV1_VAR1=kiwi
-export REBUILD_ENV1_VAR2=almond
-export REBUILD_FOO_ROOT=${REBUILD_PACKAGE_PREFIX}
-
+mkdir -p ${REBUILD_STAGE_PREFIX_DIR}/bin
+cat << EOF > ${REBUILD_STAGE_PREFIX_DIR}/bin/foo1.sh
+#!/bin/bash
+echo this is foo1.
+EOF
+chmod 755 ${REBUILD_STAGE_PREFIX_DIR}/bin/foo1.sh
