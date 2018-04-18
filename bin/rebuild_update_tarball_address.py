@@ -23,7 +23,7 @@ def main():
         return 0
       replacements = { old_revision: new_revision }
       print('%s: update %s -> %s' % (filename, old_revision, new_revision))
-      file_replace.replace(filename, replacements, backup = True, word_boundary = True)
+      file_replace.replace(filename, replacements, backup = False, word_boundary = True)
   return 0
 
 main()
