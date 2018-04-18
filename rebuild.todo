@@ -818,5 +818,9 @@ steps that use th args argument in execute:
 step_artifact_create_check_package might need to be retired
 egg check is either commented out or broken
 
-april 17
 makefile in step_make might not work
+
+2018-04-17
+ - add check for home directory droppings before and after a build to make sure tools are not crapping stuff there
+ - warnings in setup.sh when env dir exists but is empty
+ 
