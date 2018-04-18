@@ -6,7 +6,7 @@ from collections import namedtuple
 from bes.common import check, node
 from bes.text import white_space
 
-class recipe(namedtuple('recipe', 'format_version,filename,enabled,properties,requirements,descriptor,instructions,steps,load,env_vars')):
+class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties, requirements, descriptor, instructions, steps, load, env_vars')):
 
   CHECK_UNKNOWN_PROPERTIES = True
   
