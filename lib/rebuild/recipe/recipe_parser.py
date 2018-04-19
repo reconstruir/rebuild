@@ -85,10 +85,11 @@ class recipe_parser(object):
       if text.startswith('properties'):
         properties = self._parse_properties(child)
       elif text.startswith('requirements'):
-        caca_reqs = self._parse_requirements(child)
-        requirements.extend(caca_reqs)
+        requirements.extend(self._parse_requirements(child))
       elif text.startswith('steps'):
         steps = self._parse_steps(child)
+      elif text.startswith('source'):
+        steps = self._parse_source(child)
       elif text.startswith('enabled'):
         enabled = self._parse_enabled(child)
       elif text.startswith('load'):
@@ -109,9 +110,7 @@ class recipe_parser(object):
       d = poto1.to_dict()
       d.update(poto2.to_dict())
       properties['env_vars'] = d
-    desc = package_descriptor(name, version,
-                              requirements = requirements,
-                              properties = properties)
+    desc = package_descriptor(name, version, requirements = requirements, properties = properties)
     return recipe(2, self.filename, enabled, properties, requirements,
                   desc, instructions, steps, load, env_vars)
 
@@ -146,7 +145,17 @@ class recipe_parser(object):
         properties.update(values)
       except RuntimeError as ex:
         self._error('error parsing properties: %s' % (property_text), node)
-  
+    return properties
+
+  def _parse_source(self, node):
+    properties = {}
+    for child in node.children:
+      property_text = tree_text_parser.node_text_flat(child)
+      try:
+        values = key_value_parser.parse_to_dict(property_text, options = key_value_parser.KEEP_QUOTES)
+        properties.update(values)
+      except RuntimeError as ex:
+        self._error('error parsing properties: %s' % (property_text), node)
     return properties
   
   def _parse_requirements(self, node):
