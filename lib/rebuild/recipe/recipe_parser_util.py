@@ -51,7 +51,7 @@ class recipe_parser_util(object):
     elif arg_type == value_type.HOOK_LIST:
       return clazz._parse_hook_list(value)
     elif arg_type == value_type.FILE_LIST:
-      return clazz._parse_file_list(value, path.dirname(filename))
+      return recipe_file_list.parse(value, filename)
     elif arg_type == value_type.FILE:
       return recipe_file.parse(value, filename)
     elif arg_type == value_type.DIR:
@@ -105,17 +105,6 @@ class recipe_parser_util(object):
       hook = hook_class()
       hooks.append(hook)
     return hooks
-
-  @classmethod
-  def _parse_file_list(clazz, value, base):
-    result = recipe_file_list()
-    filenames = clazz._parse_string_list(value)
-    for filename in filenames:
-      filename_abs = path.join(base, filename)
-      if not path.isfile(filename_abs):
-        raise RuntimeError('file for file_list not found: %s' % (filename_abs))
-      result.append(recipe_file(filename_abs))
-    return result
 
   @classmethod
   def _parse_dir(clazz, value, base):

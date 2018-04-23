@@ -6,6 +6,7 @@ from bes.common import check, string_util, type_checked_list
 from bes.compat import StringIO
 from bes.key_value import key_value_list
 from bes.dependency import dependency_provider
+from bes.text import string_list
 
 class recipe_file(dependency_provider):
 
@@ -47,5 +48,14 @@ class recipe_file_list(type_checked_list):
   def __str__(self):
     return self.to_string()
 
+  @classmethod
+  def parse(clazz, value, recipe_filename):
+    result = clazz()
+    filenames = string_list.parse(value, options = string_list.KEEP_QUOTES)
+    for filename in filenames:
+      rf = recipe_file.parse(filename, recipe_filename)
+      result.append(recipe_file.parse(filename, recipe_filename))
+    return result
+  
 check.register_class(recipe_file, include_seq = False)
 check.register_class(recipe_file_list, include_seq = False)
