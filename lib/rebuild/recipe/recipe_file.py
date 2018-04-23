@@ -18,6 +18,9 @@ class recipe_file(dependency_provider):
     self.filename = filename
     self.values = values
 
+  def __str__(self):
+    return self.value_to_string()
+    
   def value_to_string(self):
     buf = StringIO()
     buf.write(path.basename(self.filename))
@@ -46,7 +49,7 @@ class recipe_file_list(type_checked_list, dependency_provider):
     super(recipe_file_list, self).__init__(recipe_file, values = values)
 
   def __str__(self):
-    return self.to_string()
+    return ' '.join([ h.value_to_string() for h in iter(self) ])
 
   @classmethod
   def parse(clazz, value, recipe_filename):

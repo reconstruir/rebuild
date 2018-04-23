@@ -4,6 +4,7 @@
 from bes.common import algorithm, check, type_checked_list
 from bes.compat import StringIO
 from rebuild.base import build_system
+from rebuild.step import hook_list
 from bes.key_value import key_value, key_value_list
 from bes.text import string_list
 from .recipe_file import recipe_file_list
@@ -79,7 +80,7 @@ class masked_value_list(object):
       return self._resolve_typed_list(values, recipe_file_list)
     elif check.is_recipe_install_file_list(values[0]):
       return self._resolve_typed_list(values, recipe_install_file_list)
-    elif check.is_hook_seq(values[0]):
+    elif check.is_hook_list(values[0]):
       return self._resolve_hook_list(values)
     elif check.is_recipe_file(values[0]):
       return values[-1]
@@ -133,9 +134,9 @@ class masked_value_list(object):
     return result
 
   def _resolve_hook_list(self, values):
-    result = []
+    result = hook_list()
     for value in values:
-      check.check_hook_seq(value)
+      check.check_hook_list(value)
       result.extend(value)
     return result
   

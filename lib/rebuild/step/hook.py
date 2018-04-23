@@ -5,6 +5,8 @@ from abc import ABCMeta, abstractmethod
 from bes.system.compat import with_metaclass
 from bes.common import check, type_checked_list
 from bes.dependency import dependency_provider
+from bes.text import string_list
+
 from .hook_registry import hook_registry
 from .step_result import step_result
 
@@ -23,6 +25,9 @@ class hook(with_metaclass(hook_register_meta, dependency_provider)):
     'Create a new hook.'
     pass
 
+  def __str__(self):
+    return self.value_to_string()
+  
   def value_to_string(self):
     return self.__class__.__name__
     
@@ -48,17 +53,20 @@ class hook_list(type_checked_list, dependency_provider):
     super(hook_list, self).__init__(hook, values = values)
 
   def __str__(self):
-    return self.to_string()
+    return ' '.join([ h.value_to_string() for h in iter(self) ])
 
   @classmethod
-  def parse(clazz, value, hookname):
+  def parse(clazz, value):
     result = clazz()
-    filenames = string_list.parse(value, options = string_list.KEEP_QUOTES)
-    for filename in filenames:
-      rf = hook.parse(filename, hookname)
-      result.append(hook.parse(filename, hookname))
+    names = string_list.parse(value, options = string_list.KEEP_QUOTES)
+    for name in names:
+      hook_class = hook_registry.get(name)
+      if not hook_class:
+        raise RuntimeError('hook class not found: %s' % (name))
+      hook = hook_class()
+      result.append(hook)
     return result
-
+  
   def provided(self):
     'Return a list of dependencies provided by this provider.'
     result = []
@@ -66,6 +74,5 @@ class hook_list(type_checked_list, dependency_provider):
       result.extend(value.provided())
     return result
 
-#check.register_class(hook, include_seq = False)
-#check.register_class(hook_list, include_seq = False)
-check.register_class(hook)
+check.register_class(hook, include_seq = False)
+check.register_class(hook_list, include_seq = False)

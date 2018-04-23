@@ -259,7 +259,7 @@ class step(with_metaclass(step_register_meta, object)):
 
   @classmethod
   def call_hooks(clazz, hooks, script, env):
-    check.check_hook_seq(hooks)
+    check.check_hook_list(hooks)
     for hook in hooks:
       hook_result = hook.execute(script, env) 
       if not isinstance(hook_result, step_result):

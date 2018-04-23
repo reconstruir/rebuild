@@ -4,8 +4,8 @@
 import os.path as path
 from bes.common import bool_util, check, object_util, string_util
 from bes.key_value import key_value, key_value_list
-from rebuild.step import hook_registry
 from rebuild.value import value_type
+from rebuild.step import hook_list
 from bes.text import comments, string_list
 from .recipe_file import recipe_file, recipe_file_list
 from .recipe_install_file import recipe_install_file, recipe_install_file_list
@@ -49,7 +49,7 @@ class recipe_parser_util(object):
     elif arg_type == value_type.STRING:
       return value
     elif arg_type == value_type.HOOK_LIST:
-      return clazz._parse_hook_list(value)
+      return hook_list.parse(value)
     elif arg_type == value_type.FILE_LIST:
       return recipe_file_list.parse(value, filename)
     elif arg_type == value_type.FILE:
@@ -77,7 +77,7 @@ class recipe_parser_util(object):
     elif arg_type == value_type.STRING:
       return None
     elif arg_type == value_type.HOOK_LIST:
-      return []
+      return hook_list()
     elif arg_type == value_type.FILE_LIST:
       return recipe_file_list()
     elif arg_type == value_type.FILE:
@@ -93,18 +93,6 @@ class recipe_parser_util(object):
     if not value:
       return []
     return string_list.parse(value, options = string_list.KEEP_QUOTES)
-
-  @classmethod
-  def _parse_hook_list(clazz, value):
-    hooks = []
-    names = clazz._parse_string_list(value)
-    for name in names:
-      hook_class = hook_registry.get(name)
-      if not hook_class:
-        raise RuntimeError('hook class not found: %s' % (name))
-      hook = hook_class()
-      hooks.append(hook)
-    return hooks
 
   @classmethod
   def _parse_dir(clazz, value, base):
