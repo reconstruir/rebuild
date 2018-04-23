@@ -148,15 +148,16 @@ class recipe_parser(object):
     return properties
 
   def _parse_source(self, node):
-    properties = {}
+    source = {}
     for child in node.children:
-      property_text = tree_text_parser.node_text_flat(child)
-      try:
-        values = key_value_parser.parse_to_dict(property_text, options = key_value_parser.KEEP_QUOTES)
-        properties.update(values)
-      except RuntimeError as ex:
-        self._error('error parsing properties: %s' % (property_text), node)
-    return properties
+#      property_text = tree_text_parser.node_text_flat(child)
+      print('FUCK: child: %s' % (child))
+#      try:
+#        values = key_value_parser.parse_to_dict(property_text, options = key_value_parser.KEEP_QUOTES)
+#        source.update(values)
+#      except RuntimeError as ex:
+#        self._error('error parsing source: %s' % (property_text), node)
+    return source
   
   def _parse_requirements(self, node):
     reqs = []

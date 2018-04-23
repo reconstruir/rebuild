@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common import check, type_checked_list
+from bes.common import check, string_util, type_checked_list
 from bes.compat import StringIO
 from bes.key_value import key_value_list
 from bes.dependency import dependency_provider
@@ -29,6 +29,16 @@ class recipe_file(dependency_provider):
     'Return a list of dependencies provided by this provider.'
     return [ self.filename ]
 
+  @classmethod
+  def parse(clazz, value, recipe_filename):
+    base = path.dirname(recipe_filename)
+    filename, _, rest = string_util.partition_by_white_space(value)
+    filename_abs = path.join(base, filename)
+    if not path.isfile(filename_abs):
+      raise RuntimeError('file not found: %s' % (filename_abs))
+    values = key_value_list.parse(rest, options = key_value_list.KEEP_QUOTES)
+    return recipe_file(filename_abs, values)
+  
 class recipe_file_list(type_checked_list):
 
   def __init__(self, values = None):
