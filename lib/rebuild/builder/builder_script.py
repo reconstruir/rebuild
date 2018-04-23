@@ -136,6 +136,7 @@ class builder_script(object):
           else:
             sources.extend(caca)
       for k, v in args.items():
+        print('checking %s=%s' % (k, str(v)))
         sources.extend(dependency_provider.determine_provided(v))
     sources.append(self.filename)
     caca_sources = []

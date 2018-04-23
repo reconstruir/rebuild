@@ -40,7 +40,7 @@ class recipe_file(dependency_provider):
     values = key_value_list.parse(rest, options = key_value_list.KEEP_QUOTES)
     return recipe_file(filename_abs, values)
   
-class recipe_file_list(type_checked_list):
+class recipe_file_list(type_checked_list, dependency_provider):
 
   def __init__(self, values = None):
     super(recipe_file_list, self).__init__(recipe_file, values = values)
@@ -55,6 +55,13 @@ class recipe_file_list(type_checked_list):
     for filename in filenames:
       rf = recipe_file.parse(filename, recipe_filename)
       result.append(recipe_file.parse(filename, recipe_filename))
+    return result
+
+  def provided(self):
+    'Return a list of dependencies provided by this provider.'
+    result = []
+    for value in iter(self):
+      result.extend(value.provided())
     return result
   
 check.register_class(recipe_file, include_seq = False)
