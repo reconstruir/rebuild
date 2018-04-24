@@ -46,6 +46,7 @@ class builder_cli(object):
     self.parser.add_argument('-l', '--level', action = 'store', type = str, default = build_target.DEFAULT, help = 'Build level.  One of (%s) [ %s ]' % (build_levels, build_level.DEFAULT_LEVEL))
     self.parser.add_argument('--skip-to-step', action = 'store', type = str, help = 'Skip to the given step name. [ None ]')
     self.parser.add_argument('--deps-only', action = 'store_true', help = 'Only build dependencies')
+    self.parser.add_argument('--recipes-only', action = 'store_true', help = 'Only read the recipes dont build them.')
     self.parser.add_argument('--no-network', action = 'store_true', help = 'Down go to the network.')
     self.parser.add_argument('--skip-tests', action = 'store_true', help = 'Skip the tests part of the build.')
     self.parser.add_argument('--scratch', action = 'store_true', help = 'Start from scratch by deleting existing data.')
@@ -115,6 +116,7 @@ class builder_cli(object):
                                        opts.get('build_level', build_target.DEFAULT),
                                        opts.get('archs', build_target.DEFAULT))
     config.deps_only = args.deps_only
+    config.recipes_only = args.recipes_only
     config.disabled = args.disabled
     config.keep_going = args.keep_going
     config.no_checksums = args.no_checksums
@@ -146,6 +148,9 @@ class builder_cli(object):
       build_blurb.blurb('rebuild', ' '.join(bldr.package_names()), fit = True)
       return 1
 
+    if config.recipes_only:
+      return bldr.EXIT_CODE_SUCCESS
+    
     return bldr.build_many_scripts(resolved_args.package_names)
 
   @classmethod

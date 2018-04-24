@@ -151,7 +151,6 @@ class builder(object):
     return self._run_result(self.SCRIPT_FAILED, None)
   
   def build_many_scripts(self, package_names):
-
 #    for name, script in self._env.script_manager.scripts.items():
 #      self._env.checksum_manager.set_sources(script.descriptor.full_name, script.sources)
 #    self._env.checksum_manager.print_sources()

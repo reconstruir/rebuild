@@ -21,6 +21,7 @@ class builder_config(object):
                                           archs = build_arch.DEFAULT_HOST_ARCHS)
     self.root_dir = None
     self.deps_only = False
+    self.recipes_only = False
     self.disabled = False
     self.keep_going = False
     self.no_checksums = False
