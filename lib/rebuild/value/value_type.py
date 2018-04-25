@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.enum import enum
@@ -17,6 +16,7 @@ class value_type(enum):
   KEY_VALUES = 8
   STRING = 9
   STRING_LIST = 10
+  GIT_ADDRESS = 11
     
   DEFAULT = STRING
 

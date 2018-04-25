@@ -80,7 +80,5 @@ class builder_script_manager(object):
   def _load_scripts(clazz, filename, build_target, env):
     scripts = []
     recipes = builder_recipe_loader.load(filename)
-#    import pickle
-#    x = pickle.dumps(recipes)
     scripts = [ builder_script(recipe, build_target, env) for recipe in recipes ]
     return scripts
