@@ -3,17 +3,14 @@
 from bes.common import check, string_util
 from bes.compat import StringIO
 from bes.dependency import dependency_provider
+from .recipe_caca import recipe_caca
 
-class value_git_address(dependency_provider):
+class value_git_address(recipe_caca):
 
-  # Needs to be set for parse to work
-  download_manager = None
-  
-  def __init__(self, download_manager, address, revision):
-    assert download_manager
+  def __init__(self, env, address, revision):
+    super(value_git_address, self).__init__(env)
     check.check_string(address)
     check.check_string(revision)
-    self._download_manager = download_manager
     self.address = address
     self.revision = revision
 
@@ -26,16 +23,18 @@ class value_git_address(dependency_provider):
     buf.write(',')
     buf.write(self.revision)
     return buf.getvalue()
-    
-  def provided(self):
-    'Return a list of dependencies provided by this provider.'
-    return [ self._download_manager.tarball_path(self.address, self.revision) ]
 
-  @classmethod
-  def parse(clazz, value):
+  #@abstractmethod
+  def sources(self):
+    'Return a list of sources this caca provides or None if no sources.'
+    return [ self.env.download_manager.tarball_path(self.address, self.revision) ]
+
+  #@classmethod
+  #@abstractmethod
+  def parse(clazz, env, recipe_filename, value):
     parts = string_util.split_by_white_space(value)
     if len(parts) != 2:
       raise ValueError('expected address and tag instead of: %s' % (value))
-    return clazz(self.download_manager, parts[0], parts[1])
+    return clazz(env, parts[0], parts[1])
   
 check.register_class(value_git_address, include_seq = False)
