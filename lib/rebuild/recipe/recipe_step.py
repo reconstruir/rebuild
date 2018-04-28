@@ -35,7 +35,7 @@ class recipe_step(namedtuple('recipe_step', 'name,description,values')):
     return buf.getvalue().strip()
 
   def resolve_values(self, env):
-    check.check_value_env(env)
+    check.check_recipe_load_env(env)
     result = {}
     for value in self.values:
       result.update({ value.key: value.resolve(env.build_target.system) })

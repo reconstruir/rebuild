@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from rebuild.recipe import masked_value as V, masked_value_list as VL, value_env
+from rebuild.recipe import masked_value as V, masked_value_list as VL, recipe_load_env
 from rebuild.base import build_system
 from rebuild.value import value_type
 
@@ -37,7 +37,7 @@ class test_masked_value_list(unit_test):
     r.append(self._key_values('linux: a=55'))
     self.assertEqual( [ ( 'a', '55' ), ( 'b', '"x y"' ), ( 'l', '7' ) ], r.resolve(build_system.LINUX) )
 
-  TEST_ENV = value_env(None, None)
+  TEST_ENV = recipe_load_env(None, None)
     
   @classmethod
   def _int(clazz, s):

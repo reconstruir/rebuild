@@ -3,7 +3,7 @@
 
 import inspect, os.path as path
 from bes.testing.unit_test import unit_test
-from rebuild.recipe import recipe, recipe_parser as P, recipe_parser_error as ERR, recipe_step as RS, value_env
+from rebuild.recipe import recipe, recipe_parser as P, recipe_parser_error as ERR, recipe_step as RS, recipe_load_env
 from rebuild.step import compound_step, step, step_result
 from bes.key_value import key_value as KV, key_value_list as KVL
 from bes.fs import file_util, temp_file
@@ -13,7 +13,7 @@ class test_recipe_parser(unit_test):
 
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/recipe_parser'
 
-  TEST_ENV = value_env(None, None)
+  TEST_ENV = recipe_load_env(None, None)
   
   @classmethod
   def _parse(self, text, starting_line_number = 0):

@@ -7,7 +7,7 @@ from bes.common import check
 class recipe_caca(with_metaclass(ABCMeta, object)):
   
   def __init__(self, env):
-    check.check_value_env(env)
+    check.check_recipe_load_env(env)
     self.env = env
   
   @abstractmethod

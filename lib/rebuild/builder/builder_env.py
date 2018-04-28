@@ -11,7 +11,7 @@ from rebuild.package import artifact_manager
 from rebuild.base import package_descriptor, requirement_manager
 from bes.git import git_download_cache, git_util
 from rebuild.source_finder import repo_source_finder, local_source_finder, source_finder_chain
-from rebuild.recipe import value_env
+from rebuild.recipe import recipe_load_env
 from .builder_script_manager import builder_script_manager
 
 class builder_env(object):
@@ -60,7 +60,7 @@ class builder_env(object):
 
   @classmethod
   def _make_recipe_load_env(clazz, build_target, downloads_manager):
-    return value_env(build_target, downloads_manager)
+    return recipe_load_env(build_target, downloads_manager)
   
   def update_tools(self, packages):
     check.check_package_descriptor_seq(packages)

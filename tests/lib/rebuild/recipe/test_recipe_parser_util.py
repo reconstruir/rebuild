@@ -2,12 +2,12 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from rebuild.recipe import recipe_parser_util as RPU, value_env
+from rebuild.recipe import recipe_parser_util as RPU, recipe_load_env
 from rebuild.value import value_type
 
 class test_recipe_parser_util(unit_test):
 
-  TEST_ENV = value_env(None, None)
+  TEST_ENV = recipe_load_env(None, None)
   
   def test_parse_key(self):
     self.assertEqual( '', RPU.parse_key('') )

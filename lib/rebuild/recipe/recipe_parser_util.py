@@ -22,7 +22,7 @@ class recipe_parser_util(object):
 
   @classmethod
   def parse_key_and_value(clazz, env, recipe_filename, text, arg_type):
-    check.check_value_env(env)
+    check.check_recipe_load_env(env)
     check.check_string(recipe_filename)
     check.check_string(text)
     check.check_value_type(arg_type)
@@ -41,7 +41,7 @@ class recipe_parser_util(object):
 
   @classmethod
   def parse_value(clazz, env, recipe_filename, value, arg_type):
-    check.check_value_env(env)
+    check.check_recipe_load_env(env)
     check.check_string(recipe_filename)
     check.check_string(value)
     check.check_value_type(arg_type)
