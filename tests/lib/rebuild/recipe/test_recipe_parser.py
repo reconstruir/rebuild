@@ -3,7 +3,7 @@
 
 import inspect, os.path as path
 from bes.testing.unit_test import unit_test
-from rebuild.recipe import recipe, recipe_parser as P, recipe_parser_error as ERR, recipe_step as RS
+from rebuild.recipe import recipe, recipe_parser as P, recipe_parser_error as ERR, recipe_step as RS, value_env
 from rebuild.step import compound_step, step, step_result
 from bes.key_value import key_value as KV, key_value_list as KVL
 from bes.fs import file_util, temp_file
@@ -12,10 +12,12 @@ from test_steps import *
 class test_recipe_parser(unit_test):
 
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/recipe_parser'
+
+  TEST_ENV = value_env(None, None)
   
   @classmethod
   def _parse(self, text, starting_line_number = 0):
-    return P(text, path.basename(__file__), starting_line_number = starting_line_number).parse()
+    return P(self.TEST_ENV, path.basename(__file__), text, starting_line_number = starting_line_number).parse()
 
   @classmethod
   def setUpClass(clazz):
@@ -466,7 +468,7 @@ package foo-1.2.3-4
       bool_value: True
 '''
 
-    r = P(text, self._filename_for_parser()).parse()
+    r = P(self.TEST_ENV, self._filename_for_parser(), text).parse()
     self.assertEqual( 1, len(r) )
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
@@ -484,7 +486,7 @@ package foo-1.2.3-4
     step_takes_hook_list
       hook_list_value: test_loaded_hook1 test_loaded_hook2
 '''
-    r = P(text, self._filename_for_parser()).parse()
+    r = P(self.TEST_ENV, self._filename_for_parser(), text).parse()
     self.assertEqual( 1, len(r) )
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
@@ -506,7 +508,7 @@ package foo-1.2.3-4
     hook1_filename = self.data_path('test_loaded_hook3.py')
     hook2_filename = self.data_path('test_loaded_hook4.py')
     
-    r = P(text, hook1_filename).parse()
+    r = P(self.TEST_ENV, hook1_filename, text).parse()
     self.assertEqual( 1, len(r) )
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
@@ -525,7 +527,7 @@ package foo-1.2.3-4
     step_takes_file_list
       file_list_value: test_file1.txt test_file2.txt
 '''
-    r = P(text, '<test>').parse()
+    r = P(self.TEST_ENV, self._filename_for_parser(), text).parse()
     self.assertEqual( 1, len(r) )
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_file_list\n    file_list_value: test_file1.txt test_file2.txt', str(r[0].steps[0]) )
@@ -538,7 +540,7 @@ package foo-1.2.3-4
     step_takes_file
       file_value: test_file1.txt
 '''
-    r = P(text, self._filename_for_parser()).parse()
+    r = P(self.TEST_ENV, self._filename_for_parser(), text).parse()
     self.assertEqual( 1, len(r) )
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_file\n    file_value: test_file1.txt', str(r[0].steps[0]) )
@@ -551,7 +553,7 @@ package foo-1.2.3-4
     step_takes_file
       file_value: test_file1.txt foo=1 bar=2 baz=\"hello kiwi\"
 '''
-    r = P(text, self._filename_for_parser()).parse()
+    r = P(self.TEST_ENV, self._filename_for_parser(), text).parse()
     self.assertEqual( 1, len(r) )
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_file\n    file_value: test_file1.txt foo=1 bar=2 baz=\"hello kiwi\"', str(r[0].steps[0]) )
@@ -564,7 +566,7 @@ package foo-1.2.3-4
     step_takes_file_install_list
       file_install_list_value: test_file1.txt etc/foo/f1.txt test_file2.txt etc/foo/f2.txt
 '''
-    r = P(text, self._filename_for_parser()).parse()
+    r = P(self.TEST_ENV, self._filename_for_parser(), text).parse()
     self.assertEqual( 1, len(r) )
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_file_install_list\n    file_install_list_value: test_file1.txt etc/foo/f1.txt test_file2.txt etc/foo/f2.txt', str(r[0].steps[0]) )
@@ -612,7 +614,7 @@ package foo-1.2.3-4
     step_takes_file_list
       file_list_value: test_file1.txt test_file2.txt
 '''
-    r = P(text, self._filename_for_parser()).parse()
+    r = P(self.TEST_ENV, self._filename_for_parser(), text).parse()
     self.assertEqual( 1, len(r) )
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_file_list\n    file_list_value: test_file1.txt test_file2.txt', str(r[0].steps[0]) )

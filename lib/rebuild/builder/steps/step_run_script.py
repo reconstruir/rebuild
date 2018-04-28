@@ -18,7 +18,7 @@ class step_run_script(step):
     '''
     
   def execute(self, script, env, args):
-    values = self.recipe.resolve_values(env.config.build_target.system)
+    values = self.recipe.resolve_values(env.recipe_load_env)
     script_file = values.get('script')
     script_env = values.get('script_env')
       

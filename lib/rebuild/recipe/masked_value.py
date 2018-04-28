@@ -84,11 +84,11 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
     buf.write(': ')
     buf.write(self.value_to_string(quote = quote))
     return buf.getvalue()
-      
+
   @classmethod
-  def parse_mask_and_value(clazz, text, filename, argspec):
+  def parse_mask_and_value(clazz, env, recipe_filename, text, argspec):
     mask, delimiter, value = text.partition(':')
-    value = recipe_parser_util.parse_value(value.strip(), filename, argspec)
+    value = recipe_parser_util.parse_value(env, recipe_filename, value.strip(), argspec)
     return clazz(mask, value)
 
   def mask_matches(self, system):

@@ -41,8 +41,9 @@ class recipe_parser(object):
 
   MAGIC = '!rebuild.recipe!'
 
-  def __init__(self, text, filename, starting_line_number = 0):
+  def __init__(self, env, filename, text, starting_line_number = 0):
     self.text = text
+    self.env = env
     self.filename = filename
     self.starting_line_number = starting_line_number
 
@@ -171,7 +172,7 @@ class recipe_parser(object):
     env_vars = []
     for child in node.children:
       text = tree_text_parser.node_text_flat(child)
-      value = masked_value.parse_mask_and_value(text, self.filename, value_type.KEY_VALUES)
+      value = masked_value.parse_mask_and_value(self.env, self.filename, text, value_type.KEY_VALUES)
       env_vars.append(value)
     return masked_value_list(env_vars)
 
@@ -179,7 +180,7 @@ class recipe_parser(object):
     export_compilation_flags_requirements = []
     for child in node.children:
       text = tree_text_parser.node_text_flat(child)
-      value = masked_value.parse_mask_and_value(text, self.filename, value_type.STRING_LIST)
+      value = masked_value.parse_mask_and_value(self.env, self.filename, text, value_type.STRING_LIST)
       export_compilation_flags_requirements.append(value)
     return masked_value_list(export_compilation_flags_requirements)
 
@@ -210,7 +211,7 @@ class recipe_parser(object):
     args_definition = description.step_class.args_definition()
     if not key in args_definition:
       self._error('invalid config \"%s\" instead of: %s' % (key, ' '.join(args_definition.keys())), node)
-    value = recipe_parser_util.parse_key_and_value(node.data.text, self.filename, args_definition[key].atype)
+    value = recipe_parser_util.parse_key_and_value(self.env, self.filename, node.data.text, args_definition[key].atype)
     if value.value:
       assert not node.children
       values.append(masked_value(None, value.value))
@@ -219,7 +220,7 @@ class recipe_parser(object):
       for child in node.children:
         text = tree_text_parser.node_text_flat(child)
         try:
-          value = masked_value.parse_mask_and_value(text, self.filename, args_definition[key].atype)
+          value = masked_value.parse_mask_and_value(self.env, self.filename, text, args_definition[key].atype)
         except RuntimeError as ex:
           self._error('error: %s - %s' % (text, str(ex)), node)
         values.append(value)

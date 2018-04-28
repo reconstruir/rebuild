@@ -23,7 +23,7 @@ class step_pkg_config_make_pc(step):
     '''
     
   def execute(self, script, env, args):
-    values = self.recipe.resolve_values(env.config.build_target.system)
+    values = self.recipe.resolve_values(env.recipe_load_env)
     pc_files = [ f.filename for f in values.get('pc_files') or [] ]
     pc_file_variables = values.get('pc_file_variables')
     

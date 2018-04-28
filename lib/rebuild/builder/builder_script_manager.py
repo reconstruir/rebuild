@@ -79,6 +79,6 @@ class builder_script_manager(object):
   @classmethod
   def _load_scripts(clazz, filename, build_target, env):
     scripts = []
-    recipes = builder_recipe_loader.load(filename)
+    recipes = builder_recipe_loader.load(env.recipe_load_env, filename)
     scripts = [ builder_script(recipe, build_target, env) for recipe in recipes ]
     return scripts

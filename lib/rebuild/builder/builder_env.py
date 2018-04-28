@@ -11,6 +11,7 @@ from rebuild.package import artifact_manager
 from rebuild.base import package_descriptor, requirement_manager
 from bes.git import git_download_cache, git_util
 from rebuild.source_finder import repo_source_finder, local_source_finder, source_finder_chain
+from rebuild.recipe import value_env
 from .builder_script_manager import builder_script_manager
 
 class builder_env(object):
@@ -22,6 +23,7 @@ class builder_env(object):
     self.tools_manager = self._make_tools_manager(config.build_root)
     self.downloads_manager = self._make_downloads_manager(config.build_root)
     self.artifact_manager = self._make_artifact_manager(config.build_root)
+    self.recipe_load_env = self._make_recipe_load_env(self.config.build_target, self.downloads_manager)
     self.script_manager = builder_script_manager(filenames, self.config.build_target, self)
     self.requirement_manager = requirement_manager()
     for script in self.script_manager.scripts.values():
@@ -56,6 +58,12 @@ class builder_env(object):
   def _make_tools_manager(clazz, build_dir):
     return tools_manager(path.join(build_dir, 'tools'))
 
+  @classmethod
+  def _make_recipe_load_env(clazz, build_target, downloads_manager):
+    return value_env(build_target, downloads_manager)
+  
   def update_tools(self, packages):
     check.check_package_descriptor_seq(packages)
     self.tools_manager.update(packages, self.artifact_manager)
+
+    

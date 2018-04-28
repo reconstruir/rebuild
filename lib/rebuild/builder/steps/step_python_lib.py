@@ -19,7 +19,7 @@ class step_python_lib_build(step):
     '''
 
   def execute(self, script, env, args):
-    values = self.recipe.resolve_values(env.config.build_target.system)
+    values = self.recipe.resolve_values(env.recipe_load_env)
     python_lib_build_env = values.get('python_lib_build_env')
     python_lib_build_flags = values.get('python_lib_build_flags')
 
@@ -40,7 +40,7 @@ class step_python_lib_install(step):
     '''
 
   def execute(self, script, env, args):
-    values = self.recipe.resolve_values(env.config.build_target.system)
+    values = self.recipe.resolve_values(env.recipe_load_env)
     python_lib_install_env = values.get('python_lib_install_env')
     python_lib_install_flags = values.get('python_lib_install_flags')
 

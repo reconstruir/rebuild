@@ -23,7 +23,7 @@ class step_python_make_standalone_program(step):
     '''
     
   def execute(self, script, env, args):
-    values = self.recipe.resolve_values(env.config.build_target.system)
+    values = self.recipe.resolve_values(env.recipe_load_env)
     standalone_programs = values.get('standalone_programs', [])
       
     if not standalone_programs:

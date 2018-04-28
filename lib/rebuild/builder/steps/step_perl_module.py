@@ -23,7 +23,7 @@ class step_perl_module_setup(step):
     '''
     
   def execute(self, script, env, args):
-    values = self.recipe.resolve_values(env.config.build_target.system)
+    values = self.recipe.resolve_values(env.recipe_load_env)
     perl_module_setup_env = values.get('perl_module_setup_env')
     perl_module_setup_flags = values.get('perl_module_setup_flags')
     makefile = values.get('makefile')

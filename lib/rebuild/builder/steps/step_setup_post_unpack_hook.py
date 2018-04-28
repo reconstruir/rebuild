@@ -14,5 +14,5 @@ class step_setup_post_unpack_hook(step):
     return 'post_unpack_hooks hook_list'
     
   def execute(self, script, env, args):
-    values = self.recipe.resolve_values(script.build_target.system)
+    values = self.recipe.resolve_values(env.recipe_load_env)
     return self.call_hooks(values.get('post_unpack_hooks'), script, env)

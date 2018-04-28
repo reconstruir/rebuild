@@ -21,7 +21,9 @@ class recipe_parser_util(object):
     return key.strip()
 
   @classmethod
-  def parse_key_and_value(clazz, text, filename, arg_type):
+  def parse_key_and_value(clazz, env, recipe_filename, text, arg_type):
+    check.check_value_env(env)
+    check.check_string(recipe_filename)
     check.check_string(text)
     check.check_value_type(arg_type)
     text = comments.strip_line(text)
@@ -34,11 +36,15 @@ class recipe_parser_util(object):
     value = value.strip() or None
     if not value:
       return key_value(key, value)
-    value = clazz.parse_value(value, filename, arg_type)
+    value = clazz.parse_value(env, recipe_filename, value, arg_type)
     return key_value(key, value)
 
   @classmethod
-  def parse_value(clazz, value, filename, arg_type):
+  def parse_value(clazz, env, recipe_filename, value, arg_type):
+    check.check_value_env(env)
+    check.check_string(recipe_filename)
+    check.check_string(value)
+    check.check_value_type(arg_type)
     if arg_type == value_type.BOOL:
       return bool_util.parse_bool(value)
     elif arg_type == value_type.INT:
@@ -52,14 +58,14 @@ class recipe_parser_util(object):
     elif arg_type == value_type.HOOK_LIST:
       return hook_list.parse(value)
     elif arg_type == value_type.FILE_LIST:
-      return recipe_file_list.parse(value, filename)
+      return recipe_file_list.parse(value, recipe_filename)
     elif arg_type == value_type.FILE:
-      return recipe_file.parse(value, filename)
+      return recipe_file.parse(value, recipe_filename)
     elif arg_type == value_type.DIR:
-      return clazz._parse_dir(value, path.dirname(filename))
+      return clazz._parse_dir(value, path.dirname(recipe_filename))
     elif arg_type == value_type.FILE_INSTALL_LIST:
-      if filename:
-        base = path.dirname(filename)
+      if recipe_filename:
+        base = path.dirname(recipe_filename)
       else:
         base = None
       return clazz._parse_file_install_list(value, base)

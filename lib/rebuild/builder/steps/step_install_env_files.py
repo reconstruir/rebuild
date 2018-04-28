@@ -22,7 +22,7 @@ class step_install_env_files(step):
     '''
     
   def execute(self, script, env, args):
-    values = self.recipe.resolve_values(env.config.build_target.system)
+    values = self.recipe.resolve_values(env.recipe_load_env)
     env_files = values.get('env_files')
     if env_files:
       env_files = [ f.filename for f in env_files ]

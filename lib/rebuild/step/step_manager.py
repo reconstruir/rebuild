@@ -37,7 +37,7 @@ class step_manager(object):
     step_class = recipe_step.description.step_class
     s = step_class()
     s.recipe = recipe_step
-    resolved_args = recipe_step.resolve_values(script.build_target.system)
+    resolved_args = recipe_step.resolve_values(env.recipe_load_env)
     check.check_dict(resolved_args)
     parsed_args = recipe_step.description.step_class.parse_step_args(script, env, resolved_args)
     check.check_dict(parsed_args)

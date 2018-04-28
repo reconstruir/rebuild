@@ -27,7 +27,7 @@ class value_git_address(recipe_caca):
   #@abstractmethod
   def sources(self):
     'Return a list of sources this caca provides or None if no sources.'
-    return [ self.env.download_manager.tarball_path(self.address, self.revision) ]
+    return [ self.env.downloads_manager.tarball_path(self.address, self.revision) ]
 
   #@classmethod
   #@abstractmethod

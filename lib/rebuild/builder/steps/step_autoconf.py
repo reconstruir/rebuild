@@ -21,7 +21,7 @@ class step_autoconf_configure(step):
     '''
     
   def execute(self, script, env, args):
-    values = self.recipe.resolve_values(env.config.build_target.system)
+    values = self.recipe.resolve_values(env.recipe_load_env)
     configure_env = values.get('configure_env')
     configure_flags = values.get('configure_flags') or []
     configure_script = values.get('configure_script')
@@ -65,7 +65,7 @@ class step_autoconf_pre_configure_hooks(step):
     return 'pre_configure_hooks hook_list'
     
   def execute(self, script, env, args):
-    values = self.recipe.resolve_values(script.build_target.system)
+    values = self.recipe.resolve_values(env.recipe_load_env)
     return self.call_hooks(values.get('pre_configure_hooks'), script, env)
 
 class step_autoconf_post_configure_hooks(step):
@@ -79,7 +79,7 @@ class step_autoconf_post_configure_hooks(step):
     return 'post_configure_hooks hook_list'
     
   def execute(self, script, env, args):
-    values = self.recipe.resolve_values(script.build_target.system)
+    values = self.recipe.resolve_values(env.recipe_load_env)
     return self.call_hooks(values.get('post_configure_hooks'), script, env)
 
 class step_autoconf(compound_step):

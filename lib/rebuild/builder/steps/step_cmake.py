@@ -20,7 +20,7 @@ class step_cmake_configure(step):
     '''
     
   def execute(self, script, env, args):
-    values = self.recipe.resolve_values(env.config.build_target.system)
+    values = self.recipe.resolve_values(env.recipe_load_env)
     cmake_env = values.get('cmake_env')
     cmake_flags = values.get('cmake_flags')
 

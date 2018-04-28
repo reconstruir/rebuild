@@ -28,7 +28,7 @@ class step_setup_unpack(step):
     '''
 
   def execute(self, script, env, args):
-    values = self.recipe.resolve_values(env.config.build_target.system)
+    values = self.recipe.resolve_values(env.recipe_load_env)
     no_tarballs = values.get('no_tarballs')
     tarball_name = values.get('tarball_name')
     skip_unpack = values.get('skip_unpack')

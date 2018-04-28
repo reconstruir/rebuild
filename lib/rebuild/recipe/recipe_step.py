@@ -4,7 +4,6 @@
 from collections import namedtuple
 from bes.compat import StringIO
 from bes.common import check
-from rebuild.base import build_system
 from bes.key_value import key_value_list
 from .recipe_value_list import recipe_value_list
 from .recipe_parser_util import recipe_parser_util
@@ -35,16 +34,16 @@ class recipe_step(namedtuple('recipe_step', 'name,description,values')):
       buf.write('\n')
     return buf.getvalue().strip()
 
-  def resolve_values(self, system):
-    assert build_system.system_is_valid(system)
+  def resolve_values(self, env):
+    check.check_value_env(env)
     result = {}
     for value in self.values:
-      result.update({ value.key: value.resolve(system) })
+      result.update({ value.key: value.resolve(env.build_target.system) })
     args_definition = self.description.step_class.args_definition()
     for name, arg_type in args_definition.items():
       if name not in result:
         if arg_type.default is not None:
-          result[name] = recipe_parser_util.parse_value(arg_type.default, '<default>', arg_type.atype)
+          result[name] = recipe_parser_util.parse_value(env, '<default>', arg_type.default, arg_type.atype)
         else:
           result[name] = recipe_parser_util.value_default(arg_type.atype)
     return result

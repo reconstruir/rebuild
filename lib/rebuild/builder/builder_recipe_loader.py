@@ -12,8 +12,8 @@ from rebuild.recipe import recipe, recipe_parser
 class builder_recipe_loader(object):
 
   @classmethod
-  def load(clazz, filename):
-    recipes = clazz._load_recipes(filename)
+  def load(clazz, env, filename):
+    recipes = clazz._load_recipes(env, filename)
     if clazz._recipe_version(filename) == 2:
       return recipes.recipes
     assert False
@@ -21,16 +21,17 @@ class builder_recipe_loader(object):
   _recipes = namedtuple('_recipes', 'filename,recipes')
 
   @classmethod
-  def _load_recipes_v2(clazz, filename):
-    parser = recipe_parser(file_util.read(filename, codec = 'utf8'), filename)
+  def _load_recipes_v2(clazz, env, filename):
+    content = file_util.read(filename, codec = 'utf8')
+    parser = recipe_parser(env, filename, content)
     recipes = parser.parse()
     return clazz._recipes(filename, recipes)
   
   @classmethod
-  def _load_recipes(clazz, filename):
+  def _load_recipes(clazz, env, filename):
     version =  clazz._recipe_version(filename)
     assert version in [ 2]
-    return clazz._load_recipes_v2(filename)
+    return clazz._load_recipes_v2(env, filename)
   
   @classmethod
   def _recipe_version(clazz, filename):
