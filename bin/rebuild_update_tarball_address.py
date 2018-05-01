@@ -6,6 +6,7 @@ from rebuild.builder.builder_recipe_loader import builder_recipe_loader
 from bes.git import repo
 from bes.fs import file_replace, temp_file
 from rebuild.base import build_system
+from rebuild.recipe import recipe_load_env
 
 def main():
   filename = path.abspath('rebuild.recipe')
