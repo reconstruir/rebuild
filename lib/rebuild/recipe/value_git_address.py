@@ -20,7 +20,7 @@ class value_git_address(recipe_caca):
   def value_to_string(self):
     buf = StringIO()
     buf.write(self.address)
-    buf.write(',')
+    buf.write(' ')
     buf.write(self.revision)
     return buf.getvalue()
 
@@ -29,7 +29,7 @@ class value_git_address(recipe_caca):
     'Return a list of sources this caca provides or None if no sources.'
     return [ self.env.downloads_manager.tarball_path(self.address, self.revision) ]
 
-  #@classmethod
+  @classmethod
   #@abstractmethod
   def parse(clazz, env, recipe_filename, value):
     parts = string_util.split_by_white_space(value)

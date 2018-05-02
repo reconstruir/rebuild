@@ -619,32 +619,18 @@ package foo-1.2.3-4
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_file_list\n    file_list_value: test_file1.txt test_file2.txt', str(r[0].steps[0]) )
 
-    
-  def xtest_step_source(self):
+  def test_step_value_git_address(self):
     text = '''!rebuild.recipe!
-package foo 1.2.3
+package foo-1.2.3-4
+
   steps
-    step_caca_source
-      tarball
-        all: libpng-${REBUILD_VERSION}.tar.gz dest=${REBUILD_BUILD_DIR} strip_common_base=True
-
-      tarball
-        linux: android-ndk-${REBUILD_VERSION}-linux-x86_64.zip
-        macos: android-ndk-${REBUILD_VERSION}-darwin-x86_64.zip
-
-      tarball
-        all: /Users/ramiro/proj/rebuild/rebuild-1.0.0.tar.gz
-
-      address:
-        all: git@git:bes.git f5a202c
-
-      dir
-        all: openssl-1.1.0g
+    step_takes_git_address
+      git_address_value: test_file1.txt test_file2.txt
 '''
-    r = self._parse(text)
+    r = P(self.TEST_ENV, self._filename_for_parser(), text).parse()
     self.assertEqual( 1, len(r) )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertMultiLineEqual( 'step_takes_string\n    string_value: my string with "a quote"', str(r[0].steps[0]) )
+    self.assertMultiLineEqual( 'step_takes_git_address\n    git_address_value: test_file1.txt test_file2.txt', str(r[0].steps[0]) )
     
   def _filename_for_parser(self):
     'Return a fake filename for parser.  Some values need it to find files relatively to filename.'

@@ -122,6 +122,17 @@ class step_takes_file_install_list(step):
   
   def execute(self, script, env, args):
     return step_result(True)
+
+class step_takes_git_address(step):
+  def __init__(self):
+    super(step_takes_git_address, self).__init__()
+    
+  @classmethod
+  def define_args(clazz):
+    return 'git_address_value git_address'
+  
+  def execute(self, script, env, args):
+    return step_result(True)
   
 class step_takes_all(step):
   def __init__(self):

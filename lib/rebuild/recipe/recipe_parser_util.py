@@ -70,7 +70,7 @@ class recipe_parser_util(object):
         base = None
       return clazz._parse_file_install_list(value, base)
     elif arg_type == value_type.GIT_ADDRESS:
-      return value_git_address.parse(parse(download_manager, value))
+      return value_git_address.parse(env, recipe_filename, value)
     raise ValueError('unknown arg_type: %s' % (str(arg_type)))
 
   @classmethod
