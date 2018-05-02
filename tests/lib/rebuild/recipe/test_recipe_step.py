@@ -117,6 +117,22 @@ git_address_value
       'git_address_value': git_address(env, 'linux_address', 'linux_tag'),
     }
     self.assertEqual( expected, r )
+
+    env = recipe_load_env(build_target(system = 'macos'), None)
+    r = step.resolve_values(env)
+    expected = {
+      'bool_value': False,
+      'file_install_list_value': [],
+      'file_list_value': [],
+      'file_value': None,
+      'hook_list_value': [],
+      'int_value': None,
+      'key_values_value': [],
+      'string_list_value': [],
+      'string_value': None,
+      'git_address_value': git_address(env, 'macos_address', 'macos_tag'),
+    }
+    self.assertEqual( expected, r )
     
   @classmethod
   def _parse(clazz, s):
