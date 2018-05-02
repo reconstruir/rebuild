@@ -4,6 +4,7 @@
 from bes.testing.unit_test import unit_test
 from rebuild.base import build_target
 from rebuild.recipe import recipe_parser, recipe_file_list, recipe_install_file_list, recipe_load_env
+from rebuild.recipe.value import git_address
 from bes.key_value import key_value as KV, key_value_list as KVL
 from bes.text import string_list
 from test_steps import *
@@ -27,6 +28,7 @@ class test_recipe_step(unit_test):
       'key_values_value': KVL(),
       'string_list_value': string_list(),
       'string_value': None,
+      'git_address_value': None,
     }
     self.assertEqual( expected, r )
 
@@ -60,6 +62,7 @@ key_values_value
       'key_values_value': KVL([ ( 'a', 'forlinux' ), ( 'b', '6' ) ]),
       'string_list_value': ['a', 'b', '"x y"'],
       'string_value': None,
+      'git_address_value': None,
     }
     self.assertEqual( expected, r )
     r = step.resolve_values(recipe_load_env(build_target(system = 'macos'), None))
@@ -73,6 +76,7 @@ key_values_value
       'key_values_value': KVL([ ( 'a', 'formacos' ), ( 'b', '6' ) ]),
       'string_list_value': ['a', 'b', '"x y"'],
       'string_value': None,
+      'git_address_value': None,
     }
     self.assertEqual( expected, r )
     r = step.resolve_values(recipe_load_env(build_target(system = 'android'), None))
@@ -86,9 +90,34 @@ key_values_value
       'key_values_value': KVL([ ( 'a', 'forandroid' ), ( 'b', '6' ) ]),
       'string_list_value': ['a', 'b', '"x y"'],
       'string_value': None,
+      'git_address_value': None,
     }
     self.assertEqual( expected, r )
 
+  def test_takes_git_address(self):
+    self.maxDiff = None
+    text = '''\
+git_address_value
+  linux: linux_address linux_tag
+  macos: macos_address macos_tag
+'''
+    step = self._parse(text)
+    env = recipe_load_env(build_target(system = 'linux'), None)
+    r = step.resolve_values(env)
+    expected = {
+      'bool_value': False,
+      'file_install_list_value': [],
+      'file_list_value': [],
+      'file_value': None,
+      'hook_list_value': [],
+      'int_value': None,
+      'key_values_value': [],
+      'string_list_value': [],
+      'string_value': None,
+      'git_address_value': git_address(env, 'linux_address', 'linux_tag'),
+    }
+    self.assertEqual( expected, r )
+    
   @classmethod
   def _parse(clazz, s):
     recipe_template = '''!rebuild.recipe!

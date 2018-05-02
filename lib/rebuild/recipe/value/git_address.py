@@ -3,12 +3,12 @@
 from bes.common import check, string_util
 from bes.compat import StringIO
 from bes.dependency import dependency_provider
-from .recipe_caca import recipe_caca
+from .value_base import value_base
 
-class value_git_address(recipe_caca):
+class git_address(value_base):
 
   def __init__(self, env, address, revision):
-    super(value_git_address, self).__init__(env)
+    super(git_address, self).__init__(env)
     check.check_string(address)
     check.check_string(revision)
     self.address = address
@@ -16,6 +16,9 @@ class value_git_address(recipe_caca):
 
   def __str__(self):
     return self.value_to_string()
+    
+  def __eq__(self, other):
+    return self.address == other.address and self.revision == other.revision
     
   def value_to_string(self):
     buf = StringIO()
@@ -37,4 +40,9 @@ class value_git_address(recipe_caca):
       raise ValueError('expected address and tag instead of: %s' % (value))
     return clazz(env, parts[0], parts[1])
   
-check.register_class(value_git_address, include_seq = False)
+  @classmethod
+  #@abstractmethod
+  def default_value(clazz):
+    return None
+  
+check.register_class(git_address, include_seq = False)

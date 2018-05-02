@@ -84,6 +84,8 @@ class masked_value_list(object):
       return self._resolve_hook_list(values)
     elif check.is_recipe_file(values[0]):
       return values[-1]
+    elif check.is_git_address(values[0]):
+      return values[-1]
     raise TypeError('unknown value type: %s - %s' % (str(values[0]), type(values[0])))
 
   def _resolve_values(self, system):

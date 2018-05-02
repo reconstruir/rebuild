@@ -150,6 +150,7 @@ class step_takes_all(step):
       key_values_value        key_values
       string_value            string
       string_list_value       string_list
+      git_address_value       git_address
     '''
   
   def execute(self, script, env, args):

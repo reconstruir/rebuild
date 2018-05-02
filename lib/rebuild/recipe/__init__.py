@@ -11,5 +11,4 @@ from .recipe_step import recipe_step
 from .recipe_step_list import recipe_step_list
 from .recipe_value import recipe_value
 from .recipe_value_list import recipe_value_list
-from .value_git_address import value_git_address
 from .recipe_load_env import recipe_load_env

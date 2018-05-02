@@ -47,7 +47,7 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
       return str(self.value)
     elif check.is_recipe_file(self.value):
       return str(self.value)
-    elif check.is_value_git_address(self.value):
+    elif check.is_git_address(self.value):
       return str(self.value)
     else:
       assert False
@@ -63,7 +63,7 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
     check.is_recipe_file_list,
     check.is_recipe_install_file_list,
     check.is_recipe_install_file_list,
-    check.is_value_git_address,
+    check.is_git_address,
   ]
       
   @classmethod

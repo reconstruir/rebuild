@@ -4,10 +4,10 @@ from abc import abstractmethod, ABCMeta
 from bes.system.compat import with_metaclass
 from bes.common import check
 
-class recipe_caca(with_metaclass(ABCMeta, object)):
+class value_base(with_metaclass(ABCMeta, object)):
   
   def __init__(self, env):
-    check.check_recipe_load_env(env)
+    #check.check_recipe_load_env(env)
     self.env = env
   
   @abstractmethod
@@ -17,8 +17,14 @@ class recipe_caca(with_metaclass(ABCMeta, object)):
 
   @classmethod
   @abstractmethod
-  def parse(self, env, recipe_filename, value):
+  def parse(clazz, env, recipe_filename, value):
     'Parse a value.'
     pass
 
-check.register_class(recipe_caca)
+  @classmethod
+  @abstractmethod
+  def default_value(clazz):
+    'Return the default value to use for this class.'
+    pass
+
+check.register_class(value_base)

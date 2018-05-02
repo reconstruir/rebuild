@@ -9,7 +9,8 @@ from rebuild.step import hook_list
 from bes.text import comments, string_list
 from .recipe_file import recipe_file, recipe_file_list
 from .recipe_install_file import recipe_install_file, recipe_install_file_list
-from .value_git_address import value_git_address
+
+from .value import git_address
 
 class recipe_parser_util(object):
 
@@ -70,7 +71,7 @@ class recipe_parser_util(object):
         base = None
       return clazz._parse_file_install_list(value, base)
     elif arg_type == value_type.GIT_ADDRESS:
-      return value_git_address.parse(env, recipe_filename, value)
+      return git_address.parse(env, recipe_filename, value)
     raise ValueError('unknown arg_type: %s' % (str(arg_type)))
 
   @classmethod
@@ -95,6 +96,8 @@ class recipe_parser_util(object):
       return None
     elif arg_type == value_type.FILE_INSTALL_LIST:
       return recipe_install_file_list()
+    elif arg_type == value_type.GIT_ADDRESS:
+      return None
     raise ValueError('unknown arg_type: %s' % (str(arg_type)))
 
   @classmethod
