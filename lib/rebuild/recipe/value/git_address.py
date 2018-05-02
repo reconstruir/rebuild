@@ -7,7 +7,7 @@ from .value_base import value_base
 
 class git_address(value_base):
 
-  def __init__(self, env, address, revision):
+  def __init__(self, env = None, address = '', revision = ''):
     super(git_address, self).__init__(env)
     check.check_string(address)
     check.check_string(revision)

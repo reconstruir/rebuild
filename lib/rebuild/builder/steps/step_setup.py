@@ -12,12 +12,14 @@ from .step_setup_post_unpack_hook import step_setup_post_unpack_hook
 from .step_setup_prepare_environment import step_setup_prepare_environment
 from .step_setup_tarball_download import step_setup_tarball_download
 from .step_setup_unpack import step_setup_unpack
+from .step_caca_source import step_caca_source
 
 class step_setup(compound_step):
   'A collection of multiple setup steps.'
   __steps__ = [
     step_setup_prepare_environment,
     step_setup_install_build_tool_requirements,
+    step_caca_source,
     step_setup_tarball_download,
     step_setup_unpack,
     step_setup_patch,
