@@ -20,7 +20,7 @@ class step_extract_tarballs_to_stage_dir(step):
     '''
     
   def execute(self, script, env, args):
-    values = self.recipe.resolve_values(env.recipe_load_env)
+    values = self.values
     skip_unpack = values.get('skip_unpack')
     tarballs_no_base_dir = values.get('tarballs_no_base_dir')
     tarballs_strip_common_base = values.get('tarballs_strip_common_base')

@@ -10,13 +10,13 @@ from bes.text import string_list
 
 class recipe_file(dependency_provider):
 
-  def __init__(self, filename, values = None):
+  def __init__(self, filename, properties = None):
     'Create a new hook.'
     check.check_string(filename)
-    values = values or key_value_list()
-    check.check_key_value_list(values)
+    properties = properties or key_value_list()
+    check.check_key_value_list(properties)
     self.filename = filename
-    self.values = values
+    self.properties = properties
 
   def __str__(self):
     return self.value_to_string()
@@ -24,9 +24,9 @@ class recipe_file(dependency_provider):
   def value_to_string(self):
     buf = StringIO()
     buf.write(path.basename(self.filename))
-    if self.values:
+    if self.properties:
       buf.write(' ')
-      buf.write(self.values.to_string(value_delimiter = ' ', quote = True))
+      buf.write(self.properties.to_string(value_delimiter = ' ', quote = True))
     return buf.getvalue()
     
   def provided(self):
@@ -40,8 +40,8 @@ class recipe_file(dependency_provider):
     filename_abs = path.join(base, filename)
     if not path.isfile(filename_abs):
       raise RuntimeError('file not found: %s' % (filename_abs))
-    values = key_value_list.parse(rest, options = key_value_list.KEEP_QUOTES)
-    return recipe_file(filename_abs, values)
+    properties = key_value_list.parse(rest, options = key_value_list.KEEP_QUOTES)
+    return recipe_file(filename_abs, properties)
   
 class recipe_file_list(type_checked_list, dependency_provider):
 

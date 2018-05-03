@@ -24,7 +24,7 @@ class step_install_install_files(step):
     '''
     
   def execute(self, script, env, args):
-    values = self.recipe.resolve_values(env.recipe_load_env)
+    values = self.values
     install_files = values.get('install_files', [])
       
     if not install_files:

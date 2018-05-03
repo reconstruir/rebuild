@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy, os, os.path as path
@@ -35,6 +34,7 @@ class step(with_metaclass(step_register_meta, object)):
   def __init__(self):
     self._recipe = None
     self._args = {}
+    self.values = None
 
   @classmethod
   def args_definition(clazz):
@@ -60,8 +60,12 @@ class step(with_metaclass(step_register_meta, object)):
     'Execute the step.'
     pass
  
-  def sources(self):
+  def sources(self, env):
     'Return a list of sources for this step.'
+    return []
+ 
+  def tarballs(self, env):
+    'Return a list of tarballs for this step.'
     return []
  
   def on_tag_changed(self):
@@ -99,7 +103,7 @@ class step(with_metaclass(step_register_meta, object)):
     assert recipe != None
     assert self._recipe == None
     self._recipe = recipe
-
+    
   @property
   def tag(self):
     return self.bes_log_tag__
@@ -284,7 +288,7 @@ class step(with_metaclass(step_register_meta, object)):
       if check.is_masked_value_list(config):
         resolved = config.resolve(system)
       else:
-        raise RuntimeError('fuck you in the ass: %s - %s' % (config))
+        raise RuntimeError('not a valid masked_value_list: %s' % (config))
     else:
       resolved = []
     requirements = script.descriptor.requirements.filter_by_hardness(['RUN', 'BUILD']).filter_by_system(system)

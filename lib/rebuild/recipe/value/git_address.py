@@ -1,5 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+import os.path as path
 from bes.common import check, string_util
 from bes.compat import StringIO
 from bes.dependency import dependency_provider
@@ -30,7 +31,7 @@ class git_address(value_base):
   #@abstractmethod
   def sources(self):
     'Return a list of sources this caca provides or None if no sources.'
-    return [ self.env.downloads_manager.tarball_path(self.address, self.revision) ]
+    return [ self.downloaded_tarball_path() ]
 
   @classmethod
   #@abstractmethod
@@ -44,5 +45,17 @@ class git_address(value_base):
   #@abstractmethod
   def default_value(clazz):
     return None
+
+  def downloaded_tarball_path(self):
+    return self.env.downloads_manager.tarball_path(self.address, self.revision)
   
+  def download(self):
+    if not self.env.downloads_manager.has_tarball(self.address, self.revision):
+      assert self.needs_download()
+      self.env.downloads_manager.get_tarball(self.address, self.revision)
+    assert not self.needs_download()
+
+  def needs_download(self):
+    return not path.isfile(self.downloaded_tarball_path())
+    
 check.register_class(git_address, include_seq = False)

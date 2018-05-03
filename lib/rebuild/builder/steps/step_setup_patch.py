@@ -22,7 +22,7 @@ class step_setup_patch(step):
     '''
     
   def execute(self, script, env, args):
-    values = self.recipe.resolve_values(env.recipe_load_env)
+    values = self.values
     patches = [ f.filename for f in values.get('patches') or [] ]
     patch_strip_depth = values.get('patch_strip_depth')
     patch_program = values.get('patch_program') or 'patch'

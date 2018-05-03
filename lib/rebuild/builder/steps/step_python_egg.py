@@ -27,7 +27,7 @@ class step_python_egg_build(step):
     '''
     
   def execute(self, script, env, args):
-    values = self.recipe.resolve_values(env.recipe_load_env)
+    values = self.values
     shell_flags = values.get('shell_flags')
     shell_env = values.get('shell_env')
     update_version_tag = values.get('update_version_tag')

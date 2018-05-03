@@ -18,7 +18,7 @@ class step_run_script(step):
     '''
     
   def execute(self, script, env, args):
-    values = self.recipe.resolve_values(env.recipe_load_env)
+    values = self.values
     script_file = values.get('script')
     script_env = values.get('script_env')
       
@@ -27,6 +27,6 @@ class step_run_script(step):
       self.log_d(message)
       return step_result(True, message)
 
-    script_env.extend(script_file.values)
+    script_env.extend(script_file.properties)
     
     return self.call_shell(path.abspath(script_file.filename), script, env, shell_env = script_env)

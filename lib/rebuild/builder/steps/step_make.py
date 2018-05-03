@@ -27,7 +27,7 @@ class step_make(step):
     return []
 
   def execute(self, script, env, args):
-    values = self.recipe.resolve_values(env.recipe_load_env)
+    values = self.values
     make_env = values.get('make_env')
     make_flags = values.get('make_flags') or []
     make_num_jobs = values.get('make_num_jobs')
@@ -65,7 +65,7 @@ class step_make_install(step):
     '''
     
   def execute(self, script, env, args):
-    values = self.recipe.resolve_values(env.recipe_load_env)
+    values = self.values
     makefile = values.get('makefile')
     install_target = values.get('install_target')
     make_install_flags = values.get('make_install_flags')
@@ -106,7 +106,7 @@ class step_make_test(step):
     '''
     
   def execute(self, script, env, args):
-    values = self.recipe.resolve_values(env.recipe_load_env)
+    values = self.values
     make_test_flags = values.get('make_test_flags')
     make_test_env = values.get('make_test_env')
     makefile = values.get('makefile')

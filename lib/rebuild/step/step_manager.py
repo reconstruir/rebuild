@@ -37,7 +37,11 @@ class step_manager(object):
     step_class = recipe_step.description.step_class
     s = step_class()
     s.recipe = recipe_step
-    resolved_args = recipe_step.resolve_values(env.recipe_load_env)
+    rrr = recipe_step.resolve_values(env.recipe_load_env)
+#    print('FUCK step=%s\nFUCK   RESOLVED rrr=%s' % (s, rrr))
+#    print('FUCK -----')
+#    resolved_args = {}
+    resolved_args = rrr
     check.check_dict(resolved_args)
     parsed_args = recipe_step.description.step_class.parse_step_args(script, env, resolved_args)
     check.check_dict(parsed_args)
@@ -67,12 +71,17 @@ class step_manager(object):
   def execute(self, script, env):
     script.timer.start('step_manager.execute()')
     output = {}
+    poto = self._unroll_steps()
+    for p in poto:
+      p.values = p.recipe.resolve_values(env.recipe_load_env)
+ 
+#      print('FUCK unrolled %s: sources=%s' % (p, p.sources(env)))
 #    self._steps = self._unroll_steps()
-#    for s in self._steps:
-#      print('FUCK: step=%s' % (str(s)))
     for s in self._steps:
       step_args = dict_util.combine(s.args, output)
       script.timer.start('step %s' % (s.__class__.__name__))
+#      print('FUCK EXECUTE step=%s\nFUCK   args=%s' % (s, step_args))
+#      print('FUCK -----')
       result = s.execute(script, env, step_args)
       script.timer.stop()
       output.update(result.output or {})

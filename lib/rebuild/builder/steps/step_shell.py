@@ -18,7 +18,7 @@ class step_shell(step):
     '''
   
   def execute(self, script, env, args):
-    values = self.recipe.resolve_values(env.recipe_load_env)
+    values = self.values
     shell_env = values.get('shell_env')
     cmd = values.get('cmd')
     check.check_string(cmd)
