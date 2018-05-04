@@ -21,3 +21,6 @@ class source_finder_chain(object):
       if result:
         return result
     return None
+
+check.register_class(source_finder_chain, include_seq = False)
+  

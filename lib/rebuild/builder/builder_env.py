@@ -23,7 +23,7 @@ class builder_env(object):
     self.tools_manager = self._make_tools_manager(config.build_root)
     self.downloads_manager = self._make_downloads_manager(config.build_root)
     self.artifact_manager = self._make_artifact_manager(config.build_root)
-    self.recipe_load_env = self._make_recipe_load_env(self.config.build_target, self.downloads_manager)
+    self.recipe_load_env = self._make_recipe_load_env(self.config.build_target, self.downloads_manager, self.source_finder)
     self.script_manager = builder_script_manager(filenames, self.config.build_target, self)
     self.requirement_manager = requirement_manager()
     for script in self.script_manager.scripts.values():
@@ -59,8 +59,8 @@ class builder_env(object):
     return tools_manager(path.join(build_dir, 'tools'))
 
   @classmethod
-  def _make_recipe_load_env(clazz, build_target, downloads_manager):
-    return recipe_load_env(build_target, downloads_manager)
+  def _make_recipe_load_env(clazz, build_target, downloads_manager, source_finder):
+    return recipe_load_env(build_target, downloads_manager, source_finder)
   
   def update_tools(self, packages):
     check.check_package_descriptor_seq(packages)

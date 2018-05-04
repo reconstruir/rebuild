@@ -38,6 +38,7 @@ class step_manager(object):
     s = step_class()
     s.recipe = recipe_step
     rrr = recipe_step.resolve_values(env.recipe_load_env)
+#    rrr = {}
 #    print('FUCK step=%s\nFUCK   RESOLVED rrr=%s' % (s, rrr))
 #    print('FUCK -----')
 #    resolved_args = {}
@@ -74,8 +75,7 @@ class step_manager(object):
     poto = self._unroll_steps()
     for p in poto:
       p.values = p.recipe.resolve_values(env.recipe_load_env)
- 
-#      print('FUCK unrolled %s: sources=%s' % (p, p.sources(env)))
+      print('FUCK unrolled %s: sources=%s' % (p, p.sources(env)))
 #    self._steps = self._unroll_steps()
     for s in self._steps:
       step_args = dict_util.combine(s.args, output)

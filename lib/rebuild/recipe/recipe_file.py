@@ -11,7 +11,7 @@ from bes.text import string_list
 class recipe_file(dependency_provider):
 
   def __init__(self, filename, properties = None):
-    'Create a new hook.'
+    'Class to manage a recipe file.'
     check.check_string(filename)
     properties = properties or key_value_list()
     check.check_key_value_list(properties)

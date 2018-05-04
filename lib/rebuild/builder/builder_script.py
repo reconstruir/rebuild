@@ -34,7 +34,7 @@ class builder_script(object):
                                               self.descriptor.full_name,
                                               self.env.config.timestamp)
     self.source_unpacked_dir = path.join(self.working_dir, 'source')
-    self.build_dir = path.join(self.working_dir, 'rebuild')
+    self.build_dir = path.join(self.working_dir, 'build')
 
     self.stage_dir = path.join(self.working_dir, 'stage')
     self.staged_files_dir = path.join(self.stage_dir, 'files')
@@ -118,7 +118,13 @@ class builder_script(object):
 
   @property
   def sources(self):
-    return self._script_sources()
+    sources = self._script_sources()
+    assert False
+    for x in self._step_manager._unroll_steps():
+      if x:
+        print('FUCK: %s' % (x.sources()))
+      sources.extend(x.sources())
+    return sources
 
   file_checksums = namedtuple('file_checksums', 'sources,targets')
 

@@ -4,16 +4,20 @@ import os.path as path
 from bes.common import check, string_util
 from bes.compat import StringIO
 from bes.dependency import dependency_provider
+from bes.key_value import key_value_list
 from .value_base import value_base
 
 class git_address(value_base):
 
-  def __init__(self, env = None, address = '', revision = ''):
+  def __init__(self, env = None, address = '', revision = '', properties = None):
     super(git_address, self).__init__(env)
     check.check_string(address)
     check.check_string(revision)
     self.address = address
     self.revision = revision
+    properties = properties or key_value_list()
+    check.check_key_value_list(properties)
+    self.properties = properties
 
   def __str__(self):
     return self.value_to_string()
@@ -26,6 +30,9 @@ class git_address(value_base):
     buf.write(self.address)
     buf.write(' ')
     buf.write(self.revision)
+    if self.properties:
+      buf.write(' ')
+      buf.write(self.properties.to_string(value_delimiter = ' ', quote = True))
     return buf.getvalue()
 
   #@abstractmethod
@@ -37,9 +44,14 @@ class git_address(value_base):
   #@abstractmethod
   def parse(clazz, env, recipe_filename, value):
     parts = string_util.split_by_white_space(value)
-    if len(parts) != 2:
-      raise ValueError('expected address and tag instead of: %s' % (value))
-    return clazz(env, parts[0], parts[1])
+    if len(parts) < 2:
+      raise ValueError('expected address and revision instead of: %s' % (value))
+    address = parts[0]
+    revision = parts[1]
+    rest = value.replace(address, '')
+    rest = rest.replace(revision, '')
+    properties = key_value_list.parse(rest, options = key_value_list.KEEP_QUOTES)
+    return clazz(env, address = address, revision = revision, properties = properties)
   
   @classmethod
   #@abstractmethod
