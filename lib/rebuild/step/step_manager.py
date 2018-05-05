@@ -38,11 +38,15 @@ class step_manager(object):
     s = step_class()
     s.recipe = recipe_step
     rrr = recipe_step.resolve_values(env.recipe_load_env)
-#    rrr = {}
+#2    rrr = {}
 #    print('FUCK step=%s\nFUCK   RESOLVED rrr=%s' % (s, rrr))
 #    print('FUCK -----')
 #    resolved_args = {}
     resolved_args = rrr
+    if 'caca_tarball_address' in resolved_args:
+      del resolved_args['caca_tarball_address']
+#    for k, v in sorted(resolved_args.items()):
+#      print('FUCK %s: %s' % (k, v))
     check.check_dict(resolved_args)
     parsed_args = recipe_step.description.step_class.parse_step_args(script, env, resolved_args)
     check.check_dict(parsed_args)
