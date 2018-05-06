@@ -6,7 +6,7 @@ includedir=${prefix}/include
 
 Name: ${REBUILD_PACKAGE_NAME}
 Description: ${REBUILD_PACKAGE_DESCRIPTION}
-Version: ${REBUILD_PACKAGE_VERSION}
+Version: ${REBUILD_PACKAGE_FULL_VERSION}
 
 Requires: libstarch
 Libs: -L${libdir} -L${sharedlibdir} -lpotato -lstarch

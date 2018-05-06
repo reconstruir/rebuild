@@ -549,7 +549,7 @@ nov 23
 
 nov 30
 - use class registry and parsing scheme for hooks and checks
-- REBUILD_PACKAGE_VERSION insconsisent maybe should be REBUILDER_PACKAGE_VERSION
+- REBUILD_PACKAGE_FULL_VERSION insconsisent maybe should be REBUILDER_PACKAGE_VERSION
 - write unit tests for features used in
   proj/third_party/python/python_setuptools/build.py
   python/python_pillow/reb-python_pillow-test.py
@@ -834,9 +834,9 @@ makefile in step_make might not work
  - retire copy source to dir step
  - support mutliple tarballs like this
        tarball
-        macos: sdk-tools-darwin-${REBUILD_PACKAGE_VERSION}.zip dest=${REBUILD_STAGE_PREFIX_DIR}
+        macos: sdk-tools-darwin-${REBUILD_PACKAGE_FULL_VERSION}.zip dest=${REBUILD_STAGE_PREFIX_DIR}
         macos: platform-tools-latest-darwin.zip dest=${REBUILD_STAGE_PREFIX_DIR}
-        linux: sdk-tools-linux-${REBUILD_PACKAGE_VERSION}.zip dest=${REBUILD_STAGE_PREFIX_DIR}
+        linux: sdk-tools-linux-${REBUILD_PACKAGE_FULL_VERSION}.zip dest=${REBUILD_STAGE_PREFIX_DIR}
         linux: platform-tools-latest-linux.zip dest=${REBUILD_STAGE_PREFIX_DIR}
  - add value_dir class and fix step_patch to use it for patch_dir
  - better error when failing to parse a recipe
@@ -848,9 +848,13 @@ makefile in step_make might not work
   steps  
     step_autoconf
       tarball
-        all: libgpg-error-${REBUILD_PACKAGE_VERSION}.tar.bz2
+        all: libgpg-error-${REBUILD_PACKAGE_FULL_VERSION}.tar.bz2
       configure_flags
         all: --enable-static --disable-shared
         linux: --with-pic
 fails to find source because of the -1 in the version
-${REBUILD_PACKAGE_VERSION} in recipes for tarball names is fucked because it includes the revision
+
+2018-05-06
+ - gettext subsiutions should be unified with script.substitutions instead of custom
+ - any replacements should go through script.substituitions
+ 

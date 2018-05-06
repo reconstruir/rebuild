@@ -292,7 +292,7 @@ class package_manager(object):
     result = copy.deepcopy(pkg_desc.env_vars)
     variables = {
       'REBUILD_PACKAGE_ROOT_DIR': self._installation_dir,
-      'REBUILD_PACKAGE_VERSION': str(pkg_desc.version),
+      'REBUILD_PACKAGE_FULL_VERSION': str(pkg_desc.version),
       'REBUILD_PKG_NAME': pkg_desc.name,
     }
     

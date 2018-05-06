@@ -69,7 +69,7 @@ class tools_package_manager(object):
     env_vars = copy.deepcopy(pkg_desc.env_vars)
     variables = {
       'REBUILD_PACKAGE_ROOT_DIR': self._package_dir(pkg_desc),
-      'REBUILD_PACKAGE_VERSION': str(pkg_desc.version),
+      'REBUILD_PACKAGE_FULL_VERSION': str(pkg_desc.version),
       'REBUILD_PACKAGE_NAME': pkg_desc.name,
     }
     for key, value in env_vars.items():

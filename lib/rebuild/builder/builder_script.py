@@ -49,12 +49,15 @@ class builder_script(object):
     self.check_dir = path.join(self.working_dir, 'check')
     self.requirements_manager = package_manager(path.join(self.working_dir, 'requirements'), env.artifact_manager)
     self._add_steps_v2()
+    #print('FUCK: version=%s; type=%s' % (str(self.descriptor.version), type(self.descriptor.version)))
     self.substitutions = {
       'REBUILD_BUILD_DIR': self.build_dir,
       'REBUILD_PACKAGE_DESCRIPTION':  self.descriptor.name,
       'REBUILD_PACKAGE_FULL_NAME':  self.descriptor.full_name,
       'REBUILD_PACKAGE_NAME':  self.descriptor.name,
-      'REBUILD_PACKAGE_VERSION':  str(self.descriptor.version),
+      'REBUILD_PACKAGE_FULL_VERSION':  str(self.descriptor.version),
+      'REBUILD_PACKAGE_FULL_VERSION':  str(self.descriptor.version),
+      'REBUILD_PACKAGE_UPSTREAM_VERSION':  self.descriptor.version.upstream_version,
       'REBUILD_PYTHON_PLATFORM_NAME':   self.build_target.system,
       'REBUILD_REQUIREMENTS_BIN_DIR': self.requirements_manager.bin_dir,
       'REBUILD_REQUIREMENTS_DIR': self.requirements_manager.installation_dir,

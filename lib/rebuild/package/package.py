@@ -101,7 +101,7 @@ unset REBUILD_STUFF_DIR
       '${REBUILD_PACKAGE_PREFIX}': installation_dir,
       '${REBUILD_PACKAGE_NAME}': self.metadata.name,
       '${REBUILD_PACKAGE_DESCRIPTION}': self.metadata.name,
-      '${REBUILD_PACKAGE_VERSION}': str(self.metadata.build_version),
+      '${REBUILD_PACKAGE_FULL_VERSION}': str(self.metadata.build_version),
       '${REBUILD_PACKAGE_FULL_NAME}': self.package_descriptor.full_name,
       '#@REBUILD_HEAD@': self._ENV_FILE_HEAD_TEMPLATE,
       '#@REBUILD_TAIL@': self._ENV_FILE_TAIL_TEMPLATE,

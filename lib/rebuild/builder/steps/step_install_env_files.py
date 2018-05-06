@@ -35,7 +35,7 @@ class step_install_env_files(step):
     replacements = {
       'REBUILD_PACKAGE_NAME': script.descriptor.name,
       'REBUILD_PACKAGE_DESCRIPTION': script.descriptor.name,
-      'REBUILD_PACKAGE_VERSION': str(script.descriptor.version),
+      'REBUILD_PACKAGE_FULL_VERSION': str(script.descriptor.version),
     }
 
     env_file_variables = args.get('env_file_variables', {})
