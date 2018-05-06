@@ -43,9 +43,9 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
       return str(self.value)
     elif check.is_recipe_install_file_list(self.value):
       return ' '.join([ h.value_to_string() for h in self.value ])
-    elif check.is_recipe_file_list(self.value):
+    elif check.is_value_file_list(self.value):
       return str(self.value)
-    elif check.is_recipe_file(self.value):
+    elif check.is_value_file(self.value):
       return str(self.value)
     elif check.is_git_address(self.value):
       return str(self.value)
@@ -59,8 +59,8 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
     check.is_key_value_list,
     check.is_string_list,
     check.is_hook_list,
-    check.is_recipe_file,
-    check.is_recipe_file_list,
+    check.is_value_file,
+    check.is_value_file_list,
     check.is_recipe_install_file_list,
     check.is_recipe_install_file_list,
     check.is_git_address,
@@ -90,9 +90,9 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
     return buf.getvalue()
 
   @classmethod
-  def parse_mask_and_value(clazz, env, recipe_filename, text, argspec):
+  def parse_mask_and_value(clazz, env, value_filename, text, argspec):
     mask, delimiter, value = text.partition(':')
-    value = recipe_parser_util.parse_value(env, recipe_filename, value.strip(), argspec)
+    value = recipe_parser_util.parse_value(env, value_filename, value.strip(), argspec)
     return clazz(mask, value)
 
   def mask_matches(self, system):

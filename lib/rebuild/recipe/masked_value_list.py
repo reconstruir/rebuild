@@ -7,7 +7,7 @@ from rebuild.base import build_system
 from rebuild.recipe.value import hook_list
 from bes.key_value import key_value, key_value_list
 from bes.text import string_list
-from .recipe_file import recipe_file_list
+from .value_file import value_file_list
 from .recipe_install_file import recipe_install_file_list
 
 class masked_value_list(object):
@@ -76,13 +76,13 @@ class masked_value_list(object):
       return self._resolve_key_values(values)
     elif check.is_string_list(values[0]):
       return self._resolve_string_list(values)
-    elif check.is_recipe_file_list(values[0]):
-      return self._resolve_typed_list(values, recipe_file_list)
+    elif check.is_value_file_list(values[0]):
+      return self._resolve_typed_list(values, value_file_list)
     elif check.is_recipe_install_file_list(values[0]):
       return self._resolve_typed_list(values, recipe_install_file_list)
     elif check.is_hook_list(values[0]):
       return self._resolve_hook_list(values)
-    elif check.is_recipe_file(values[0]):
+    elif check.is_value_file(values[0]):
       return values[-1]
     elif check.is_git_address(values[0]):
       return values[-1]

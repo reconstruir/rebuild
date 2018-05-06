@@ -5,7 +5,7 @@ from bes.common import bool_util, check, object_util, string_util
 from bes.key_value import key_value, key_value_list
 from rebuild.recipe.value import value_type, hook_list
 from bes.text import comments, string_list
-from .recipe_file import recipe_file, recipe_file_list
+from .value_file import value_file, value_file_list
 from .recipe_install_file import recipe_install_file, recipe_install_file_list
 
 from .value import git_address
@@ -20,9 +20,9 @@ class recipe_parser_util(object):
     return key.strip()
 
   @classmethod
-  def parse_key_and_value(clazz, env, recipe_filename, text, arg_type):
+  def parse_key_and_value(clazz, env, value_filename, text, arg_type):
     check.check_recipe_load_env(env)
-    check.check_string(recipe_filename)
+    check.check_string(value_filename)
     check.check_string(text)
     check.check_value_type(arg_type)
     text = comments.strip_line(text)
@@ -35,13 +35,13 @@ class recipe_parser_util(object):
     value = value.strip() or None
     if not value:
       return key_value(key, value)
-    value = clazz.parse_value(env, recipe_filename, value, arg_type)
+    value = clazz.parse_value(env, value_filename, value, arg_type)
     return key_value(key, value)
 
   @classmethod
-  def parse_value(clazz, env, recipe_filename, value, arg_type):
+  def parse_value(clazz, env, value_filename, value, arg_type):
     check.check_recipe_load_env(env)
-    check.check_string(recipe_filename)
+    check.check_string(value_filename)
     check.check_string(value)
     check.check_value_type(arg_type)
     if arg_type == value_type.BOOL:
@@ -57,19 +57,19 @@ class recipe_parser_util(object):
     elif arg_type == value_type.HOOK_LIST:
       return hook_list.parse(value)
     elif arg_type == value_type.FILE_LIST:
-      return recipe_file_list.parse(value, recipe_filename)
+      return value_file_list.parse(value, value_filename)
     elif arg_type == value_type.FILE:
-      return recipe_file.parse(value, recipe_filename)
+      return value_file.parse(value, value_filename)
     elif arg_type == value_type.DIR:
-      return clazz._parse_dir(value, path.dirname(recipe_filename))
+      return clazz._parse_dir(value, path.dirname(value_filename))
     elif arg_type == value_type.FILE_INSTALL_LIST:
-      if recipe_filename:
-        base = path.dirname(recipe_filename)
+      if value_filename:
+        base = path.dirname(value_filename)
       else:
         base = None
       return clazz._parse_file_install_list(value, base)
     elif arg_type == value_type.GIT_ADDRESS:
-      return git_address.parse(env, recipe_filename, value)
+      return git_address.parse(env, value_filename, value)
     raise ValueError('unknown arg_type: %s' % (str(arg_type)))
 
   @classmethod
@@ -87,7 +87,7 @@ class recipe_parser_util(object):
     elif arg_type == value_type.HOOK_LIST:
       return hook_list()
     elif arg_type == value_type.FILE_LIST:
-      return recipe_file_list()
+      return value_file_list()
     elif arg_type == value_type.FILE:
       return None
     elif arg_type == value_type.DIR:
@@ -109,7 +109,7 @@ class recipe_parser_util(object):
     filename_abs = path.join(base, value)
     if not path.isdir(filename_abs):
       raise RuntimeError('dir not found: %s' % (filename_abs))
-    return recipe_file(filename_abs)
+    return value_file(filename_abs)
 
   @classmethod
   def _parse_file_install_list(clazz, value, base):

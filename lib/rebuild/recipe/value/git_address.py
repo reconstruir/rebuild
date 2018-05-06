@@ -42,7 +42,7 @@ class git_address(value_base):
 
   @classmethod
   #@abstractmethod
-  def parse(clazz, env, recipe_filename, value):
+  def parse(clazz, env, value_filename, value):
     parts = string_util.split_by_white_space(value)
     if len(parts) < 2:
       raise ValueError('expected address and revision instead of: %s' % (value))

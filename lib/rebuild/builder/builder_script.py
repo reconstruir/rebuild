@@ -12,7 +12,7 @@ from rebuild.base import build_blurb
 from bes.dependency import dependency_provider
 from rebuild.step import step_description, step_manager
 from rebuild.package import package_manager
-from rebuild.recipe import recipe_file
+from rebuild.recipe import value_file
 
 class builder_script(object):
 
@@ -146,7 +146,7 @@ class builder_script(object):
     sources.append(self.filename)
     caca_sources = []
     for source in sources:
-      if check.is_recipe_file(source):
+      if check.is_value_file(source):
         caca_sources.append(source.filename)
       elif check.is_string(source):
         caca_sources.append(source)
