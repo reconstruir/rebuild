@@ -47,6 +47,8 @@ class step_manager(object):
       del resolved_args['tarball_address']
     if 'tarball' in resolved_args:
       del resolved_args['tarball']
+    if 'tarball_dir' in resolved_args:
+      del resolved_args['tarball_dir']
 #    for k, v in sorted(resolved_args.items()):
 #      print('FUCK %s: %s' % (k, v))
     check.check_dict(resolved_args)

@@ -11,7 +11,7 @@ package tbar-1.0.1
 
   steps  
     step_setup
-      no_tarballs: True
+
     step_post_install
       install_files
         all: files/bin/tbar.py bin/tbar.py files/bin/tbar_code_gen.py

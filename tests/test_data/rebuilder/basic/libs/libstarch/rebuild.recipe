@@ -4,9 +4,8 @@ package libstarch 1.0.0
 
   steps  
     step_setup
-      copy_source_to_build_dir: True
-      tarball_source_dir_override
-        all: src
+      tarball_dir:
+        all: libs/libstarch/src dest=${REBUILD_BUILD_DIR}
     step_make
       make_flags
         linux: CC=gcc CFLAGS=-std=c99

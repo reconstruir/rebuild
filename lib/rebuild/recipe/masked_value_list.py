@@ -88,6 +88,8 @@ class masked_value_list(object):
       return values[-1]
     elif check.is_value_source_tarball(values[0]):
       return values[-1]
+    elif check.is_value_source_dir(values[0]):
+      return values[-1]
     raise TypeError('unknown value type: %s - %s' % (str(values[0]), type(values[0])))
 
   def _resolve_values(self, system):

@@ -47,6 +47,7 @@ class builder_script(object):
     self.logs_dir = path.join(self.working_dir, 'logs')
     self.test_dir = path.join(self.working_dir, 'test')
     self.check_dir = path.join(self.working_dir, 'check')
+    self.temp_dir = path.join(self.working_dir, 'temp')
     self.requirements_manager = package_manager(path.join(self.working_dir, 'requirements'), env.artifact_manager)
     self._add_steps_v2()
     #print('FUCK: version=%s; type=%s' % (str(self.descriptor.version), type(self.descriptor.version)))
@@ -55,7 +56,7 @@ class builder_script(object):
       'REBUILD_PACKAGE_DESCRIPTION':  self.descriptor.name,
       'REBUILD_PACKAGE_FULL_NAME':  self.descriptor.full_name,
       'REBUILD_PACKAGE_NAME':  self.descriptor.name,
-      'REBUILD_PACKAGE_FULL_VERSION':  str(self.descriptor.version),
+      'REBUILD_PACKAGE_VERSION':  str(self.descriptor.version),
       'REBUILD_PACKAGE_FULL_VERSION':  str(self.descriptor.version),
       'REBUILD_PACKAGE_UPSTREAM_VERSION':  self.descriptor.version.upstream_version,
       'REBUILD_PYTHON_PLATFORM_NAME':   self.build_target.system,
@@ -69,6 +70,7 @@ class builder_script(object):
       'REBUILD_STAGE_PREFIX_DIR':  self.staged_files_dir,
       'REBUILD_STAGE_PYTHON_LIB_DIR':  path.join(self.staged_files_dir, 'lib/python'),
       'REBUILD_TEST_DIR': self.test_dir,
+      'REBUILD_TEMP_DIR': self.temp_dir,
       'REBUILD_SOURCE_UNPACKED_DIR': self.source_unpacked_dir,
     }
       

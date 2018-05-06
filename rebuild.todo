@@ -858,4 +858,6 @@ fails to find source because of the -1 in the version
  - gettext subsiutions should be unified with script.substitutions instead of custom
  - any replacements should go through script.substituitions
  - add git_address unit tests for rebuilder
+ - value_base add notion of sources vs tarballs
+ - builder_script.py retire ${REBUILD_PACKAGE_VERSION}
  

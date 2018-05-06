@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from rebuild.step import compound_step
@@ -10,7 +9,6 @@ from .step_setup_patch import step_setup_patch
 from .step_setup_post_setup_hook import step_setup_post_setup_hook
 from .step_setup_post_unpack_hook import step_setup_post_unpack_hook
 from .step_setup_prepare_environment import step_setup_prepare_environment
-from .step_setup_unpack import step_setup_unpack
 from .step_caca_source import step_caca_source
 
 class step_setup(compound_step):
@@ -19,7 +17,6 @@ class step_setup(compound_step):
     step_setup_prepare_environment,
     step_setup_install_build_tool_requirements,
     step_caca_source,
-    step_setup_unpack,
     step_setup_patch,
     step_setup_post_unpack_hook,
     step_setup_copy_source_to_build_dir,

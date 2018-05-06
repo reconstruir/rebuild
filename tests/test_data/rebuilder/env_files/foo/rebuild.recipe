@@ -4,7 +4,6 @@ package foo-1.0.0
 
   steps
     step_setup
-      no_tarballs: True
       
     step_post_install
       install_files
