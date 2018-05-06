@@ -853,3 +853,4 @@ makefile in step_make might not work
         all: --enable-static --disable-shared
         linux: --with-pic
 fails to find source because of the -1 in the version
+${REBUILD_PACKAGE_VERSION} in recipes for tarball names is fucked because it includes the revision
