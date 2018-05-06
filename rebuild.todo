@@ -857,4 +857,5 @@ fails to find source because of the -1 in the version
 2018-05-06
  - gettext subsiutions should be unified with script.substitutions instead of custom
  - any replacements should go through script.substituitions
+ - add git_address unit tests for rebuilder
  

@@ -1,6 +1,6 @@
 !rebuild.recipe!
 
-package libpotato-1.0.0
+package libpotato 1.0.0
   export_compilation_flags_requirements
     all: libstarch
 

@@ -1,6 +1,6 @@
 !rebuild.recipe!
 
-package libstarch-1.0.0
+package libstarch 1.0.0
 
   steps  
     step_setup

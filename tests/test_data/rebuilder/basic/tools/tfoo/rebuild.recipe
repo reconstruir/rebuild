@@ -1,6 +1,6 @@
 !rebuild.recipe!
 
-package tfoo-1.0.0
+package tfoo 1.0.0
 
   env_vars
     all: TFOO_ENV1=tfoo_env1 TFOO_ENV2=tfoo_env2

@@ -17,7 +17,8 @@ class value_type(enum):
   STRING = 9
   STRING_LIST = 10
   GIT_ADDRESS = 11
-  SOURCE = 12
+  SOURCE_TARBALL = 12
+  SOURCE_DIR = 13
     
   DEFAULT = STRING
 

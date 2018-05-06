@@ -71,7 +71,7 @@ class recipe_parser_util(object):
       return clazz._parse_file_install_list(value, base)
     elif arg_type == value_type.GIT_ADDRESS:
       return value_git_address.parse(env, value_filename, value)
-    elif arg_type == value_type.SOURCE:
+    elif arg_type == value_type.SOURCE_TARBALL:
       return value_source.parse(env, value_filename, value)
     raise ValueError('unknown arg_type: %s' % (str(arg_type)))
 
@@ -99,7 +99,7 @@ class recipe_parser_util(object):
       return recipe_install_file_list()
     elif arg_type == value_type.GIT_ADDRESS:
       return value_git_address.default_value()
-    elif arg_type == value_type.SOURCE:
+    elif arg_type == value_type.SOURCE_TARBALL:
       return value_source.default_value()
     raise ValueError('unknown arg_type: %s' % (str(arg_type)))
 

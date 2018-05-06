@@ -1,6 +1,6 @@
 !rebuild.recipe!
 
-package tbar-1.0.0
+package tbar 1.0.0
 
   requirements
     all: TOOL tfoo >= 1.0.0

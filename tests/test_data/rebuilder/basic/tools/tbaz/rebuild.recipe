@@ -1,6 +1,6 @@
 !rebuild.recipe!
 
-package tbaz-1.0.0
+package tbaz 1.0.0
 
   steps
     step_setup

@@ -1,6 +1,6 @@
 !rebuild.recipe!
 
-package fructose-3.4.5-6
+package fructose 3.4.5-6
 
   instructions
     libfructose1
@@ -26,6 +26,8 @@ package fructose-3.4.5-6
 
   steps  
     step_autoconf
+      tarball
+        all: ${REBUILD_PACKAGE_NAME}-${REBUILD_PACKAGE_UPSTREAM_VERSION}.tar.gz
       configure_env
         linux: CFLAGS="-I${REBUILD_REQUIREMENTS_INCLUDE_DIR} -std=gnu99"
                LDFLAGS="-L${REBUILD_REQUIREMENTS_LIB_DIR}"
