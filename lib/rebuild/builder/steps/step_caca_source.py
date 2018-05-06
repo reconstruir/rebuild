@@ -25,21 +25,21 @@ class step_caca_source(step):
 #    skip_unpack                  bool         False
 #    tarball_source_dir_override  dir
 #    tarball_override             file
-    caca_source_dir               dir
+#    source_dir               dir
     tarball_address          git_address
-    caca_tarball                  source
+    tarball                  source
     '''
   
   def execute(self, script, env, args):
     values = self.values
 
     tarball_address = values['tarball_address']
-    caca_tarball = values['caca_tarball']
+    tarball = values['tarball']
 
-    if tarball_address and caca_tarball:
-      return step_result(False, 'Only one tarball_address and caca_tarball should be given.')
+    if tarball_address and tarball:
+      return step_result(False, 'Only one tarball_address and tarball should be given.')
     
-    if tarball_address or caca_tarball:
+    if tarball_address or tarball:
       setattr(script, 'fuck_no_tarballs', True)
       
     if tarball_address:
@@ -54,10 +54,10 @@ class step_caca_source(step):
                        props.dest,
                        strip_common_base = props.strip_common_base)
 
-    if caca_tarball:
-      caca_tarball.substitutions = script.substitutions
-      tarball_path = caca_tarball.sources()[0]
-      props = caca_tarball.decode_properties()
+    if tarball:
+      tarball.substitutions = script.substitutions
+      tarball_path = tarball.sources()[0]
+      props = tarball.decode_properties()
       self.blurb('Extracting %s to %s' % (path.relpath(tarball_path), path.relpath(props.dest)))
       archiver.extract(tarball_path,
                        props.dest,
