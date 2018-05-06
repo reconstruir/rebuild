@@ -28,7 +28,7 @@ class step_setup_unpack(step):
     '''
 
   def execute(self, script, env, args):
-      
+#    assert False
     no_tarballs = self.values.get('no_tarballs')
     if getattr(script, 'fuck_no_tarballs', False):
       no_tarballs = True

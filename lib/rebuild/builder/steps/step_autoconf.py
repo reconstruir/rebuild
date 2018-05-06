@@ -40,6 +40,12 @@ class step_autoconf_configure(step):
     tc = toolchain.get_toolchain(script.build_target)
       
     configure_script_path = path.join(script.source_unpacked_dir, configure_script)
+    if not path.isfile(configure_script_path):
+      configure_script_path = path.join(script.build_dir, configure_script)
+
+    if not path.isfile(configure_script_path):
+      return step_result(False, 'configure script not found: %s' % (path.relpath(configure_script_path)))
+    
     configure_cmd = [
       configure_script_path,
       '--prefix=%s' % (script.staged_files_dir),

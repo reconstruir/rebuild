@@ -111,9 +111,12 @@ class recipe_parser_util(object):
 
   @classmethod
   def _parse_dir(clazz, value, base):
-    filename_abs = path.join(base, value)
-    if not path.isdir(filename_abs):
-      raise RuntimeError('dir not found: %s' % (filename_abs))
+    if value.startswith('$'):
+      filename_abs = value
+    else:
+      filename_abs = path.join(base, value)
+#    if not path.isdir(filename_abs):
+#      raise RuntimeError('dir not found: %s' % (filename_abs))
     return value_file(filename_abs)
 
   @classmethod

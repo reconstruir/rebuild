@@ -57,6 +57,9 @@ class step_caca_source(step):
     if tarball:
       tarball.substitutions = script.substitutions
       tarball_path = tarball.sources()[0]
+      if not tarball_path:
+        return step_result(False, 'No tarball found for %s' % (script.descriptor.full_name))
+        
       props = tarball.decode_properties()
       self.blurb('Extracting %s to %s' % (path.relpath(tarball_path), path.relpath(props.dest)))
       archiver.extract(tarball_path,

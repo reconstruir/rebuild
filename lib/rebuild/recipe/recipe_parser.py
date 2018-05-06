@@ -191,7 +191,10 @@ class recipe_parser(object):
   def _parse_steps(self, node):
     steps = recipe_step_list()
     for child in node.children:
-      description = step_description.parse_description(child.data.text)
+      try:
+        description = step_description.parse_description(child.data.text)
+      except RuntimeError as ex:
+        self._error(ex.message)
       step = self._parse_step(description, child)
       steps.append(step)
     return steps

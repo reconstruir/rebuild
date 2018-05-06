@@ -832,4 +832,24 @@ makefile in step_make might not work
  - recipe_install_file should be a subclass of value_file
  - change source_dir to recipe_dir
  - retire copy source to dir step
- 
+ - support mutliple tarballs like this
+       tarball
+        macos: sdk-tools-darwin-${REBUILD_PACKAGE_VERSION}.zip dest=${REBUILD_STAGE_PREFIX_DIR}
+        macos: platform-tools-latest-darwin.zip dest=${REBUILD_STAGE_PREFIX_DIR}
+        linux: sdk-tools-linux-${REBUILD_PACKAGE_VERSION}.zip dest=${REBUILD_STAGE_PREFIX_DIR}
+        linux: platform-tools-latest-linux.zip dest=${REBUILD_STAGE_PREFIX_DIR}
+ - add value_dir class and fix step_patch to use it for patch_dir
+ - better error when failing to parse a recipe
+ - FIX:
+ package libgpg_error 1.27-1
+  properties
+    pkg_config_name=libgpg_error
+
+  steps  
+    step_autoconf
+      tarball
+        all: libgpg-error-${REBUILD_PACKAGE_VERSION}.tar.bz2
+      configure_flags
+        all: --enable-static --disable-shared
+        linux: --with-pic
+fails to find source because of the -1 in the version
