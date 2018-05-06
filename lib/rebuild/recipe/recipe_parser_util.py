@@ -9,6 +9,7 @@ from .value_file import value_file, value_file_list
 from .recipe_install_file import recipe_install_file, recipe_install_file_list
 
 from .value import value_git_address
+from .value import value_source
 
 class recipe_parser_util(object):
 
@@ -70,6 +71,8 @@ class recipe_parser_util(object):
       return clazz._parse_file_install_list(value, base)
     elif arg_type == value_type.GIT_ADDRESS:
       return value_git_address.parse(env, value_filename, value)
+    elif arg_type == value_type.SOURCE:
+      return value_source.parse(env, value_filename, value)
     raise ValueError('unknown arg_type: %s' % (str(arg_type)))
 
   @classmethod
@@ -95,7 +98,9 @@ class recipe_parser_util(object):
     elif arg_type == value_type.FILE_INSTALL_LIST:
       return recipe_install_file_list()
     elif arg_type == value_type.GIT_ADDRESS:
-      return None
+      return value_git_address.default_value()
+    elif arg_type == value_type.SOURCE:
+      return value_source.default_value()
     raise ValueError('unknown arg_type: %s' % (str(arg_type)))
 
   @classmethod

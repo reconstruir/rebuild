@@ -45,6 +45,8 @@ class step_manager(object):
     resolved_args = rrr
     if 'caca_tarball_address' in resolved_args:
       del resolved_args['caca_tarball_address']
+    if 'caca_tarball' in resolved_args:
+      del resolved_args['caca_tarball']
 #    for k, v in sorted(resolved_args.items()):
 #      print('FUCK %s: %s' % (k, v))
     check.check_dict(resolved_args)
@@ -79,7 +81,7 @@ class step_manager(object):
     poto = self._unroll_steps()
     for p in poto:
       p.values = p.recipe.resolve_values(env.recipe_load_env)
-      print('FUCK unrolled %s: sources=%s' % (p, p.sources(env)))
+      #print('FUCK unrolled %s: sources=%s' % (p, p.sources(env)))
 #    self._steps = self._unroll_steps()
     for s in self._steps:
       step_args = dict_util.combine(s.args, output)

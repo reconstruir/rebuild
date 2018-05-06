@@ -22,5 +22,12 @@ class source_finder_chain(object):
         return result
     return None
 
+  def find_tarball(self, filename):
+    for finder in self._finders:
+      result = finder.find_tarball(filename)
+      if result:
+        return result
+    return None
+  
 check.register_class(source_finder_chain, include_seq = False)
   
