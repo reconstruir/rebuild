@@ -1,9 +1,6 @@
-#!/usr/bin/env python
-#-*- coding:utf-8 -*-
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from .compound_step import compound_step
-from .hook import hook, hook_list
-from .hook_registry import hook_registry
 from .step import step, step_result
 from .step_aborted import step_aborted
 from .step_arg_spec import step_arg_spec

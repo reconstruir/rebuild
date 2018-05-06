@@ -4,7 +4,7 @@
 from bes.common import algorithm, check, type_checked_list
 from bes.compat import StringIO
 from rebuild.base import build_system
-from rebuild.step import hook_list
+from rebuild.recipe.value import hook_list
 from bes.key_value import key_value, key_value_list
 from bes.text import string_list
 from .recipe_file import recipe_file_list

@@ -1,6 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import copy, os, os.path as path
+import copy, inspect, os, os.path as path
 
 from abc import abstractmethod, ABCMeta
 from collections import namedtuple
@@ -13,13 +13,13 @@ from bes.system.compat import with_metaclass
 from rebuild.base import build_blurb, build_target
 from bes.dependency import dependency_resolver
 from rebuild.toolchain import toolchain
-from rebuild.value import value_type
+#from rebuild.recipe.value import value_type
 
 from .step_registry import step_registry
 from .step_result import step_result
 from .step_arg_spec import step_arg_spec
 
-class step_register_meta(ABCMeta, value_type.CONSTANTS):
+class step_register_meta(ABCMeta): #, value_type.CONSTANTS):
 
   def __new__(meta, name, bases, class_dict):
     clazz = ABCMeta.__new__(meta, name, bases, class_dict)
@@ -46,8 +46,13 @@ class step(with_metaclass(step_register_meta, object)):
   def _determine_args_definition(clazz):
     defs = clazz.define_args()
     if check.is_string(defs):
-      defs = step_arg_spec.parse_many(defs)
-    check.check_dict(defs)
+      try:
+        defs = step_arg_spec.parse_many(defs)
+      except RuntimeError as ex:
+        filename = inspect.getfile(clazz.define_args)
+        line_number = inspect.getsourcelines(clazz.define_args)[1]
+        raise RuntimeError('%s: %s:%s' % (ex.message, filename, line_number))
+      check.check_dict(defs)
     return defs
 
 #  @abstractmethod
@@ -265,11 +270,10 @@ class step(with_metaclass(step_register_meta, object)):
   def call_hooks(clazz, hooks, script, env):
     check.check_hook_list(hooks)
     for hook in hooks:
-      hook_result = hook.execute(script, env) 
-      if not isinstance(hook_result, step_result):
-        raise RuntimeError('hook did not return step_result: %s' % (h))
-      if not hook_result.success:
-        return hook_result
+      rv = hook.execute(script, env)
+      check.is_hook_result(rv)
+      if not rv.success:
+        return step_result(rv.success, rv.message)
     return step_result(True, None)
   
   @classmethod

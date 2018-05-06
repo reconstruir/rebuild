@@ -3,7 +3,7 @@
 
 from bes.testing.unit_test import unit_test
 from rebuild.recipe import recipe_parser_util as RPU, recipe_load_env
-from rebuild.value import value_type
+from rebuild.recipe.value import value_type
 
 class test_recipe_parser_util(unit_test):
 

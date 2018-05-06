@@ -5,7 +5,6 @@ from rebuild.step import step, step_result
 from rebuild.tools import install
 
 from rebuild.recipe import recipe_parser_util
-from rebuild.value import value_type
 
 from bes.common import check, object_util, variable
 from bes.fs import file_util

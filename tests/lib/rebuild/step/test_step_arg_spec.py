@@ -3,7 +3,7 @@
 
 from bes.testing.unit_test import unit_test
 from rebuild.step import step_arg_spec as AS
-from rebuild.value import value_type as VT
+from rebuild.recipe.value import value_type as VT
 
 class test_step_arg_spec(unit_test):
 

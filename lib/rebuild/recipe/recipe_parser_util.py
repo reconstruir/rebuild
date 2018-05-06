@@ -1,11 +1,9 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
 from bes.common import bool_util, check, object_util, string_util
 from bes.key_value import key_value, key_value_list
-from rebuild.value import value_type
-from rebuild.step import hook_list
+from rebuild.recipe.value import value_type, hook_list
 from bes.text import comments, string_list
 from .recipe_file import recipe_file, recipe_file_list
 from .recipe_install_file import recipe_install_file, recipe_install_file_list

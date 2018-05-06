@@ -12,8 +12,8 @@ from bes.text import string_list, tree_text_parser
 from bes.python import code
 
 from rebuild.base import build_version, requirement, requirement_list, package_descriptor
-from rebuild.step import step_description
-from rebuild.value import value_type
+from rebuild.step.step_description import step_description
+from rebuild.recipe.value import value_type
 from rebuild.instruction import instruction_list
 
 from .masked_value import masked_value

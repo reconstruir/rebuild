@@ -4,7 +4,7 @@
 from bes.testing.unit_test import unit_test
 from rebuild.recipe import masked_value as V, masked_value_list as VL, recipe_load_env
 from rebuild.base import build_system
-from rebuild.value import value_type
+from rebuild.recipe.value import value_type
 
 class test_masked_value_list(unit_test):
 

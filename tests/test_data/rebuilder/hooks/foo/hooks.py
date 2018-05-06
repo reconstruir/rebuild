@@ -1,6 +1,6 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
-from rebuild.step import hook
+
+from rebuild.recipe.value import hook
 
 class _test_hook1(hook):
     
@@ -9,7 +9,7 @@ class _test_hook1(hook):
     from bes.fs import file_replace
     f = path.join(script.staged_files_bin_dir, 'foo.py')
     file_replace.replace(f, { '@FOO@': 'hook1' }, word_boundary = True)
-    return self.step_result(True, None)
+    return self.result(True)
   
 class _test_hook2(hook):
     
@@ -18,5 +18,4 @@ class _test_hook2(hook):
     from bes.fs import file_replace
     f = path.join(script.staged_files_bin_dir, 'foo.py')
     file_replace.replace(f, { '@BAR@': 'hook2' }, word_boundary = True)
-    return self.step_result(True, None)
-    
+    return self.result(True)

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from abc import ABCMeta, abstractmethod
@@ -8,7 +7,7 @@ from bes.dependency import dependency_provider
 from bes.text import string_list
 
 from .hook_registry import hook_registry
-from .step_result import step_result
+from .hook_result import hook_result
 
 class hook_register_meta(ABCMeta):
 
@@ -19,7 +18,7 @@ class hook_register_meta(ABCMeta):
 
 class hook(with_metaclass(hook_register_meta, dependency_provider)):
 
-  step_result = step_result
+  result = hook_result
   
   def __init__(self):
     'Create a new hook.'

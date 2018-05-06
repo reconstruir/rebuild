@@ -826,5 +826,7 @@ makefile in step_make might not work
 
 2018-04-27
  - retire env_vars when replaced with env files
- 
+
+2018-05-05
+ - need hook tests that both pass and fail
  

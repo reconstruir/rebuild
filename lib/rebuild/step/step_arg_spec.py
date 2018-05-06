@@ -1,10 +1,9 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.common import check, string_util
 from bes.text import comments
 from collections import namedtuple
-from rebuild.value import value_type
+from rebuild.recipe.value import value_type
 
 class step_arg_spec(namedtuple('step_arg_spec', 'name,atype,default,line_number')):
   
@@ -28,7 +27,7 @@ class step_arg_spec(namedtuple('step_arg_spec', 'name,atype,default,line_number'
     name = parts[0]
     atype = parts[1].upper()
     if not value_type.name_is_valid(atype):
-      raise RuntimeError('invalid arg type: "%s"' % (atype))
+      raise RuntimeError('invalid arg type "%s"' % (atype))
     default = None
     if len(parts) > 2:
       default = ' '.join(parts[2:])
@@ -41,7 +40,7 @@ class step_arg_spec(namedtuple('step_arg_spec', 'name,atype,default,line_number'
     lines = text.split('\n')
     for i, line in enumerate(lines):
       if line:
-        spec = step_arg_spec.parse(line, i + 1)
+        spec = clazz.parse(line, i + 1)
         if spec.name in result:
           raise ValueError('duplicate arg spec: %s' % (spec.name))
         result[spec.name] = spec

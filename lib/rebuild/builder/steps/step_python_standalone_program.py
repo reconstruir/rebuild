@@ -8,7 +8,6 @@ from bes.fs import file_util
 from bes.system import execute
 from rebuild.step import compound_step, step, step_result
 from rebuild.tools import install
-from rebuild.value import value_type
 
 class step_python_make_standalone_program(step):
   'A step to make standalone python programs using pyinstaller.'
