@@ -19,11 +19,6 @@ class sample_step_save_args1(step):
     self.saved_args = _save_args(args)
     return step_result(True, None)
 
-  @classmethod
-  def parse_step_args(clazz, script, env, args):
-    keys = [ key for key in args.keys() if key.startswith('desc1_') ]
-    return { key: args[key] for key in keys }
-
 class sample_step_save_args2(step):
   def __init__(self):
     self.tag = 'sample_step_save_args2'
@@ -34,11 +29,6 @@ class sample_step_save_args2(step):
     self.saved_args = _save_args(args)
     return step_result(True, None)
 
-  @classmethod
-  def parse_step_args(clazz, script, env, args):
-    keys = [ key for key in args.keys() if key.startswith('desc2_') ]
-    return { key: args[key] for key in keys }
-
 class sample_step_save_args3(step):
   def __init__(self):
     self.tag = 'sample_step_save_args3'
@@ -48,11 +38,6 @@ class sample_step_save_args3(step):
   def execute(self, script, env, args):
     self.saved_args = _save_args(args)
     return step_result(True, None)
-
-  @classmethod
-  def parse_step_args(clazz, script, env, args):
-    keys = [ key for key in args.keys() if key.startswith('desc3_') ]
-    return { key: args[key] for key in keys }
 
 class sample_step_fake_success(step):
   def __init__(self):

@@ -83,15 +83,6 @@ class step(with_metaclass(step_register_meta, object)):
     'Return a list of arg specs.'
     return {}
   
-  @classmethod
-  def parse_step_args(clazz, script, env, values):
-    return {}
-    result = {}
-    if values:
-      check.check_dict(values)
-      result.update(values)
-    return result
-
   def sources_keys(self):
     return []
 

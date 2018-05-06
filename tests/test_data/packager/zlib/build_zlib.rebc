@@ -1,12 +1,13 @@
 !rebuild.recipe!
 
-package zlib-1.2.8-1
+package zlib 1.2.8-1
   properties
 
   steps  
     step_autoconf
+      tarball
+        all: ${REBUILD_PACKAGE_NAME}-${REBUILD_PACKAGE_UPSTREAM_VERSION}.tar.gz
       configure_env
         all: CFLAGS=${REBUILD_COMPILE_CFLAGS}
       configure_flags
         all: --static
-      copy_source_to_build_dir: True

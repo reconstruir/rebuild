@@ -37,24 +37,19 @@ class step_manager(object):
     step_class = recipe_step.description.step_class
     s = step_class()
     s.recipe = recipe_step
-    rrr = recipe_step.resolve_values(env.recipe_load_env)
-#2    rrr = {}
-#    print('FUCK step=%s\nFUCK   RESOLVED rrr=%s' % (s, rrr))
-#    print('FUCK -----')
+#    rrr = recipe_step.resolve_values(env.recipe_load_env)
+#    rrr = {}
 #    resolved_args = {}
-    resolved_args = rrr
-    if 'tarball_address' in resolved_args:
-      del resolved_args['tarball_address']
-    if 'tarball' in resolved_args:
-      del resolved_args['tarball']
-    if 'tarball_dir' in resolved_args:
-      del resolved_args['tarball_dir']
-#    for k, v in sorted(resolved_args.items()):
-#      print('FUCK %s: %s' % (k, v))
-    check.check_dict(resolved_args)
-    parsed_args = recipe_step.description.step_class.parse_step_args(script, env, resolved_args)
-    check.check_dict(parsed_args)
-    s.args = dict_util.combine(resolved_args, parsed_args)
+#    resolved_args = rrr
+#    if 'tarball_address' in resolved_args:
+#      del resolved_args['tarball_address']
+#    if 'tarball' in resolved_args:
+#      del resolved_args['tarball']
+#    if 'tarball_dir' in resolved_args:
+#      del resolved_args['tarball_dir']
+#    check.check_dict(resolved_args)
+#    s.args = resolved_args
+    s.args = {}
     return self._add_step(s)
 
   def add_steps_v2(self, steps, script, env):
@@ -80,16 +75,11 @@ class step_manager(object):
   def execute(self, script, env):
     script.timer.start('step_manager.execute()')
     output = {}
-    poto = self._unroll_steps()
-    for p in poto:
-      p.values = p.recipe.resolve_values(env.recipe_load_env)
-      #print('FUCK unrolled %s: sources=%s' % (p, p.sources(env)))
-#    self._steps = self._unroll_steps()
+    self._steps = self._unroll_steps()
     for s in self._steps:
+      s.values = s.recipe.resolve_values(env.recipe_load_env)
       step_args = dict_util.combine(s.args, output)
       script.timer.start('step %s' % (s.__class__.__name__))
-#      print('FUCK EXECUTE step=%s\nFUCK   args=%s' % (s, step_args))
-#      print('FUCK -----')
       result = s.execute(script, env, step_args)
       script.timer.stop()
       output.update(result.output or {})

@@ -800,8 +800,6 @@ april 16
 - hook interface is fucked the abstract method warning doesnt happen if the signature of execute changes.
 
 steps that use args argument in execute:
-  step_setup_unpack
-  step_setup_copy_source_to_build_dir
   step_python_egg_install
   step_python_egg_check_downloaded_dependencies
   step_make_install
@@ -809,7 +807,6 @@ steps that use args argument in execute:
   step_extract_tarballs_to_stage_dir
   step_cleanup_strip_binaries
   step_cleanup_binary_filenames
-  step_check_darwin_archs
   step_artifact_create_check_package
   step_python_egg_install
   step_python_egg_check_downloaded_dependencies

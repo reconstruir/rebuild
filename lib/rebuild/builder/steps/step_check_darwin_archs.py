@@ -29,6 +29,10 @@ class step_check_darwin_archs(step):
   def execute(self, script, env, args):
     if not script.build_target.is_darwin():
       return step_result(True, None)
+    
+    if self.values.get('ignore_check_darwin_archs'):
+      return step_result(True, None)
+      
     if path.isdir(script.staged_files_lib_dir):
       expected_archs = script.build_target.archs
       for lib in library.list_libraries(script.staged_files_lib_dir, relative = False):
@@ -40,9 +44,6 @@ class step_check_darwin_archs(step):
           else:
             actual_label = 'None'
           msg = 'Expected archs for %s dont match.  Should be \"%s\" instead if \"%s\"' % (lib, expected_label, actual_label)
-          if args.get('ignore_check_darwin_archs', False):
-            return step_result(True, None)
-          else:
-            return step_result(False, msg)
+          return step_result(False, msg)
 
     return step_result(True, None)

@@ -2,7 +2,6 @@
 
 from rebuild.step import compound_step
 
-from .step_setup_copy_source_to_build_dir import step_setup_copy_source_to_build_dir
 from .step_setup_install_build_tool_requirements import step_setup_install_build_tool_requirements
 from .step_setup_install_requirements import step_setup_install_requirements
 from .step_setup_patch import step_setup_patch
@@ -19,7 +18,6 @@ class step_setup(compound_step):
     step_caca_source,
     step_setup_patch,
     step_setup_post_unpack_hook,
-    step_setup_copy_source_to_build_dir,
     step_setup_install_requirements,
     step_setup_post_setup_hook,
   ]
