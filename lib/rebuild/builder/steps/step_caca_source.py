@@ -27,7 +27,7 @@ class step_caca_source(step):
 #    tarball_override             file
     caca_source_dir               dir
     caca_tarball_address          git_address
-#    caca_tarball                  source
+    caca_tarball                  source
     '''
   
   def execute(self, script, env, args):

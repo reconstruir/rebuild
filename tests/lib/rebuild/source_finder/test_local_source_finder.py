@@ -145,6 +145,14 @@ class test_local_source_finder(unit_test):
     self.assertEqual( path.join(tmp_dir, 'a/alpha-Darwin-1.2.3.tar.gz'),
                       finder.find_source('alpha', '1.2.3', 'macos') )
     
+  def test_local_find_tarball(self):
+    tmp_dir = source_dir_maker.make([
+      'file a/alpha-1.2.3.tar.gz "${tarball}" 644',
+      'file a/alpha-1.2.4.tar.gz "${tarball}" 644',
+    ])
+    finder = local_source_finder(tmp_dir)
+    self.assertEqual( path.join(tmp_dir, 'a/alpha-1.2.3.tar.gz'),
+                      finder.find_tarball('alpha-1.2.3.tar.gz') )
     
 if __name__ == '__main__':
   unit_test.main()

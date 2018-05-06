@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from .source_finder import source_finder
@@ -14,13 +13,16 @@ class repo_source_finder(source_finder):
     self.update_only_once = update_only_once
     self._updated = False
     
+  #@abstractmethod
   def find_source(self, name, version, system):
-    if self.update_only_once:
-      self._update_once()
-    else:
-      self._update()
-    return self._find_tarball(self.repo.root, name, version, system)
+    self._update_if_needed()
+    return self._find_by_name_and_version(self.repo.root, name, version, system)
 
+  #@abstractmethod
+  def find_tarball(self, filename):
+    self._update_if_needed()
+    return self._find_by_filename(self.repo.root, filename)
+  
   def _update_once(self):
     if self._updated:
       return
@@ -33,3 +35,9 @@ class repo_source_finder(source_finder):
     else:
       build_blurb.blurb('rebuild', 'Updating repo sources: %s' % (path.relpath(self.repo.root)))
       self.repo.clone_or_pull()
+
+  def _update_if_needed(self):
+    if self.update_only_once:
+      self._update_once()
+    else:
+      self._update()

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from abc import abstractmethod, ABCMeta
@@ -11,11 +10,19 @@ from .tarball_finder import tarball_finder
 class source_finder(with_metaclass(ABCMeta, object)):
 
   @abstractmethod
-  def find_source(self, name, version, build_target):
+  def find_source(self, name, version, system):
+    pass
+
+  @abstractmethod
+  def find_tarball(self, filename):
     pass
 
   @classmethod
-  def _find_tarball(clazz, where, name, version, system):
+  def _find_by_filename(self, where, filename):
+    return tarball_finder.find_by_filename(where, filename)
+  
+  @classmethod
+  def _find_by_name_and_version(clazz, where, name, version, system):
     check.check_string(name)
     check.check_string(version)
     check.check_string(system)

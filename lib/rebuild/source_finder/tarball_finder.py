@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path, re
@@ -16,6 +15,16 @@ class tarball_finder(object):
         filenames += file_find.find(d, max_depth = 4, relative = False, file_type = file_find.FILE | file_find.LINK)
     return clazz.find_in_list(filenames, name, version)
 
+  @classmethod
+  def find_by_filename(self, where, filename):
+    tarballs = file_find.find_fnmatch(where, [ filename ], max_depth = 4, relative = False, file_type = file_find.FILE | file_find.LINK)
+    if not tarballs:
+      return None
+    if len(tarballs) == 1:
+      return tarballs[0]
+    else:
+      raise RuntimeError('Too many tarballs found for %s' % (filename))
+  
   @classmethod
   def find_in_list(clazz, filenames, name, version):
     'Find the filenames that match name and version.'
