@@ -37,7 +37,7 @@ class step_caca_source(step):
     tarball = values['tarball']
 
     if tarball_address and tarball:
-      return step_result(False, 'Only one tarball_address and tarball should be given.')
+      return step_result(False, 'Only one of: tarball_address and tarball should be given.')
     
     if tarball_address or tarball:
       setattr(script, 'fuck_no_tarballs', True)

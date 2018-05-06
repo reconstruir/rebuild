@@ -77,8 +77,8 @@ class test_rebuilder_script(script_unit_test):
     self.assertEqual( [ 'foo-1.0.0.tar.gz' ], test.artifacts )
     tgz = path.join(test.artifacts_dir, 'foo-1.0.0.tar.gz')
     self.assertEqual( [
-      'files/foo-1.0.0/bin/bar.sh',
-      'files/foo-1.0.0/usr/bin/foo.sh',
+      'files/bin/bar.sh',
+      'files/usr/bin/foo.sh',
       'metadata/metadata.json',
     ], test.artifacts_members['foo-1.0.0.tar.gz'])
     

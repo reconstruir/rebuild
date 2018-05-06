@@ -1,13 +1,9 @@
 !rebuild.recipe!
 
 package foo-1.0.0
-  steps  
+  steps
     step_setup
-      extra_tarballs
-        all: foo-extra-stuff
-      skip_unpack
-        all: True
-
-    step_extract_tarballs_to_stage_dir
-
+      tarball
+        all: foo-extra-stuff.tar.gz dest=${REBUILD_STAGE_PREFIX_DIR}
     step_post_install
+      skip_binary_third_party_prefix: True
