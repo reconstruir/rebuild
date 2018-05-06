@@ -830,4 +830,5 @@ makefile in step_make might not work
 2018-05-05
  - need hook tests that both pass and fail
  - recipe_install_file should be a subclass of value_file
+ - change source_dir to recipe_dir
  

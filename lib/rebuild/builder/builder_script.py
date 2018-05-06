@@ -66,6 +66,7 @@ class builder_script(object):
       'REBUILD_STAGE_PREFIX_DIR':  self.staged_files_dir,
       'REBUILD_STAGE_PYTHON_LIB_DIR':  path.join(self.staged_files_dir, 'lib/python'),
       'REBUILD_TEST_DIR': self.test_dir,
+      'REBUILD_SOURCE_UNPACKED_DIR': self.source_unpacked_dir,
     }
       
   @property

@@ -9,12 +9,9 @@ from .value_base import value_base
 class value_source(value_base):
 
   def __init__(self, env = None, filename = '', properties = None):
-    super(value_source, self).__init__(env)
+    super(value_source, self).__init__(env, properties = properties)
     check.check_string(filename)
     self.filename = filename
-    properties = properties or key_value_list()
-    check.check_key_value_list(properties)
-    self.properties = properties
 
   def __str__(self):
     return self.value_to_string()
@@ -25,9 +22,10 @@ class value_source(value_base):
   def value_to_string(self):
     buf = StringIO()
     buf.write(self.filename)
-    if self.properties:
+    ps = self.properties_to_string()
+    if ps:
       buf.write(' ')
-      buf.write(self.properties.to_string(value_delimiter = ' ', quote = True))
+      buf.write(ps)
     return buf.getvalue()
 
   #@abstractmethod
@@ -35,6 +33,10 @@ class value_source(value_base):
     'Return a list of sources this caca provides or None if no sources.'
     return [ self.env.source_finder.find_tarball(self.filename) ]
 
+  #@abstractmethod
+  def substitutions_changed(self):
+    self.filename = self.substitute(self.filename)
+  
   @classmethod
   #@abstractmethod
   def parse(clazz, env, value_filename, value):
@@ -43,7 +45,7 @@ class value_source(value_base):
       raise ValueError('expected filename instead of: %s' % (value))
     filename = parts[0]
     rest = value.replace(filename, '')
-    properties = key_value_list.parse(rest, options = key_value_list.KEEP_QUOTES)
+    properties = clazz.parse_properties(rest)
     return clazz(env, filename = filename, properties = properties)
   
   @classmethod

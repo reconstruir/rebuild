@@ -9,14 +9,11 @@ from .value_base import value_base
 class value_git_address(value_base):
 
   def __init__(self, env = None, address = '', revision = '', properties = None):
-    super(value_git_address, self).__init__(env)
+    super(value_git_address, self).__init__(env, properties = properties)
     check.check_string(address)
     check.check_string(revision)
     self.address = address
     self.revision = revision
-    properties = properties or key_value_list()
-    check.check_key_value_list(properties)
-    self.properties = properties
 
   def __str__(self):
     return self.value_to_string()
@@ -29,9 +26,10 @@ class value_git_address(value_base):
     buf.write(self.address)
     buf.write(' ')
     buf.write(self.revision)
-    if self.properties:
+    ps = self.properties_to_string()
+    if ps:
       buf.write(' ')
-      buf.write(self.properties.to_string(value_delimiter = ' ', quote = True))
+      buf.write(ps)
     return buf.getvalue()
 
   #@abstractmethod
@@ -39,6 +37,10 @@ class value_git_address(value_base):
     'Return a list of sources this caca provides or None if no sources.'
     return [ self.downloaded_tarball_path() ]
 
+  #@abstractmethod
+  def substitutions_changed(self):
+    pass
+  
   @classmethod
   #@abstractmethod
   def parse(clazz, env, value_filename, value):
@@ -49,7 +51,7 @@ class value_git_address(value_base):
     revision = parts[1]
     rest = value.replace(address, '')
     rest = rest.replace(revision, '')
-    properties = key_value_list.parse(rest, options = key_value_list.KEEP_QUOTES)
+    properties = clazz.parse_properties(rest)
     return clazz(env, address = address, revision = revision, properties = properties)
   
   @classmethod
