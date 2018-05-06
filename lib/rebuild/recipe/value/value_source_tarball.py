@@ -6,10 +6,10 @@ from bes.compat import StringIO
 from bes.key_value import key_value_list
 from .value_base import value_base
 
-class value_source(value_base):
+class value_source_tarball(value_base):
 
   def __init__(self, env = None, filename = '', properties = None):
-    super(value_source, self).__init__(env, properties = properties)
+    super(value_source_tarball, self).__init__(env, properties = properties)
     check.check_string(filename)
     self.filename = filename
 
@@ -53,4 +53,4 @@ class value_source(value_base):
   def default_value(clazz):
     return None
 
-check.register_class(value_source, include_seq = False)
+check.register_class(value_source_tarball, include_seq = False)

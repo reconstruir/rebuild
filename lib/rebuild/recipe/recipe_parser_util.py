@@ -9,7 +9,7 @@ from .value_file import value_file, value_file_list
 from .recipe_install_file import recipe_install_file, recipe_install_file_list
 
 from .value import value_git_address
-from .value import value_source
+from .value import value_source_tarball
 
 class recipe_parser_util(object):
 
@@ -72,7 +72,7 @@ class recipe_parser_util(object):
     elif arg_type == value_type.GIT_ADDRESS:
       return value_git_address.parse(env, value_filename, value)
     elif arg_type == value_type.SOURCE_TARBALL:
-      return value_source.parse(env, value_filename, value)
+      return value_source_tarball.parse(env, value_filename, value)
     raise ValueError('unknown arg_type: %s' % (str(arg_type)))
 
   @classmethod
@@ -100,7 +100,7 @@ class recipe_parser_util(object):
     elif arg_type == value_type.GIT_ADDRESS:
       return value_git_address.default_value()
     elif arg_type == value_type.SOURCE_TARBALL:
-      return value_source.default_value()
+      return value_source_tarball.default_value()
     raise ValueError('unknown arg_type: %s' % (str(arg_type)))
 
   @classmethod

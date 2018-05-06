@@ -86,7 +86,7 @@ class masked_value_list(object):
       return values[-1]
     elif check.is_value_git_address(values[0]):
       return values[-1]
-    elif check.is_value_source(values[0]):
+    elif check.is_value_source_tarball(values[0]):
       return values[-1]
     raise TypeError('unknown value type: %s - %s' % (str(values[0]), type(values[0])))
 

@@ -5,5 +5,5 @@ from .hook_registry import hook_registry
 from .hook_result import hook_result
 from .value_base import value_base
 from .value_git_address import value_git_address
-from .value_source import value_source
+from .value_source_tarball import value_source_tarball
 from .value_type import value_type
