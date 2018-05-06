@@ -8,7 +8,7 @@ from bes.text import comments, string_list
 from .value_file import value_file, value_file_list
 from .recipe_install_file import recipe_install_file, recipe_install_file_list
 
-from .value import git_address
+from .value import value_git_address
 
 class recipe_parser_util(object):
 
@@ -69,7 +69,7 @@ class recipe_parser_util(object):
         base = None
       return clazz._parse_file_install_list(value, base)
     elif arg_type == value_type.GIT_ADDRESS:
-      return git_address.parse(env, value_filename, value)
+      return value_git_address.parse(env, value_filename, value)
     raise ValueError('unknown arg_type: %s' % (str(arg_type)))
 
   @classmethod

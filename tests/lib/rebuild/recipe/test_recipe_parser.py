@@ -619,7 +619,7 @@ package foo-1.2.3-4
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_file_list\n    file_list_value: test_file1.txt test_file2.txt', str(r[0].steps[0]) )
 
-  def test_step_value_git_address(self):
+  def test_step_git_address(self):
     text = '''!rebuild.recipe!
 package foo-1.2.3-4
 

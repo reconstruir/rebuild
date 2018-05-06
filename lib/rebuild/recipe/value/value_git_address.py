@@ -7,10 +7,10 @@ from bes.dependency import dependency_provider
 from bes.key_value import key_value_list
 from .value_base import value_base
 
-class git_address(value_base):
+class value_git_address(value_base):
 
   def __init__(self, env = None, address = '', revision = '', properties = None):
-    super(git_address, self).__init__(env)
+    super(value_git_address, self).__init__(env)
     check.check_string(address)
     check.check_string(revision)
     self.address = address
@@ -70,4 +70,4 @@ class git_address(value_base):
   def needs_download(self):
     return not path.isfile(self.downloaded_tarball_path())
     
-check.register_class(git_address, include_seq = False)
+check.register_class(value_git_address, include_seq = False)
