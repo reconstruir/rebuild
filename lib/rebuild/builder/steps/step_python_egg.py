@@ -21,7 +21,7 @@ class step_python_egg_build(step):
     shell_flags         string_list
     shell_env           key_values
     update_version_tag  string
-    tarball_address     string_list
+    tarball_address git_address
     setup_script        string       setup.py
     setup_dir           string
     '''
@@ -40,7 +40,7 @@ class step_python_egg_build(step):
       filename = path.join(script.build_dir, update_version_tag)
       assert path.isfile(filename)
       v1 = version_info.read_file(filename)
-      v2 = v1.change(address = tarball_address[0], tag = tarball_address[1], timestamp = time_util.timestamp(timezone = True))
+      v2 = v1.change(address = tarball_address.address, tag = tarball_address.revision, timestamp = time_util.timestamp(timezone = True))
       v2.save_file(filename)
     flags = ' '.join(shell_flags)
     cmd = '${PYTHON} %s bdist_egg --plat-name=${REBUILD_PYTHON_PLATFORM_NAME} %s' % (setup_script, flags)

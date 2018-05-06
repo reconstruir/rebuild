@@ -30,7 +30,7 @@ class value_base(with_metaclass(ABCMeta, object)):
   
   def decode_properties(self):
     props = self.properties.to_dict()
-    dest = props.get('dest', '${REBUILD_SOURCE_DIR')
+    dest = props.get('dest', '${REBUILD_SOURCE_UNPACKED_DIR}')
     dest = variable.substitute(dest, self._substitutions)
     strip_common_base = props.get('strip_common_base', True)
     return self.decoded_properties(dest, strip_common_base)

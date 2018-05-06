@@ -26,26 +26,29 @@ class step_caca_source(step):
 #    tarball_source_dir_override  dir
 #    tarball_override             file
     caca_source_dir               dir
-    caca_tarball_address          git_address
+    tarball_address          git_address
     caca_tarball                  source
     '''
   
   def execute(self, script, env, args):
     values = self.values
 
-    caca_tarball_address = values['caca_tarball_address']
+    tarball_address = values['tarball_address']
     caca_tarball = values['caca_tarball']
 
-    if caca_tarball_address and caca_tarball:
-      return step_result(False, 'Only one caca_tarball_address and caca_tarball should be given.')
+    if tarball_address and caca_tarball:
+      return step_result(False, 'Only one tarball_address and caca_tarball should be given.')
     
-    if caca_tarball_address:
-      caca_tarball_address.substitutions = script.substitutions
-      downloaded_path = caca_tarball_address.downloaded_tarball_path()
-      if caca_tarball_address.needs_download():
-        self.blurb('Downloading %s@%s to %s' % (caca_tarball_address.address, caca_tarball_address.revision, path.relpath(downloaded_path)))
-        caca_tarball_address.download()
-      props = caca_tarball_address.decode_properties()
+    if tarball_address or caca_tarball:
+      setattr(script, 'fuck_no_tarballs', True)
+      
+    if tarball_address:
+      tarball_address.substitutions = script.substitutions
+      downloaded_path = tarball_address.downloaded_tarball_path()
+      if tarball_address.needs_download():
+        self.blurb('Downloading %s@%s to %s' % (tarball_address.address, tarball_address.revision, path.relpath(downloaded_path)))
+        tarball_address.download()
+      props = tarball_address.decode_properties()
       self.blurb('Extracting %s to %s' % (path.relpath(downloaded_path), path.relpath(props.dest)))
       archiver.extract(downloaded_path,
                        props.dest,
@@ -68,9 +71,9 @@ class step_caca_source(step):
   def tarballs(self, env):
     result = []
     values = self.values
-    caca_tarball_address = values['caca_tarball_address']
-    if caca_tarball_address:
-      result.extend(caca_tarball_address.sources())
+    tarball_address = values['tarball_address']
+    if tarball_address:
+      result.extend(tarball_address.sources())
     return result
 
 #  def sources_keys(self):

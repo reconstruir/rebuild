@@ -28,7 +28,10 @@ class step_setup_unpack(step):
     '''
 
   def execute(self, script, env, args):
+      
     no_tarballs = self.values.get('no_tarballs')
+    if getattr(script, 'fuck_no_tarballs', False):
+      no_tarballs = True
     tarball_name = self.values.get('tarball_name')
     skip_unpack = self.values.get('skip_unpack')
       
