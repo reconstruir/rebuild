@@ -106,7 +106,7 @@ class test_builder_autoconf(unit_test):
       if clazz.DEBUG:
         print('log_dir: %s' % (script.logs_dir))
     asserter.assertEqual( bldr.SCRIPT_SUCCESS, rv.status )
-    tarball = rv.packager_result.output['published_tarball']
+    tarball = rv.packager_result.outputs['published_tarball']
     pkg = package(tarball)
     return pkg
     
