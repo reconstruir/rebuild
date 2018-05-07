@@ -724,7 +724,6 @@ step_make accepts shell_env
 
 march 30
 - factor out revision again
-- env_file_variables appears to be unused
 - missing env_files unit tests
 - missing unit test for a lot of args
 - make steps be pluggins
@@ -803,10 +802,7 @@ steps that use args argument in execute:
   step_python_egg_install
   step_python_egg_check_downloaded_dependencies
   step_make_install
-  step_install_env_files
   step_extract_tarballs_to_stage_dir
-  step_cleanup_strip_binaries
-  step_cleanup_binary_filenames
   step_artifact_create_check_package
   step_python_egg_install
   step_python_egg_check_downloaded_dependencies
@@ -857,4 +853,5 @@ fails to find source because of the -1 in the version
  - add git_address unit tests for rebuilder
  - value_base add notion of sources vs tarballs
  - builder_script.py retire ${REBUILD_PACKAGE_VERSION}
+ - s/strip_binaries/strip_release_binaries/
  

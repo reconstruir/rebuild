@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
@@ -13,13 +12,20 @@ class step_cleanup_strip_binaries(step):
   def __init__(self):
     super(step_cleanup_strip_binaries, self).__init__()
 
+  @classmethod
+  def define_args(clazz):
+    return '''
+    dont_strip_binaries   bool        False
+    strip_binaries        bool        True
+    '''
+    
   def execute(self, script, env, args):
     is_release = script.build_target.level == build_level.RELEASE
     if is_release:
-      if args.get('dont_strip_binaries', False):
+      if self.values.get('dont_strip_binaries'):
         return step_result(True, None)
     else:
-      if not args.get('strip_binaries', False):
+      if not self.values.get('strip_binaries'):
         return step_result(True, None)
     if not path.isdir(script.staged_files_dir):
       return step_result(True, None)

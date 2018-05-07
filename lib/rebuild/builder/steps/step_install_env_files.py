@@ -38,8 +38,6 @@ class step_install_env_files(step):
       'REBUILD_PACKAGE_FULL_VERSION': str(script.descriptor.version),
     }
 
-    env_file_variables = args.get('env_file_variables', {})
-    replacements.update(env_file_variables)
     for env_file in env_files:
       dst_file = path.join(script.stagged_env_dir, path.basename(env_file))
       file_replace.copy_with_substitute(env_file, dst_file, replacements, backup = False)
