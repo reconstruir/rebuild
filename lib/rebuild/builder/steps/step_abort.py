@@ -9,5 +9,6 @@ class step_abort(step):
   def __init__(self):
     super(step_abort, self).__init__()
 
-  def execute(self, script, env, args):
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     raise step_aborted()

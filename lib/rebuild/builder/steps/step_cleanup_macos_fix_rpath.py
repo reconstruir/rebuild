@@ -14,7 +14,8 @@ class step_cleanup_macos_fix_rpath(step):
   def __init__(self):
     super(step_cleanup_macos_fix_rpath, self).__init__()
 
-  def execute(self, script, env, args):
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     if not script.build_target.is_darwin():
       return step_result(True, None)
     if not path.isdir(script.staged_files_dir):

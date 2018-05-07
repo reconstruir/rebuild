@@ -15,7 +15,8 @@ class step_cleanup_library_filenames(step):
   def __init__(self):
     super(step_cleanup_library_filenames, self).__init__()
 
-  def execute(self, script, env, args):
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     if path.isdir(script.staged_files_lib_dir):
       libraries = library.list_libraries(script.staged_files_lib_dir, relative = True)
       for l in libraries:

@@ -31,7 +31,7 @@ class compound_step(step):
     return super(compound_step, self).recipe()
 
   #@abstractmethod
-  def execute(self, script, env, args):
+  def execute(self, script, env, values, inputs):
     assert False
   
   @recipe.setter

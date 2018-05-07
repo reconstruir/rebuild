@@ -17,8 +17,8 @@ class step_run_script(step):
     script_env key_values
     '''
     
-  def execute(self, script, env, args):
-    values = self.values
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     script_file = values.get('script')
     script_env = values.get('script_env')
       

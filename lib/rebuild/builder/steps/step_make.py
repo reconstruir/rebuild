@@ -26,8 +26,8 @@ class step_make(step):
   def extra_make_flags(self):
     return []
 
-  def execute(self, script, env, args):
-    values = self.values
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     make_env = values.get('make_env')
     make_flags = values.get('make_flags') or []
     make_num_jobs = values.get('make_num_jobs')
@@ -64,8 +64,8 @@ class step_make_install(step):
     install_target       string       install
     '''
     
-  def execute(self, script, env, args):
-    values = self.values
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     makefile = values.get('makefile')
     install_target = values.get('install_target')
     make_install_flags = values.get('make_install_flags')
@@ -104,8 +104,8 @@ class step_make_test(step):
     make_test_env    key_values
     '''
     
-  def execute(self, script, env, args):
-    values = self.values
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     make_test_flags = values.get('make_test_flags')
     make_test_env = values.get('make_test_env')
     makefile = values.get('makefile')

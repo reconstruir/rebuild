@@ -22,8 +22,8 @@ class step_install_install_files(step):
     install_files   file_install_list
     '''
     
-  def execute(self, script, env, args):
-    values = self.values
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     install_files = values.get('install_files', [])
       
     if not install_files:

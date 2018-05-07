@@ -5,15 +5,15 @@ from bes.common import check
 
 class step_result(object):
 
-  def __init__(self, success, message = None, failed_step = None, output = {}):
+  def __init__(self, success, message = None, failed_step = None, outputs = {}):
     check.check_bool(success)
     self.success = success
     if message:
       check.check_string(message)
     self.message = message
     self.failed_step = failed_step
-    check.check_dict(output)
-    self.output = copy.deepcopy(output)
+    check.check_dict(outputs)
+    self.outputs = copy.deepcopy(outputs)
 
   def __str__(self):
-    return '%s:%s:%s:%s' % (self.success, self.message, self.failed_step, self.output)
+    return '%s:%s:%s:%s' % (self.success, self.message, self.failed_step, self.outputs)

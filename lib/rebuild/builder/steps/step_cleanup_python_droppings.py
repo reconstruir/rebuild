@@ -11,7 +11,8 @@ class step_cleanup_python_droppings(step):
   def __init__(self):
     super(step_cleanup_python_droppings, self).__init__()
 
-  def execute(self, script, env, args):
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     droppings = [
       'lib/python/easy-install.pth',
       'lib/python/site.py',

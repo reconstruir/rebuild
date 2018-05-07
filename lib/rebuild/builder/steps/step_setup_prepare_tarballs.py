@@ -23,9 +23,8 @@ class step_setup_prepare_tarballs(step):
     tarball                  source_tarball
     '''
   
-  def execute(self, script, env, args):
-    values = self.values
-
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     tarball_address = values['tarball_address']
     tarball_dir = values['tarball_dir']
     tarball = values['tarball']
@@ -87,8 +86,7 @@ class step_setup_prepare_tarballs(step):
 
   def tarballs(self, env):
     result = []
-    values = self.values
-    tarball_address = values['tarball_address']
+    tarball_address = self._values['tarball_address']
     if tarball_address:
       result.extend(tarball_address.sources())
     return result

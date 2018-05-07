@@ -10,7 +10,8 @@ class step_setup_prepare_environment(step):
   def __init__(self):
     super(step_setup_prepare_environment, self).__init__()
 
-  def execute(self, script, env, args):
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     # We want a clean environment for tools to work
     os_env.path_reset()
     return step_result(True, None)

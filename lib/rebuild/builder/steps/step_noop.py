@@ -9,5 +9,6 @@ class step_noop(step):
   def __init__(self):
     super(step_noop, self).__init__()
 
-  def execute(self, script, env, args):
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     return step_result(True)

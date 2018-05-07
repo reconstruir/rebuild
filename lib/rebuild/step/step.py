@@ -54,8 +54,7 @@ class step(with_metaclass(step_register_meta, object)):
     return defs
 
   @abstractmethod
-#  def execute(self, script, env, values, inputs):
-  def execute(self, script, env, args):
+  def execute(self, script, env, values, inputs):
     'Execute the step.'
     pass
  

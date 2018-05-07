@@ -18,8 +18,8 @@ class step_python_lib_build(step):
     python_lib_build_env     key_values
     '''
 
-  def execute(self, script, env, args):
-    values = self.values
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     python_lib_build_env = values.get('python_lib_build_env')
     python_lib_build_flags = values.get('python_lib_build_flags')
 
@@ -39,8 +39,8 @@ class step_python_lib_install(step):
     python_lib_install_env     key_values
     '''
 
-  def execute(self, script, env, args):
-    values = self.values
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     python_lib_install_env = values.get('python_lib_install_env')
     python_lib_install_flags = values.get('python_lib_install_flags')
 

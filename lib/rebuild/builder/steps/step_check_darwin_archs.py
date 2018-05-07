@@ -26,11 +26,12 @@ class step_check_darwin_archs(step):
         return False
     return True
 
-  def execute(self, script, env, args):
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     if not script.build_target.is_darwin():
       return step_result(True, None)
     
-    if self.values.get('ignore_check_darwin_archs'):
+    if values.get('ignore_check_darwin_archs'):
       return step_result(True, None)
       
     if path.isdir(script.staged_files_lib_dir):

@@ -19,13 +19,14 @@ class step_cleanup_strip_binaries(step):
     strip_release_binaries    bool        True
     '''
     
-  def execute(self, script, env, args):
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     is_release = script.build_target.level == build_level.RELEASE
     if is_release:
-      if self.values.get('dont_strip_binaries'):
+      if values.get('dont_strip_binaries'):
         return step_result(True, None)
     else:
-      if not self.values.get('strip_release_binaries'):
+      if not values.get('strip_release_binaries'):
         return step_result(True, None)
     if not path.isdir(script.staged_files_dir):
       return step_result(True, None)

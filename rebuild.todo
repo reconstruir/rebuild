@@ -830,4 +830,5 @@ makefile in step_make might not work
  - any replacements should go through script.substituitions
  - value_base add notion of sources vs tarballs
  - fix sources() sources_keys() etc mess
+ - make step_result a namtedtuple
  

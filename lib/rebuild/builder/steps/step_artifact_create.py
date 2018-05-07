@@ -17,7 +17,8 @@ class step_artifact_create_make_package(step):
   def __init__(self):
     super(step_artifact_create_make_package, self).__init__()
 
-  def execute(self, script, env, args):
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     if not script.has_stage_dir():
       return step_result(False, script.format_message('No files to package found in {stage_dir}'))
 
@@ -30,7 +31,7 @@ class step_artifact_create_make_package(step):
                                             script.build_target,
                                             script.stage_dir)
     self.blurb('staged tarball: %s' % (path.relpath(staged_tarball)))
-    return step_result(True, None, output = { 'staged_tarball': staged_tarball })
+    return step_result(True, None, outputs = { 'staged_tarball': staged_tarball })
   
 class step_artifact_create_test_package(step):
   'Test an package with any tests give for it in its rebuildfile.'
@@ -45,9 +46,10 @@ class step_artifact_create_test_package(step):
     package_test_env key_values
     '''
   
-  def execute(self, script, env, args):
-    tests = self.values.get('tests')
-    package_test_env = self.values.get('package_test_env')
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
+    tests = values.get('tests')
+    package_test_env = values.get('package_test_env')
     
     if not tests:
       message = 'No tests for %s' % (script.descriptor.full_name)
@@ -59,7 +61,7 @@ class step_artifact_create_test_package(step):
       self.blurb(message)
       return step_result(True, message)
       
-    staged_tarball = args.get('staged_tarball', None)
+    staged_tarball = inputs.get('staged_tarball', None)
     if not staged_tarball or not path.isfile(staged_tarball):
       message = 'Missing staged tarball for %s: ' % (str(script.descriptor))
       self.log_d(message)
@@ -89,13 +91,14 @@ class step_artifact_create_publish_package(step):
   def __init__(self):
     super(step_artifact_create_publish_package, self).__init__()
 
-  def execute(self, script, env, args):
-    staged_tarball = args.get('staged_tarball', None)
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
+    staged_tarball = inputs.get('staged_tarball', None)
     assert staged_tarball
     assert archiver.is_valid(staged_tarball)
     published_tarball = env.artifact_manager.publish(staged_tarball, script.build_target)
     self.blurb('published tarball: %s' % (path.relpath(published_tarball)))
-    return step_result(True, None, output = { 'published_tarball': published_tarball })
+    return step_result(True, None, outputs = { 'published_tarball': published_tarball })
 
 class step_artifact_create(compound_step):
   'A collection of multiple cleanup steps.'

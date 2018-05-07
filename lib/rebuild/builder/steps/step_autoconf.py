@@ -20,8 +20,8 @@ class step_autoconf_configure(step):
     need_autoreconf   bool        False
     '''
     
-  def execute(self, script, env, args):
-    values = self.values
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     configure_env = values.get('configure_env')
     configure_flags = values.get('configure_flags') or []
     configure_script = values.get('configure_script')
@@ -70,8 +70,8 @@ class step_autoconf_pre_configure_hooks(step):
   def define_args(clazz):
     return 'pre_configure_hooks hook_list'
     
-  def execute(self, script, env, args):
-    values = self.values
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     return self.call_hooks(values.get('pre_configure_hooks'), script, env)
 
 class step_autoconf_post_configure_hooks(step):
@@ -84,8 +84,8 @@ class step_autoconf_post_configure_hooks(step):
   def define_args(clazz):
     return 'post_configure_hooks hook_list'
     
-  def execute(self, script, env, args):
-    values = self.values
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     return self.call_hooks(values.get('post_configure_hooks'), script, env)
 
 class step_autoconf(compound_step):

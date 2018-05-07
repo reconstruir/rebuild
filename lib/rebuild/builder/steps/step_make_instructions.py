@@ -13,7 +13,8 @@ class step_make_instructions(step):
   def __init__(self):
     super(step_make_instructions, self).__init__()
 
-  def execute(self, script, env, args):
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     if not script.instructions:
       message = 'No build instructions for %s' % (script.descriptor.full_name)
       self.log_d(message)

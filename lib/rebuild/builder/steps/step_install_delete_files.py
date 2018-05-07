@@ -19,8 +19,8 @@ class step_install_delete_files(step):
     delete_files_ignore_missing  bool         False
     '''
   
-  def execute(self, script, env, args):
-    values = self.values
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     delete_files = values.get('delete_files')
     ignore_missing = values.get('delete_files_ignore_missing')
 

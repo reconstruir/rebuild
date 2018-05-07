@@ -26,8 +26,8 @@ class step_python_egg_build(step):
     setup_dir           string
     '''
     
-  def execute(self, script, env, args):
-    values = self.values
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     shell_flags = values.get('shell_flags')
     shell_env = values.get('shell_env')
     update_version_tag = values.get('update_version_tag')
@@ -58,8 +58,9 @@ class step_python_egg_install(step):
     setup_dir           string
     '''
     
-  def execute(self, script, env, args):
-    setup_dir = self.values.get('setup_dir')
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
+    setup_dir = values.get('setup_dir')
     if setup_dir:
       dist_dir = path.join(script.build_dir, setup_dir, 'dist')
     else:
@@ -96,8 +97,9 @@ class step_python_egg_check_downloaded_dependencies(step):
     setup_dir           string
     '''
     
-  def execute(self, script, env, args):
-    setup_dir = self.values.get('setup_dir')
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
+    setup_dir = values.get('setup_dir')
     if setup_dir:
       eggs_build_dir = path.join(script.build_dir, setup_dir, '.eggs')
     else:

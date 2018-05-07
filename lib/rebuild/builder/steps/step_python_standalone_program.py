@@ -21,8 +21,8 @@ class step_python_make_standalone_program(step):
     standalone_programs   file_install_list
     '''
     
-  def execute(self, script, env, args):
-    values = self.values
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     standalone_programs = values.get('standalone_programs', [])
       
     if not standalone_programs:

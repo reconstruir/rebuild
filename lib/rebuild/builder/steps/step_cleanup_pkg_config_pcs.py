@@ -12,7 +12,8 @@ class step_cleanup_pkg_config_pcs(step):
   def __init__(self):
     super(step_cleanup_pkg_config_pcs, self).__init__()
 
-  def execute(self, script, env, args):
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     pc_files = pkg_config.find_pc_files(script.staged_files_dir)
     for pc_file in pc_files:
       if pkg_config_file.rewrite_cleanup(pc_file, pc_file, backup = False):

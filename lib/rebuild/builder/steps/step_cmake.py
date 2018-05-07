@@ -19,8 +19,8 @@ class step_cmake_configure(step):
     cmake_env     key_values
     '''
     
-  def execute(self, script, env, args):
-    values = self.values
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     cmake_env = values.get('cmake_env')
     cmake_flags = values.get('cmake_flags')
 
@@ -53,7 +53,8 @@ class step_cmake_install(step):
   def __init__(self):
     super(step_cmake_install, self).__init__()
 
-  def execute(self, script, env, args):
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     cmd = 'make install prefix=$REBUILD_STAGE_PREFIX_DIR'
     return self.call_shell(cmd, script, env)
 

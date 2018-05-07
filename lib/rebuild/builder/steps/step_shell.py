@@ -17,8 +17,8 @@ class step_shell(step):
     shell_env     key_values
     '''
   
-  def execute(self, script, env, args):
-    values = self.values
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     shell_env = values.get('shell_env')
     cmd = values.get('cmd')
     check.check_string(cmd)

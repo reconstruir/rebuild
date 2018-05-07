@@ -21,7 +21,6 @@ class step_manager(object):
     log.add_logging(self, tag)
     build_blurb.add_blurb(self, tag)
     self._steps = []
-    self._args = {}
     self._tag = tag
     self._stop_step = None
 
@@ -33,12 +32,11 @@ class step_manager(object):
       step_instance = step_class()
       check.check_step(step_instance)
       step_instance.recipe = recipe_step
-      step_instance.args = {}
       step_instance.tag = self._tag
       steps.append(step_instance)
     self._steps = self._unroll_steps(steps)
     for step in self._steps:
-      step.values = step.recipe.resolve_values(env.recipe_load_env)
+      step._values = step.recipe.resolve_values(env.recipe_load_env)
     
   @classmethod
   def _unroll_children_steps(clazz, step, result):
@@ -58,18 +56,17 @@ class step_manager(object):
       
   def execute(self, script, env):
     script.timer.start('step_manager.execute()')
-    output = {}
+    outputs = {}
     for step in self._steps:
-      step_args = dict_util.combine(step.args, output)
       script.timer.start('step %s' % (step.__class__.__name__))
-      result = step.execute(script, env, step_args)
+      result = step.execute(script, env, step._values, outputs)
       script.timer.stop()
-      output.update(result.output or {})
+      outputs.update(result.outputs or {})
       if not result.success:
         script.timer.stop()
-        return step_result(False, message = result.message, failed_step = result.failed_step, output = output)
+        return step_result(False, message = result.message, failed_step = result.failed_step, outputs = outputs)
     script.timer.stop()
-    return step_result(True, output = output)
+    return step_result(True, outputs = outputs)
 
   def step_list(self, args):
     'Return a list of 2 tuples.  Each tuple has ( step, args )'

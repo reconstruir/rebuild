@@ -23,8 +23,8 @@ class step_setup_patch(step):
     patch_dir          dir        ${REBUILD_SOURCE_UNPACKED_DIR}
     '''
     
-  def execute(self, script, env, args):
-    values = self.values
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     patches = [ f.filename for f in values.get('patches') or [] ]
     patch_strip_depth = values.get('patch_strip_depth')
     patch_program = values.get('patch_program') or 'patch'

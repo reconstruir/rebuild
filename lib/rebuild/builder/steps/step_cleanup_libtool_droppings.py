@@ -11,7 +11,8 @@ class step_cleanup_libtool_droppings(step):
   def __init__(self):
     super(step_cleanup_libtool_droppings, self).__init__()
 
-  def execute(self, script, env, args):
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     staged_files_lib_dir = path.join(script.staged_files_dir, 'lib')
     if path.isdir(staged_files_lib_dir):
       droppings = file_find.find_fnmatch(path.join(script.staged_files_dir, 'lib'),

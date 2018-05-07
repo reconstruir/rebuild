@@ -13,6 +13,6 @@ class step_setup_post_unpack_hook(step):
   def define_args(clazz):
     return 'post_unpack_hooks hook_list'
     
-  def execute(self, script, env, args):
-    values = self.values
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     return self.call_hooks(values.get('post_unpack_hooks'), script, env)

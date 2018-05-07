@@ -22,8 +22,8 @@ class step_perl_module_setup(step):
     makefile                  file         Makefile.PL
     '''
     
-  def execute(self, script, env, args):
-    values = self.values
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     perl_module_setup_env = values.get('perl_module_setup_env')
     perl_module_setup_flags = values.get('perl_module_setup_flags')
     makefile = values.get('makefile')
@@ -46,7 +46,8 @@ class step_perl_module_post_install_cleanup(step):
   def __init__(self):
     super(step_perl_module_post_install_cleanup, self).__init__()
 
-  def execute(self, script, env, args):
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     bt = script.build_target
     if not bt.system == build_system.LINUX:
       return step_result(True)

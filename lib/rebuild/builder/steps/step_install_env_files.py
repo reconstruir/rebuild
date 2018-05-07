@@ -20,9 +20,8 @@ class step_install_env_files(step):
     return '''
     env_files   file_list
     '''
-    
-  def execute(self, script, env, args):
-    values = self.values
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     env_files = values.get('env_files')
     if env_files:
       env_files = [ f.filename for f in env_files ]

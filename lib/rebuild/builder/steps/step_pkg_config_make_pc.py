@@ -22,8 +22,8 @@ class step_pkg_config_make_pc(step):
     pc_file_variables  key_values
     '''
     
-  def execute(self, script, env, args):
-    values = self.values
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     pc_files = [ f.filename for f in values.get('pc_files') or [] ]
     pc_file_variables = values.get('pc_file_variables')
     

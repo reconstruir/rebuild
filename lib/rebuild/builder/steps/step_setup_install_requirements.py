@@ -13,7 +13,8 @@ class step_setup_install_requirements(step):
   def __init__(self):
     super(step_setup_install_requirements, self).__init__()
 
-  def execute(self, script, env, args):
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     package_desc = script.descriptor
     requirements = env.requirement_manager.resolve_deps_poto([package_desc.name],
                                                              env.config.build_target.system,

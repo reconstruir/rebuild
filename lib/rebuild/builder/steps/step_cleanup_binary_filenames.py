@@ -18,10 +18,11 @@ class step_cleanup_binary_filenames(step):
     skip_binary_third_party_prefix   bool        False
     '''
     
-  def execute(self, script, env, args):
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
     if not path.isdir(script.staged_files_bin_dir):
       return step_result(True, None)
-    if self.values.get('skip_binary_third_party_prefix'):
+    if values.get('skip_binary_third_party_prefix'):
       return step_result(True, None)
       
     binaries = dir_util.list(script.staged_files_bin_dir)
