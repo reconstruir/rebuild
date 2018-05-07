@@ -32,31 +32,6 @@ class step_artifact_create_make_package(step):
     self.blurb('staged tarball: %s' % (path.relpath(staged_tarball)))
     return step_result(True, None, output = { 'staged_tarball': staged_tarball })
   
-class step_artifact_create_check_package(step):
-  'Check that the staged package is good.'
-
-  def __init__(self):
-    super(step_artifact_create_check_package, self).__init__()
-
-  def execute(self, script, env, args):
-    checks = args.get('checks', [])
-    if not checks:
-      message = 'No checks for %s' % (script.descriptor.full_name)
-      return step_result(True, message)
-    
-    staged_tarball = args.get('staged_tarball', None)
-    assert staged_tarball
-    assert archiver.is_valid(staged_tarball)
-    unpack_dir = path.join(script.check_dir, 'unpacked')
-    archiver.extract(staged_tarball, unpack_dir, strip_common_base = True)
-
-    for check_class in checks:
-      check = check_class()
-      check_result = check.check(path.join(unpack_dir, 'files'), script)
-      if not check_result.success:
-        return step_result(False, check_result.message)
-    return step_result(True, None)
-
 class step_artifact_create_test_package(step):
   'Test an package with any tests give for it in its rebuildfile.'
 
@@ -71,9 +46,8 @@ class step_artifact_create_test_package(step):
     '''
   
   def execute(self, script, env, args):
-    values = self.values
-    tests = values.get('tests', [])
-    package_test_env = values.get('package_test_env', key_value_list()) or key_value_list()
+    tests = self.values.get('tests')
+    package_test_env = self.values.get('package_test_env')
     
     if not tests:
       message = 'No tests for %s' % (script.descriptor.full_name)
@@ -127,7 +101,6 @@ class step_artifact_create(compound_step):
   'A collection of multiple cleanup steps.'
   __steps__ = [
     step_artifact_create_make_package,
-    step_artifact_create_check_package,
     step_artifact_create_test_package,
     step_artifact_create_publish_package,
   ]

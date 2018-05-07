@@ -52,8 +52,14 @@ class step_python_egg_install(step):
   def __init__(self):
     super(step_python_egg_install, self).__init__()
 
+  @classmethod
+  def define_args(clazz):
+    return '''
+    setup_dir           string
+    '''
+    
   def execute(self, script, env, args):
-    setup_dir = args.get('setup_dir', None)
+    setup_dir = self.values.get('setup_dir')
     if setup_dir:
       dist_dir = path.join(script.build_dir, setup_dir, 'dist')
     else:
@@ -84,8 +90,14 @@ class step_python_egg_check_downloaded_dependencies(step):
   def __init__(self):
     super(step_python_egg_check_downloaded_dependencies, self).__init__()
 
+  @classmethod
+  def define_args(clazz):
+    return '''
+    setup_dir           string
+    '''
+    
   def execute(self, script, env, args):
-    setup_dir = args.get('setup_dir', None)
+    setup_dir = self.values.get('setup_dir')
     if setup_dir:
       eggs_build_dir = path.join(script.build_dir, setup_dir, '.eggs')
     else:

@@ -7,10 +7,8 @@ from .builder import builder
 from .builder_cli import builder_cli
 from .builder_script import builder_script
 from .builder_script_manager import builder_script_manager
-from .check import check, check_result
 from .builder_config import builder_config
 from .builder_env import builder_env
 
-from rebuild.builder.checks import *
 from rebuild.builder.steps import *
 from rebuild.step import step, step_result

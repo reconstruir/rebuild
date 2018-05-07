@@ -54,8 +54,8 @@ class builder_script(object):
       'REBUILD_BUILD_DIR': self.build_dir,
       'REBUILD_PACKAGE_DESCRIPTION':  self.descriptor.name,
       'REBUILD_PACKAGE_FULL_NAME':  self.descriptor.full_name,
-      'REBUILD_PACKAGE_NAME':  self.descriptor.name,
       'REBUILD_PACKAGE_FULL_VERSION':  str(self.descriptor.version),
+      'REBUILD_PACKAGE_NAME':  self.descriptor.name,
       'REBUILD_PACKAGE_UPSTREAM_VERSION':  self.descriptor.version.upstream_version,
       'REBUILD_PYTHON_PLATFORM_NAME':   self.build_target.system,
       'REBUILD_REQUIREMENTS_BIN_DIR': self.requirements_manager.bin_dir,
@@ -64,12 +64,12 @@ class builder_script(object):
       'REBUILD_REQUIREMENTS_LIB_DIR': self.requirements_manager.lib_dir,
       'REBUILD_REQUIREMENTS_SHARE_DIR': self.requirements_manager.share_dir,
       'REBUILD_SOURCE_DIR': path.abspath(self.source_dir),
+      'REBUILD_SOURCE_UNPACKED_DIR': self.source_unpacked_dir,
       'REBUILD_STAGE_FRAMEWORKS_DIR':  path.join(self.staged_files_dir, 'frameworks'),
       'REBUILD_STAGE_PREFIX_DIR':  self.staged_files_dir,
       'REBUILD_STAGE_PYTHON_LIB_DIR':  path.join(self.staged_files_dir, 'lib/python'),
-      'REBUILD_TEST_DIR': self.test_dir,
       'REBUILD_TEMP_DIR': self.temp_dir,
-      'REBUILD_SOURCE_UNPACKED_DIR': self.source_unpacked_dir,
+      'REBUILD_TEST_DIR': self.test_dir,
     }
     
   @property

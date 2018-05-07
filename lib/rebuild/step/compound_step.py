@@ -25,12 +25,8 @@ class compound_step(step):
       result.update(defs)
     return result
 
-  def prepare(self, script, env, args):
-    assert self.steps
-    for step in self.steps:
-      step.prepare(script, env, dict_util.combine(args, output))
-  
   def sources(self):
+    assert False
     sources = []
     assert self.steps
     for step in self.steps:
@@ -38,6 +34,7 @@ class compound_step(step):
     return sources
 
   def execute(self, script, env, args):
+    assert False
     assert self.steps
     output = {}
     for step in self.steps:
@@ -54,6 +51,7 @@ class compound_step(step):
 
   @property
   def recipe(self):
+    assert False
     return super(compound_step, self).recipe()
   
   @recipe.setter

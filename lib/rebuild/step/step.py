@@ -13,18 +13,16 @@ from bes.system.compat import with_metaclass
 from rebuild.base import build_blurb, build_target
 from bes.dependency import dependency_resolver
 from rebuild.toolchain import toolchain
-#from rebuild.recipe.value import value_type
 
 from .step_registry import step_registry
 from .step_result import step_result
 from .step_arg_spec import step_arg_spec
 
-class step_register_meta(ABCMeta): #, value_type.CONSTANTS):
+class step_register_meta(ABCMeta):
 
   def __new__(meta, name, bases, class_dict):
     clazz = ABCMeta.__new__(meta, name, bases, class_dict)
     step_registry.register_step_class(clazz)
-#    clazz._determine_args_definition()
     return clazz
 
 class step(with_metaclass(step_register_meta, object)):
@@ -37,6 +35,7 @@ class step(with_metaclass(step_register_meta, object)):
     self.values = None
 
   @classmethod
+  @abstractmethod
   def args_definition(clazz):
     if not hasattr(clazz, '_args_definition'):
       setattr(clazz, '_args_definition', clazz._determine_args_definition())
@@ -55,11 +54,6 @@ class step(with_metaclass(step_register_meta, object)):
       check.check_dict(defs)
     return defs
 
-#  @abstractmethod
-  def prepare(self, script, env, args):
-    'Prepare the step.'
-    pass
- 
   @abstractmethod
   def execute(self, script, env, args):
     'Execute the step.'
@@ -215,7 +209,6 @@ class step(with_metaclass(step_register_meta, object)):
     else:
       cwd = script.build_dir
 
-    print('FUCK: cwd=%s' % (cwd))
     rv = execute.execute(command,
                          cwd = cwd,
                          env = env,
