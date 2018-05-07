@@ -2,15 +2,16 @@
 
 import os.path as path
 from bes.common import bool_util, check, object_util, string_util
-from bes.key_value import key_value, key_value_list
+from bes.key_value import key_value
 from rebuild.recipe.value import value_type, hook_list
 from bes.text import comments, string_list
 from .value_file import value_file, value_file_list
 from .recipe_install_file import recipe_install_file, recipe_install_file_list
 
 from .value import value_git_address
-from .value import value_source_tarball
+from .value import value_key_values
 from .value import value_source_dir
+from .value import value_source_tarball
 
 class recipe_parser_util(object):
 
@@ -51,7 +52,7 @@ class recipe_parser_util(object):
     elif arg_type == value_type.INT:
       return int(value)
     elif arg_type == value_type.KEY_VALUES:
-      return key_value_list.parse(value, options = key_value_list.KEEP_QUOTES)
+      return value_key_values.parse(env, value_filename, value)
     elif arg_type == value_type.STRING_LIST:
       return clazz._parse_string_list(value)
     elif arg_type == value_type.STRING:
@@ -85,7 +86,7 @@ class recipe_parser_util(object):
     elif arg_type == value_type.INT:
       return None
     elif arg_type == value_type.KEY_VALUES:
-      return key_value_list()
+      return value_key_values.default_value()
     elif arg_type == value_type.STRING_LIST:
       return string_list()
     elif arg_type == value_type.STRING:

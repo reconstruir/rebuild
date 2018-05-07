@@ -13,14 +13,15 @@ class value_key_values(value_base):
     check.check_key_value_list(values)
     self.values = values
 
-  def __str__(self):
-    return self.value_to_string()
-    
   def __eq__(self, other):
     return self.values == other.values
     
-  def value_to_string(self):
-    return str(self.values)
+  def __iter__(self):
+    return iter(self.values)
+    
+  #@abstractmethod
+  def value_to_string(self, quote):
+    return self.values.to_string(delimiter = '=', value_delimiter = ' ', quote = quote)
 
   #@abstractmethod
   def sources(self):
@@ -42,4 +43,24 @@ class value_key_values(value_base):
   def default_value(clazz):
     return key_value_list()
 
+  @classmethod
+  #@abstractmethod
+  def resolve(clazz, values):
+    'Resolve a list of values if this type into a nice dictionary.'
+    result = key_value_list()
+    seen = {}
+    for value in values:
+      check.check_value_key_values(value)
+      check.check_key_value_list(value.values)
+      for next_kv in value.values:
+        check.check_key_value(next_kv)
+        i = len(result)
+        seen_i = seen.get(next_kv.key, None)
+        if seen_i is not None:
+          result[seen_i] = next_kv
+        else:
+          result.append(next_kv)
+          seen[next_kv.key] = i
+    return result
+  
 check.register_class(value_key_values, include_seq = False)

@@ -17,6 +17,9 @@ class value_base(with_metaclass(ABCMeta, object)):
     self.properties = properties
     self._substitutions = {}
 
+  def __str__(self):
+    return self.value_to_string(True)
+    
   def properties_to_string(self):
     if not self.properties:
       return None
@@ -54,7 +57,12 @@ class value_base(with_metaclass(ABCMeta, object)):
   def substitutions_changed(self):
     'substitutions changed.'
     pass
-    
+
+  @abstractmethod
+  def value_to_string(self, quote):
+    'Return the value as a string and quote if needed.'
+    pass
+  
   @abstractmethod
   def sources(self):
     'Return a list of sources this caca provides or None if no sources.'
@@ -70,6 +78,12 @@ class value_base(with_metaclass(ABCMeta, object)):
   @abstractmethod
   def default_value(clazz):
     'Return the default value to use for this class.'
+    pass
+
+  @classmethod
+  @abstractmethod
+  def resolve(clazz, values):
+    'Resolve a list of values if this type into a nice dictionary.'
     pass
 
 check.register_class(value_base)

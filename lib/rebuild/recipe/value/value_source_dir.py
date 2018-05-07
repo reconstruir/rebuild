@@ -15,13 +15,11 @@ class value_source_dir(value_base):
     self.where = where
     self._tarball = None
     
-  def __str__(self):
-    return self.value_to_string()
-    
   def __eq__(self, other):
     return self.where == other.where
     
-  def value_to_string(self):
+  #@abstractmethod
+  def value_to_string(self, quote):
     buf = StringIO()
     buf.write(self.where)
     ps = self.properties_to_string()
@@ -55,6 +53,12 @@ class value_source_dir(value_base):
   def default_value(clazz):
     return None
 
+  @classmethod
+  #@abstractmethod
+  def resolve(clazz, values):
+    # FIXME
+    return values[-1]
+  
   def _update(self):
     assert self.substitutions
     temp_dir = self.substitute('${REBUILD_TEMP_DIR}')
@@ -66,5 +70,5 @@ class value_source_dir(value_base):
     archiver.create(tarball_path, self.where, base_dir = full_name)
     assert path.isfile(tarball_path)
     self._tarball = tarball_path
-    
+  
 check.register_class(value_source_dir, include_seq = False)

@@ -72,8 +72,8 @@ class masked_value_list(object):
       return values[-1]
     elif check.is_bool(values[0]):
       return values[-1]
-    elif check.is_key_value_list(values[0]):
-      return self._resolve_key_values(values)
+    elif check.is_value_key_values(values[0]):
+      return values[0].resolve(values)
     elif check.is_string_list(values[0]):
       return self._resolve_string_list(values)
     elif check.is_value_file_list(values[0]):
@@ -85,11 +85,11 @@ class masked_value_list(object):
     elif check.is_value_file(values[0]):
       return values[-1]
     elif check.is_value_git_address(values[0]):
-      return values[-1]
+      return values[0].resolve(values)
     elif check.is_value_source_tarball(values[0]):
-      return values[-1]
+      return values[0].resolve(values)
     elif check.is_value_source_dir(values[0]):
-      return values[-1]
+      return values[0].resolve(values)
     raise TypeError('unknown value type: %s - %s' % (str(values[0]), type(values[0])))
 
   def _resolve_values(self, system):
@@ -121,22 +121,6 @@ class masked_value_list(object):
       check.check_string_list(value)
       result.extend(value)
     result.remove_dups()
-    return result
-
-  def _resolve_key_values(self, values):
-    result = key_value_list()
-    seen = {}
-    for value in values:
-      assert isinstance(value, key_value_list)
-      for next_value in value:
-        i = len(result)
-        assert isinstance(next_value, key_value)
-        seen_i = seen.get(next_value.key, None)
-        if seen_i is not None:
-          result[seen_i] = next_value
-        else:
-          result.append(next_value)
-          seen[next_value.key] = i
     return result
 
   def _resolve_hook_list(self, values):

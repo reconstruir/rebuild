@@ -13,13 +13,11 @@ class value_source_tarball(value_base):
     check.check_string(filename)
     self.filename = filename
 
-  def __str__(self):
-    return self.value_to_string()
-    
   def __eq__(self, other):
     return self.filename == other.filename
     
-  def value_to_string(self):
+  #@abstractmethod
+  def value_to_string(self, quote):
     buf = StringIO()
     buf.write(self.filename)
     ps = self.properties_to_string()
@@ -53,4 +51,10 @@ class value_source_tarball(value_base):
   def default_value(clazz):
     return None
 
+  @classmethod
+  #@abstractmethod
+  def resolve(clazz, values):
+    # FIXME
+    return values[-1]
+  
 check.register_class(value_source_tarball, include_seq = False)

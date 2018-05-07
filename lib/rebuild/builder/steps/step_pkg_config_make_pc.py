@@ -35,6 +35,7 @@ class step_pkg_config_make_pc(step):
     replacements = {}
     replacements.update(script.substitutions)
     if pc_file_variables:
+      pc_file_variables = pc_file_variables[:]
       pc_file_variables.unquote_strings()
       replacements.update(pc_file_variables.to_dict())
     for src_pc in pc_files:

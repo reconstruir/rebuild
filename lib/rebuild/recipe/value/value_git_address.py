@@ -15,13 +15,11 @@ class value_git_address(value_base):
     self.address = address
     self.revision = revision
 
-  def __str__(self):
-    return self.value_to_string()
-    
   def __eq__(self, other):
     return self.address == other.address and self.revision == other.revision
     
-  def value_to_string(self):
+  #@abstractmethod
+  def value_to_string(self, quote):
     buf = StringIO()
     buf.write(self.address)
     buf.write(' ')
@@ -59,6 +57,12 @@ class value_git_address(value_base):
   def default_value(clazz):
     return None
 
+  @classmethod
+  #@abstractmethod
+  def resolve(clazz, values):
+    # FIXME
+    return values[-1]
+  
   def downloaded_tarball_path(self):
     return self.env.downloads_manager.tarball_path(self.address, self.revision)
   

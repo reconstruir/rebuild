@@ -35,8 +35,8 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
       return self.value
     elif check.is_bool(self.value):
       return str(self.value)
-    elif check.is_key_value_list(self.value):
-      return self.value.to_string(delimiter = '=', value_delimiter = ' ', quote = quote)
+    elif check.is_value_key_values(self.value):
+      return self.value.value_to_string(quote)
     elif check.is_string_list(self.value):
       return self.value.to_string(delimiter = ' ', quote = quote)
     elif check.is_hook_list(self.value):
@@ -57,19 +57,18 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
       assert False
 
   _VALUE_TYPE_CHECKERS = [
-    check.is_int,
-    check.is_string,
     check.is_bool,
-    check.is_key_value_list,
-    check.is_string_list,
     check.is_hook_list,
+    check.is_int,
+    check.is_recipe_install_file_list,
+    check.is_string,
+    check.is_string_list,
     check.is_value_file,
     check.is_value_file_list,
-    check.is_recipe_install_file_list,
-    check.is_recipe_install_file_list,
     check.is_value_git_address,
-    check.is_value_source_tarball,
+    check.is_value_key_values,
     check.is_value_source_dir,
+    check.is_value_source_tarball,
   ]
       
   @classmethod

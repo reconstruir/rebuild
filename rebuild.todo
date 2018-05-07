@@ -833,3 +833,5 @@ makefile in step_make might not work
  - make step_result a namtedtuple
  - all step values should subclass value_base
  - test_recipe_step need a unit tests with substitutions
+ - make value_base subclasses be immutable somehow
+ 
