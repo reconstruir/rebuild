@@ -12,7 +12,7 @@ from rebuild.base import build_blurb
 from bes.dependency import dependency_provider
 from rebuild.step import step_description, step_manager
 from rebuild.package import package_manager
-from rebuild.recipe import value_file
+from rebuild.recipe.value import value_file
 
 class builder_script(object):
 
