@@ -37,7 +37,7 @@ class value_source_tarball(value_base):
   
   @classmethod
   #@abstractmethod
-  def parse(clazz, env, value_filename, value):
+  def parse(clazz, env, recipe_filename, value):
     parts = string_util.split_by_white_space(value)
     if len(parts) < 1:
       raise ValueError('expected filename instead of: %s' % (value))

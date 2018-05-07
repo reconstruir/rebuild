@@ -834,4 +834,8 @@ makefile in step_make might not work
  - all step values should subclass value_base
  - test_recipe_step need a unit tests with substitutions
  - make value_base subclasses be immutable somehow
+
+2018-05-07
+ - notion of build "host" might be confusing with the notion of "host" in cross compiling
+ - do "wiping expired tmp build directory" stuff in a thread to not block the main build loop
  

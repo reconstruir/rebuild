@@ -34,7 +34,7 @@ class value_key_values(value_base):
   
   @classmethod
   #@abstractmethod
-  def parse(clazz, env, value_filename, value):
+  def parse(clazz, env, recipe_filename, value):
     values = key_value_list.parse(value, options = key_value_list.KEEP_QUOTES)
     return clazz(env, values = values)
   

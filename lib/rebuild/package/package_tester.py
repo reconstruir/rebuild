@@ -17,7 +17,7 @@ from .package_manager import package_manager
 
 class package_tester(object):
 
-  test_config = namedtuple('test_config', 'script,package_tarball,artifact_manager,tools_manager,extra_env')
+  test_config = namedtuple('test_config', 'script, package_tarball, artifact_manager, tools_manager, extra_env')
 
   def __init__(self, config, test):
     self._config = config
@@ -45,7 +45,7 @@ class package_tester(object):
     elif test.endswith('.sh'):
       return clazz._run_shell_test(config, test)
     else:
-      raise RuntimeError('Uknown test type for %s: %s' % (config.package_info.name, test))
+      raise RuntimeError('Uknown test type for %s: %s - %s' % (config.script.descriptor.full_name, str(test), type(test)))
 
   @classmethod
   def _run_c_test(clazz, config, test_source, compiler, extra_cflags):
@@ -113,7 +113,7 @@ class package_tester(object):
   def _run_perl_test(clazz, config, test_source):
     return clazz._run_exe_test('PERL', 'perl', config, test_source)
 
-  _test_context = namedtuple('_test_context','package_info,env,saved_env,test_dir,test_name,test_source_with_replacements,package_manager')
+  _test_context = namedtuple('_test_context', 'package_info, env, saved_env, test_dir, test_name, test_source_with_replacements, package_manager')
 
   @classmethod
   def _make_test_context(clazz, config, test_source):
@@ -154,16 +154,17 @@ class package_tester(object):
     substitutions.update(config.script.substitutions)
     substitutions.update({ 
       'REBUILDER_TEST_NAME': test_name,
-#      'REBUILDER_TEST_FILENAME': test_source,
     })
     for kv in config.extra_env:
       shell_env[kv.key] = variable.substitute(kv.value, substitutions)
     shell_env.update(substitutions)
-
     file_replace.copy_with_substitute(test_source, test_source_with_replacements,
                                       substitutions, backup = False)
-    return clazz._test_context(package.package_descriptor, shell_env, saved_env,
-                               test_root_dir, test_name,
+    return clazz._test_context(package.package_descriptor,
+                               shell_env,
+                               saved_env,
+                               test_root_dir,
+                               test_name,
                                test_source_with_replacements,
                                pm)
 
