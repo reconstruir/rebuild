@@ -854,4 +854,5 @@ fails to find source because of the -1 in the version
  - value_base add notion of sources vs tarballs
  - builder_script.py retire ${REBUILD_PACKAGE_VERSION}
  - s/strip_binaries/strip_release_binaries/
+ - step_make_* 'makefile' unit test
  

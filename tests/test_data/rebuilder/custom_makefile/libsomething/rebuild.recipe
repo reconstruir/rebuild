@@ -1,0 +1,23 @@
+!rebuild.recipe!
+
+package libsomething 1.0.0
+
+  steps  
+    step_setup
+      tarball_dir:
+        all: libsomething/src dest=${REBUILD_BUILD_DIR}
+    step_make
+      make_flags
+        linux: CC=gcc CFLAGS=-std=c99
+        macos: CC=clang CFLAGS="${REBUILD_COMPILE_ARCH_FLAGS}"
+      makefile
+        all: src/custom.makefile
+    step_make_install
+      makefile
+        all: src/custom.makefile
+    step_post_install
+      pc_files
+        all: libsomething.pc
+      skip_binary_third_party_prefix: True
+      tests
+        all: test-libsomething.c

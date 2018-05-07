@@ -65,6 +65,11 @@ class test_rebuilder_script(script_unit_test):
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libstarch-1.0.0.tar.gz' ], test.artifacts )
 
+  def test_lib_custom_makefile(self):
+    test = self._run_test(False, 'custom_makefile', 'libsomething')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'libsomething-1.0.0.tar.gz' ], test.artifacts )
+
   def test_lib_libpotato_depends_on_libstarch(self):
     test = self._run_test(False, 'basic', 'libpotato')
     self.assertEqual( 0, test.result.exit_code )

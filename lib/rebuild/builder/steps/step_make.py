@@ -1,6 +1,6 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+import os.path as path
 from bes.common import check
 from rebuild.step import compound_step, step, step_result
 
@@ -16,7 +16,7 @@ class step_make(step):
   @classmethod
   def define_args(clazz):
     return '''
-    makefile       string
+    makefile       file
     make_flags     string_list
     make_env       key_values
     make_target    string
@@ -40,7 +40,7 @@ class step_make(step):
       raise RuntimeError('make_num_jobs should be between 1 and %d instead of %s' % (self.MAX_NUM_JOBS, make_num_jobs))
     cmd = [ 'make', 'V=1', '-j', str(make_num_jobs) ]
     if makefile:
-      cmd += [ '-f', makefile ]
+      cmd += [ '-f', path.basename(makefile.filename) ]
 
     cmd += make_flags
     cmd += self.extra_make_flags()
@@ -76,9 +76,8 @@ class step_make_install(step):
     else:
       assert isinstance(make_install_flags, list)
       
-    makefile = args.get('makefile', None)
     if makefile:
-      makefile_flags = '-f %s' % (makefile)
+      makefile_flags = '-f %s' % (path.basename(makefile.filename))
     else:
       makefile_flags = ''
 
@@ -100,9 +99,9 @@ class step_make_test(step):
   @classmethod
   def define_args(clazz):
     return '''
-    makefile         string
+    makefile         file
     make_test_flags  string_list
-    make_test_env     key_values
+    make_test_env    key_values
     '''
     
   def execute(self, script, env, args):
@@ -112,7 +111,7 @@ class step_make_test(step):
     makefile = values.get('makefile')
 
     if makefile:
-      makefile_flags = '-f %s' % (makefile)
+      makefile_flags = '-f %s' % (path.basename(makefile.filename))
     else:
       makefile_flags = ''
 
