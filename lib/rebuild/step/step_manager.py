@@ -25,25 +25,20 @@ class step_manager(object):
     self._tag = tag
     self._stop_step = None
 
-  def _add_step(self, s):
-    if not isinstance(s, step):
-      raise RuntimeError('step must be an instance of step instead of %s' % (type(s)))
-    s.tag = self._tag
-    self._steps.append(s)
-    return s
-
-  def add_step_v2(self, recipe_step, script, env):
+  def add_step(self, recipe_step, script, env):
     check.check_recipe_step(recipe_step)
     step_class = recipe_step.description.step_class
-    s = step_class()
-    s.recipe = recipe_step
-    s.args = {}
-    return self._add_step(s)
+    step_instance = step_class()
+    check.check_step(step_instance)
+    step_instance.recipe = recipe_step
+    step_instance.args = {}
+    step_instance.tag = self._tag
+    self._steps.append(step_instance)
 
-  def add_steps_v2(self, steps, script, env):
+  def add_steps(self, steps, script, env):
     check.check_recipe_step_list(steps)
     for step in steps:
-      self.add_step_v2(step, script, env)
+      self.add_step(step, script, env)
 
   @classmethod
   def _unroll_children_steps(clazz, step, result):

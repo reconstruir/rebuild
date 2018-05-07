@@ -49,7 +49,6 @@ class builder_script(object):
     self.check_dir = path.join(self.working_dir, 'check')
     self.temp_dir = path.join(self.working_dir, 'temp')
     self.requirements_manager = package_manager(path.join(self.working_dir, 'requirements'), env.artifact_manager)
-    self._add_steps_v2()
     self.substitutions = {
       'REBUILD_BUILD_DIR': self.build_dir,
       'REBUILD_PACKAGE_DESCRIPTION':  self.descriptor.name,
@@ -71,6 +70,7 @@ class builder_script(object):
       'REBUILD_TEMP_DIR': self.temp_dir,
       'REBUILD_TEST_DIR': self.test_dir,
     }
+    self._add_steps()
     
   @property
   def descriptor(self):
@@ -100,11 +100,11 @@ class builder_script(object):
     base_dir = '%s_%s' % (full_name, timestamp)
     return path.join(build_dir, base_dir)
     
-  def _add_steps_v2(self):
+  def _add_steps(self):
     if not self.enabled:
       return
     try:
-      self._step_manager.add_steps_v2(self.steps, self, self.env)
+      self._step_manager.add_steps(self.steps, self, self.env)
     except Exception as ex:
       print(('Caught exception adding steps to script: %s' % (self.filename)))
       raise

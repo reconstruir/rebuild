@@ -35,7 +35,6 @@ class step(with_metaclass(step_register_meta, object)):
     self.values = None
 
   @classmethod
-  @abstractmethod
   def args_definition(clazz):
     if not hasattr(clazz, '_args_definition'):
       setattr(clazz, '_args_definition', clazz._determine_args_definition())
@@ -72,7 +71,7 @@ class step(with_metaclass(step_register_meta, object)):
     pass
 
   @classmethod
-#  @abstractmethod
+  @abstractmethod
   def define_args(clazz):
     'Return a list of arg specs.'
     return {}
@@ -116,7 +115,6 @@ class step(with_metaclass(step_register_meta, object)):
 
   @classmethod
   def create_command_env(clazz, script):
-    #env = os_env.make_clean_env()
     env = os_env.make_clean_env(keep_keys = [ 'PYTHONPATH' ])
 
     STATIC = True
@@ -302,3 +300,4 @@ class step(with_metaclass(step_register_meta, object)):
     for key in sorted(env.keys()):
       env[key] = variable.substitute(str(env[key]), env)
       
+check.register_class(step, include_seq = False)
