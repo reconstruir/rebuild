@@ -10,11 +10,13 @@ from .build_system import build_system
 
 class requirement_list(type_checked_list):
 
+  __value_type__ = requirement
+  
   def __init__(self, values = None):
-    super(requirement_list, self).__init__(requirement, values = values)
+    super(requirement_list, self).__init__(values = values)
 
   @classmethod
-  def cast_entry(clazz, entry):
+  def cast_value(clazz, entry):
     if isinstance(entry, tuple):
       return requirement(*entry)
     return entry

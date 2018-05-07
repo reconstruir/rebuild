@@ -12,8 +12,10 @@ from bes.dependency import dependency_resolver
 
 class instruction_list(type_checked_list):
 
+  __value_type__ = instruction
+  
   def __init__(self, values = None):
-    super(instruction_list, self).__init__(instruction, values = values)
+    super(instruction_list, self).__init__(values = values)
 
   def __contains__(self, v):
     if check.is_string(v):

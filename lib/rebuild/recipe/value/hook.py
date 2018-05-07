@@ -48,8 +48,10 @@ class hook(with_metaclass(hook_register_meta, dependency_provider)):
 
 class hook_list(type_checked_list, dependency_provider):
 
+  __value_type__ = hook
+  
   def __init__(self, values = None):
-    super(hook_list, self).__init__(hook, values = values)
+    super(hook_list, self).__init__(values = values)
 
   def __str__(self):
     return ' '.join([ h.value_to_string() for h in iter(self) ])

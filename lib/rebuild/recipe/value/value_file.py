@@ -49,9 +49,11 @@ class value_file(value_base):
     return value_file(env = env, filename = filename_abs, properties = properties)
   
 class value_file_list(type_checked_list, value_base):
+
+  __value_type__ = value_file
   
   def __init__(self, env = None, values = None):
-    type_checked_list.__init__(self, value_file, values = values)
+    type_checked_list.__init__(self, values = values)
     value_base.__init__(self, env)
 
   #@abstractmethod

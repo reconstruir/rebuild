@@ -6,8 +6,10 @@ from .artifact_descriptor import artifact_descriptor
 
 class artifact_descriptor_list(type_checked_list):
 
+  __value_type__ = artifact_descriptor
+  
   def __init__(self, values = None):
-    super(artifact_descriptor_list, self).__init__(artifact_descriptor, values = values)
+    super(artifact_descriptor_list, self).__init__(values = values)
 
   def to_string(self, delimiter = '\n'):
     buf = StringIO()

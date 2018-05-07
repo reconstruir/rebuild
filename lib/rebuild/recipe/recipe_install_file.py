@@ -20,8 +20,10 @@ class recipe_install_file(dependency_provider):
 
 class recipe_install_file_list(type_checked_list):
 
+  __value_type__ = recipe_install_file
+  
   def __init__(self, values = None):
-    super(recipe_install_file_list, self).__init__(recipe_install_file, values = values)
+    super(recipe_install_file_list, self).__init__(values = values)
 
   def __str__(self):
     return self.to_string()

@@ -7,8 +7,10 @@ from .package_descriptor import package_descriptor
 
 class package_descriptor_list(type_checked_list):
 
+  __value_type__ = package_descriptor
+  
   def __init__(self, values = None):
-    super(package_descriptor_list, self).__init__(package_descriptor, values = values)
+    super(package_descriptor_list, self).__init__(values = values)
 
   def to_string(self, delimiter = '\n'):
     buf = StringIO()

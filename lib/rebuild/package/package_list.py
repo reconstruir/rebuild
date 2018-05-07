@@ -7,8 +7,10 @@ from .package import package
 
 class package_list(type_checked_list):
 
+  __value_type__ = package
+  
   def __init__(self, values = None):
-    super(package_list, self).__init__(package, values = values)
+    super(package_list, self).__init__(values = values)
 
   def sort_by_descriptor(self):
     self._values = sorted(self._values, key = lambda package: package.package_descriptor)
