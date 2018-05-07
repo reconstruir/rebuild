@@ -8,14 +8,14 @@ from .step_setup_patch import step_setup_patch
 from .step_setup_post_setup_hook import step_setup_post_setup_hook
 from .step_setup_post_unpack_hook import step_setup_post_unpack_hook
 from .step_setup_prepare_environment import step_setup_prepare_environment
-from .step_caca_source import step_caca_source
+from .step_setup_prepare_tarballs import step_setup_prepare_tarballs
 
 class step_setup(compound_step):
   'A collection of multiple setup steps.'
   __steps__ = [
     step_setup_prepare_environment,
     step_setup_install_build_tool_requirements,
-    step_caca_source,
+    step_setup_prepare_tarballs,
     step_setup_patch,
     step_setup_post_unpack_hook,
     step_setup_install_requirements,

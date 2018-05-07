@@ -9,11 +9,11 @@ from bes.fs import file_util, temp_file
 from rebuild.step import step, step_result
 from rebuild.base import build_blurb
 
-class step_caca_source(step):
+class step_setup_prepare_tarballs(step):
   'Prepare source tarballs..'
 
   def __init__(self):
-    super(step_caca_source, self).__init__()
+    super(step_setup_prepare_tarballs, self).__init__()
 
   @classmethod
   def define_args(clazz):
