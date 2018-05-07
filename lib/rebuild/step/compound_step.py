@@ -25,34 +25,14 @@ class compound_step(step):
       result.update(defs)
     return result
 
-  def sources(self):
-    assert False
-    sources = []
-    assert self.steps
-    for step in self.steps:
-      sources.append(step.sources())
-    return sources
-
-  def execute(self, script, env, args):
-    assert False
-    assert self.steps
-    output = {}
-    for step in self.steps:
-      script.timer.start('step %s' % (step.__class__.__name__))
-      result = step.execute(script, env, dict_util.combine(args, output))
-      script.timer.stop()
-      output.update(result.output or {})
-      if not result.success:
-        return step_result(False,
-                           message = result.message,
-                           failed_step = step,
-                           output = output)
-    return step_result(True, output = output)
-
   @property
   def recipe(self):
     assert False
     return super(compound_step, self).recipe()
+
+  #@abstractmethod
+  def execute(self, script, env, args):
+    assert False
   
   @recipe.setter
   def recipe(self, recipe):

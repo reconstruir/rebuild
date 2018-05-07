@@ -25,21 +25,21 @@ class step_manager(object):
     self._tag = tag
     self._stop_step = None
 
-  def add_step(self, recipe_step, script, env):
-    check.check_recipe_step(recipe_step)
-    step_class = recipe_step.description.step_class
-    step_instance = step_class()
-    check.check_step(step_instance)
-    step_instance.recipe = recipe_step
-    step_instance.args = {}
-    step_instance.tag = self._tag
-    self._steps.append(step_instance)
-
-  def add_steps(self, steps, script, env):
-    check.check_recipe_step_list(steps)
-    for step in steps:
-      self.add_step(step, script, env)
-
+  def add_steps(self, recipe_steps, script, env):
+    check.check_recipe_step_list(recipe_steps)
+    steps = []
+    for recipe_step in recipe_steps:
+      step_class = recipe_step.description.step_class
+      step_instance = step_class()
+      check.check_step(step_instance)
+      step_instance.recipe = recipe_step
+      step_instance.args = {}
+      step_instance.tag = self._tag
+      steps.append(step_instance)
+    self._steps = self._unroll_steps(steps)
+    for step in self._steps:
+      step.values = step.recipe.resolve_values(env.recipe_load_env)
+    
   @classmethod
   def _unroll_children_steps(clazz, step, result):
     assert isinstance(result, list)
@@ -49,21 +49,20 @@ class step_manager(object):
     else:
       result.append(step)
       
-  def _unroll_steps(self):
+  @classmethod
+  def _unroll_steps(clazz, steps):
     result = []
-    for s in self._steps:
-      self._unroll_children_steps(s, result)
+    for s in steps:
+      clazz._unroll_children_steps(s, result)
     return result
       
   def execute(self, script, env):
     script.timer.start('step_manager.execute()')
     output = {}
-    self._steps = self._unroll_steps()
-    for s in self._steps:
-      s.values = s.recipe.resolve_values(env.recipe_load_env)
-      step_args = dict_util.combine(s.args, output)
-      script.timer.start('step %s' % (s.__class__.__name__))
-      result = s.execute(script, env, step_args)
+    for step in self._steps:
+      step_args = dict_util.combine(step.args, output)
+      script.timer.start('step %s' % (step.__class__.__name__))
+      result = step.execute(script, env, step_args)
       script.timer.stop()
       output.update(result.output or {})
       if not result.success:
