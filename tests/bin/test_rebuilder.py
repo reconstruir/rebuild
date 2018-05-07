@@ -3,7 +3,8 @@
 
 import os.path as path
 from bes.testing.unit_test import script_unit_test
-from bes.fs import file_find, temp_file
+from bes.fs import file_find, file_replace, tar_util, temp_file
+from bes.git import repo
 from bes.archive import archiver
 from bes.system import host
 from collections import namedtuple
@@ -26,58 +27,79 @@ class test_rebuilder_script(script_unit_test):
   _test_context = namedtuple('_test_context', 'tmp_dir,command,result,artifacts_dir,artifacts,artifacts_members,artifacts_contents,droppings')
 
   def test_basic_fructose(self):
-    test = self._run_test(False, 'basic', 'fructose')
+    test = self._run_test(False, self.data_dir(), 'basic', 'fructose')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
 
   def test_one_project(self):
-    test = self._run_test(False, 'one_project', 'fructose')
+    test = self._run_test(False, self.data_dir(), 'one_project', 'fructose')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
     
   def test_fructose_and_fiber(self):
-    test = self._run_test(False, 'basic', 'fructose', 'fiber')
+    test = self._run_test(False, self.data_dir(), 'basic', 'fructose', 'fiber')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fiber-1.0.0.tar.gz', 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
     
   def xxxtest_orange(self):
-    test = self._run_test(False, 'basic', 'fructose', 'fiber')
+    test = self._run_test(False, self.data_dir(), 'basic', 'fructose', 'fiber')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fiber-1.0.0.tar.gz', 'fiber-orange-6.5.4-3.tar.gz', 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
 
   def test_tool_tfoo(self):
-    test = self._run_test(False, 'basic', 'tfoo')
+    test = self._run_test(False, self.data_dir(), 'basic', 'tfoo')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'tfoo-1.0.0.tar.gz' ], test.artifacts )
     
   def test_tool_tbar_depends_on_tfoo(self):
-    test = self._run_test(False, 'basic', 'tbar')
+    test = self._run_test(False, self.data_dir(), 'basic', 'tbar')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'tbar-1.0.0.tar.gz', 'tfoo-1.0.0.tar.gz' ], test.artifacts )
 
   def test_tool_tbaz(self):
-    test = self._run_test(False, 'basic', 'tbaz')
+    test = self._run_test(False, self.data_dir(), 'basic', 'tbaz')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'tbaz-1.0.0.tar.gz' ], test.artifacts )
     
   def test_lib_libstarch(self):
-    test = self._run_test(False, 'basic', 'libstarch')
+    test = self._run_test(False, self.data_dir(), 'basic', 'libstarch')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libstarch-1.0.0.tar.gz' ], test.artifacts )
 
-  def test_lib_custom_makefile(self):
-    test = self._run_test(False, 'custom_makefile', 'libsomething')
+  def test_custom_makefile(self):
+    test = self._run_test(False, self.data_dir(), 'custom_makefile', 'libsomething')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'libsomething-1.0.0.tar.gz' ], test.artifacts )
+
+  def test_tarball_git_address(self):
+    tmp_dir = self._make_temp_dir()
+    project_dir = path.join(self.data_dir(), 'tarball_git_address')
+    source_dir = path.join(project_dir, 'src')
+    tar_util.copy_tree_with_tar(project_dir, path.join(tmp_dir, 'tarball_git_address'))
+    gr = repo.make_temp_repo(delete = not self.DEBUG)
+    if self.DEBUG:
+      print("temp git repo: ", gr.root)
+    tar_util.copy_tree_with_tar(source_dir, gr.root)
+    gr.add('.')
+    gr.commit('add', '.')
+    replacements = {
+      '@ADDRESS@': gr.root,
+      '@REVISION@': gr.last_commit_hash(short_hash = True),
+    }
+    recipe_filename = path.join(tmp_dir, 'tarball_git_address', 'libsomething/rebuild.recipe')
+    file_replace.replace(recipe_filename, replacements, backup = False)
+    test = self._run_test(False, tmp_dir, 'tarball_git_address', 'libsomething')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libsomething-1.0.0.tar.gz' ], test.artifacts )
 
   def test_lib_libpotato_depends_on_libstarch(self):
-    test = self._run_test(False, 'basic', 'libpotato')
+    test = self._run_test(False, self.data_dir(), 'basic', 'libpotato')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libpotato-1.0.0.tar.gz', 'libstarch-1.0.0.tar.gz', 'tbar-1.0.0.tar.gz', 'tfoo-1.0.0.tar.gz' ], test.artifacts )
     self.assertTrue( 'files/lib/pkgconfig/libpotato.pc' in test.artifacts_members['libpotato-1.0.0.tar.gz'] )
     
   def test_extra_tarballs(self):
-    test = self._run_test(False, 'extra_tarballs', 'foo', '--source-dir', path.join(self.data_dir(), 'extra_tarballs/source'))
+    test = self._run_test(False, self.data_dir(), 'extra_tarballs', 'foo', '--source-dir', path.join(self.data_dir(), 'extra_tarballs/source'))
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'foo-1.0.0.tar.gz' ], test.artifacts )
     tgz = path.join(test.artifacts_dir, 'foo-1.0.0.tar.gz')
@@ -88,7 +110,7 @@ class test_rebuilder_script(script_unit_test):
     ], test.artifacts_members['foo-1.0.0.tar.gz'])
     
   def test_hooks(self):
-    test = self._run_test(True, 'hooks', 'foo')
+    test = self._run_test(True, self.data_dir(), 'hooks', 'foo')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'foo-1.0.0.tar.gz' ], test.artifacts )
     tgz = path.join(test.artifacts_dir, 'foo-1.0.0.tar.gz')
@@ -102,7 +124,7 @@ print("hook1 hook2")
     self.assertMultiLineEqual( expected, test.artifacts_contents['foo-1.0.0.tar.gz']['files/bin/foo.py'] )
     
   def test_env_files(self):
-    test = self._run_test(True, 'env_files', 'foo')
+    test = self._run_test(True, self.data_dir(), 'env_files', 'foo')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'foo-1.0.0.tar.gz' ], test.artifacts )
     tgz = path.join(test.artifacts_dir, 'foo-1.0.0.tar.gz')
@@ -116,9 +138,9 @@ print("hook1 hook2")
     expected = '''#!/usr/bin/env python
 print("hook1 hook2")
 '''
-
+    
   def test_run_script(self):
-    test = self._run_test(False, 'run_script', 'foo')
+    test = self._run_test(False, self.data_dir(), 'run_script', 'foo')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'foo-1.0.0.tar.gz' ], test.artifacts )
     self.assertEqual( [
@@ -145,10 +167,10 @@ print("hook1 hook2")
     ] + list(args)
     return cmd
 
-  def _run_test(self, read_contents, cwd_subdir, *args):
+  def _run_test(self, read_contents, data_dir, cwd_subdir, *args):
     tmp_dir = self._make_temp_dir()
     command = self._make_command(tmp_dir, *args)
-    cwd = path.join(self.data_dir(), cwd_subdir)
+    cwd = path.join(data_dir, cwd_subdir)
     artifacts_dir = path.join(tmp_dir, 'artifacts', self.BUILD_TARGET.build_path)
     result = self.run_script(command, cwd = cwd)
     artifacts = file_find.find(artifacts_dir)

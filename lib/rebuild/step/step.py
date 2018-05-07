@@ -215,6 +215,7 @@ class step(with_metaclass(step_register_meta, object)):
     else:
       cwd = script.build_dir
 
+    print('FUCK: cwd=%s' % (cwd))
     rv = execute.execute(command,
                          cwd = cwd,
                          env = env,
