@@ -10,7 +10,8 @@ from collections import namedtuple
 class value_base(with_metaclass(ABCMeta, object)):
   
   def __init__(self, env, properties = None):
-    #check.check_recipe_load_env(env)
+    if env:
+      check.check_recipe_load_env(env)
     self.env = env
     properties = properties or key_value_list()
     check.check_key_value_list(properties)

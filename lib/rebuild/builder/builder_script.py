@@ -109,9 +109,6 @@ class builder_script(object):
       print(('Caught exception adding steps to script: %s' % (self.filename)))
       raise
 
-  def step_list(self, args):
-    return self._step_manager.step_list(args)
-
   def execute(self):
     result = self._step_manager.execute(self, self.env)
     if result.success:
@@ -135,12 +132,11 @@ class builder_script(object):
   def _script_sources(self):
     'Return a list of sources for this script.'
     sources = []
-    for step, args in self.step_list({}):
+    for step, args in self._step_manager.step_list():
       for sources_key in step.sources_keys():
         caca = args.get(sources_key, []) or []
         if caca:
           assert isinstance(caca, ( list, type_checked_list ))
-          from rebuild.recipe import recipe_install_file
           if check.is_recipe_install_file_list(caca):
             sources.extend([ x.filename for x in caca])
           else:

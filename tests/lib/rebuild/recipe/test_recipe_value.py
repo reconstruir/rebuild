@@ -4,6 +4,7 @@
 from bes.testing.unit_test import unit_test
 from rebuild.recipe import recipe_value as V, masked_value as MV, masked_value_list as MVL
 from bes.key_value import key_value as KV, key_value_list as KVL
+from rebuild.recipe.value import value_key_values as VKV
 
 class test_recipe_value(unit_test):
 
@@ -23,7 +24,7 @@ class test_recipe_value(unit_test):
     self.assertEqual( 'key: a b "c d"', str(V('key', [ MV(None, [ 'a', 'b', 'c d' ]) ])) )
     
   def test__str__one_line_key_values(self):
-    self.assertEqual( 'key: a=5 b=6 c="x y"', str(V('key', [ MV(None, KVL([ ( 'a', 5 ), ( 'b', 6 ), ( 'c', 'x y' ) ])) ])) )
+    self.assertEqual( 'key: a=5 b=6 c="x y"', str(V('key', [ MV(None, VKV(values = KVL([ ( 'a', 5 ), ( 'b', 6 ), ( 'c', 'x y' ) ]))) ])) )
 
   def test__str__multi_line_bool(self):
     self.assertEqual( 'key\n  all: True', str(V('key', [ MV('all', True) ])) )

@@ -67,11 +67,11 @@ class step_manager(object):
     script.timer.stop()
     return step_result(True, outputs = outputs)
 
-  def step_list(self, args):
+  def step_list(self):
     'Return a list of 2 tuples.  Each tuple has ( step, args )'
     result = []
     for s in self._steps:
-      result.append((s, dict_util.combine(args, s.args)))
+      result.append((s, copy.deepcopy(s.args)))
     return result
 
   @property

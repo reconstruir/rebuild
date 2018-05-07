@@ -4,6 +4,7 @@
 from bes.testing.unit_test import unit_test
 from rebuild.recipe import masked_value as RSV
 from bes.key_value import key_value as KV, key_value_list as KVL
+from rebuild.recipe.value import value_key_values as VKV
 
 class test_masked_value(unit_test):
 
@@ -20,7 +21,7 @@ class test_masked_value(unit_test):
     self.assertEqual( 'foo bar "x y"', str(RSV(None, [ 'foo', 'bar', 'x y' ])) )
 
   def test__str__no_mask_key_values(self):
-    self.assertEqual( 'foo=5 bar=6 baz="x y"', str(RSV(None, KVL([KV('foo', 5), KV('bar', 6), KV('baz', 'x y')]))) )
+    self.assertEqual( 'foo=5 bar=6 baz="x y"', str(RSV(None, VKV(values = KVL([KV('foo', 5), KV('bar', 6), KV('baz', 'x y')])))) )
 
   def test__str__with_mask_int(self):
     self.assertEqual( 'all: 666', str(RSV('all', 666)) )
@@ -35,7 +36,7 @@ class test_masked_value(unit_test):
     self.assertEqual( 'all: foo bar "x y"', str(RSV('all', [ 'foo', 'bar', 'x y' ])) )
 
   def test__str__with_mask_key_values(self):
-    self.assertEqual( 'all: foo=5 bar=6 baz="x y"', str(RSV('all', KVL([KV('foo', 5), KV('bar', 6), KV('baz', 'x y')]))) )
+    self.assertEqual( 'all: foo=5 bar=6 baz="x y"', str(RSV('all', VKV(values = KVL([KV('foo', 5), KV('bar', 6), KV('baz', 'x y')])))) )
   
 if __name__ == '__main__':
   unit_test.main()
