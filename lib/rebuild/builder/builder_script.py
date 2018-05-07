@@ -71,7 +71,7 @@ class builder_script(object):
       'REBUILD_TEMP_DIR': self.temp_dir,
       'REBUILD_SOURCE_UNPACKED_DIR': self.source_unpacked_dir,
     }
-      
+    
   @property
   def descriptor(self):
     return self.recipe.descriptor

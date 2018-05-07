@@ -799,14 +799,10 @@ april 16
 - hook interface is fucked the abstract method warning doesnt happen if the signature of execute changes.
 
 steps that use args argument in execute:
-  step_python_egg_install
-  step_python_egg_check_downloaded_dependencies
-  step_make_install
-  step_extract_tarballs_to_stage_dir
   step_artifact_create_check_package
-  step_python_egg_install
-  step_python_egg_check_downloaded_dependencies
   step_artifact_create_test_package
+  step_python_egg_check_downloaded_dependencies
+  step_python_egg_install
 
 step_artifact_create_check_package might need to be retired
 egg check is either commented out or broken
@@ -838,4 +834,5 @@ makefile in step_make might not work
  - gettext subsiutions should be unified with script.substitutions instead of custom
  - any replacements should go through script.substituitions
  - value_base add notion of sources vs tarballs
+ - fix sources() sources_keys() etc mess
  

@@ -32,15 +32,9 @@ class step_install_env_files(step):
       self.log_d(message)
       return step_result(True, message)
 
-    replacements = {
-      'REBUILD_PACKAGE_NAME': script.descriptor.name,
-      'REBUILD_PACKAGE_DESCRIPTION': script.descriptor.name,
-      'REBUILD_PACKAGE_FULL_VERSION': str(script.descriptor.version),
-    }
-
     for env_file in env_files:
       dst_file = path.join(script.stagged_env_dir, path.basename(env_file))
-      file_replace.copy_with_substitute(env_file, dst_file, replacements, backup = False)
+      file_replace.copy_with_substitute(env_file, dst_file, script.substitutions, backup = False)
 
     return step_result(True, None)
 
