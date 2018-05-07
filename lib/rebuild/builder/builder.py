@@ -241,6 +241,9 @@ class builder(object):
         self.blurb('disabled: %s' % (filename))
         continue
       exit_code = self._call_build_one_script(script)
+      sources = script.poto_sources()
+      for s in sources:
+        print('FUCK: %s: SOURCE: %s' % (script.descriptor.name, s))
       if exit_code == self.EXIT_CODE_FAILED:
         failed_packages.append(name)
         if not self._env.config.keep_going:

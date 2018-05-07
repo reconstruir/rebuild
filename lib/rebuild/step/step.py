@@ -32,8 +32,21 @@ class step(with_metaclass(step_register_meta, object)):
   def __init__(self):
     self._recipe = None
     self._args = {}
-    self.values = None
+    self._values = None
 
+  @property
+  def values(self):
+    if self._values is None:
+      raise ValueError('values have not been set yet.')
+    return self._values
+
+  @values.setter
+  def values(self, values):
+    check.check_dict(values)
+    if self._values is not None:
+      raise ValueError('values can only be set once.')
+    self._values = values
+  
   @classmethod
   def args_definition(clazz):
     if not hasattr(clazz, '_args_definition'):

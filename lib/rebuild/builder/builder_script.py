@@ -120,12 +120,19 @@ class builder_script(object):
   @property
   def sources(self):
     sources = self._script_sources()
-    assert False
     for x in self._step_manager._unroll_steps():
       if x:
         print('FUCK: %s' % (x.sources()))
       sources.extend(x.sources())
     return sources
+
+  def poto_sources(self):
+    sources = []
+    for step in self._step_manager:
+      for key, value in step.values.items():
+        if check.is_value_base(value):
+          sources.extend(value.sources())
+    return algorithm.unique(sources)
 
   file_checksums = namedtuple('file_checksums', 'sources,targets')
 

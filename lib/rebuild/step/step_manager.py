@@ -23,6 +23,9 @@ class step_manager(object):
     self._tag = tag
     self._stop_step = None
 
+  def __iter__(self):
+    return iter(self._steps)
+    
   def add_steps(self, recipe_steps, script, env):
     check.check_recipe_step_list(recipe_steps)
     steps = []
@@ -35,7 +38,7 @@ class step_manager(object):
       steps.append(step_instance)
     self._steps = self._unroll_steps(steps)
     for step in self._steps:
-      step._values = step.recipe.resolve_values(script.substitutions, env.recipe_load_env)
+      step.values = step.recipe.resolve_values(script.substitutions, env.recipe_load_env)
       
   @classmethod
   def _unroll_children_steps(clazz, step, result):
@@ -58,7 +61,7 @@ class step_manager(object):
     outputs = {}
     for step in self._steps:
       script.timer.start('step %s' % (step.__class__.__name__))
-      result = step.execute(script, env, step._values, outputs)
+      result = step.execute(script, env, step.values, outputs)
       script.timer.stop()
       outputs.update(result.outputs or {})
       if not result.success:
