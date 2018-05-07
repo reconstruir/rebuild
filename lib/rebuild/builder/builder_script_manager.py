@@ -75,7 +75,6 @@ class builder_script_manager(object):
     'Return all the package names.'
     return sorted(self.scripts.keys())
 
-  
   @classmethod
   def _load_scripts(clazz, filename, build_target, env):
     scripts = []
