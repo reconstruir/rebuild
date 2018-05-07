@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 # TODO
@@ -37,7 +36,10 @@ class step_manager(object):
     self._steps = self._unroll_steps(steps)
     for step in self._steps:
       step._values = step.recipe.resolve_values(env.recipe_load_env)
-    
+      for key, value in sorted(step._values.items()):
+        if check.is_value_base(value):
+          value.substitutions = script.substitutions
+      
   @classmethod
   def _unroll_children_steps(clazz, step, result):
     assert isinstance(result, list)

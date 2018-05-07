@@ -45,6 +45,7 @@ class value_base(with_metaclass(ABCMeta, object)):
     if self._substitutions == substitutions:
       return
     self._substitutions = substitutions
+    print('FUCK: substitutions changed for %s - %s' % (str(self), type(self)))
     self.substitutions_changed()
     
   def substitute(self, text):

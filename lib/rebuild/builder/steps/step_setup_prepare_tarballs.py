@@ -44,7 +44,6 @@ class step_setup_prepare_tarballs(step):
       setattr(script, 'fuck_no_tarballs', True)
       
     if tarball_address:
-      tarball_address.substitutions = script.substitutions
       downloaded_path = tarball_address.downloaded_tarball_path()
       if tarball_address.needs_download():
         self.blurb('Downloading %s@%s to %s' % (tarball_address.address, tarball_address.revision, path.relpath(downloaded_path)))
@@ -56,7 +55,6 @@ class step_setup_prepare_tarballs(step):
                        strip_common_base = props.strip_common_base)
 
     if tarball:
-      tarball.substitutions = script.substitutions
       tarball_path = tarball.sources()[0]
       if not tarball_path:
         return step_result(False, 'No tarball found for %s' % (script.descriptor.full_name))
@@ -68,7 +66,6 @@ class step_setup_prepare_tarballs(step):
                        strip_common_base = props.strip_common_base)
       
     if tarball_dir:
-      tarball_dir.substitutions = script.substitutions
       tarball_path = tarball_dir.sources()[0]
       if not tarball_path:
         return step_result(False, 'No tarball found for %s' % (script.descriptor.full_name))

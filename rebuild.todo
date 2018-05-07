@@ -831,4 +831,5 @@ makefile in step_make might not work
  - value_base add notion of sources vs tarballs
  - fix sources() sources_keys() etc mess
  - make step_result a namtedtuple
+ - all step values should subclass value_base
  
