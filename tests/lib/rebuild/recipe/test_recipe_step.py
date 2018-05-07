@@ -17,7 +17,7 @@ class test_recipe_step(unit_test):
     text = '''\
 '''
     step = self._parse(text)
-    r = step.resolve_values(recipe_load_env(build_target(system = 'linux'), None))
+    r = step.resolve_values({}, recipe_load_env(build_target(system = 'linux'), None))
     expected = {
       'bool_value': False,
       'file_install_list_value': recipe_install_file_list(),
@@ -32,7 +32,7 @@ class test_recipe_step(unit_test):
     }
     self.assertEqual( expected, r )
 
-    r = step.resolve_values(recipe_load_env(build_target(system = 'macos'), None))
+    r = step.resolve_values({}, recipe_load_env(build_target(system = 'macos'), None))
     self.assertEqual( expected, r )
 
   
@@ -51,7 +51,7 @@ key_values_value
   android: a=forandroid
 '''
     step = self._parse(text)
-    r = step.resolve_values(recipe_load_env(build_target(system = 'linux'), None))
+    r = step.resolve_values({}, recipe_load_env(build_target(system = 'linux'), None))
     expected = {
       'bool_value': True,
       'file_install_list_value': [],
@@ -65,7 +65,7 @@ key_values_value
       'git_address_value': None,
     }
     self.assertEqual( expected, r )
-    r = step.resolve_values(recipe_load_env(build_target(system = 'macos'), None))
+    r = step.resolve_values({}, recipe_load_env(build_target(system = 'macos'), None))
     expected = {
       'bool_value': True,
       'file_install_list_value': [],
@@ -79,7 +79,7 @@ key_values_value
       'git_address_value': None,
     }
     self.assertEqual( expected, r )
-    r = step.resolve_values(recipe_load_env(build_target(system = 'android'), None))
+    r = step.resolve_values({}, recipe_load_env(build_target(system = 'android'), None))
     expected = {
       'bool_value': True,
       'file_install_list_value': [],
@@ -103,7 +103,7 @@ git_address_value
 '''
     step = self._parse(text)
     env = recipe_load_env(build_target(system = 'linux'), None)
-    r = step.resolve_values(env)
+    r = step.resolve_values({}, env)
     expected = {
       'bool_value': False,
       'file_install_list_value': [],
@@ -119,7 +119,7 @@ git_address_value
     self.assertEqual( expected, r )
 
     env = recipe_load_env(build_target(system = 'macos'), None)
-    r = step.resolve_values(env)
+    r = step.resolve_values({}, env)
     expected = {
       'bool_value': False,
       'file_install_list_value': [],

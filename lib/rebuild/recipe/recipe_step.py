@@ -33,7 +33,8 @@ class recipe_step(namedtuple('recipe_step', 'name,description,values')):
       buf.write('\n')
     return buf.getvalue().strip()
 
-  def resolve_values(self, env):
+  def resolve_values(self, substitutions, env):
+    check.check_dict(substitutions)
     check.check_recipe_load_env(env)
     result = {}
     for value in self.values:
@@ -45,6 +46,11 @@ class recipe_step(namedtuple('recipe_step', 'name,description,values')):
           result[name] = recipe_parser_util.parse_value(env, '<default>', arg_type.default, arg_type.atype)
         else:
           result[name] = recipe_parser_util.value_default(arg_type.atype)
+
+    for key, value in result.items():
+      if check.is_value_base(value):
+        value.substitutions = substitutions
+          
     return result
 
 check.register_class(recipe_step, include_seq = False)

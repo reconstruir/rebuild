@@ -35,10 +35,7 @@ class step_manager(object):
       steps.append(step_instance)
     self._steps = self._unroll_steps(steps)
     for step in self._steps:
-      step._values = step.recipe.resolve_values(env.recipe_load_env)
-      for key, value in sorted(step._values.items()):
-        if check.is_value_base(value):
-          value.substitutions = script.substitutions
+      step._values = step.recipe.resolve_values(script.substitutions, env.recipe_load_env)
       
   @classmethod
   def _unroll_children_steps(clazz, step, result):

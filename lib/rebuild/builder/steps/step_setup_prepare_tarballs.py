@@ -40,9 +40,6 @@ class step_setup_prepare_tarballs(step):
     if count > 1:
       return step_result(False, 'Only one of: tarball, tarball_address or tarball_dir can be given.')
     
-    if count > 0:
-      setattr(script, 'fuck_no_tarballs', True)
-      
     if tarball_address:
       downloaded_path = tarball_address.downloaded_tarball_path()
       if tarball_address.needs_download():
