@@ -21,7 +21,7 @@ class step_cleanup_binary_filenames(step):
   def execute(self, script, env, args):
     if not path.isdir(script.staged_files_bin_dir):
       return step_result(True, None)
-    if args.get('skip_binary_third_party_prefix', False):
+    if self.values.get('skip_binary_third_party_prefix'):
       return step_result(True, None)
       
     binaries = dir_util.list(script.staged_files_bin_dir)

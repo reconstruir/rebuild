@@ -9,6 +9,8 @@ package libpng-1.6.28-1
 
   steps  
     step_autoconf
+      tarball
+        all: libpng-${REBUILD_PACKAGE_UPSTREAM_VERSION}.tar.gz
       configure_env
         all: CFLAGS="$REBUILD_REQUIREMENTS_CFLAGS ${REBUILD_COMPILE_CFLAGS}"
              LDFLAGS=$REBUILD_REQUIREMENTS_LDFLAGS

@@ -68,6 +68,8 @@ package %s-%s-%s
     %s
   steps
     step_autoconf
+      tarball
+        all: ${REBUILD_PACKAGE_NAME}-${REBUILD_PACKAGE_UPSTREAM_VERSION}.tar.gz
       configure_env
         linux: CC=gcc CFLAGS="-fucku -std=c99 -I${REBUILD_REQUIREMENTS_INCLUDE_DIR}"
         all: CFLAGS=-I${REBUILD_REQUIREMENTS_INCLUDE_DIR} LDFLAGS=\"-L${REBUILD_REQUIREMENTS_LIB_DIR}\"

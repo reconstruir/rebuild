@@ -5,6 +5,8 @@ package libjpeg-9a-1
 
   steps  
     step_setup
+      tarball
+        all: ${REBUILD_PACKAGE_NAME}-${REBUILD_PACKAGE_UPSTREAM_VERSION}.tar.gz
     step_autoconf_configure
     step_shell
       cmd: make V=1
