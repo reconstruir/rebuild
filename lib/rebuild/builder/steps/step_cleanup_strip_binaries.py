@@ -15,8 +15,8 @@ class step_cleanup_strip_binaries(step):
   @classmethod
   def define_args(clazz):
     return '''
-    dont_strip_binaries   bool        False
-    strip_binaries        bool        True
+    dont_strip_binaries       bool        False
+    strip_release_binaries    bool        True
     '''
     
   def execute(self, script, env, args):
@@ -25,7 +25,7 @@ class step_cleanup_strip_binaries(step):
       if self.values.get('dont_strip_binaries'):
         return step_result(True, None)
     else:
-      if not self.values.get('strip_binaries'):
+      if not self.values.get('strip_release_binaries'):
         return step_result(True, None)
     if not path.isdir(script.staged_files_dir):
       return step_result(True, None)
