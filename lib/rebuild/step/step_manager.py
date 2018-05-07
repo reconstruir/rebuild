@@ -37,18 +37,6 @@ class step_manager(object):
     step_class = recipe_step.description.step_class
     s = step_class()
     s.recipe = recipe_step
-#    rrr = recipe_step.resolve_values(env.recipe_load_env)
-#    rrr = {}
-#    resolved_args = {}
-#    resolved_args = rrr
-#    if 'tarball_address' in resolved_args:
-#      del resolved_args['tarball_address']
-#    if 'tarball' in resolved_args:
-#      del resolved_args['tarball']
-#    if 'tarball_dir' in resolved_args:
-#      del resolved_args['tarball_dir']
-#    check.check_dict(resolved_args)
-#    s.args = resolved_args
     s.args = {}
     return self._add_step(s)
 

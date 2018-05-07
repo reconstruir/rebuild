@@ -833,24 +833,10 @@ makefile in step_make might not work
         linux: platform-tools-latest-linux.zip dest=${REBUILD_STAGE_PREFIX_DIR}
  - add value_dir class and fix step_patch to use it for patch_dir
  - better error when failing to parse a recipe
- - FIX:
- package libgpg_error 1.27-1
-  properties
-    pkg_config_name=libgpg_error
-
-  steps  
-    step_autoconf
-      tarball
-        all: libgpg-error-${REBUILD_PACKAGE_FULL_VERSION}.tar.bz2
-      configure_flags
-        all: --enable-static --disable-shared
-        linux: --with-pic
-fails to find source because of the -1 in the version
 
 2018-05-06
  - gettext subsiutions should be unified with script.substitutions instead of custom
  - any replacements should go through script.substituitions
  - add git_address unit tests for rebuilder
  - value_base add notion of sources vs tarballs
- - builder_script.py retire ${REBUILD_PACKAGE_VERSION}
  
