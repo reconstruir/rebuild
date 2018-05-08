@@ -1,7 +1,6 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import copy, fnmatch, os, os.path as path
+import copy, fnmatch, os, os.path as path, threading
 from bes.common import algorithm, dict_util, object_util
 from bes.thread import thread_pool
 from bes.fs import dir_util, file_util
@@ -95,11 +94,19 @@ class builder(object):
     for package_name in package_names:
       script = self._env.script_manager.scripts[package_name]
       builds_dir = self._env.config.builds_dir(script.build_target)
+      to_remove = []
       if path.isdir(builds_dir):
         tmp_dirs = dir_util.older_dirs(dir_util.list(builds_dir), hours = 24)
         for tmp_dir in tmp_dirs:
           self.blurb('wiping expired tmp build directory: %s' % (path.relpath(tmp_dir)))
-          file_util.remove(tmp_dir)
+          to_remove.append(tmp_dir)
+
+      def remove_tmp_dirs_thread(dirs):
+        for d in dirs:
+          file_util.remove(d)
+
+      t = threading.Thread(target = remove_tmp_dirs_thread, args = (to_remove, ))
+      t.start()
 
   EXIT_CODE_SUCCESS = 0
   EXIT_CODE_FAILED = 1
@@ -243,7 +250,7 @@ class builder(object):
       exit_code = self._call_build_one_script(script)
       sources = script.poto_sources()
       for s in sources:
-        print('FUCK: %s: SOURCE: %s' % (script.descriptor.name, s))
+        print('CACA: %s: SOURCE: %s' % (script.descriptor.name, s))
       if exit_code == self.EXIT_CODE_FAILED:
         failed_packages.append(name)
         if not self._env.config.keep_going:

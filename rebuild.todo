@@ -837,5 +837,7 @@ makefile in step_make might not work
 
 2018-05-07
  - notion of build "host" might be confusing with the notion of "host" in cross compiling
- - do "wiping expired tmp build directory" stuff in a thread to not block the main build loop
+
+2018-05-08
+ - checksum files should be able to include other checksum files
  
