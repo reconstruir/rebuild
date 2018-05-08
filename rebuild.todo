@@ -840,4 +840,6 @@ makefile in step_make might not work
 
 2018-05-08
  - checksum files should be able to include other checksum files
+ - step_pkg_config_make_pc.py cleanup pc_files
+ - step_setup_patch.py cleanups patches
  
