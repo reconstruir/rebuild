@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.common import algorithm, check, type_checked_list
@@ -7,10 +6,10 @@ from rebuild.base import build_system
 from rebuild.recipe.value import hook_list
 from bes.key_value import key_value, key_value_list
 from bes.text import string_list
-from .value_install_file import value_install_file_list
 
 from .value import value_file
 from .value import value_file_list
+from .value import value_install_file_list
 
 class masked_value_list(object):
 

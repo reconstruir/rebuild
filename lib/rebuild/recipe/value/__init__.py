@@ -7,6 +7,8 @@ from .value_base import value_base
 from .value_file import value_file
 from .value_file_list import value_file_list
 from .value_git_address import value_git_address
+from .value_install_file import value_install_file
+from .value_install_file import value_install_file_list
 from .value_key_values import value_key_values
 from .value_list_base import value_list_base
 from .value_source_dir import value_source_dir

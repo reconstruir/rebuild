@@ -5,11 +5,12 @@ from bes.common import bool_util, check, object_util, string_util
 from bes.key_value import key_value
 from rebuild.recipe.value import value_type, hook_list
 from bes.text import comments, string_list
-from .value_install_file import value_install_file, value_install_file_list
 
 from .value import value_file
 from .value import value_file_list
 from .value import value_git_address
+from .value import value_install_file
+from .value import value_install_file_list
 from .value import value_key_values
 from .value import value_source_dir
 from .value import value_source_tarball

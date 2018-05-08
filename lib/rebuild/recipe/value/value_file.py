@@ -46,7 +46,7 @@ class value_file(value_base):
   def parse(clazz, env, recipe_filename, value):
     base = path.dirname(recipe_filename)
     filename, _, rest = string_util.partition_by_white_space(value)
-    filename_abs = path.join(base, filename)
+    filename_abs = path.abspath(path.join(base, filename))
     if not path.isfile(filename_abs):
       raise RuntimeError('file not found: %s' % (filename_abs))
     properties = clazz.parse_properties(rest)
