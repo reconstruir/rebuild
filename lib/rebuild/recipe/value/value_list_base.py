@@ -35,6 +35,12 @@ class value_list_base(type_checked_list, value_base):
       result.append(rf)
     return result
 
+  @classmethod
+  #@abstractmethod
+  def default_value(clazz):
+    'Return the default value to use for this class.'
+    return []
+
   #@abstractmethod
   def sources(self):
     result = []

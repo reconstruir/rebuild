@@ -25,7 +25,13 @@ class value_file(value_base):
       buf.write(' ')
       buf.write(ps)
     return buf.getvalue()
-    
+
+  @classmethod
+  #@abstractmethod
+  def default_value(clazz):
+    'Return the default value to use for this class.'
+    return None
+
   #@abstractmethod
   def sources(self):
     'Return a list of sources this caca provides or None if no sources.'

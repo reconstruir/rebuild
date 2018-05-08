@@ -95,9 +95,9 @@ class recipe_parser_util(object):
     elif arg_type == value_type.HOOK_LIST:
       return hook_list()
     elif arg_type == value_type.FILE_LIST:
-      return value_file_list()
+      return value_file_list.default_value()
     elif arg_type == value_type.FILE:
-      return None
+      return value_file.default_value()
     elif arg_type == value_type.DIR:
       return None
     elif arg_type == value_type.FILE_INSTALL_LIST:

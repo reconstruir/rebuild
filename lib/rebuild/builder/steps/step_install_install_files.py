@@ -24,7 +24,7 @@ class step_install_install_files(step):
     
   #@abstractmethod
   def execute(self, script, env, values, inputs):
-    install_files = values.get('install_files', [])
+    install_files = values.get('install_files')
       
     if not install_files:
       message = 'No install_files for %s' % (script.descriptor.full_name)
