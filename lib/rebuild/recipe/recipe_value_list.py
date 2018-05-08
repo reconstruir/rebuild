@@ -49,10 +49,11 @@ class recipe_value_list(object):
   def __len__(self):
     return len(self._values)
 
-  def resolve(self, system):
+  def resolve(self, system, args_definition):
     result = {}
     for value in self._values:
-      result[value.key] = value.resolve(system)
+      assert value.key in args_definition
+      result[value.key] = value.resolve(system, args_definition[value.key].atype)
     return result
   
 check.register_class(recipe_value_list, include_seq = False)

@@ -60,7 +60,7 @@ class recipe_value(namedtuple('recipe_value', 'key,values')):
       buf.write('\n')
     return buf.getvalue().strip()
 
-  def resolve(self, system):
-    return self.values.resolve(system)
+  def resolve(self, system, arg_type):
+    return self.values.resolve(system, arg_type)
   
 check.register_class(recipe_value, include_seq = False)

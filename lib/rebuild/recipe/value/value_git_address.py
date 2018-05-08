@@ -53,12 +53,12 @@ class value_git_address(value_base):
   
   @classmethod
   #@abstractmethod
-  def default_value(clazz):
+  def default_value(clazz, arg_type):
     return None
 
   @classmethod
   #@abstractmethod
-  def resolve(clazz, values):
+  def resolve(clazz, values, arg_type):
     # FIXME
     return values[-1]
   

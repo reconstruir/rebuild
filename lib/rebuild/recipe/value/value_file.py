@@ -29,9 +29,10 @@ class value_file(value_base):
 
   @classmethod
   #@abstractmethod
-  def default_value(clazz):
+  def default_value(clazz, arg_type):
     'Return the default value to use for this class.'
     return None
+    return value_file_list()
 
   #@abstractmethod
   def sources(self):
@@ -52,8 +53,23 @@ class value_file(value_base):
       raise RuntimeError('file not found: %s' % (filename_abs))
     properties = clazz.parse_properties(rest)
     return value_file(env = env, filename = filename_abs, properties = properties)
+
+  @classmethod
+  #@abstractmethod
+  def resolve(clazz, values, arg_type):
+    check.check_value_file_seq(values)
+    env = None
+    result_values = []
+    for value in values:
+      check.check_value_file(value)
+      if not env:
+        env = value.env
+      result_values.append(value)
+    result = value_file_list(env = env, values = result_values)
+    result.remove_dups()
+    return result
   
-check.register_class(value_file, include_seq = False)
+check.register_class(value_file, include_seq = True)
 
 class value_file_list(value_list_base):
 

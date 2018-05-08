@@ -77,13 +77,13 @@ class value_base(with_metaclass(ABCMeta, object)):
 
   @classmethod
   @abstractmethod
-  def default_value(clazz):
+  def default_value(clazz, arg_type):
     'Return the default value to use for this class.'
     pass
 
   @classmethod
   @abstractmethod
-  def resolve(clazz, values):
+  def resolve(clazz, values, arg_type):
     'Resolve a list of values if this type into a nice dictionary.'
     pass
 

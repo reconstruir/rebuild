@@ -107,8 +107,8 @@ class recipe_parser(object):
       else:
         self._error('unknown recipe section: \"%s\"' % (text), node)
     if env_vars:
-      poto1 = env_vars.resolve('macos')
-      poto2 = env_vars.resolve('linux')
+      poto1 = env_vars.resolve('macos', value_type.KEY_VALUES)
+      poto2 = env_vars.resolve('linux', value_type.KEY_VALUES)
       d = poto1.to_dict()
       d.update(poto2.to_dict())
       properties['env_vars'] = d

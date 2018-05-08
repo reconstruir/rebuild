@@ -843,3 +843,9 @@ makefile in step_make might not work
  - step_pkg_config_make_pc.py cleanup pc_files
  - step_setup_patch.py cleanups patches
  
+ - recipe_parser.py - fix this shit
+       poto1 = env_vars.resolve('macos', value_type.KEY_VALUES)
+      poto2 = env_vars.resolve('linux', value_type.KEY_VALUES)
+      d = poto1.to_dict()
+      d.update(poto2.to_dict())
+      properties['env_vars'] = d

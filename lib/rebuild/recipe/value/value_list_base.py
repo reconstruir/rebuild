@@ -37,7 +37,7 @@ class value_list_base(type_checked_list, value_base):
 
   @classmethod
   #@abstractmethod
-  def default_value(clazz):
+  def default_value(clazz, arg_type):
     'Return the default value to use for this class.'
     return []
 

@@ -36,10 +36,15 @@ class recipe_step(namedtuple('recipe_step', 'name,description,values')):
   def resolve_values(self, substitutions, env):
     check.check_dict(substitutions)
     check.check_recipe_load_env(env)
+    args_definition = self.description.step_class.args_definition()
+    for name, arg_type in sorted(args_definition.items()):
+      print('POTO: args_definition %s=%s' % (name, arg_type))
     result = {}
     for value in self.values:
-      result.update({ value.key: value.resolve(env.build_target.system) })
-    args_definition = self.description.step_class.args_definition()
+      print('POTOX: resolving key=%s value=%s - %s' % (value.key, value, type(value)))
+      assert value.key in args_definition
+      arg_type = args_definition[value.key].atype
+      result.update({ value.key: value.resolve(env.build_target.system, arg_type) })
     for name, arg_type in args_definition.items():
       if name not in result:
         if arg_type.default is not None:

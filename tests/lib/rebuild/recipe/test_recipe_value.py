@@ -5,6 +5,7 @@ from bes.testing.unit_test import unit_test
 from rebuild.recipe import recipe_value as V, masked_value as MV, masked_value_list as MVL
 from bes.key_value import key_value as KV, key_value_list as KVL
 from rebuild.recipe.value import value_key_values as VKV
+from rebuild.recipe.value import value_type as VT
 
 class test_recipe_value(unit_test):
 
@@ -43,9 +44,10 @@ class test_recipe_value(unit_test):
       MV('linux', [ 'forlinux' ]),
       MV('macos', [ 'formacos' ]),
     ]
-    self.assertEqual( [ 'forall', 'forlinux' ], V('key', values).resolve('linux') )
-    self.assertEqual( [ 'forall', 'formacos' ], V('key', values).resolve('macos') )
-    self.assertEqual( [ 'forall' ], V('key', values).resolve('android') )
+
+    self.assertEqual( [ 'forall', 'forlinux' ], V('key', values).resolve('linux', VT.STRING_LIST) )
+    self.assertEqual( [ 'forall', 'formacos' ], V('key', values).resolve('macos', VT.STRING_LIST) )
+    self.assertEqual( [ 'forall' ], V('key', values).resolve('android', VT.STRING_LIST) )
     
 if __name__ == '__main__':
   unit_test.main()

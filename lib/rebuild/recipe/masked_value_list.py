@@ -60,11 +60,11 @@ class masked_value_list(object):
   def __len__(self):
     return len(self._values)
 
-  def resolve(self, system):
+  def resolve(self, system, arg_type):
     if not self._values:
       return []
     first_value = self._values[0].value
-    values = self._resolve_values(system)
+    values = self._resolve_values_by_mask(system)
       
     if not values:
       return None
@@ -75,26 +75,26 @@ class masked_value_list(object):
     elif check.is_bool(values[0]):
       return values[-1]
     elif check.is_value_key_values(values[0]):
-      return values[0].resolve(values)
+      return values[0].__class__.resolve(values, arg_type)
     elif check.is_string_list(values[0]):
       return self._resolve_string_list(values)
     elif check.is_value_file_list(values[0]):
       return self._resolve_typed_list(values, value_file_list)
     elif check.is_value_install_file(values[0]):
-      return values[0].__class__.resolve(values)
+      return values[0].__class__.resolve(values, arg_type)
     elif check.is_hook_list(values[0]):
       return self._resolve_hook_list(values)
     elif check.is_value_file(values[0]):
       return values[-1]
     elif check.is_value_git_address(values[0]):
-      return values[0].__class__.resolve(values)
+      return values[0].__class__.resolve(values, arg_type)
     elif check.is_value_source_tarball(values[0]):
-      return values[0].__class__.resolve(values)
+      return values[0].__class__.resolve(values, arg_type)
     elif check.is_value_source_dir(values[0]):
-      return values[0].__class__.resolve(values)
+      return values[0].__class__.resolve(values, arg_type)
     raise TypeError('unknown value type: %s - %s' % (str(values[0]), type(values[0])))
 
-  def _resolve_values(self, system):
+  def _resolve_values_by_mask(self, system):
     result = []
     for value in self._values:
       if value.mask_matches(system):

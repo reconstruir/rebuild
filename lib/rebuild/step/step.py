@@ -13,6 +13,7 @@ from bes.system.compat import with_metaclass
 from rebuild.base import build_blurb, build_target
 from bes.dependency import dependency_resolver
 from rebuild.toolchain import toolchain
+from rebuild.recipe.value import value_type
 
 from .step_registry import step_registry
 from .step_result import step_result
@@ -286,7 +287,7 @@ class step(with_metaclass(step_register_meta, object)):
     config = script.descriptor.properties.get('export_compilation_flags_requirements', [])
     if config:
       if check.is_masked_value_list(config):
-        resolved = config.resolve(system)
+        resolved = config.resolve(system, value_type.STRING_LIST)
       else:
         raise RuntimeError('not a valid masked_value_list: %s' % (config))
     else:

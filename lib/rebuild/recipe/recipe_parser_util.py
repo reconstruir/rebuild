@@ -88,7 +88,7 @@ class recipe_parser_util(object):
     elif arg_type == value_type.INT:
       return None
     elif arg_type == value_type.KEY_VALUES:
-      return value_key_values.default_value()
+      return value_key_values.default_value(arg_type)
     elif arg_type == value_type.STRING_LIST:
       return string_list()
     elif arg_type == value_type.STRING:
@@ -96,19 +96,19 @@ class recipe_parser_util(object):
     elif arg_type == value_type.HOOK_LIST:
       return hook_list()
     elif arg_type == value_type.FILE_LIST:
-      return value_file_list.default_value()
+      return value_file_list.default_value(arg_type)
     elif arg_type == value_type.FILE:
-      return value_file.default_value()
+      return value_file.default_value(arg_type)
     elif arg_type == value_type.DIR:
       return None
     elif arg_type == value_type.INSTALL_FILE:
-      return value_install_file.default_value()
+      return value_install_file.default_value(arg_type)
     elif arg_type == value_type.GIT_ADDRESS:
-      return value_git_address.default_value()
+      return value_git_address.default_value(arg_type)
     elif arg_type == value_type.SOURCE_TARBALL:
-      return value_source_tarball.default_value()
+      return value_source_tarball.default_value(arg_type)
     elif arg_type == value_type.SOURCE_DIR:
-      return value_source_dir.default_value()
+      return value_source_dir.default_value(arg_type)
     raise ValueError('unknown arg_type: %s' % (str(arg_type)))
 
   @classmethod
