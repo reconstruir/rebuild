@@ -8,14 +8,14 @@ from .value_base import value_base
 class value_list_base(type_checked_list, value_base):
 
   def __init__(self, env = None, values = None):
-    type_checked_list.__init__(values = values)
+    type_checked_list.__init__(self, values = values)
     value_base.__init__(self, env)
 
   #@abstractmethod
   def value_to_string(self, quote):
     buf = StringIO()
     for i, value in enumerate(self):
-      if i == 0:
+      if i != 0:
         buf.write(' ')
       buf.write(value.value_to_string(quote))
     return buf.getvalue()
