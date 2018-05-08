@@ -1,8 +1,9 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common import check, type_checked_list
+from bes.common import check
 from bes.dependency import dependency_provider
+from .value_base import value_base
 
 class value_install_file(dependency_provider):
 
@@ -18,15 +19,4 @@ class value_install_file(dependency_provider):
     'Return a list of dependencies provided by this provider.'
     return [ self.filename ]
 
-class value_install_file_list(type_checked_list):
-
-  __value_type__ = value_install_file
-  
-  def __init__(self, values = None):
-    super(value_install_file_list, self).__init__(values = values)
-
-  def __str__(self):
-    return self.to_string()
-  
 check.register_class(value_install_file, include_seq = False)
-check.register_class(value_install_file_list, include_seq = False)
