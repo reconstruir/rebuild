@@ -32,7 +32,7 @@ class step_install_env_files(step):
 
     for env_file in env_files:
       dst_file = path.join(script.stagged_env_dir, path.basename(env_file.filename))
-      file_replace.copy_with_substitute(env_file, dst_file, script.substitutions, backup = False)
+      file_replace.copy_with_substitute(env_file.filename, dst_file, script.substitutions, backup = False)
 
     return step_result(True, None)
 
