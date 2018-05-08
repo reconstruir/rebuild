@@ -31,7 +31,7 @@ class step_install_install_files(step):
       self.log_d(message)
       return step_result(True, message)
     
-    check.check_recipe_install_file_list(install_files)
+    check.check_value_install_file_list(install_files)
     
     for install_file in install_files:
       src = variable.substitute(install_file.filename, script.substitutions)

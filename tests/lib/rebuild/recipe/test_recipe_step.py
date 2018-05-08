@@ -3,7 +3,7 @@
 
 from bes.testing.unit_test import unit_test
 from rebuild.base import build_target
-from rebuild.recipe import recipe_parser, recipe_install_file_list, recipe_load_env
+from rebuild.recipe import recipe_parser, value_install_file_list, recipe_load_env
 from rebuild.recipe.value import value_file, value_file_list, value_git_address
 from bes.key_value import key_value as KV, key_value_list as KVL
 from bes.text import string_list
@@ -20,7 +20,7 @@ class test_recipe_step(unit_test):
     r = step.resolve_values({}, recipe_load_env(build_target(system = 'linux'), None))
     expected = {
       'bool_value': False,
-      'file_install_list_value': recipe_install_file_list(),
+      'file_install_list_value': value_install_file_list(),
       'file_list_value': value_file_list(),
       'file_value': None,
       'hook_list_value': [],

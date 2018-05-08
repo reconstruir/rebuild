@@ -5,7 +5,7 @@ from bes.common import bool_util, check, object_util, string_util
 from bes.key_value import key_value
 from rebuild.recipe.value import value_type, hook_list
 from bes.text import comments, string_list
-from .recipe_install_file import recipe_install_file, recipe_install_file_list
+from .value_install_file import value_install_file, value_install_file_list
 
 from .value import value_file
 from .value import value_file_list
@@ -101,7 +101,7 @@ class recipe_parser_util(object):
     elif arg_type == value_type.DIR:
       return None
     elif arg_type == value_type.FILE_INSTALL_LIST:
-      return recipe_install_file_list()
+      return value_install_file_list()
     elif arg_type == value_type.GIT_ADDRESS:
       return value_git_address.default_value()
     elif arg_type == value_type.SOURCE_TARBALL:
@@ -128,7 +128,7 @@ class recipe_parser_util(object):
 
   @classmethod
   def _parse_file_install_list(clazz, value, base):
-    result = recipe_install_file_list()
+    result = value_install_file_list()
     data = clazz._parse_string_list(value)
     if (len(data) % 2) != 0:
       raise RuntimeError('invalid non even list: %s' % (data))
@@ -139,6 +139,6 @@ class recipe_parser_util(object):
         filename_abs = filename
 #      if not path.isfile(filename_abs):
 #        raise RuntimeError('not found: %s' % (filename_abs))
-      result.append(recipe_install_file(filename_abs, dst_filename))
+      result.append(value_install_file(filename_abs, dst_filename))
     return result
   
