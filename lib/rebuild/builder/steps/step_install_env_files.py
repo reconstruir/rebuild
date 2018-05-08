@@ -20,11 +20,10 @@ class step_install_env_files(step):
     return '''
     env_files   file_list
     '''
+  
   #@abstractmethod
   def execute(self, script, env, values, inputs):
     env_files = values.get('env_files')
-    if env_files:
-      env_files = [ f.filename for f in env_files ]
 
     if not env_files:
       message = 'No env files for %s' % (script.descriptor.full_name)
@@ -32,7 +31,7 @@ class step_install_env_files(step):
       return step_result(True, message)
 
     for env_file in env_files:
-      dst_file = path.join(script.stagged_env_dir, path.basename(env_file))
+      dst_file = path.join(script.stagged_env_dir, path.basename(env_file.filename))
       file_replace.copy_with_substitute(env_file, dst_file, script.substitutions, backup = False)
 
     return step_result(True, None)
