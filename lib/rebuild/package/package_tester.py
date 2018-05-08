@@ -29,7 +29,7 @@ class package_tester(object):
 
   @classmethod
   def _run_test(clazz, config, test):
-    build_blurb.blurb('tester', 'Testing %s with %s' % (path.relpath(config.package_tarball), test))
+    build_blurb.blurb('tester', 'Testing %s with %s' % (path.relpath(config.package_tarball), path.relpath(test)))
     assert path.isfile(test)
     tc = toolchain.get_toolchain(config.script.build_target)
     ce = tc.compiler_environment()
@@ -50,7 +50,7 @@ class package_tester(object):
   @classmethod
   def _run_c_test(clazz, config, test_source, compiler, extra_cflags):
     context = clazz._make_test_context(config, test_source)
-    build_blurb.blurb_verbose('tester', '%s: running c test %s with %s' % (context.package_info.name, test_source, compiler))
+    build_blurb.blurb_verbose('tester', '%s: running c test %s with %s' % (context.package_info.name, path.relpath(test_source), compiler))
     package_names_for_pkg_config = [ context.package_info.name ]
 
     # FIXME: static is hardcoded here (depends on global static mode)
