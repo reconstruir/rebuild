@@ -146,7 +146,7 @@ class builder_script(object):
         caca = args.get(sources_key, []) or []
         if caca:
           assert isinstance(caca, ( list, type_checked_list ))
-          if check.is_value_install_file_seq(caca):
+          if check.is_value_install_file_list(caca):
             sources.extend([ x.filename for x in caca])
           else:
             sources.extend(caca)

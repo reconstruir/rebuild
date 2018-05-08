@@ -25,7 +25,9 @@ class step_install_install_files(step):
   #@abstractmethod
   def execute(self, script, env, values, inputs):
     install_files = values.get('install_files')
-      
+    print('FUCK: install_files=%s - %s' % (str(install_files), type(install_files)))
+    for i, x in enumerate(install_files):
+      print('FUCK:   %d: %s - %s' % (i, str(x), type(x)))
     if not install_files:
       message = 'No install_files for %s' % (script.descriptor.full_name)
       self.log_d(message)

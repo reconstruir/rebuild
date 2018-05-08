@@ -5,6 +5,7 @@ from bes.common import algorithm, check, string_util
 from bes.compat import StringIO
 from bes.dependency import dependency_provider
 from .value_base import value_base
+from .value_list_base import value_list_base
 
 class value_install_file(value_base):
 
@@ -32,7 +33,7 @@ class value_install_file(value_base):
   #@abstractmethod
   def default_value(clazz):
     'Return the default value to use for this class.'
-    return []
+    return value_install_file_list()
 
   #@abstractmethod
   def sources(self):
@@ -61,10 +62,24 @@ class value_install_file(value_base):
   #@abstractmethod
   def resolve(clazz, values):
     check.check_value_install_file_seq(values)
-    result = []
+    env = None
+    result_values = []
     for value in values:
       check.check_value_install_file(value)
-      result.append(value)
-    return algorithm.unique(result)
+      if not env:
+        env = value.env
+      result_values.append(value)
+    result = value_install_file_list(env = env, values = result_values)
+    result.remove_dups()
+    return result
   
-check.register_class(value_install_file) #, include_seq = False)
+check.register_class(value_install_file, include_seq = True)
+
+class value_install_file_list(value_list_base):
+
+  __value_type__ = value_install_file
+  
+  def __init__(self, env = None, values = None):
+    super(value_install_file_list, self).__init__(env = env, values = values)
+
+check.register_class(value_install_file_list, include_seq = False)

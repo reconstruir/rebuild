@@ -4,6 +4,7 @@ import os.path as path
 from bes.common import check, string_util
 from bes.compat import StringIO
 from .value_base import value_base
+from .value_list_base import value_list_base
 
 class value_file(value_base):
 
@@ -53,3 +54,12 @@ class value_file(value_base):
     return value_file(env = env, filename = filename_abs, properties = properties)
   
 check.register_class(value_file, include_seq = False)
+
+class value_file_list(value_list_base):
+
+  __value_type__ = value_file
+  
+  def __init__(self, env = None, values = None):
+    super(value_file_list, self).__init__(env = env, values = values)
+
+check.register_class(value_file_list, include_seq = False)
