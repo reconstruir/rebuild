@@ -18,7 +18,7 @@ class step_python_make_standalone_program(step):
   @classmethod
   def define_args(clazz):
     return '''
-    standalone_programs   file_install_list
+    standalone_programs   install_file
     '''
     
   #@abstractmethod

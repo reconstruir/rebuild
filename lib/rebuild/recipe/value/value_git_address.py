@@ -41,14 +41,13 @@ class value_git_address(value_base):
   
   @classmethod
   #@abstractmethod
-  def parse(clazz, env, recipe_filename, value):
-    parts = string_util.split_by_white_space(value)
+  def parse(clazz, env, recipe_filename, text):
+    parts = string_util.split_by_white_space(text)
     if len(parts) < 2:
-      raise ValueError('expected address and revision instead of: %s' % (value))
+      raise ValueError('expected address and revision instead of: %s' % (text))
     address = parts[0]
     revision = parts[1]
-    rest = value.replace(address, '')
-    rest = rest.replace(revision, '')
+    rest = string_util.replace(text, { address: '', revision: '' })
     properties = clazz.parse_properties(rest)
     return clazz(env, address = address, revision = revision, properties = properties)
   

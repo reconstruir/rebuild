@@ -39,12 +39,12 @@ class value_source_dir(value_base):
   
   @classmethod
   #@abstractmethod
-  def parse(clazz, env, recipe_filename, value):
-    parts = string_util.split_by_white_space(value)
+  def parse(clazz, env, recipe_filename, text):
+    parts = string_util.split_by_white_space(text)
     if len(parts) < 1:
-      raise ValueError('expected filename instead of: %s' % (value))
+      raise ValueError('expected filename instead of: %s' % (text))
     where = parts[0]
-    rest = value.replace(where, '')
+    rest = string_util.replace(text, { where: '' })
     properties = clazz.parse_properties(rest)
     return clazz(env, where = where, properties = properties)
   

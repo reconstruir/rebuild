@@ -71,7 +71,7 @@ class value_base(with_metaclass(ABCMeta, object)):
 
   @classmethod
   @abstractmethod
-  def parse(clazz, env, recipe_filename, value):
+  def parse(clazz, env, recipe_filename, text):
     'Parse a value.'
     pass
 

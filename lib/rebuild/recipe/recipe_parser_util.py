@@ -10,7 +10,6 @@ from .value import value_file
 from .value import value_file_list
 from .value import value_git_address
 from .value import value_install_file
-from .value import value_install_file_list
 from .value import value_key_values
 from .value import value_source_dir
 from .value import value_source_tarball
@@ -67,12 +66,13 @@ class recipe_parser_util(object):
       return value_file.parse(env, recipe_filename, value)
     elif arg_type == value_type.DIR:
       return clazz._parse_dir(env, value, path.dirname(recipe_filename))
-    elif arg_type == value_type.FILE_INSTALL_LIST:
-      if recipe_filename:
-        base = path.dirname(recipe_filename)
-      else:
-        base = None
-      return clazz._parse_file_install_list(value, base)
+    elif arg_type == value_type.INSTALL_FILE:
+      return value_install_file.parse(env, recipe_filename, value)
+#      if recipe_filename:
+#        base = path.dirname(recipe_filename)
+#      else:
+#        base = None
+#      return clazz._parse_install_file_list(value, base)
     elif arg_type == value_type.GIT_ADDRESS:
       return value_git_address.parse(env, recipe_filename, value)
     elif arg_type == value_type.SOURCE_TARBALL:
@@ -101,8 +101,8 @@ class recipe_parser_util(object):
       return value_file.default_value()
     elif arg_type == value_type.DIR:
       return None
-    elif arg_type == value_type.FILE_INSTALL_LIST:
-      return value_install_file_list()
+    elif arg_type == value_type.INSTALL_FILE:
+      return value_install_file.default_value()
     elif arg_type == value_type.GIT_ADDRESS:
       return value_git_address.default_value()
     elif arg_type == value_type.SOURCE_TARBALL:
@@ -126,20 +126,4 @@ class recipe_parser_util(object):
 #    if not path.isdir(filename_abs):
 #      raise RuntimeError('dir not found: %s' % (filename_abs))
     return value_file(env = env, filename = filename_abs)
-
-  @classmethod
-  def _parse_file_install_list(clazz, value, base):
-    result = value_install_file_list()
-    data = clazz._parse_string_list(value)
-    if (len(data) % 2) != 0:
-      raise RuntimeError('invalid non even list: %s' % (data))
-    for filename, dst_filename in object_util.chunks(data, 2):
-      if False: #base:
-        filename_abs = path.abspath(path.join(base, filename))
-      else:
-        filename_abs = filename
-#      if not path.isfile(filename_abs):
-#        raise RuntimeError('not found: %s' % (filename_abs))
-      result.append(value_install_file(filename_abs, dst_filename))
-    return result
   

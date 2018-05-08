@@ -130,7 +130,10 @@ class builder_script(object):
     for step in self._step_manager:
       for key, value in step.values.items():
         if check.is_value_base(value):
-          sources.extend(value.sources())
+          more_sources = value.sources()
+          if more_sources:
+            #print('FUCK: MORE SOURCES: %s - %s => %s' % (str(value), type(value), more_sources))
+            sources.extend(more_sources)
     return algorithm.unique(sources)
 
   file_checksums = namedtuple('file_checksums', 'sources,targets')
@@ -143,7 +146,7 @@ class builder_script(object):
         caca = args.get(sources_key, []) or []
         if caca:
           assert isinstance(caca, ( list, type_checked_list ))
-          if check.is_value_install_file_list(caca):
+          if check.is_value_install_file_seq(caca):
             sources.extend([ x.filename for x in caca])
           else:
             sources.extend(caca)

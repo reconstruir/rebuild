@@ -558,18 +558,33 @@ package foo-1.2.3-4
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_file\n    file_value: test_file1.txt foo=1 bar=2 baz=\"hello kiwi\"', str(r[0].steps[0]) )
 
-  def test_step_value_file_install_list(self):
+  def test_step_value_install_file(self):
     text = '''!rebuild.recipe!
 package foo-1.2.3-4
 
   steps
-    step_takes_file_install_list
-      file_install_list_value: test_file1.txt etc/foo/f1.txt test_file2.txt etc/foo/f2.txt
+    step_takes_install_file
+      install_file_value: test_file1.txt etc/foo/f1.txt
 '''
     r = P(self.TEST_ENV, self._filename_for_parser(), text).parse()
     self.assertEqual( 1, len(r) )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertMultiLineEqual( 'step_takes_file_install_list\n    file_install_list_value: test_file1.txt etc/foo/f1.txt test_file2.txt etc/foo/f2.txt', str(r[0].steps[0]) )
+    self.assertMultiLineEqual( 'step_takes_install_file\n    install_file_value: test_file1.txt etc/foo/f1.txt', str(r[0].steps[0]) )
+
+  def test_step_value_install_file_many(self):
+    text = '''!rebuild.recipe!
+package foo-1.2.3-4
+
+  steps
+    step_takes_install_file
+      install_file_value
+        all: test_file1.txt etc/foo/f1.txt
+        all: test_file2.txt etc/foo/f2.txt
+'''
+    r = P(self.TEST_ENV, self._filename_for_parser(), text).parse()
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 1, len(r[0].steps) )
+    self.assertMultiLineEqual( 'step_takes_install_file\n  install_file_value\n    all: test_file1.txt etc/foo/f1.txt\n    all: test_file2.txt etc/foo/f2.txt', str(r[0].steps[0]) )
 
 
   def test_step_comments(self):

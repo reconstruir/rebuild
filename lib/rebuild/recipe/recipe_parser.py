@@ -23,6 +23,7 @@ from .recipe_parser_util import recipe_parser_util
 from .recipe_step import recipe_step
 from .recipe_step_list import recipe_step_list
 from .recipe_value import recipe_value
+from .value import value_file
 
 class recipe_parser_error(Exception):
   def __init__(self, message, filename, line_number):
@@ -206,6 +207,10 @@ class recipe_parser(object):
       more_values = self._parse_step_value(description, child)
       assert isinstance(more_values, recipe_value)
       values.append(more_values)
+
+#    recipe_file = value_file(env = self.env, filename = path.abspath(self.filename))
+#    values.insert(0, recipe_value('recipe_filename', masked_value_list([ masked_value(None, recipe_file) ])))
+
     return recipe_step(name, description, values)
 
   def _parse_step_value(self, description, node):

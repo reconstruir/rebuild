@@ -9,7 +9,7 @@ from bes.text import string_list
 
 from .value import value_file
 from .value import value_file_list
-from .value import value_install_file_list
+from .value import value_install_file
 
 class masked_value_list(object):
 
@@ -65,6 +65,7 @@ class masked_value_list(object):
       return []
     first_value = self._values[0].value
     values = self._resolve_values(system)
+      
     if not values:
       return None
     if check.is_int(values[0]):
@@ -79,18 +80,18 @@ class masked_value_list(object):
       return self._resolve_string_list(values)
     elif check.is_value_file_list(values[0]):
       return self._resolve_typed_list(values, value_file_list)
-    elif check.is_value_install_file_list(values[0]):
-      return self._resolve_typed_list(values, value_install_file_list)
+    elif check.is_value_install_file(values[0]):
+      return values[0].__class__.resolve(values)
     elif check.is_hook_list(values[0]):
       return self._resolve_hook_list(values)
     elif check.is_value_file(values[0]):
       return values[-1]
     elif check.is_value_git_address(values[0]):
-      return values[0].resolve(values)
+      return values[0].__class__.resolve(values)
     elif check.is_value_source_tarball(values[0]):
-      return values[0].resolve(values)
+      return values[0].__class__.resolve(values)
     elif check.is_value_source_dir(values[0]):
-      return values[0].resolve(values)
+      return values[0].__class__.resolve(values)
     raise TypeError('unknown value type: %s - %s' % (str(values[0]), type(values[0])))
 
   def _resolve_values(self, system):

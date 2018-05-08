@@ -40,8 +40,8 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
       return self.value.to_string(delimiter = ' ', quote = quote)
     elif check.is_hook_list(self.value):
       return str(self.value)
-    elif check.is_value_install_file_list(self.value):
-      return ' '.join([ h.value_to_string() for h in self.value ])
+    elif check.is_value_install_file(self.value):
+      return str(self.value)
     elif check.is_value_file_list(self.value):
       return str(self.value)
     elif check.is_value_file(self.value):
@@ -59,12 +59,12 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
     check.is_bool,
     check.is_hook_list,
     check.is_int,
-    check.is_value_install_file_list,
     check.is_string,
     check.is_string_list,
     check.is_value_file,
     check.is_value_file_list,
     check.is_value_git_address,
+    check.is_value_install_file,
     check.is_value_key_values,
     check.is_value_source_dir,
     check.is_value_source_tarball,

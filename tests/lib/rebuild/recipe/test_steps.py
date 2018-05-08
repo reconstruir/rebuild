@@ -112,13 +112,13 @@ class step_takes_file(step):
   def execute(self, script, env, args):
     return step_result(True)
   
-class step_takes_file_install_list(step):
+class step_takes_install_file(step):
   def __init__(self):
-    super(step_takes_file_install_list, self).__init__()
+    super(step_takes_install_file, self).__init__()
     
   @classmethod
   def define_args(clazz):
-    return 'file_install_list_value file_install_list'
+    return 'install_file_value install_file'
   
   def execute(self, script, env, args):
     return step_result(True)
@@ -143,7 +143,7 @@ class step_takes_all(step):
     return '''
       bool_value              bool
       file_value              file
-      file_install_list_value file_install_list
+      install_file_value      install_file
       file_list_value         file_list
       hook_list_value         hook_list
       int_value               int

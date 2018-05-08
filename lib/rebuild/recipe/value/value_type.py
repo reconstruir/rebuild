@@ -9,7 +9,7 @@ class value_type(enum):
   BOOL = 1
   DIR = 2
   FILE = 3
-  FILE_INSTALL_LIST = 4
+  INSTALL_FILE = 4
   FILE_LIST = 5
   HOOK_LIST = 6
   INT = 7
