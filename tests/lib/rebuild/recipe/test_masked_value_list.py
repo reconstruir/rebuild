@@ -4,7 +4,7 @@
 from bes.testing.unit_test import unit_test
 from rebuild.recipe import masked_value as V, masked_value_list as VL, recipe_load_env
 from rebuild.base import build_system
-from rebuild.recipe.value import value_type as VT
+from rebuild.recipe.value import value_type as VT, value_origin as VO
 
 class test_masked_value_list(unit_test):
 
@@ -41,23 +41,23 @@ class test_masked_value_list(unit_test):
     
   @classmethod
   def _int(clazz, s):
-    return V.parse_mask_and_value(clazz.TEST_ENV, '<none>', s, VT.INT)
+    return V.parse_mask_and_value(clazz.TEST_ENV, VO(__file__, 1, s), s, VT.INT)
     
   @classmethod
   def _string(clazz, s):
-    return V.parse_mask_and_value(clazz.TEST_ENV, '<none>', s, VT.STRING)
+    return V.parse_mask_and_value(clazz.TEST_ENV, VO(__file__, 1, s), s, VT.STRING)
     
   @classmethod
   def _bool(clazz, s):
-    return V.parse_mask_and_value(clazz.TEST_ENV, '<none>', s, VT.BOOL)
+    return V.parse_mask_and_value(clazz.TEST_ENV, VO(__file__, 1, s), s, VT.BOOL)
     
   @classmethod
   def _string_list(clazz, s):
-    return V.parse_mask_and_value(clazz.TEST_ENV, '<none>', s, VT.STRING_LIST)
+    return V.parse_mask_and_value(clazz.TEST_ENV, VO(__file__, 1, s), s, VT.STRING_LIST)
     
   @classmethod
   def _key_values(clazz, s):
-    return V.parse_mask_and_value(clazz.TEST_ENV, '<none>', s, VT.KEY_VALUES)
+    return V.parse_mask_and_value(clazz.TEST_ENV, VO(__file__, 1, s), s, VT.KEY_VALUES)
     
 if __name__ == '__main__':
   unit_test.main()

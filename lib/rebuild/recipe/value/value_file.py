@@ -10,9 +10,9 @@ from .value_type import value_type
 
 class value_file(value_base):
 
-  def __init__(self, env = None, filename = '', properties = None):
+  def __init__(self, env = None, origin = None, filename = '', properties = None):
     'Class to manage a recipe file.'
-    super(value_file, self).__init__(env, properties = properties)
+    super(value_file, self).__init__(env, origin, properties = properties)
     check.check_string(filename)
     self.filename = filename
 
@@ -51,14 +51,14 @@ class value_file(value_base):
   
   @classmethod
   #@abstractmethod
-  def parse(clazz, env, recipe_filename, value):
-    base = path.dirname(recipe_filename)
+  def parse(clazz, env, origin, value):
+    base = path.dirname(origin.filename)
     filename, _, rest = string_util.partition_by_white_space(value)
     filename_abs = path.abspath(path.join(base, filename))
     if not path.isfile(filename_abs):
-      raise RuntimeError('file not found: %s' % (filename_abs))
+      raise RuntimeError('%s: file not found: %s' % (origin, filename_abs))
     properties = clazz.parse_properties(rest)
-    return value_file(env = env, filename = filename_abs, properties = properties)
+    return value_file(env = env, origin = origin, filename = filename_abs, properties = properties)
 
   @classmethod
   #@abstractmethod
@@ -98,7 +98,7 @@ class value_file_list(value_list_base):
 
   __value_type__ = value_file
   
-  def __init__(self, env = None, values = None):
-    super(value_file_list, self).__init__(env = env, values = values)
+  def __init__(self, env = None, origin = None, values = None):
+    super(value_file_list, self).__init__(env = env, origin = origin, values = values)
 
 check.register_class(value_file_list, include_seq = False)

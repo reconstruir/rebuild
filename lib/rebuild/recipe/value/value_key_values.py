@@ -7,8 +7,8 @@ from .value_base import value_base
 
 class value_key_values(value_base):
 
-  def __init__(self, env = None, values = None):
-    super(value_key_values, self).__init__(env)
+  def __init__(self, env = None, origin = None, values = None):
+    super(value_key_values, self).__init__(env, origin)
     values = values or key_value_list()
     check.check_key_value_list(values)
     self.values = values
@@ -34,9 +34,9 @@ class value_key_values(value_base):
   
   @classmethod
   #@abstractmethod
-  def parse(clazz, env, recipe_filename, value):
+  def parse(clazz, env, origin, value):
     values = key_value_list.parse(value, options = key_value_list.KEEP_QUOTES)
-    return clazz(env, values = values)
+    return clazz(env, origin = origin, values = values)
   
   @classmethod
   #@abstractmethod

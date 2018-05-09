@@ -24,9 +24,9 @@ class value_hook(with_metaclass(hook_register_meta, value_base)):
 
   result = hook_result
   
-  def __init__(self, env = None, properties = None):
+  def __init__(self, env = None, origin = None, properties = None):
     'Create a new hook.'
-    super(value_hook, self).__init__(env, properties = properties)
+    super(value_hook, self).__init__(env, origin, properties = properties)
 
   def __eq__(self, other):
     return self.filename == other.filename
@@ -65,13 +65,13 @@ class value_hook(with_metaclass(hook_register_meta, value_base)):
 
   @classmethod
   #@abstractmethod
-  def parse(clazz, env, recipe_filename, value):
+  def parse(clazz, env, origin, value):
     hook_name, _, rest = string_util.partition_by_white_space(value)
     hook_class = hook_registry.get(hook_name)
     if not hook_class:
-      raise TypeError('hook class not found: %s' % (hook_name))
+      raise TypeError('%s: hook class not found: %s' % (origin, hook_name))
     properties = clazz.parse_properties(rest)
-    hook_instance = hook_class(env = env, properties = properties)
+    hook_instance = hook_class(env = env, origin = origin, properties = properties)
     return hook_instance
 
   @classmethod
@@ -101,7 +101,7 @@ class value_hook_list(value_list_base):
 
   __value_type__ = value_hook
   
-  def __init__(self, env = None, values = None):
-    super(value_hook_list, self).__init__(env = env, values = values)
+  def __init__(self, env = None, origin = None, values = None):
+    super(value_hook_list, self).__init__(env = env, origin = origin, values = values)
   
 check.register_class(value_hook_list, include_seq = False)

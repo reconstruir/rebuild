@@ -8,8 +8,8 @@ from .value_base import value_base
 
 class value_source_tarball(value_base):
 
-  def __init__(self, env = None, filename = '', properties = None):
-    super(value_source_tarball, self).__init__(env, properties = properties)
+  def __init__(self, env = None, origin = None, filename = '', properties = None):
+    super(value_source_tarball, self).__init__(env, origin, properties = properties)
     check.check_string(filename)
     self.filename = filename
 
@@ -37,14 +37,14 @@ class value_source_tarball(value_base):
   
   @classmethod
   #@abstractmethod
-  def parse(clazz, env, recipe_filename, text):
+  def parse(clazz, env, origin, text):
     parts = string_util.split_by_white_space(text)
     if len(parts) < 1:
-      raise ValueError('expected filename instead of: %s' % (text))
+      raise ValueError('%s: expected filename instead of: %s' % (origin, text))
     filename = parts[0]
     rest = string_util.replace(text, { filename: '' })
     properties = clazz.parse_properties(rest)
-    return clazz(env, filename = filename, properties = properties)
+    return clazz(env = env, origin = origin, filename = filename, properties = properties)
   
   @classmethod
   #@abstractmethod

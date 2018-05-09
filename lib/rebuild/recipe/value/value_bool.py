@@ -8,8 +8,8 @@ from .value_type import value_type
 
 class value_bool(value_base):
 
-  def __init__(self, env = None, value = False):
-    super(value_bool, self).__init__(env)
+  def __init__(self, env = None, origin = None, value = False):
+    super(value_bool, self).__init__(env, origin)
     check.check_bool(value)
     self.value = value
 
@@ -38,9 +38,9 @@ class value_bool(value_base):
   
   @classmethod
   #@abstractmethod
-  def parse(clazz, env, recipe_filename, text):
+  def parse(clazz, env, origin, text):
     value = bool_util.parse_bool(text)
-    return clazz(env, value = value)
+    return clazz(env, origin = origin, value = value)
   
   @classmethod
   #@abstractmethod

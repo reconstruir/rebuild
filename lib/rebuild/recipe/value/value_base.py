@@ -9,10 +9,13 @@ from collections import namedtuple
 
 class value_base(with_metaclass(ABCMeta, object)):
   
-  def __init__(self, env, properties = None):
+  def __init__(self, env, origin, properties = None):
     if env:
       check.check_recipe_load_env(env)
     self.env = env
+    if origin:
+      check.check_value_origin(origin)
+    self.origin = origin
     properties = properties or key_value_list()
     check.check_key_value_list(properties)
     self.properties = properties
@@ -71,7 +74,7 @@ class value_base(with_metaclass(ABCMeta, object)):
 
   @classmethod
   @abstractmethod
-  def parse(clazz, env, recipe_filename, text):
+  def parse(clazz, env, origin, text):
     'Parse a value.'
     assert False
 

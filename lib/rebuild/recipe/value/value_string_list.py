@@ -9,8 +9,8 @@ from .value_type import value_type
 
 class value_string_list(value_base):
 
-  def __init__(self, env = None, values = None):
-    super(value_string_list, self).__init__(env)
+  def __init__(self, env = None, origin = None, values = None):
+    super(value_string_list, self).__init__(env, origin)
     values = values or string_list()
     if not check.is_string_list(values):
       values = string_list(values)
@@ -40,12 +40,12 @@ class value_string_list(value_base):
   
   @classmethod
   #@abstractmethod
-  def parse(clazz, env, recipe_filename, text):
+  def parse(clazz, env, origin, text):
     if not text:
       values = string_list()
     else:
       values = string_list.parse(text, options = string_list.KEEP_QUOTES)
-    return clazz(env, values = values)
+    return clazz(env = env, origin = origin, values = values)
   
   @classmethod
   #@abstractmethod
@@ -58,7 +58,7 @@ class value_string_list(value_base):
     'Resolve a list of values if this type into a nice dictionary.'
     if arg_type != value_type.STRING_LIST:
       values_string = [ str(x) for x in values ]
-      print('FUCK: arg_type should be %s instead of %d for %s' % (value_type.STRING_LIST, arg_type, values_string))
+      print('WARNING: %s: arg_type should be %s instead of %d for %s' % (values[0].origin, value_type.STRING_LIST, arg_type, values_string))
       return clazz.default_value(arg_type)
       #raise TypeError('arg_type should be %s instead of %d' % (value_type.STRING_LIST, arg_type))
     result = string_list()

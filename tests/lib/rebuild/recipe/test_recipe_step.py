@@ -5,6 +5,7 @@ from bes.testing.unit_test import unit_test
 from rebuild.base import build_target
 from rebuild.recipe import recipe_parser, recipe_load_env
 from rebuild.recipe.value import value_file, value_file_list, value_git_address, value_install_file
+from rebuild.recipe.value import value_origin as VO
 from bes.key_value import key_value as KV, key_value_list as KVL
 from bes.text import string_list
 from test_steps import *
@@ -114,7 +115,7 @@ git_address_value
       'key_values_value': [],
       'string_list_value': [],
       'string_value': None,
-      'git_address_value': value_git_address(env, 'linux_address', 'linux_tag'),
+      'git_address_value': value_git_address(env, VO('caca', 1, 'caca'), 'linux_address', 'linux_tag'),
     }
     self.assertEqual( expected, r )
 
@@ -130,7 +131,7 @@ git_address_value
       'key_values_value': [],
       'string_list_value': [],
       'string_value': None,
-      'git_address_value': value_git_address(env, 'macos_address', 'macos_tag'),
+      'git_address_value': value_git_address(env, VO('caca', 1, 'caca'), 'macos_address', 'macos_tag'),
     }
     self.assertEqual( expected, r )
     

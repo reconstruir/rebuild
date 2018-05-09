@@ -8,8 +8,8 @@ from .value_type import value_type
 
 class value_string(value_base):
 
-  def __init__(self, env = None, value = None):
-    super(value_string, self).__init__(env)
+  def __init__(self, env = None, origin = None, value = None):
+    super(value_string, self).__init__(env, origin)
     if value is not None:
       check.check_string(value)
     self.value = value
@@ -34,8 +34,8 @@ class value_string(value_base):
   
   @classmethod
   #@abstractmethod
-  def parse(clazz, env, recipe_filename, text):
-    return clazz(env, value = text)
+  def parse(clazz, env, origin, text):
+    return clazz(env = env, origin = origin, value = text)
   
   @classmethod
   #@abstractmethod

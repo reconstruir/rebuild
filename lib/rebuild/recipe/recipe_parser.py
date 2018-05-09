@@ -18,12 +18,15 @@ from rebuild.instruction import instruction_list
 
 from .masked_value import masked_value
 from .masked_value_list import masked_value_list
+
 from .recipe import recipe
 from .recipe_parser_util import recipe_parser_util
 from .recipe_step import recipe_step
 from .recipe_step_list import recipe_step_list
 from .recipe_value import recipe_value
+
 from .value import value_file
+from .value import value_origin
 
 class recipe_parser_error(Exception):
   def __init__(self, message, filename, line_number):
@@ -173,7 +176,8 @@ class recipe_parser(object):
     env_vars = []
     for child in node.children:
       text = tree_text_parser.node_text_flat(child)
-      value = masked_value.parse_mask_and_value(self.env, self.filename, text, value_type.KEY_VALUES)
+      child_origin = value_origin(self.filename, child.data.line_number, text)
+      value = masked_value.parse_mask_and_value(self.env, child_origin, text, value_type.KEY_VALUES)
       env_vars.append(value)
     return masked_value_list(env_vars)
 
@@ -181,7 +185,8 @@ class recipe_parser(object):
     export_compilation_flags_requirements = []
     for child in node.children:
       text = tree_text_parser.node_text_flat(child)
-      value = masked_value.parse_mask_and_value(self.env, self.filename, text, value_type.STRING_LIST)
+      child_origin = value_origin(self.filename, child.data.line_number, text)
+      value = masked_value.parse_mask_and_value(self.env, child_origin, text, value_type.STRING_LIST)
       export_compilation_flags_requirements.append(value)
     return masked_value_list(export_compilation_flags_requirements)
 
@@ -214,12 +219,14 @@ class recipe_parser(object):
     return recipe_step(name, description, values)
 
   def _parse_step_value(self, description, node):
+    origin = value_origin(self.filename, node.data.line_number, node.data.text)
     values = masked_value_list()
-    key = recipe_parser_util.parse_key(node.data.text)
+    key = recipe_parser_util.parse_key(origin, node.data.text)
     args_definition = description.step_class.args_definition()
     if not key in args_definition:
       self._error('invalid config \"%s\" instead of: %s' % (key, ' '.join(args_definition.keys())), node)
-    value = recipe_parser_util.parse_key_and_value(self.env, self.filename, node.data.text, args_definition[key].atype)
+    
+    value = recipe_parser_util.parse_key_and_value(self.env, origin, node.data.text, args_definition[key].atype)
     if value.value:
       assert not node.children
       values.append(masked_value(None, value.value))
@@ -227,10 +234,11 @@ class recipe_parser(object):
 #      assert node.children
       for child in node.children:
         text = tree_text_parser.node_text_flat(child)
+        child_origin = value_origin(self.filename, child.data.line_number, text)
         try:
-          value = masked_value.parse_mask_and_value(self.env, self.filename, text, args_definition[key].atype)
+          value = masked_value.parse_mask_and_value(self.env, child_origin, text, args_definition[key].atype)
         except RuntimeError as ex:
-          self._error('error: %s - %s' % (text, str(ex)), node)
+          self._error('error: %s: %s - %s' % (origin, text, str(ex)), node)
         values.append(value)
     return recipe_value(key, values)
 

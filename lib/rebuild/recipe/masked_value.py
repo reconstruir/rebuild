@@ -61,9 +61,9 @@ class masked_value(namedtuple('masked_value', 'mask, value')):
     return buf.getvalue()
 
   @classmethod
-  def parse_mask_and_value(clazz, env, value_filename, text, argspec):
+  def parse_mask_and_value(clazz, env, origin, text, argspec):
     mask, delimiter, value = text.partition(':')
-    value = recipe_parser_util.parse_value(env, value_filename, value.strip(), argspec)
+    value = recipe_parser_util.parse_value(env, origin, value.strip(), argspec)
     return clazz(mask, value)
 
   def mask_matches(self, system):

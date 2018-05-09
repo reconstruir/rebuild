@@ -9,8 +9,8 @@ from .value_base import value_base
 
 class value_source_dir(value_base):
 
-  def __init__(self, env = None, where = '', properties = None):
-    super(value_source_dir, self).__init__(env, properties = properties)
+  def __init__(self, env = None, origin = None, where = '', properties = None):
+    super(value_source_dir, self).__init__(env, origin, properties = properties)
     check.check_string(where)
     self.where = where
     self._tarball = None
@@ -39,14 +39,14 @@ class value_source_dir(value_base):
   
   @classmethod
   #@abstractmethod
-  def parse(clazz, env, recipe_filename, text):
+  def parse(clazz, env, origin, text):
     parts = string_util.split_by_white_space(text)
     if len(parts) < 1:
-      raise ValueError('expected filename instead of: %s' % (text))
+      raise ValueError('%s: expected filename instead of: %s' % (origin, text))
     where = parts[0]
     rest = string_util.replace(text, { where: '' })
     properties = clazz.parse_properties(rest)
-    return clazz(env, where = where, properties = properties)
+    return clazz(env = env, origin = origin, where = where, properties = properties)
   
   @classmethod
   #@abstractmethod
@@ -65,8 +65,6 @@ class value_source_dir(value_base):
     full_name = self.substitute('${REBUILD_PACKAGE_FULL_NAME}')
     tarball_filename = '%s.tar.gz' % (full_name)
     tarball_path = path.join(temp_dir, tarball_filename)
-    import os
-    print('FUCK: cwd=%s' % (os.getcwd()))
     archiver.create(tarball_path, self.where, base_dir = full_name)
     assert path.isfile(tarball_path)
     self._tarball = tarball_path

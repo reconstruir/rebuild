@@ -8,8 +8,8 @@ from .value_base import value_base
 
 class value_git_address(value_base):
 
-  def __init__(self, env = None, address = '', revision = '', properties = None):
-    super(value_git_address, self).__init__(env, properties = properties)
+  def __init__(self, env = None, origin = None, address = '', revision = '', properties = None):
+    super(value_git_address, self).__init__(env , origin, properties = properties)
     check.check_string(address)
     check.check_string(revision)
     self.address = address
@@ -41,15 +41,15 @@ class value_git_address(value_base):
   
   @classmethod
   #@abstractmethod
-  def parse(clazz, env, recipe_filename, text):
+  def parse(clazz, env, origin, text):
     parts = string_util.split_by_white_space(text)
     if len(parts) < 2:
-      raise ValueError('expected address and revision instead of: %s' % (text))
+      raise ValueError('%s: expected address and revision instead of: %s' % (origin, text))
     address = parts[0]
     revision = parts[1]
     rest = string_util.replace(text, { address: '', revision: '' })
     properties = clazz.parse_properties(rest)
-    return clazz(env, address = address, revision = revision, properties = properties)
+    return clazz(env, origin = origin, address = address, revision = revision, properties = properties)
   
   @classmethod
   #@abstractmethod

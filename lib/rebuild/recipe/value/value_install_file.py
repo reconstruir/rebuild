@@ -9,8 +9,8 @@ from .value_list_base import value_list_base
 
 class value_install_file(value_base):
 
-  def __init__(self, env = None, filename = '', dst_filename = '', properties = None):
-    super(value_install_file, self).__init__(env, properties = properties)
+  def __init__(self, env = None, origin = None, filename = '', dst_filename = '', properties = None):
+    super(value_install_file, self).__init__(env, origin, properties = properties)
     self.filename = filename
     self.dst_filename = dst_filename
 
@@ -47,16 +47,16 @@ class value_install_file(value_base):
 
   @classmethod
   #@abstractmethod
-  def parse(clazz, env, recipe_filename, text):
+  def parse(clazz, env, origin, text):
     parts = string_util.split_by_white_space(text)
     if len(parts) < 2:
-      raise ValueError('expected filename and dst_filename instead of: %s' % (text))
+      raise ValueError('%s: expected filename and dst_filename instead of: %s' % (origin, text))
     filename = parts[0]
     dst_filename = parts[1]
     rest = text.replace(filename, '')
     rest = rest.replace(dst_filename, '')
     properties = clazz.parse_properties(rest)
-    return clazz(env = env, filename = filename, dst_filename = dst_filename, properties = properties)
+    return clazz(env = env, origin = origin, filename = filename, dst_filename = dst_filename, properties = properties)
 
   @classmethod
   #@abstractmethod
@@ -79,7 +79,7 @@ class value_install_file_list(value_list_base):
 
   __value_type__ = value_install_file
   
-  def __init__(self, env = None, values = None):
-    super(value_install_file_list, self).__init__(env = env, values = values)
+  def __init__(self, env = None, origin = None, values = None):
+    super(value_install_file_list, self).__init__(env = env, origin = origin, values = values)
 
 check.register_class(value_install_file_list, include_seq = False)
