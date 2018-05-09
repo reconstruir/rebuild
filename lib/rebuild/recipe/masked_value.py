@@ -26,8 +26,6 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
       value = value_string_list(env = None, values = value)
     elif check.is_key_value_list(value):
       value = value_key_values(env = None, values = value)
-#    elif (not check.is_string(value) and not check.is_string_list(value)) and check.is_string_seq(value):
-#      value = string_list(value)
     if not clazz.value_type_is_valid(value):
       raise TypeError('invalid value type: %s - %s' % (str(value), type(value)))
     return clazz.__bases__[0].__new__(clazz, mask, value)

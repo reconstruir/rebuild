@@ -3,6 +3,7 @@
 from bes.common import check, type_checked_list
 from bes.compat import StringIO
 from bes.text import string_list
+
 from .value_base import value_base
 
 class value_list_base(type_checked_list, value_base):
@@ -46,6 +47,19 @@ class value_list_base(type_checked_list, value_base):
     result = []
     for value in self:
       result.extend(value.sources())
+    return result
+
+  @classmethod
+  #@abstractmethod
+  def resolve(clazz, values, arg_type):
+    'Resolve a list of list values by flattening it down to a single list.'
+    check.check_seq(values, clazz)
+    value_type = clazz.value_type()
+    result = clazz()
+    for value in values:
+      check.check(value, clazz)
+      result.extend(value._values)
+    result.remove_dups()
     return result
   
 check.register_class(value_list_base, include_seq = False)

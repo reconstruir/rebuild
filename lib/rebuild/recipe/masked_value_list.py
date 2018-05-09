@@ -60,10 +60,9 @@ class masked_value_list(object):
 
   def resolve(self, system, arg_type):
     if not self._values:
-      return []
-    first_value = self._values[0].value
+      return None
+    
     values = self._resolve_values_by_mask(system)
-    #print('FUCK: CACA: values=%s - %s' % (str(values), type(values)))
       
     if not values:
       return None
@@ -79,9 +78,7 @@ class masked_value_list(object):
     elif check.is_value_string_list(values[0]):
       return values[0].__class__.resolve(values, arg_type)
     elif check.is_value_file_list(values[0]):
-      #return values[0][0].__class__.resolve(values, arg_type)
-      #return values[0].__class__.resolve(values, arg_type)
-      return self._resolve_typed_list(values, value_file_list)
+      return values[0].__class__.resolve(values, arg_type)
     elif check.is_value_install_file(values[0]):
       return values[0].__class__.resolve(values, arg_type)
     elif check.is_value_hook(values[0]):
@@ -101,14 +98,6 @@ class masked_value_list(object):
     for value in self._values:
       if value.mask_matches(system):
         result.append(value.value)
-    return result
-
-  def _resolve_typed_list(self, values, list_type):
-    result = list_type()
-    for value in values:
-      assert isinstance(value, type_checked_list)
-      result.extend(value)
-    result.remove_dups()
     return result
 
 check.register_class(masked_value_list, include_seq = False)

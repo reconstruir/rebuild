@@ -100,7 +100,7 @@ class recipe_parser_util(object):
     elif arg_type == value_type.FILE:
       return value_file.default_value(arg_type)
     elif arg_type == value_type.DIR:
-      return None
+      return value_file.default_value(arg_type)
     elif arg_type == value_type.INSTALL_FILE:
       return value_install_file.default_value(arg_type)
     elif arg_type == value_type.GIT_ADDRESS:

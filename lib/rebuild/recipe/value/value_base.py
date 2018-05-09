@@ -57,34 +57,34 @@ class value_base(with_metaclass(ABCMeta, object)):
   @abstractmethod
   def substitutions_changed(self):
     'substitutions changed.'
-    pass
+    assert False
 
   @abstractmethod
   def value_to_string(self, quote):
     'Return the value as a string and quote if needed.'
-    pass
+    assert False
   
   @abstractmethod
   def sources(self):
     'Return a list of sources this caca provides or None if no sources.'
-    pass
+    assert False
 
   @classmethod
   @abstractmethod
   def parse(clazz, env, recipe_filename, text):
     'Parse a value.'
-    pass
+    assert False
 
   @classmethod
   @abstractmethod
   def default_value(clazz, arg_type):
     'Return the default value to use for this class.'
-    pass
+    assert False
 
   @classmethod
   @abstractmethod
   def resolve(clazz, values, arg_type):
     'Resolve a list of values if this type into a nice dictionary.'
-    pass
+    assert False
 
 check.register_class(value_base)
