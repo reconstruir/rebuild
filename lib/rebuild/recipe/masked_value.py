@@ -15,21 +15,23 @@ from .value import value_string_list
 
 class masked_value(namedtuple('masked_value', 'mask, value')):
 
-  def __new__(clazz, mask, value):
+  def __new__(clazz, mask, value, origin = None):
     if check.is_bool(value):
-      value = value_bool(env = None, value = value)
+      value = value_bool(env = None, origin = origin, value = value)
     elif check.is_int(value):
-      value = value_int(env = None, value = value)
+      value = value_int(env = None, origin = origin, value = value)
     elif check.is_string(value):
-      value = value_string(env = None, value = value)
+      value = value_string(env = None, origin = origin, value = value)
     elif check.is_string_list(value) or check.is_string_seq(value):
-      value = value_string_list(env = None, values = value)
+      value = value_string_list(env = None, origin = origin, values = value)
     elif check.is_key_value_list(value):
-      value = value_key_values(env = None, values = value)
+      value = value_key_values(env = None, origin = origin, values = value)
 
     if not check.is_value_base(value):
       raise TypeError('value should be subclass of value_base: %s - %s' % (str(value), type(value)))
-      
+
+    if origin:
+      check.check_value_origin(origin)
     return clazz.__bases__[0].__new__(clazz, mask, value)
 
   def __str__(self):
@@ -64,7 +66,7 @@ class masked_value(namedtuple('masked_value', 'mask, value')):
   def parse_mask_and_value(clazz, env, origin, text, argspec):
     mask, delimiter, value = text.partition(':')
     value = recipe_parser_util.parse_value(env, origin, value.strip(), argspec)
-    return clazz(mask, value)
+    return clazz(mask, value, origin)
 
   def mask_matches(self, system):
     return build_system.mask_matches(self.mask or 'all', system)
