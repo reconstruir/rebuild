@@ -3,8 +3,10 @@
 import os.path as path
 from bes.common import check, string_util
 from bes.compat import StringIO
+
 from .value_base import value_base
 from .value_list_base import value_list_base
+from .value_type import value_type
 
 class value_file(value_base):
 
@@ -31,8 +33,12 @@ class value_file(value_base):
   #@abstractmethod
   def default_value(clazz, arg_type):
     'Return the default value to use for this class.'
-    return None
-    return value_file_list()
+    if arg_type == value_type.FILE:
+      return None
+    elif arg_type == value_type.FILE_LIST:
+      return value_file_list()
+    else:
+      raise ValueError('Invalid value_type: %s' % (arg_type))
 
   #@abstractmethod
   def sources(self):
@@ -58,6 +64,15 @@ class value_file(value_base):
   #@abstractmethod
   def resolve(clazz, values, arg_type):
     check.check_value_file_seq(values)
+    if arg_type == value_type.FILE:
+      return clazz._resolve_file(values)
+    elif arg_type == value_type.FILE_LIST:
+      return clazz._resolve_file_list(values)
+    else:
+      raise ValueError('Invalid value_type: %s' % (arg_type))
+  
+  @classmethod
+  def _resolve_file_list(clazz, values):
     env = None
     result_values = []
     for value in values:
@@ -68,6 +83,12 @@ class value_file(value_base):
     result = value_file_list(env = env, values = result_values)
     result.remove_dups()
     return result
+  
+  @classmethod
+  def _resolve_file(clazz, values):
+    if not values:
+      return None
+    return values[-1]
   
 check.register_class(value_file, include_seq = True)
 

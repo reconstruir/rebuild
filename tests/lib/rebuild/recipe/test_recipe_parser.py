@@ -484,14 +484,21 @@ package foo-1.2.3-4
 
   steps
     step_takes_hook_list
-      hook_list_value: test_loaded_hook1 test_loaded_hook2
+      hook_list_value
+        all: test_loaded_hook1
+        all: test_loaded_hook2
 '''
-    r = P(self.TEST_ENV, self._filename_for_parser(), text).parse()
+    hook1_filename = self.data_path('test_loaded_hook1.py')
+    hook2_filename = self.data_path('test_loaded_hook2.py')
+
+    r = P(self.TEST_ENV, hook1_filename, text).parse()
     self.assertEqual( 1, len(r) )
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertMultiLineEqual( 'step_takes_hook_list\n    hook_list_value: test_loaded_hook1 test_loaded_hook2', str(r[0].steps[0]) )
+    self.assertMultiLineEqual( 'step_takes_hook_list\n  hook_list_value\n    all: test_loaded_hook1\n    all: test_loaded_hook2', str(r[0].steps[0]) )
+    self.assertEqual( hook1_filename, r[0].steps[0].values[0].values[0].value.filename )
+    self.assertEqual( hook2_filename, r[0].steps[0].values[0].values[1].value.filename )
     
   def test_step_value_hook_list_with_mask(self):
     text = '''!rebuild.recipe!
@@ -503,21 +510,20 @@ package foo-1.2.3-4
   steps
     step_takes_hook_list
       hook_list_value
-        linux: test_loaded_hook3 test_loaded_hook4
+        linux: test_loaded_hook3
+        linux:  test_loaded_hook4
 '''
-    hook1_filename = self.data_path('test_loaded_hook3.py')
-    hook2_filename = self.data_path('test_loaded_hook4.py')
+    hook3_filename = self.data_path('test_loaded_hook3.py')
+    hook4_filename = self.data_path('test_loaded_hook4.py')
     
-    r = P(self.TEST_ENV, hook1_filename, text).parse()
+    r = P(self.TEST_ENV, hook3_filename, text).parse()
     self.assertEqual( 1, len(r) )
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertEqual( 1, len(r[0].steps) )
-    self.assertMultiLineEqual( 'step_takes_hook_list\n  hook_list_value\n    linux: test_loaded_hook3 test_loaded_hook4', str(r[0].steps[0]) )
-    hooks = r[0].steps[0].values[0].values
-    self.assertEqual( 2, len(hooks[0].value) )
-    self.assertEqual( hook1_filename, hooks[0].value[0].filename )
-    self.assertEqual( hook2_filename, hooks[0].value[1].filename )
+    self.assertMultiLineEqual( 'step_takes_hook_list\n  hook_list_value\n    linux: test_loaded_hook3\n    linux: test_loaded_hook4', str(r[0].steps[0]) )
+    self.assertEqual( hook3_filename, r[0].steps[0].values[0].values[0].value.filename )
+    self.assertEqual( hook4_filename, r[0].steps[0].values[0].values[1].value.filename )
 
   def test_step_value_file_list(self):
     text = '''!rebuild.recipe!

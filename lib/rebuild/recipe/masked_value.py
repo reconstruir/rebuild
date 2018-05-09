@@ -38,7 +38,7 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
       return self.value.value_to_string(quote)
     elif check.is_string_list(self.value):
       return self.value.to_string(delimiter = ' ', quote = quote)
-    elif check.is_hook_list(self.value):
+    elif check.is_hook(self.value):
       return str(self.value)
     elif check.is_value_install_file(self.value):
       return str(self.value)
@@ -57,7 +57,8 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
 
   _VALUE_TYPE_CHECKERS = [
     check.is_bool,
-    check.is_hook_list,
+    check.is_hook,
+#    check.is_hook_list,
     check.is_int,
     check.is_string,
     check.is_string_list,
