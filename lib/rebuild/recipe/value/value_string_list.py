@@ -18,6 +18,8 @@ class value_string_list(value_base):
     self.values = values
 
   def __eq__(self, other):
+    if check.is_string_seq(other):
+      return self.values == other
     return self.values == other.values
     
   def __iter__(self):
@@ -39,7 +41,10 @@ class value_string_list(value_base):
   @classmethod
   #@abstractmethod
   def parse(clazz, env, recipe_filename, text):
-    values = string_list.parse(text, options = string_list.KEEP_QUOTES)
+    if not text:
+      values = string_list()
+    else:
+      values = string_list.parse(text, options = string_list.KEEP_QUOTES)
     return clazz(env, values = values)
   
   @classmethod
@@ -54,8 +59,8 @@ class value_string_list(value_base):
     assert arg_type == value_type.STRING_LIST
     result = string_list()
     for value in values:
-      check.check_string_list(value)
-      result.extend(value)
+      check.check_value_string_list(value)
+      result.extend(value.values)
     result.remove_dups()
     return result
   

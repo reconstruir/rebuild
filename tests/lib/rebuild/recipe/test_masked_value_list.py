@@ -26,7 +26,7 @@ class test_masked_value_list(unit_test):
     r.append(self._string_list('linux: --linux'))
     r.append(self._string_list('macos: --macos'))
     r.append(self._string_list('linux: --linux'))
-    self.assertEqual( [ '--all', '--linux' ], r.resolve(build_system.LINUX, VT.STRING) )
+    self.assertEqual( [ '--all', '--linux' ], r.resolve(build_system.LINUX, VT.STRING_LIST) )
 
   def test_resolve_key_values(self):
     r = VL()

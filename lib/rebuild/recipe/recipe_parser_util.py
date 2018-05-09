@@ -3,19 +3,21 @@
 import os.path as path
 from bes.common import bool_util, check
 from bes.key_value import key_value
-from rebuild.recipe.value import value_type, value_hook
-from bes.text import comments, string_list
+from bes.text import comments
 
 from .value import value_bool
 from .value import value_file
 from .value import value_file_list
 from .value import value_git_address
+from .value import value_hook
 from .value import value_install_file
 from .value import value_int
 from .value import value_key_values
 from .value import value_source_dir
 from .value import value_source_tarball
 from .value import value_string
+from .value import value_string_list
+from .value import value_type
 
 class recipe_parser_util(object):
 
@@ -58,7 +60,7 @@ class recipe_parser_util(object):
     elif arg_type == value_type.KEY_VALUES:
       return value_key_values.parse(env, recipe_filename, value)
     elif arg_type == value_type.STRING_LIST:
-      return clazz._parse_string_list(value)
+      return value_string_list.parse(env, recipe_filename, value)
     elif arg_type == value_type.STRING:
       return value_string.parse(env, recipe_filename, value)
     elif arg_type == value_type.HOOK_LIST:
@@ -88,7 +90,7 @@ class recipe_parser_util(object):
     elif arg_type == value_type.KEY_VALUES:
       return value_key_values.default_value(arg_type)
     elif arg_type == value_type.STRING_LIST:
-      return string_list()
+      return value_string_list.default_value(arg_type)
     elif arg_type == value_type.STRING:
       return value_string.default_value(arg_type)
     elif arg_type == value_type.HOOK_LIST:
@@ -108,12 +110,6 @@ class recipe_parser_util(object):
     elif arg_type == value_type.SOURCE_DIR:
       return value_source_dir.default_value(arg_type)
     raise ValueError('unknown arg_type: %s' % (str(arg_type)))
-
-  @classmethod
-  def _parse_string_list(clazz, value):
-    if not value:
-      return []
-    return string_list.parse(value, options = string_list.KEEP_QUOTES)
 
   @classmethod
   def _parse_dir(clazz, env, value, base):

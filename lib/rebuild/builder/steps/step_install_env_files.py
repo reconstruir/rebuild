@@ -24,7 +24,7 @@ class step_install_env_files(step):
   #@abstractmethod
   def execute(self, script, env, values, inputs):
     env_files = values.get('env_files')
-
+    print('FUCK: env_files=%s - %s' % (env_files, type(env_files)))
     if not env_files:
       message = 'No env files for %s' % (script.descriptor.full_name)
       self.log_d(message)

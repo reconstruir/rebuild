@@ -3,15 +3,15 @@
 
 from collections import namedtuple
 from bes.common import check
-from bes.text import string_list
 from bes.compat import StringIO
-from bes.key_value import key_value, key_value_list
 from rebuild.base import build_system
 from .recipe_parser_util import recipe_parser_util
 
 from .value import value_bool
 from .value import value_int
+from .value import value_key_values
 from .value import value_string
+from .value import value_string_list
 
 class masked_value(namedtuple('masked_value', 'mask,value')):
 
@@ -22,8 +22,12 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
       value = value_int(env = None, value = value)
     elif check.is_string(value):
       value = value_string(env = None, value = value)
-    elif (not check.is_string(value) and not check.is_string_list(value)) and check.is_string_seq(value):
-      value = string_list(value)
+    elif check.is_string_list(value) or check.is_string_seq(value):
+      value = value_string_list(env = None, values = value)
+    elif check.is_key_value_list(value):
+      value = value_key_values(env = None, values = value)
+#    elif (not check.is_string(value) and not check.is_string_list(value)) and check.is_string_seq(value):
+#      value = string_list(value)
     if not clazz.value_type_is_valid(value):
       raise TypeError('invalid value type: %s - %s' % (str(value), type(value)))
     return clazz.__bases__[0].__new__(clazz, mask, value)
@@ -46,8 +50,8 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
       return self.value.value_to_string(quote)
     elif check.is_value_key_values(self.value):
       return self.value.value_to_string(quote)
-    elif check.is_string_list(self.value):
-      return self.value.to_string(delimiter = ' ', quote = quote)
+    elif check.is_value_string_list(self.value):
+      return self.value.value_to_string(quote)
     elif check.is_value_hook(self.value):
       return self.value.value_to_string(quote)
     elif check.is_value_install_file(self.value):
@@ -66,7 +70,6 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
       assert False
 
   _VALUE_TYPE_CHECKERS = [
-    check.is_string_list,
     check.is_value_bool,
     check.is_value_file,
     check.is_value_file_list,
@@ -78,6 +81,7 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
     check.is_value_source_dir,
     check.is_value_source_tarball,
     check.is_value_string,
+    check.is_value_string_list,
   ]
       
   @classmethod

@@ -4,7 +4,6 @@ from bes.common import algorithm, check, type_checked_list
 from bes.compat import StringIO
 from rebuild.base import build_system
 from bes.key_value import key_value, key_value_list
-from bes.text import string_list
 
 from .value import value_file
 from .value import value_file_list
@@ -77,8 +76,8 @@ class masked_value_list(object):
       return values[0].__class__.resolve(values, arg_type)
     elif check.is_value_key_values(values[0]):
       return values[0].__class__.resolve(values, arg_type)
-    elif check.is_string_list(values[0]):
-      return self._resolve_string_list(values)
+    elif check.is_value_string_list(values[0]):
+      return values[0].__class__.resolve(values, arg_type)
     elif check.is_value_file_list(values[0]):
       #return values[0][0].__class__.resolve(values, arg_type)
       #return values[0].__class__.resolve(values, arg_type)
@@ -108,14 +107,6 @@ class masked_value_list(object):
     result = list_type()
     for value in values:
       assert isinstance(value, type_checked_list)
-      result.extend(value)
-    result.remove_dups()
-    return result
-
-  def _resolve_string_list(self, values):
-    result = string_list()
-    for value in values:
-      check.check_string_list(value)
       result.extend(value)
     result.remove_dups()
     return result
