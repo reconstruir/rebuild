@@ -849,3 +849,6 @@ makefile in step_make might not work
       d = poto1.to_dict()
       d.update(poto2.to_dict())
       properties['env_vars'] = d
+
+ - distinction between value_file and value_file_list in recipes is confusing
+ 

@@ -78,6 +78,7 @@ class masked_value_list(object):
     elif check.is_string_list(values[0]):
       return self._resolve_string_list(values)
     elif check.is_value_file_list(values[0]):
+      #return values[0][0].__class__.resolve(values, arg_type)
       #return values[0].__class__.resolve(values, arg_type)
       return self._resolve_typed_list(values, value_file_list)
     elif check.is_value_install_file(values[0]):
@@ -85,7 +86,7 @@ class masked_value_list(object):
     elif check.is_value_hook(values[0]):
       return values[0].__class__.resolve(values, arg_type)
     elif check.is_value_file(values[0]):
-      return values[-1]
+      return values[0].__class__.resolve(values, arg_type)
     elif check.is_value_git_address(values[0]):
       return values[0].__class__.resolve(values, arg_type)
     elif check.is_value_source_tarball(values[0]):
