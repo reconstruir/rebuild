@@ -56,7 +56,11 @@ class value_string_list(value_base):
   #@abstractmethod
   def resolve(clazz, values, arg_type):
     'Resolve a list of values if this type into a nice dictionary.'
-    assert arg_type == value_type.STRING_LIST
+    if arg_type != value_type.STRING_LIST:
+      values_string = [ str(x) for x in values ]
+      print('FUCK: arg_type should be %s instead of %d for %s' % (value_type.STRING_LIST, arg_type, values_string))
+      return clazz.default_value(arg_type)
+      #raise TypeError('arg_type should be %s instead of %d' % (value_type.STRING_LIST, arg_type))
     result = string_list()
     for value in values:
       check.check_value_string_list(value)

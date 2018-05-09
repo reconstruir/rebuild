@@ -53,6 +53,7 @@ class recipe_parser_util(object):
     check.check_string(recipe_filename)
     check.check_string(value)
     check.check_value_type(arg_type)
+    
     if arg_type == value_type.BOOL:
       return value_bool.parse(env, recipe_filename, value)
     elif arg_type == value_type.INT:

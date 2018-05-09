@@ -13,7 +13,7 @@ from .value import value_key_values
 from .value import value_string
 from .value import value_string_list
 
-class masked_value(namedtuple('masked_value', 'mask,value')):
+class masked_value(namedtuple('masked_value', 'mask, value')):
 
   def __new__(clazz, mask, value):
     if check.is_bool(value):
@@ -26,8 +26,10 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
       value = value_string_list(env = None, values = value)
     elif check.is_key_value_list(value):
       value = value_key_values(env = None, values = value)
-    if not clazz.value_type_is_valid(value):
-      raise TypeError('invalid value type: %s - %s' % (str(value), type(value)))
+
+    if not check.is_value_base(value):
+      raise TypeError('value should be subclass of value_base: %s - %s' % (str(value), type(value)))
+      
     return clazz.__bases__[0].__new__(clazz, mask, value)
 
   def __str__(self):
@@ -40,55 +42,8 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
       return self._to_string_no_mask(depth, indent, quote)
 
   def value_to_string(self, quote = True):
-    if check.is_value_int(self.value):
-      return self.value.value_to_string(quote)
-    elif check.is_value_string(self.value):
-      return self.value.value_to_string(quote)
-    elif check.is_value_bool(self.value):
-      return self.value.value_to_string(quote)
-    elif check.is_value_key_values(self.value):
-      return self.value.value_to_string(quote)
-    elif check.is_value_string_list(self.value):
-      return self.value.value_to_string(quote)
-    elif check.is_value_hook(self.value):
-      return self.value.value_to_string(quote)
-    elif check.is_value_install_file(self.value):
-      return self.value.value_to_string(quote)
-    elif check.is_value_file_list(self.value):
-      return self.value.value_to_string(quote)
-    elif check.is_value_file(self.value):
-      return self.value.value_to_string(quote)
-    elif check.is_value_git_address(self.value):
-      return self.value.value_to_string(quote)
-    elif check.is_value_source_tarball(self.value):
-      return self.value.value_to_string(quote)
-    elif check.is_value_source_dir(self.value):
-      return self.value.value_to_string(quote)
-    else:
-      assert False
-
-  _VALUE_TYPE_CHECKERS = [
-    check.is_value_bool,
-    check.is_value_file,
-    check.is_value_file_list,
-    check.is_value_git_address,
-    check.is_value_hook,
-    check.is_value_install_file,
-    check.is_value_int,
-    check.is_value_key_values,
-    check.is_value_source_dir,
-    check.is_value_source_tarball,
-    check.is_value_string,
-    check.is_value_string_list,
-  ]
+    return self.value.value_to_string(quote)
       
-  @classmethod
-  def value_type_is_valid(clazz, v):
-    for checker in clazz._VALUE_TYPE_CHECKERS:
-      if checker(v):
-        return True
-    return False
-    
   def _to_string_no_mask(self, depth, indent, quote):
     spaces = depth * indent * ' '
     buf = StringIO()

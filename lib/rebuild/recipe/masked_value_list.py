@@ -3,11 +3,6 @@
 from bes.common import algorithm, check, type_checked_list
 from bes.compat import StringIO
 from rebuild.base import build_system
-from bes.key_value import key_value, key_value_list
-
-from .value import value_file
-from .value import value_file_list
-from .value import value_install_file
 
 class masked_value_list(object):
 
@@ -66,32 +61,11 @@ class masked_value_list(object):
       
     if not values:
       return None
-    
-    if check.is_value_int(values[0]):
-      return values[0].__class__.resolve(values, arg_type)
-    elif check.is_value_string(values[0]):
-      return values[0].__class__.resolve(values, arg_type)
-    elif check.is_value_bool(values[0]):
-      return values[0].__class__.resolve(values, arg_type)
-    elif check.is_value_key_values(values[0]):
-      return values[0].__class__.resolve(values, arg_type)
-    elif check.is_value_string_list(values[0]):
-      return values[0].__class__.resolve(values, arg_type)
-    elif check.is_value_file_list(values[0]):
-      return values[0].__class__.resolve(values, arg_type)
-    elif check.is_value_install_file(values[0]):
-      return values[0].__class__.resolve(values, arg_type)
-    elif check.is_value_hook(values[0]):
-      return values[0].__class__.resolve(values, arg_type)
-    elif check.is_value_file(values[0]):
-      return values[0].__class__.resolve(values, arg_type)
-    elif check.is_value_git_address(values[0]):
-      return values[0].__class__.resolve(values, arg_type)
-    elif check.is_value_source_tarball(values[0]):
-      return values[0].__class__.resolve(values, arg_type)
-    elif check.is_value_source_dir(values[0]):
-      return values[0].__class__.resolve(values, arg_type)
-    raise TypeError('unknown value type: %s - %s' % (str(values[0]), type(values[0])))
+
+    if not check.is_value_base(values[0]):
+      raise TypeError('value should be subclass of value_base: %s - %s' % (str(values[0]), type(values[0])))
+
+    return values[0].__class__.resolve(values, arg_type)
 
   def _resolve_values_by_mask(self, system):
     result = []
