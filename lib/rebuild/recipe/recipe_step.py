@@ -42,13 +42,18 @@ class recipe_step(namedtuple('recipe_step', 'name,description,values')):
       assert value.key in args_definition
       arg_type = args_definition[value.key].atype
       result.update({ value.key: value.resolve(env.build_target.system, arg_type) })
+      
     for name, arg_type in args_definition.items():
       if name not in result:
         if arg_type.default is not None:
-          result[name] = recipe_parser_util.parse_value(env, '<default>', arg_type.default, arg_type.atype)
+          value = recipe_parser_util.parse_value(env, '<default>', arg_type.default, arg_type.atype)
+          if check.is_value_base(value):
+            result[name] = value.resolve([ value ], arg_type.atype)
+          else:
+            result[name] = value
         else:
           result[name] = recipe_parser_util.value_default(arg_type.atype)
-
+          
     for key, value in result.items():
       if check.is_value_base(value):
         value.substitutions = substitutions

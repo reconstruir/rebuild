@@ -66,6 +66,8 @@ class value_file(value_base):
     check.check_value_file_seq(values)
     if arg_type == value_type.FILE:
       return clazz._resolve_file(values)
+    elif arg_type == value_type.DIR:
+      return clazz._resolve_file(values)
     elif arg_type == value_type.FILE_LIST:
       return clazz._resolve_file_list(values)
     else:

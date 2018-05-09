@@ -11,9 +11,11 @@ from .value_hook import value_hook
 from .value_hook import value_hook_list
 from .value_install_file import value_install_file
 from .value_install_file import value_install_file_list
+from .value_int import value_int
 from .value_key_values import value_key_values
 from .value_list_base import value_list_base
 from .value_source_dir import value_source_dir
 from .value_source_tarball import value_source_tarball
+from .value_string import value_string
 from .value_string_list import value_string_list
 from .value_type import value_type

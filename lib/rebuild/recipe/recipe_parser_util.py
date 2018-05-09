@@ -14,6 +14,7 @@ from .value import value_key_values
 from .value import value_source_dir
 from .value import value_source_tarball
 from .value import value_bool
+from .value import value_int
 
 class recipe_parser_util(object):
 
@@ -52,7 +53,7 @@ class recipe_parser_util(object):
     if arg_type == value_type.BOOL:
       return value_bool.parse(env, recipe_filename, value)
     elif arg_type == value_type.INT:
-      return int(value)
+      return value_int.parse(env, recipe_filename, value)
     elif arg_type == value_type.KEY_VALUES:
       return value_key_values.parse(env, recipe_filename, value)
     elif arg_type == value_type.STRING_LIST:
@@ -87,7 +88,7 @@ class recipe_parser_util(object):
     if arg_type == value_type.BOOL:
       return value_bool.default_value(arg_type)
     elif arg_type == value_type.INT:
-      return None
+      return value_int.default_value(arg_type)
     elif arg_type == value_type.KEY_VALUES:
       return value_key_values.default_value(arg_type)
     elif arg_type == value_type.STRING_LIST:

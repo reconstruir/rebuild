@@ -25,7 +25,6 @@ class step_autoconf_configure(step):
     configure_flags = values.get('configure_flags') or []
     configure_script = values.get('configure_script')
     need_autoreconf = values.get('need_autoreconf')
-    print('FUCK: need_autoreconf=%s - %s' % (need_autoreconf, type(need_autoreconf)))
     
     if check.is_string_list(configure_flags):
       configure_flags = configure_flags.to_list()

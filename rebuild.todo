@@ -851,4 +851,5 @@ makefile in step_make might not work
       properties['env_vars'] = d
 
  - distinction between value_file and value_file_list in recipes is confusing
+ - test_recipe_step needs to test for defaults
  

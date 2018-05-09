@@ -9,10 +9,17 @@ from bes.key_value import key_value, key_value_list
 from rebuild.base import build_system
 from .recipe_parser_util import recipe_parser_util
 
+from .value import value_bool
+from .value import value_int
+
 class masked_value(namedtuple('masked_value', 'mask,value')):
 
   def __new__(clazz, mask, value):
-    if (not check.is_string(value) and not check.is_string_list(value)) and check.is_string_seq(value):
+    if check.is_bool(value):
+      value = value_bool(env = None, value = value)
+    elif check.is_int(value):
+      value = value_int(env = None, value = value)
+    elif (not check.is_string(value) and not check.is_string_list(value)) and check.is_string_seq(value):
       value = string_list(value)
     if not clazz.value_type_is_valid(value):
       raise TypeError('invalid value type: %s - %s' % (str(value), type(value)))
@@ -28,8 +35,8 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
       return self._to_string_no_mask(depth, indent, quote)
 
   def value_to_string(self, quote = True):
-    if check.is_int(self.value):
-      return str(self.value)
+    if check.is_value_int(self.value):
+      return self.value.value_to_string(quote)
     elif check.is_string(self.value):
       return self.value
     elif check.is_value_bool(self.value):
@@ -56,7 +63,6 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
       assert False
 
   _VALUE_TYPE_CHECKERS = [
-    check.is_int,
     check.is_string,
     check.is_string_list,
     check.is_value_bool,
@@ -65,6 +71,7 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
     check.is_value_git_address,
     check.is_value_hook,
     check.is_value_install_file,
+    check.is_value_int,
     check.is_value_key_values,
     check.is_value_source_dir,
     check.is_value_source_tarball,
