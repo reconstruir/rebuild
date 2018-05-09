@@ -53,7 +53,8 @@ class value_list_base(type_checked_list, value_base):
   #@abstractmethod
   def resolve(clazz, values, arg_type):
     'Resolve a list of list values by flattening it down to a single list.'
-    check.check_seq(values, clazz)
+    if not check.is_seq(values, clazz):
+      raise TypeError('%s: should be a sequence of %s instead of %s - %s' % (values[0].origin, clazz, str(values), type(values)))
     value_type = clazz.value_type()
     result = clazz()
     for value in values:
