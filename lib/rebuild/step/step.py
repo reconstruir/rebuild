@@ -265,7 +265,7 @@ class step(with_metaclass(step_register_meta, object)):
 
   @classmethod
   def call_hooks(clazz, hooks, script, env):
-    check.check_hook_list(hooks)
+    check.check_value_hook_list(hooks)
     for hook in hooks:
       rv = hook.execute(script, env)
       check.is_hook_result(rv)

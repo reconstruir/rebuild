@@ -1,8 +1,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from rebuild.recipe.value import hook
+from rebuild.recipe.value import value_hook
 
-class _test_hook1(hook):
+class _test_hook1(value_hook):
     
   def execute(self, script, env):
     import os.path as path
@@ -11,7 +11,7 @@ class _test_hook1(hook):
     file_replace.replace(f, { '@FOO@': 'hook1' }, word_boundary = True)
     return self.result(True)
   
-class _test_hook2(hook):
+class _test_hook2(value_hook):
     
   def execute(self, script, env):
     import os.path as path

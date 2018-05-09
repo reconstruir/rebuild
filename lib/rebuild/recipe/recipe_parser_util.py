@@ -3,7 +3,7 @@
 import os.path as path
 from bes.common import bool_util, check, object_util, string_util
 from bes.key_value import key_value
-from rebuild.recipe.value import value_type, hook
+from rebuild.recipe.value import value_type, value_hook
 from bes.text import comments, string_list
 
 from .value import value_file
@@ -59,7 +59,7 @@ class recipe_parser_util(object):
     elif arg_type == value_type.STRING:
       return value
     elif arg_type == value_type.HOOK_LIST:
-      return hook.parse(env, recipe_filename, value)
+      return value_hook.parse(env, recipe_filename, value)
     elif arg_type == value_type.FILE_LIST:
       return value_file_list.parse(env, recipe_filename, value)
     elif arg_type == value_type.FILE:
@@ -94,7 +94,7 @@ class recipe_parser_util(object):
     elif arg_type == value_type.STRING:
       return None
     elif arg_type == value_type.HOOK_LIST:
-      return hook.default_value(arg_type)
+      return value_hook.default_value(arg_type)
     elif arg_type == value_type.FILE_LIST:
       return value_file_list.default_value(arg_type)
     elif arg_type == value_type.FILE:

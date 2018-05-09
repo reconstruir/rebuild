@@ -3,7 +3,7 @@
 from bes.common import check
 from collections import namedtuple
 
-class hook_result(namedtuple('hook_result', 'success,message')):
+class hook_result(namedtuple('hook_result', 'success, message')):
 
   DEFAULT = 'default'
 

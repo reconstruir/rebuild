@@ -82,7 +82,7 @@ class masked_value_list(object):
       return self._resolve_typed_list(values, value_file_list)
     elif check.is_value_install_file(values[0]):
       return values[0].__class__.resolve(values, arg_type)
-    elif check.is_hook(values[0]):
+    elif check.is_value_hook(values[0]):
       return values[0].__class__.resolve(values, arg_type)
     elif check.is_value_file(values[0]):
       return values[-1]
