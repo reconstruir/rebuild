@@ -1,0 +1,57 @@
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
+
+import os.path as path
+from bes.common import bool_util, check
+
+from .value_base import value_base
+from .value_type import value_type
+
+class value_bool(value_base):
+
+  def __init__(self, env = None, value = False):
+    super(value_bool, self).__init__(env)
+    check.check_bool(value)
+    self.value = value
+
+  def __eq__(self, other):
+    if check.is_bool(other):
+      return self.value == other
+    return self.value == other.value
+
+  def __bool__(self):
+    return self.value
+  
+  __nonzero__ = __bool__
+    
+  #@abstractmethod
+  def value_to_string(self, quote):
+    return str(self.value)
+
+  #@abstractmethod
+  def sources(self):
+    'Return a list of sources this caca provides or None if no sources.'
+    return []
+
+  #@abstractmethod
+  def substitutions_changed(self):
+    pass
+  
+  @classmethod
+  #@abstractmethod
+  def parse(clazz, env, recipe_filename, text):
+    value = bool_util.parse_bool(text)
+    return clazz(env, value = value)
+  
+  @classmethod
+  #@abstractmethod
+  def default_value(clazz, arg_type):
+    return False
+
+  @classmethod
+  #@abstractmethod
+  def resolve(clazz, values, arg_type):
+    'Resolve a list of values if this type into a nice dictionary.'
+    assert arg_type == value_type.BOOL
+    return values[-1].value
+  
+check.register_class(value_bool, include_seq = True)

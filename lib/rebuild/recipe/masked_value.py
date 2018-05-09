@@ -32,34 +32,34 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
       return str(self.value)
     elif check.is_string(self.value):
       return self.value
-    elif check.is_bool(self.value):
-      return str(self.value)
+    elif check.is_value_bool(self.value):
+      return self.value.value_to_string(quote)
     elif check.is_value_key_values(self.value):
       return self.value.value_to_string(quote)
     elif check.is_string_list(self.value):
       return self.value.to_string(delimiter = ' ', quote = quote)
     elif check.is_value_hook(self.value):
-      return str(self.value)
+      return self.value.value_to_string(quote)
     elif check.is_value_install_file(self.value):
-      return str(self.value)
+      return self.value.value_to_string(quote)
     elif check.is_value_file_list(self.value):
-      return str(self.value)
+      return self.value.value_to_string(quote)
     elif check.is_value_file(self.value):
-      return str(self.value)
+      return self.value.value_to_string(quote)
     elif check.is_value_git_address(self.value):
-      return str(self.value)
+      return self.value.value_to_string(quote)
     elif check.is_value_source_tarball(self.value):
-      return str(self.value)
+      return self.value.value_to_string(quote)
     elif check.is_value_source_dir(self.value):
-      return str(self.value)
+      return self.value.value_to_string(quote)
     else:
       assert False
 
   _VALUE_TYPE_CHECKERS = [
-    check.is_bool,
     check.is_int,
     check.is_string,
     check.is_string_list,
+    check.is_value_bool,
     check.is_value_file,
     check.is_value_file_list,
     check.is_value_git_address,

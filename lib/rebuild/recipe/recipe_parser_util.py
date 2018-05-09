@@ -1,7 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common import bool_util, check, object_util, string_util
+from bes.common import bool_util, check
 from bes.key_value import key_value
 from rebuild.recipe.value import value_type, value_hook
 from bes.text import comments, string_list
@@ -13,6 +13,7 @@ from .value import value_install_file
 from .value import value_key_values
 from .value import value_source_dir
 from .value import value_source_tarball
+from .value import value_bool
 
 class recipe_parser_util(object):
 
@@ -49,7 +50,7 @@ class recipe_parser_util(object):
     check.check_string(value)
     check.check_value_type(arg_type)
     if arg_type == value_type.BOOL:
-      return bool_util.parse_bool(value)
+      return value_bool.parse(env, recipe_filename, value)
     elif arg_type == value_type.INT:
       return int(value)
     elif arg_type == value_type.KEY_VALUES:
@@ -84,7 +85,7 @@ class recipe_parser_util(object):
   @classmethod
   def value_default(clazz, arg_type):
     if arg_type == value_type.BOOL:
-      return False
+      return value_bool.default_value(arg_type)
     elif arg_type == value_type.INT:
       return None
     elif arg_type == value_type.KEY_VALUES:

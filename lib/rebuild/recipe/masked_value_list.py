@@ -64,6 +64,7 @@ class masked_value_list(object):
       return []
     first_value = self._values[0].value
     values = self._resolve_values_by_mask(system)
+    print('FUCK: CACA: values=%s - %s' % (str(values), type(values)))
       
     if not values:
       return None
@@ -71,8 +72,8 @@ class masked_value_list(object):
       return values[-1]
     elif check.is_string(values[0]):
       return values[-1]
-    elif check.is_bool(values[0]):
-      return values[-1]
+    elif check.is_value_bool(values[0]):
+      return values[0].__class__.resolve(values, arg_type)
     elif check.is_value_key_values(values[0]):
       return values[0].__class__.resolve(values, arg_type)
     elif check.is_string_list(values[0]):

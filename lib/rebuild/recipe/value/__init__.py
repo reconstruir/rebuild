@@ -3,6 +3,7 @@
 from .hook_registry import hook_registry
 from .hook_result import hook_result
 from .value_base import value_base
+from .value_bool import value_bool
 from .value_file import value_file
 from .value_file import value_file_list
 from .value_git_address import value_git_address
