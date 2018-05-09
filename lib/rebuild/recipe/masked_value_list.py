@@ -71,8 +71,8 @@ class masked_value_list(object):
     
     if check.is_value_int(values[0]):
       return values[0].__class__.resolve(values, arg_type)
-    elif check.is_string(values[0]):
-      return values[-1]
+    elif check.is_value_string(values[0]):
+      return values[0].__class__.resolve(values, arg_type)
     elif check.is_value_bool(values[0]):
       return values[0].__class__.resolve(values, arg_type)
     elif check.is_value_key_values(values[0]):

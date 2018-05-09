@@ -11,6 +11,7 @@ from .recipe_parser_util import recipe_parser_util
 
 from .value import value_bool
 from .value import value_int
+from .value import value_string
 
 class masked_value(namedtuple('masked_value', 'mask,value')):
 
@@ -19,6 +20,8 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
       value = value_bool(env = None, value = value)
     elif check.is_int(value):
       value = value_int(env = None, value = value)
+    elif check.is_string(value):
+      value = value_string(env = None, value = value)
     elif (not check.is_string(value) and not check.is_string_list(value)) and check.is_string_seq(value):
       value = string_list(value)
     if not clazz.value_type_is_valid(value):
@@ -37,8 +40,8 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
   def value_to_string(self, quote = True):
     if check.is_value_int(self.value):
       return self.value.value_to_string(quote)
-    elif check.is_string(self.value):
-      return self.value
+    elif check.is_value_string(self.value):
+      return self.value.value_to_string(quote)
     elif check.is_value_bool(self.value):
       return self.value.value_to_string(quote)
     elif check.is_value_key_values(self.value):
@@ -63,7 +66,6 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
       assert False
 
   _VALUE_TYPE_CHECKERS = [
-    check.is_string,
     check.is_string_list,
     check.is_value_bool,
     check.is_value_file,
@@ -75,6 +77,7 @@ class masked_value(namedtuple('masked_value', 'mask,value')):
     check.is_value_key_values,
     check.is_value_source_dir,
     check.is_value_source_tarball,
+    check.is_value_string,
   ]
       
   @classmethod

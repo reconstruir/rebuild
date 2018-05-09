@@ -6,15 +6,16 @@ from bes.key_value import key_value
 from rebuild.recipe.value import value_type, value_hook
 from bes.text import comments, string_list
 
+from .value import value_bool
 from .value import value_file
 from .value import value_file_list
 from .value import value_git_address
 from .value import value_install_file
+from .value import value_int
 from .value import value_key_values
 from .value import value_source_dir
 from .value import value_source_tarball
-from .value import value_bool
-from .value import value_int
+from .value import value_string
 
 class recipe_parser_util(object):
 
@@ -59,7 +60,7 @@ class recipe_parser_util(object):
     elif arg_type == value_type.STRING_LIST:
       return clazz._parse_string_list(value)
     elif arg_type == value_type.STRING:
-      return value
+      return value_string.parse(env, recipe_filename, value)
     elif arg_type == value_type.HOOK_LIST:
       return value_hook.parse(env, recipe_filename, value)
     elif arg_type == value_type.FILE_LIST:
@@ -70,11 +71,6 @@ class recipe_parser_util(object):
       return clazz._parse_dir(env, value, path.dirname(recipe_filename))
     elif arg_type == value_type.INSTALL_FILE:
       return value_install_file.parse(env, recipe_filename, value)
-#      if recipe_filename:
-#        base = path.dirname(recipe_filename)
-#      else:
-#        base = None
-#      return clazz._parse_install_file_list(value, base)
     elif arg_type == value_type.GIT_ADDRESS:
       return value_git_address.parse(env, recipe_filename, value)
     elif arg_type == value_type.SOURCE_TARBALL:
@@ -94,7 +90,7 @@ class recipe_parser_util(object):
     elif arg_type == value_type.STRING_LIST:
       return string_list()
     elif arg_type == value_type.STRING:
-      return None
+      return value_string.default_value(arg_type)
     elif arg_type == value_type.HOOK_LIST:
       return value_hook.default_value(arg_type)
     elif arg_type == value_type.FILE_LIST:
