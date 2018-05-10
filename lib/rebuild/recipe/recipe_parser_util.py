@@ -30,27 +30,7 @@ class recipe_parser_util(object):
     return key.strip()
 
   @classmethod
-  def parse_key_and_value(clazz, env, origin, text, arg_type):
-    assert False
-    check.check_recipe_load_env(env)
-    check.check_value_origin(origin)
-    check.check_string(text)
-    check.check_value_type(arg_type)
-    text = comments.strip_line(text)
-    key, delimiter, value = text.partition(':')
-    key = key.strip()
-    if not key:
-      raise ValueError('%s: invalid step value key: \"%s\"' % (origin, text))
-    if not delimiter:
-      return key_value(key, None)
-    value = value.strip() or None
-    if not value:
-      return key_value(key, value)
-    value = clazz.parse_value(env, origin, value, arg_type)
-    return key_value(key, value)
-
-  @classmethod
-  def parse_key_and_value2(clazz, env, origin, text, value_class_name):
+  def parse_key_and_value(clazz, env, origin, text, value_class_name):
     check.check_recipe_load_env(env)
     check.check_value_origin(origin)
     check.check_string(text)

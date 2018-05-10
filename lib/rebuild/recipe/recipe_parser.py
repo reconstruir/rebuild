@@ -228,7 +228,7 @@ class recipe_parser(object):
 
     value_class_name = value_type.value_to_name(args_definition[key].atype).lower()
 #    value = recipe_parser_util.parse_key_and_value(self.env, origin, node.data.text, args_definition[key].atype)
-    value = recipe_parser_util.parse_key_and_value2(self.env, origin, node.data.text, value_class_name)
+    value = recipe_parser_util.parse_key_and_value(self.env, origin, node.data.text, value_class_name)
     if value.value:
       assert not node.children
       values.append(masked_value(None, value.value, origin))
