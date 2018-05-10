@@ -696,7 +696,20 @@ package foo-1.2.3-4
     self.assertEqual( 1, len(files) )
     self.assertEqual( self.data_path('test_file2.txt'), files[0].filename )
 
+  def test_step_value_file_list_empty(self):
+    text = '''!rebuild.recipe!
+package foo-1.2.3-4
+  steps
+    step_takes_file_list
+      file_list_value
+'''
+    r = P(self.TEST_ENV, self._filename_for_parser(), text).parse()
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 1, len(r[0].steps) )
 
+    step1 = r[0].steps[0]
+    values = step1.resolve_values({}, self.TEST_ENV)
+    self.assertEqual( None, values['file_list_value'] )
     
   def _filename_for_parser(self):
     'Return a fake filename for parser.  Some values need it to find files relatively to filename.'
