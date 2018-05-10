@@ -1,13 +1,22 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+from collections import namedtuple
 from abc import abstractmethod, ABCMeta
+
 from bes.system.compat import with_metaclass
 from bes.common import check, variable
 from bes.key_value import key_value_list
 
-from collections import namedtuple
+from .value_registry import value_registry
 
-class value_base(with_metaclass(ABCMeta, object)):
+class value_register_meta(ABCMeta):
+
+  def __new__(meta, name, bases, class_dict):
+    clazz = ABCMeta.__new__(meta, name, bases, class_dict)
+    value_registry.register(clazz)
+    return clazz
+
+class value_base(with_metaclass(value_register_meta, object)):
   
   def __init__(self, env, origin, properties = None):
     if env:

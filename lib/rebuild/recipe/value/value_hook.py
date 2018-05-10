@@ -9,14 +9,14 @@ from bes.dependency import dependency_provider
 
 from .hook_registry import hook_registry
 from .hook_result import hook_result
-from .value_base import value_base
+from .value_base import value_base, value_register_meta
 from .value_type import value_type
 from .value_list_base import value_list_base
 
-class hook_register_meta(ABCMeta):
+class hook_register_meta(value_register_meta):
 
   def __new__(meta, name, bases, class_dict):
-    clazz = ABCMeta.__new__(meta, name, bases, class_dict)
+    clazz = value_register_meta.__new__(meta, name, bases, class_dict)
     hook_registry.register(clazz)
     return clazz
 
