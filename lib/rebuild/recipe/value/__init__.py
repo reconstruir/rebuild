@@ -4,6 +4,7 @@ from .hook_registry import hook_registry
 from .hook_result import hook_result
 from .value_base import value_base
 from .value_bool import value_bool
+from .value_definition import value_definition
 from .value_file import value_file
 from .value_file import value_file_list
 from .value_git_address import value_git_address
@@ -20,4 +21,3 @@ from .value_source_tarball import value_source_tarball
 from .value_string import value_string
 from .value_string_list import value_string_list
 from .value_type import value_type
-

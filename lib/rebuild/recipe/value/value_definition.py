@@ -1,9 +1,9 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+from collections import namedtuple
 from bes.common import check, string_util
 from bes.text import comments
-from collections import namedtuple
-from rebuild.recipe.value import value_type
+from .value_type import value_type
 
 class value_definition(namedtuple('value_definition', 'name, atype, default, line_number')):
   

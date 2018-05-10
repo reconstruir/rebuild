@@ -14,12 +14,11 @@ from bes.system import os_env, execute, log
 from bes.system.compat import with_metaclass
 
 from rebuild.base import build_blurb, build_target
-from rebuild.recipe.value import value_type
+from rebuild.recipe.value import value_definition, value_type
 from rebuild.toolchain import toolchain
 
 from .step_registry import step_registry
 from .step_result import step_result
-from .value_definition import value_definition
 
 class step_register_meta(ABCMeta):
   
