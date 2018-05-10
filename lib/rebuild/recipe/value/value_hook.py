@@ -17,7 +17,7 @@ class hook_register_meta(ABCMeta):
 
   def __new__(meta, name, bases, class_dict):
     clazz = ABCMeta.__new__(meta, name, bases, class_dict)
-    hook_registry.register_hook_class(clazz)
+    hook_registry.register(clazz)
     return clazz
 
 class value_hook(with_metaclass(hook_register_meta, value_base)):

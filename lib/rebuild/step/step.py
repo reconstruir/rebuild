@@ -6,24 +6,26 @@ from abc import abstractmethod, ABCMeta
 from collections import namedtuple
 
 from bes.common import check, dict_util, object_util, string_util, variable
+from bes.dependency import dependency_resolver
+from bes.factory import singleton_class_registry
 from bes.fs import file_util
 from bes.key_value import key_value_list
 from bes.system import os_env, execute, log
 from bes.system.compat import with_metaclass
+
 from rebuild.base import build_blurb, build_target
-from bes.dependency import dependency_resolver
-from rebuild.toolchain import toolchain
 from rebuild.recipe.value import value_type
+from rebuild.toolchain import toolchain
 
 from .step_registry import step_registry
 from .step_result import step_result
 from .step_arg_spec import step_arg_spec
 
 class step_register_meta(ABCMeta):
-
+  
   def __new__(meta, name, bases, class_dict):
     clazz = ABCMeta.__new__(meta, name, bases, class_dict)
-    step_registry.register_step_class(clazz)
+    step_registry.register(clazz)
     return clazz
 
 class step(with_metaclass(step_register_meta, object)):

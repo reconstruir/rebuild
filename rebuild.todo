@@ -854,4 +854,5 @@ makefile in step_make might not work
  - test_recipe_step needs to test for defaults
  - enhance args_definition to keep track of the origin
  - add a value_dir type
+ - add hook tests including existing exception
  
