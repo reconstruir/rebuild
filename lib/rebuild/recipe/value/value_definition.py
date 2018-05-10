@@ -3,19 +3,16 @@
 from collections import namedtuple
 from bes.common import check, string_util
 from bes.text import comments
-from .value_type import value_type
 
-class value_definition(namedtuple('value_definition', 'name, atype, default, line_number')):
+class value_definition(namedtuple('value_definition', 'name, class_name, default, line_number')):
   
-  def __new__(clazz, name, atype, default, line_number):
+  def __new__(clazz, name, class_name, default, line_number):
     check.check_string(name)
-    check.check_value_type(atype)
-    if check.is_string(atype):
-      atype = value_type.name_to_value(atype)
+    check.check_string(class_name)
     if default != None:
       check.check_string(default)
     check.check_int(line_number)
-    return clazz.__bases__[0].__new__(clazz, name, atype, default, line_number)
+    return clazz.__bases__[0].__new__(clazz, name, class_name, default, line_number)
 
   @classmethod
   def parse(clazz, text, line_number):
@@ -25,13 +22,11 @@ class value_definition(namedtuple('value_definition', 'name, atype, default, lin
     if len(parts) < 2:
       raise RuntimeError('invalid arg spec: "%s"' % (text))
     name = parts[0]
-    atype = parts[1].upper()
-    if not value_type.name_is_valid(atype):
-      raise RuntimeError('invalid arg type "%s"' % (atype))
+    class_name = parts[1].lower()
     default = None
     if len(parts) > 2:
       default = ' '.join(parts[2:])
-    return clazz(name, atype, default, line_number)
+    return clazz(name, class_name, default, line_number)
 
   @classmethod
   def parse_many(clazz, text):

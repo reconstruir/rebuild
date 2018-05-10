@@ -1,20 +1,16 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.enum import enum
-
-class value_type(enum):
-  BOOL = 1
-  DIR = 2
-  FILE = 3
-  INSTALL_FILE = 4
-  FILE_LIST = 5
-  HOOK_LIST = 6
-  INT = 7
-  KEY_VALUES = 8
-  STRING = 9
-  STRING_LIST = 10
-  GIT_ADDRESS = 11
-  SOURCE_TARBALL = 12
-  SOURCE_DIR = 13
-    
-  DEFAULT = STRING
+class value_type(object):
+  BOOL = 'bool'
+  DIR = 'dir'
+  FILE = 'file'
+  INSTALL_FILE = 'install_file'
+  FILE_LIST = 'file_list'
+  HOOK_LIST = 'hook_list'
+  INT = 'int'
+  KEY_VALUES = 'key_values'
+  STRING = 'string'
+  STRING_LIST = 'string_list'
+  GIT_ADDRESS = 'git_address'
+  SOURCE_TARBALL = 'source_tarball'
+  SOURCE_DIR = 'source_dir'

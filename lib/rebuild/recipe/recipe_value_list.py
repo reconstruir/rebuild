@@ -53,7 +53,7 @@ class recipe_value_list(object):
     result = {}
     for value in self._values:
       assert value.key in args_definition
-      result[value.key] = value.resolve(system, args_definition[value.key].atype)
+      result[value.key] = value.resolve(system, args_definition[value.key].class_name)
     return result
   
 check.register_class(recipe_value_list, include_seq = False)

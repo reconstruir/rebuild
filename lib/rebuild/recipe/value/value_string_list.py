@@ -49,20 +49,20 @@ class value_string_list(value_base):
   
   @classmethod
   #@abstractmethod
-  def default_value(clazz, arg_type):
+  def default_value(clazz, class_name):
     return string_list()
 
   @classmethod
   #@abstractmethod
-  def resolve(clazz, values, arg_type):
+  def resolve(clazz, values, class_name):
     'Resolve a list of values if this type into a nice dictionary.'
-    if arg_type != value_type.STRING_LIST:
+    if class_name != value_type.STRING_LIST:
       values_string = [ str(x) for x in values ]
-      print('WARNING: %s: arg_type should be %s instead of %s for %s' % (values[0].origin, value_type.value_to_name(value_type.STRING_LIST),
-                                                                         value_type.value_to_name(arg_type), values_string))
+      print('WARNING: %s: class_name should be %s instead of %s for %s' % (values[0].origin, value_type.value_to_name(value_type.STRING_LIST),
+                                                                         value_type.value_to_name(class_name), values_string))
       assert False
-      return clazz.default_value(arg_type)
-      #raise TypeError('arg_type should be %s instead of %d' % (value_type.STRING_LIST, arg_type))
+      return clazz.default_value(class_name)
+      #raise TypeError('class_name should be %s instead of %d' % (value_type.STRING_LIST, class_name))
     result = string_list()
     for value in values:
       check.check_value_string_list(value)

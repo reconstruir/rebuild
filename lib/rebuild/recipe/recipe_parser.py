@@ -212,19 +212,17 @@ class recipe_parser(object):
     if not key in args_definition:
       self._error('invalid config \"%s\" instead of: %s' % (key, ' '.join(args_definition.keys())), node)
 
-    value_class_name = value_type.value_to_name(args_definition[key].atype).lower()
-#    value = recipe_parser_util.parse_key_and_value(self.env, origin, node.data.text, args_definition[key].atype)
+    value_class_name = args_definition[key].class_name
     value = recipe_parser_util.parse_key_and_value(self.env, origin, node.data.text, value_class_name)
     if value.value:
       assert not node.children
       values.append(masked_value(None, value.value, origin))
     else:
-      #      assert node.children
       for child in node.children:
         text = tree_text_parser.node_text_flat(child)
         child_origin = value_origin(self.filename, child.data.line_number, text)
         try:
-          value = masked_value.parse_mask_and_value(self.env, child_origin, text, args_definition[key].atype)
+          value = masked_value.parse_mask_and_value(self.env, child_origin, text, value_class_name)
         except RuntimeError as ex:
           self._error('error: %s: %s - %s' % (origin, text, str(ex)), node)
         values.append(value)

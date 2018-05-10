@@ -36,16 +36,10 @@ class recipe_parser_util(object):
     return key_value(key, value)
 
   @classmethod
-  def parse_value2(clazz, env, origin, text, value_class_name):
-    return value_factory.create_with_class_name(env, origin, text, value_class_name)
-  
-  @classmethod
-  def parse_value(clazz, env, origin, text, vtype):
-    value_class_name = value_type.value_to_name(vtype).lower()
+  def parse_value(clazz, env, origin, text, value_class_name):
     return value_factory.create_with_class_name(env, origin, text, value_class_name)
 
   @classmethod
-  def value_default(clazz, vtype):
-    value_class_name = value_type.value_to_name(vtype).lower()
-    value_class = value_factory.get_class(value_class_name)
-    return value_class.default_value(vtype)
+  def value_default(clazz, class_name):
+    value_class = value_factory.get_class(class_name)
+    return value_class.default_value(class_name)

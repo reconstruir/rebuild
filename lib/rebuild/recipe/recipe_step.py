@@ -43,19 +43,18 @@ class recipe_step(namedtuple('recipe_step', 'name,description,values')):
     result = {}
     for value in self.values:
       assert value.key in args_definition
-      arg_type = args_definition[value.key].atype
-      result.update({ value.key: value.resolve(env.build_target.system, arg_type) })
+      class_name = args_definition[value.key].class_name
+      result.update({ value.key: value.resolve(env.build_target.system, class_name) })
       
-    for name, arg_type in args_definition.items():
+    for name, arg_def in args_definition.items():
       if name not in result:
-        if arg_type.default is not None:
-          origin = value_origin('<default>', arg_type.line_number, arg_type.default)
-          value_class_name = value_type.value_to_name(arg_type.atype).lower()
-          value = recipe_parser_util.parse_value2(env, origin, arg_type.default, value_class_name)
+        if arg_def.default is not None:
+          origin = value_origin('<default>', arg_def.line_number, arg_def.default)
+          value = recipe_parser_util.parse_value(env, origin, arg_def.default, arg_def.class_name)
           check.check_value_base(value)
-          result[name] = value.resolve([ value ], arg_type.atype)
+          result[name] = value.resolve([ value ], arg_def.class_name)
         else:
-          result[name] = recipe_parser_util.value_default(arg_type.atype)
+          result[name] = recipe_parser_util.value_default(arg_def.class_name)
           
     for key, value in result.items():
       if check.is_value_base(value):

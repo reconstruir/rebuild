@@ -43,7 +43,7 @@ class value_hook(with_metaclass(hook_register_meta, value_base)):
 
   @classmethod
   #@abstractmethod
-  def default_value(clazz, arg_type):
+  def default_value(clazz, class_name):
     'Return the default value to use for this class.'
     return value_hook_list()
   
@@ -76,9 +76,9 @@ class value_hook(with_metaclass(hook_register_meta, value_base)):
 
   @classmethod
   #@abstractmethod
-  def resolve(clazz, values, arg_type):
+  def resolve(clazz, values, class_name):
     check.check_value_hook_seq(values)
-    assert arg_type == value_type.HOOK_LIST
+    assert class_name == value_type.HOOK_LIST
     env = None
     result_hooks = []
     for value in values:

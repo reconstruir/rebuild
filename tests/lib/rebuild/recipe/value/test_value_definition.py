@@ -3,21 +3,20 @@
 
 from bes.testing.unit_test import unit_test
 from rebuild.recipe.value import value_definition as VD
-from rebuild.recipe.value import value_type as VT
 
 class test_value_definition(unit_test):
 
   def test_parse(self):
-    self.assertEqual( ( 'configure_flags', VT.STRING_LIST, None, 2 ), VD.parse('configure_flags string_list', 2) )
-    self.assertEqual( ( 'configure_env', VT.KEY_VALUES, None, 3 ), VD.parse('configure_env key_values', 3) )
-    self.assertEqual( ( 'configure_script', VT.STRING, None, 4 ), VD.parse('configure_script string', 4) )
-    self.assertEqual( ( 'need_autoreconf', VT.BOOL, None, 5 ), VD.parse('need_autoreconf bool', 5) )
+    self.assertEqual( ( 'configure_flags', 'string_list', None, 2 ), VD.parse('configure_flags string_list', 2) )
+    self.assertEqual( ( 'configure_env', 'key_values', None, 3 ), VD.parse('configure_env key_values', 3) )
+    self.assertEqual( ( 'configure_script', 'string', None, 4 ), VD.parse('configure_script string', 4) )
+    self.assertEqual( ( 'need_autoreconf', 'bool', None, 5 ), VD.parse('need_autoreconf bool', 5) )
     
   def test_parse_with_defaults(self):
-    self.assertEqual( ( 'configure_flags', VT.STRING_LIST, 'a b c', 2 ), VD.parse('configure_flags string_list a b c', 2) )
-    self.assertEqual( ( 'configure_env', VT.KEY_VALUES, 'a=5 b=6', 3 ), VD.parse('configure_env key_values a=5 b=6', 3) )
-    self.assertEqual( ( 'configure_script', VT.STRING, 'foo', 4 ), VD.parse('configure_script string foo', 4) )
-    self.assertEqual( ( 'need_autoreconf', VT.BOOL, 'False', 5 ), VD.parse('need_autoreconf bool False', 5) )
+    self.assertEqual( ( 'configure_flags', 'string_list', 'a b c', 2 ), VD.parse('configure_flags string_list a b c', 2) )
+    self.assertEqual( ( 'configure_env', 'key_values', 'a=5 b=6', 3 ), VD.parse('configure_env key_values a=5 b=6', 3) )
+    self.assertEqual( ( 'configure_script', 'string', 'foo', 4 ), VD.parse('configure_script string foo', 4) )
+    self.assertEqual( ( 'need_autoreconf', 'bool', 'False', 5 ), VD.parse('need_autoreconf bool False', 5) )
 
   def test_parse_many(self):
     text = '''
@@ -27,10 +26,10 @@ class test_value_definition(unit_test):
     need_autoreconf   bool
     '''
     expected = {
-      'configure_flags': VD( 'configure_flags', VT.STRING_LIST, None, 2 ),
-      'configure_env': VD( 'configure_env', VT.KEY_VALUES, None, 3 ),
-      'configure_script': VD( 'configure_script', VT.STRING, None, 4 ),
-      'need_autoreconf': VD( 'need_autoreconf', VT.BOOL, None, 5 ),
+      'configure_flags': VD( 'configure_flags', 'string_list', None, 2 ),
+      'configure_env': VD( 'configure_env', 'key_values', None, 3 ),
+      'configure_script': VD( 'configure_script', 'string', None, 4 ),
+      'need_autoreconf': VD( 'need_autoreconf', 'bool', None, 5 ),
     }
     self.assertEqual( expected, VD.parse_many(text) )
     
@@ -42,10 +41,10 @@ class test_value_definition(unit_test):
     need_autoreconf   BOOL        False
     '''
     expected = {
-      'configure_flags': VD( 'configure_flags', VT.STRING_LIST, 'a b c', 2 ),
-      'configure_env': VD( 'configure_env', VT.KEY_VALUES, 'a=5 b=6', 3 ),
-      'configure_script': VD( 'configure_script', VT.STRING, 'foo', 4 ),
-      'need_autoreconf': VD( 'need_autoreconf', VT.BOOL, 'False', 5 ),
+      'configure_flags': VD( 'configure_flags', 'string_list', 'a b c', 2 ),
+      'configure_env': VD( 'configure_env', 'key_values', 'a=5 b=6', 3 ),
+      'configure_script': VD( 'configure_script', 'string', 'foo', 4 ),
+      'need_autoreconf': VD( 'need_autoreconf', 'bool', 'False', 5 ),
     }
     self.assertEqual( expected, VD.parse_many(text) )
     

@@ -89,13 +89,13 @@ class value_base(with_metaclass(value_register_meta, object)):
 
   @classmethod
   @abstractmethod
-  def default_value(clazz, arg_type):
+  def default_value(clazz, class_name):
     'Return the default value to use for this class.'
     assert False
 
   @classmethod
   @abstractmethod
-  def resolve(clazz, values, arg_type):
+  def resolve(clazz, values, class_name):
     'Resolve a list of values if this type into a nice dictionary.'
     assert False
 

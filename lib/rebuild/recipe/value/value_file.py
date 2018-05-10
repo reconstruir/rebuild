@@ -5,8 +5,8 @@ from bes.common import check, string_util
 from bes.compat import StringIO
 
 from .value_base import value_base
-from .value_list_base import value_list_base
 from .value_type import value_type
+from .value_list_base import value_list_base
 
 class value_file(value_base):
 
@@ -31,14 +31,14 @@ class value_file(value_base):
 
   @classmethod
   #@abstractmethod
-  def default_value(clazz, arg_type):
+  def default_value(clazz, class_name):
     'Return the default value to use for this class.'
-    if arg_type == value_type.FILE:
+    if class_name == value_type.FILE:
       return None
-    elif arg_type == value_type.FILE_LIST:
+    elif class_name == value_type.FILE_LIST:
       return value_file_list()
     else:
-      raise ValueError('Invalid value_type: %s' % (arg_type))
+      raise ValueError('Invalid value_type: %s' % (class_name))
 
   #@abstractmethod
   def sources(self):
@@ -65,16 +65,16 @@ class value_file(value_base):
 
   @classmethod
   #@abstractmethod
-  def resolve(clazz, values, arg_type):
+  def resolve(clazz, values, class_name):
     check.check_value_file_seq(values)
-    if arg_type == value_type.FILE:
+    if class_name == value_type.FILE:
       return clazz._resolve_file(values)
-    elif arg_type == value_type.DIR:
+    elif class_name == value_type.DIR:
       return clazz._resolve_file(values)
-    elif arg_type == value_type.FILE_LIST:
+    elif class_name == value_type.FILE_LIST:
       return clazz._resolve_file_list(values)
     else:
-      raise ValueError('Invalid value_type: %s' % (arg_type))
+      raise ValueError('Invalid value_type: %s' % (class_name))
   
   @classmethod
   def _resolve_file_list(clazz, values):

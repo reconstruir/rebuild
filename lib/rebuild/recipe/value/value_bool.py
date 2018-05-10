@@ -44,14 +44,14 @@ class value_bool(value_base):
   
   @classmethod
   #@abstractmethod
-  def default_value(clazz, arg_type):
+  def default_value(clazz, class_name):
     return False
 
   @classmethod
   #@abstractmethod
-  def resolve(clazz, values, arg_type):
+  def resolve(clazz, values, class_name):
     'Resolve a list of values if this type into a nice dictionary.'
-    assert arg_type == value_type.BOOL
+    assert class_name == value_type.BOOL
     return values[-1].value
   
 check.register_class(value_bool, include_seq = True)

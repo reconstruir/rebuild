@@ -43,14 +43,14 @@ class value_int(value_base):
   
   @classmethod
   #@abstractmethod
-  def default_value(clazz, arg_type):
+  def default_value(clazz, class_name):
     return None
 
   @classmethod
   #@abstractmethod
-  def resolve(clazz, values, arg_type):
+  def resolve(clazz, values, class_name):
     'Resolve a list of values if this type into a nice dictionary.'
-    assert arg_type == value_type.INT
+    assert class_name == value_type.INT
     return values[-1].value
   
 check.register_class(value_int, include_seq = True)

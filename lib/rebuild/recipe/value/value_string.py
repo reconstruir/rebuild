@@ -39,14 +39,14 @@ class value_string(value_base):
   
   @classmethod
   #@abstractmethod
-  def default_value(clazz, arg_type):
+  def default_value(clazz, class_name):
     return None
 
   @classmethod
   #@abstractmethod
-  def resolve(clazz, values, arg_type):
+  def resolve(clazz, values, class_name):
     'Resolve a list of values if this type into a nice dictionary.'
-    assert arg_type == value_type.STRING
+    assert class_name == value_type.STRING
     return values[-1].value
   
 check.register_class(value_string, include_seq = True)

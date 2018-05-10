@@ -6,7 +6,6 @@ from rebuild.recipe import recipe_value as RV, recipe_value_list as RVL, masked_
 from bes.key_value import key_value_list as KVL
 from bes.text import string_list
 from rebuild.recipe.value import value_key_values as VKV
-from rebuild.recipe.value import value_type as VT
 from rebuild.recipe.value import value_definition as VD
 
 class test_recipe_value_list(unit_test):
@@ -24,9 +23,9 @@ class test_recipe_value_list(unit_test):
     ])
 
     args_definition = {
-      'bool_value': VD('bool_value', VT.BOOL, 'False', 1),
-      'string_list_value': VD('string_list_value', VT.STRING_LIST, '', 2),
-      'key_values_value': VD('key_values_value', VT.KEY_VALUES, '', 3),
+      'bool_value': VD('bool_value', 'bool', 'False', 1),
+      'string_list_value': VD('string_list_value', 'string_list', '', 2),
+      'key_values_value': VD('key_values_value', 'key_values', '', 3),
     }
     
     r = values.resolve('linux', args_definition)

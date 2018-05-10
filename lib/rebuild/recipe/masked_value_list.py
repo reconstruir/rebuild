@@ -55,7 +55,7 @@ class masked_value_list(object):
   def __len__(self):
     return len(self._values)
 
-  def resolve(self, system, arg_type):
+  def resolve(self, system, class_name):
     if not self._values:
       return None
     
@@ -67,9 +67,9 @@ class masked_value_list(object):
     if not check.is_value_base(values[0]):
       raise TypeError('value should be subclass of value_base: %s - %s' % (str(values[0]), type(values[0])))
 
-    value_class = value_factory.get_class_for_value_type(arg_type)
+    value_class = value_factory.get_class(class_name)
     
-    return value_class.resolve(values, arg_type)
+    return value_class.resolve(values, class_name)
 
   def _resolve_values_by_mask(self, system):
     result = []

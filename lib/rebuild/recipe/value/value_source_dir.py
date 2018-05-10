@@ -50,12 +50,12 @@ class value_source_dir(value_base):
   
   @classmethod
   #@abstractmethod
-  def default_value(clazz, arg_type):
+  def default_value(clazz, class_name):
     return None
 
   @classmethod
   #@abstractmethod
-  def resolve(clazz, values, arg_type):
+  def resolve(clazz, values, class_name):
     # FIXME
     return values[-1]
   

@@ -31,7 +31,7 @@ class value_install_file(value_base):
 
   @classmethod
   #@abstractmethod
-  def default_value(clazz, arg_type):
+  def default_value(clazz, class_name):
     'Return the default value to use for this class.'
     return value_install_file_list()
 
@@ -60,7 +60,7 @@ class value_install_file(value_base):
 
   @classmethod
   #@abstractmethod
-  def resolve(clazz, values, arg_type):
+  def resolve(clazz, values, class_name):
     check.check_value_install_file_seq(values)
     env = None
     result_values = []

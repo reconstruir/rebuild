@@ -38,7 +38,7 @@ class value_list_base(type_checked_list, value_base):
 
   @classmethod
   #@abstractmethod
-  def default_value(clazz, arg_type):
+  def default_value(clazz, class_name):
     'Return the default value to use for this class.'
     return clazz()
 
@@ -51,7 +51,7 @@ class value_list_base(type_checked_list, value_base):
 
   @classmethod
   #@abstractmethod
-  def resolve(clazz, values, arg_type):
+  def resolve(clazz, values, class_name):
     'Resolve a list of list values by flattening it down to a single list.'
     if not check.is_seq(values, clazz):
       raise TypeError('%s: should be a sequence of %s instead of %s - %s' % (values[0].origin, clazz, str(values), type(values)))
