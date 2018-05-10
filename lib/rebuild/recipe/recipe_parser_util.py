@@ -18,6 +18,7 @@ from .value import value_source_tarball
 from .value import value_string
 from .value import value_string_list
 from .value import value_type
+from .value import value_registry
 
 class recipe_parser_util(object):
 
@@ -47,6 +48,28 @@ class recipe_parser_util(object):
     value = clazz.parse_value(env, origin, value, arg_type)
     return key_value(key, value)
 
+  @classmethod
+  def parse_key_and_value2(clazz, env, origin, text, value_class_name):
+    check.check_recipe_load_env(env)
+    check.check_value_origin(origin)
+    check.check_string(text)
+    check.check_string(value_class_name)
+    text = comments.strip_line(text)
+    key, delimiter, value = text.partition(':')
+    key = key.strip()
+    if not key:
+      raise ValueError('%s: invalid step value key: \"%s\"' % (origin, text))
+    if not delimiter:
+      return key_value(key, None)
+    value_text = value.strip() or None
+    if not value_text:
+      return key_value(key, None)
+    value_class = value_registry.get(value_class_name)
+    if not value_class:
+      raise TypeError('%s: unknown value class \"%s\"' % (origin, value_class_name))
+    value = value_class.parse(env, origin, value_text)
+    return key_value(key, value)
+  
   @classmethod
   def parse_value(clazz, env, origin, value, arg_type):
     check.check_recipe_load_env(env)
