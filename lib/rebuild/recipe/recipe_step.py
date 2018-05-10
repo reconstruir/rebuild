@@ -52,6 +52,7 @@ class recipe_step(namedtuple('recipe_step', 'name,description,values')):
           origin = value_origin('<default>', arg_type.line_number, arg_type.default)
           value_class_name = value_type.value_to_name(arg_type.atype).lower()
           value = recipe_parser_util.parse_value2(env, origin, arg_type.default, value_class_name)
+          check.check_value_base(value)
           if check.is_value_base(value):
             result[name] = value.resolve([ value ], arg_type.atype)
           else:

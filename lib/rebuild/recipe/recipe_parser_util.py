@@ -1,24 +1,11 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import os.path as path
-from bes.common import bool_util, check
+from bes.common import check
 from bes.key_value import key_value
 from bes.text import comments
 
-from .value import value_bool
-from .value import value_file
-from .value import value_file_list
-from .value import value_git_address
-from .value import value_hook
-from .value import value_install_file
-from .value import value_int
-from .value import value_key_values
-from .value import value_source_dir
-from .value import value_source_tarball
-from .value import value_string
-from .value import value_string_list
+from .value import value_factory
 from .value import value_type
-from .value import value_registry
 
 class recipe_parser_util(object):
 
@@ -45,96 +32,20 @@ class recipe_parser_util(object):
     value_text = value.strip() or None
     if not value_text:
       return key_value(key, None)
-    value_class = value_registry.get(value_class_name)
-    if not value_class:
-      raise TypeError('%s: unknown value class \"%s\"' % (origin, value_class_name))
-    value = value_class.parse(env, origin, value_text)
+    value = value_factory.create_with_class_name(env, origin, value_text, value_class_name)
     return key_value(key, value)
 
   @classmethod
   def parse_value2(clazz, env, origin, text, value_class_name):
-    check.check_recipe_load_env(env)
-    check.check_value_origin(origin)
-    check.check_string(text)
-    check.check_string(value_class_name)
-    value_class = value_registry.get(value_class_name)
-    if not value_class:
-      raise TypeError('%s: unknown value class \"%s\"' % (origin, value_class_name))
-    return value_class.parse(env, origin, text)
+    return value_factory.create_with_class_name(env, origin, text, value_class_name)
   
   @classmethod
-  def parse_value(clazz, env, origin, text, arg_type):
-    #assert False
-    check.check_recipe_load_env(env)
-    check.check_value_origin(origin)
-    check.check_string(text)
-    check.check_value_type(arg_type)
-    
-    if arg_type == value_type.BOOL:
-      return value_bool.parse(env, origin, text)
-    elif arg_type == value_type.INT:
-      return value_int.parse(env, origin, text)
-    elif arg_type == value_type.KEY_VALUES:
-      return value_key_values.parse(env, origin, text)
-    elif arg_type == value_type.STRING_LIST:
-      return value_string_list.parse(env, origin, text)
-    elif arg_type == value_type.STRING:
-      return value_string.parse(env, origin, text)
-    elif arg_type == value_type.HOOK_LIST:
-      return value_hook.parse(env, origin, text)
-    elif arg_type == value_type.FILE_LIST:
-      return value_file_list.parse(env, origin, text)
-    elif arg_type == value_type.FILE:
-      return value_file.parse(env, origin, text)
-    elif arg_type == value_type.DIR:
-      return clazz._parse_dir(env, text, path.dirname(origin.filename))
-    elif arg_type == value_type.INSTALL_FILE:
-      return value_install_file.parse(env, origin, text)
-    elif arg_type == value_type.GIT_ADDRESS:
-      return value_git_address.parse(env, origin, text)
-    elif arg_type == value_type.SOURCE_TARBALL:
-      return value_source_tarball.parse(env, origin, text)
-    elif arg_type == value_type.SOURCE_DIR:
-      return value_source_dir.parse(env, origin, text)
-    raise ValueError('unknown arg_type \"%s\" for %s:%s' % (str(arg_type), origin, origin.text))
+  def parse_value(clazz, env, origin, text, vtype):
+    value_class_name = value_type.value_to_name(vtype).lower()
+    return value_factory.create_with_class_name(env, origin, text, value_class_name)
 
   @classmethod
-  def value_default(clazz, arg_type):
-    if arg_type == value_type.BOOL:
-      return value_bool.default_value(arg_type)
-    elif arg_type == value_type.INT:
-      return value_int.default_value(arg_type)
-    elif arg_type == value_type.KEY_VALUES:
-      return value_key_values.default_value(arg_type)
-    elif arg_type == value_type.STRING_LIST:
-      return value_string_list.default_value(arg_type)
-    elif arg_type == value_type.STRING:
-      return value_string.default_value(arg_type)
-    elif arg_type == value_type.HOOK_LIST:
-      return value_hook.default_value(arg_type)
-    elif arg_type == value_type.FILE_LIST:
-      return value_file_list.default_value(arg_type)
-    elif arg_type == value_type.FILE:
-      return value_file.default_value(arg_type)
-    elif arg_type == value_type.DIR:
-      return value_file.default_value(arg_type)
-    elif arg_type == value_type.INSTALL_FILE:
-      return value_install_file.default_value(arg_type)
-    elif arg_type == value_type.GIT_ADDRESS:
-      return value_git_address.default_value(arg_type)
-    elif arg_type == value_type.SOURCE_TARBALL:
-      return value_source_tarball.default_value(arg_type)
-    elif arg_type == value_type.SOURCE_DIR:
-      return value_source_dir.default_value(arg_type)
-    raise ValueError('unknown arg_type: %s' % (str(arg_type)))
-
-  @classmethod
-  def _parse_dir(clazz, env, value, base):
-    if value.startswith('$'):
-      filename_abs = value
-    else:
-      filename_abs = path.join(base, value)
-#    if not path.isdir(filename_abs):
-#      raise RuntimeError('dir not found: %s' % (filename_abs))
-    return value_file(env = env, filename = filename_abs)
-  
+  def value_default(clazz, vtype):
+    value_class_name = value_type.value_to_name(vtype).lower()
+    value_class = value_factory.get_class(value_class_name)
+    return value_class.default_value(vtype)
