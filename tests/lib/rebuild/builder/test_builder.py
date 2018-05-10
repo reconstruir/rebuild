@@ -39,7 +39,7 @@ class test_builder(unit_test):
 
   def test_libpng(self):
     tmp_dir = temp_file.make_temp_dir()
-    filenames = [ self.data_path('zlib/build_zlib.rebc'), self.data_path('libpng/build_libpng.rebc') ]
+    filenames = [ self.data_path('zlib/build_zlib.rebc'), self.data_path('libpng/rebuild.recipe') ]
     config = builder_config()
     config.build_root = path.join(tmp_dir, 'BUILD')
     config.no_network = True

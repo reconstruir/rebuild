@@ -855,4 +855,17 @@ makefile in step_make might not work
  - enhance args_definition to keep track of the origin
  - add a value_dir type
  - add hook tests including existing exception
+
+2018-05-08
+ - add rebuilder unit tests of patch_dir
+ - add recipe unit tests with empty steps like so (patches, pc_files):
+  steps  
+    step_autoconf
+      configure_env
+        all: CFLAGS=${REBUILD_COMPILE_CFLAGS}
+      configure_flags
+        all: --enable-static --disable-shared
+        linux: --with-pic
+      patches
+      pc_files
  

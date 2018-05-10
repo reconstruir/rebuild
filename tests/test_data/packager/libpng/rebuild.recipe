@@ -1,6 +1,6 @@
 !rebuild.recipe!
 
-package libpng-1.6.28-1
+package libpng 1.6.28-1
   export_compilation_flags_requirements
     all: zlib
 

@@ -6,7 +6,9 @@ from bes.common import check
 from bes.key_value import key_value_list
 from .recipe_value_list import recipe_value_list
 from .recipe_parser_util import recipe_parser_util
+
 from .value import value_origin
+from .value import value_type
 
 class recipe_step(namedtuple('recipe_step', 'name,description,values')):
 
@@ -48,7 +50,8 @@ class recipe_step(namedtuple('recipe_step', 'name,description,values')):
       if name not in result:
         if arg_type.default is not None:
           origin = value_origin('<default>', arg_type.line_number, arg_type.default)
-          value = recipe_parser_util.parse_value(env, origin, arg_type.default, arg_type.atype)
+          value_class_name = value_type.value_to_name(arg_type.atype).lower()
+          value = recipe_parser_util.parse_value2(env, origin, arg_type.default, value_class_name)
           if check.is_value_base(value):
             result[name] = value.resolve([ value ], arg_type.atype)
           else:

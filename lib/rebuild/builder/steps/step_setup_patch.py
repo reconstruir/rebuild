@@ -28,17 +28,16 @@ class step_setup_patch(step):
     patch_strip_depth = values.get('patch_strip_depth')
     patch_program = values.get('patch_program') or 'patch'
     patch_dir = values.get('patch_dir')
-    patch_dir = variable.substitute(patch_dir.filename, script.substitutions)
     if not patches:
       message = 'No patches for %s' % (script.descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
 
     for p in patches:
-      self.blurb('Patching with %s at %s' % (p, path.relpath(patch_dir)))
+      self.blurb('Patching with %s in dir %s' % (path.relpath(p), path.relpath(patch_dir.filename)))
 
     exit_code, msg = patch.patch(patches,
-                                 patch_dir,
+                                 patch_dir.filename,
                                  strip = patch_strip_depth,
                                  backup = True,
                                  posix = True,

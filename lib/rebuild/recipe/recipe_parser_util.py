@@ -31,6 +31,7 @@ class recipe_parser_util(object):
 
   @classmethod
   def parse_key_and_value(clazz, env, origin, text, arg_type):
+    assert False
     check.check_recipe_load_env(env)
     check.check_value_origin(origin)
     check.check_string(text)
@@ -69,40 +70,52 @@ class recipe_parser_util(object):
       raise TypeError('%s: unknown value class \"%s\"' % (origin, value_class_name))
     value = value_class.parse(env, origin, value_text)
     return key_value(key, value)
-  
+
   @classmethod
-  def parse_value(clazz, env, origin, value, arg_type):
+  def parse_value2(clazz, env, origin, text, value_class_name):
     check.check_recipe_load_env(env)
     check.check_value_origin(origin)
-    check.check_string(value)
+    check.check_string(text)
+    check.check_string(value_class_name)
+    value_class = value_registry.get(value_class_name)
+    if not value_class:
+      raise TypeError('%s: unknown value class \"%s\"' % (origin, value_class_name))
+    return value_class.parse(env, origin, text)
+  
+  @classmethod
+  def parse_value(clazz, env, origin, text, arg_type):
+    #assert False
+    check.check_recipe_load_env(env)
+    check.check_value_origin(origin)
+    check.check_string(text)
     check.check_value_type(arg_type)
     
     if arg_type == value_type.BOOL:
-      return value_bool.parse(env, origin, value)
+      return value_bool.parse(env, origin, text)
     elif arg_type == value_type.INT:
-      return value_int.parse(env, origin, value)
+      return value_int.parse(env, origin, text)
     elif arg_type == value_type.KEY_VALUES:
-      return value_key_values.parse(env, origin, value)
+      return value_key_values.parse(env, origin, text)
     elif arg_type == value_type.STRING_LIST:
-      return value_string_list.parse(env, origin, value)
+      return value_string_list.parse(env, origin, text)
     elif arg_type == value_type.STRING:
-      return value_string.parse(env, origin, value)
+      return value_string.parse(env, origin, text)
     elif arg_type == value_type.HOOK_LIST:
-      return value_hook.parse(env, origin, value)
+      return value_hook.parse(env, origin, text)
     elif arg_type == value_type.FILE_LIST:
-      return value_file_list.parse(env, origin, value)
+      return value_file_list.parse(env, origin, text)
     elif arg_type == value_type.FILE:
-      return value_file.parse(env, origin, value)
+      return value_file.parse(env, origin, text)
     elif arg_type == value_type.DIR:
-      return clazz._parse_dir(env, value, path.dirname(origin.filename))
+      return clazz._parse_dir(env, text, path.dirname(origin.filename))
     elif arg_type == value_type.INSTALL_FILE:
-      return value_install_file.parse(env, origin, value)
+      return value_install_file.parse(env, origin, text)
     elif arg_type == value_type.GIT_ADDRESS:
-      return value_git_address.parse(env, origin, value)
+      return value_git_address.parse(env, origin, text)
     elif arg_type == value_type.SOURCE_TARBALL:
-      return value_source_tarball.parse(env, origin, value)
+      return value_source_tarball.parse(env, origin, text)
     elif arg_type == value_type.SOURCE_DIR:
-      return value_source_dir.parse(env, origin, value)
+      return value_source_dir.parse(env, origin, text)
     raise ValueError('unknown arg_type \"%s\" for %s:%s' % (str(arg_type), origin, origin.text))
 
   @classmethod

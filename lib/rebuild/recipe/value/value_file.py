@@ -54,9 +54,12 @@ class value_file(value_base):
   def parse(clazz, env, origin, value):
     base = path.dirname(origin.filename)
     filename, _, rest = string_util.partition_by_white_space(value)
-    filename_abs = path.abspath(path.join(base, filename))
-    if not path.isfile(filename_abs):
-      raise RuntimeError('%s: file not found: %s' % (origin, filename_abs))
+    if filename.startswith('$'):
+      filename_abs = filename
+    else:
+      filename_abs = path.abspath(path.join(base, filename))
+      if not path.isfile(filename_abs):
+        raise RuntimeError('%s: file not found: %s' % (origin, filename_abs))
     properties = clazz.parse_properties(rest)
     return value_file(env = env, origin = origin, filename = filename_abs, properties = properties)
 

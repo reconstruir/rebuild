@@ -5,6 +5,7 @@ from .hook_result import hook_result
 from .value_base import value_base
 from .value_bool import value_bool
 from .value_definition import value_definition
+from .value_dir import value_dir
 from .value_file import value_file
 from .value_file import value_file_list
 from .value_git_address import value_git_address

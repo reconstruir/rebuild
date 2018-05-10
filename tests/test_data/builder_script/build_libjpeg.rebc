@@ -10,5 +10,3 @@ package libjpeg-9a-1
       configure_flags
         all: --enable-static --disable-shared
         linux: --with-pic
-      patches
-      pc_files
