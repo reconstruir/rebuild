@@ -16,16 +16,17 @@ from .value import value_string_list
 class masked_value(namedtuple('masked_value', 'mask, value')):
 
   def __new__(clazz, mask, value, origin = None):
-    if check.is_bool(value):
-      value = value_bool(env = None, origin = origin, value = value)
-    elif check.is_int(value):
-      value = value_int(env = None, origin = origin, value = value)
-    elif check.is_string(value):
-      value = value_string(env = None, origin = origin, value = value)
-    elif check.is_string_list(value) or check.is_string_seq(value):
-      value = value_string_list(env = None, origin = origin, values = value)
-    elif check.is_key_value_list(value):
-      value = value_key_values(env = None, origin = origin, values = value)
+    if not check.is_value_base(value):
+      if check.is_bool(value):
+        value = value_bool(env = None, origin = origin, value = value)
+      elif check.is_int(value):
+        value = value_int(env = None, origin = origin, value = value)
+      elif check.is_string(value):
+        value = value_string(env = None, origin = origin, value = value)
+      elif check.is_string_list(value) or check.is_string_seq(value):
+        value = value_string_list(env = None, origin = origin, values = value)
+      elif check.is_key_value_list(value):
+        value = value_key_values(env = None, origin = origin, values = value)
 
     if not check.is_value_base(value):
       raise TypeError('value should be subclass of value_base: %s - %s' % (str(value), type(value)))

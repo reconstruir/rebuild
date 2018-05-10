@@ -4,6 +4,8 @@ from bes.common import algorithm, check, type_checked_list
 from bes.compat import StringIO
 from rebuild.base import build_system
 
+from .value import value_factory
+
 class masked_value_list(object):
 
   def __init__(self, values = None):
@@ -65,11 +67,13 @@ class masked_value_list(object):
     if not check.is_value_base(values[0]):
       raise TypeError('value should be subclass of value_base: %s - %s' % (str(values[0]), type(values[0])))
 
-    return values[0].__class__.resolve(values, arg_type)
+    value_class = value_factory.get_class_for_value_type(arg_type)
+    
+    return value_class.resolve(values, arg_type)
 
   def _resolve_values_by_mask(self, system):
     result = []
-    for value in self._values:
+    for i, value in enumerate(self._values):
       if value.mask_matches(system):
         result.append(value.value)
     return result

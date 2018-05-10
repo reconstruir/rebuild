@@ -93,8 +93,6 @@ class recipe_parser(object):
         requirements.extend(self._parse_requirements(child))
       elif text.startswith('steps'):
         steps = self._parse_steps(child)
-      elif text.startswith('source'):
-        steps = self._parse_source(child)
       elif text.startswith('enabled'):
         enabled = self._parse_enabled(child)
       elif text.startswith('load'):
@@ -152,18 +150,6 @@ class recipe_parser(object):
         self._error('error parsing properties: %s' % (property_text), node)
     return properties
 
-  def _parse_source(self, node):
-    source = {}
-    for child in node.children:
-#      property_text = tree_text_parser.node_text_flat(child)
-      print('FUCK: child: %s' % (child))
-#      try:
-#        values = key_value_parser.parse_to_dict(property_text, options = key_value_parser.KEEP_QUOTES)
-#        source.update(values)
-#      except RuntimeError as ex:
-#        self._error('error parsing source: %s' % (property_text), node)
-    return source
-  
   def _parse_requirements(self, node):
     reqs = []
     for child in node.children:

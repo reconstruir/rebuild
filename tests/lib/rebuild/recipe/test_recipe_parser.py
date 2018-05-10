@@ -5,6 +5,7 @@ import inspect, os.path as path
 from bes.testing.unit_test import unit_test
 from rebuild.recipe import recipe, recipe_parser as P, recipe_parser_error as ERR, recipe_step as RS, recipe_load_env
 from rebuild.step import compound_step, step, step_result
+from rebuild.base import build_target
 from bes.key_value import key_value as KV, key_value_list as KVL
 from bes.fs import file_util, temp_file
 from test_steps import *
@@ -13,7 +14,7 @@ class test_recipe_parser(unit_test):
 
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/recipe_parser'
 
-  TEST_ENV = recipe_load_env(None, None)
+  TEST_ENV = recipe_load_env(build_target.make_host_build_target(), None)
   
   @classmethod
   def _parse(self, text, starting_line_number = 0):
@@ -656,6 +657,46 @@ package foo-1.2.3-4
     self.assertEqual( 1, len(r) )
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_git_address\n    git_address_value: test_file1.txt test_file2.txt', str(r[0].steps[0]) )
+
+  def test_step_value_commented_out(self):
+    text = '''!rebuild.recipe!
+package foo-1.2.3-4
+  steps
+    step_takes_file_list
+      file_list_value
+        all: test_file1.txt
+        all: test_file2.txt
+'''
+    r = P(self.TEST_ENV, self._filename_for_parser(), text).parse()
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 1, len(r[0].steps) )
+
+    step1 = r[0].steps[0]
+    values = step1.resolve_values({}, self.TEST_ENV)
+    files = values['file_list_value']
+    self.assertEqual( 2, len(files) )
+    self.assertEqual( self.data_path('test_file1.txt'), files[0].filename )
+    self.assertEqual( self.data_path('test_file2.txt'), files[1].filename )
+
+    text = '''!rebuild.recipe!
+package foo-1.2.3-4
+  steps
+    step_takes_file_list
+      file_list_value
+        all: #test_file1.txt
+        all: test_file2.txt
+'''
+    r = P(self.TEST_ENV, self._filename_for_parser(), text).parse()
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 1, len(r[0].steps) )
+
+    step1 = r[0].steps[0]
+    values = step1.resolve_values({}, self.TEST_ENV)
+    files = values['file_list_value']
+    self.assertEqual( 1, len(files) )
+    self.assertEqual( self.data_path('test_file2.txt'), files[0].filename )
+
+
     
   def _filename_for_parser(self):
     'Return a fake filename for parser.  Some values need it to find files relatively to filename.'

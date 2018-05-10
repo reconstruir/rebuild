@@ -29,3 +29,7 @@ class value_factory(object):
     if not value_class:
       raise TypeError('%s: unknown value class \"%s\"' % (origin, value_class_name))
     return value_class
+
+  @classmethod
+  def get_class_for_value_type(clazz, vtype):
+    return clazz.get_class(value_type.value_to_name(vtype).lower())

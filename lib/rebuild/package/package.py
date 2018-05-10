@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import copy, json, os.path as path, re
+import os.path as path, re
 
 from bes.archive import archive, archiver
 from bes.common import check, dict_util, json_util, string_util
@@ -143,10 +143,13 @@ unset REBUILD_STUFF_DIR
   @classmethod
   def create_tarball(clazz, tarball_path, pkg_desc, build_target, stage_dir, timer = None):
     timer = timer or noop_debug_timer()
+
+    properties = dict_util.filter_without_keys(pkg_desc.properties, [ 'export_compilation_flags_requirements' ])
+    
     # Hack the export_compilation_flags_requirements property to be a plain string list instead of the masked config it is
-    properties = copy.deepcopy(pkg_desc.properties)
-    if 'export_compilation_flags_requirements' in properties:
-      properties['export_compilation_flags_requirements'] = [ str(x) for x in properties['export_compilation_flags_requirements'] ]
+    key = 'export_compilation_flags_requirements'
+    if key in pkg_desc.properties:
+      properties[key] = [ str(x) for x in pkg_desc.properties[key] ]
       
     files_dir = path.join(stage_dir, 'files')
     timer.start('create_tarball - find files')
