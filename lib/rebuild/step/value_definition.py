@@ -5,7 +5,7 @@ from bes.text import comments
 from collections import namedtuple
 from rebuild.recipe.value import value_type
 
-class step_arg_spec(namedtuple('step_arg_spec', 'name, atype, default, line_number')):
+class value_definition(namedtuple('value_definition', 'name, atype, default, line_number')):
   
   def __new__(clazz, name, atype, default, line_number):
     check.check_string(name)

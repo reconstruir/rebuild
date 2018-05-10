@@ -19,7 +19,7 @@ from rebuild.toolchain import toolchain
 
 from .step_registry import step_registry
 from .step_result import step_result
-from .step_arg_spec import step_arg_spec
+from .value_definition import value_definition
 
 class step_register_meta(ABCMeta):
   
@@ -61,7 +61,7 @@ class step(with_metaclass(step_register_meta, object)):
     defs = clazz.define_args()
     if check.is_string(defs):
       try:
-        defs = step_arg_spec.parse_many(defs)
+        defs = value_definition.parse_many(defs)
       except RuntimeError as ex:
         filename = inspect.getfile(clazz.define_args)
         line_number = inspect.getsourcelines(clazz.define_args)[1]

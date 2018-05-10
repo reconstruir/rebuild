@@ -2,10 +2,10 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from rebuild.step import step_arg_spec as AS
+from rebuild.step import value_definition as AS
 from rebuild.recipe.value import value_type as VT
 
-class test_step_arg_spec(unit_test):
+class test_value_definition(unit_test):
 
   def test_parse(self):
     self.assertEqual( ( 'configure_flags', VT.STRING_LIST, None, 2 ), AS.parse('configure_flags string_list', 2) )

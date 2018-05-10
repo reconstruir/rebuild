@@ -3,7 +3,7 @@
 from .compound_step import compound_step
 from .step import step, step_result
 from .step_aborted import step_aborted
-from .step_arg_spec import step_arg_spec
+from .value_definition import value_definition
 from .step_description import step_description
 from .step_manager import step_manager
 from .step_registry import step_registry

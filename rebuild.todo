@@ -563,7 +563,7 @@ dec 8
 - step_check_hard_coded_paths maybe needs to be in a uber step check step same with step_check_darwin_archs
 
 dec 19
-- step_arg_spec check does not work with lower case
+- value_definition check does not work with lower case
 
 dec 21
 - fix enabled parsing for build.py<python_pyspotify>

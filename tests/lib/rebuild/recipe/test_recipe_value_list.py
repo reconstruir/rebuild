@@ -7,7 +7,7 @@ from bes.key_value import key_value_list as KVL
 from bes.text import string_list
 from rebuild.recipe.value import value_key_values as VKV
 from rebuild.recipe.value import value_type as VT
-from rebuild.step import step_arg_spec as SAS
+from rebuild.step import value_definition as SAS
 
 class test_recipe_value_list(unit_test):
 
