@@ -16,6 +16,7 @@ from .value_int import value_int
 from .value_key_values import value_key_values
 from .value_list_base import value_list_base
 from .value_origin import value_origin
+from .value_registry import value_registry
 from .value_source_dir import value_source_dir
 from .value_source_tarball import value_source_tarball
 from .value_string import value_string
