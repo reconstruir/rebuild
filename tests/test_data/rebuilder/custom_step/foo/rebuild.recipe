@@ -1,0 +1,16 @@
+!rebuild.recipe!
+
+package foo 1.0.0
+  load
+    custom_steps.py
+
+  steps
+    step_setup
+
+    _custom_step_make_foo
+
+    _custom_step_install_foo
+    
+    step_post_install
+      tests
+        all: test-foo.py
