@@ -138,6 +138,11 @@ print("hook1 hook2")
     expected = '''#!/usr/bin/env python
 print("hook1 hook2")
 '''
+
+  def test_custom_steps(self):
+    test = self._run_test(True, self.data_dir(), 'custom_step', 'foo')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'foo-1.0.0.tar.gz' ], test.artifacts )
     
   def test_run_script(self):
     test = self._run_test(False, self.data_dir(), 'run_script', 'foo')

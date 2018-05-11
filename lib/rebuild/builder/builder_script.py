@@ -47,6 +47,7 @@ class builder_script(object):
     self.test_dir = path.join(self.working_dir, 'test')
     self.check_dir = path.join(self.working_dir, 'check')
     self.temp_dir = path.join(self.working_dir, 'temp')
+    self.python_lib_dir = path.join(self.staged_files_dir, 'lib/python')
     self.requirements_manager = package_manager(path.join(self.working_dir, 'requirements'), env.artifact_manager)
     self.substitutions = {
       'REBUILD_BUILD_DIR': self.build_dir,
@@ -65,7 +66,7 @@ class builder_script(object):
       'REBUILD_SOURCE_UNPACKED_DIR': self.source_unpacked_dir,
       'REBUILD_STAGE_FRAMEWORKS_DIR':  path.join(self.staged_files_dir, 'frameworks'),
       'REBUILD_STAGE_PREFIX_DIR':  self.staged_files_dir,
-      'REBUILD_STAGE_PYTHON_LIB_DIR':  path.join(self.staged_files_dir, 'lib/python'),
+      'REBUILD_STAGE_PYTHON_LIB_DIR':  self.python_lib_dir,
       'REBUILD_TEMP_DIR': self.temp_dir,
       'REBUILD_TEST_DIR': self.test_dir,
     }

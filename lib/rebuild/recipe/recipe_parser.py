@@ -213,7 +213,7 @@ class recipe_parser(object):
       self._error('invalid config \"%s\" instead of: %s' % (key, ' '.join(args_definition.keys())), node)
 
     value_class_name = args_definition[key].class_name
-    value = recipe_parser_util.parse_key_and_value(self.env, origin, node.data.text, value_class_name)
+    value = recipe_parser_util.make_key_value(self.env, origin, node.data.text, value_class_name)
     if value.value:
       assert not node.children
       values.append(masked_value(None, value.value, origin))

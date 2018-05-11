@@ -5,7 +5,6 @@ from bes.key_value import key_value
 from bes.text import comments
 
 from .value import value_factory
-from .value import value_type
 
 class recipe_parser_util(object):
 
@@ -17,7 +16,7 @@ class recipe_parser_util(object):
     return key.strip()
 
   @classmethod
-  def parse_key_and_value(clazz, env, origin, text, value_class_name):
+  def make_key_value(clazz, env, origin, text, value_class_name):
     check.check_recipe_load_env(env)
     check.check_value_origin(origin)
     check.check_string(text)
@@ -36,7 +35,7 @@ class recipe_parser_util(object):
     return key_value(key, value)
 
   @classmethod
-  def parse_value(clazz, env, origin, text, value_class_name):
+  def make_value(clazz, env, origin, text, value_class_name):
     return value_factory.create_with_class_name(env, origin, text, value_class_name)
 
   @classmethod
