@@ -1,0 +1,33 @@
+!rebuild.recipe!
+
+package fiber 1.0.0
+
+  instructions
+    libfiber1
+      CFLAGS
+        -I${REBUILD_PACKAGE_PREFIX}/include
+      LDFLAGS
+        -L${REBUILD_PACKAGE_PREFIX}/lib
+      LIBS
+        -lfiber1
+
+    libfiber2
+      CFLAGS
+        -I${REBUILD_PACKAGE_PREFIX}/include
+        -I${REBUILD_PACKAGE_PREFIX}/include/caca
+      LDFLAGS
+        -L${REBUILD_PACKAGE_PREFIX}/lib
+      LIBS
+        -lfiber2
+
+    fiber
+      requires
+        libfiber2 libfiber1
+
+  steps  
+    step_autoconf
+      tarball
+        all: ${REBUILD_PACKAGE_NAME}-${REBUILD_PACKAGE_UPSTREAM_VERSION}.tar.gz
+      configure_env
+        linux: CFLAGS="-I${REBUILD_REQUIREMENTS_INCLUDE_DIR} -std=gnu99"
+               LDFLAGS="-L${REBUILD_REQUIREMENTS_LIB_DIR}"

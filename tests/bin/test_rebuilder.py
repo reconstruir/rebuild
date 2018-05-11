@@ -26,26 +26,26 @@ class test_rebuilder_script(script_unit_test):
   
   _test_context = namedtuple('_test_context', 'tmp_dir,command,result,artifacts_dir,artifacts,artifacts_members,artifacts_contents,droppings')
 
-  def test_basic_fructose(self):
-    test = self._run_test(False, self.data_dir(), 'basic', 'fructose')
+  def test_autoconf_fructose(self):
+    test = self._run_test(False, self.data_dir(), 'autoconf', 'fructose')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
+
+  def test_autoconf_fructose_and_fiber(self):
+    test = self._run_test(False, self.data_dir(), 'autoconf', 'fructose', 'fiber')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'fiber-1.0.0.tar.gz', 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
+
+  def xxxtest_autoconf_orange(self):
+    test = self._run_test(False, self.data_dir(), 'basic', 'orange')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'fiber-1.0.0.tar.gz', 'fiber-orange-6.5.4-3.tar.gz', 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
 
   def test_one_project(self):
     test = self._run_test(False, self.data_dir(), 'one_project', 'fructose')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
     
-  def test_fructose_and_fiber(self):
-    test = self._run_test(False, self.data_dir(), 'basic', 'fructose', 'fiber')
-    self.assertEqual( 0, test.result.exit_code )
-    self.assertEqual( [ 'fiber-1.0.0.tar.gz', 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
-    
-  def xxxtest_orange(self):
-    test = self._run_test(False, self.data_dir(), 'basic', 'fructose', 'fiber')
-    self.assertEqual( 0, test.result.exit_code )
-    self.assertEqual( [ 'fiber-1.0.0.tar.gz', 'fiber-orange-6.5.4-3.tar.gz', 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
-
   def test_tool_tfoo(self):
     test = self._run_test(False, self.data_dir(), 'basic', 'tfoo')
     self.assertEqual( 0, test.result.exit_code )
