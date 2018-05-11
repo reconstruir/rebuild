@@ -3,11 +3,8 @@
 
 def rebuild_packages():
   return [
-    'fiber/rebuild.recipe',
-    'fructose/rebuild.recipe',
     'libs/libpotato/rebuild.recipe',
     'libs/libstarch/rebuild.recipe',
-    'orange/rebuild.recipe',
     'tools/tbar/build_100.recipe',
 #    'tools/tbar/build_101.recipe',
     'tools/tfoo/rebuild.recipe',
