@@ -134,6 +134,11 @@ class test_rebuilder_script(script_unit_test):
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libsomething-1.0.0.tar.gz' ], test.artifacts )
 
+  def test_patch(self):
+    test = self._run_test(False, self.data_dir(), 'patch', 'libfoo')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'libfoo-1.0.0.tar.gz' ], test.artifacts )
+
   def test_tarball_git_address(self):
     tmp_dir = self._make_temp_dir()
     project_dir = path.join(self.data_dir(), 'tarball_git_address')

@@ -26,6 +26,7 @@ class step_setup_patch(step):
   def execute(self, script, env, values, inputs):
     patches = [ f.filename for f in values.get('patches') or [] ]
     patch_strip_depth = values.get('patch_strip_depth')
+    print('FUCK: patch_strip_depth=%s' % (patch_strip_depth))
     patch_program = values.get('patch_program') or 'patch'
     patch_dir = values.get('patch_dir')
     if not patches:

@@ -6,15 +6,19 @@ package libfoo 1.0.0
     step_setup
       tarball_dir:
         all: libfoo/src dest=${REBUILD_BUILD_DIR}
+      patches
+        all: libfoo.patch
+      patch_dir
+        all: ${REBUILD_BUILD_DIR}
+      patch_strip_depth: 3
+        
     step_make
       make_flags
         linux: CC=gcc CFLAGS=-std=c99
         macos: CC=clang CFLAGS="${REBUILD_COMPILE_ARCH_FLAGS}"
-      makefile
-        all: src/custom.makefile
+        
     step_make_install
-      makefile
-        all: src/custom.makefile
+    
     step_post_install
       pc_files
         all: libfoo.pc
