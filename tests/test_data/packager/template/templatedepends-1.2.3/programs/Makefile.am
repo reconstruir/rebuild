@@ -1,1 +1,0 @@
-SUBDIRS = templatedepends_program1 templatedepends_program2

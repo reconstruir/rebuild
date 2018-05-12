@@ -1,2 +1,0 @@
-bin_PROGRAMS = template_print_env
-template_print_env_SOURCES = template_print_env_main.c

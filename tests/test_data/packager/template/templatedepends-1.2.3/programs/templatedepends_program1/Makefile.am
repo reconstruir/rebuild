@@ -1,2 +1,0 @@
-bin_PROGRAMS = templatedepends_program1
-templatedepends_program1_SOURCES = templatedepends_program1_main.c
