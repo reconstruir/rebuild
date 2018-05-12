@@ -97,7 +97,6 @@ jan 27
 - dela with the ugliness of BuildScript.all_scripts and BuildScript.checksum_dir
 
 feb 5
-- replace slow packager tests with smaller ones that do the same thing.
 - license in hdradio is apache
 - investigate why ~/.bes/fs/cached_read/files/var/folders/g1/lkq6h5vj4hn5q32f1drxx_xh0000gn/T/nosetests-* keeps growing
 
@@ -509,7 +508,6 @@ nov 2
 nov 3
 - filenames duplicated in builder_env and builder __init__
 - env duplicated in builder __init__ as well as builder.build_script()
-- s _run_result packager_result to script_result
 - move the binary_object test files to a common place
 - add a extra_code unit test in test_hook.py
 

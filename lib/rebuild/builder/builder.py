@@ -118,7 +118,7 @@ class builder(object):
       self.blurb('%s - SUCCESS' % (script.descriptor.name))
       return self.EXIT_CODE_SUCCESS
     elif result.status == self.SCRIPT_FAILED:
-      self.blurb('FAILED: %s - %s - %s' % (script.descriptor.name, result.packager_result.failed_step.__class__.__name__, result.packager_result.message))
+      self.blurb('FAILED: %s - %s - %s' % (script.descriptor.name, result.script_result.failed_step.__class__.__name__, result.script_result.message))
       return self.EXIT_CODE_FAILED
     elif result.status == self.SCRIPT_CURRENT:
       self.blurb('%s - up-to-date.' % (script.descriptor.name))
@@ -133,7 +133,7 @@ class builder(object):
   SCRIPT_FAILED = 'failed'
   SCRIPT_CURRENT = 'current'
   SCRIPT_ABORTED = 'aborted'
-  _run_result = namedtuple('_run_result', 'status,packager_result')
+  _run_result = namedtuple('_run_result', 'status,script_result')
   
   def _build_one_script(self, script, env):
     try:
@@ -145,11 +145,11 @@ class builder(object):
           file_util.remove(script.working_dir)
         return self._run_result(self.SCRIPT_CURRENT, None)
       build_blurb.blurb('rebuild', '%s - building' % (script.descriptor.name))
-      packager_result = script.execute()
-      if packager_result.success:
-        return self._run_result(self.SCRIPT_SUCCESS, packager_result)
+      script_result = script.execute()
+      if script_result.success:
+        return self._run_result(self.SCRIPT_SUCCESS, script_result)
       else:
-        return self._run_result(self.SCRIPT_FAILED, packager_result)
+        return self._run_result(self.SCRIPT_FAILED, script_result)
 
     except step_aborted as ex:
       return self._run_result(self.SCRIPT_ABORTED, None)

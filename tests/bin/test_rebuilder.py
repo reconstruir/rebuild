@@ -26,7 +26,7 @@ class test_rebuilder_script(script_unit_test):
   
   _test_context = namedtuple('_test_context', 'tmp_dir,command,result,artifacts_dir,artifacts,artifacts_members,artifacts_contents,droppings')
 
-  def test_autoconf_arsenic(self):
+  def test_autoconf_with_tarball(self):
     self.maxDiff = None
     test = self._run_test(False, self.data_dir(), 'autoconf', 'arsenic')
     self.assertEqual( 0, test.result.exit_code )
@@ -226,7 +226,7 @@ print("hook1 hook2")
   def _make_command(self, tmp_dir, *args):
     cmd = [
       '--source-dir',
-      path.join(self.data_dir(), '../packager'),
+      path.join(self.data_dir(), '../sources'),
       '--no-network',
       '-v',
       '--root', tmp_dir,
