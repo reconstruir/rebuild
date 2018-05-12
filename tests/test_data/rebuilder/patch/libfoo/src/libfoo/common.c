@@ -1,6 +1,6 @@
 #include "common.h"
 
-int something_common_foo(void)
+int foo_common_foo(void)
 {
   return 1;
 }

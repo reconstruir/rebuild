@@ -9,5 +9,5 @@ Description: ${REBUILD_PACKAGE_DESCRIPTION}
 Version: ${REBUILD_PACKAGE_FULL_VERSION}
 
 Requires:
-Libs: -L${libdir} -L${sharedlibdir} -lsomething
+Libs: -L${libdir} -L${sharedlibdir} -lfoo
 Cflags: -I${includedir}

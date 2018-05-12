@@ -1,11 +1,11 @@
 !rebuild.recipe!
 
-package libsomething 1.0.0
+package libfoo 1.0.0
 
   steps  
     step_setup
       tarball_dir:
-        all: libsomething/src dest=${REBUILD_BUILD_DIR}
+        all: libfoo/src dest=${REBUILD_BUILD_DIR}
     step_make
       make_flags
         linux: CC=gcc CFLAGS=-std=c99
@@ -17,7 +17,7 @@ package libsomething 1.0.0
         all: src/custom.makefile
     step_post_install
       pc_files
-        all: libsomething.pc
+        all: libfoo.pc
       skip_binary_third_party_prefix: True
       tests
-        all: test-libsomething.c
+        all: test-libfoo.c

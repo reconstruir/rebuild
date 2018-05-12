@@ -1,6 +1,6 @@
-programs/something_prog1/something_prog1_main.o
-something_prog1_main
-libsomething.a
-libsomething/bar.o
-libsomething/foo.o
-libsomething/common.o
+programs/foo_prog1/foo_prog1_main.o
+foo_prog1_main
+libfoo.a
+libfoo/bar.o
+libfoo/foo.o
+libfoo/common.o

@@ -1,5 +1,5 @@
-#include <libsomething/foo.h>
-#include <libsomething/bar.h>
+#include <libfoo/foo.h>
+#include <libfoo/bar.h>
 #include <stdio.h>
 #include <stdlib.h>
 

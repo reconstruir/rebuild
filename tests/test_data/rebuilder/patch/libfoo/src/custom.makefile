@@ -7,26 +7,26 @@ LOCAL_CFLAGS=-I.
 %.o: %.c
 	$(CC) $(CFLAGS) $(LOCAL_CFLAGS) -c $< -o $@
 
-all: libsomething.a something_prog1_main
+all: libfoo.a foo_prog1_main
 
-LIBSTARCH_OBJS = libsomething/foo.o libsomething/bar.o libsomething/common.o
-LIBSTARCH_HEADERS = libsomething/bar.h libsomething/foo.h libsomething/common.h
+LIBSTARCH_OBJS = libfoo/foo.o libfoo/bar.o libfoo/common.o
+LIBSTARCH_HEADERS = libfoo/bar.h libfoo/foo.h libfoo/common.h
 
-libsomething.a: $(LIBSTARCH_OBJS)
+libfoo.a: $(LIBSTARCH_OBJS)
 	$(AR) $(AR_FLAGS) $@ $^
 
-STARCH_PROG1_MAIN_OBJS = programs/something_prog1/something_prog1_main.o
+STARCH_PROG1_MAIN_OBJS = programs/foo_prog1/foo_prog1_main.o
 
-something_prog1_main: $(STARCH_PROG1_MAIN_OBJS) libsomething.a
+foo_prog1_main: $(STARCH_PROG1_MAIN_OBJS) libfoo.a
 	$(CC) -o $@ $^
 
 clean:
-	rm -f $(LIBSTARCH_OBJS) $(STARCH_PROG1_MAIN_OBJS) libsomething.a something_prog1_main
+	rm -f $(LIBSTARCH_OBJS) $(STARCH_PROG1_MAIN_OBJS) libfoo.a foo_prog1_main
 
-install: something_prog1_main libsomething.a $(LIBSTARCH_HEADERS)
+install: foo_prog1_main libfoo.a $(LIBSTARCH_HEADERS)
 	mkdir -p $(prefix)/bin
 	mkdir -p $(prefix)/lib
-	mkdir -p $(prefix)/include/libsomething
-	install -m 755 something_prog1_main $(prefix)/bin
-	install -m 644 libsomething.a $(prefix)/lib
-	$(foreach header,$(LIBSTARCH_HEADERS),install -m 644 $(header) $(prefix)/include/libsomething;)
+	mkdir -p $(prefix)/include/libfoo
+	install -m 755 foo_prog1_main $(prefix)/bin
+	install -m 644 libfoo.a $(prefix)/lib
+	$(foreach header,$(LIBSTARCH_HEADERS),install -m 644 $(header) $(prefix)/include/libfoo;)
