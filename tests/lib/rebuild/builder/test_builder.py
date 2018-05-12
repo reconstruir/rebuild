@@ -8,7 +8,6 @@ from bes.fs import file_util, temp_file
 from bes.git import git_download_cache
 from bes.testing.unit_test import unit_test
 from rebuild.builder import builder, builder_config, builder_env
-from rebuild.builder.unit_test_packaging import unit_test_packaging
 from rebuild.checksum import checksum_manager
 from rebuild.package import artifact_manager, package_manager
 from rebuild.source_finder import local_source_finder, source_finder_chain
@@ -21,23 +20,7 @@ class test_builder(unit_test):
   DEBUG = unit_test.DEBUG
   #DEBUG = True
 
-  def test_amhello(self):
-    tmp_dir = temp_file.make_temp_dir()
-    amhello_builder_script = unit_test_packaging.make_recipe(2, tmp_dir, 'build_amhello.rebc', 'amhello', '1.0', 0)
-    file_util.copy(self.data_path('amhello-1.0.tar.gz'), tmp_dir)
-    filenames = [ amhello_builder_script ]
-    config = builder_config()
-    config.build_root = path.join(tmp_dir, 'BUILD')
-    config.source_dir = self.data_dir()
-    config.no_network = True
-    config.verbose = True
-    env = builder_env(config, filenames)
-    bldr = builder(env)
-    packages = [ 'amhello' ]
-    rv = bldr.build_many_scripts(packages)
-    self.assertEqual( builder.EXIT_CODE_SUCCESS, rv )
-
-  def test_libpng(self):
+  def xtest_libpng(self):
     tmp_dir = temp_file.make_temp_dir()
     filenames = [ self.data_path('zlib/build_zlib.rebc'), self.data_path('libpng/rebuild.recipe') ]
     config = builder_config()
@@ -50,7 +33,7 @@ class test_builder(unit_test):
     rv = bldr.build_many_scripts(packages)
     self.assertEqual( builder.EXIT_CODE_SUCCESS, rv )
 
-  def test_fructose(self):
+  def xtest_fructose(self):
     rv = self._build_project([
       'build_fructose.rebc',
       'fructose-3.4.5.tar.gz',
@@ -62,7 +45,7 @@ class test_builder(unit_test):
     ])
     self.assertEqual( builder.EXIT_CODE_SUCCESS, rv.exit_code )
 
-  def test_fructose_with_env_vars(self):
+  def xtest_fructose_with_env_vars(self):
     rv = self._build_project([
       'build_fructose_with_env_vars.rebc',
       'fructose-3.4.5.tar.gz',

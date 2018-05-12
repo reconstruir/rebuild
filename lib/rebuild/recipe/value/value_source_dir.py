@@ -63,9 +63,10 @@ class value_source_dir(value_base):
     assert self.substitutions
     temp_dir = self.substitute('${REBUILD_TEMP_DIR}')
     full_name = self.substitute('${REBUILD_PACKAGE_FULL_NAME}')
+    where = self.substitute(self.where)
     tarball_filename = '%s.tar.gz' % (full_name)
     tarball_path = path.join(temp_dir, tarball_filename)
-    archiver.create(tarball_path, self.where, base_dir = full_name)
+    archiver.create(tarball_path, where, base_dir = full_name)
     assert path.isfile(tarball_path)
     self._tarball = tarball_path
   

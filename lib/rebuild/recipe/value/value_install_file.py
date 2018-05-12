@@ -11,18 +11,26 @@ class value_install_file(value_base):
 
   def __init__(self, env = None, origin = None, filename = '', dst_filename = '', properties = None):
     super(value_install_file, self).__init__(env, origin, properties = properties)
-    self.filename = filename
-    self.dst_filename = dst_filename
+    self._filename = filename
+    self._dst_filename = dst_filename
 
   def __eq__(self, other):
-    return self.filename == other.filename and self.dst_filename == other.dst_filename
-    
+    return self._filename == other._filename and self._dst_filename == other._dst_filename
+
+  @property
+  def filename(self):
+    return self.substitute(self._filename)
+  
+  @property
+  def dst_filename(self):
+    return self.substitute(self._dst_filename)
+  
   #@abstractmethod
   def value_to_string(self, quote):
     buf = StringIO()
-    buf.write(path.basename(self.filename))
+    buf.write(path.basename(self._filename))
     buf.write(' ')
-    buf.write(self.dst_filename)
+    buf.write(self._dst_filename)
     ps = self.properties_to_string()
     if ps:
       buf.write(' ')
@@ -42,8 +50,7 @@ class value_install_file(value_base):
 
   #@abstractmethod
   def substitutions_changed(self):
-    self.filename = self.substitute(self.filename)
-    self.dst_filename = self.substitute(self.dst_filename)
+    pass
 
   @classmethod
   #@abstractmethod

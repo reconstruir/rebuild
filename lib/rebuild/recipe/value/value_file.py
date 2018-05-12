@@ -14,15 +14,19 @@ class value_file(value_base):
     'Class to manage a recipe file.'
     super(value_file, self).__init__(env, origin, properties = properties)
     check.check_string(filename)
-    self.filename = filename
+    self._filename = filename
 
+  @property
+  def filename(self):
+    return self.substitute(self._filename)
+    
   def __eq__(self, other):
-    return self.filename == other.filename
+    return self._filename == other._filename
     
   #@abstractmethod
   def value_to_string(self, quote):
     buf = StringIO()
-    buf.write(path.basename(self.filename))
+    buf.write(path.basename(self._filename))
     ps = self.properties_to_string()
     if ps:
       buf.write(' ')
@@ -47,7 +51,7 @@ class value_file(value_base):
 
   #@abstractmethod
   def substitutions_changed(self):
-    self.filename = self.substitute(self.filename)
+    pass
   
   @classmethod
   #@abstractmethod
