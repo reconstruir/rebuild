@@ -7,7 +7,7 @@ package libfoo 1.0.0
       tarball_dir:
         all: libfoo/src dest=${REBUILD_BUILD_DIR}
       patches
-        all: libfoo.patch
+        all: patches/libfoo.patch
       patch_dir
         all: ${REBUILD_BUILD_DIR}
       patch_strip_depth: 3

@@ -24,25 +24,23 @@ class step_setup_patch(step):
     
   #@abstractmethod
   def execute(self, script, env, values, inputs):
-    patches = [ f.filename for f in values.get('patches') or [] ]
-    patch_strip_depth = values.get('patch_strip_depth')
-    print('FUCK: patch_strip_depth=%s' % (patch_strip_depth))
-    patch_program = values.get('patch_program') or 'patch'
-    patch_dir = values.get('patch_dir')
+    patches = values.get('patches')
     if not patches:
       message = 'No patches for %s' % (script.descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
+    patch_strip_depth = values.get('patch_strip_depth')
+    patch_program = values.get('patch_program')
+    patch_dir = values.get('patch_dir')
 
     for p in patches:
-      self.blurb('Patching with %s in dir %s' % (path.relpath(p), path.relpath(patch_dir.filename)))
-
-    exit_code, msg = patch.patch(patches,
-                                 patch_dir.filename,
-                                 strip = patch_strip_depth,
-                                 backup = True,
-                                 posix = True,
-                                 program = patch_program)
+      self.blurb('Applying patch %s in dir %s' % (path.relpath(p.filename), path.relpath(patch_dir.filename)))
+      exit_code, msg = patch.patch(p.filename,
+                                   patch_dir.filename,
+                                   strip = patch_strip_depth,
+                                   backup = True,
+                                   posix = True,
+                                   program = patch_program)
     return step_result(exit_code == 0, msg)
 
   def sources_keys(self):
