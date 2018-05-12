@@ -26,6 +26,43 @@ class test_rebuilder_script(script_unit_test):
   
   _test_context = namedtuple('_test_context', 'tmp_dir,command,result,artifacts_dir,artifacts,artifacts_members,artifacts_contents,droppings')
 
+  def test_autoconf_arsenic(self):
+    self.maxDiff = None
+    test = self._run_test(False, self.data_dir(), 'autoconf', 'arsenic')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'arsenic-1.2.9.tar.gz' ], test.artifacts )
+  
+  def test_autoconf_fructose(self):
+    self.maxDiff = None
+    test = self._run_test(False, self.data_dir(), 'autoconf', 'fructose')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
+    self.assertEqual( [
+      'files/bin/fructose_print_env',
+      'files/bin/fructose_program1',
+      'files/bin/fructose_program2',
+      'files/bin/rebbe_fructose_print_env',
+      'files/bin/rebbe_fructose_program1',
+      'files/bin/rebbe_fructose_program2',
+      'files/include/fructose1/fructose1.h',
+      'files/include/fructose2/fructose2.h',
+      'files/lib/libfructose1.a',
+      'files/lib/libfructose2.a',
+      'files/lib/librebbe_fructose1.a',
+      'files/lib/librebbe_fructose2.a',
+      'files/lib/pkgconfig/fructose.pc',
+      'files/lib/pkgconfig/libfructose1.pc',
+      'files/lib/pkgconfig/libfructose2.pc',
+      'files/lib/pkgconfig/librebbe_fructose1.pc',
+      'files/lib/pkgconfig/librebbe_fructose2.pc',
+      'files/lib/pkgconfig/rebbe_fructose.pc',
+      'files/lib/rebuild_instructions/fructose.rci',
+      'files/lib/rebuild_instructions/libfructose1.rci',
+      'files/lib/rebuild_instructions/libfructose2.rci',
+      'files/share/doc/fructose/README',
+      'metadata/metadata.json',
+    ], test.artifacts_members['fructose-3.4.5-6.tar.gz'])
+
   def test_autoconf_fructose(self):
     self.maxDiff = None
     test = self._run_test(False, self.data_dir(), 'autoconf', 'fructose')

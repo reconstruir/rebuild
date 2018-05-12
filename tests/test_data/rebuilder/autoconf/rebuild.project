@@ -2,6 +2,7 @@
 
 def rebuild_packages():
   return [
+    'arsenic/rebuild.recipe',
     'fiber/rebuild.recipe',
     'fructose/rebuild.recipe',
     'orange/rebuild.recipe',
