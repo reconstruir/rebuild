@@ -1,0 +1,1 @@
+SUBDIRS = fructose_program1 fructose_program2 fructose_print_env

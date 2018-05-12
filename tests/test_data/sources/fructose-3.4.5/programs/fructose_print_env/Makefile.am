@@ -1,0 +1,2 @@
+bin_PROGRAMS = fructose_print_env
+fructose_print_env_SOURCES = fructose_print_env_main.c
