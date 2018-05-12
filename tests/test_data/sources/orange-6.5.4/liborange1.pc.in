@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: liborange1
+Version: @VERSION@
+Description: liborange1 is nice
+Requires: @orange1_REQUIRES@
+Libs: -L${libdir} @orange1_LIBS@
+Libs.private: @orange1_LIBS_PRIVATE@
+Cflags: -I${includedir} @orange1_CFLAGS@
