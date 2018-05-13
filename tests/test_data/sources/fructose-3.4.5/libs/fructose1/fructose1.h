@@ -3,6 +3,7 @@
 
 extern int fructose1_foo(int x);
 extern int fructose1_bar(int x);
+extern int fructose1_baz(int x);
 
 #endif /* fructose1_h__ */
 

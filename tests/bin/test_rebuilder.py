@@ -134,10 +134,15 @@ class test_rebuilder_script(script_unit_test):
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libsomething-1.0.0.tar.gz' ], test.artifacts )
 
-  def test_patch(self):
-    test = self._run_test(False, self.data_dir(), 'patch', 'libfoo')
+  def test_patch_in_build_dir(self):
+    test = self._run_test(False, self.data_dir(), 'patch_in_build_dir', 'libfoo')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libfoo-1.0.0.tar.gz' ], test.artifacts )
+
+  def test_patch_in_source_dir(self):
+    test = self._run_test(False, self.data_dir(), 'patch_in_source_dir', 'fructose')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
 
   def test_tarball_git_address(self):
     tmp_dir = self._make_temp_dir()

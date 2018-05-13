@@ -10,3 +10,7 @@ int fructose1_bar(int x)
   return 200;
 }
 
+int fructose1_baz(int x)
+{
+  return 300;
+}
