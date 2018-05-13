@@ -1,14 +1,9 @@
 #include <libsomething/foo.h>
 #include <libsomething/bar.h>
-#include <stdio.h>
+#include <assert.h>
 
 int main()
 {
-  int EXPECTED_X = 701;
-  int x = something_foo(0) + bar_foo(0);
-  if (x != EXPECTED_X) {
-    fprintf(stderr, "error x is %d instead of %d", x, EXPECTED_X);
-    return 1;
-  }
+  assert( 701 == something_foo(0) + bar_foo(0) );
   return 0;
 }
