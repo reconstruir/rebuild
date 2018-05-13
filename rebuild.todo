@@ -853,6 +853,3 @@ makefile in step_make might not work
  - enhance args_definition to keep track of the origin
  - add a value_dir type
  - add hook tests including existing exception
-
-2018-05-08
- - add rebuilder unit tests of patch_dir
