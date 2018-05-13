@@ -5,8 +5,8 @@
 
 int main()
 {
-  assert( 100 == fructose1_foo(1) );
-  assert( 200 == fructose1_bar(1) );
-  assert( 300 == fructose1_baz(1) );
+  assert( 100 == fructose1_foo(0) );
+  assert( 200 == fructose1_bar(0) );
+  assert( 300 == fructose1_baz(0) );
   return 0;
 }

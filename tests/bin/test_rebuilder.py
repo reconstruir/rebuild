@@ -251,8 +251,15 @@ print("hook1 hook2")
     cwd = path.join(data_dir, cwd_subdir)
     artifacts_dir = path.join(tmp_dir, 'artifacts', self.BUILD_TARGET.build_path)
     result = self.run_script(command, cwd = cwd)
-    artifacts = file_find.find(artifacts_dir)
-    droppings = file_find.find(tmp_dir)
+    if path.isdir(artifacts_dir):
+      artifacts = file_find.find(artifacts_dir)
+    else:
+      artifacts = []
+    if path.isdir(tmp_dir):
+      droppings = file_find.find(tmp_dir)
+    else:
+      droppings = []
+      
     artifacts_members = {}
     artifacts_contents = {}
     if result.exit_code == 0:

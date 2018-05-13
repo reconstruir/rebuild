@@ -1,17 +1,18 @@
 diff -ur fructose-3.4.5.orig/libs/fructose1/fructose1.c fructose-3.4.5/libs/fructose1/fructose1.c
---- fructose-3.4.5.orig/libs/fructose1/fructose1.c	2018-05-13 13:08:22.000000000 -0700
-+++ fructose-3.4.5/libs/fructose1/fructose1.c	2018-05-13 13:11:45.000000000 -0700
-@@ -10,3 +10,7 @@
-   return 200;
+--- fructose-3.4.5.orig/libs/fructose1/fructose1.c	2018-05-13 13:41:42.000000000 -0700
++++ fructose-3.4.5/libs/fructose1/fructose1.c	2018-05-13 14:15:57.000000000 -0700
+@@ -9,3 +9,8 @@
+ {
+   return x + 200;
  }
- 
++
 +int fructose1_baz(int x)
 +{
-+  return 300;
++  return x + 300;
 +}
 diff -ur fructose-3.4.5.orig/libs/fructose1/fructose1.h fructose-3.4.5/libs/fructose1/fructose1.h
---- fructose-3.4.5.orig/libs/fructose1/fructose1.h	2018-04-09 00:51:49.000000000 -0700
-+++ fructose-3.4.5/libs/fructose1/fructose1.h	2018-05-13 13:11:23.000000000 -0700
+--- fructose-3.4.5.orig/libs/fructose1/fructose1.h	2018-05-13 13:40:48.000000000 -0700
++++ fructose-3.4.5/libs/fructose1/fructose1.h	2018-05-13 14:16:05.000000000 -0700
 @@ -3,6 +3,7 @@
  
  extern int fructose1_foo(int x);

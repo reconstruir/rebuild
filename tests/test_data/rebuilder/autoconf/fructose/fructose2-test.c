@@ -1,10 +1,10 @@
 #include <stdio.h>
-
 #include <fructose2/fructose2.h>
+#include <assert.h>
 
 int main()
 {
-  printf("fructose2_foo() => %d\n", fructose2_foo(1));
-  printf("fructose2_bar() => %d\n", fructose2_bar(1));
+  assert( 1100 == fructose2_foo(0) );
+  assert( 3100 == fructose2_bar(0) );
   return 0;
 }
