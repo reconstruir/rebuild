@@ -1,14 +1,10 @@
 #include <libstarch/amylose.h>
 #include <libstarch/amylopectin.h>
-#include <stdio.h>
+#include <assert.h>
 
 int main()
 {
-  int EXPECTED_X = 701;
-  int x = amylose_foo(0) + amylopectin_foo(0);
-  if (x != EXPECTED_X) {
-    fprintf(stderr, "error x is %d instead of %d", x, EXPECTED_X);
-    return 1;
-  }
+  assert( 600 == amylopectin_foo(0) );
+  assert( 700 == amylopectin_bar(0) );
   return 0;
 }
