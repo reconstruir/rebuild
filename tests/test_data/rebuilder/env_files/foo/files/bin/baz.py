@@ -1,3 +1,3 @@
 #!/usr/bin/env python
-print("this is foo")
+print("this is baz")
 raise SystemExit(0)

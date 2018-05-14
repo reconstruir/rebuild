@@ -1,5 +1,4 @@
 
-export REBUILD_ENV1_VAR1=kiwi
-export REBUILD_ENV1_VAR2=almond
-export REBUILD_FOO_ROOT=${REBUILD_PACKAGE_PREFIX}
+export REBUILD_FOO1_VAR1=kiwi
+export REBUILD_FOO1_VAR2=almond
 
