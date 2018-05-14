@@ -197,9 +197,9 @@ print("hook1 hook2")
     self.assertMultiLineEqual( expected, test.artifacts_contents['foo-1.0.0.tar.gz']['files/bin/foo.py'] )
     
   def test_env_files(self):
-    test = self._run_test(True, self.data_dir(), 'env_files', 'foo')
+    test = self._run_test(True, self.data_dir(), 'env_files', 'foo', 'bar', 'baz')
     self.assertEqual( 0, test.result.exit_code )
-    self.assertEqual( [ 'foo-1.0.0.tar.gz' ], test.artifacts )
+    self.assertEqual( [ 'bar-1.0.0.tar.gz', 'baz-1.0.0.tar.gz',  'foo-1.0.0.tar.gz' ], test.artifacts )
     tgz = path.join(test.artifacts_dir, 'foo-1.0.0.tar.gz')
     self.assertEqual( [
       'env/foo_env1.sh',
@@ -207,6 +207,18 @@ print("hook1 hook2")
       'files/bin/foo.py',
       'metadata/metadata.json',
     ], test.artifacts_members['foo-1.0.0.tar.gz'])
+    self.assertEqual( [
+      'env/bar_env1.sh',
+      'env/bar_env2.sh',
+      'files/bin/bar.py',
+      'metadata/metadata.json',
+    ], test.artifacts_members['bar-1.0.0.tar.gz'])
+    self.assertEqual( [
+      'env/baz_env1.sh',
+      'env/baz_env2.sh',
+      'files/bin/baz.py',
+      'metadata/metadata.json',
+    ], test.artifacts_members['baz-1.0.0.tar.gz'])
 
     expected = '''#!/usr/bin/env python
 print("hook1 hook2")
