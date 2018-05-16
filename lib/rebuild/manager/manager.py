@@ -151,7 +151,7 @@ _@NAME@_setup()
   export MANPATH=${_prefix}/man:${_prefix}/share/man:${MANPATH}
   local _env_dir=$_root/env
   if [ -d $_env_dir -a -n "$(ls -A $_env_dir/*.sh)" ]; then
-    for f in $_env_dir/*.sh; do
+    for f in $(find $_env_dir -name "*.sh" -maxdepth 1); do
       source "$f"
     done
   fi  
@@ -194,8 +194,8 @@ _rebuild_system_name()
   export DYLD_LIBRARY_PATH=${_prefix}/lib:${DYLD_LIBRARY_PATH}
   export MANPATH=${_prefix}/man:${_prefix}/share/man:${MANPATH}
   local _env_dir=$_system_root/env
-  if [ -d $_env_dir -a -n "$(ls -A $_env_dir/*.sh)" ]; then
-    for f in $_env_dir/*.sh; do
+  if [ -d $_env_dir ]; then
+    for f in $(find $_env_dir -name "*.sh" -maxdepth 1); do
       source "$f"
     done
   fi  
