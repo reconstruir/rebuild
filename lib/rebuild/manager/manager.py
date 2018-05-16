@@ -150,8 +150,8 @@ _@NAME@_setup()
   export @LIBRARY_PATH@=${_prefix}/lib:${@LIBRARY_PATH@}
   export MANPATH=${_prefix}/man:${_prefix}/share/man:${MANPATH}
   local _env_dir=$_root/env
-  if [ -d $_env_dir -a -n "$(ls -A $_env_dir)" ]; then
-    for f in $_env_dir/*; do
+  if [ -d $_env_dir -a -n "$(ls -A $_env_dir/*.sh)" ]; then
+    for f in $_env_dir/*.sh; do
       source "$f"
     done
   fi  
