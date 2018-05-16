@@ -285,10 +285,10 @@ class package_manager(object):
     descriptors = [ self.descriptor_for_name(pkg_name) for pkg_name in pkg_names ]
     result = {}
     for pkg_desc in descriptors:
-      os_env.update(result, self.__env_vars_for_one_package(pkg_desc))
+      os_env.update(result, self._env_vars_for_one_package(pkg_desc))
     return result
 
-  def __env_vars_for_one_package(self, pkg_desc):
+  def _env_vars_for_one_package(self, pkg_desc):
     result = copy.deepcopy(pkg_desc.env_vars)
     variables = {
       'REBUILD_PACKAGE_ROOT_DIR': self._installation_dir,
