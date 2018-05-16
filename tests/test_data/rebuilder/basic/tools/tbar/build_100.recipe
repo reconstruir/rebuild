@@ -17,6 +17,7 @@ package tbar 1.0.0
         all: ${REBUILD_SOURCE_DIR}/files/bin/tbar_code_gen.py bin/tbar_code_gen.py
         
       tests
-        all: test-tbar.sh test-tbar-env-var.sh
+        all: test-tbar.sh
+        all: test-tbar-env-var.sh
         
       skip_binary_third_party_prefix: True

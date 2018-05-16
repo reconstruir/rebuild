@@ -31,11 +31,15 @@ function bes_testing_run_unit_tests()
 # Run that an expression argument is true and print that
 function bes_assert()
 {
+  local _filename=$(basename ${BASH_SOURCE[1]})
+  local _line=${BASH_LINENO[0]}
+  local _function=${FUNCNAME[1]}
+  
   eval "${1}"
   if [[ $? -ne 0 ]]; then
-    echo "${FUNCNAME[1]}: failed: " ${1}
+    echo "failed: " ${1} " at $_filename:$_line"
     _bes_testing_exit_code=1
-   else
-     echo "${FUNCNAME[1]}: passed"
+  else
+    echo "$_filename $_function: passed"
   fi
 }
