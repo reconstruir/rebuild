@@ -49,7 +49,8 @@ class manager(object):
   def update_packages(self, project_name, packages, build_target, allow_downgrade = False, force_install = False):
     pm = self._package_manager(project_name, build_target.system)
     pm.install_packages(packages, build_target, [ 'RUN' ], allow_downgrade = allow_downgrade, force_install = force_install)
-
+    pm.ensure_env_framework()
+    
   def installed_packages(self, project_name, build_target):
     pm = self._package_manager(project_name, build_target.system)
     return pm.list_all()

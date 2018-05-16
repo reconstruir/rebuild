@@ -9,8 +9,8 @@ package foo 1.0.0
       install_files
         all: ${REBUILD_SOURCE_DIR}/files/bin/foo.py bin/foo.py
         
-      tests
-        all: test-foo.sh
+#      tests
+#        all: test-foo.sh
         
       skip_binary_third_party_prefix: True
 
@@ -30,8 +30,8 @@ package bar 1.0.0
       install_files
         all: ${REBUILD_SOURCE_DIR}/files/bin/bar.py bin/bar.py
         
-      tests
-        all: test-bar.sh
+#      tests
+#        all: test-bar.sh
         
       skip_binary_third_party_prefix: True
 

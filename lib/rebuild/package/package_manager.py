@@ -23,6 +23,7 @@ from .package_db import package_db
 from .package_db_entry import package_db_entry
 from .env_dir import env_dir
 from .db_error import *
+from .env_framework import env_framework
 
 class PackageFilesConflictError(Exception):
   def __init__(self, message):
@@ -160,6 +161,10 @@ class package_manager(object):
                              
     self.db.add_package(entry)
 
+  def ensure_env_framework(self):
+    ef = env_framework()
+    ef.extract(path.join(self._env_dir, 'framework'))
+    
   def uninstall_package(self, pkg_name):
     self.log_i('uninstalling package: %s' % (pkg_name))
     pkg = self.db.find_package(pkg_name)

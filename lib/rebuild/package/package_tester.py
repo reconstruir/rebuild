@@ -106,7 +106,7 @@ class package_tester(object):
     return clazz._run_exe_test('SHELL', 'bash', config, test_source)
 
   @classmethod
-  def __determine_exe(clazz, env_var_name, default_exe):
+  def _determine_exe(clazz, env_var_name, default_exe):
     return os.environ.get(env_var_name, default_exe)
   
   @classmethod
@@ -172,7 +172,7 @@ class package_tester(object):
   def _run_exe_test(clazz, exe_env_name, exe_default, config, test_source):
     context = clazz._make_test_context(config, test_source)
     build_blurb.blurb_verbose('tester', '%s: running shell test %s' % (context.package_info.name, test_source))
-    exe = clazz.__determine_exe(exe_env_name, exe_default)
+    exe = clazz._determine_exe(exe_env_name, exe_default)
     cmd = '%s %s' % (exe, context.test_source_with_replacements)
     rv = execute.execute(cmd, env = context.env, non_blocking = build_blurb.verbose,
                          stderr_to_stdout = True, raise_error = False)

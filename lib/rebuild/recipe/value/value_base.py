@@ -42,14 +42,17 @@ class value_base(with_metaclass(value_register_meta, object)):
   def parse_properties(clazz, text):
     return key_value_list.parse(text, options = key_value_list.KEEP_QUOTES)
 
-  decoded_properties = namedtuple('decoded_properties', 'dest, strip_common_base')
+  decoded_properties = namedtuple('decoded_properties', 'dest, strip_common_base, base')
   
   def decode_properties(self):
     props = self.properties.to_dict()
     dest = props.get('dest', '${REBUILD_SOURCE_UNPACKED_DIR}')
     dest = variable.substitute(dest, self._substitutions)
+    base = props.get('base', None)
+    if base:
+      base = variable.substitute(base, self._substitutions)
     strip_common_base = props.get('strip_common_base', True)
-    return self.decoded_properties(dest, strip_common_base)
+    return self.decoded_properties(dest, strip_common_base, base)
 
   @property
   def substitutions(self):

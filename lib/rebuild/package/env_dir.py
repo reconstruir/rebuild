@@ -3,7 +3,7 @@
 
 import copy, difflib, os, os.path as path
 from bes.compat import StringIO
-from bes.fs import dir_util, temp_file
+from bes.fs import dir_util, file_util, temp_file
 from bes.system import execute, env_var, os_env
 from bes.text import text_line_parser
 from bes.enum import enum
@@ -45,7 +45,7 @@ class env_dir(object):
         v.remove(inst.value)
     return new_env
     
-  def instructions(self):
+  def instructions(self, env):
     files = self.files(relative = False)
     buf = StringIO()
     buf.write('#!/bin/bash\n')
@@ -59,7 +59,10 @@ class env_dir(object):
     buf.write('echo "----4----"\n')
     script = temp_file.make_temp_file(content = buf.getvalue())
     os.chmod(script, 0o755)
-    rv = execute.execute(script, raise_error = True, shell = True)
+    try:
+      rv = execute.execute(script, raise_error = True, shell = True, env = env)
+    finally:
+      file_util.remove(script)
     parser = text_line_parser(rv.stdout)
     env1 = self._parse_env_lines(parser.cut_lines('----1----', '----2----'))
     env2 = self._parse_env_lines(parser.cut_lines('----3----', '----4----'))
