@@ -12,12 +12,20 @@ class value_git_address(value_base):
     super(value_git_address, self).__init__(env , origin, properties = properties)
     check.check_string(address)
     check.check_string(revision)
-    self.address = address
-    self.revision = revision
+    self._address = address
+    self._revision = revision
 
   def __eq__(self, other):
-    return self.address == other.address and self.revision == other.revision
-    
+    return self._address == other._address and self._revision == other._revision
+
+  @property
+  def address(self):
+    return self.substitute(self._address)
+  
+  @property
+  def revision(self):
+    return self.substitute(self._revision)
+  
   #@abstractmethod
   def value_to_string(self, quote):
     buf = StringIO()
