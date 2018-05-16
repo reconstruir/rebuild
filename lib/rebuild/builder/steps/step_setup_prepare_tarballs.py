@@ -49,6 +49,7 @@ class step_setup_prepare_tarballs(step):
       self.blurb('Extracting %s to %s' % (path.relpath(downloaded_path), path.relpath(props.dest)))
       archiver.extract(downloaded_path,
                        props.dest,
+                       base_dir = props.base,
                        strip_common_base = props.strip_common_base)
 
     if tarball:
@@ -60,6 +61,7 @@ class step_setup_prepare_tarballs(step):
       self.blurb('Extracting %s to %s' % (path.relpath(tarball_path), path.relpath(props.dest)))
       archiver.extract(tarball_path,
                        props.dest,
+                       base_dir = props.base,
                        strip_common_base = props.strip_common_base)
       
     if tarball_dir:
@@ -71,6 +73,7 @@ class step_setup_prepare_tarballs(step):
       self.blurb('Extracting %s to %s' % (path.relpath(tarball_path), path.relpath(props.dest)))
       archiver.extract(tarball_path,
                        props.dest,
+                       base_dir = props.base,
                        strip_common_base = props.strip_common_base)
       
     return step_result(True, None)
