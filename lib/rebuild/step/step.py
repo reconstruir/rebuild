@@ -73,14 +73,6 @@ class step(with_metaclass(step_register_meta, object)):
     'Execute the step.'
     pass
  
-  def sources(self, env):
-    'Return a list of sources for this step.'
-    return []
- 
-  def tarballs(self, env):
-    'Return a list of tarballs for this step.'
-    return []
- 
   def on_tag_changed(self):
     'Called when the tag changes.'
     pass
@@ -91,9 +83,6 @@ class step(with_metaclass(step_register_meta, object)):
     'Return a list of arg specs.'
     return {}
   
-  def sources_keys(self):
-    return []
-
   def update_args(self, args):
     dict_util.update(self.args, args)
 

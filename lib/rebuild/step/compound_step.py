@@ -49,12 +49,6 @@ class compound_step(step):
     for step in self.steps:
       step.tag = self.tag
 
-  def sources_keys(self):
-    keys = []
-    for step in self.steps:
-      keys.extend(step.sources_keys())
-    return sorted(list(set(keys)))
-
   @classmethod
   def _get_compound_classes(clazz):
     return getattr(clazz, '__steps__', [])

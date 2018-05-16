@@ -43,6 +43,3 @@ class step_install_install_files(step):
       os.chmod(dst, mode)
       
     return step_result(True, None)
-
-  def sources_keys(self):
-    return [ 'install_files' ]

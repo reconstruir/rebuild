@@ -78,15 +78,9 @@ class step_setup_prepare_tarballs(step):
       
     return step_result(True, None)
 
-  def sources(self, env):
-    return self.tarballs(env)
-
-  def tarballs(self, env):
-    result = []
-    tarball_address = self._values['tarball_address']
-    if tarball_address:
-      result.extend(tarball_address.sources())
-    return result
-
-#  def sources_keys(self):
-#    return [ 'tarballs', 'extra_tarballs' ]
+#  def tarballs(self, env):
+#    result = []
+#    tarball_address = self._values['tarball_address']
+#    if tarball_address:
+#      result.extend(tarball_address.sources())
+#    return result

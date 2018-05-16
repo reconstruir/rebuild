@@ -82,9 +82,6 @@ class step_artifact_create_test_package(step):
         return result
     return step_result(True, None)
 
-  def sources_keys(self):
-    return [ 'tests' ]
-
 class step_artifact_create_publish_package(step):
   'Publish the package created by step_artifact_create_make_package.'
 

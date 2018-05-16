@@ -43,6 +43,3 @@ class step_pkg_config_make_pc(step):
       dst_pc = path.join(dst_dir, path.basename(src_pc))
       file_replace.copy_with_substitute(src_pc, dst_pc, replacements, backup = False)
     return step_result(True, None)
-
-  def sources_keys(self):
-    return [ 'pc_files' ]

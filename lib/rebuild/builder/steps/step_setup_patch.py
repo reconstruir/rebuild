@@ -42,6 +42,3 @@ class step_setup_patch(step):
                                    posix = True,
                                    program = patch_program)
     return step_result(exit_code == 0, msg)
-
-  def sources_keys(self):
-    return [ 'patches' ]

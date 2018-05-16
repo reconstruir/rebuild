@@ -93,8 +93,7 @@ jan 27
 - move the LD_LIBRARY_PATH hackery in PackageManager.__make_script() to a decent location
 - in __run_cpp_test() abstract the compiler name hardcoded to gcc now
 - SystemEnvironment.CLEAN_ENV_VARS might have to be system specific
-- in BuildScript.source() automate the way to figure out the list of expected_sources
-- dela with the ugliness of BuildScript.all_scripts and BuildScript.checksum_dir
+- deal with the ugliness of BuildScript.all_scripts and BuildScript.checksum_dir
 
 feb 5
 - license in hdradio is apache
@@ -827,7 +826,6 @@ makefile in step_make might not work
  - gettext subsiutions should be unified with script.substitutions instead of custom
  - any replacements should go through script.substituitions
  - value_base add notion of sources vs tarballs
- - fix sources() sources_keys() etc mess
  - make step_result a namtedtuple
  - all step values should subclass value_base
  - test_recipe_step need a unit tests with substitutions

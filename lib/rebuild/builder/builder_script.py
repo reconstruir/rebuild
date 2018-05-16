@@ -117,54 +117,14 @@ class builder_script(object):
                                                self.build_target)
     return result
 
-  @property
-  def sources(self):
-    sources = self._script_sources()
-    for x in self._step_manager._unroll_steps():
-      if x:
-        print('FUCK: %s' % (x.sources()))
-      sources.extend(x.sources())
-    return sources
-
-  def poto_sources(self):
-    sources = []
-    for step in self._step_manager:
-      for key, value in step.values.items():
-        if check.is_value_base(value):
-          more_sources = value.sources()
-          if more_sources:
-            #print('FUCK: MORE SOURCES: %s - %s => %s' % (str(value), type(value), more_sources))
-            sources.extend(more_sources)
-    return algorithm.unique(sources)
-
   file_checksums = namedtuple('file_checksums', 'sources,targets')
 
   def _script_sources(self):
-    'Return a list of sources for this script.'
-    sources = []
-    for step, args in self._step_manager.step_list():
-      for sources_key in step.sources_keys():
-        caca = args.get(sources_key, []) or []
-        if caca:
-          assert isinstance(caca, ( list, type_checked_list ))
-          if check.is_value_install_file_list(caca):
-            sources.extend([ x.filename for x in caca])
-          else:
-            sources.extend(caca)
-      for k, v in args.items():
-        sources.extend(dependency_provider.determine_provided(v))
+    sources = self._step_manager.sources()
     sources.append(self.filename)
-    caca_sources = []
-    for source in sources:
-      if check.is_value_file(source):
-        caca_sources.append(source.filename)
-      elif check.is_string(source):
-        caca_sources.append(source)
-      else:
-        raise ValueError('unknown source type: %s - %s' % (str(source), type(source)))
-    caca_sources = [ path.relpath(f) for f in caca_sources ]
-    return sorted(algorithm.unique(caca_sources))
-
+    sources = [ path.relpath(s) for s in sources ]
+    return sorted(sources)
+  
   def _dep_sources(self, all_scripts):
     'Return a list of dependency sources for this script.'
     if not all_scripts:

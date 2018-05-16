@@ -1,11 +1,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-# TODO
-# add argument checking/validation
-
 import copy
 from abc import abstractmethod
-from bes.common import check, dict_util
+from bes.common import algorithm, check, dict_util
 from bes.system import log
 
 from rebuild.base import build_blurb
@@ -89,3 +86,11 @@ class step_manager(object):
   def has_steps(self):
     return len(self._steps) > 0
     
+  def sources(self):
+    sources = []
+    for step in self:
+      for key, value in step.values.items():
+        if check.is_value_base(value):
+          sources.extend(value.sources())
+    return algorithm.unique(sources)
+  

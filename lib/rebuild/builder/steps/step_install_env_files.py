@@ -35,6 +35,3 @@ class step_install_env_files(step):
       file_replace.copy_with_substitute(env_file.filename, dst_file, script.substitutions, backup = False)
 
     return step_result(True, None)
-
-  def sources_keys(self):
-    return [ 'env_files' ]
