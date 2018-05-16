@@ -61,7 +61,10 @@ class recipe_parser(object):
   def parse(self):
     if not self.text.startswith(self.MAGIC):
       self._error('text should start with recipe magic \"%s\"' % (self.MAGIC))
-    tree = tree_text_parser.parse(self.text, strip_comments = True)
+    try:
+      tree = tree_text_parser.parse(self.text, strip_comments = True)
+    except Exception as ex:
+      self._error('failed to parse: %s' % (ex.message))
     return self._parse_tree(tree)
 
   def _parse_tree(self, root):
