@@ -1,4 +1,6 @@
+#@REBUILD_HEAD@
 
-export REBUILD_FOO1_VAR1=kiwi
-export REBUILD_FOO1_VAR2=almond
+export FOO1_VAR1=kiwi
+export FOO1_VAR2=almond
 
+#@REBUILD_TAIL@

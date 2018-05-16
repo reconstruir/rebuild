@@ -1,4 +1,4 @@
 
-export REBUILD_BAR1_VAR1=kiwi
-export REBUILD_BAR1_VAR2=almond
+export BAR1_VAR1=kiwi
+export BAR1_VAR2=almond
 

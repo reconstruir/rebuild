@@ -58,7 +58,8 @@ class package_manager(object):
     self._python_lib_dir = path.join(self._installation_dir, 'lib/python')
     self._share_dir = path.join(self._installation_dir, 'share')
     self._compile_instructions_dir = path.join(self._installation_dir, 'lib/rebuild_instructions')
-
+    self._shell_framework_dir = path.join(self._env_dir, 'framework')
+    
   @property
   def root_dir(self): 
     return self._root_dir
@@ -94,6 +95,10 @@ class package_manager(object):
   @property
   def pkg_config_path(self):
     return pkg_config.make_pkg_config_path(self._installation_dir)
+  
+  @property
+  def shell_framework_dir(self):
+    return self._shell_framework_dir
   
   def descriptor_for_name(self, pkg_name):
     entry = self.db.find_package(pkg_name)
@@ -150,7 +155,7 @@ class package_manager(object):
                                                                                          conflicts_str))
     pkg.extract_files(self._installation_dir)
     pkg.extract_env_files(self._env_dir, self._installation_dir)
-
+    self.ensure_shell_framework()
     entry = package_db_entry(pkg.metadata.name,
                              pkg.metadata.version,
                              pkg.metadata.revision,
@@ -161,9 +166,9 @@ class package_manager(object):
                              
     self.db.add_package(entry)
 
-  def ensure_env_framework(self):
+  def ensure_shell_framework(self):
     ef = env_framework()
-    ef.extract(path.join(self._env_dir, 'framework'))
+    ef.extract(self._shell_framework_dir)
     
   def uninstall_package(self, pkg_name):
     self.log_i('uninstalling package: %s' % (pkg_name))
@@ -211,6 +216,10 @@ class package_manager(object):
   def install_package(self, pkg_desc, build_target, hardness,
                       allow_downgrade = False, force_install = False):
     check.check_package_descriptor(pkg_desc)
+    result = self._install_package(pkg_desc, build_target, hardness, allow_downgrade, force_install)
+    return result
+    
+  def _install_package(self, pkg_desc, build_target, hardness, allow_downgrade, force_install):
     pkg = self._artifact_manager.package(pkg_desc, build_target)
 
     if self.is_installed(pkg.package_descriptor.name):

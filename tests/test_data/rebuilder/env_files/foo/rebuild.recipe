@@ -9,8 +9,8 @@ package foo 1.0.0
       install_files
         all: ${REBUILD_SOURCE_DIR}/files/bin/foo.py bin/foo.py
         
-#      tests
-#        all: test-foo.sh
+      tests
+        all: test-foo.sh
         
       skip_binary_third_party_prefix: True
 
@@ -51,8 +51,8 @@ package baz 1.0.0
       install_files
         all: ${REBUILD_SOURCE_DIR}/files/bin/baz.py bin/baz.py
         
-      tests
-        all: test-baz.sh
+#      tests
+#        all: test-baz.sh
         
       skip_binary_third_party_prefix: True
 

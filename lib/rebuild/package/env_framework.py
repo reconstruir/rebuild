@@ -10,9 +10,9 @@ class env_framework(object):
   
   _FILES = [
     'bin/bes_path.py',
-    'sh/bes_framework.sh',
-    'sh/bes_path.sh',
-    'sh/bes_testing.sh',
+    'env/bes_framework.sh',
+    'env/bes_path.sh',
+    'env/bes_testing.sh',
   ]
   
   def __init__(self):

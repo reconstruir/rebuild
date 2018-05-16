@@ -153,7 +153,9 @@ class package_tester(object):
     substitutions = {}
     substitutions.update(config.script.substitutions)
     substitutions.update({ 
-      'REBUILDER_TEST_NAME': test_name,
+      'REBUILD_TEST_NAME': test_name,
+      'REBUILD_SHELL_FRAMEWORK_DIR': pm.shell_framework_dir,
+      '_BES_DEV_ROOT': pm.shell_framework_dir,
     })
     for kv in config.extra_env:
       shell_env[kv.key] = variable.substitute(kv.value, substitutions)
