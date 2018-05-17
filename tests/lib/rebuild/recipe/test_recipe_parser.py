@@ -543,6 +543,19 @@ package foo-1.2.3-4
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_file_list\n    file_list_value: test_file1.txt test_file2.txt', str(r[0].steps[0]) )
 
+  def test_step_value_file_list_with_properties(self):
+    text = '''!rebuild.recipe!
+package foo-1.2.3-4
+
+  steps
+    step_takes_file_list
+      file_list_value: test_file1.txt test_file2.txt foo=5 bar=6
+'''
+    r = P(self.TEST_ENV, self._filename_for_parser(), text).parse()
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 1, len(r[0].steps) )
+    self.assertMultiLineEqual( 'step_takes_file_list\n    file_list_value: test_file1.txt test_file2.txt foo=5 bar=6', str(r[0].steps[0]) )
+
   def test_step_value_file(self):
     text = '''!rebuild.recipe!
 package foo-1.2.3-4
@@ -631,19 +644,6 @@ package foo-1.2.3-4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     self.assertMultiLineEqual( 'step_takes_bool', str(r[0].steps[0]) )
-
-  def test_step_value_file_list(self):
-    text = '''!rebuild.recipe!
-package foo-1.2.3-4
-
-  steps
-    step_takes_file_list
-      file_list_value: test_file1.txt test_file2.txt
-'''
-    r = P(self.TEST_ENV, self._filename_for_parser(), text).parse()
-    self.assertEqual( 1, len(r) )
-    self.assertEqual( 1, len(r[0].steps) )
-    self.assertMultiLineEqual( 'step_takes_file_list\n    file_list_value: test_file1.txt test_file2.txt', str(r[0].steps[0]) )
 
   def test_step_git_address(self):
     text = '''!rebuild.recipe!
