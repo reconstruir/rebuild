@@ -3,7 +3,7 @@
 
 import os.path as path
 from bes.testing.unit_test import script_unit_test
-from bes.fs import file_checksum, file_find, file_replace, tar_util, temp_file
+from bes.fs import file_checksum_list, file_find, file_replace, tar_util, temp_file
 from bes.git import repo
 from bes.archive import archiver
 from bes.system import host
@@ -24,18 +24,18 @@ class test_rebuilder_script(script_unit_test):
                               level = build_level.RELEASE,
                               archs = build_arch.DEFAULT_HOST_ARCHS)
 
-  _test_config = namedtuple('_test_config', 'read_contents, read_checksums')
+  config = namedtuple('config', 'read_contents, read_checksums')
   _test_result = namedtuple('_test_result', 'tmp_dir, command, result, artifacts_dir, artifacts, artifacts_members, artifacts_contents, droppings, checksums, checksums_contents')
 
   def test_autoconf_with_tarball(self):
     self.maxDiff = None
-    test = self._run_test(False, self.data_dir(), 'autoconf', 'arsenic')
+    test = self._run_test(self.config(False, False), self.data_dir(), 'autoconf', 'arsenic')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'arsenic-1.2.9.tar.gz' ], test.artifacts )
   
   def test_autoconf_fructose(self):
     self.maxDiff = None
-    test = self._run_test(False, self.data_dir(), 'autoconf', 'fructose')
+    test = self._run_test(self.config(False, False), self.data_dir(), 'autoconf', 'fructose')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
     self.assertEqual( [
@@ -66,7 +66,7 @@ class test_rebuilder_script(script_unit_test):
 
   def test_autoconf_fructose(self):
     self.maxDiff = None
-    test = self._run_test(False, self.data_dir(), 'autoconf', 'fructose')
+    test = self._run_test(self.config(False, False), self.data_dir(), 'autoconf', 'fructose')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
     self.assertEqual( [
@@ -96,53 +96,54 @@ class test_rebuilder_script(script_unit_test):
     ], test.artifacts_members['fructose-3.4.5-6.tar.gz'])
 
   def test_autoconf_fructose_and_fiber(self):
-    test = self._run_test(False, self.data_dir(), 'autoconf', 'fructose', 'fiber')
+    test = self._run_test(self.config(False, False), self.data_dir(), 'autoconf', 'fructose', 'fiber')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fiber-1.0.0.tar.gz', 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
 
   def xxxtest_autoconf_orange(self):
-    test = self._run_test(False, self.data_dir(), 'basic', 'orange')
+    test = self._run_test(self.config(False, False), self.data_dir(), 'basic', 'orange')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fiber-1.0.0.tar.gz', 'fiber-orange-6.5.4-3.tar.gz', 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
 
   def test_one_project(self):
-    test = self._run_test(False, self.data_dir(), 'one_project', 'fructose')
+    test = self._run_test(self.config(False, False), self.data_dir(), 'one_project', 'fructose')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
     self.assertEqual( [ 'fructose-3.4.5-6/sources.checksums', 'fructose-3.4.5-6/targets.checksums' ], test.checksums )
+#    self.assertEqual( {}, test.checksums_contents )
     
   def test_tool_tfoo(self):
-    test = self._run_test(False, self.data_dir(), 'basic', 'tfoo')
+    test = self._run_test(self.config(False, False), self.data_dir(), 'basic', 'tfoo')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'tfoo-1.0.0.tar.gz' ], test.artifacts )
     
   def test_tool_tbar_depends_on_tfoo(self):
-    test = self._run_test(False, self.data_dir(), 'basic', 'tbar')
+    test = self._run_test(self.config(False, False), self.data_dir(), 'basic', 'tbar')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'tbar-1.0.0.tar.gz', 'tfoo-1.0.0.tar.gz' ], test.artifacts )
 
   def test_tool_tbaz(self):
-    test = self._run_test(False, self.data_dir(), 'basic', 'tbaz')
+    test = self._run_test(self.config(False, False), self.data_dir(), 'basic', 'tbaz')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'tbaz-1.0.0.tar.gz' ], test.artifacts )
     
   def test_lib_libstarch(self):
-    test = self._run_test(False, self.data_dir(), 'basic', 'libstarch')
+    test = self._run_test(self.config(False, False), self.data_dir(), 'basic', 'libstarch')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libstarch-1.0.0.tar.gz' ], test.artifacts )
 
   def test_custom_makefile(self):
-    test = self._run_test(False, self.data_dir(), 'custom_makefile', 'libsomething')
+    test = self._run_test(self.config(False, False), self.data_dir(), 'custom_makefile', 'libsomething')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libsomething-1.0.0.tar.gz' ], test.artifacts )
 
   def test_patch_in_build_dir(self):
-    test = self._run_test(False, self.data_dir(), 'patch_in_build_dir', 'libfoo')
+    test = self._run_test(self.config(False, False), self.data_dir(), 'patch_in_build_dir', 'libfoo')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libfoo-1.0.0.tar.gz' ], test.artifacts )
 
   def test_patch_in_source_dir(self):
-    test = self._run_test(False, self.data_dir(), 'patch_in_source_dir', 'fructose')
+    test = self._run_test(self.config(False, False), self.data_dir(), 'patch_in_source_dir', 'fructose')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
 
@@ -163,18 +164,18 @@ class test_rebuilder_script(script_unit_test):
     }
     recipe_filename = path.join(tmp_dir, 'tarball_git_address', 'libsomething/rebuild.recipe')
     file_replace.replace(recipe_filename, replacements, backup = False)
-    test = self._run_test(False, tmp_dir, 'tarball_git_address', 'libsomething')
+    test = self._run_test(self.config(False, False), tmp_dir, 'tarball_git_address', 'libsomething')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libsomething-1.0.0.tar.gz' ], test.artifacts )
 
   def test_lib_libpotato_depends_on_libstarch(self):
-    test = self._run_test(False, self.data_dir(), 'basic', 'libpotato')
+    test = self._run_test(self.config(False, False), self.data_dir(), 'basic', 'libpotato')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libpotato-1.0.0.tar.gz', 'libstarch-1.0.0.tar.gz', 'tbar-1.0.0.tar.gz', 'tfoo-1.0.0.tar.gz' ], test.artifacts )
     self.assertTrue( 'files/lib/pkgconfig/libpotato.pc' in test.artifacts_members['libpotato-1.0.0.tar.gz'] )
     
   def test_extra_tarballs(self):
-    test = self._run_test(False, self.data_dir(), 'extra_tarballs', 'foo', '--source-dir', path.join(self.data_dir(), 'extra_tarballs/source'))
+    test = self._run_test(self.config(False, False), self.data_dir(), 'extra_tarballs', 'foo', '--source-dir', path.join(self.data_dir(), 'extra_tarballs/source'))
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'foo-1.0.0.tar.gz' ], test.artifacts )
     tgz = path.join(test.artifacts_dir, 'foo-1.0.0.tar.gz')
@@ -185,7 +186,7 @@ class test_rebuilder_script(script_unit_test):
     ], test.artifacts_members['foo-1.0.0.tar.gz'])
     
   def test_hooks(self):
-    test = self._run_test(True, self.data_dir(), 'hooks', 'foo')
+    test = self._run_test(self.config(True, True), self.data_dir(), 'hooks', 'foo')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'foo-1.0.0.tar.gz' ], test.artifacts )
     tgz = path.join(test.artifacts_dir, 'foo-1.0.0.tar.gz')
@@ -199,7 +200,7 @@ print("hook1 hook2")
     self.assertMultiLineEqual( expected, test.artifacts_contents['foo-1.0.0.tar.gz']['files/bin/foo.py'] )
     
   def test_env_files(self):
-    test = self._run_test(True, self.data_dir(), 'env_files', 'foo', 'bar', 'baz')
+    test = self._run_test(self.config(True, True), self.data_dir(), 'env_files', 'foo', 'bar', 'baz')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'bar-1.0.0.tar.gz', 'baz-1.0.0.tar.gz',  'foo-1.0.0.tar.gz' ], test.artifacts )
     tgz = path.join(test.artifacts_dir, 'foo-1.0.0.tar.gz')
@@ -227,12 +228,12 @@ print("hook1 hook2")
 '''
 
   def test_custom_steps(self):
-    test = self._run_test(True, self.data_dir(), 'custom_step', 'foo')
+    test = self._run_test(self.config(True, True), self.data_dir(), 'custom_step', 'foo')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'foo-1.0.0.tar.gz' ], test.artifacts )
     
   def test_run_script(self):
-    test = self._run_test(False, self.data_dir(), 'run_script', 'foo')
+    test = self._run_test(self.config(False, False), self.data_dir(), 'run_script', 'foo')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'foo-1.0.0.tar.gz' ], test.artifacts )
     self.assertEqual( [
@@ -259,7 +260,7 @@ print("hook1 hook2")
     ] + list(args)
     return cmd
 
-  def _run_test(self, read_contents, data_dir, cwd_subdir, *args):
+  def _run_test(self, config, data_dir, cwd_subdir, *args):
     tmp_dir = self._make_temp_dir()
     command = self._make_command(tmp_dir, *args)
     cwd = path.join(data_dir, cwd_subdir)
@@ -277,11 +278,11 @@ print("hook1 hook2")
       for artifact in artifacts:
         artifact_path = path.join(artifacts_dir, artifact)
         artifacts_members[artifact] = archiver.members(artifact_path)
-        if read_contents:
+        if config.read_contents:
           artifacts_contents[artifact] = self._artifact_contents(artifact_path)
 
-      if read_contents:
-        checksums_contents = self._load_checksums(checksums)
+      if config.read_checksums:
+        checksums_contents = self._load_checksums(checksums_dir, checksums)
           
     if result.exit_code != 0 or self.DEBUG:
       self.spew(result.stdout)
@@ -296,11 +297,12 @@ print("hook1 hook2")
     return file_find.find(where)
 
   @classmethod
-  def _load_checksums(clazz, checksums):
+  def _load_checksums(clazz, checksums_dir, checksums):
+    checksums_contents = {}
     for checksum in checksums:
-      checksum_path = path.join(checksums_dir, checksums)
-      if read_contents:
-        checksums_contents[checksum] = file_checksum_list.load_checksums_file(checksum_path)
+      checksum_path = path.join(checksums_dir, checksum)
+      checksums_contents[checksum] = file_checksum_list.load_checksums_file(checksum_path)
+    return checksums_contents
   
   @classmethod
   def _blacklist(clazz, member, patterns):
