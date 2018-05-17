@@ -148,6 +148,9 @@ class package_tester(object):
     shell_env = os_env.make_clean_env()
     os_env.update(shell_env, config.tools_manager.shell_env(resolved_tool_reqs), prepend = True)
     os_env.update(shell_env, pm.shell_env(all_packages), prepend = True)
+
+    transformed_env = pm.transform_env(shell_env, all_packages)
+    os_env.update(shell_env, transformed_env, prepend = True)
     
     test_source_with_replacements = path.join(test_root_dir, path.basename(test_source))
     substitutions = {}

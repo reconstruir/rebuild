@@ -20,15 +20,32 @@ instruction = namedtuple('instruction', 'key,value,action')
   
 class env_dir(object):
 
-  def __init__(self, where):
+  def __init__(self, where, files = None):
     self._where = path.abspath(where)
+    self._files = self._determine_files(self._where, files)
 
-  def files(self, relative = True):
-    return dir_util.list(self._where, relative = relative)
+  @classmethod
+  def _determine_files(clazz, where, files):
+    if files:
+      for f in files:
+        p = path.join(where, f)
+        if not path.isfile(p):
+          raise IOError('File not found: %s' % (p))
+      return files
+    else:
+      return dir_util.list(where, relative = True, patterns = [ '*.sh' ])
+
+  @property
+  def files(self):
+    return self._files
+
+  @property
+  def files_abs(self):
+    return [ path.join(self._where, f) for f in self.files ]
 
   def transform_env(self, env):
     new_env = copy.deepcopy(env)
-    for inst in self.instructions():
+    for inst in self.instructions(env):
       if inst.action == action.SET:
         new_env[inst.key] = inst.value
       elif inst.action == action.UNSET:
@@ -46,13 +63,12 @@ class env_dir(object):
     return new_env
     
   def instructions(self, env):
-    files = self.files(relative = False)
     buf = StringIO()
     buf.write('#!/bin/bash\n')
     buf.write('echo "----1----"\n')
     buf.write('env\n')
     buf.write('echo "----2----"\n')
-    for f in files:
+    for f in self.files_abs:
       buf.write('source \"%s\"\n' % (f))
     buf.write('echo "----3----"\n')
     buf.write('env\n')

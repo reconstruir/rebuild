@@ -18,18 +18,28 @@ class test_env_dir(unit_test):
   @classmethod
   def tearDownClass(clazz):
     assert os.environ == clazz._save_environ
+
+  _TEST_ITEMS = [
+    'file 1.sh "export A=1\n" 644',
+    'file 2.sh "export B=2\n" 644',
+    'file 3.sh "export C=3\n" 644',
+    'file 4.sh "export D=4\n" 644',
+    'file 5.sh "export E=5\n" 644',
+    'file 6.sh "unset F\n" 644',
+  ]
     
   def test_files(self):
-    ed = self._make_temp_env_dir([
-      'file 1.sh "export A=1\n" 644',
-      'file 2.sh "export B=2\n" 644',
-      'file 3.sh "export C=3\n" 644',
-      'file 4.sh "export D=4\n" 644',
-      'file 5.sh "export E=5\n" 644',
-      'file 6.sh "unset F\n" 644',
-    ])
-    self.assertEqual( [ '1.sh', '2.sh', '3.sh', '4.sh', '5.sh', '6.sh' ], ed.files() )
+    ed = self._make_temp_env_dir(self._TEST_ITEMS)
+    self.assertEqual( [ '1.sh', '2.sh', '3.sh', '4.sh', '5.sh', '6.sh' ], ed.files )
   
+  def test_files_explicit(self):
+    ed = self._make_temp_env_dir(self._TEST_ITEMS, files = [ '1.sh', '3.sh', '5.sh' ])
+    self.assertEqual( [ '1.sh', '3.sh', '5.sh' ], ed.files )
+
+  def test_files_not_found(self):
+    with self.assertRaises(IOError) as ctx:
+      self._make_temp_env_dir(self._TEST_ITEMS, files = [ 'notthere.sh' ])
+    
   def test_instructions_set(self):
     ed = self._make_temp_env_dir([
       'file 1.sh "export FOO=1\n" 644',
@@ -132,9 +142,9 @@ class test_env_dir(unit_test):
 #      assert save_env == os.environ
       os.environ['PATH'] = save_path
 
-  def _make_temp_env_dir(self, items):
+  def _make_temp_env_dir(self, items, files = None):
     tmp_dir = temp_content.write_items_to_temp_dir(items)
-    return env_dir(tmp_dir)
+    return env_dir(tmp_dir, files = files)
       
 if __name__ == '__main__':
   unit_test.main()

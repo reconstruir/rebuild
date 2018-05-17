@@ -153,7 +153,8 @@ unset REBUILD_STUFF_DIR
 
     properties = dict_util.filter_without_keys(pkg_desc.properties, [ 'export_compilation_flags_requirements' ])
     
-    # Hack the export_compilation_flags_requirements property to be a plain string list instead of the masked config it is
+    # Hack the export_compilation_flags_requirements property to be a plain
+    # string list instead of the masked config it is
     key = 'export_compilation_flags_requirements'
     if key in pkg_desc.properties:
       properties[key] = [ str(x) for x in pkg_desc.properties[key] ]

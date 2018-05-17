@@ -325,8 +325,21 @@ class package_manager(object):
     os_env.update(env, all_env_vars)
     return env
 
-  def transform_env(self, env):
-    return env_dir(self._env_dir).transform_env(env)
+  def package_env_files(self, packages):
+    'Return a list of env files for the given packages in the same order as packages.'
+    result = []
+    for package in packages:
+      entry = self.db.find_package(package.name)
+      result.extend([ f.filename for f in entry.files.env_files ])
+    return result
+  
+  def transform_env(self, env, packages):
+    files = self.package_env_files(packages)
+    if not files:
+      return {}
+    if not path.isdir(self._env_dir):
+      return {}
+    return env_dir(self._env_dir, files = files).transform_env(env)
   
   def export_variables_to_current_env(self, packages):
     all_env_vars = self.env_vars([ p.name for p in packages])

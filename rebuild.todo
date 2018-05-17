@@ -849,11 +849,13 @@ makefile in step_make might not work
  - distinction between value_file and value_file_list in recipes is confusing
  - test_recipe_step needs to test for defaults
  - enhance args_definition to keep track of the origin
- - add a value_dir type
  - add hook tests including existing exception
 
 
 2018-05-15
  - allow '-' in package names and fix everything to match the upstream name starting with java-jdk apache-maven google-cloud-sdk
  - add a REBUILD_PACKAGE_NAME_AND_VERSION var
+ 
+2018-05-16
+ - add way to add to list of sources for example the samples in gnu_bison and gnu_flex
  
