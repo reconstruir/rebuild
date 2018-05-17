@@ -8,9 +8,9 @@ from .value_base import value_base
 
 class value_list_base(type_checked_list, value_base):
 
-  def __init__(self, env = None, origin = None, values = None, properties = None):
+  def __init__(self, env = None, origin = None, values = None):
     type_checked_list.__init__(self, values = values)
-    value_base.__init__(self, env, origin, properties = properties)
+    value_base.__init__(self, env, origin)
 
   #@abstractmethod
   def value_to_string(self, quote, include_properties = True):

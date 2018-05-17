@@ -98,7 +98,7 @@ class value_hook_list(value_list_base):
 
   __value_type__ = value_hook
   
-  def __init__(self, env = None, origin = None, values = None, properties = None):
-    super(value_hook_list, self).__init__(env = env, origin = origin, values = values, properties = properties)
+  def __init__(self, env = None, origin = None, values = None):
+    super(value_hook_list, self).__init__(env = env, origin = origin, values = values)
   
 check.register_class(value_hook_list, include_seq = False)
