@@ -75,7 +75,7 @@ class value_base(with_metaclass(value_register_meta, object)):
     assert False
 
   @abstractmethod
-  def value_to_string(self, quote):
+  def value_to_string(self, quote, include_properties = True):
     'Return the value as a string and quote if needed.'
     assert False
   
@@ -102,4 +102,11 @@ class value_base(with_metaclass(value_register_meta, object)):
     'Resolve a list of values if this type into a nice dictionary.'
     assert False
 
+  def _append_properties_string(self, buf, include_properties):
+    if include_properties:
+      ps = self.properties_to_string()
+      if ps:
+        buf.write(' ')
+        buf.write(ps)
+    
 check.register_class(value_base)

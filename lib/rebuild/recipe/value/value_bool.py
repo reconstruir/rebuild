@@ -24,7 +24,7 @@ class value_bool(value_base):
 #  __nonzero__ = __bool__
     
   #@abstractmethod
-  def value_to_string(self, quote):
+  def value_to_string(self, quote, include_properties = True):
     return str(self.value)
 
   #@abstractmethod

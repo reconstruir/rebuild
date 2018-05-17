@@ -32,13 +32,10 @@ class value_hook(with_metaclass(hook_register_meta, value_base)):
     return self.filename == other.filename
 
   #@abstractmethod
-  def value_to_string(self, quote):
+  def value_to_string(self, quote, include_properties = True):
     buf = StringIO()
     buf.write(self.__class__.__name__)
-    ps = self.properties_to_string()
-    if ps:
-      buf.write(' ')
-      buf.write(ps)
+    self._append_properties_string(buf, include_properties)
     return buf.getvalue()
 
   @classmethod
@@ -101,7 +98,7 @@ class value_hook_list(value_list_base):
 
   __value_type__ = value_hook
   
-  def __init__(self, env = None, origin = None, values = None):
-    super(value_hook_list, self).__init__(env = env, origin = origin, values = values)
+  def __init__(self, env = None, origin = None, values = None, properties = None):
+    super(value_hook_list, self).__init__(env = env, origin = origin, values = values, properties = properties)
   
 check.register_class(value_hook_list, include_seq = False)

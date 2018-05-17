@@ -23,7 +23,7 @@ class value_int(value_base):
 #    return self.value
   
   #@abstractmethod
-  def value_to_string(self, quote):
+  def value_to_string(self, quote, include_properties = True):
     return str(self.value)
 
   #@abstractmethod

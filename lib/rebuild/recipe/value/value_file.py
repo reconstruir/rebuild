@@ -24,13 +24,10 @@ class value_file(value_base):
     return self._filename == other._filename
     
   #@abstractmethod
-  def value_to_string(self, quote):
+  def value_to_string(self, quote, include_properties = True):
     buf = StringIO()
     buf.write(path.basename(self._filename))
-    ps = self.properties_to_string()
-    if ps:
-      buf.write(' ')
-      buf.write(ps)
+    self._append_properties_string(buf, include_properties)
     return buf.getvalue()
 
   @classmethod
@@ -55,9 +52,9 @@ class value_file(value_base):
   
   @classmethod
   #@abstractmethod
-  def parse(clazz, env, origin, value):
+  def parse(clazz, env, origin, text):
     base = path.dirname(origin.filename)
-    filename, _, rest = string_util.partition_by_white_space(value)
+    filename, _, rest = string_util.partition_by_white_space(text)
     if filename.startswith('$'):
       filename_abs = filename
     else:
@@ -105,7 +102,7 @@ class value_file_list(value_list_base):
 
   __value_type__ = value_file
   
-  def __init__(self, env = None, origin = None, values = None):
-    super(value_file_list, self).__init__(env = env, origin = origin, values = values)
+  def __init__(self, env = None, origin = None, values = None, properties = None):
+    super(value_file_list, self).__init__(env = env, origin = origin, values = values, properties = properties)
 
 check.register_class(value_file_list, include_seq = False)

@@ -19,13 +19,10 @@ class value_source_dir(value_base):
     return self.where == other.where
     
   #@abstractmethod
-  def value_to_string(self, quote):
+  def value_to_string(self, quote, include_properties = True):
     buf = StringIO()
     buf.write(self.where)
-    ps = self.properties_to_string()
-    if ps:
-      buf.write(' ')
-      buf.write(ps)
+    self._append_properties_string(buf, include_properties)
     return buf.getvalue()
 
   #@abstractmethod

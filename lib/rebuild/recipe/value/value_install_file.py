@@ -26,15 +26,12 @@ class value_install_file(value_base):
     return self.substitute(self._dst_filename)
   
   #@abstractmethod
-  def value_to_string(self, quote):
+  def value_to_string(self, quote, include_properties = True):
     buf = StringIO()
     buf.write(path.basename(self._filename))
     buf.write(' ')
     buf.write(self._dst_filename)
-    ps = self.properties_to_string()
-    if ps:
-      buf.write(' ')
-      buf.write(ps)
+    self._append_properties_string(buf, include_properties)
     return buf.getvalue()
 
   @classmethod
@@ -86,7 +83,7 @@ class value_install_file_list(value_list_base):
 
   __value_type__ = value_install_file
   
-  def __init__(self, env = None, origin = None, values = None):
-    super(value_install_file_list, self).__init__(env = env, origin = origin, values = values)
+  def __init__(self, env = None, origin = None, values = None, properties = None):
+    super(value_install_file_list, self).__init__(env = env, origin = origin, values = values, properties = properties)
 
 check.register_class(value_install_file_list, include_seq = False)

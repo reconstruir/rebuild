@@ -27,15 +27,12 @@ class value_git_address(value_base):
     return self.substitute(self._revision)
   
   #@abstractmethod
-  def value_to_string(self, quote):
+  def value_to_string(self, quote, include_properties = True):
     buf = StringIO()
     buf.write(self.address)
     buf.write(' ')
     buf.write(self.revision)
-    ps = self.properties_to_string()
-    if ps:
-      buf.write(' ')
-      buf.write(ps)
+    self._append_properties_string(buf, include_properties)
     return buf.getvalue()
 
   #@abstractmethod

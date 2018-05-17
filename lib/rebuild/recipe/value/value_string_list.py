@@ -26,7 +26,7 @@ class value_string_list(value_base):
     return iter(self.values)
     
   #@abstractmethod
-  def value_to_string(self, quote):
+  def value_to_string(self, quote, include_properties = True):
     return self.values.to_string(delimiter = ' ', quote = quote)
 
   #@abstractmethod

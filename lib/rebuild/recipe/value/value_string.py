@@ -20,7 +20,7 @@ class value_string(value_base):
     return self.value == other.value
 
   #@abstractmethod
-  def value_to_string(self, quote):
+  def value_to_string(self, quote, include_properties = True):
     return self.value
 
   #@abstractmethod
