@@ -68,15 +68,13 @@ class step_artifact_create_test_package(step):
       return step_result(False, message)
 
     for test in tests:
-      if not check.is_string(test):
-        assert hasattr(test, 'filename')
-        test = test.filename
+      check.check_value_file(test)
       config = package_tester.test_config(script,
                                           staged_tarball,
                                           env.artifact_manager,
                                           env.tools_manager,
                                           package_test_env)
-      tester = package_tester(config, test)
+      tester = package_tester(config, test.filename)
       result =  tester.run()
       if not result.success:
         return result

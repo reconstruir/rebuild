@@ -21,6 +21,7 @@ class step_setup_prepare_tarballs(step):
     tarball_dir              source_dir
     tarball_address          git_address
     tarball                  source_tarball
+    more_sources             file_list
     '''
   
   #@abstractmethod

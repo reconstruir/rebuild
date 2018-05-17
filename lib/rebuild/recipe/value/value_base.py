@@ -57,6 +57,12 @@ class value_base(with_metaclass(value_register_meta, object)):
     'Set substitutions.'
     return self._substitutions
 
+  @property
+  def properties(self):
+    result = self._properties[:]
+    result.substitute_variables(self._substitutions)
+    return result
+
   @substitutions.setter
   def substitutions(self, substitutions):
     if self._substitutions == substitutions:
