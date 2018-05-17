@@ -293,7 +293,6 @@ feb 2
 - PackageManager and ToolsManager are inconsistent in env_vars related functions.  killall that chit
 
 feb 3
-- add a checksum to tools and maybe packages so that those with same versions trigger reinstalls during development
 - Step.py:#FIXME: unify the replacements here with those in step_pkg_config_make_pc.py
 
 PkgConfig.py:

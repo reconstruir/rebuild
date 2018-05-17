@@ -3,7 +3,7 @@
 
 import os.path as path
 from bes.testing.unit_test import script_unit_test
-from bes.fs import file_find, file_replace, tar_util, temp_file
+from bes.fs import file_checksum, file_find, file_replace, tar_util, temp_file
 from bes.git import repo
 from bes.archive import archiver
 from bes.system import host
@@ -23,8 +23,9 @@ class test_rebuilder_script(script_unit_test):
   BUILD_TARGET = build_target(system = build_system.HOST,
                               level = build_level.RELEASE,
                               archs = build_arch.DEFAULT_HOST_ARCHS)
-  
-  _test_context = namedtuple('_test_context', 'tmp_dir,command,result,artifacts_dir,artifacts,artifacts_members,artifacts_contents,droppings')
+
+  _test_config = namedtuple('_test_config', 'read_contents, read_checksums')
+  _test_result = namedtuple('_test_result', 'tmp_dir, command, result, artifacts_dir, artifacts, artifacts_members, artifacts_contents, droppings, checksums, checksums_contents')
 
   def test_autoconf_with_tarball(self):
     self.maxDiff = None
@@ -108,6 +109,7 @@ class test_rebuilder_script(script_unit_test):
     test = self._run_test(False, self.data_dir(), 'one_project', 'fructose')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
+    self.assertEqual( [ 'fructose-3.4.5-6/sources.checksums', 'fructose-3.4.5-6/targets.checksums' ], test.checksums )
     
   def test_tool_tfoo(self):
     test = self._run_test(False, self.data_dir(), 'basic', 'tfoo')
@@ -262,30 +264,44 @@ print("hook1 hook2")
     command = self._make_command(tmp_dir, *args)
     cwd = path.join(data_dir, cwd_subdir)
     artifacts_dir = path.join(tmp_dir, 'artifacts', self.BUILD_TARGET.build_path)
+    checksums_dir = path.join(tmp_dir, 'checksums', self.BUILD_TARGET.build_path)
     result = self.run_script(command, cwd = cwd)
-    if path.isdir(artifacts_dir):
-      artifacts = file_find.find(artifacts_dir)
-    else:
-      artifacts = []
-    if path.isdir(tmp_dir):
-      droppings = file_find.find(tmp_dir)
-    else:
-      droppings = []
+    artifacts = self._find_in_dir(artifacts_dir)
+    checksums = self._find_in_dir(checksums_dir)
+    droppings = self._find_in_dir(tmp_dir)
       
     artifacts_members = {}
     artifacts_contents = {}
+    checksums_contents = {}
     if result.exit_code == 0:
       for artifact in artifacts:
         artifact_path = path.join(artifacts_dir, artifact)
         artifacts_members[artifact] = archiver.members(artifact_path)
         if read_contents:
           artifacts_contents[artifact] = self._artifact_contents(artifact_path)
-      
+
+      if read_contents:
+        checksums_contents = self._load_checksums(checksums)
+          
     if result.exit_code != 0 or self.DEBUG:
       self.spew(result.stdout)
       
-    return self._test_context(tmp_dir, command, result, artifacts_dir, artifacts, artifacts_members, artifacts_contents, droppings)
+    return self._test_result(tmp_dir, command, result, artifacts_dir, artifacts, artifacts_members,
+                             artifacts_contents, droppings, checksums, checksums_contents)
 
+  @classmethod
+  def _find_in_dir(clazz, where):
+    if not path.isdir(where):
+      return []
+    return file_find.find(where)
+
+  @classmethod
+  def _load_checksums(clazz, checksums):
+    for checksum in checksums:
+      checksum_path = path.join(checksums_dir, checksums)
+      if read_contents:
+        checksums_contents[checksum] = file_checksum_list.load_checksums_file(checksum_path)
+  
   @classmethod
   def _blacklist(clazz, member, patterns):
     for pattern in patterns:
