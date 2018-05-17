@@ -32,7 +32,11 @@ class value_base(with_metaclass(value_register_meta, object)):
 
   def __str__(self):
     return self.value_to_string(True)
-    
+
+  @property
+  def properties_dict(self):
+    return self.properties.to_dict()
+  
   def properties_to_string(self):
     if not self.properties:
       return None
@@ -45,7 +49,7 @@ class value_base(with_metaclass(value_register_meta, object)):
   decoded_properties = namedtuple('decoded_properties', 'dest, strip_common_base, base')
   
   def decode_properties(self):
-    props = self.properties.to_dict()
+    props = self.properties_dict
     dest = props.get('dest', '${REBUILD_SOURCE_UNPACKED_DIR}')
     dest = variable.substitute(dest, self._substitutions)
     base = props.get('base', None)

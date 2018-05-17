@@ -697,12 +697,6 @@ when done converting builder scripts retire the properties hacks in recipe_parse
 figure out the check_python_eggs mess
 env_vars should always default to empty being '' instead of None.  check package_manager.__env_vars_for_one_package as check tools_package_manager.env_vars()
 
-this doenst work:
-      patch_strip_depth: 0
-instead need to      
-      patch_strip_depth
-        all: 0
-
 step_autoconf:
 instead of:
   configure_script  string      configure

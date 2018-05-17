@@ -6,11 +6,12 @@ package libfoo 1.0.0
     step_setup
       tarball_dir:
         all: libfoo/src dest=${REBUILD_BUILD_DIR}
+        
       patches
-        all: patches/libfoo.patch
+        all: patches/libfoo.patch strip=3
+        
       patch_dir
         all: ${REBUILD_BUILD_DIR}
-      patch_strip_depth: 3
         
     step_make
       make_flags

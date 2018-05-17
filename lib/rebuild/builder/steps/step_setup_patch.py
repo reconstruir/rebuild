@@ -17,7 +17,6 @@ class step_setup_patch(step):
   def define_args(clazz):
     return '''
     patches            file_list  
-    patch_strip_depth  int        1
     patch_program      string     patch
     patch_dir          dir        ${REBUILD_SOURCE_UNPACKED_DIR}
     '''
@@ -29,15 +28,18 @@ class step_setup_patch(step):
       message = 'No patches for %s' % (script.descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
-    patch_strip_depth = values.get('patch_strip_depth')
     patch_program = values.get('patch_program')
     patch_dir = values.get('patch_dir')
 
     for p in patches:
-      self.blurb('Applying patch %s in dir %s' % (path.relpath(p.filename), path.relpath(patch_dir.filename)))
+      props = p.properties_dict
+      strip = int(props.get('strip', self.DEFAULT_PATCH_STRIP_DEPTH))
+      self.blurb('Applying patch %s (strip=%d) in dir %s' % (path.relpath(p.filename),
+                                                             strip,
+                                                             path.relpath(patch_dir.filename)))
       exit_code, msg = patch.patch(p.filename,
                                    patch_dir.filename,
-                                   strip = patch_strip_depth,
+                                   strip = strip,
                                    backup = True,
                                    posix = True,
                                    program = patch_program)
