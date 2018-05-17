@@ -3,7 +3,6 @@
 import os.path as path
 from bes.common import check, string_util
 from bes.compat import StringIO
-from bes.key_value import key_value_list
 from bes.archive import archiver
 from .value_base import value_base
 
