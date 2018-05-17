@@ -858,4 +858,5 @@ makefile in step_make might not work
  
 2018-05-16
  - add way to add to list of sources for example the samples in gnu_bison and gnu_flex
+ - check MANIFEST.in for missing files
  
