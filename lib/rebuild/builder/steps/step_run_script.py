@@ -28,6 +28,6 @@ class step_run_script(step):
       return step_result(True, message)
 
     shell_env = script_env[:]
-    shell_env.extend(script_file.properties)
+    shell_env.extend(script_file._properties) # FUCKME
     
     return self.call_shell(path.abspath(script_file.filename), script, env, shell_env = shell_env)

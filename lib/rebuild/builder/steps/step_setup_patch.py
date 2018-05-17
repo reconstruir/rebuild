@@ -32,8 +32,7 @@ class step_setup_patch(step):
     patch_dir = values.get('patch_dir')
 
     for p in patches:
-      props = p.properties_dict
-      strip = int(props.get('strip', self.DEFAULT_PATCH_STRIP_DEPTH))
+      strip = int(p.get_property('strip', self.DEFAULT_PATCH_STRIP_DEPTH))
       self.blurb('Applying patch %s (strip=%d) in dir %s' % (path.relpath(p.filename),
                                                              strip,
                                                              path.relpath(patch_dir.filename)))

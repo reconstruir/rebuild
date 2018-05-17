@@ -27,37 +27,31 @@ class value_base(with_metaclass(value_register_meta, object)):
     self.origin = origin
     properties = properties or key_value_list()
     check.check_key_value_list(properties)
-    self.properties = properties
+    self._properties = properties
     self._substitutions = {}
 
   def __str__(self):
     return self.value_to_string(True)
 
-  @property
-  def properties_dict(self):
-    return self.properties.to_dict()
-  
   def properties_to_string(self):
-    if not self.properties:
+    if not self._properties:
       return None
-    return self.properties.to_string(value_delimiter = ' ', quote = True)
+    return self._properties.to_string(value_delimiter = ' ', quote = True)
 
   @classmethod
   def parse_properties(clazz, text):
     return key_value_list.parse(text, options = key_value_list.KEEP_QUOTES)
 
-  decoded_properties = namedtuple('decoded_properties', 'dest, strip_common_base, base')
+  def get_property(self, key, default_value = None):
+    kv = self._properties.find_by_last_key(key)
+    if not kv:
+      value = default_value
+    else:
+      value = kv.value
+    if check.is_string(value):
+      value = self.substitute(value)
+    return value
   
-  def decode_properties(self):
-    props = self.properties_dict
-    dest = props.get('dest', '${REBUILD_SOURCE_UNPACKED_DIR}')
-    dest = variable.substitute(dest, self._substitutions)
-    base = props.get('base', None)
-    if base:
-      base = variable.substitute(base, self._substitutions)
-    strip_common_base = props.get('strip_common_base', True)
-    return self.decoded_properties(dest, strip_common_base, base)
-
   @property
   def substitutions(self):
     'Set substitutions.'

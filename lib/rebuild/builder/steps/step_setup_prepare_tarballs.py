@@ -45,36 +45,40 @@ class step_setup_prepare_tarballs(step):
       if tarball_address.needs_download():
         self.blurb('Downloading %s@%s to %s' % (tarball_address.address, tarball_address.revision, path.relpath(downloaded_path)))
         tarball_address.download()
-      props = tarball_address.decode_properties()
-      self.blurb('Extracting %s to %s' % (path.relpath(downloaded_path), path.relpath(props.dest)))
+      dest = tarball_address.get_property('dest', '${REBUILD_SOURCE_UNPACKED_DIR}')
+      base = tarball_address.get_property('base', None)
+      strip_common_base = tarball_address.get_property('strip_common_base', True)
+      self.blurb('Extracting %s to %s' % (path.relpath(downloaded_path), path.relpath(dest)))
       archiver.extract(downloaded_path,
-                       props.dest,
-                       base_dir = props.base,
-                       strip_common_base = props.strip_common_base)
+                       dest,
+                       base_dir = base,
+                       strip_common_base = strip_common_base)
 
     if tarball:
       tarball_path = tarball.sources()[0]
       if not tarball_path:
         return step_result(False, 'No tarball found for %s' % (script.descriptor.full_name))
-        
-      props = tarball.decode_properties()
-      self.blurb('Extracting %s to %s' % (path.relpath(tarball_path), path.relpath(props.dest)))
+      dest = tarball.get_property('dest', '${REBUILD_SOURCE_UNPACKED_DIR}')
+      base = tarball.get_property('base', None)
+      strip_common_base = tarball.get_property('strip_common_base', True)
+      self.blurb('Extracting %s to %s' % (path.relpath(tarball_path), path.relpath(dest)))
       archiver.extract(tarball_path,
-                       props.dest,
-                       base_dir = props.base,
-                       strip_common_base = props.strip_common_base)
+                       dest,
+                       base_dir = base,
+                       strip_common_base = strip_common_base)
       
     if tarball_dir:
       tarball_path = tarball_dir.sources()[0]
       if not tarball_path:
         return step_result(False, 'No tarball found for %s' % (script.descriptor.full_name))
-        
-      props = tarball_dir.decode_properties()
-      self.blurb('Extracting %s to %s' % (path.relpath(tarball_path), path.relpath(props.dest)))
+      dest = tarball_dir.get_property('dest', '${REBUILD_SOURCE_UNPACKED_DIR}')
+      base = tarball_dir.get_property('base', None)
+      strip_common_base = tarball_dir.get_property('strip_common_base', True)
+      self.blurb('Extracting %s to %s' % (path.relpath(tarball_path), path.relpath(dest)))
       archiver.extract(tarball_path,
-                       props.dest,
-                       base_dir = props.base,
-                       strip_common_base = props.strip_common_base)
+                       dest,
+                       base_dir = base,
+                       strip_common_base = strip_common_base)
       
     return step_result(True, None)
 
