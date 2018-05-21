@@ -140,6 +140,11 @@ class test_rebuilder_script(script_unit_test):
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libsomething-1.0.0.tar.gz' ], test.artifacts )
 
+  def test_pc_file_variables(self):
+    test = self._run_test(self.config(False, False), self.data_dir(), 'pc_file_variables', 'libsomething')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'libsomething-1.0.0.tar.gz' ], test.artifacts )
+
   def test_patch_in_build_dir(self):
     test = self._run_test(self.config(False, False), self.data_dir(), 'patch_in_build_dir', 'libfoo')
     self.assertEqual( 0, test.result.exit_code )
