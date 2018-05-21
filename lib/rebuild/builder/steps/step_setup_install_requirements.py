@@ -16,7 +16,7 @@ class step_setup_install_requirements(step):
   #@abstractmethod
   def execute(self, script, env, values, inputs):
     package_desc = script.descriptor
-    requirements = env.requirement_manager.resolve_deps_poto([package_desc.name],
+    requirements = env.requirement_manager.resolve_deps([package_desc.name],
                                                              env.config.build_target.system,
                                                              ['BUILD', 'RUN'],
                                                              False)

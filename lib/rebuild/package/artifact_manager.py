@@ -181,7 +181,7 @@ class artifact_manager(object):
     return self._requirement_managers[build_target.build_path]
 
   def resolve_deps(self, names, build_target, hardness, include_names):
-    return self.get_requirement_manager(build_target).resolve_deps_poto(names, build_target.system, hardness, include_names)
+    return self.get_requirement_manager(build_target).resolve_deps(names, build_target.system, hardness, include_names)
   
   def _make_requirement_manager(self, build_target):
     rm = requirement_manager()

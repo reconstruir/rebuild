@@ -59,16 +59,16 @@ class requirement_manager(object):
     'Resolve packages without tools return the names in build order.'
     assert callable(name_filter)
     check.check_string_seq(names)
-    just_deps = self.resolve_deps_poto(names, system, hardness, False)
+    just_deps = self.resolve_deps(names, system, hardness, False)
     everything_names = algorithm.unique(just_deps.names() + names)
     only_wanted_names = [ dep for dep in everything_names if name_filter(dep) ]
-    only_wanted_deps = self.resolve_deps_poto(only_wanted_names, system, hardness, False)
+    only_wanted_deps = self.resolve_deps(only_wanted_names, system, hardness, False)
     wanted_everything_names = algorithm.unique(only_wanted_deps.names() + only_wanted_names)
     all_dep_map = self._dependency_map(hardness, system)
     resolved_map = dict_util.filter_with_keys(all_dep_map, wanted_everything_names)
     return self.descriptors(dependency_resolver.build_order_flat(resolved_map))
   
-  def resolve_deps_poto(self, names, system, hardness, include_names):
+  def resolve_deps(self, names, system, hardness, include_names):
     'Resolve dependencies.'
     check.check_string_seq(names)
     names = object_util.listify(names)
