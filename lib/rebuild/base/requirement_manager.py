@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.common import algorithm, check, dict_util, object_util
@@ -45,7 +44,7 @@ class requirement_manager(object):
     for name in sorted(dep_map.keys()):
       print('%s%s: %s' % (label, name, ' '.join(sorted(dep_map[name]))))
   
-  def _dependency_map(self, hardness, system):
+  def dependency_map(self, hardness, system):
     dep_map = {}
     for descriptor in self._descriptor_map.values():
       dep_map[descriptor.name] = set(descriptor.requirements.filter_by_hardness(hardness).filter_by_system(system).names())
@@ -54,19 +53,6 @@ class requirement_manager(object):
   @classmethod
   def _normalize_hardness(clazz, hardness):
     return sorted(object_util.listify(hardness))
-  
-  def resolve_and_order(self, names, system, hardness, name_filter):
-    'Resolve packages without tools return the names in build order.'
-    assert callable(name_filter)
-    check.check_string_seq(names)
-    just_deps = self.resolve_deps(names, system, hardness, False)
-    everything_names = algorithm.unique(just_deps.names() + names)
-    only_wanted_names = [ dep for dep in everything_names if name_filter(dep) ]
-    only_wanted_deps = self.resolve_deps(only_wanted_names, system, hardness, False)
-    wanted_everything_names = algorithm.unique(only_wanted_deps.names() + only_wanted_names)
-    all_dep_map = self._dependency_map(hardness, system)
-    resolved_map = dict_util.filter_with_keys(all_dep_map, wanted_everything_names)
-    return self.descriptors(dependency_resolver.build_order_flat(resolved_map))
   
   def resolve_deps(self, names, system, hardness, include_names):
     'Resolve dependencies.'
@@ -79,7 +65,7 @@ class requirement_manager(object):
       if not desc:
         raise KeyError('Not found in packages: %s' % (name))
       reqs.extend(desc.requirements.filter_by_hardness(hardness).filter_by_system(system))
-    dep_map = self._dependency_map(hardness, system)
+    dep_map = self.dependency_map(hardness, system)
     result = package_descriptor_list(dependency_resolver.resolve_and_order_deps(reqs.names(), self._descriptor_map, dep_map))
     if include_names:
       result += self.descriptors(names)

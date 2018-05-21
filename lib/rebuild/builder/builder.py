@@ -1,9 +1,10 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy, fnmatch, os, os.path as path, threading
-from bes.common import algorithm, dict_util, object_util
+from bes.common import algorithm, check, dict_util, object_util
 from bes.thread import thread_pool
 from bes.fs import dir_util, file_util
+from bes.dependency import dependency_resolver
 from collections import namedtuple
 from rebuild.step import step_aborted
 from rebuild.base import build_blurb
@@ -198,15 +199,15 @@ class builder(object):
     if not self._env.config.skip_tests:
       test_hardness += [ 'TEST' ]
     
-    to_build = req_manager.resolve_and_order(package_names,
-                                             self._env.config.host_build_target.system,
-                                             [ 'BUILD', 'RUN' ] + test_hardness,
-                                             lambda dep: not req_manager.is_tool(dep))
+    to_build = self._resolve_and_order(package_names,
+                                       self._env.config.host_build_target.system,
+                                       [ 'BUILD', 'RUN' ] + test_hardness,
+                                       lambda dep: not req_manager.is_tool(dep))
 
-    tools_to_build = req_manager.resolve_and_order(package_names,
-                                                   self._env.config.host_build_target.system,
-                                                   [ 'BUILD', 'RUN', 'TOOL' ] + test_hardness,
-                                                   lambda dep: req_manager.is_tool(dep))
+    tools_to_build = self._resolve_and_order(package_names,
+                                             self._env.config.host_build_target.system,
+                                             [ 'BUILD', 'RUN', 'TOOL' ] + test_hardness,
+                                             lambda dep: req_manager.is_tool(dep))
     
     save_build_target = self._env.config.build_target
 
@@ -229,6 +230,20 @@ class builder(object):
                                 to_build.names(),
                                 'packages')
 
+  def _resolve_and_order(self, names, system, hardness, name_filter):
+    'Resolve packages without tools return the names in build order.'
+    assert callable(name_filter)
+    check.check_string_seq(names)
+    req_manager = self._env.requirement_manager
+    just_deps = req_manager.resolve_deps(names, system, hardness, False)
+    everything_names = algorithm.unique(just_deps.names() + names)
+    only_wanted_names = [ dep for dep in everything_names if name_filter(dep) ]
+    only_wanted_deps = req_manager.resolve_deps(only_wanted_names, system, hardness, False)
+    wanted_everything_names = algorithm.unique(only_wanted_deps.names() + only_wanted_names)
+    all_dep_map = req_manager.dependency_map(hardness, system)
+    resolved_map = dict_util.filter_with_keys(all_dep_map, wanted_everything_names)
+    return req_manager.descriptors(dependency_resolver.build_order_flat(resolved_map))
+  
   @classmethod
   def _scripts_clone_for_host_build_target(clazz, scripts, host_build_target, env):
     result = {}
