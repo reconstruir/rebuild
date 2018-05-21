@@ -40,11 +40,11 @@ class new_tools_manager(object):
     self._timer.stop()
 
     self._timer.start('%s: compute run deps' % (pkg_desc.full_name))
-    run_deps = self._artifact_manager.resolve_deps_poto([ pkg_desc.name ], self._build_target, [ 'RUN' ], False)
+    run_deps = self._artifact_manager.resolve_deps([ pkg_desc.name ], self._build_target, [ 'RUN' ], False)
     self._timer.stop()
 
     self._timer.start('%s: compute tool deps' % (pkg_desc.full_name))
-    tool_deps = self._artifact_manager.resolve_deps_poto([ pkg_desc.name ], self._build_target, [ 'TOOL' ], False)
+    tool_deps = self._artifact_manager.resolve_deps([ pkg_desc.name ], self._build_target, [ 'TOOL' ], False)
     self._timer.stop()
 
     self._timer.start('%s: install dep run packages' % (pkg_desc.full_name))

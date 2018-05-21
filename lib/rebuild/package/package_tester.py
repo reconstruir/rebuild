@@ -134,10 +134,10 @@ class package_tester(object):
 
     tool_reqs = pd.requirements.filter_by_hardness(['TOOL'])
     tool_reqs_names = tool_reqs.names()
-    resolved_tool_reqs = config.artifact_manager.resolve_deps_poto(tool_reqs_names,
-                                                                   config.script.env.config.host_build_target,
-                                                                   [ 'TOOL' ],
-                                                                   True)
+    resolved_tool_reqs = config.artifact_manager.resolve_deps(tool_reqs_names,
+                                                              config.script.env.config.host_build_target,
+                                                              [ 'TOOL' ],
+                                                              True)
     config.tools_manager.update(resolved_tool_reqs, config.artifact_manager)
 
     saved_env = os_env.clone_current_env()

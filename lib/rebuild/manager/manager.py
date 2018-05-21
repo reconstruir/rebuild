@@ -58,7 +58,7 @@ class manager(object):
   ResolveResult = namedtuple('ResolveResult', 'available,missing,resolved')
   def resolve_packages(self, package_names, build_target):
     self.log_i('resolving: %s' % (' '.join(package_names)))
-    resolved_deps = self.artifact_manager.resolve_deps_poto(package_names, build_target, ['RUN'], True)
+    resolved_deps = self.artifact_manager.resolve_deps(package_names, build_target, ['RUN'], True)
     resolved_names = [ desc.name for desc in resolved_deps ]
     available_packages = self.artifact_manager.available_packages(build_target)
     available_names = [ p.package_descriptor.name for p in available_packages ]

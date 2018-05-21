@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
@@ -181,13 +180,7 @@ class artifact_manager(object):
       self._requirement_managers[build_target.build_path] = self._make_requirement_manager(build_target)
     return self._requirement_managers[build_target.build_path]
 
-  def resolve(self, names, build_target):
-    return self.get_requirement_manager(build_target).resolve(names, build_target.system)
-  
-  def resolve_deps(self, names, build_target):
-    return self.get_requirement_manager(build_target).resolve_deps(names, build_target.system)
-
-  def resolve_deps_poto(self, names, build_target, hardness, include_names):
+  def resolve_deps(self, names, build_target, hardness, include_names):
     return self.get_requirement_manager(build_target).resolve_deps_poto(names, build_target.system, hardness, include_names)
   
   def _make_requirement_manager(self, build_target):
