@@ -45,7 +45,7 @@ class requirement_manager(object):
     for name in sorted(dep_map.keys()):
       print('%s%s: %s' % (label, name, ' '.join(sorted(dep_map[name]))))
   
-  def _resolve_deps(self, names, hardness, system):
+  def _resolve_deps(self, names, system, hardness):
     names = object_util.listify(names)
     hardness = self._normalize_hardness(hardness)
     reqs = requirement_list()
@@ -71,10 +71,10 @@ class requirement_manager(object):
     'Resolve packages without tools return the names in build order.'
     assert callable(name_filter)
     check.check_string_seq(names)
-    just_deps = self._resolve_deps(names, hardness, system)
+    just_deps = self._resolve_deps(names, system, hardness)
     everything_names = algorithm.unique(just_deps.names() + names)
     only_wanted_names = [ dep for dep in everything_names if name_filter(dep) ]
-    only_wanted_deps = self._resolve_deps(only_wanted_names, hardness, system)
+    only_wanted_deps = self._resolve_deps(only_wanted_names, system, hardness)
     wanted_everything_names = algorithm.unique(only_wanted_deps.names() + only_wanted_names)
     all_dep_map = self._dependency_map(hardness, system)
     resolved_map = dict_util.filter_with_keys(all_dep_map, wanted_everything_names)
@@ -83,7 +83,7 @@ class requirement_manager(object):
   def resolve_deps_poto(self, names, system, hadrness, include_names):
     'Resolve dependencies.'
     check.check_string_seq(names)
-    just_deps = self._resolve_deps(names, hadrness, system)
+    just_deps = self._resolve_deps(names, system, hadrness)
     if include_names:
       just_deps += self.descriptors(names)
     just_deps.remove_dups()
