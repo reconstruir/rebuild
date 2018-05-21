@@ -24,7 +24,7 @@ class step_pkg_config_make_pc(step):
     
   #@abstractmethod
   def execute(self, script, env, values, inputs):
-    pc_files = [ f.filename for f in values.get('pc_files') or [] ]
+    pc_files = values.get('pc_files')
     pc_file_variables = values.get('pc_file_variables')
     
     if not pc_files:
@@ -40,6 +40,6 @@ class step_pkg_config_make_pc(step):
       replacements.update(pc_file_variables.to_dict())
     for src_pc in pc_files:
       dst_dir = path.join(script.staged_files_dir, 'lib/pkgconfig')
-      dst_pc = path.join(dst_dir, path.basename(src_pc))
-      file_replace.copy_with_substitute(src_pc, dst_pc, replacements, backup = False)
+      dst_pc = path.join(dst_dir, path.basename(src_pc.filename))
+      file_replace.copy_with_substitute(src_pc.filename, dst_pc, replacements, backup = False)
     return step_result(True, None)
