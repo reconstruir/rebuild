@@ -3,7 +3,7 @@
 
 import os.path as path
 from bes.testing.unit_test import script_unit_test
-from bes.fs import file_checksum_list, file_find, file_replace, tar_util, temp_file
+from bes.fs import file_checksum, file_checksum_list, file_find, file_replace, tar_util, temp_file
 from bes.git import repo
 from bes.archive import archiver
 from bes.system import host
@@ -106,12 +106,15 @@ class test_rebuilder_script(script_unit_test):
     self.assertEqual( [ 'fiber-1.0.0.tar.gz', 'fiber-orange-6.5.4-3.tar.gz', 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
 
   def test_one_project(self):
-    test = self._run_test(self.config(False, False), self.data_dir(), 'one_project', 'fructose')
+    test = self._run_test(self.config(False, True), self.data_dir(), 'one_project', 'fructose')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
     self.assertEqual( [ 'fructose-3.4.5-6/sources.checksums', 'fructose-3.4.5-6/targets.checksums' ], test.checksums )
-#    self.assertEqual( {}, test.checksums_contents )
-    
+    self.assertEqual( [ 'builds/macos/x86_64/release/fructose-3.4.5-6_timestamp/temp/fructose-3.4.5-6.tar.gz', 'fructose/rebuild.recipe' ],
+                      test.checksums_contents['fructose-3.4.5-6/sources.checksums'].filenames() )
+    self.assertEqual( [ 'artifacts/macos/x86_64/release/fructose-3.4.5-6.tar.gz' ],
+                      test.checksums_contents['fructose-3.4.5-6/targets.checksums'].filenames() )
+
   def test_tool_tfoo(self):
     test = self._run_test(self.config(False, False), self.data_dir(), 'basic', 'tfoo')
     self.assertEqual( 0, test.result.exit_code )
@@ -282,7 +285,7 @@ print("hook1 hook2")
           artifacts_contents[artifact] = self._artifact_contents(artifact_path)
 
       if config.read_checksums:
-        checksums_contents = self._load_checksums(checksums_dir, checksums)
+        checksums_contents = self._load_checksums(checksums_dir, tmp_dir, checksums)
           
     if result.exit_code != 0 or self.DEBUG:
       self.spew(result.stdout)
@@ -297,12 +300,20 @@ print("hook1 hook2")
     return file_find.find(where)
 
   @classmethod
-  def _load_checksums(clazz, checksums_dir, checksums):
+  def _load_checksums(clazz, checksums_dir, tmp_dir, checksums):
     checksums_contents = {}
     for checksum in checksums:
       checksum_path = path.join(checksums_dir, checksum)
-      checksums_contents[checksum] = file_checksum_list.load_checksums_file(checksum_path)
+      checksums_contents[checksum] = clazz._fix_checksums(file_checksum_list.load_checksums_file(checksum_path), tmp_dir)
     return checksums_contents
+  
+  @classmethod
+  def _fix_checksums(clazz, checksums, tmp_dir):
+    assert not tmp_dir.endswith(path.sep)
+    result = file_checksum_list()
+    for checksum in checksums:
+      result.append(file_checksum(checksum.filename.replace(tmp_dir + path.sep, ''), checksum.checksum))
+    return result
   
   @classmethod
   def _blacklist(clazz, member, patterns):

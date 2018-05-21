@@ -122,9 +122,20 @@ class builder_script(object):
   def _script_sources(self):
     sources = self._step_manager.sources()
     sources.append(self.filename)
-    sources = [ path.relpath(s) for s in sources ]
+    sources = [ self._path_normalize(s) for s in sources ]
     return sorted(sources)
-  
+
+  @classmethod
+  def _path_normalize(clazz, p):
+    if path.isabs(p):
+      result = path.relpath(p)
+      if result.startswith(path.pardir):
+        return p
+      else:
+        return result
+    else:
+      return p
+    
   def _dep_sources(self, all_scripts):
     'Return a list of dependency sources for this script.'
     if not all_scripts:
@@ -149,7 +160,7 @@ class builder_script(object):
     return result
 
   def _targets(self):
-    return [ path.relpath(self.env.artifact_manager.artifact_path(self.descriptor, self.build_target)) ]
+    return [ self._path_normalize(self.env.artifact_manager.artifact_path(self.descriptor, self.build_target)) ]
 
   def _current_checksums(self, all_scripts):
     return self.file_checksums(file_checksum_list.from_files(self._sources(all_scripts)),
