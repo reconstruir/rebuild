@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from .binary_format_base import binary_format_base, binary_format_object, binary_format_file
