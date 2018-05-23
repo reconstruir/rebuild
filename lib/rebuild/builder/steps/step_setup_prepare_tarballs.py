@@ -82,10 +82,3 @@ class step_setup_prepare_tarballs(step):
                        strip_common_base = strip_common_base)
       
     return step_result(True, None)
-
-#  def tarballs(self, env):
-#    result = []
-#    tarball_address = self._values['tarball_address']
-#    if tarball_address:
-#      result.extend(tarball_address.sources())
-#    return result
