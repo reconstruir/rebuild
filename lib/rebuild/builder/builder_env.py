@@ -38,7 +38,7 @@ class builder_env(object):
     if source_dir:
      chain.add_finder(local_source_finder(source_dir))
     else:
-     root = path.join(build_dir, 'third_party_sources', git_util.sanitize_address(address))
+     root = path.join(build_dir, 'third_party_tarballs', git_util.sanitize_address(address))
      chain.add_finder(repo_source_finder(root, address, no_network = no_network, update_only_once = True))
     return chain
 
