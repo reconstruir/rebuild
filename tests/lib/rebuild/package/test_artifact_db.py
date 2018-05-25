@@ -169,5 +169,15 @@ class test_artifact_db(unit_test):
     db.add_artifact(e2)
     self.assertEqual( [ e2.artifact_descriptor, e1.artifact_descriptor ], db.list_all_by_descriptor() )
 
+  def test_list_all_by_metadata(self):
+    tmp_db = self._make_tmp_db_path()
+    db = DB(tmp_db)
+    e1 = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES)
+    e2 = PM('bar-5.6.7.tar.gz', 'bar', '5.6.7', 1, 0, 'linux', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES2)
+    db.add_artifact(e1)
+    self.assertEqual( [ e1 ], db.list_all_by_metadata() )
+    db.add_artifact(e2)
+    self.assertEqual( [ e2, e1 ], db.list_all_by_metadata() )
+
 if __name__ == '__main__':
   unit_test.main()
