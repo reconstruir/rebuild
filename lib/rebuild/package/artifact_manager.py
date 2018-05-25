@@ -43,8 +43,8 @@ class artifact_manager(object):
     self._package_cache = {}
     self._reset()
     self._db = artifact_db(path.join(self._root_dir, 'artifacts.db'))
-#    self._timer = debug_timer('am', 'error')
-    self._timer = noop_debug_timer('am', 'error')
+    self._timer = debug_timer('am', 'error')
+#    self._timer = noop_debug_timer('am', 'error')
     self._sync_db()
 
   def _sync_db(self):
@@ -91,7 +91,7 @@ class artifact_manager(object):
     filename = '%s.tar.gz' % (package_descriptor.full_name)
     return path.join(self._root_dir, build_target.build_path, filename)
 
-  def publish(self, tarball, build_target):
+  def publish(self, tarball, build_target, allow_replace = True):
     pkg = package(tarball)
     pkg_info = pkg.package_descriptor
     artifact_path = self.artifact_path(pkg_info, build_target)
@@ -99,6 +99,10 @@ class artifact_manager(object):
     if not self.no_git:
       git.add(self._root_dir, pkg_info.artifact_path(build_target))
     self._reset()
+    pkg_md = pkg.metadata.clone_with_filename(artifact_path)
+#    if self._db.has_artifact(pkg_md.artifact_descriptor):
+#      if not allow_replace:
+#    self._db.add_artifact(pkg.metadata.clone_with_filename(artifact_path))
     return artifact_path
 
   def available_packages(self, build_target):
@@ -119,19 +123,25 @@ class artifact_manager(object):
     return self.available_packages(build_target).latest_versions()
 
   def resolve_packages(self, package_names, build_target):
+    self._timer.start('resolve_packages(package_names %s, build_target %s)' % (package_names, build_target))
     # FIXME: need to deal with multiple versions
     result = []
+    self._timer.start('available_packages(build_target %s)' % (str(build_target)))
     available_packages = self.available_packages(build_target)
+    self._timer.stop()
     for package_name in package_names:
+      self._timer.start('_find_package_by_name(package_name %s)' % (package_name))
       available_package = self._find_package_by_name(package_name,
                                                      available_packages)
+      self._timer.stop()
       if not available_package:
+        self._timer.stop()
         raise NotInstalledError('package \"%s\" not found' % (package_name))
 
       result.append(available_package)
 
     assert len(result) == len(package_names)
-        
+    self._timer.stop()
     return result
 
   def find_package(self, build_target, pkg_desc):

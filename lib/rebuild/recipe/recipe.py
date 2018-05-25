@@ -6,17 +6,19 @@ from collections import namedtuple
 from bes.common import check, node
 from bes.text import white_space
 
-class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties, requirements, descriptor, instructions, steps, load, env_vars')):
+class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties, requirements, descriptor, instructions, steps, load, env_vars, variables')):
 
   CHECK_UNKNOWN_PROPERTIES = True
   
   def __new__(clazz, format_version, filename, enabled, properties, requirements,
-              descriptor, instructions, steps, load, env_vars):
+              descriptor, instructions, steps, load, env_vars, variables = None):
     assert format_version == 2
     if env_vars:
       check.check_masked_value_list(env_vars)
+    if variables:
+      check.check_masked_value_list(variables)
     return clazz.__bases__[0].__new__(clazz, format_version, filename, enabled, properties,
-                                      requirements, descriptor, instructions, steps, load, env_vars)
+                                      requirements, descriptor, instructions, steps, load, env_vars, variables)
 
   def __str__(self):
     return self.to_string()
@@ -31,8 +33,11 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
     if self.enabled != '':
       root.add_child('enabled=%s' % (self.enabled))
       root.add_child('')
+    if self.variables:
+      root.children.append(self._masked_value_list_to_node('variables', self.variables))
+      root.add_child('')
     if self.env_vars:
-      root.children.append(self._env_vars_to_node(self.env_vars))
+      root.children.append(self._masked_value_list_to_node('env_vars', self.env_vars))
       root.add_child('')
     if self.properties:
       root.children.append(self._properties_to_node(self.properties))
@@ -102,10 +107,10 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
     return result
 
   @classmethod
-  def _env_vars_to_node(clazz, env_vars):
-    result = node('env_vars')
-    for env_var in env_vars:
-      result.add_child(env_var.to_string())
+  def _masked_value_list_to_node(clazz, key, mvl):
+    result = node(key)
+    for mv in mvl:
+      result.add_child(mv.to_string())
     return result
 
   @classmethod

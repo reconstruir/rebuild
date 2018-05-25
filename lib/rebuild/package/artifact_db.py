@@ -91,6 +91,28 @@ create table {files_table_name}(
     self._db.execute('insert into artifacts(%s) values(%s)' % (keys, values))
     self._db.commit()
 
+  def _insert_or_replace(self, command, md):
+    check.check_package_metadata(md)
+    d =  {
+      'name': util.sql_encode_string(md.name),
+      'filename': util.sql_encode_string(md.filename),
+      'version': util.sql_encode_string(md.version),
+      'revision': str(md.revision),
+      'epoch': str(md.epoch),
+      'system': util.sql_encode_string(md.system),
+      'level': util.sql_encode_string(md.level),
+      'archs': util.sql_encode_string_list(md.archs),
+      'distro': util.sql_encode_string(md.distro),
+      'requirements': util.sql_encode_requirements(md.requirements),
+      'properties': util.sql_encode_dict(md.properties),
+      'files_checksum': util.sql_encode_string(md.files.files_checksum),
+      'env_files_checksum': util.sql_encode_string(md.files.env_files_checksum),
+    }
+    keys = ', '.join(d.keys())
+    values = ', '.join(d.values())
+    self._db.execute('{} into artifacts(%s) values(%s)'.format(command) % (keys, values))
+    self._db.commit()
+    
   def remove_artifact(self, adesc):
     check.check_artifact_descriptor(adesc)
     if not self.has_artifact(adesc):
