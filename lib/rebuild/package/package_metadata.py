@@ -90,5 +90,12 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
       'properties': self.properties,
       'files': self.files.to_simple_dict(),
     }
+
+  def clone_with_filename(self, filename):
+    l = list(self)
+    l[1] = filename
+    # remove format version which __init__() does not take
+    l.pop(0)
+    return self.__class__(*l)
   
 check.register_class(package_metadata, include_seq = False)
