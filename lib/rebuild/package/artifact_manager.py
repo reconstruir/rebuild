@@ -91,7 +91,7 @@ class artifact_manager(object):
     filename = '%s.tar.gz' % (package_descriptor.full_name)
     return path.join(self._root_dir, build_target.build_path, filename)
 
-  def publish(self, tarball, build_target, allow_replace = True):
+  def publish(self, tarball, build_target, allow_replace):
     pkg = package(tarball)
     pkg_info = pkg.package_descriptor
     artifact_path = self.artifact_path(pkg_info, build_target)

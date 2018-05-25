@@ -1,6 +1,5 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
-#
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
 from bes.testing.unit_test import unit_test
@@ -9,6 +8,7 @@ from bes.git import git
 from rebuild.base import build_arch, build_blurb, build_system, build_target, build_level, package_descriptor
 from rebuild.package import artifact_manager
 from rebuild.package.unit_test_packages import unit_test_packages
+from rebuild.package.db_error import *
 
 class test_artifact_manager(unit_test):
 
@@ -35,16 +35,25 @@ class test_artifact_manager(unit_test):
     manager = self._make_test_artifact_manager()
     bt = build_target(build_system.LINUX, build_level.RELEASE)
     tmp_tarball = unit_test_packages.make_apple()
-    filename = manager.publish(tmp_tarball, bt)
+    filename = manager.publish(tmp_tarball, bt, False)
     self.assertTrue( path.exists(filename) )
 
-  def test_publish_again(self):
+  def test_publish_again_with_replace(self):
     manager = self._make_test_artifact_manager()
     bt = build_target(build_system.LINUX, build_level.RELEASE)
     tmp_tarball = unit_test_packages.make_apple()
-    filename = manager.publish(tmp_tarball, bt)
+    filename = manager.publish(tmp_tarball, bt, True)
     self.assertTrue( path.exists(filename) )
-    filename = manager.publish(tmp_tarball, bt)
+    filename = manager.publish(tmp_tarball, bt, True)
+
+  def test_publish_again_without_replace(self):
+    manager = self._make_test_artifact_manager()
+    bt = build_target(build_system.LINUX, build_level.RELEASE)
+    tmp_tarball = unit_test_packages.make_apple()
+    filename = manager.publish(tmp_tarball, bt, False)
+    self.assertTrue( path.exists(filename) )
+    with self.assertRaises(AlreadyInstalledError) as context:
+      manager.publish(tmp_tarball, bt, False)
 
   def _make_test_artifacts_git_repo(self):
     tmp_repo = temp_file.make_temp_dir(delete = not self.DEBUG)

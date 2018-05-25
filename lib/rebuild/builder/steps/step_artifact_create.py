@@ -91,7 +91,7 @@ class step_artifact_create_publish_package(step):
     staged_tarball = inputs.get('staged_tarball', None)
     assert staged_tarball
     assert archiver.is_valid(staged_tarball)
-    published_tarball = env.artifact_manager.publish(staged_tarball, script.build_target)
+    published_tarball = env.artifact_manager.publish(staged_tarball, script.build_target, True)
     self.blurb('published tarball: %s' % (path.relpath(published_tarball)))
     return step_result(True, None, outputs = { 'published_tarball': published_tarball })
 
