@@ -92,6 +92,21 @@ class test_artifact_db(unit_test):
     db.remove_artifact(adesc)
     self.assertFalse( db.has_artifact(adesc) )
     
+  def test_readd(self):
+    tmp_db = self._make_tmp_db_path()
+    db = DB(tmp_db)
+    e = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES)
+    adesc = e.artifact_descriptor
+    self.assertFalse( db.has_artifact(adesc) )
+    db.add_artifact(e)
+    self.assertTrue( db.has_artifact(adesc) )
+    db.remove_artifact(adesc)
+    self.assertFalse( db.has_artifact(adesc) )
+    db.add_artifact(e)
+    self.assertTrue( db.has_artifact(adesc) )
+    db.remove_artifact(adesc)
+    self.assertFalse( db.has_artifact(adesc) )
+    
   def test_remove_not_installed(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
@@ -119,6 +134,17 @@ class test_artifact_db(unit_test):
     self.assertFalse( db.has_artifact(e1.artifact_descriptor) )
     with self.assertRaises(NotInstalledError) as context:
       db.replace_artifact(e2)
+
+  def test_find(self):
+    tmp_db = self._make_tmp_db_path()
+    db = DB(tmp_db)
+    e = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES)
+    adesc = e.artifact_descriptor
+    self.assertEqual( None, db.find_artifact(adesc) )
+    db.add_artifact(e)
+    self.assertEqual( e, db.find_artifact(adesc) )
+    db.remove_artifact(adesc)
+    self.assertEqual( None, db.find_artifact(adesc) )
       
   def xtest_package_files(self):
     db = DB(self._make_tmp_db_path())

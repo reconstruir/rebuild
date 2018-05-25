@@ -33,18 +33,10 @@ create table artifacts(
 );
 '''
 
-  SCHEMA_FILES = '''
-create table {files_table_name}(
-  filename  text primary key not null, 
-  checksum  text
-);
-'''
-
   def __init__(self, filename):
     self._filename = path.abspath(filename)
     self._db = sqlite(self._filename)
     self._db.ensure_table('artifacts', self.SCHEMA_ARTIFACTS)
-    self._files = {}
     self._files_db = files_db(self._db)
     
   @property
@@ -184,20 +176,12 @@ create table {files_table_name}(
     rows = self._db.select_namedtuples('''SELECT * FROM artifacts''')
     rows = [ package_metadata.from_sql_row(row, []) for row in rows ]
     return sorted(rows)
-
-  def find_artifact(self, adesc):
-    check.check_artifact_descriptor(adesc)
-    sql = 'select count(name) from artifacts where {}'.format(adesc.WHERE_EXPRESSION)
-    t = adesc.to_sql_tuple()
-    row = self._db.select_one(sql, adesc.to_sql_tuple())
-    return row[0] > 0
   
-  def _load_metadata(self, adesc):
-    check.check_artifact_descriptor(adesc)
+  def _load_artifact(self, adesc):
     sql = 'select * from artifacts where {}'.format(adesc.WHERE_EXPRESSION)
     rows = self._db.select_namedtuples(sql, adesc.to_sql_tuple())
     if not rows:
-      raise NotInstalledError('Not installed: %s' % (str(adesc)), adesc)
+      return None
     assert(len(rows) == 1)
     row = rows[0]
     files_table_name = adesc.sql_table_name
@@ -219,4 +203,13 @@ create table {files_table_name}(
                             json.loads(row.properties),
                             files)
   
-  
+  def find_artifact(self, adesc):
+    check.check_artifact_descriptor(adesc)
+    return self._load_artifact(adesc)
+
+  def get_artifact(self, adesc):
+    check.check_artifact_descriptor(adesc)
+    md = self._load_artifact(adesc)
+    if not md:
+      raise NotInstalledError('Not installed: %s' % (str(adesc)), adesc)
+    return md
