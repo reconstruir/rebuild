@@ -26,6 +26,18 @@ class test_artifact_db(unit_test):
     'files_chk',
     'env_files_chk')
 
+  TEST_FILES2 = package_files(FCL(
+    [
+      ( 'g1', 'gchk1' ),
+      ( 'g2', 'gchk2' ),
+    ]),
+    FCL([
+      ( 'h1', 'hchk1' ),
+      ( 'h2', 'hchk2' ),
+    ]),
+    'files2_chk',
+    'env_files2_chk')
+  
   DEBUG = unit_test.DEBUG
   #DEBUG = True
   
@@ -88,7 +100,26 @@ class test_artifact_db(unit_test):
     self.assertFalse( db.has_artifact(adesc) )
     with self.assertRaises(NotInstalledError) as context:
       db.remove_artifact(adesc)
-    
+
+  def test_replace(self):
+    tmp_db = self._make_tmp_db_path()
+    db = DB(tmp_db)
+    e1 = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES)
+    e2 = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES2)
+    self.assertFalse( db.has_artifact(e1.artifact_descriptor) )
+    db.add_artifact(e1)
+    self.assertTrue( db.has_artifact(e1.artifact_descriptor) )
+    db.replace_artifact(e2)
+      
+  def test_replace_not_installed(self):
+    tmp_db = self._make_tmp_db_path()
+    db = DB(tmp_db)
+    e1 = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES)
+    e2 = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES2)
+    self.assertFalse( db.has_artifact(e1.artifact_descriptor) )
+    with self.assertRaises(NotInstalledError) as context:
+      db.replace_artifact(e2)
+      
   def xtest_package_files(self):
     db = DB(self._make_tmp_db_path())
     db.add_package(PM('p1', '1', 0, 0, [], {}, FCL([ ( 'p1/f1', 'c' ), ( 'p1/f2', 'c' ) ])))

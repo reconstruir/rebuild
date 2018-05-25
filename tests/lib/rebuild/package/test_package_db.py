@@ -81,18 +81,29 @@ class test_package_db(unit_test):
 
   def test_package_files(self):
     db = DB(self._make_tmp_db_path())
-    db.add_package(PE('p1', '1', 0, 0, [], {}, package_files(FCL([ ( 'p1/f1', 'c1' ), ( 'p1/f2', 'c2' ) ]), FCL([ ( 'e1', 'ec1' ), ( 'e2', 'ec2' ) ]), 'f_chk', 'ef_chk')))
-    db.add_package(PE('p2', '1', 0, 0, [], {}, package_files(FCL([ ( 'p2/f1', 'c1' ), ( 'p2/f2', 'c2' ) ]), FCL([ ( 'e1', 'ec1' ), ( 'e2', 'ec2' ) ]), 'f_chk', 'ef_chk')))
-    db.add_package(PE('p3', '1', 0, 0, [], {}, package_files(FCL([ ( 'p3/f1', 'c1' ), ( 'p3/f2', 'c2' ) ]), FCL([ ( 'e1', 'ec1' ), ( 'e2', 'ec2' ) ]), 'f_chk', 'ef_chk')))
-    db.add_package(PE('p4', '1', 0, 0, [], {}, package_files(FCL([ ( 'p4/f1', 'c1' ), ( 'p4/f2', 'c2' ) ]), FCL([ ( 'e1', 'ec1' ), ( 'e2', 'ec2' ) ]), 'f_chk', 'ef_chk')))
-    db.add_package(PE('p5', '1', 0, 0, [], {}, package_files(FCL([ ( 'p5/f1', 'c1' ), ( 'p5/f2', 'c2' ) ]), FCL([ ( 'e1', 'ec1' ), ( 'e2', 'ec2' ) ]), 'f_chk', 'ef_chk')))
-    db.add_package(PE('p6', '1', 0, 0, [], {}, package_files(FCL([ ( 'p6/f1', 'c1' ), ( 'p6/f2', 'c2' ) ]), FCL([ ( 'e1', 'ec1' ), ( 'e2', 'ec2' ) ]), 'f_chk', 'ef_chk')))
+    db.add_package(PE('p1', '1', 0, 0, [], {}, package_files(FCL([ ( 'p1/f1', 'c1a' ), ( 'p1/f2', 'c1b' ) ]), FCL([ ( 'p1/e1a', 'ec1a' ), ( 'p1/e2b', 'ec1b' ) ]), 'f_chk', 'ef_chk')))
+    db.add_package(PE('p2', '1', 0, 0, [], {}, package_files(FCL([ ( 'p2/f1', 'c2a' ), ( 'p2/f2', 'c2b' ) ]), FCL([ ( 'p2/e2a', 'ec2a' ), ( 'p2/e2b', 'ec2b' ) ]), 'f_chk', 'ef_chk')))
+    db.add_package(PE('p3', '1', 0, 0, [], {}, package_files(FCL([ ( 'p3/f1', 'c3a' ), ( 'p3/f2', 'c3b' ) ]), FCL([ ( 'p3/e3a', 'ec3a' ), ( 'p3/e2b', 'ec3b' ) ]), 'f_chk', 'ef_chk')))
+    db.add_package(PE('p4', '1', 0, 0, [], {}, package_files(FCL([ ( 'p4/f1', 'c4a' ), ( 'p4/f2', 'c4b' ) ]), FCL([ ( 'p4/e4a', 'ec4a' ), ( 'p4/e2b', 'ec4b' ) ]), 'f_chk', 'ef_chk')))
+    db.add_package(PE('p5', '1', 0, 0, [], {}, package_files(FCL([ ( 'p5/f1', 'c5a' ), ( 'p5/f2', 'c5b' ) ]), FCL([ ( 'p5/e5a', 'ec5a' ), ( 'p5/e2b', 'ec5b' ) ]), 'f_chk', 'ef_chk')))
+    db.add_package(PE('p6', '1', 0, 0, [], {}, package_files(FCL([ ( 'p6/f1', 'c6a' ), ( 'p6/f2', 'c6b' ) ]), FCL([ ( 'p6/e6a', 'ec6a' ), ( 'p6/e2b', 'ec6b' ) ]), 'f_chk', 'ef_chk')))
     self.assertEqual( set([ 'p1/f1', 'p1/f2' ]), db.files('p1') )
+    self.assertEqual( set([ 'p1/e1a', 'p1/e2b' ]), db.env_files('p1') )
+
     self.assertEqual( set([ 'p2/f1', 'p2/f2' ]), db.files('p2') )
+    self.assertEqual( set([ 'p2/e2a', 'p2/e2b' ]), db.env_files('p2') )
+
     self.assertEqual( set([ 'p3/f1', 'p3/f2' ]), db.files('p3') )
+    self.assertEqual( set([ 'p3/e3a', 'p3/e2b' ]), db.env_files('p3') )
+
     self.assertEqual( set([ 'p4/f1', 'p4/f2' ]), db.files('p4') )
+    self.assertEqual( set([ 'p4/e4a', 'p4/e2b' ]), db.env_files('p4') )
+
     self.assertEqual( set([ 'p5/f1', 'p5/f2' ]), db.files('p5') )
+    self.assertEqual( set([ 'p5/e5a', 'p5/e2b' ]), db.env_files('p5') )
+
     self.assertEqual( set([ 'p6/f1', 'p6/f2' ]), db.files('p6') )
+    self.assertEqual( set([ 'p6/e6a', 'p6/e2b' ]), db.env_files('p6') )
   
   def test_packages_with_files(self):
     db = DB(self._make_tmp_db_path())

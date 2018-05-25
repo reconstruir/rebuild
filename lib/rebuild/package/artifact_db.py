@@ -68,7 +68,7 @@ create table {files_table_name}(
     check.check_package_metadata(md)
     adesc = md.artifact_descriptor
     if not self.has_artifact(adesc):
-      raise NotInstalledError('Not installed: %s' % (str(adesc)))
+      raise NotInstalledError('Not installed: %s' % (str(adesc)), adesc)
     self._insert_or_replace('replace', md)
     
   def _insert_or_replace(self, command, md):
@@ -188,3 +188,36 @@ create table {files_table_name}(
     rows = self._db.select_namedtuples('''SELECT * FROM artifacts''')
     rows = [ package_metadata.from_sql_row(row, []) for row in rows ]
     return sorted(rows)
+
+  def find_artifact(self, adesc):
+    check.check_artifact_descriptor(adesc)
+    sql = 'select count(name) from artifacts where {}'.format(adesc.WHERE_EXPRESSION)
+    t = adesc.to_sql_tuple()
+    row = self._db.select_one(sql, adesc.to_sql_tuple())
+    return row[0] > 0
+  
+  def _load_metadata(self, adesc):
+    check.check_artifact_descriptor(adesc)
+    sql = 'select * from artifacts where {}'.format(adesc.WHERE_EXPRESSION)
+    rows = self._db.select_namedtuples(sql, adesc.to_sql_tuple())
+    if not rows:
+      raise NotInstalledError('Not installed: %s' % (str(adesc)), name)
+    assert(len(rows) == 1)
+    row = rows[0]
+    #filename, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files
+    #filename, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files, checksum = None
+    return package_metadata(row.filename,
+                            row.name,
+                            row.version,
+                            row.revision,
+                            row.epoch,
+                            row.system,
+                            row.level,
+                            json.loads(row.archs),
+                            row.distro,
+                            util.sql_decode_requirements(row.requirements),
+                            json.loads(row.properties),
+                            [], #self._files_db.file_checksums(name),
+                            checksum = row.checksum)
+  
+  

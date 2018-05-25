@@ -61,6 +61,9 @@ create table {files_table_name}(
       self._files[name] = set(self._files_db.filenames(name))
     return self._files[name]
                         
+  def env_files(self, name):
+    return self.files(self._make_env_files_table_name(name))
+                        
   def list_all(self, include_version = False):
     if not include_version:
       return self.names()
@@ -87,7 +90,7 @@ create table {files_table_name}(
     values = ', '.join(d.values())
     self._db.execute('insert into packages(%s) values(%s)' % (keys, values))
     self._files_db.add_table(entry.name, entry.files.files)
-    self._files_db.add_table(entry.name + '_env', entry.files.env_files)
+    self._files_db.add_table(self._make_env_files_table_name(entry.name), entry.files.env_files)
     self._db.commit()
 
   def remove_package(self, name):
@@ -96,7 +99,7 @@ create table {files_table_name}(
     t = ( name, )
     self._db.execute('delete from packages where name=?', t)
     self._files_db.remove_table(name)
-    self._files_db.remove_table(name + '_env')
+    self._files_db.remove_table(self._make_env_files_table_name(name))
     self._db.commit()
 
   def packages_with_files(self, files):
@@ -116,6 +119,10 @@ create table {files_table_name}(
       self._packages[name] = self._load_package_db_entry(name)
     return self._packages[name]
 
+  @classmethod
+  def _make_env_files_table_name(clazz, name):
+    return name + '_env'
+  
   def _load_package_db_entry(self, name):
     rows = self._db.select_namedtuples('''select * from packages where name=?''', ( name, ))
     if not rows:
@@ -123,7 +130,7 @@ create table {files_table_name}(
     assert(len(rows) == 1)
     row = rows[0]
     files = package_files(self._files_db.file_checksums(name),
-                          self._files_db.file_checksums(name + '_env'),
+                          self._files_db.file_checksums(self._make_env_files_table_name(name)),
                           row.files_checksum,
                           row.env_files_checksum)
     return package_db_entry(row.name,
