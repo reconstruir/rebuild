@@ -99,27 +99,14 @@ class artifact_manager(object):
     if not self.no_git:
       git.add(self._root_dir, pkg_info.artifact_path(build_target))
     self._reset()
-    pkg_md = pkg.metadata.clone_with_filename(artifact_path)
-#    if self._db.has_artifact(pkg_md.artifact_descriptor):
-#      if not allow_replace:
-#    self._db.add_artifact(pkg.metadata.clone_with_filename(artifact_path))
+    pkg_metadata = pkg.metadata.clone_with_filename(artifact_path)
+    should_replace = allow_replace and self._db.has_artifact(pkg_metadata.artifact_descriptor)
+    if should_replace:
+      self._db.replace_artifact(pkg_metadata)
+    else:
+      self._db.add_artifact(pkg_metadata)
     return artifact_path
 
-  '''
-  def publish2(self, tarball, build_target, allow_replace):
-    pkg = package(tarball)
-    pkg_info = pkg.package_descriptor
-    artifact_path = self.artifact_path(pkg_info, build_target)
-    file_util.copy(tarball, artifact_path)
-    if not self.no_git:
-      git.add(self._root_dir, pkg_info.artifact_path(build_target))
-    self._reset()
-    pkg_md = pkg.metadata.clone_with_filename(artifact_path)
-    if self._db.has_artifact(pkg_md.artifact_descriptor):
-      if not allow_replace:
-        self._db.add_artifact(pkg.metadata.clone_with_filename(artifact_path))
-    return artifact_path
-'''
   def available_packages(self, build_target):
     if build_target.build_path not in self._available_packages_map:
       self._available_packages_map[build_target.build_path] = self._compute_available_packages(build_target)
