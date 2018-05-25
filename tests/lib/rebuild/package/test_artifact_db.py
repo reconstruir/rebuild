@@ -51,15 +51,15 @@ class test_artifact_db(unit_test):
   def test_db_create_empty(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
-    self.assertEqual( [], db.list_all() )
+    self.assertEqual( [], db.list_all_by_descriptor() )
 
   def test_db_recreate_empty(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
-    self.assertEqual( [], db.list_all() )
+    self.assertEqual( [], db.list_all_by_descriptor() )
     del db
     recreated_db = DB(tmp_db)
-    self.assertEqual( [], recreated_db.list_all() )
+    self.assertEqual( [], recreated_db.list_all_by_descriptor() )
 
   def test_add(self):
     tmp_db = self._make_tmp_db_path()
@@ -159,15 +159,15 @@ class test_artifact_db(unit_test):
     with self.assertRaises(NotInstalledError) as context:
       db.get_artifact(adesc)
 
-  def test_list_all(self):
+  def test_list_all_by_descriptor(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
     e1 = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES)
     e2 = PM('bar-5.6.7.tar.gz', 'bar', '5.6.7', 1, 0, 'linux', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES2)
     db.add_artifact(e1)
-    self.assertEqual( [ e1.artifact_descriptor ], db.list_all() )
+    self.assertEqual( [ e1.artifact_descriptor ], db.list_all_by_descriptor() )
     db.add_artifact(e2)
-    self.assertEqual( [ e2.artifact_descriptor, e1.artifact_descriptor ], db.list_all() )
+    self.assertEqual( [ e2.artifact_descriptor, e1.artifact_descriptor ], db.list_all_by_descriptor() )
 
 if __name__ == '__main__':
   unit_test.main()

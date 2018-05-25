@@ -11,6 +11,7 @@ from .db_error import *
 from .files_db import files_db
 from .package_files import package_files
 from .package_metadata import package_metadata
+from .package_metadata_list import package_metadata_list
 from .util import util
 
 class artifact_db(object):
@@ -113,53 +114,27 @@ create table artifacts(
     self._files_db.remove_table(self._make_env_files_table_name(files_table_name))
     self._db.commit()
 
-  def list_all(self):
-    rows = self._db.select_namedtuples('''select * from artifacts order by name asc''')
-    result = artifact_descriptor_list()
-    for row in rows:
-      result.append(artifact_descriptor(row.name,
-                                        row.version,
-                                        row.revision,
-                                        row.epoch,
-                                        row.system,
-                                        row.level,
-                                        json.loads(row.archs),
-                                        row.distro))
-    return result
+  def list_all_by_descriptor(self):
+    rows = self._db.select_namedtuples('''select name, version, revision, epoch, system, level, archs, distro from artifacts order by name asc, version asc, revision asc, epoch asc, system asc, level asc, archs asc, distro asc''')
+    values = [ self._load_artifact_descriptor(row) for row in rows ]
+    return artifact_descriptor_list(values = values)
 
-###  def _list_all_entries(self):
-###    rows = self._db.select_namedtuples('''SELECT * FROM artifacts ORDER by name ASC''')
-###    return [ package_metadata.from_sql_row(row, self._files_table_rows(row.name)) for row in rows ]
+  def list_all_by_metadata(self):
+    rows = self._db.select_namedtuples('''select * from artifacts order by name asc, version asc, revision asc, epoch asc, system asc, level asc, archs asc, distro asc''')
+    return self._load_rows_metadata_list(rows)
+
+  @classmethod
+  def _load_artifact_descriptor(clazz, row):
+    assert row
+    return artifact_descriptor(row.name,
+                               row.version,
+                               row.revision,
+                               row.epoch,
+                               row.system,
+                               row.level,
+                               json.loads(row.archs),
+                               row.distro)
   
-###  def list_all(self, include_version = False):
-###    if not include_version:
-###      rows = self._db.select_namedtuples('''SELECT name FROM artifacts''')
-###      return [ row.name for row in rows ]
-###    rows = self._db.select_namedtuples('''SELECT name, version, revision, epoch FROM artifacts''')
-###    result = []
-###    for row in rows:
-###      entry = package_metadata.from_sql_row(row, [])
-###      result.append(entry.descriptor.full_name)
-###    return sorted(result)
-
-###  def find_package(self, name):
-###    t = ( name, )
-###    rows = self._db.select_namedtuples('''SELECT * FROM artifacts where name=?''', t)
-###    if rows:
-###      return package_metadata.from_sql_row(rows[0], self._files_table_rows(rows[0].name))
-###    return None
-###
-###  def artifacts_with_files(self, files):
-###    'Return a list of package names for any artifacts that contain files. '
-###    files = set(files)
-###    result = []
-###    for name in self.names():
-###      next_files = self.package_files(name)
-###      common = files & next_files
-###      if common:
-###        result.append(name)
-###    return result
-
   def available_artifacts(self, build_target):
     rows = self._db.select_namedtuples('''SELECT * FROM artifacts''')
     rows = [ package_metadata.from_sql_row(row, []) for row in rows ]
@@ -171,7 +146,16 @@ create table artifacts(
     if not rows:
       return None
     assert(len(rows) == 1)
-    row = rows[0]
+    return self._load_row_metadata(rows[0], adesc = adesc)
+
+  def _load_rows_metadata_list(self, rows):
+    assert rows
+    values = [ self._load_row_metadata(row) for row in rows ]
+    return package_metadata_list(values = values)
+  
+  def _load_row_metadata(self, row, adesc = None):
+    assert row
+    adesc = adesc or self._load_artifact_descriptor(row)
     files_table_name = adesc.sql_table_name
     files = package_files(self._files_db.file_checksums(files_table_name),
                           self._files_db.file_checksums(self._make_env_files_table_name(files_table_name)),

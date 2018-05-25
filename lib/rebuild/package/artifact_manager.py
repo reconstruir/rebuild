@@ -207,5 +207,11 @@ class artifact_manager(object):
     for package in self.latest_available_packages(build_target):
       rm.add_package(package.package_descriptor)
     return rm
-  
+
+  def list_all_by_descriptor(self):
+    return self._db.list_all_by_descriptor()
+
+  def list_all_by_metadata(self):
+    return self._db.list_all_by_metadata()
+
 check.register_class(artifact_manager, include_seq = False)
