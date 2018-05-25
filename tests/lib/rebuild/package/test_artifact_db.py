@@ -58,6 +58,17 @@ class test_artifact_db(unit_test):
     db.add_artifact(e)
     self.assertTrue( db.has_artifact(adesc) )
 
+  def test_add_duplicate(self):
+    tmp_db = self._make_tmp_db_path()
+    db = DB(tmp_db)
+    e = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES)
+    adesc = e.artifact_descriptor
+    self.assertFalse( db.has_artifact(adesc) )
+    db.add_artifact(e)
+    self.assertTrue( db.has_artifact(adesc) )
+    with self.assertRaises(AlreadyInstalledError) as context:
+      db.add_artifact(e)
+      
   def test_remove(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
@@ -69,42 +80,15 @@ class test_artifact_db(unit_test):
     db.remove_artifact(adesc)
     self.assertFalse( db.has_artifact(adesc) )
     
-  def xtest_db_add_duplicate(self):
+  def test_remove_not_installed(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
-    e = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, [], {}, self.TEST_FILES)
+    e = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES)
     adesc = e.artifact_descriptor
-    db.add_artifact(e)
-    self.assertTrue( db.has_artifact(adesc) )
-    with self.assertRaises(AlreadyInstalledError) as context:
-      db.add_artifact(e)
+    self.assertFalse( db.has_artifact(adesc) )
+    with self.assertRaises(NotInstalledError) as context:
+      db.remove_artifact(adesc)
     
-  def xtest_db_add(self):
-    tmp_db = self._make_tmp_db_path()
-    db = DB(tmp_db)
-    files = FCL([ ( 'lib/libfoo.a', 'c1' ), ( 'include/libfoo.h', 'c2' ) ])
-    files.sort()
-    #filename, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files, checksum = None):
-    new_entry = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, [], {}, files)
-    db.add_artifact(new_entry)
-
-#    name, version, revision, epoch, system, level, archs
-    db.has_artifact('foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None)
-    return 
-    self.assertTrue( db.has_package('foo') )
-    self.assertEqual( [ 'foo' ], db.list_all() )
-    self.assertEqual( [ 'foo-1.2.3-1' ], db.list_all(include_version = True) )
-    self.assertEqual( [ PD.parse('foo-1.2.3-1') ], db.list_all_descriptors() )
-    self.assertEqual( PM('foo', '1.2.3', 1, 0, [], {}, files), db.find_package('foo') )
-  
-    del db
-    recreated_db = DB(tmp_db)
-    self.assertTrue( recreated_db.has_package('foo') )
-    self.assertEqual( [ 'foo' ], recreated_db.list_all() )
-    actual_package = recreated_db.find_package('foo')
-    expected_package = PM('foo', '1.2.3', 1, 0, [], {}, files)
-    self.assertEqual( expected_package, actual_package )
-
   def xtest_db_remove(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)

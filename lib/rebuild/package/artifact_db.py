@@ -61,7 +61,7 @@ create table {files_table_name}(
     check.check_package_metadata(md)
     adesc = md.artifact_descriptor
     if self.has_artifact(adesc):
-      raise AlreadyInstalledError('Already installed: %s' % (str(adesc)))
+      raise AlreadyInstalledError('Already installed: %s' % (str(adesc)), adesc)
     self._insert_or_replace('insert', md)
 
   def replace_artifact(self, md):
@@ -96,7 +96,7 @@ create table {files_table_name}(
   def remove_artifact(self, adesc):
     check.check_artifact_descriptor(adesc)
     if not self.has_artifact(adesc):
-      raise NotInstalledError('Not installed: %s' % (adesc), adesc)
+      raise NotInstalledError('Not installed: %s' % (str(adesc)), adesc)
     sql = 'delete from artifacts where {}'.format(adesc.WHERE_EXPRESSION)
     self._db.execute(sql, adesc.to_sql_tuple())
     self._db.commit()
