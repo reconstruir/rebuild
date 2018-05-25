@@ -847,4 +847,8 @@ makefile in step_make might not work
  
 2018-05-16
  - check MANIFEST.in for missing files
+
+2018-05-24
+ - rebbe_retry.sh should have tools added to PATH
+ - also make it more readable by using variables
  
