@@ -11,15 +11,6 @@ from .util import util
 from .files_db import files_db
 from .db_error import *
 
-class ArtifactAlreadyInstalledError(Exception):
-  def __init__(self, message, adesc):
-    super(ArtifactAlreadyInstalledError, self).__init__()
-    self.message = message
-    self.adesc = adesc
-
-  def __str__(self):
-    return self.message
-
 class artifact_db(object):
 
   SCHEMA_ARTIFACTS = '''
@@ -70,27 +61,16 @@ create table {files_table_name}(
     check.check_package_metadata(md)
     adesc = md.artifact_descriptor
     if self.has_artifact(adesc):
-      raise ArtifactAlreadyInstalledError('Already installed: %s' % (str(adesc)), adesc)
-    d =  {
-      'name': util.sql_encode_string(md.name),
-      'filename': util.sql_encode_string(md.filename),
-      'version': util.sql_encode_string(md.version),
-      'revision': str(md.revision),
-      'epoch': str(md.epoch),
-      'system': util.sql_encode_string(md.system),
-      'level': util.sql_encode_string(md.level),
-      'archs': util.sql_encode_string_list(md.archs),
-      'distro': util.sql_encode_string(md.distro),
-      'requirements': util.sql_encode_requirements(md.requirements),
-      'properties': util.sql_encode_dict(md.properties),
-      'files_checksum': util.sql_encode_string(md.files.files_checksum),
-      'env_files_checksum': util.sql_encode_string(md.files.env_files_checksum),
-    }
-    keys = ', '.join(d.keys())
-    values = ', '.join(d.values())
-    self._db.execute('insert into artifacts(%s) values(%s)' % (keys, values))
-    self._db.commit()
+      raise AlreadyInstalledError('Already installed: %s' % (str(adesc)))
+    self._insert_or_replace('insert', md)
 
+  def replace_artifact(self, md):
+    check.check_package_metadata(md)
+    adesc = md.artifact_descriptor
+    if not self.has_artifact(adesc):
+      raise NotInstalledError('Not installed: %s' % (str(adesc)))
+    self._insert_or_replace('replace', md)
+    
   def _insert_or_replace(self, command, md):
     check.check_package_metadata(md)
     d =  {
