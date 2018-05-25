@@ -45,13 +45,14 @@ class artifact_manager(object):
     self.reload_db()
     self._timer = debug_timer('am', 'error')
 #    self._timer = noop_debug_timer('am', 'error')
-    self._sync_db()
+#    self._sync_db()
 
     self._db = artifact_db(path.join(self._root_dir, 'artifacts.db'))
 
   def reload_db(self):
     self._db = artifact_db(path.join(self._root_dir, 'artifacts.db'))
-    
+
+  '''
   def _sync_db(self):
     return
     possible = self._find_possible_artifacts(self._root_dir)
@@ -74,7 +75,8 @@ class artifact_manager(object):
       else:
         self._timer.stop()
         print('invalid package: %s' % (f))
-
+'''
+  
   @classmethod
   def _find_possible_artifacts(clazz, root_dir):
     dirs = dir_util.list(root_dir, relative = False)
