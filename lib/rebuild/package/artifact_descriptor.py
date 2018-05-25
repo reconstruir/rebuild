@@ -2,7 +2,7 @@
 
 import os
 from collections import namedtuple
-from bes.common import check, cached_property
+from bes.common import cached_property, check, string_util
 from rebuild.base import build_arch, build_level, build_system, build_target, build_version, package_descriptor
 from .util import util
 
@@ -23,7 +23,12 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
     return clazz.__bases__[0].__new__(clazz, name, version, revision, epoch, system, level, archs, distro)
 
   def __str__(self):
-    return '%s,%s,%s,%s,%s,%s,%s,%s' % (self.name, self.version, self.revision, self.epoch, self.system, self.level, self.archs, self.distro)
+    return '%s;%s;%s;%s;%s;%s;%s;%s' % (self.name, self.version, self.revision, self.epoch, self.system, self.level,
+                                        ','.join(self.archs), self.distro)
+
+  @cached_property
+  def sql_table_name(self):
+    return string_util.replace_punctuation(str(self), '_')
 
   @cached_property
   def build_version(self):

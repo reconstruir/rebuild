@@ -2,12 +2,12 @@
 
 import json
 from collections import namedtuple
-from bes.fs import file_checksum_list
 from bes.common import cached_property, check, json_util, string_util
 from rebuild.base import build_target, build_version, package_descriptor, requirement_list
-from .util import util
+
 from .artifact_descriptor import artifact_descriptor
 from .package_files import package_files
+from .util import util
 
 class package_metadata(namedtuple('package_metadata', 'format_version, filename, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files')):
 

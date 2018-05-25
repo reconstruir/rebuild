@@ -17,7 +17,8 @@ CREATE TABLE {table_name} (
   def __init__(self, db):
     self._db = db
 
-  def table_name(self, name):
+  @classmethod
+  def table_name(clazz, name):
     return 'files_%s' % (name)
 
   def has_table(self, name):

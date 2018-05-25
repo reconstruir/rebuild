@@ -5,11 +5,11 @@ from bes.common import check
 from bes.sqlite import sqlite
 from rebuild.base import build_version, package_descriptor, package_descriptor_list
 
+from .db_error import *
+from .files_db import files_db
 from .package_db_entry import package_db_entry
 from .package_files import package_files
-from .files_db import files_db
 from .util import util
-from .db_error import *
 
 class package_db(object):
 

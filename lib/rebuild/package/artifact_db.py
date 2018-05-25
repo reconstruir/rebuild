@@ -6,10 +6,11 @@ from bes.common import check, string_util
 from bes.sqlite import sqlite
 from .artifact_descriptor_list import artifact_descriptor_list
 
+from .db_error import *
+from .files_db import files_db
+from .package_files import package_files
 from .package_metadata import package_metadata
 from .util import util
-from .files_db import files_db
-from .db_error import *
 
 class artifact_db(object):
 
@@ -62,17 +63,29 @@ create table {files_table_name}(
     adesc = md.artifact_descriptor
     if self.has_artifact(adesc):
       raise AlreadyInstalledError('Already installed: %s' % (str(adesc)), adesc)
-    self._insert_or_replace('insert', md)
+    keys, values = self._metadata_to_sql_keys_and_values(md)
+    self._db.execute('insert into artifacts(%s) values(%s)' % (keys, values))
+    files_table_name = md.artifact_descriptor.sql_table_name
+    self._files_db.add_table(files_table_name, md.files.files)
+    self._files_db.add_table(self._make_env_files_table_name(files_table_name), md.files.env_files)
+    self._db.commit()
 
   def replace_artifact(self, md):
     check.check_package_metadata(md)
     adesc = md.artifact_descriptor
     if not self.has_artifact(adesc):
       raise NotInstalledError('Not installed: %s' % (str(adesc)), adesc)
-    self._insert_or_replace('replace', md)
+    keys, values = self._metadata_to_sql_keys_and_values(md)
+    self._db.execute('replace into artifacts(%s) values(%s)' % (keys, values))
+    files_table_name = md.artifact_descriptor.sql_table_name
+    self._files_db.remove_table(files_table_name)
+    self._files_db.remove_table(self._make_env_files_table_name(files_table_name))
+    self._files_db.add_table(files_table_name, md.files.files)
+    self._files_db.add_table(self._make_env_files_table_name(files_table_name), md.files.env_files)
+    self._db.commit()
     
-  def _insert_or_replace(self, command, md):
-    check.check_package_metadata(md)
+  @classmethod
+  def _metadata_to_sql_keys_and_values(self, md):
     d =  {
       'name': util.sql_encode_string(md.name),
       'filename': util.sql_encode_string(md.filename),
@@ -90,8 +103,11 @@ create table {files_table_name}(
     }
     keys = ', '.join(d.keys())
     values = ', '.join(d.values())
-    self._db.execute('{} into artifacts(%s) values(%s)'.format(command) % (keys, values))
-    self._db.commit()
+    return keys, values
+    
+  @classmethod
+  def _make_env_files_table_name(clazz, name):
+    return name + '_env'
     
   def remove_artifact(self, adesc):
     check.check_artifact_descriptor(adesc)
@@ -99,6 +115,9 @@ create table {files_table_name}(
       raise NotInstalledError('Not installed: %s' % (str(adesc)), adesc)
     sql = 'delete from artifacts where {}'.format(adesc.WHERE_EXPRESSION)
     self._db.execute(sql, adesc.to_sql_tuple())
+    files_table_name = adesc.sql_table_name
+    self._files_db.remove_table(files_table_name)
+    self._files_db.remove_table(self._make_env_files_table_name(files_table_name))
     self._db.commit()
 
 #  name            text not null, 
@@ -128,29 +147,6 @@ create table {files_table_name}(
                                         row.distro))
     return result
 
-  def _load_metadata(self, adesc):
-    check.check_artifact_descriptor(adesc)
-    sql = 'select * from artifacts where {}'.format(adesc.WHERE_EXPRESSION)
-    rows = self._db.select_namedtuples(sql, adesc.to_sql_tuple())
-    if not rows:
-      raise NotInstalledError('not installed: %s' % (name), name)
-    assert(len(rows) == 1)
-    row = rows[0]
-    #filename, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files, checksum = None
-    return package_metadata(row.filename,
-                            row.name,
-                            row.version,
-                            row.revision,
-                            row.epoch,
-                            row.system,
-                            row.level,
-                            json.loads(row.archs),
-                            row.distro,
-                            util.sql_decode_requirements(row.requirements),
-                            json.loads(row.properties),
-                            [], #self._files_db.file_checksums(name),
-                            checksum = row.checksum)
-  
 ###  def _list_all_entries(self):
 ###    rows = self._db.select_namedtuples('''SELECT * FROM artifacts ORDER by name ASC''')
 ###    return [ package_metadata.from_sql_row(row, self._files_table_rows(row.name)) for row in rows ]
@@ -201,11 +197,15 @@ create table {files_table_name}(
     sql = 'select * from artifacts where {}'.format(adesc.WHERE_EXPRESSION)
     rows = self._db.select_namedtuples(sql, adesc.to_sql_tuple())
     if not rows:
-      raise NotInstalledError('Not installed: %s' % (str(adesc)), name)
+      raise NotInstalledError('Not installed: %s' % (str(adesc)), adesc)
     assert(len(rows) == 1)
     row = rows[0]
+    files_table_name = adesc.sql_table_name
+    files = package_files(self._files_db.file_checksums(files_table_name),
+                          self._files_db.file_checksums(self._make_env_files_table_name(files_table_name)),
+                          row.files_checksum,
+                          row.env_files_checksum)
     #filename, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files
-    #filename, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files, checksum = None
     return package_metadata(row.filename,
                             row.name,
                             row.version,
@@ -217,7 +217,6 @@ create table {files_table_name}(
                             row.distro,
                             util.sql_decode_requirements(row.requirements),
                             json.loads(row.properties),
-                            [], #self._files_db.file_checksums(name),
-                            checksum = row.checksum)
+                            files)
   
   
