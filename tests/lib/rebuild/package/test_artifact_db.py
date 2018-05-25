@@ -158,35 +158,16 @@ class test_artifact_db(unit_test):
     db.remove_artifact(adesc)
     with self.assertRaises(NotInstalledError) as context:
       db.get_artifact(adesc)
-      
-  def xtest_package_files(self):
-    db = DB(self._make_tmp_db_path())
-    db.add_package(PM('p1', '1', 0, 0, [], {}, FCL([ ( 'p1/f1', 'c' ), ( 'p1/f2', 'c' ) ])))
-    db.add_package(PM('p2', '1', 0, 0, [], {}, FCL([ ( 'p2/f1', 'c' ), ( 'p2/f2', 'c' ) ])))
-    db.add_package(PM('p3', '1', 0, 0, [], {}, FCL([ ( 'p3/f1', 'c' ), ( 'p3/f2', 'c' ) ])))
-    db.add_package(PM('p4', '1', 0, 0, [], {}, FCL([ ( 'p4/f1', 'c' ), ( 'p4/f2', 'c' ) ])))
-    db.add_package(PM('p5', '1', 0, 0, [], {}, FCL([ ( 'p5/f1', 'c' ), ( 'p5/f2', 'c' ) ])))
-    db.add_package(PM('p6', '1', 0, 0, [], {}, FCL([ ( 'p6/f1', 'c' ), ( 'p6/f2', 'c' ) ])))
-    self.assertEqual( set([ 'p1/f1', 'p1/f2' ]), db.package_files('p1') )
-    self.assertEqual( set([ 'p2/f1', 'p2/f2' ]), db.package_files('p2') )
-    self.assertEqual( set([ 'p3/f1', 'p3/f2' ]), db.package_files('p3') )
-    self.assertEqual( set([ 'p4/f1', 'p4/f2' ]), db.package_files('p4') )
-    self.assertEqual( set([ 'p5/f1', 'p5/f2' ]), db.package_files('p5') )
-    self.assertEqual( set([ 'p6/f1', 'p6/f2' ]), db.package_files('p6') )
-  
-  def xtest_packages_with_files(self):
-    db = DB(self._make_tmp_db_path())
-    db.add_package(PM('p1', '1', 0, 0, [], {}, FCL([ ( 'p1/f1', 'c' ), ( 'p1/f2', 'c' ) ])))
-    db.add_package(PM('p2', '1', 0, 0, [], {}, FCL([ ( 'p2/f1', 'c' ), ( 'p2/f2', 'c' ) ])))
-    db.add_package(PM('p3', '1', 0, 0, [], {}, FCL([ ( 'p3/f1', 'c' ), ( 'p3/f2', 'c' ) ])))
-    db.add_package(PM('p4', '1', 0, 0, [], {}, FCL([ ( 'p4/f1', 'c' ), ( 'p4/f2', 'c' ) ])))
-    db.add_package(PM('p5', '1', 0, 0, [], {}, FCL([ ( 'p5/f1', 'c' ), ( 'p5/f2', 'c' ) ])))
-    db.add_package(PM('p6', '1', 0, 0, [], {}, FCL([ ( 'p6/f1', 'c' ), ( 'p6/f2', 'c' ) ])))
 
-    self.assertEqual( [], db.packages_with_files([ 'notthere' ]) )
-    self.assertEqual( [ 'p1' ], db.packages_with_files([ 'p1/f2' ]) )
-    self.assertEqual( [ 'p1', 'p2' ], db.packages_with_files([ 'p1/f2', 'p2/f1' ]) )
-    self.assertEqual( [ 'p1', 'p2', 'p6' ], db.packages_with_files([ 'p1/f2', 'p2/f1', 'p6/f1' ]) )
+  def test_list_all(self):
+    tmp_db = self._make_tmp_db_path()
+    db = DB(tmp_db)
+    e1 = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES)
+    e2 = PM('bar-5.6.7.tar.gz', 'bar', '5.6.7', 1, 0, 'linux', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES2)
+    db.add_artifact(e1)
+    self.assertEqual( [ e1.artifact_descriptor ], db.list_all() )
+    db.add_artifact(e2)
+    self.assertEqual( [ e2.artifact_descriptor, e1.artifact_descriptor ], db.list_all() )
 
 if __name__ == '__main__':
   unit_test.main()

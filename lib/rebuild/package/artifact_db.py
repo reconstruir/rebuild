@@ -4,8 +4,9 @@ import json, os.path as path
 from bes.fs import file_check
 from bes.common import check, string_util
 from bes.sqlite import sqlite
-from .artifact_descriptor_list import artifact_descriptor_list
 
+from .artifact_descriptor import artifact_descriptor
+from .artifact_descriptor_list import artifact_descriptor_list
 from .db_error import *
 from .files_db import files_db
 from .package_files import package_files
