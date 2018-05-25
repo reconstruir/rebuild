@@ -42,11 +42,16 @@ class artifact_manager(object):
 
     self._package_cache = {}
     self._reset()
-    self._db = artifact_db(path.join(self._root_dir, 'artifacts.db'))
+    self.reload_db()
     self._timer = debug_timer('am', 'error')
 #    self._timer = noop_debug_timer('am', 'error')
     self._sync_db()
 
+    self._db = artifact_db(path.join(self._root_dir, 'artifacts.db'))
+
+  def reload_db(self):
+    self._db = artifact_db(path.join(self._root_dir, 'artifacts.db'))
+    
   def _sync_db(self):
     return
     possible = self._find_possible_artifacts(self._root_dir)

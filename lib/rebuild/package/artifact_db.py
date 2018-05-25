@@ -111,19 +111,6 @@ create table artifacts(
     self._files_db.remove_table(files_table_name)
     self._files_db.remove_table(self._make_env_files_table_name(files_table_name))
     self._db.commit()
-
-#  name            text not null, 
-#  filename        text not null, 
-#  checksum        text not null, 
-#  version         text not null, 
-#  revision        integer not null, 
-#  epoch           integer not null, 
-#  system          text not null, 
-#  level           text not null, 
-#  archs           text not null, 
-#  distro          text, 
-#  requirements    text,
-#  properties      text
 #    
   def list_all(self):
     rows = self._db.select_namedtuples('''select * from artifacts order by name asc''')

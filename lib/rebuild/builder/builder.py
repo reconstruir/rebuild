@@ -90,6 +90,8 @@ class builder(object):
     for d in dirs:
       print('scratching existing data: %s' % (path.relpath(d)))
       file_util.remove(d)
+    # Since we just killed the directory where the artifacts db lives we need to reload it
+    self._env.artifact_manager.reload_db()
     
   def wipe_old_build_dirs(self, package_names):
     for package_name in package_names:
