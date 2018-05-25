@@ -89,31 +89,6 @@ class test_artifact_db(unit_test):
     with self.assertRaises(NotInstalledError) as context:
       db.remove_artifact(adesc)
     
-  def xtest_db_remove(self):
-    tmp_db = self._make_tmp_db_path()
-    db = DB(tmp_db)
-    self.assertFalse( db.has_package('foo') )
-    files = FCL([ ( 'lib/libfoo.a', 'c1' ), ( 'include/libfoo.h', 'c2' ) ])
-    files.sort()
-    reqs = None
-    new_entry = PM('foo-1.2.3.tar.gz', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, [], {}, [])
-    db.add_package(new_entry)
-    self.assertTrue( db.has_package('1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None) )
-    return
-#    self.assertEqual( [ 'foo' ], db.list_all() )
-#    self.assertEqual( PM('foo', '1.2.3', 1, 0, [], {}, files), db.find_package('foo') )
-
-    db.remove_package('foo')
-    self.assertFalse( db.has_package('foo') )
-    self.assertEqual( [], db.list_all() )
-    self.assertEqual( None, db.find_package('foo') )
-
-    del db
-    recreated_db = DB(tmp_db)
-    self.assertFalse( recreated_db.has_package('foo') )
-    self.assertEqual( [], recreated_db.list_all() )
-    self.assertEqual( None, recreated_db.find_package('foo') )
-
   def xtest_package_files(self):
     db = DB(self._make_tmp_db_path())
     db.add_package(PM('p1', '1', 0, 0, [], {}, FCL([ ( 'p1/f1', 'c' ), ( 'p1/f2', 'c' ) ])))
