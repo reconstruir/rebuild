@@ -146,6 +146,19 @@ class test_artifact_db(unit_test):
     db.remove_artifact(adesc)
     self.assertEqual( None, db.find_artifact(adesc) )
       
+  def test_get(self):
+    tmp_db = self._make_tmp_db_path()
+    db = DB(tmp_db)
+    e = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES)
+    adesc = e.artifact_descriptor
+    with self.assertRaises(NotInstalledError) as context:
+      db.get_artifact(adesc)
+    db.add_artifact(e)
+    self.assertEqual( e, db.get_artifact(adesc) )
+    db.remove_artifact(adesc)
+    with self.assertRaises(NotInstalledError) as context:
+      db.get_artifact(adesc)
+      
   def xtest_package_files(self):
     db = DB(self._make_tmp_db_path())
     db.add_package(PM('p1', '1', 0, 0, [], {}, FCL([ ( 'p1/f1', 'c' ), ( 'p1/f2', 'c' ) ])))
