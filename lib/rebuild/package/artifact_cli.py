@@ -20,21 +20,28 @@ class artifact_cli(build_target_cli):
     db_parser.add_argument('--db', action = 'store', default = self.DEFAULT_DB, help = 'The artifacts db')
     db_parser.add_argument('--metadata', '-m', action = 'store_true', help = 'Load metadata')
     db_parser.add_argument('--descriptor', '-d', action = 'store_true', help = 'Load descriptors')
-    self.build_target_add_arguments(db_parser)
+    db_parser.add_argument('--name', '-n', action = 'store', default = None, help = 'Name to query')
+    self.build_target_add_arguments(db_parser, True)
     
   def main(self):
-    args = self.parser.parse_args()
-    bt = self.build_target_resolve(args)
-    if args.command == 'query':
-      return self._command_query(args.db, args.metadata, args.descriptor)
+    self.args = self.parser.parse_args()
+    self.build_target = self.build_target_resolve(self.args)
+    if self.args.command == 'query':
+      return self._command_query()
     else:
       raise RuntimeError('Unknown command: %s' % (args.command))
     return 0
 
-  def _command_query(self, db_filename, metadata, descriptor):
-    db = artifact_db(db_filename)
-    if descriptor:
+  def _command_query(self):
+    db = artifact_db(self.args.db)
+    if self.args.descriptor:
       available = db.list_all_by_descriptor()
+      if self.args.name:
+        available = available.filter_by_name(self.args.name)
+      if self.args.level:
+        available = available.filter_by_level(self.args.level)
+      if self.args.system:
+        available = available.filter_by_system(self.args.system)
       data = table(data = available)
       data.column_names = tuple([ f.upper() for f in available[0]._fields ])
       data.modify_column('ARCHS', lambda archs: ' '.join(archs))
@@ -42,7 +49,7 @@ class artifact_cli(build_target_cli):
       tt.set_labels(data.column_names)
       print(tt)
   
-    if metadata:
+    if self.args.metadata:
       available = db.list_all_by_metadata()
       data = [ a.artifact_descriptor for a in available ]
       tt = text_table(data = data)

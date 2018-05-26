@@ -24,4 +24,16 @@ class artifact_descriptor_list(type_checked_list):
   def __str__(self):
     return self.to_string()
 
+  def filter_by_name(self, name):
+    'Return only the descriptors that match name.'
+    return self.__class__([ adesc for adesc in self if adesc.name == name ])
+  
+  def filter_by_level(self, level):
+    'Return only the descriptors that match level.'
+    return self.__class__([ adesc for adesc in self if adesc.level == level ])
+  
+  def filter_by_system(self, system):
+    'Return only the descriptors that match system.'
+    return self.__class__([ adesc for adesc in self if adesc.system == system ])
+  
 check.register_class(artifact_descriptor_list, include_seq = False)

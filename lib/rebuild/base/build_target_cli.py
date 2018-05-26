@@ -20,27 +20,36 @@ class build_target_cli(object):
   def __init__(self):
     pass
 
-  def build_target_add_arguments(self, parser):
+  def build_target_add_arguments(self, parser, use_none_defaults):
+    if use_none_defaults:
+      default_system = None
+      default_archs = None
+      default_level = None
+    else:
+      default_system = self.SYSTEM_DEFAULT
+      default_archs = []
+      default_level = build_level.DEFAULT_LEVEL
+            
     parser.add_argument('-s', '--system',
                         action = 'store',
                         type = str,
-                        default = self.SYSTEM_DEFAULT,
+                        default = default_system,
                         help = 'system to build for.  One of (%s) [ %s ]' % (self.SYSTEM_CHOICES_BLURB, self.SYSTEM_DEFAULT))
-    parser.add_argument('-a', '--arch',
+    parser.add_argument('-a', '--archs',
                         action = 'append',
                         type = str, 
                         choices = self.ARCH_CHOICES,
-                        default = [],
+                        default = default_archs,
                         help = 'Architectures to build for.  One of (%s) [ %s ]' % (self.ARCHS_BLURB, self.DEFAULT_ARCHS_BLURB))
     parser.add_argument('-l', '--level',
                         action = 'store',
                         type = str,
-                        default = build_level.DEFAULT_LEVEL,
+                        default = default_level,
                         choices = self.LEVEL_CHOICES,
                         help = 'Build level.  One of (%s) [ %s ]' % (self.BUILD_LEVELS_BLURB, build_level.DEFAULT_LEVEL))
     
   def build_target_resolve(self, args):
-    print('system: %s' % (args.system))
-    print('  arch: %s' % (args.arch))
-    print(' level: %s' % (args.level))
-    return None
+    args.system = build_system.parse_system(args.system or 'default')
+    args.level = build_level.parse_level(args.level or 'default')
+    #args.archs = build_arch.parse_archs(args.system, args.archs or 'default')
+    return build_target(system = args.system, level = args.level, archs = args.archs)
