@@ -3,7 +3,7 @@
 
 from bes.testing.unit_test import unit_test
 from rebuild.base import build_target
-from rebuild.recipe import recipe_parser, recipe_load_env
+from rebuild.recipe import recipe_parser, testing_recipe_load_env
 from rebuild.recipe.value import value_file, value_file_list, value_git_address, value_install_file
 from rebuild.recipe.value import value_origin as VO
 from bes.key_value import key_value as KV, key_value_list as KVL
@@ -12,13 +12,13 @@ from test_steps import *
 
 class test_recipe_step(unit_test):
 
-  TEST_ENV = recipe_load_env(build_target(), None)
+  TEST_ENV = testing_recipe_load_env()
   
   def test_empty_defaults(self):
     text = '''\
 '''
     step = self._parse(text)
-    r = step.resolve_values({}, recipe_load_env(build_target(system = 'linux'), None))
+    r = step.resolve_values({}, testing_recipe_load_env(build_target(system = 'linux')))
     expected = {
       'bool_value': False,
       'install_file_value': [],
@@ -33,7 +33,7 @@ class test_recipe_step(unit_test):
     }
     self.assertEqual( expected, r )
 
-    r = step.resolve_values({}, recipe_load_env(build_target(system = 'macos'), None))
+    r = step.resolve_values({}, testing_recipe_load_env(build_target(system = 'macos')))
     self.assertEqual( expected, r )
 
   
@@ -52,7 +52,7 @@ key_values_value
   android: a=forandroid
 '''
     step = self._parse(text)
-    r = step.resolve_values({}, recipe_load_env(build_target(system = 'linux'), None))
+    r = step.resolve_values({}, testing_recipe_load_env(build_target(system = 'linux')))
     expected = {
       'bool_value': True,
       'install_file_value': [],
@@ -66,7 +66,7 @@ key_values_value
       'git_address_value': None,
     }
     self.assertEqual( expected, r )
-    r = step.resolve_values({}, recipe_load_env(build_target(system = 'macos'), None))
+    r = step.resolve_values({}, testing_recipe_load_env(build_target(system = 'macos')))
     expected = {
       'bool_value': True,
       'install_file_value': [],
@@ -80,7 +80,7 @@ key_values_value
       'git_address_value': None,
     }
     self.assertEqual( expected, r )
-    r = step.resolve_values({}, recipe_load_env(build_target(system = 'android'), None))
+    r = step.resolve_values({}, testing_recipe_load_env(build_target(system = 'android')))
     expected = {
       'bool_value': True,
       'install_file_value': [],
@@ -103,7 +103,7 @@ git_address_value
   macos: macos_address macos_tag
 '''
     step = self._parse(text)
-    env = recipe_load_env(build_target(system = 'linux'), None)
+    env = testing_recipe_load_env(build_target(system = 'linux'))
     r = step.resolve_values({}, env)
     expected = {
       'bool_value': False,
@@ -119,7 +119,7 @@ git_address_value
     }
     self.assertEqual( expected, r )
 
-    env = recipe_load_env(build_target(system = 'macos'), None)
+    env = testing_recipe_load_env(build_target(system = 'macos'))
     r = step.resolve_values({}, env)
     expected = {
       'bool_value': False,

@@ -6,13 +6,13 @@ from bes.testing.unit_test import unit_test
 from rebuild.base import build_target
 from bes.fs import file_util, temp_file
 from rebuild.builder.builder_recipe_loader import builder_recipe_loader
-from rebuild.recipe import recipe_load_env
+from rebuild.recipe import testing_recipe_load_env
 
 class test_builder_recipe_loader(unit_test):
 
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/builder_script'
 
-  TEST_ENV = recipe_load_env(build_target(), None)
+  TEST_ENV = testing_recipe_load_env()
   
   def test_load_libjpeg(self):
     filenames = [ self.data_path('build_libjpeg.rebc') ]

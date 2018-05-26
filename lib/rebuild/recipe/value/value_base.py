@@ -20,7 +20,7 @@ class value_base(with_metaclass(value_register_meta, object)):
   
   def __init__(self, env, origin, properties = None):
     if env:
-      check.check_recipe_load_env(env)
+      check.check_recipe_load_env_base(env)
     self.env = env
     if origin:
       check.check_value_origin(origin)

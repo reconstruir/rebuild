@@ -3,12 +3,12 @@
 
 from bes.testing.unit_test import unit_test
 from bes.key_value import key_value_list as KVL
-from rebuild.recipe import recipe_parser_util as RPU, recipe_load_env
+from rebuild.recipe import recipe_parser_util as RPU, testing_recipe_load_env
 from rebuild.recipe.value import value_type as VT, value_origin as VO, value_key_values as VKV
 
 class test_recipe_parser_util(unit_test):
 
-  TEST_ENV = recipe_load_env(None, None)
+  TEST_ENV = testing_recipe_load_env()
   TEST_ORIGIN = VO(__file__, 1, '')
   
   def test_parse_key(self):

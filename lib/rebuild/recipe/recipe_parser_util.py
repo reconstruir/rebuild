@@ -17,7 +17,7 @@ class recipe_parser_util(object):
 
   @classmethod
   def make_key_value(clazz, env, origin, text, value_class_name):
-    check.check_recipe_load_env(env)
+    check.check_recipe_load_env_base(env)
     check.check_value_origin(origin)
     check.check_string(text)
     check.check_string(value_class_name)

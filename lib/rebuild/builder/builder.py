@@ -210,17 +210,17 @@ class builder(object):
                                              self._env.config.host_build_target.system,
                                              [ 'BUILD', 'RUN', 'TOOL' ] + test_hardness,
                                              lambda dep: req_manager.is_tool(dep))
-    
+
     save_build_target = self._env.config.build_target
 
     if self._env.config.host_build_target != self._env.config.build_target:
-      host_scripts = self._scripts_clone_for_host_build_target(self._env.script_manager.scripts,
-                                                               self._env.config.host_build_target,
-                                                               self._env)
+      tools_to_build_scripts = self._scripts_clone_for_host_build_target(self._env.script_manager.subset(tools_to_build.names()),
+                                                                         self._env.config.host_build_target,
+                                                                         self._env)
     else:
-      host_scripts = self._env.script_manager.scripts
+      tools_to_build_scripts = self._env.script_manager.subset(tools_to_build.names())
     self._env.config.build_target = self._env.config.host_build_target
-    exit_code = self._build_packages(host_scripts,
+    exit_code = self._build_packages(tools_to_build_scripts,
                                      tools_to_build.names(),
                                      'tools')
     self._env.config.build_target = save_build_target
