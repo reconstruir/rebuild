@@ -2,6 +2,7 @@
 
 import argparse, os.path as path
 from .artifact_db import artifact_db
+from bes.common import table
 from bes.text import text_table
 
 class artifact_cli(object):
@@ -30,8 +31,13 @@ class artifact_cli(object):
     db = artifact_db(db_filename)
     if descriptor:
       available = db.list_all_by_descriptor()
-      tt = text_table(data = available)
-      tt.set_labels(tuple([ f.upper() for f in available[0]._fields ]))
+      data = table(data = available)
+      data.column_names = tuple([ f.upper() for f in available[0]._fields ])
+
+      data.modify_column('ARCHS', lambda archs: ' '.join(archs))
+
+      tt = text_table(data = data)
+      tt.set_labels(data.column_names)
       print(tt)
   
     if metadata:
