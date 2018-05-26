@@ -384,10 +384,7 @@ remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir ${_root_dir}
     return 0
 
   def _command_test(self, bt, package_tarball, test, artifacts_dir, tools_dir, tmp_dir, opts, verbose):
-    DEFAULT_OPTIONS = 'build_python=False'
-    #opts = copy.deepcopy(DEFAULT_OPTIONS)
     parsed_opts = key_value_parser.parse_to_dict(opts)
-    #opts.update(parsed_opts)
     opts = parsed_opts
 
     if 'build_level' in opts and bt == build_target.DEFAULT:

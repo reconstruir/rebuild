@@ -20,10 +20,6 @@ from bes.git import git_download_cache
 
 class builder_cli(object):
 
-  DEFAULT_OPTIONS = {
-    'build_python': False,
-  }
-
   def __init__(self):
     all_archs = ','.join(build_arch.DEFAULT_HOST_ARCHS)
     default_archs = ','.join(build_arch.DEFAULT_ARCHS[build_system.HOST])
@@ -31,7 +27,6 @@ class builder_cli(object):
     systems = ','.join(build_system.SYSTEMS)
     self.parser = argparse.ArgumentParser(description = 'Build packages.')
     self.parser.add_argument('-C', '--change-dir', action = 'store', type = str, default = None)
-    self.parser.add_argument('-o', '--opts', action = 'store', type = str, default = '')
     self.parser.add_argument('-f', '--project-file', action = 'store', type = str, default = 'rebuild.project')
     self.parser.add_argument('-n', '--no-checksums', action = 'store_true')
     self.parser.add_argument('-v', '--verbose', action = 'store_true', default = False)
@@ -76,9 +71,6 @@ class builder_cli(object):
       os.chdir(args.change_dir)
 
     target_packages = args.target_packages[0]
-    opts = copy.deepcopy(self.DEFAULT_OPTIONS)
-    parsed_opts = key_value_parser.parse_to_dict(args.opts)
-    opts.update(parsed_opts)
 
     available_packages = self.load_project_file(args.project_file)
 
@@ -90,31 +82,16 @@ class builder_cli(object):
       target_packages_filter = [ p for p in target_packages_filter if p ]
       available_packages = self._filter_target_packages(available_packages, target_packages_filter)
     
-    if 'system' in opts and args.system == build_target.DEFAULT:
-      args.system == opts['system']
-
-    if 'build_level' in opts and args.level == build_target.DEFAULT:
-      args.level == opts['build_level']
-
-    if 'archs' in opts and args.archs == build_target.DEFAULT:
-      args.archs == opts['archs']
-  
     args.system = build_system.parse_system(args.system)
     args.level = build_level.parse_level(args.level)
     args.archs = build_arch.parse_archs(args.system, args.archs)
     
-    opts['system'] = args.system
-    opts['level'] = args.level
-    opts['archs'] = args.archs
-
     build_blurb.set_process_name('rebuild')
     build_blurb.set_verbose(args.verbose)
 
     config = builder_config()
     config.build_root = path.abspath(path.abspath(args.root))
-    config.build_target = build_target(opts.get('system', build_target.DEFAULT),
-                                       opts.get('build_level', build_target.DEFAULT),
-                                       opts.get('archs', build_target.DEFAULT))
+    config.build_target = build_target(system = args.system, level = args.level, archs = args.archs)
     config.deps_only = args.deps_only
     config.recipes_only = args.recipes_only
     config.disabled = args.disabled

@@ -854,4 +854,7 @@ makefile in step_make might not work
 
 018-05-25
  - package_db.py move caching of files and env_files up one level so db does only db stuff
-  
+
+018-05-26
+ - add unit tests of debug level as well as some tools that require libs and the libs are debug but the tools release
+ 
