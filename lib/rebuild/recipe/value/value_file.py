@@ -16,6 +16,9 @@ class value_file(value_base):
     check.check_string(filename)
     self._filename = filename
 
+  def __hash__(self):
+    return hash(self._filename)
+    
   @property
   def filename(self):
     return self.substitute(self._filename)

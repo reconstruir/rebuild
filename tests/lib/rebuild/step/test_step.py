@@ -7,14 +7,22 @@ from rebuild.step import step, step_result
 class test_step(unit_test):
 
   class TestStep(step):
-    def execute(self, argument):
+
+    #@abstractmethod
+    def execute(self, script, env, values, inputs):
       'Execute the step.'
-      return step_result(True, '')
+      return self.result(True)
 
     def on_tag_changed(self):
       'Called when the tag changes.'
       pass
 
+    @classmethod
+    #@abstractmethod
+    def define_args(clazz):
+      'Return a list of arg specs.'
+      return {}
+    
   def test_test_step(self):
     s = self.TestStep()
 
