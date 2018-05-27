@@ -6,6 +6,7 @@ from bes.testing.unit_test import script_unit_test
 from bes.fs import file_checksum, file_checksum_list, file_find, file_replace, tar_util, temp_file
 from bes.git import repo
 from bes.archive import archiver
+from bes.common import string_util
 from bes.system import host
 from collections import namedtuple
 from rebuild.base import build_arch, build_level, build_system, build_target
@@ -123,9 +124,9 @@ class test_rebuilder_script(script_unit_test):
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
     self.assertEqual( [ 'fructose-3.4.5-6/sources.checksums', 'fructose-3.4.5-6/targets.checksums' ], test.checksums )
-    self.assertEqual( [ 'builds/macos/x86_64/release/fructose-3.4.5-6_timestamp/temp/fructose-3.4.5-6.tar.gz', 'fructose/rebuild.recipe' ],
+    self.assertEqual( [ 'builds/$SYSTEM/x86_64/release/fructose-3.4.5-6_timestamp/temp/fructose-3.4.5-6.tar.gz', 'fructose/rebuild.recipe' ],
                       test.checksums_contents['fructose-3.4.5-6/sources.checksums'].filenames() )
-    self.assertEqual( [ 'artifacts/macos/x86_64/release/fructose-3.4.5-6.tar.gz' ],
+    self.assertEqual( [ 'artifacts/$SYSTEM/x86_64/release/fructose-3.4.5-6.tar.gz' ],
                       test.checksums_contents['fructose-3.4.5-6/targets.checksums'].filenames() )
 
   def test_tool_tfoo(self):
@@ -308,7 +309,7 @@ print("hook1 hook2")
           artifacts_contents[artifact] = self._artifact_contents(artifact_path)
 
       if config.read_checksums:
-        checksums_contents = self._load_checksums(checksums_dir, tmp_dir, checksums)
+        checksums_contents = self._load_checksums(config, checksums_dir, tmp_dir, checksums)
           
     if result.exit_code != 0 or self.DEBUG:
       self.spew(result.stdout)
@@ -323,19 +324,24 @@ print("hook1 hook2")
     return file_find.find(where)
 
   @classmethod
-  def _load_checksums(clazz, checksums_dir, tmp_dir, checksums):
+  def _load_checksums(clazz, config, checksums_dir, tmp_dir, checksums):
     checksums_contents = {}
     for checksum in checksums:
       checksum_path = path.join(checksums_dir, checksum)
-      checksums_contents[checksum] = clazz._fix_checksums(file_checksum_list.load_checksums_file(checksum_path), tmp_dir)
+      checksums_contents[checksum] = clazz._fix_checksums(config, file_checksum_list.load_checksums_file(checksum_path), tmp_dir)
     return checksums_contents
   
   @classmethod
-  def _fix_checksums(clazz, checksums, tmp_dir):
+  def _fix_checksums(clazz, config, checksums, tmp_dir):
     assert not tmp_dir.endswith(path.sep)
     result = file_checksum_list()
     for checksum in checksums:
-      result.append(file_checksum(checksum.filename.replace(tmp_dir + path.sep, ''), checksum.checksum))
+      replacements = {
+        tmp_dir + path.sep: '',
+        config.build_target.system, '$SYSTEM',
+      }
+      new_filename = string_util.replace(checksum.filename, replacements)
+      result.append(file_checksum(new_filename, checksum.checksum))
     return result
   
   @classmethod
