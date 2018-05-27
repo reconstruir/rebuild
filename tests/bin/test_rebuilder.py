@@ -10,6 +10,8 @@ from bes.common import string_util
 from bes.system import host
 from collections import namedtuple
 from rebuild.base import build_arch, build_level, build_system, build_target
+from rebuild.toolchain import toolchain_testing
+from bes.testing.unit_test.unit_test_skip import skip_if
 
 class test_rebuilder_script(script_unit_test):
 
@@ -149,6 +151,7 @@ class test_rebuilder_script(script_unit_test):
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libstarch-1.0.0.tar.gz' ], test.artifacts )
 
+  @skip_if(not toolchain_testing.can_compile_ios(), 'cannot compile ios')
   def test_lib_libstarch_ios_cross_compile(self):
     test = self._run_test(self.config(bt = self.IOS_BUILD_TARGET), self.data_dir(), 'basic', 'libstarch', '-s', 'ios')
     self.assertEqual( 0, test.result.exit_code )
