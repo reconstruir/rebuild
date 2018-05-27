@@ -338,7 +338,7 @@ print("hook1 hook2")
     for checksum in checksums:
       replacements = {
         tmp_dir + path.sep: '',
-        config.build_target.system, '$SYSTEM',
+        config.build_target.system: '$SYSTEM',
       }
       new_filename = string_util.replace(checksum.filename, replacements)
       result.append(file_checksum(new_filename, checksum.checksum))
