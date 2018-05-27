@@ -10,8 +10,8 @@ package libstarch 1.0.0
       make_flags
         all: CFLAGS="${REBUILD_COMPILE_CFLAGS} -std=c99"
         darwin: AR=${AR_REPLACEMENT}
-#        linux: CC=gcc
-#        macos: CC=clang
+        linux: CC=gcc
+        macos: CC=clang
         
     step_make_install
     step_post_install

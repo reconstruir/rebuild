@@ -4,17 +4,10 @@
 import os.path as path
 from bes.testing.unit_test import unit_test
 from rebuild.base import build_target, build_system
-from rebuild.toolchain import compiler, toolchain
+from rebuild.toolchain import compiler, toolchain, toolchain_testing
 from bes.fs import file_util, temp_file
-from bes.system import host
 from bes.common import object_util, variable
 from bes.testing.unit_test.unit_test_skip import skip_if
-
-def _can_compile_macos(): return host.is_macos()
-def _can_compile_ios(): return host.is_macos()
-def _android_toolchain_is_valid(): return toolchain.get_toolchain(build_target(system = build_system.ANDROID)).is_valid()
-def _can_compile_android(): return (host.is_macos() or host.is_linux()) and _android_toolchain_is_valid()
-def _can_compile_linux(): return host.is_linux()
 
 class test_toolchain(unit_test):
 
@@ -30,7 +23,7 @@ int main(int argc, char* argv[])
 }
 '''
 
-  @skip_if(not _can_compile_macos(), 'cannot compile macos')
+  @skip_if(not toolchain_testing.can_compile_macos(), 'cannot compile macos')
   def test_compile_cc_macos(self):
     tmp_dir = self._make_temp_dir()
     src = self._make_temp_source(tmp_dir, 'test.c', self.CC_SOURCE)
@@ -39,7 +32,7 @@ int main(int argc, char* argv[])
     self.assertEqual( 1, len(targets) )
     self.assertTrue( path.exists(targets[0][1]) )
 
-  @skip_if(not _can_compile_ios(), 'cannot compile ios')
+  @skip_if(not toolchain_testing.can_compile_ios(), 'cannot compile ios')
   def test_compile_cc_ios(self):
     tmp_dir = self._make_temp_dir()
     src = self._make_temp_source(tmp_dir, 'test.c', self.CC_SOURCE)
@@ -48,7 +41,7 @@ int main(int argc, char* argv[])
     self.assertEqual( 1, len(targets) )
     self.assertTrue( path.exists(targets[0][1]) )
 
-  @skip_if(not _can_compile_android(), 'cannot compile android')
+  @skip_if(not toolchain_testing.can_compile_android(), 'cannot compile android')
   def test_compile_cc_android(self):
     tmp_dir = self._make_temp_dir()
     src = self._make_temp_source(tmp_dir, 'test.c', self.CC_SOURCE)
@@ -57,7 +50,7 @@ int main(int argc, char* argv[])
     self.assertEqual( 1, len(targets) )
     self.assertTrue( path.exists(targets[0][1]) )
     
-  @skip_if(not _can_compile_linux(), 'cannot compile linux')
+  @skip_if(not toolchain_testing.can_compile_linux(), 'cannot compile linux')
   def test_compile_cc_linux(self):
     tmp_dir = self._make_temp_dir()
     src = self._make_temp_source(tmp_dir, 'test.c', self.CC_SOURCE)

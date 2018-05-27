@@ -1,5 +1,5 @@
 prefix=/usr/local
-CC=clang
+#CC=clang
 AR=ar
 AR_FLAGS=r
 LOCAL_CFLAGS=-I.
@@ -24,7 +24,7 @@ libstarch.a: $(LIBSTARCH_OBJS)
 STARCH_PROG1_MAIN_OBJS = programs/starch_prog1/starch_prog1_main.o
 
 starch_prog1_main: $(STARCH_PROG1_MAIN_OBJS) libstarch.a
-	$(CC) -o $@ $^
+	$(CC) $(CFLAGS) $(LOCAL_CFLAGS) -o $@ $^
 
 clean:
 	rm -f $(LIBSTARCH_OBJS) $(STARCH_PROG1_MAIN_OBJS) libstarch.a starch_prog1_main
