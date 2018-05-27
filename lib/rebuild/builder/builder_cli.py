@@ -89,9 +89,15 @@ class builder_cli(object):
     build_blurb.set_process_name('rebuild')
     build_blurb.set_verbose(args.verbose)
 
+    bt = build_target(system = args.system, level = args.level, archs = args.archs)
+    
+    # Tests only run on desktop
+    if not bt.is_desktop():
+      args.skip_tests = True
+    
     config = builder_config()
     config.build_root = path.abspath(path.abspath(args.root))
-    config.build_target = build_target(system = args.system, level = args.level, archs = args.archs)
+    config.build_target = bt
     config.deps_only = args.deps_only
     config.recipes_only = args.recipes_only
     config.disabled = args.disabled
@@ -114,6 +120,7 @@ class builder_cli(object):
     env = builder_env(config, available_packages)
     
     build_blurb.blurb('rebuild', 'target=%s; host=%s' % (config.build_target.build_path, config.host_build_target.build_path))
+    build_blurb.blurb_verbose('rebuild', 'command line: %s' % (' '.join(sys.argv)))
 
     bldr = builder(env)
 

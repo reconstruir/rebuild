@@ -8,9 +8,11 @@ package libstarch 1.0.0
         all: libs/libstarch/src dest=${REBUILD_BUILD_DIR}
     step_make
       make_flags
-        linux: CC=gcc CFLAGS=-std=c99
-        #macos: AR=${AR_REPLACEMENT}
-        macos: CC=clang CFLAGS="${REBUILD_COMPILE_ARCH_FLAGS}"
+        all: CFLAGS="${REBUILD_COMPILE_CFLAGS} -std=c99"
+        darwin: AR=${AR_REPLACEMENT}
+#        linux: CC=gcc
+#        macos: CC=clang
+        
     step_make_install
     step_post_install
       pc_files

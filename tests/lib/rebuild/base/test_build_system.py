@@ -76,5 +76,17 @@ class test_build_system(unit_test):
     self.assertEqual( True, BT.mask_matches('desktop', 'macos') )
     self.assertEqual( False, BT.mask_matches('mobile', 'macos') )
 
+  def test_is_desktop(self):
+    self.assertEqual( True, BT.is_desktop('linux') )
+    self.assertEqual( True, BT.is_desktop('macos') )
+    self.assertEqual( False, BT.is_desktop('ios') )
+    self.assertEqual( False, BT.is_desktop('android') )
+    
+  def test_is_mobile(self):
+    self.assertEqual( False, BT.is_mobile('linux') )
+    self.assertEqual( False, BT.is_mobile('macos') )
+    self.assertEqual( True, BT.is_mobile('ios') )
+    self.assertEqual( True, BT.is_mobile('android') )
+    
 if __name__ == '__main__':
   unit_test.main()

@@ -7,7 +7,13 @@ LOCAL_CFLAGS=-I.
 %.o: %.c
 	$(CC) $(CFLAGS) $(LOCAL_CFLAGS) -c $< -o $@
 
-all: libstarch.a starch_prog1_main
+ifdef REBUILD_NO_PROGRAMS
+	programs=
+else
+	programs=starch_prog1_main
+endif
+
+all: libstarch.a $(programs)
 
 LIBSTARCH_OBJS = libstarch/amylose.o libstarch/amylopectin.o libstarch/common.o
 LIBSTARCH_HEADERS = libstarch/amylopectin.h libstarch/amylose.h libstarch/common.h

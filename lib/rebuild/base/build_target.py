@@ -60,6 +60,12 @@ class build_target(namedtuple('build_target', 'system,distro,level,archs,build_p
   def is_linux(self):
     return self.system == build_system.LINUX
 
+  def is_desktop(self):
+    return build_system.is_desktop(self.system)
+
+  def is_mobile(self):
+    return build_system.is_mobile(self.system)
+
   def to_dict(self):
     return {
       'system': self.system,

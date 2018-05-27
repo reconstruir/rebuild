@@ -7,6 +7,8 @@ from bes.common import string_util
 
 class build_arch(object):
 
+  DEFAULT = 'default'
+
   ARMV7 = 'armv7'
   ARM64 = 'arm64'
   I386 = 'i386'

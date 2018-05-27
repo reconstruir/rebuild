@@ -187,7 +187,7 @@ class step(with_metaclass(step_register_meta, object)):
 
     env.update(shell_env)
 
-    clazz.env_dump(env, script.descriptor.name, 'PRE ENVIRONMENT')
+    #clazz.env_dump(env, script.descriptor.name, 'PRE ENVIRONMENT')
 
     clazz._env_substitite(env)
 
@@ -207,7 +207,7 @@ class step(with_metaclass(step_register_meta, object)):
 #    file_util.mkdir(script.build_dir)
     retry_script = clazz._write_retry_script(command, env, script)
 
-    clazz.env_dump(env, script.descriptor.name, clazz.__name__ + ' : ' + 'POST ENVIRONMENT')
+    #clazz.env_dump(env, script.descriptor.name, clazz.__name__ + ' : ' + 'POST ENVIRONMENT')
 
     for k,v in env.items():
       if string_util.is_quoted(v):

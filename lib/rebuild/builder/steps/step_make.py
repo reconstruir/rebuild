@@ -29,11 +29,11 @@ class step_make(step):
   #@abstractmethod
   def execute(self, script, env, values, inputs):
     make_env = values.get('make_env')
-    make_flags = values.get('make_flags') or []
+    make_flags = values.get('make_flags')
     make_num_jobs = values.get('make_num_jobs')
     make_target = values.get('make_target')
     makefile = values.get('makefile')
-      
+
     if make_num_jobs < 1:
       raise RuntimeError('make_num_jobs should be between 1 and %d instead of %s' % (self.MAX_NUM_JOBS, make_num_jobs))
     if make_num_jobs > 8:

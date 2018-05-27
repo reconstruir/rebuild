@@ -103,3 +103,11 @@ class build_system(object):
     if not clazz.system_is_valid(system):
       raise ValueError('Invalid system: %s - %s' % (str(system), type(system)))
     return system in resolved_mask
+
+  @classmethod
+  def is_desktop(clazz, system):
+    return clazz.mask_matches(clazz.DESKTOP, system)
+  
+  @classmethod
+  def is_mobile(clazz, system):
+    return clazz.mask_matches(clazz.MOBILE, system)

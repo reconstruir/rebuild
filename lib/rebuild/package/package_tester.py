@@ -11,6 +11,7 @@ from bes.dependency import dependency_resolver
 from bes.common import algorithm, variable
 from bes.system import execute, os_env
 from bes.fs import file_replace
+from bes.debug import debug_timer, noop_debug_timer
 
 from .package import package
 from .package_manager import package_manager
@@ -117,28 +118,43 @@ class package_tester(object):
 
   @classmethod
   def _make_test_context(clazz, config, test_source):
+    #timer = debug_timer('am', 'error')
+    timer = noop_debug_timer('am', 'error')
+    timer.start('_make_test_context()')
     test_name = path.splitext(path.basename(test_source))[0]
     test_root_dir = path.join(config.script.test_dir, test_name)
     pm_root_dir = path.join(test_root_dir, 'requirements')
 
     pm = package_manager(pm_root_dir, config.artifact_manager)
 
+    timer.start('load tarball')
     package = pm.load_tarball(config.package_tarball, config.script.build_target)
+    timer.stop()
     pd = package.package_descriptor
     
+    timer.start('resolve_deps')
     deps_packages = config.script.resolve_deps(['RUN', 'TEST'], False)
+    timer.stop()
     all_packages = deps_packages + [ pd ]
 
+    timer.start('install packages')
     pm.install_packages(deps_packages, config.script.build_target, ['RUN', 'TEST'])
+    timer.stop()
+    timer.start('install tarball')
     pm.install_tarball(config.package_tarball, ['RUN', 'TEST'])
+    timer.stop()
 
     tool_reqs = pd.requirements.filter_by_hardness(['TOOL'])
     tool_reqs_names = tool_reqs.names()
+    timer.start('resolve tools deps')
     resolved_tool_reqs = config.artifact_manager.resolve_deps(tool_reqs_names,
                                                               config.script.env.config.host_build_target,
                                                               [ 'TOOL' ],
                                                               True)
+    timer.stop()
+    timer.start('tools update')
     config.tools_manager.update(resolved_tool_reqs, config.artifact_manager)
+    timer.stop()
 
     saved_env = os_env.clone_current_env()
 
@@ -165,6 +181,7 @@ class package_tester(object):
     shell_env.update(substitutions)
     file_replace.copy_with_substitute(test_source, test_source_with_replacements,
                                       substitutions, backup = False)
+    timer.stop()
     return clazz._test_context(package.package_descriptor,
                                shell_env,
                                saved_env,

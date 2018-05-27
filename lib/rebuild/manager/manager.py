@@ -66,9 +66,9 @@ class manager(object):
     if missing_packages:
       return self.ResolveResult(available_packages, missing_packages, [])
     resolved = self.artifact_manager.resolve_packages(resolved_names, build_target)
-    resolved_infos = [ r.package_descriptor for r in resolved ]
+    resolved_descriptors = [ r.package_descriptor for r in resolved ]
     self.log_i('done resolving')
-    return self.ResolveResult(available_packages, [], resolved_infos)
+    return self.ResolveResult(available_packages, [], resolved_descriptors)
 
   def resolve_and_update_packages(self, project_name, packages, build_target, allow_downgrade = False, force_install = False):
     resolve_rv = self.resolve_packages(packages, build_target)
