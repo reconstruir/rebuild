@@ -825,11 +825,8 @@ makefile in step_make might not work
  - notion of build "host" might be confusing with the notion of "host" in cross compiling
 
 2018-05-08
- - step_pkg_config_make_pc.py cleanup pc_files
- - step_setup_patch.py cleanups patches
- 
  - recipe_parser.py - fix this shit
-       poto1 = env_vars.resolve('macos', value_type.KEY_VALUES)
+      poto1 = env_vars.resolve('macos', value_type.KEY_VALUES)
       poto2 = env_vars.resolve('linux', value_type.KEY_VALUES)
       d = poto1.to_dict()
       d.update(poto2.to_dict())
@@ -857,4 +854,11 @@ makefile in step_make might not work
 
 018-05-26
  - add unit tests of debug level as well as some tools that require libs and the libs are debug but the tools release
+   cause tools are always release
+ 
+2018-05-27
+ - add way to depend on compiler like hashing in scons or versioning somehow
+ - when gcc is missing on linux issue commands to install it using native package manager
+ - add native dependencies for python, compiler, make
+ - download and discard tarballs to save diskspace
  
