@@ -6,11 +6,11 @@ from rebuild.builder.builder_recipe_loader import builder_recipe_loader
 from bes.git import repo
 from bes.fs import file_replace, temp_file
 from rebuild.base import build_system, build_target
-from rebuild.recipe import recipe_load_env
+from rebuild.recipe import testing_recipe_load_env
 
 def main():
   filename = path.abspath('rebuild.recipe')
-  env = recipe_load_env(build_target(), None)
+  env = testing_recipe_load_env()
   recipes = builder_recipe_loader.load(env, filename)
   for recipe in recipes:
     values = recipe.steps[0].resolve_values({}, env)
