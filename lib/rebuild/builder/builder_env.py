@@ -13,6 +13,7 @@ from bes.git import git_download_cache, git_util
 from rebuild.source_finder import repo_source_finder, local_source_finder, source_finder_chain
 from rebuild.recipe import recipe_load_env
 from .builder_script_manager import builder_script_manager
+from bes.fs import file_trash
 
 class builder_env(object):
 
@@ -26,6 +27,7 @@ class builder_env(object):
     self.recipe_load_env = recipe_load_env(self)
     self.script_manager = builder_script_manager(filenames, self.config.build_target, self)
     self.requirement_manager = requirement_manager()
+    self.trash = file_trash(self.config.trash_dir)
     for script in self.script_manager.scripts.values():
       self.requirement_manager.add_package(script.descriptor)
       

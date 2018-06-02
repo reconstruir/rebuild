@@ -101,8 +101,9 @@ class builder(object):
       if path.isdir(builds_dir):
         tmp_dirs = dir_util.older_dirs(dir_util.list(builds_dir), hours = 24)
         for tmp_dir in tmp_dirs:
-          self.blurb('wiping expired tmp build directory: %s' % (path.relpath(tmp_dir)))
-          to_remove.append(tmp_dir)
+          self._env.trash.trash(tmp_dir)
+#          self.blurb('wiping expired tmp build directory: %s' % (path.relpath(tmp_dir)))
+#          to_remove.append(tmp_dir)
 
       def remove_tmp_dirs_thread(dirs):
         for d in dirs:

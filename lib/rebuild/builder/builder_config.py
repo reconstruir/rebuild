@@ -14,7 +14,7 @@ class builder_config(object):
   DEFAULT_THIRD_PARTY_PREFIX = 'rebbe_'
   
   def __init__(self):
-    self.build_root = None
+    self._build_root = None
     self.build_target = build_target()
     self.host_build_target = build_target(system = build_system.HOST,
                                           level = build_level.RELEASE,
@@ -40,10 +40,21 @@ class builder_config(object):
     self.timestamp = time_util.timestamp()
     self._performance = False
     self.timer = noop_debug_timer('perf', 'debug') 
+    self._performance = False
+    self._trash_dir = None
     
   def builds_dir(self, build_target):
     return path.join(self.build_root, 'builds', build_target.build_path)
 
+  @property
+  def build_root(self):
+    return self._build_root
+
+  @build_root.setter
+  def build_root(self, value):
+    self._build_root = value
+    self._build_root_changed()
+    
   @property
   def performance(self):
     return self._performance
@@ -59,3 +70,15 @@ class builder_config(object):
     else:
       self.timer = noop_debug_timer('perf', 'debug') 
   
+  def _build_root_changed(self):
+    self._trash_dir = path.join(self._build_root, '.trash')
+
+  @property
+  def trash_dir(self):
+    if not self._trash_dir:
+      raise AttributeError('trash_dir has not been set yet.')
+    return self._trash_dir
+
+  @trash_dir.setter
+  def trash_dir(self, value):
+    raise AttributeError('trash_dir is read only.')
