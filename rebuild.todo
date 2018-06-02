@@ -861,4 +861,6 @@ makefile in step_make might not work
  - when gcc is missing on linux issue commands to install it using native package manager
  - add native dependencies for python, compiler, make
  - download and discard tarballs to save diskspace
- 
+
+2018-05-30
+ - all the "mine" tests are broken
