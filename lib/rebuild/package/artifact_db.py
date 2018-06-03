@@ -135,18 +135,14 @@ create table artifacts(
                                json.loads(row.archs),
                                row.distro)
   
-  def available_artifacts(self, build_target):
-    rows = self._db.select_namedtuples('''SELECT * FROM artifacts''')
-    rows = [ package_metadata.from_sql_row(row, []) for row in rows ]
-    return sorted(rows)
-  
   def _load_artifact(self, adesc):
     sql = 'select * from artifacts where {}'.format(adesc.WHERE_EXPRESSION)
     rows = self._db.select_namedtuples(sql, adesc.to_sql_tuple())
     if not rows:
       return None
     assert(len(rows) == 1)
-    return self._load_row_metadata(rows[0], adesc = adesc)
+    md = self._load_row_metadata(rows[0], adesc = adesc)
+    return md
 
   def _load_rows_metadata_list(self, rows):
     assert rows
@@ -162,18 +158,19 @@ create table artifacts(
                           row.files_checksum,
                           row.env_files_checksum)
     #filename, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files
-    return package_metadata(row.filename,
-                            row.name,
-                            row.version,
-                            row.revision,
-                            row.epoch,
-                            row.system,
-                            row.level,
-                            json.loads(row.archs),
-                            row.distro,
-                            util.sql_decode_requirements(row.requirements),
-                            json.loads(row.properties),
-                            files)
+    md =  package_metadata(row.filename,
+                           row.name,
+                           row.version,
+                           row.revision,
+                           row.epoch,
+                           row.system,
+                           row.level,
+                           json.loads(row.archs),
+                           row.distro,
+                           util.sql_decode_requirements(row.requirements),
+                           json.loads(row.properties),
+                           files)
+    return md
   
   def find_artifact(self, adesc):
     check.check_artifact_descriptor(adesc)

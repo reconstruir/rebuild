@@ -64,7 +64,7 @@ class test_artifact_db(unit_test):
   def test_add(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
-    e = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES)
+    e = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, [], {}, self.TEST_FILES)
     adesc = e.artifact_descriptor
     self.assertFalse( db.has_artifact(adesc) )
     db.add_artifact(e)
@@ -73,7 +73,7 @@ class test_artifact_db(unit_test):
   def test_add_duplicate(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
-    e = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES)
+    e = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, [], {}, self.TEST_FILES)
     adesc = e.artifact_descriptor
     self.assertFalse( db.has_artifact(adesc) )
     db.add_artifact(e)
@@ -84,7 +84,7 @@ class test_artifact_db(unit_test):
   def test_remove(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
-    e = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES)
+    e = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, [], {}, self.TEST_FILES)
     adesc = e.artifact_descriptor
     self.assertFalse( db.has_artifact(adesc) )
     db.add_artifact(e)
@@ -95,7 +95,7 @@ class test_artifact_db(unit_test):
   def test_readd(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
-    e = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES)
+    e = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, [], {}, self.TEST_FILES)
     adesc = e.artifact_descriptor
     self.assertFalse( db.has_artifact(adesc) )
     db.add_artifact(e)
@@ -110,7 +110,7 @@ class test_artifact_db(unit_test):
   def test_remove_not_installed(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
-    e = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES)
+    e = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, [], {}, self.TEST_FILES)
     adesc = e.artifact_descriptor
     self.assertFalse( db.has_artifact(adesc) )
     with self.assertRaises(NotInstalledError) as context:
@@ -119,8 +119,8 @@ class test_artifact_db(unit_test):
   def test_replace(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
-    e1 = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES)
-    e2 = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES2)
+    e1 = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, [], {}, self.TEST_FILES)
+    e2 = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, [], {}, self.TEST_FILES2)
     self.assertFalse( db.has_artifact(e1.artifact_descriptor) )
     db.add_artifact(e1)
     self.assertTrue( db.has_artifact(e1.artifact_descriptor) )
@@ -129,8 +129,8 @@ class test_artifact_db(unit_test):
   def test_replace_not_installed(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
-    e1 = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES)
-    e2 = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES2)
+    e1 = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, [], {}, self.TEST_FILES)
+    e2 = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, [], {}, self.TEST_FILES2)
     self.assertFalse( db.has_artifact(e1.artifact_descriptor) )
     with self.assertRaises(NotInstalledError) as context:
       db.replace_artifact(e2)
@@ -138,32 +138,34 @@ class test_artifact_db(unit_test):
   def test_find(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
-    e = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES)
+    e = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, [], {}, self.TEST_FILES)
     adesc = e.artifact_descriptor
     self.assertEqual( None, db.find_artifact(adesc) )
     db.add_artifact(e)
-    self.assertEqual( e, db.find_artifact(adesc) )
+    r = db.find_artifact(adesc)
+    print('R: %s' % (str(r)))
+    self.assertEqual( e, r )
     db.remove_artifact(adesc)
     self.assertEqual( None, db.find_artifact(adesc) )
-      
+    
   def test_get(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
-    e = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES)
+    e = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, [], {}, self.TEST_FILES)
     adesc = e.artifact_descriptor
     with self.assertRaises(NotInstalledError) as context:
       db.get_artifact(adesc)
-    db.add_artifact(e)
-    self.assertEqual( e, db.get_artifact(adesc) )
-    db.remove_artifact(adesc)
+      db.add_artifact(e)
+      self.assertEqual( e, db.get_artifact(adesc) )
+      db.remove_artifact(adesc)
     with self.assertRaises(NotInstalledError) as context:
       db.get_artifact(adesc)
 
   def test_list_all_by_descriptor(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
-    e1 = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES)
-    e2 = PM('bar-5.6.7.tar.gz', 'bar', '5.6.7', 1, 0, 'linux', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES2)
+    e1 = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, [], {}, self.TEST_FILES)
+    e2 = PM('bar-5.6.7.tar.gz', 'bar', '5.6.7', 1, 0, 'linux', 'release', [ 'x86_64' ], None, [], {}, self.TEST_FILES2)
     db.add_artifact(e1)
     self.assertEqual( [ e1.artifact_descriptor ], db.list_all_by_descriptor() )
     db.add_artifact(e2)
@@ -172,8 +174,8 @@ class test_artifact_db(unit_test):
   def test_list_all_by_metadata(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
-    e1 = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES)
-    e2 = PM('bar-5.6.7.tar.gz', 'bar', '5.6.7', 1, 0, 'linux', 'release', [ 'x86_64' ], '', [], {}, self.TEST_FILES2)
+    e1 = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, [], {}, self.TEST_FILES)
+    e2 = PM('bar-5.6.7.tar.gz', 'bar', '5.6.7', 1, 0, 'linux', 'release', [ 'x86_64' ], None, [], {}, self.TEST_FILES2)
     db.add_artifact(e1)
     self.assertEqual( [ e1 ], db.list_all_by_metadata() )
     db.add_artifact(e2)

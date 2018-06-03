@@ -20,6 +20,7 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
     check.check_string(system)
     check.check_string(level)
     check.check_string_seq(archs)
+    distro = distro or ''
     check.check_string(distro)
     if check.is_string(requirements):
       requirements = requirement_list.parse(requirements)

@@ -10,16 +10,16 @@ class test_artifact_descriptor(unit_test):
   def test_parse_filename(self):
     f = AD.parse_artifact_filename
 
-    self.assertEqual( ( 'gnu_libtool', '2.4.6', 0, 0, 'macos', 'release', [ 'x86_64' ], None ),
+    self.assertEqual( ( 'gnu_libtool', '2.4.6', 0, 0, 'macos', 'release', [ 'x86_64' ], '' ),
                       f('macos/x86_64/release/gnu_libtool-2.4.6.tar.gz') )
 
-    self.assertEqual( ( 'gnu_libtool', '2.4.6', 0, 0, 'macos', 'debug', [ 'x86_64' ], None ),
+    self.assertEqual( ( 'gnu_libtool', '2.4.6', 0, 0, 'macos', 'debug', [ 'x86_64' ], '' ),
                       f('macos/x86_64/debug/gnu_libtool-2.4.6.tar.gz') )
 
-    self.assertEqual( ( 'gnu_libtool', '2.4.6', 0, 0, 'linux', 'release', [ 'x86_64' ], None ),
+    self.assertEqual( ( 'gnu_libtool', '2.4.6', 0, 0, 'linux', 'release', [ 'x86_64' ], '' ),
                       f('linux/x86_64/release/gnu_libtool-2.4.6.tar.gz') )
 
-    self.assertEqual( ( 'gnu_libtool', '2.4.6', 0, 0, 'linux', 'debug', [ 'x86_64' ], None ),
+    self.assertEqual( ( 'gnu_libtool', '2.4.6', 0, 0, 'linux', 'debug', [ 'x86_64' ], '' ),
                       f('linux/x86_64/debug/gnu_libtool-2.4.6.tar.gz') )
     
 if __name__ == '__main__':

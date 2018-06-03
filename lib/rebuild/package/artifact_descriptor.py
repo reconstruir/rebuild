@@ -18,8 +18,8 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
     check.check_string(system)
     check.check_string(level)
     check.check_string_seq(archs)
-    if distro:
-      check.check_string(distro)
+    distro = distro or ''
+    check.check_string(distro)
     return clazz.__bases__[0].__new__(clazz, name, version, revision, epoch, system, level, archs, distro)
 
   def __str__(self):
@@ -47,7 +47,7 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
       self.system,
       self.level,
       util.sql_encode_string_list(self.archs, quoted = False),
-      self.distro
+      self.distro,
     )
 
   @classmethod

@@ -9,10 +9,11 @@ from bes.fs import dir_util, file_checksum, file_find, file_util
 from bes.debug import debug_timer, noop_debug_timer
 from rebuild.base import package_descriptor, package_descriptor_list, requirement_manager
 
+from .artifact_db import artifact_db
+from .artifact_descriptor import artifact_descriptor
+from .db_error import *
 from .package import package
 from .package_list import package_list
-from .db_error import *
-from .artifact_db import artifact_db
 
 #log.configure('artifact_manager=debug')
 
@@ -94,25 +95,29 @@ class artifact_manager(object):
     self._available_packages_map = {}
     self._requirement_managers = {}
     
-  def artifact_path(self, package_descriptor, build_target):
+  def artifact_path(self, package_descriptor, build_target, relative = False):
     filename = '%s.tar.gz' % (package_descriptor.full_name)
-    return path.join(self._root_dir, build_target.build_path, filename)
+    relative_path = path.join(build_target.build_path, filename)
+    if relative:
+      return relative_path
+    return path.join(self._root_dir, relative_path)
 
   def publish(self, tarball, build_target, allow_replace):
     pkg = package(tarball)
     pkg_info = pkg.package_descriptor
-    artifact_path = self.artifact_path(pkg_info, build_target)
-    file_util.copy(tarball, artifact_path)
+    artifact_path_rel = self.artifact_path(pkg_info, build_target, relative = True)
+    artifact_path_abs = self.artifact_path(pkg_info, build_target, relative = False)
+    file_util.copy(tarball, artifact_path_abs)
     if not self.no_git:
       git.add(self._root_dir, pkg_info.artifact_path(build_target))
     self._reset()
-    pkg_metadata = pkg.metadata.clone_with_filename(artifact_path)
+    pkg_metadata = pkg.metadata.clone_with_filename(artifact_path_rel)
     should_replace = allow_replace and self._db.has_artifact(pkg_metadata.artifact_descriptor)
     if should_replace:
       self._db.replace_artifact(pkg_metadata)
     else:
       self._db.add_artifact(pkg_metadata)
-    return artifact_path
+    return artifact_path_abs
 
   def available_packages(self, build_target):
     if build_target.build_path not in self._available_packages_map:
@@ -180,6 +185,22 @@ class artifact_manager(object):
                               package_descriptor)
     return self._get_package(tarball)
 
+  def list_all_by_descriptor(self):
+    self._db.list_all_by_descriptor()
+
+  def list_all_by_metadata(self):
+    self._db.list_all_by_metadata()
+  
+  def caca_package(self, package_descriptor, build_target):
+    adesc = artifact_descriptor(package_descriptor.name, package_descriptor.version.upstream_version,
+                                package_descriptor.version.revision, package_descriptor.version.epoch,
+                                build_target.system, build_target.level, build_target.archs, build_target.distro)
+    return self._db.get_artifact(adesc)
+
+  def caca_find_package(self, adesc):
+    check.check_artifact_descriptor(adesc)
+    return self._db.get_artifact(adesc)
+  
   def _get_package(self, tarball):
     if not tarball in self._package_cache:
       self._package_cache[tarball] = package(tarball)
