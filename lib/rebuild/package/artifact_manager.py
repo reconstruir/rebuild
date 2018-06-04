@@ -52,31 +52,6 @@ class artifact_manager(object):
 
   def reload_db(self):
     self._db = artifact_db(path.join(self._root_dir, 'artifacts.db'))
-
-  '''
-  def _sync_db(self):
-    return
-    possible = self._find_possible_artifacts(self._root_dir)
-    self._timer.stop()
-    for f in possible:
-      self._timer.start('checking %s' % (path.relpath(f)))
-      if package.is_package(f):
-        self._timer.stop()
-        self._timer.start('loading %s' % (path.relpath(f)))
-        p = package(f)
-        self._timer.stop()
-
-        self._timer.start('checksum %s' % (path.relpath(f)))
-        chk = file_checksum.from_file(f)
-        self._timer.stop()
-        self._timer.start('loading metadata %s' % (path.relpath(f)))
-        md = p.metadata
-        self._timer.stop()
-        print('metadata: %d - %s' % (len(md.files), str(md.artifact_descriptor)))
-      else:
-        self._timer.stop()
-        print('invalid package: %s' % (f))
-'''
   
   @classmethod
   def _find_possible_artifacts(clazz, root_dir):
@@ -113,8 +88,6 @@ class artifact_manager(object):
     self._reset()
     pkg_metadata = pkg.metadata.clone_with_filename(artifact_path_rel)
     should_replace = allow_replace and self._db.has_artifact(pkg_metadata.artifact_descriptor)
-    print('FUCK: should_replace=%s' % (should_replace))
-    print('FUCK: adesc=%s' % (str(pkg_metadata.artifact_descriptor)))
     if should_replace:
       self._db.replace_artifact(pkg_metadata)
     else:

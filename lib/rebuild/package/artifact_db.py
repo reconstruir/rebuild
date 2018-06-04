@@ -117,10 +117,12 @@ create table artifacts(
 
   def list_all_by_descriptor(self, build_target = None):
     if build_target:
-#      system,distro,level,archs,build_path
       sql = '''select name, version, revision, epoch, system, level, archs, distro from artifacts where system=? and level=? and archs=? order by name asc, version asc, revision asc, epoch asc, system asc, level asc, archs asc, distro asc'''
-      data = ( build_target.system, build_target.level, util.sql_encode_string_list(build_target.archs) )
+      data = ( build_target.system, build_target.level, util.sql_encode_string_list(build_target.archs, quoted = False) )
       rows = self._db.select_namedtuples(sql, data)
+      print('FUCK:  sql: %s' % (sql))
+      print('FUCK: data: %s' % (str(data)))
+      print('FUCK: rows: %s' % (str(rows)))
     else:
       sql = '''select name, version, revision, epoch, system, level, archs, distro from artifacts order by name asc, version asc, revision asc, epoch asc, system asc, level asc, archs asc, distro asc'''
       rows = self._db.select_namedtuples(sql)
@@ -148,10 +150,6 @@ create table artifacts(
     rows = self._db.select_namedtuples(sql, adesc.to_sql_tuple())
     if not rows:
       return None
-    print('FUCK: sql: %s' % (sql))
-    print('FUCK: data: %s' % (str(adesc.to_sql_tuple())))
-    for i, r in enumerate(rows):
-      print('FUCK: %d: row: %s' % (i, str(r)))
     assert(len(rows) == 1)
     md = self._load_row_metadata(rows[0], adesc = adesc)
     return md
