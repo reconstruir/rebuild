@@ -75,5 +75,13 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
                  level,
                  archs,
                  None)
+
+  @property
+  def full_name(self):
+    return self.make_full_name_str(self.name, self.build_version)
+
+  @classmethod
+  def make_full_name_str(clazz, name, version):
+    return '%s%s%s' % (name, '-', str(version))
   
 check.register_class(artifact_descriptor, include_seq = False)
