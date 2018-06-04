@@ -864,3 +864,6 @@ makefile in step_make might not work
 
 2018-05-30
  - all the "mine" tests are broken
+ - artifact db usage of files_db does not happen in transactions
+ - add unit test of replacing a package where the only chance is the files checksum
+ 

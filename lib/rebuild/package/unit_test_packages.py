@@ -4,7 +4,7 @@
 
 import os.path as path
 from bes.common import dict_util, json_util, string_util
-from bes.fs import file_util, temp_file, temp_item
+from bes.fs import file_find, file_util, temp_file, temp_item
 from bes.archive import archiver
 from rebuild.base import build_arch, build_system, build_target, package_descriptor, requirement, requirement_list
 from rebuild.package import package, package_files, package_metadata as PM
@@ -133,6 +133,16 @@ Cflags: -I${includedir}
           tp = clazz(desc, pm, system = system, level = level, debug = debug)
           tp.create_tarball(root_dir)
 
+  @classmethod
+  def publish_artifacts(clazz, am):
+    artifacts = file_find.find_fnmatch(am.root_dir, [ '*.tar.gz' ], relative = False)
+    for artifact in artifacts:
+      tmp_artifact = temp_file.make_temp_file()
+      file_util.copy(artifact, tmp_artifact)
+      file_util.remove(artifact)
+      p = package(tmp_artifact)
+      am.publish(tmp_artifact, p.metadata.build_target, False)
+          
   @classmethod
   def make_water(clazz, debug = False):
     return clazz.make_simple_tarball('water-1.0.0-0', clazz.TEST_PACKAGES, debug = debug)

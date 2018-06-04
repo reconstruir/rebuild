@@ -113,6 +113,8 @@ class artifact_manager(object):
     self._reset()
     pkg_metadata = pkg.metadata.clone_with_filename(artifact_path_rel)
     should_replace = allow_replace and self._db.has_artifact(pkg_metadata.artifact_descriptor)
+    print('FUCK: should_replace=%s' % (should_replace))
+    print('FUCK: adesc=%s' % (str(pkg_metadata.artifact_descriptor)))
     if should_replace:
       self._db.replace_artifact(pkg_metadata)
     else:
@@ -178,12 +180,12 @@ class artifact_manager(object):
       candidates = sorted(candidates, cmp = package.descriptor_cmp)
     return candidates[-1]
 
-  def package(self, package_descriptor, build_target):
-    tarball = self.artifact_path(package_descriptor, build_target)
-    if not path.isfile(tarball):
-      raise NotInstalledError('Artifact \"%s\" not found for %s' % (tarball, package_descriptor.full_name),
-                              package_descriptor)
-    return self._get_package(tarball)
+#  def package(self, package_descriptor, build_target):
+#    tarball = self.artifact_path(package_descriptor, build_target)
+#    if not path.isfile(tarball):
+#      raise NotInstalledError('Artifact \"%s\" not found for %s' % (tarball, package_descriptor.full_name),
+#                              package_descriptor)
+#    return self._get_package(tarball)
 
   def list_all_by_descriptor(self):
     self._db.list_all_by_descriptor()
@@ -191,11 +193,14 @@ class artifact_manager(object):
   def list_all_by_metadata(self):
     self._db.list_all_by_metadata()
   
-  def caca_package(self, package_descriptor, build_target):
+  def caca_package(self, package_descriptor, build_target, relative_filename = True):
     adesc = artifact_descriptor(package_descriptor.name, package_descriptor.version.upstream_version,
                                 package_descriptor.version.revision, package_descriptor.version.epoch,
                                 build_target.system, build_target.level, build_target.archs, build_target.distro)
-    return self._db.get_artifact(adesc)
+    md = self._db.get_artifact(adesc)
+    if relative_filename:
+      return md
+    return md.clone_with_filename(path.join(self._root_dir, md.filename))
 
   def caca_find_package(self, adesc):
     check.check_artifact_descriptor(adesc)

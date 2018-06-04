@@ -2,11 +2,11 @@
 #-*- coding:utf-8 -*-
 #
 import os.path as path, unittest
-from bes.fs import temp_file
+from bes.fs import file_find, file_util, temp_file
 from bes.system import host
 from rebuild.base import build_system, build_target, build_level, package_descriptor
 from rebuild.pkg_config import pkg_config
-from rebuild.package import artifact_manager, package_manager
+from rebuild.package import artifact_manager, package, package_manager
 from rebuild.package import PackageFilesConflictError, PackageMissingRequirementsError
 from rebuild.package.db_error import *
 from bes.archive import archiver, temp_archive
@@ -134,6 +134,7 @@ class test_package_manager(unittest.TestCase):
       print("root_dir:\n%s\n" % (root_dir))
     am = artifact_manager(root_dir, address = None, no_git = True)
     unit_test_packages.make_test_packages(unit_test_packages.TEST_PACKAGES, am.root_dir)
+    unit_test_packages.publish_artifacts(am)
     return am
 
   def test_install_package(self):

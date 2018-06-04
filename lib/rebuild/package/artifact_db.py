@@ -57,25 +57,23 @@ create table artifacts(
     adesc = md.artifact_descriptor
     if self.has_artifact(adesc):
       raise AlreadyInstalledError('Already installed: %s' % (str(adesc)), adesc)
+    self._add_artifact_i(md)
+    self._db.commit()
+
+  def _add_artifact_i(self, md):
     keys, values = self._metadata_to_sql_keys_and_values(md)
     self._db.execute('insert into artifacts(%s) values(%s)' % (keys, values))
     files_table_name = md.artifact_descriptor.sql_table_name
     self._files_db.add_table(files_table_name, md.files.files)
     self._files_db.add_table(self._make_env_files_table_name(files_table_name), md.files.env_files)
-    self._db.commit()
 
   def replace_artifact(self, md):
     check.check_package_metadata(md)
     adesc = md.artifact_descriptor
     if not self.has_artifact(adesc):
       raise NotInstalledError('Not installed: %s' % (str(adesc)), adesc)
-    keys, values = self._metadata_to_sql_keys_and_values(md)
-    self._db.execute('replace into artifacts(%s) values(%s)' % (keys, values))
-    files_table_name = md.artifact_descriptor.sql_table_name
-    self._files_db.remove_table(files_table_name)
-    self._files_db.remove_table(self._make_env_files_table_name(files_table_name))
-    self._files_db.add_table(files_table_name, md.files.files)
-    self._files_db.add_table(self._make_env_files_table_name(files_table_name), md.files.env_files)
+    self._remove_artifact(md.artifact_descriptor)
+    self._add_artifact_i(md)
     self._db.commit()
     
   @classmethod
@@ -107,15 +105,25 @@ create table artifacts(
     check.check_artifact_descriptor(adesc)
     if not self.has_artifact(adesc):
       raise NotInstalledError('Not installed: %s' % (str(adesc)), adesc)
+    self._remove_artifact(adesc)
+    self._db.commit()
+
+  def _remove_artifact(self, adesc):
     sql = 'delete from artifacts where {}'.format(adesc.WHERE_EXPRESSION)
     self._db.execute(sql, adesc.to_sql_tuple())
     files_table_name = adesc.sql_table_name
     self._files_db.remove_table(files_table_name)
     self._files_db.remove_table(self._make_env_files_table_name(files_table_name))
-    self._db.commit()
 
-  def list_all_by_descriptor(self):
-    rows = self._db.select_namedtuples('''select name, version, revision, epoch, system, level, archs, distro from artifacts order by name asc, version asc, revision asc, epoch asc, system asc, level asc, archs asc, distro asc''')
+  def list_all_by_descriptor(self, build_target = None):
+    if build_target:
+#      system,distro,level,archs,build_path
+      sql = '''select name, version, revision, epoch, system, level, archs, distro from artifacts where system=? and level=? and archs=? order by name asc, version asc, revision asc, epoch asc, system asc, level asc, archs asc, distro asc'''
+      data = ( build_target.system, build_target.level, util.sql_encode_string_list(build_target.archs) )
+      rows = self._db.select_namedtuples(sql, data)
+    else:
+      sql = '''select name, version, revision, epoch, system, level, archs, distro from artifacts order by name asc, version asc, revision asc, epoch asc, system asc, level asc, archs asc, distro asc'''
+      rows = self._db.select_namedtuples(sql)
     values = [ self._load_artifact_descriptor(row) for row in rows ]
     return artifact_descriptor_list(values = values)
 
@@ -140,6 +148,10 @@ create table artifacts(
     rows = self._db.select_namedtuples(sql, adesc.to_sql_tuple())
     if not rows:
       return None
+    print('FUCK: sql: %s' % (sql))
+    print('FUCK: data: %s' % (str(adesc.to_sql_tuple())))
+    for i, r in enumerate(rows):
+      print('FUCK: %d: row: %s' % (i, str(r)))
     assert(len(rows) == 1)
     md = self._load_row_metadata(rows[0], adesc = adesc)
     return md

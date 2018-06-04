@@ -220,11 +220,11 @@ class package_manager(object):
     return result
     
   def _install_package(self, pkg_desc, build_target, hardness, allow_downgrade, force_install):
-    pkg = self._artifact_manager.package(pkg_desc, build_target)
+    pkg = self._artifact_manager.caca_package(pkg_desc, build_target, relative_filename = False)
 
-    if self.is_installed(pkg.package_descriptor.name):
+    if self.is_installed(pkg.name):
       self.log_i('install_package: %s for %s' % (pkg_desc.full_name, ' '.join(hardness)))
-      old_pkg_entry = self.db.find_package(pkg.package_descriptor.name)
+      old_pkg_entry = self.db.find_package(pkg.name)
       old_pkg_entry_desc = old_pkg_entry.descriptor
       comparison = package_descriptor.full_name_cmp(old_pkg_entry_desc, pkg_desc)
       if force_install:
@@ -235,35 +235,35 @@ class package_manager(object):
         return False
       elif comparison < 0:
         self.log_i('install_package: upgrading from %s to %s' % (old_pkg_entry_desc.full_name,
-                                                                 pkg.package_descriptor.full_name))
-        self.uninstall_package(pkg.package_descriptor.name)
-        self.install_tarball(pkg.tarball, hardness)
+                                                                 pkg.full_name))
+        self.uninstall_package(pkg.name)
+        self.install_tarball(pkg.filename, hardness)
         return True
       else:
         if allow_downgrade:
           self.log_i('install_package: downgrading from %s to %s' % (old_pkg_entry_desc.full_name,
-                                                                     pkg.package_descriptor.full_name))
-          self.uninstall_package(pkg.package_descriptor.name)
-          self.install_tarball(pkg.tarball, hardness)
+                                                                     pkg.full_name))
+          self.uninstall_package(pkg.name)
+          self.install_tarball(pkg.filename, hardness)
           return True
         else:
           print('warning: installed package %s newer than available package %s' % (old_pkg_entry_desc.full_name,
                                                                                    pkg_desc.full_name))
         return False
     else:
-      self.log_i('install_package: first install: %s' % (pkg.tarball))
-      self.install_tarball(pkg.tarball, hardness)
+      self.log_i('install_package: first install: %s' % (pkg.filename))
+      self.install_tarball(pkg.filename, hardness)
       return True
 
   @classmethod
   def _file_checksums_changed(clazz, old_pkg_entry, new_pkg):
     check.check_package_db_entry(old_pkg_entry)
-    check.check_package(new_pkg)
+    check.check_package_metadata(new_pkg)
 
     old_desc = old_pkg_entry.descriptor
 
     old_files_checksums = old_pkg_entry.files.files_checksum
-    new_files_checksums = new_pkg.metadata.files.files_checksum
+    new_files_checksums = new_pkg.files.files_checksum
     files_checksums_changed = old_files_checksums != new_files_checksums
     if files_checksums_changed:
       clazz.log_i('install_package: files changed: %s old=%s new=%s' % (old_desc.name,
@@ -271,7 +271,7 @@ class package_manager(object):
                                                                         new_files_checksums))
 
     old_env_files_checksums = old_pkg_entry.files.env_files_checksum
-    new_env_files_checksums = new_pkg.metadata.files.env_files_checksum
+    new_env_files_checksums = new_pkg.files.env_files_checksum
     env_files_checksums_changed = old_env_files_checksums != new_env_files_checksums
     if env_files_checksums_changed:
       clazz.log_i('install_package: env files changed: %s old=%s new=%s' % (old_desc.name,

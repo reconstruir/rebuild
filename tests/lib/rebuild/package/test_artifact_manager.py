@@ -23,7 +23,7 @@ class test_artifact_manager(unit_test):
     am = artifact_manager(root_dir, address = address)
     if items:
       clazz._make_test_artifacts(items, am.root_dir)
-    clazz._publish_artifacts(am)
+    unit_test_packages.publish_artifacts(am)
     return am
 
   def test_artifact_path(self):
@@ -68,44 +68,10 @@ class test_artifact_manager(unit_test):
     return self._make_test_artifact_manager(address = tmp_repo)
 
   @classmethod
-  def _publish_artifacts(clazz, am):
-    artifacts = file_find.find_fnmatch(am.root_dir, [ '*.tar.gz' ], relative = False)
-    for artifact in artifacts:
-      tmp_artifact = temp_file.make_temp_file()
-      file_util.copy(artifact, tmp_artifact)
-      file_util.remove(artifact)
-      p = package(tmp_artifact)
-      am.publish(tmp_artifact, p.metadata.build_target, False)
-  
-  @classmethod
   def _make_test_artifacts(clazz, items, root_dir):
     unit_test_packages.make_test_packages(items, root_dir)
     
   def test_artifact_from_git(self):
-    manager = self._make_test_artifacts_git_repo()
-
-    linux = build_target(build_system.LINUX, build_level.RELEASE)
-    darwin = build_target(build_system.MACOS, build_level.RELEASE)
-
-    self.assertEqual( 'water-1.0.0', manager.package(package_descriptor('water', '1.0.0'), darwin).package_descriptor.full_name )
-    self.assertEqual( 'water-1.0.0-1', manager.package(package_descriptor('water', '1.0.0-1'), darwin).package_descriptor.full_name )
-    self.assertEqual( 'water-1.0.0-2', manager.package(package_descriptor('water', '1.0.0-2'), darwin).package_descriptor.full_name )
-    self.assertEqual( 'fructose-3.4.5-6', manager.package(package_descriptor('fructose', '3.4.5-6'), darwin).package_descriptor.full_name )
-    self.assertEqual( 'apple-1.2.3-1', manager.package(package_descriptor('apple', '1.2.3-1'), darwin).package_descriptor.full_name )
-    self.assertEqual( 'orange-6.5.4-3', manager.package(package_descriptor('orange', '6.5.4-3'), darwin).package_descriptor.full_name )
-    self.assertEqual( 'orange_juice-1.4.5', manager.package(package_descriptor('orange_juice', '1.4.5'), darwin).package_descriptor.full_name )
-    self.assertEqual( 'pear_juice-6.6.6', manager.package(package_descriptor('pear_juice', '6.6.6'), darwin).package_descriptor.full_name )
-
-    self.assertEqual( 'water-1.0.0', manager.package(package_descriptor('water', '1.0.0'), linux).package_descriptor.full_name )
-    self.assertEqual( 'water-1.0.0-1', manager.package(package_descriptor('water', '1.0.0-1'), linux).package_descriptor.full_name )
-    self.assertEqual( 'water-1.0.0-2', manager.package(package_descriptor('water', '1.0.0-2'), linux).package_descriptor.full_name )
-    self.assertEqual( 'fructose-3.4.5-6', manager.package(package_descriptor('fructose', '3.4.5-6'), linux).package_descriptor.full_name )
-    self.assertEqual( 'apple-1.2.3-1', manager.package(package_descriptor('apple', '1.2.3-1'), linux).package_descriptor.full_name )
-    self.assertEqual( 'orange-6.5.4-3', manager.package(package_descriptor('orange', '6.5.4-3'), linux).package_descriptor.full_name )
-    self.assertEqual( 'orange_juice-1.4.5', manager.package(package_descriptor('orange_juice', '1.4.5'), linux).package_descriptor.full_name )
-    self.assertEqual( 'pear_juice-6.6.6', manager.package(package_descriptor('pear_juice', '6.6.6'), linux).package_descriptor.full_name )
-
-  def test_caca_artifact_from_git(self):
     manager = self._make_test_artifacts_git_repo()
 
     linux = build_target(build_system.LINUX, build_level.RELEASE)

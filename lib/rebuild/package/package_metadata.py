@@ -98,5 +98,13 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
     # remove format version which __init__() does not take
     l.pop(0)
     return self.__class__(*l)
+
+  @property
+  def full_name(self):
+    return self.make_full_name_str(self.name, self.build_version)
+
+  @classmethod
+  def make_full_name_str(clazz, name, version):
+    return '%s%s%s' % (name, '-', str(version))
   
 check.register_class(package_metadata, include_seq = False)

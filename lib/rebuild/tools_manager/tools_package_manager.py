@@ -49,8 +49,8 @@ class tools_package_manager(object):
     check.check_artifact_manager(artifact_manager)
     if self.is_installed(pkg_desc):
       return
-    package = artifact_manager.package(pkg_desc, self.BUILD_TARGET)
-    self.install_tarball(package.tarball)
+    package = artifact_manager.caca_package(pkg_desc, self.BUILD_TARGET, relative_filename = False)
+    self.install_tarball(package.filename)
 
   def bin_dir(self, pkg_desc):
     if not self.is_installed(pkg_desc):

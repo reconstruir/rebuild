@@ -30,6 +30,7 @@ class test_tools_manager(unittest.TestCase):
       print("root_dir:\n%s\n" % (root_dir))
     am = artifact_manager(root_dir, address = None, no_git = True)
     unit_test_packages.make_test_packages(unit_test_packages.TEST_PACKAGES, am.root_dir)
+    unit_test_packages.publish_artifacts(am)
     return am
   
   def test_update(self):
