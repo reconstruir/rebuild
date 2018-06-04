@@ -206,10 +206,6 @@ class artifact_manager(object):
       self._package_cache[tarball] = package(tarball)
     return self._package_cache[tarball]
 
-#  def dependency_map(self, build_target):
-#    available = self.available_packages(build_target).descriptors()
-#    return package_descriptor_list.dependency_map(available)
-
   def get_requirement_manager(clazz, build_target):
     if not build_target.build_path in self._requirement_managers:
       self._requirement_managers[build_target.build_path] = self._make_requirement_manager(build_target)
