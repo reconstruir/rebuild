@@ -8,7 +8,7 @@ from rebuild.package import env_framework
 
 class test_env_framework(unit_test):
 
-  def test_extract(self):
+  def xtest_extract(self):
     tmp_dir = temp_file.make_temp_dir(delete = False)
     ef = env_framework()
     ef.extract(tmp_dir)

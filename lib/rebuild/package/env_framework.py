@@ -24,4 +24,4 @@ class env_framework(object):
       dst_path = path.join(where, f)
       content = package.get_data_content(src_path, __file__, __name__)
       file_util.save(dst_path, content = content, mode = 0o755)
-      assert not file_util.is_empty(dst_path)
+      #assert not file_util.is_empty(dst_path)
