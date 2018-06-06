@@ -124,7 +124,9 @@ class test_artifact_db(unit_test):
     self.assertFalse( db.has_artifact(e1.artifact_descriptor) )
     db.add_artifact(e1)
     self.assertTrue( db.has_artifact(e1.artifact_descriptor) )
+    self.assertEqual( [ e1.artifact_descriptor ], db.list_all_by_descriptor() )
     db.replace_artifact(e2)
+    self.assertEqual( [ e2.artifact_descriptor ], db.list_all_by_descriptor() )
       
   def test_replace_not_installed(self):
     tmp_db = self._make_tmp_db_path()

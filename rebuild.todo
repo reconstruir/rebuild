@@ -863,7 +863,9 @@ makefile in step_make might not work
  - download and discard tarballs to save diskspace
 
 2018-05-30
- - all the "mine" tests are broken
- - artifact db usage of files_db does not happen in transactions
- - add unit test of replacing a package where the only chance is the files checksum
+ - bes_test rebuild test is broken not sure why
+ - add unit test of replacing a package where the only change is the files checksum
+
+2018-06-06
+ - do the linux rpath fix only if the binary in question has libs that need it
  
