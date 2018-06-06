@@ -151,7 +151,7 @@ _@NAME@_setup()
   export MANPATH=${_prefix}/man:${_prefix}/share/man:${MANPATH}
   local _env_dir=$_root/env
   if [ -d $_env_dir -a -n "$(ls -A $_env_dir/*.sh)" ]; then
-    for f in $(find $_env_dir -name "*.sh" -maxdepth 1); do
+    for f in $(find $_env_dir -maxdepth 1 -name "*.sh"); do
       source "$f"
     done
   fi  
@@ -191,11 +191,11 @@ _rebuild_system_name()
   export PATH=${_prefix}/bin:${PATH}
   export PYTHONPATH=${_prefix}/lib/python:${PYTHONPATH}
   export PKG_CONFIG_PATH=${_prefix}/lib/pkgconfig:${PKG_CONFIG_PATH}
-  export DYLD_LIBRARY_PATH=${_prefix}/lib:${DYLD_LIBRARY_PATH}
+  export @LIBRARY_PATH@=${_prefix}/lib:${@LIBRARY_PATH@}
   export MANPATH=${_prefix}/man:${_prefix}/share/man:${MANPATH}
   local _env_dir=$_system_root/env
   if [ -d $_env_dir ]; then
-    for f in $(find $_env_dir -name "*.sh" -maxdepth 1); do
+    for f in $(find $_env_dir -maxdepth 1 -name "*.sh"); do
       source "$f"
     done
   fi  

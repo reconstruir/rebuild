@@ -44,3 +44,9 @@ class library_base(with_metaclass(ABCMeta, object)):
   def static_prefix(self):
     'Return the static library prefix.'
     pass
+
+  @abstractmethod
+  def binary_format_name(self):
+    'The name of the binary format (usually elf or macho).'
+    pass
+  

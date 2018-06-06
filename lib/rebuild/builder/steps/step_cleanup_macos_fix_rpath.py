@@ -21,7 +21,6 @@ class step_cleanup_macos_fix_rpath(step):
     if not path.isdir(script.staged_files_dir):
       return step_result(True, None)
     binaries = binary_detector.find_strippable_binaries(script.staged_files_dir, format_name = 'macho')
-    blurb_binaries = [ path.relpath(b) for b in binaries ]
     for b in binaries:
       deps = [ dep for dep in library.dependencies(b) if dep.startswith(script.staged_files_dir) ]
       for dep in deps:

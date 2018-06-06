@@ -9,6 +9,7 @@ from .step_cleanup_gnu_info import step_cleanup_gnu_info
 from .step_cleanup_library_filenames import step_cleanup_library_filenames
 from .step_cleanup_libtool_droppings import step_cleanup_libtool_droppings
 from .step_cleanup_macos_fix_rpath import step_cleanup_macos_fix_rpath
+from .step_cleanup_linux_fix_rpath import step_cleanup_linux_fix_rpath
 from .step_cleanup_pkg_config_pcs import step_cleanup_pkg_config_pcs
 from .step_cleanup_python_droppings import step_cleanup_python_droppings
 from .step_cleanup_strip_binaries import step_cleanup_strip_binaries
@@ -25,6 +26,7 @@ class step_cleanup(compound_step):
     step_cleanup_python_droppings,
     step_cleanup_strip_binaries,
     step_cleanup_macos_fix_rpath,
+    step_cleanup_linux_fix_rpath,
   ]
   def __init__(self):
     super(step_cleanup, self).__init__()

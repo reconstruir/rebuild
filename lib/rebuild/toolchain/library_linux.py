@@ -67,3 +67,8 @@ class library_linux(library_base):
   def static_prefix(clazz):
     'Return the static library prefix.'
     return 'lib'
+
+  @classmethod
+  def binary_format_name(self):
+    'The name of the binary format (usually elf or macho).'
+    return 'elf'
