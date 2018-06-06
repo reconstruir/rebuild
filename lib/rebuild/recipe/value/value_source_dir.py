@@ -31,7 +31,7 @@ class value_source_dir(value_base):
 
   #@abstractmethod
   def substitutions_changed(self):
-    self._update()
+    self._update_tarball_path()
   
   @classmethod
   #@abstractmethod
@@ -55,15 +55,18 @@ class value_source_dir(value_base):
     # FIXME
     return values[-1]
   
-  def _update(self):
+  def _update_tarball_path(self):
     assert self.substitutions
     temp_dir = self.substitute('${REBUILD_TEMP_DIR}')
-    full_name = self.substitute('${REBUILD_PACKAGE_FULL_NAME}')
-    where = self.substitute(self.where)
-    tarball_filename = '%s.tar.gz' % (full_name)
-    tarball_path = path.join(temp_dir, tarball_filename)
-    archiver.create(tarball_path, where, base_dir = full_name)
-    assert path.isfile(tarball_path)
-    self._tarball = tarball_path
+    self._full_name = self.substitute('${REBUILD_PACKAGE_FULL_NAME}')
+    self._resolved_where = self.substitute(self.where)
+    tarball_filename = '%s.tar.gz' % (self._full_name)
+    self._tarball = path.join(temp_dir, tarball_filename)
+    
+  def tarball(self):
+    if not path.isfile(self._tarball):
+      archiver.create(self._tarball, self._resolved_where, base_dir = self._full_name)
+      assert path.isfile(self._tarball)
+    return self._tarball
   
 check.register_class(value_source_dir, include_seq = False)

@@ -69,7 +69,7 @@ class step_setup_prepare_tarballs(step):
                        strip_common_base = strip_common_base)
       
     if tarball_dir:
-      tarball_path = tarball_dir.sources()[0]
+      tarball_path = tarball_dir.tarball()
       if not tarball_path:
         return step_result(False, 'No tarball found for %s' % (script.descriptor.full_name))
       dest = tarball_dir.get_property('dest', '${REBUILD_SOURCE_UNPACKED_DIR}')
