@@ -69,6 +69,7 @@ class step_setup_prepare_tarballs(step):
                        strip_common_base = strip_common_base)
       
     if tarball_dir:
+      self.blurb('Creating tarball %s from %s' % (path.relpath(tarball_dir.sources()[0]), tarball_dir.where))
       tarball_path = tarball_dir.tarball()
       if not tarball_path:
         return step_result(False, 'No tarball found for %s' % (script.descriptor.full_name))
