@@ -153,13 +153,6 @@ class artifact_manager(object):
       candidates = sorted(candidates, cmp = package.descriptor_cmp)
     return candidates[-1]
 
-#  def package(self, package_descriptor, build_target):
-#    tarball = self.artifact_path(package_descriptor, build_target)
-#    if not path.isfile(tarball):
-#      raise NotInstalledError('Artifact \"%s\" not found for %s' % (tarball, package_descriptor.full_name),
-#                              package_descriptor)
-#    return self._get_package(tarball)
-
   def list_all_by_descriptor(self, build_target = None):
     self._db.list_all_by_descriptor(build_target = build_target)
 
