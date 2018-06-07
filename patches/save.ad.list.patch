@@ -1,0 +1,173 @@
+diff --git a/lib/rebuild/package/artifact_descriptor_list.py b/lib/rebuild/package/artifact_descriptor_list.py
+index aff5147..73ca5d0 100644
+--- a/lib/rebuild/package/artifact_descriptor_list.py
++++ b/lib/rebuild/package/artifact_descriptor_list.py
+@@ -35,5 +35,18 @@ class artifact_descriptor_list(type_checked_list):
+   def filter_by_system(self, system):
+     'Return only the descriptors that match system.'
+     return self.__class__([ adesc for adesc in self if adesc.system == system ])
++
++  def latest_versions(self):
++    'Return a list of only the lastest version of any artifact with multiple versions.'
++    latest = {}
++    for adesc in self:
++      name = adesc.name
++      if not name in latest:
++        latest[name] = adesc
++      else:
++        if adesc.build_version > latest[name].build_version:
++          latest[name] = adesc
++    result = artifact_descriptor_list(latest.values())
++    return sorted(result)
+   
+ check.register_class(artifact_descriptor_list, include_seq = False)
+diff --git a/lib/rebuild/package/artifact_manager.py b/lib/rebuild/package/artifact_manager.py
+index ea92092..e84ca03 100644
+--- a/lib/rebuild/package/artifact_manager.py
++++ b/lib/rebuild/package/artifact_manager.py
+@@ -109,7 +109,9 @@ class artifact_manager(object):
+     return package_list([ self._get_package(f) for f in all_files ])
+   
+   def latest_available_packages(self, build_target):
+-    return self.available_packages(build_target).latest_versions()
++    r = self.available_packages(build_target)
++    print('FUCK: caca: r=%s - %s' % (str(r), type(r)))
++    return r #self.available_packages(build_target).latest_versions()
+ 
+   def resolve_packages(self, package_names, build_target):
+     self._timer.start('resolve_packages(package_names %s, build_target %s)' % (package_names, build_target))
+@@ -158,7 +160,10 @@ class artifact_manager(object):
+ 
+   def list_all_by_metadata(self, build_target = None):
+     self._db.list_all_by_metadata(build_target = build_target)
+-  
++
++  def latest_versions_for_build_target(self, build_target):
++    return self.list_all_by_descriptor(build_target = build_target).latest_versions()
++    
+   def find_by_package_descriptor(self, package_descriptor, build_target, relative_filename = True):
+     check.check_package_descriptor(package_descriptor)
+     check.check_build_target(build_target)
+diff --git a/rebuild.todo b/rebuild.todo
+index f4c46fc..a00c103 100644
+--- a/rebuild.todo
++++ b/rebuild.todo
+@@ -870,4 +870,5 @@ makefile in step_make might not work
+ when python changed from using libedit to libreadline this error happened add a unit test
+ rebuild.package.package_manager.PackageFilesConflictError: conflicts found between "libreadline" and "libedit": share/man/man3/history.3
+  - make sure sourcing ~/.rebuild/foo/stuff/env/*.sh does so only for dependencies
++ - version comparison is shit
+  
+\ No newline at end of file
+diff --git a/tests/lib/rebuild/package/test_artifact_manager.py b/tests/lib/rebuild/package/test_artifact_manager.py
+index c8587a7..c68664f 100755
+--- a/tests/lib/rebuild/package/test_artifact_manager.py
++++ b/tests/lib/rebuild/package/test_artifact_manager.py
+@@ -15,6 +15,9 @@ class test_artifact_manager(unit_test):
+   DEBUG = unit_test.DEBUG
+   #DEBUG = True
+ 
++  LINUX_BT = build_target(build_system.LINUX, build_level.RELEASE)
++  DARWIN_BT = build_target(build_system.MACOS, build_level.RELEASE)
++  
+   @classmethod
+   def _make_test_artifact_manager(clazz, address = None, items = None):
+     root_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
+@@ -27,34 +30,34 @@ class test_artifact_manager(unit_test):
+     return am
+ 
+   def test_artifact_path(self):
+-    manager = self._make_test_artifact_manager()
++    am = self._make_test_artifact_manager()
+     pi = PD('foo', '1.2.34-1')
+-    bt = build_target(build_system.LINUX, build_level.RELEASE)
+-    self.assertEqual( path.join(manager.root_dir, pi.artifact_path(bt)), manager.artifact_path(pi, bt) )
++    bt = self.LINUX_BT
++    self.assertEqual( path.join(am.root_dir, pi.artifact_path(bt)), am.artifact_path(pi, bt) )
+ 
+   def test_publish(self):
+-    manager = self._make_test_artifact_manager()
+-    bt = build_target(build_system.LINUX, build_level.RELEASE)
++    am = self._make_test_artifact_manager()
++    bt = self.LINUX_BT
+     tmp_tarball = unit_test_packages.make_apple()
+-    filename = manager.publish(tmp_tarball, bt, False)
++    filename = am.publish(tmp_tarball, bt, False)
+     self.assertTrue( path.exists(filename) )
+ 
+   def test_publish_again_with_replace(self):
+-    manager = self._make_test_artifact_manager()
+-    bt = build_target(build_system.LINUX, build_level.RELEASE)
++    am = self._make_test_artifact_manager()
++    bt = self.LINUX_BT
+     tmp_tarball = unit_test_packages.make_apple()
+-    filename = manager.publish(tmp_tarball, bt, True)
++    filename = am.publish(tmp_tarball, bt, True)
+     self.assertTrue( path.exists(filename) )
+-    filename = manager.publish(tmp_tarball, bt, True)
++    filename = am.publish(tmp_tarball, bt, True)
+ 
+   def test_publish_again_without_replace(self):
+-    manager = self._make_test_artifact_manager()
+-    bt = build_target(build_system.LINUX, build_level.RELEASE)
++    am = self._make_test_artifact_manager()
++    bt = self.LINUX_BT
+     tmp_tarball = unit_test_packages.make_apple()
+-    filename = manager.publish(tmp_tarball, bt, False)
++    filename = am.publish(tmp_tarball, bt, False)
+     self.assertTrue( path.exists(filename) )
+     with self.assertRaises(AlreadyInstalledError) as context:
+-      manager.publish(tmp_tarball, bt, False)
++      am.publish(tmp_tarball, bt, False)
+ 
+   def _make_test_artifacts_git_repo(self):
+     tmp_repo = temp_file.make_temp_dir(delete = not self.DEBUG)
+@@ -72,28 +75,29 @@ class test_artifact_manager(unit_test):
+     unit_test_packages.make_test_packages(items, root_dir)
+     
+   def test_find_by_package_descriptor(self):
+-    manager = self._make_test_artifacts_git_repo()
++    am = self._make_test_artifacts_git_repo()
+ 
+-    linux = build_target(build_system.LINUX, build_level.RELEASE)
+-    darwin = build_target(build_system.MACOS, build_level.RELEASE)
++    self.assertEqual( 'water-1.0.0', am.find_by_package_descriptor(PD('water', '1.0.0'), self.DARWIN_BT).package_descriptor.full_name )
++    self.assertEqual( 'water-1.0.0-1', am.find_by_package_descriptor(PD('water', '1.0.0-1'), self.DARWIN_BT).package_descriptor.full_name )
++    self.assertEqual( 'water-1.0.0-2', am.find_by_package_descriptor(PD('water', '1.0.0-2'), self.DARWIN_BT).package_descriptor.full_name )
++    self.assertEqual( 'fructose-3.4.5-6', am.find_by_package_descriptor(PD('fructose', '3.4.5-6'), self.DARWIN_BT).package_descriptor.full_name )
++    self.assertEqual( 'apple-1.2.3-1', am.find_by_package_descriptor(PD('apple', '1.2.3-1'), self.DARWIN_BT).package_descriptor.full_name )
++    self.assertEqual( 'orange-6.5.4-3', am.find_by_package_descriptor(PD('orange', '6.5.4-3'), self.DARWIN_BT).package_descriptor.full_name )
++    self.assertEqual( 'orange_juice-1.4.5', am.find_by_package_descriptor(PD('orange_juice', '1.4.5'), self.DARWIN_BT).package_descriptor.full_name )
++    self.assertEqual( 'pear_juice-6.6.6', am.find_by_package_descriptor(PD('pear_juice', '6.6.6'), self.DARWIN_BT).package_descriptor.full_name )
+ 
+-    self.assertEqual( 'water-1.0.0', manager.find_by_package_descriptor(PD('water', '1.0.0'), darwin).package_descriptor.full_name )
+-    self.assertEqual( 'water-1.0.0-1', manager.find_by_package_descriptor(PD('water', '1.0.0-1'), darwin).package_descriptor.full_name )
+-    self.assertEqual( 'water-1.0.0-2', manager.find_by_package_descriptor(PD('water', '1.0.0-2'), darwin).package_descriptor.full_name )
+-    self.assertEqual( 'fructose-3.4.5-6', manager.find_by_package_descriptor(PD('fructose', '3.4.5-6'), darwin).package_descriptor.full_name )
+-    self.assertEqual( 'apple-1.2.3-1', manager.find_by_package_descriptor(PD('apple', '1.2.3-1'), darwin).package_descriptor.full_name )
+-    self.assertEqual( 'orange-6.5.4-3', manager.find_by_package_descriptor(PD('orange', '6.5.4-3'), darwin).package_descriptor.full_name )
+-    self.assertEqual( 'orange_juice-1.4.5', manager.find_by_package_descriptor(PD('orange_juice', '1.4.5'), darwin).package_descriptor.full_name )
+-    self.assertEqual( 'pear_juice-6.6.6', manager.find_by_package_descriptor(PD('pear_juice', '6.6.6'), darwin).package_descriptor.full_name )
++    self.assertEqual( 'water-1.0.0', am.find_by_package_descriptor(PD('water', '1.0.0'), self.LINUX_BT).package_descriptor.full_name )
++    self.assertEqual( 'water-1.0.0-1', am.find_by_package_descriptor(PD('water', '1.0.0-1'), self.LINUX_BT).package_descriptor.full_name )
++    self.assertEqual( 'water-1.0.0-2', am.find_by_package_descriptor(PD('water', '1.0.0-2'), self.LINUX_BT).package_descriptor.full_name )
++    self.assertEqual( 'fructose-3.4.5-6', am.find_by_package_descriptor(PD('fructose', '3.4.5-6'), self.LINUX_BT).package_descriptor.full_name )
++    self.assertEqual( 'apple-1.2.3-1', am.find_by_package_descriptor(PD('apple', '1.2.3-1'), self.LINUX_BT).package_descriptor.full_name )
++    self.assertEqual( 'orange-6.5.4-3', am.find_by_package_descriptor(PD('orange', '6.5.4-3'), self.LINUX_BT).package_descriptor.full_name )
++    self.assertEqual( 'orange_juice-1.4.5', am.find_by_package_descriptor(PD('orange_juice', '1.4.5'), self.LINUX_BT).package_descriptor.full_name )
++    self.assertEqual( 'pear_juice-6.6.6', am.find_by_package_descriptor(PD('pear_juice', '6.6.6'), self.LINUX_BT).package_descriptor.full_name )
+ 
+-    self.assertEqual( 'water-1.0.0', manager.find_by_package_descriptor(PD('water', '1.0.0'), linux).package_descriptor.full_name )
+-    self.assertEqual( 'water-1.0.0-1', manager.find_by_package_descriptor(PD('water', '1.0.0-1'), linux).package_descriptor.full_name )
+-    self.assertEqual( 'water-1.0.0-2', manager.find_by_package_descriptor(PD('water', '1.0.0-2'), linux).package_descriptor.full_name )
+-    self.assertEqual( 'fructose-3.4.5-6', manager.find_by_package_descriptor(PD('fructose', '3.4.5-6'), linux).package_descriptor.full_name )
+-    self.assertEqual( 'apple-1.2.3-1', manager.find_by_package_descriptor(PD('apple', '1.2.3-1'), linux).package_descriptor.full_name )
+-    self.assertEqual( 'orange-6.5.4-3', manager.find_by_package_descriptor(PD('orange', '6.5.4-3'), linux).package_descriptor.full_name )
+-    self.assertEqual( 'orange_juice-1.4.5', manager.find_by_package_descriptor(PD('orange_juice', '1.4.5'), linux).package_descriptor.full_name )
+-    self.assertEqual( 'pear_juice-6.6.6', manager.find_by_package_descriptor(PD('pear_juice', '6.6.6'), linux).package_descriptor.full_name )
++  def xtest_latest_versions_for_build_target(self):
++    am = self._make_test_artifacts_git_repo()
++    self.assertEqual( [], am.latest_versions_for_build_target(self.LINUX_BT) )
+     
+ if __name__ == '__main__':
+   unit_test.main()
