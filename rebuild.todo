@@ -870,4 +870,5 @@ makefile in step_make might not work
 when python changed from using libedit to libreadline this error happened add a unit test
 rebuild.package.package_manager.PackageFilesConflictError: conflicts found between "libreadline" and "libedit": share/man/man3/history.3
  - make sure sourcing ~/.rebuild/foo/stuff/env/*.sh does so only for dependencies
+ - version comparison is shit
  

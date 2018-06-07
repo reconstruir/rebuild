@@ -154,11 +154,14 @@ class artifact_manager(object):
     return candidates[-1]
 
   def list_all_by_descriptor(self, build_target = None):
-    self._db.list_all_by_descriptor(build_target = build_target)
+    return self._db.list_all_by_descriptor(build_target = build_target)
 
   def list_all_by_metadata(self, build_target = None):
-    self._db.list_all_by_metadata(build_target = build_target)
-  
+    return self._db.list_all_by_metadata(build_target = build_target)
+
+  def list_latest_versions(self, build_target):
+    return self.list_all_by_descriptor(build_target = build_target).latest_versions()
+    
   def find_by_package_descriptor(self, package_descriptor, build_target, relative_filename = True):
     check.check_package_descriptor(package_descriptor)
     check.check_build_target(build_target)
@@ -197,11 +200,5 @@ class artifact_manager(object):
     for package in self.latest_available_packages(build_target):
       rm.add_package(package.package_descriptor)
     return rm
-
-  def list_all_by_descriptor(self):
-    return self._db.list_all_by_descriptor()
-
-  def list_all_by_metadata(self):
-    return self._db.list_all_by_metadata()
 
 check.register_class(artifact_manager, include_seq = False)
