@@ -194,6 +194,18 @@ class test_artifact_db(unit_test):
     db.add_artifact(e2)
     self.assertEqual( [ e2.artifact_descriptor ], db.list_all_by_descriptor(build_target = linux_bt) )
     self.assertEqual( [ e1.artifact_descriptor ], db.list_all_by_descriptor(build_target = macos_bt) )
+
+  def test_list_all_by_metadata_with_build_target(self):
+    tmp_db = self._make_tmp_db_path()
+    db = DB(tmp_db)
+    linux_bt = build_target(build_system.LINUX, build_level.RELEASE)
+    macos_bt = build_target(build_system.MACOS, build_level.RELEASE)
+    e1 = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, [], {}, self.TEST_FILES)
+    e2 = PM('bar-5.6.7.tar.gz', 'bar', '5.6.7', 1, 0, 'linux', 'release', [ 'x86_64' ], None, [], {}, self.TEST_FILES2)
+    db.add_artifact(e1)
+    db.add_artifact(e2)
+    self.assertEqual( [ e2 ], db.list_all_by_metadata(build_target = linux_bt) )
+    self.assertEqual( [ e1 ], db.list_all_by_metadata(build_target = macos_bt) )
     
 if __name__ == '__main__':
   unit_test.main()

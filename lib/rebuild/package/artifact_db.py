@@ -115,19 +115,29 @@ create table artifacts(
     self._files_db.remove_table(files_table_name)
     self._files_db.remove_table(self._make_env_files_table_name(files_table_name))
 
+  @classmethod
+  def _build_target_to_sql_tuple(clazz, bt):
+    return ( bt.system, bt.level, util.sql_encode_string_list(bt.archs, quoted = False) )
+  
   def list_all_by_descriptor(self, build_target = None):
     if build_target:
       sql = '''select name, version, revision, epoch, system, level, archs, distro from artifacts where system=? and level=? and archs=? order by name asc, version asc, revision asc, epoch asc, system asc, level asc, archs asc, distro asc'''
-      data = ( build_target.system, build_target.level, util.sql_encode_string_list(build_target.archs, quoted = False) )
-      rows = self._db.select_namedtuples(sql, data)
+      data = self._build_target_to_sql_tuple(build_target)
     else:
       sql = '''select name, version, revision, epoch, system, level, archs, distro from artifacts order by name asc, version asc, revision asc, epoch asc, system asc, level asc, archs asc, distro asc'''
-      rows = self._db.select_namedtuples(sql)
+      data = ()
+    rows = self._db.select_namedtuples(sql, data)
     values = [ self._load_artifact_descriptor(row) for row in rows ]
     return artifact_descriptor_list(values = values)
-
+  
   def list_all_by_metadata(self, build_target = None):
-    rows = self._db.select_namedtuples('''select * from artifacts order by name asc, version asc, revision asc, epoch asc, system asc, level asc, archs asc, distro asc''')
+    if build_target:
+      sql = '''select * from artifacts where system=? and level=? and archs=? order by name asc, version asc, revision asc, epoch asc, system asc, level asc, archs asc, distro asc'''
+      data = self._build_target_to_sql_tuple(build_target)
+    else:
+      sql = '''select * from artifacts order by name asc, version asc, revision asc, epoch asc, system asc, level asc, archs asc, distro asc'''
+      data = ()
+    rows = self._db.select_namedtuples(sql, data)
     return self._load_rows_metadata_list(rows)
 
   @classmethod

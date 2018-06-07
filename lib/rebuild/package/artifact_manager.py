@@ -160,11 +160,11 @@ class artifact_manager(object):
 #                              package_descriptor)
 #    return self._get_package(tarball)
 
-  def list_all_by_descriptor(self):
-    self._db.list_all_by_descriptor()
+  def list_all_by_descriptor(self, build_target = None):
+    self._db.list_all_by_descriptor(build_target = build_target)
 
-  def list_all_by_metadata(self):
-    self._db.list_all_by_metadata()
+  def list_all_by_metadata(self, build_target = None):
+    self._db.list_all_by_metadata(build_target = build_target)
   
   def caca_package(self, package_descriptor, build_target, relative_filename = True):
     adesc = artifact_descriptor(package_descriptor.name, package_descriptor.version.upstream_version,
