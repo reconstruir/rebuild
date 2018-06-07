@@ -5,7 +5,7 @@ import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import file_find, file_util, temp_file
 from bes.git import git
-from rebuild.base import build_arch, build_blurb, build_system, build_target, build_level, package_descriptor
+from rebuild.base import build_arch, build_blurb, build_system, build_target, build_level, package_descriptor as PD
 from rebuild.package import artifact_manager, package
 from rebuild.package.unit_test_packages import unit_test_packages
 from rebuild.package.db_error import *
@@ -28,7 +28,7 @@ class test_artifact_manager(unit_test):
 
   def test_artifact_path(self):
     manager = self._make_test_artifact_manager()
-    pi = package_descriptor('foo', '1.2.34-1')
+    pi = PD('foo', '1.2.34-1')
     bt = build_target(build_system.LINUX, build_level.RELEASE)
     self.assertEqual( path.join(manager.root_dir, pi.artifact_path(bt)), manager.artifact_path(pi, bt) )
 
@@ -71,28 +71,29 @@ class test_artifact_manager(unit_test):
   def _make_test_artifacts(clazz, items, root_dir):
     unit_test_packages.make_test_packages(items, root_dir)
     
-  def test_artifact_from_git(self):
+  def test_find_by_package_descriptor(self):
     manager = self._make_test_artifacts_git_repo()
 
     linux = build_target(build_system.LINUX, build_level.RELEASE)
     darwin = build_target(build_system.MACOS, build_level.RELEASE)
 
-    self.assertEqual( 'water-1.0.0', manager.caca_package(package_descriptor('water', '1.0.0'), darwin).package_descriptor.full_name )
-    self.assertEqual( 'water-1.0.0-1', manager.caca_package(package_descriptor('water', '1.0.0-1'), darwin).package_descriptor.full_name )
-    self.assertEqual( 'water-1.0.0-2', manager.caca_package(package_descriptor('water', '1.0.0-2'), darwin).package_descriptor.full_name )
-    self.assertEqual( 'fructose-3.4.5-6', manager.caca_package(package_descriptor('fructose', '3.4.5-6'), darwin).package_descriptor.full_name )
-    self.assertEqual( 'apple-1.2.3-1', manager.caca_package(package_descriptor('apple', '1.2.3-1'), darwin).package_descriptor.full_name )
-    self.assertEqual( 'orange-6.5.4-3', manager.caca_package(package_descriptor('orange', '6.5.4-3'), darwin).package_descriptor.full_name )
-    self.assertEqual( 'orange_juice-1.4.5', manager.caca_package(package_descriptor('orange_juice', '1.4.5'), darwin).package_descriptor.full_name )
-    self.assertEqual( 'pear_juice-6.6.6', manager.caca_package(package_descriptor('pear_juice', '6.6.6'), darwin).package_descriptor.full_name )
+    self.assertEqual( 'water-1.0.0', manager.find_by_package_descriptor(PD('water', '1.0.0'), darwin).package_descriptor.full_name )
+    self.assertEqual( 'water-1.0.0-1', manager.find_by_package_descriptor(PD('water', '1.0.0-1'), darwin).package_descriptor.full_name )
+    self.assertEqual( 'water-1.0.0-2', manager.find_by_package_descriptor(PD('water', '1.0.0-2'), darwin).package_descriptor.full_name )
+    self.assertEqual( 'fructose-3.4.5-6', manager.find_by_package_descriptor(PD('fructose', '3.4.5-6'), darwin).package_descriptor.full_name )
+    self.assertEqual( 'apple-1.2.3-1', manager.find_by_package_descriptor(PD('apple', '1.2.3-1'), darwin).package_descriptor.full_name )
+    self.assertEqual( 'orange-6.5.4-3', manager.find_by_package_descriptor(PD('orange', '6.5.4-3'), darwin).package_descriptor.full_name )
+    self.assertEqual( 'orange_juice-1.4.5', manager.find_by_package_descriptor(PD('orange_juice', '1.4.5'), darwin).package_descriptor.full_name )
+    self.assertEqual( 'pear_juice-6.6.6', manager.find_by_package_descriptor(PD('pear_juice', '6.6.6'), darwin).package_descriptor.full_name )
 
-    self.assertEqual( 'water-1.0.0', manager.caca_package(package_descriptor('water', '1.0.0'), linux).package_descriptor.full_name )
-    self.assertEqual( 'water-1.0.0-1', manager.caca_package(package_descriptor('water', '1.0.0-1'), linux).package_descriptor.full_name )
-    self.assertEqual( 'water-1.0.0-2', manager.caca_package(package_descriptor('water', '1.0.0-2'), linux).package_descriptor.full_name )
-    self.assertEqual( 'fructose-3.4.5-6', manager.caca_package(package_descriptor('fructose', '3.4.5-6'), linux).package_descriptor.full_name )
-    self.assertEqual( 'apple-1.2.3-1', manager.caca_package(package_descriptor('apple', '1.2.3-1'), linux).package_descriptor.full_name )
-    self.assertEqual( 'orange-6.5.4-3', manager.caca_package(package_descriptor('orange', '6.5.4-3'), linux).package_descriptor.full_name )
-    self.assertEqual( 'orange_juice-1.4.5', manager.caca_package(package_descriptor('orange_juice', '1.4.5'), linux).package_descriptor.full_name )
-    self.assertEqual( 'pear_juice-6.6.6', manager.caca_package(package_descriptor('pear_juice', '6.6.6'), linux).package_descriptor.full_name )
+    self.assertEqual( 'water-1.0.0', manager.find_by_package_descriptor(PD('water', '1.0.0'), linux).package_descriptor.full_name )
+    self.assertEqual( 'water-1.0.0-1', manager.find_by_package_descriptor(PD('water', '1.0.0-1'), linux).package_descriptor.full_name )
+    self.assertEqual( 'water-1.0.0-2', manager.find_by_package_descriptor(PD('water', '1.0.0-2'), linux).package_descriptor.full_name )
+    self.assertEqual( 'fructose-3.4.5-6', manager.find_by_package_descriptor(PD('fructose', '3.4.5-6'), linux).package_descriptor.full_name )
+    self.assertEqual( 'apple-1.2.3-1', manager.find_by_package_descriptor(PD('apple', '1.2.3-1'), linux).package_descriptor.full_name )
+    self.assertEqual( 'orange-6.5.4-3', manager.find_by_package_descriptor(PD('orange', '6.5.4-3'), linux).package_descriptor.full_name )
+    self.assertEqual( 'orange_juice-1.4.5', manager.find_by_package_descriptor(PD('orange_juice', '1.4.5'), linux).package_descriptor.full_name )
+    self.assertEqual( 'pear_juice-6.6.6', manager.find_by_package_descriptor(PD('pear_juice', '6.6.6'), linux).package_descriptor.full_name )
+    
 if __name__ == '__main__':
   unit_test.main()

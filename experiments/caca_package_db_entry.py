@@ -6,7 +6,7 @@ from collections import namedtuple
 from bes.common import check, node
 from bes.text import white_space
 
-class caca_package_db_entry(namedtuple('caca_package_db_entry', 'format_version,name,version,system,archs,level,distro,requirements,build_tool_requirements,env_vars')):
+class find_by_package_descriptor_db_entry(namedtuple('find_by_package_descriptor_db_entry', 'format_version,name,version,system,archs,level,distro,requirements,build_tool_requirements,env_vars')):
 
   def __new__(clazz, format_version, name, version, system, archs, level,
               distro, requirements, build_tool_requirements, env_vars):

@@ -159,19 +159,21 @@ class artifact_manager(object):
   def list_all_by_metadata(self, build_target = None):
     self._db.list_all_by_metadata(build_target = build_target)
   
-  def caca_package(self, package_descriptor, build_target, relative_filename = True):
+  def find_by_package_descriptor(self, package_descriptor, build_target, relative_filename = True):
+    check.check_package_descriptor(package_descriptor)
+    check.check_build_target(build_target)
     adesc = artifact_descriptor(package_descriptor.name, package_descriptor.version.upstream_version,
                                 package_descriptor.version.revision, package_descriptor.version.epoch,
                                 build_target.system, build_target.level, build_target.archs, build_target.distro)
-    md = self._db.get_artifact(adesc)
+    return self.find_by_artifact_descriptor(adesc, relative_filename = relative_filename)
+
+  def find_by_artifact_descriptor(self, artifact_descriptor, relative_filename = True):
+    check.check_artifact_descriptor(artifact_descriptor)
+    md = self._db.get_artifact(artifact_descriptor)
     if relative_filename:
       return md
     return md.clone_with_filename(path.join(self._root_dir, md.filename))
 
-  def caca_find_package(self, adesc):
-    check.check_artifact_descriptor(adesc)
-    return self._db.get_artifact(adesc)
-  
   def _get_package(self, tarball):
     if not tarball in self._package_cache:
       self._package_cache[tarball] = package(tarball)

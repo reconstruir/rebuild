@@ -220,7 +220,7 @@ class package_manager(object):
     return result
     
   def _install_package(self, pkg_desc, build_target, hardness, allow_downgrade, force_install):
-    pkg = self._artifact_manager.caca_package(pkg_desc, build_target, relative_filename = False)
+    pkg = self._artifact_manager.find_by_package_descriptor(pkg_desc, build_target, relative_filename = False)
 
     if self.is_installed(pkg.name):
       self.log_i('install_package: %s for %s' % (pkg_desc.full_name, ' '.join(hardness)))
