@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
@@ -55,20 +54,19 @@ class manager(object):
     pm = self._package_manager(project_name, build_target.system)
     return pm.list_all()
 
-  ResolveResult = namedtuple('ResolveResult', 'available,missing,resolved')
+  resolve_result = namedtuple('resolve_result', 'available,missing,resolved')
   def resolve_packages(self, package_names, build_target):
-    self.log_i('resolving: %s' % (' '.join(package_names)))
     resolved_deps = self.artifact_manager.resolve_deps(package_names, build_target, ['RUN'], True)
     resolved_names = [ desc.name for desc in resolved_deps ]
     available_packages = self.artifact_manager.available_packages(build_target)
     available_names = [ p.package_descriptor.name for p in available_packages ]
     missing_packages = dependency_resolver.check_missing(available_names, package_names)
     if missing_packages:
-      return self.ResolveResult(available_packages, missing_packages, [])
+      return self.resolve_result(available_packages, missing_packages, [])
     resolved = self.artifact_manager.resolve_packages(resolved_names, build_target)
     resolved_descriptors = [ r.package_descriptor for r in resolved ]
     self.log_i('done resolving')
-    return self.ResolveResult(available_packages, [], resolved_descriptors)
+    return self.resolve_result(available_packages, [], resolved_descriptors)
 
   def resolve_and_update_packages(self, project_name, packages, build_target, allow_downgrade = False, force_install = False):
     resolve_rv = self.resolve_packages(packages, build_target)
