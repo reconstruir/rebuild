@@ -189,5 +189,25 @@ class test_package_manager(unittest.TestCase):
 
     self.assertEqual( [ 'arsenic-1.2.9', 'mercury-1.2.8', 'water-1.0.0' ], pm.list_all(include_version = True) )
 
+  def test_dep_map(self):
+    pm = self._make_test_pm()
+    packages = [
+      package_descriptor.parse('water-1.0.0'),
+      package_descriptor.parse('fiber-1.0.0'),
+      package_descriptor.parse('fructose-3.4.5-6'),
+      package_descriptor.parse('fruit-1.0.0'),
+      package_descriptor.parse('apple-1.2.3-1'),
+    ]
+    pm.install_packages(packages, self.TEST_BUILD_TARGET, [ 'RUN' ])
+    self.assertEqual( [ 'apple-1.2.3-1', 'fiber-1.0.0', 'fructose-3.4.5-6', 'fruit-1.0.0', 'water-1.0.0' ],
+                      pm.list_all(include_version = True) )
+    self.assertEqual( {
+      'apple': set(['fruit']),
+      'fiber': set([]),
+      'fructose': set([]),
+      'fruit': set(['fiber', 'fructose', 'water']),
+      'water': set([]),
+    }, pm.dep_map() )
+
 if __name__ == '__main__':
   unittest.main()

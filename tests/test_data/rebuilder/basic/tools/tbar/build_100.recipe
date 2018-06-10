@@ -21,3 +21,6 @@ package tbar 1.0.0
         all: test-tbar-env-var.sh
         
       skip_binary_third_party_prefix: True
+
+      env_files
+        all: tbar_env.sh

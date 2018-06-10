@@ -1,4 +1,4 @@
-!rebuild.recipe!
+d!rebuild.recipe!
 
 package tbar-1.0.1
   env_vars
@@ -9,7 +9,7 @@ package tbar-1.0.1
   requirements
     all: TOOL tfoo >= 1.0.0
 
-  steps  
+  steps
     step_setup
 
     step_post_install

@@ -872,4 +872,7 @@ rebuild.package.package_manager.PackageFilesConflictError: conflicts found betwe
  - make sure sourcing ~/.rebuild/foo/stuff/env/*.sh does so only for dependencies
  - version comparison is shit
  - need a unit test that does manager update with something that results in package resolution
+
+2018-06-09
+ - package_manager.env_vars() needs to order package_names by dependency order
  
