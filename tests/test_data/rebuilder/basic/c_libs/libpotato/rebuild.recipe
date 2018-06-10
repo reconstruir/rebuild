@@ -11,7 +11,7 @@ package libpotato 1.0.0
   steps  
     step_setup
       tarball_dir:
-        all: libs/libpotato/src dest=${REBUILD_BUILD_DIR}
+        all: c_libs/libpotato/src dest=${REBUILD_BUILD_DIR}
     step_make
       make_flags
         all: LDFLAGS="${REBUILD_REQUIREMENTS_LDFLAGS}"

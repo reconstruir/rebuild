@@ -3,8 +3,8 @@
 
 def rebuild_packages():
   return [
-    'libs/libpotato/rebuild.recipe',
-    'libs/libstarch/rebuild.recipe',
+    'c_libs/libpotato/rebuild.recipe',
+    'c_libs/libstarch/rebuild.recipe',
     'tools/tbar/build_100.recipe',
 #    'tools/tbar/build_101.recipe',
     'tools/tfoo/rebuild.recipe',

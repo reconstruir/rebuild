@@ -5,7 +5,7 @@ package libstarch 1.0.0
   steps  
     step_setup
       tarball_dir:
-        all: libs/libstarch/src dest=${REBUILD_BUILD_DIR}
+        all: c_libs/libstarch/src dest=${REBUILD_BUILD_DIR}
     step_make
       make_flags
         all: CFLAGS="${REBUILD_COMPILE_CFLAGS} -std=c99"
