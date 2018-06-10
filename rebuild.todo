@@ -1,7 +1,6 @@
 
 Use "reb" namespace for build
 
-Add pager support to build errors
 Add xcrun find support to use the right compilers on darwin
 Add c++ dialect support
 
@@ -20,21 +19,13 @@ dec 19
   pkg-config
 - deal with python packages clobbering each others easy-install.pth
   and such
-- build some python packages as eggs at least for practice
-- rename context.package_manager to context.deps_package_manager or so
 - change all_bin_dir in ToolPackageManager to be unix_path or such
-
-dec 22
-- fix ArtifactManager to not download anything in its __init__.  only
-when needed.
 
 dec 24
 - move the top level artifactory manager inside rebbe.
-- introduce the concept of a DownloadManager
 
 jan 1
 - mv ~/software/build.py to ~/projects/bin
-- finish adding proper return codes for ScriptRunner.build_script
 - finish moving checksuming to BuildScript
 
 jan 2
@@ -68,12 +59,10 @@ jan 8
 - deal with cut-n-paste nature of python build steps
 
 jan 12
-- FIXME: provide abstraction for env vars with different names on differnet unices
 - make sure no unit test code executes in regular run
 - add paralelization support.  make build order return deps in chunks that can be parallelized
 
 jan 14
-- fix disaled handing in BuildScriptManager.
 - print decent error when a dependency is disabled
 
 jan 19
@@ -848,9 +837,6 @@ makefile in step_make might not work
 2018-05-24
  - rebbe_retry.sh should have tools added to PATH
  - also make it more readable by using variables
-
-018-05-25
- - package_db.py move caching of files and env_files up one level so db does only db stuff
 
 018-05-26
  - add unit tests of debug level as well as some tools that require libs and the libs are debug but the tools release
