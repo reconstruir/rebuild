@@ -171,6 +171,11 @@ class test_rebuilder_script(script_unit_test):
     test = self._run_test(self.DEFAULT_CONFIG, self.data_dir(), 'basic', 'libfoo')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libfoo-1.0.0.tar.gz' ], test.artifacts )
+
+  def test_lib_libbar_depends_on_libfoo(self):
+    test = self._run_test(self.DEFAULT_CONFIG, self.data_dir(), 'basic', 'libbar')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'libbar-1.0.0.tar.gz', 'libfoo-1.0.0.tar.gz' ], test.artifacts )
     
   def test_custom_makefile(self):
     test = self._run_test(self.DEFAULT_CONFIG, self.data_dir(), 'custom_makefile', 'libsomething')

@@ -4,8 +4,8 @@ import subprocess, sys
 
 def main():
 
-  tfoo_rv = subprocess.check_output(['tfoo.py', 'a', 'b', 'c']).strip()
-  sys.stdout.write(tfoo_rv)
+  libfoo_rv = subprocess.check_output(['libfoo.py', 'a', 'b', 'c']).strip()
+  sys.stdout.write(libfoo_rv)
   sys.stdout.write(' # ')
   
   sys.stdout.write('libbar: ')
