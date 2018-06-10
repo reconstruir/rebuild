@@ -6,7 +6,6 @@ package libpotato 1.0.0
 
   requirements
     all: RUN libstarch >= 1.0.0
-    all: TOOL tbar >= 1.0.0
 
   steps  
     step_setup
@@ -27,4 +26,4 @@ package libpotato 1.0.0
         all: libpotato.pc
       skip_binary_third_party_prefix: True
       tests
-        all: test-libpotato.c test-libpotato-env-var-from-tool.c
+        all: test-libpotato.c

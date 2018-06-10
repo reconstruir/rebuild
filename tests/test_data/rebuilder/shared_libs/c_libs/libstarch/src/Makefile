@@ -2,33 +2,19 @@ prefix=/usr/local
 #CC=clang
 AR=ar
 AR_FLAGS=r
-LOCAL_CFLAGS=-I.
-LOCAL_LDFLAGS=
-
-%.o: %.c
-	$(CC) $(CFLAGS) $(LOCAL_CFLAGS) -c $< -o $@
-
-ifdef REBUILD_NO_PROGRAMS
-	programs=
-else
-	programs=starch_prog1_main
-endif
-
-all: libstarch.so $(programs)
+LOCAL_CFLAGS=-I. -fPIC
 
 LIBSTARCH_OBJS = libstarch/amylose.o libstarch/amylopectin.o libstarch/common.o
 LIBSTARCH_HEADERS = libstarch/amylopectin.h libstarch/amylose.h libstarch/common.h
 
-libstarch.a: $(LIBSTARCH_OBJS)
-	$(AR) $(AR_FLAGS) $@ $^
-
-libstarch.so: libstarch.a
-	$(CC) -shared $(LOCAL_LDFLAGS) $@ -o $^
+libstarch.so: $(LIBSTARCH_OBJS)
+	$(CC) -shared $(LOCAL_LDFLAGS) $^ -o $@
 
 STARCH_PROG1_MAIN_OBJS = programs/starch_prog1/starch_prog1_main.o
+STARCH_PROG1_MAIN_LIBS = -lstarch
 
 starch_prog1_main: $(STARCH_PROG1_MAIN_OBJS) libstarch.so
-	$(CC) $(CFLAGS) $(LOCAL_CFLAGS) -o $@ $^
+	$(CC) $(LDFLAGS) $(LOCAL_LDFLAGS) -o $@ $(STARCH_PROG1_MAIN_OBJS) $(STARCH_PROG1_MAIN_LIBS)
 
 clean:
 	rm -f $(LIBSTARCH_OBJS) $(STARCH_PROG1_MAIN_OBJS) libstarch.so $(programs)
