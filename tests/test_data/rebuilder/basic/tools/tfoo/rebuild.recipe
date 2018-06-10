@@ -16,3 +16,6 @@ package tfoo 1.0.0
         all: test-tfoo.sh test-tfoo-env-var.sh
         
       skip_binary_third_party_prefix: True
+
+      env_files
+        all: tfoo_env.sh
