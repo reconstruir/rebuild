@@ -1,0 +1,26 @@
+!rebuild.recipe!
+
+package libbar 1.0.0
+
+  requirements
+    all: RUN libfoo >= 1.0.0
+
+  env_vars
+    all: TBAR_ENV1=foo TBAR_ENV2=bar
+
+  steps
+    step_setup
+      
+    step_post_install
+      install_files
+        all: ${REBUILD_SOURCE_DIR}/files/bin/libbar.py bin/libbar.py
+        all: ${REBUILD_SOURCE_DIR}/files/bin/libbar_code_gen.py bin/libbar_code_gen.py
+        
+      tests
+        all: test-libbar.sh
+        all: test-libbar-env-var.sh
+        
+      skip_binary_third_party_prefix: True
+
+      env_files
+        all: libbar_env.sh

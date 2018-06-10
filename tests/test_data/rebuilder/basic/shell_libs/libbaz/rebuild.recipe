@@ -1,0 +1,15 @@
+!rebuild.recipe!
+
+package libbaz 1.0.0
+
+  steps
+    step_setup
+
+    step_post_install
+      install_files
+        all: ${REBUILD_SOURCE_DIR}/files/bin/libbaz.py bin/libbaz.py
+        
+      tests
+        all: test-libbaz.sh
+        
+      skip_binary_third_party_prefix: True

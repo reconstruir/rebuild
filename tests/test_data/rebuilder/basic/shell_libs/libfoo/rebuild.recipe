@@ -1,0 +1,21 @@
+!rebuild.recipe!
+
+package libfoo 1.0.0
+
+  env_vars
+    all: TFOO_ENV1=libfoo_env1 TFOO_ENV2=libfoo_env2
+
+  steps
+    step_setup
+      
+    step_post_install
+      install_files
+        all: ${REBUILD_SOURCE_DIR}/files/bin/libfoo.py bin/libfoo.py
+        
+      tests
+        all: test-libfoo.sh test-libfoo-env-var.sh
+        
+      skip_binary_third_party_prefix: True
+
+      env_files
+        all: libfoo_env.sh
