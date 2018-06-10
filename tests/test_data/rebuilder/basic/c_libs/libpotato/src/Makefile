@@ -1,4 +1,3 @@
-
 include $(_TEST_MAKE_DIR)/common.mk
 
 MAKE_STATIC_LIB = libpotato.a
