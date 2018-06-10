@@ -1,12 +1,4 @@
-prefix=/usr/local
-CC=clang
-AR=ar
-AR_FLAGS=r
-LOCAL_CFLAGS=-I.
-LOCAL_LDFLAGS=-L.
-
-%.o: %.c
-	$(CC) $(CFLAGS) $(LOCAL_CFLAGS) -c $< -o $@
+include $(_TEST_MAKE_DIR)/common.mk
 
 all: libpotato.a potato_prog1_main
 

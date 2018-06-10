@@ -1,11 +1,4 @@
-prefix=/usr/local
-#CC=clang
-AR=ar
-AR_FLAGS=r
-LOCAL_CFLAGS=-I.
-
-%.o: %.c
-	$(CC) $(CFLAGS) $(LOCAL_CFLAGS) -c $< -o $@
+include $(_TEST_MAKE_DIR)/common.mk
 
 ifdef REBUILD_NO_PROGRAMS
 	programs=

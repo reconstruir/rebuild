@@ -1,8 +1,11 @@
+include $(_TEST_MAKE_DIR)/common.mk
+
 prefix=/usr/local
 #CC=clang
 AR=ar
 AR_FLAGS=r
 LOCAL_CFLAGS=-I. -fPIC
+PIC_CFLAGS=-fPIC
 
 LIBSTARCH_OBJS = libstarch/amylose.o libstarch/amylopectin.o libstarch/common.o
 LIBSTARCH_HEADERS = libstarch/amylopectin.h libstarch/amylose.h libstarch/common.h

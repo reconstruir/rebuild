@@ -18,9 +18,11 @@ package libpotato 1.0.0
         linux: CC=gcc
         macos: CC=clang
         #macos: AR=${AR_REPLACEMENT}
-
+      make_env
+        all: _TEST_MAKE_DIR=${REBUILD_SOURCE_DIR}/../../../makefiles
     step_make_install
-
+      make_install_env
+        all: _TEST_MAKE_DIR=${REBUILD_SOURCE_DIR}/../../../makefiles
     step_post_install
       pc_files
         all: libpotato.pc

@@ -12,13 +12,16 @@ package libstarch 1.0.0
         darwin: AR=${AR_REPLACEMENT}
         linux: CC=gcc
         macos: CC=clang
-        
+      make_env
+        all: _TEST_MAKE_DIR=${REBUILD_SOURCE_DIR}/../../../makefiles
     step_make_install
       make_install_flags
         all: CFLAGS="${REBUILD_COMPILE_CFLAGS} -std=c99"
         darwin: AR=${AR_REPLACEMENT}
         linux: CC=gcc
         macos: CC=clang
+      make_install_env
+        all: _TEST_MAKE_DIR=${REBUILD_SOURCE_DIR}/../../../makefiles
     step_post_install
       pc_files
         all: libstarch.pc
