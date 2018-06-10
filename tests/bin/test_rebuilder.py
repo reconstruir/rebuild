@@ -166,6 +166,11 @@ class test_rebuilder_script(script_unit_test):
     test = self._run_test(self.config(bt = self.ANDROID_BUILD_TARGET), self.data_dir(), 'basic', 'libstarch', '-s', 'android')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libstarch-1.0.0.tar.gz' ], test.artifacts )
+
+  def test_lib_libfoo(self):
+    test = self._run_test(self.DEFAULT_CONFIG, self.data_dir(), 'basic', 'libfoo')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'libfoo-1.0.0.tar.gz' ], test.artifacts )
     
   def test_custom_makefile(self):
     test = self._run_test(self.DEFAULT_CONFIG, self.data_dir(), 'custom_makefile', 'libsomething')

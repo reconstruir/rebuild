@@ -1,6 +1,13 @@
 #!/bin/bash
 
-set -e -x
+source ${REBUILD_SHELL_FRAMEWORK_DIR}/env/bes_framework.sh
+source ${REBUILD_SHELL_FRAMEWORK_DIR}/env/bes_testing.sh
 
-output=$(libfoo.py one two tre)
-test "$output" == 'libfoo: one two tre'
+function test_env()
+{
+  output=$(libfoo.py one two tre)
+  bes_assert "[ 'libfoo: one two tre' = '$output' ]"
+}
+
+bes_testing_run_unit_tests
+
