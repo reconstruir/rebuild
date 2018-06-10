@@ -2,9 +2,6 @@
 
 package libfoo 1.0.0
 
-  env_vars
-    all: TFOO_ENV1=libfoo_env1 TFOO_ENV2=libfoo_env2
-
   steps
     step_setup
       

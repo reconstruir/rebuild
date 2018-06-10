@@ -5,9 +5,6 @@ package libbar 1.0.0
   requirements
     all: RUN libfoo >= 1.0.0
 
-#  env_vars
-#    all: TBAR_ENV1=foo TBAR_ENV2=bar
-
   steps
     step_setup
       
