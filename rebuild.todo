@@ -764,13 +764,7 @@ april 16
 - control-c when in the middle of package_tester doesnt interrupt
 - hook interface is fucked the abstract method warning doesnt happen if the signature of execute changes.
 
-steps that use args argument in execute:
-  step_artifact_create_test_package
-
-step_artifact_create_check_package might need to be retired
 egg check is either commented out or broken
-
-makefile in step_make might not work
 
 2018-04-17
  - add check for home directory droppings before and after a build to make sure tools are not crapping stuff there
