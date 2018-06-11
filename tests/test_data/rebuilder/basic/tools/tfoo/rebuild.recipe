@@ -10,7 +10,7 @@ package tfoo 1.0.0
       
     step_post_install
       install_files
-        all: ${REBUILD_SOURCE_DIR}/files/bin/tfoo.py bin/tfoo.py
+        all: ${REBUILD_RECIPE_DIR}/files/bin/tfoo.py bin/tfoo.py
         
       tests
         all: test-tfoo.sh test-tfoo-env-var.sh

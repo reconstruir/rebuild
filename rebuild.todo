@@ -782,7 +782,6 @@ makefile in step_make might not work
 2018-05-05
  - need hook tests that both pass and fail
  - value_install_file should be a subclass of value_file
- - change source_dir to recipe_dir
  - retire copy source to dir step
  - support mutliple tarballs like this
        tarball
@@ -797,8 +796,6 @@ makefile in step_make might not work
  - gettext subsiutions should be unified with script.substitutions instead of custom
  - any replacements should go through script.substituitions
  - value_base add notion of sources vs tarballs
- - make step_result a namtedtuple
- - all step values should subclass value_base
  - test_recipe_step need a unit tests with substitutions
  - make value_base subclasses be immutable somehow
 

@@ -7,7 +7,7 @@ package foo 1.0.0
       
     step_post_install
       install_files
-        all: ${REBUILD_SOURCE_DIR}/files/bin/foo.py bin/foo.py
+        all: ${REBUILD_RECIPE_DIR}/files/bin/foo.py bin/foo.py
         
       tests
         all: test-foo.sh
@@ -28,7 +28,7 @@ package bar 1.0.0
       
     step_post_install
       install_files
-        all: ${REBUILD_SOURCE_DIR}/files/bin/bar.py bin/bar.py
+        all: ${REBUILD_RECIPE_DIR}/files/bin/bar.py bin/bar.py
         
 #      tests
 #        all: test-bar.sh
@@ -49,7 +49,7 @@ package baz 1.0.0
       
     step_post_install
       install_files
-        all: ${REBUILD_SOURCE_DIR}/files/bin/baz.py bin/baz.py
+        all: ${REBUILD_RECIPE_DIR}/files/bin/baz.py bin/baz.py
         
 #      tests
 #        all: test-baz.sh

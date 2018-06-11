@@ -7,7 +7,7 @@ package libfoo 1.0.0
       
     step_post_install
       install_files
-        all: ${REBUILD_SOURCE_DIR}/files/bin/libfoo.py bin/libfoo.py
+        all: ${REBUILD_RECIPE_DIR}/files/bin/libfoo.py bin/libfoo.py
         
       tests
         all: test-libfoo.sh test-libfoo-env-var.sh
