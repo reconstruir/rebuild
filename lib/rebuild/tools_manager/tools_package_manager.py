@@ -54,12 +54,12 @@ class tools_package_manager(object):
 
   def bin_dir(self, pkg_desc):
     if not self.is_installed(pkg_desc):
-      raise RuntimeError('package not installed: %s' % (pkg_desc))
+      raise RuntimeError('package not installed: %s' % (str(pkg_desc)))
     return path.join(self._package_dir(pkg_desc), 'bin')
 
   def lib_dir(self, pkg_desc):
     if not self.is_installed(pkg_desc):
-      raise RuntimeError('package not installed: %s' % (pkg_desc))
+      raise RuntimeError('package not installed: %s' % (str(pkg_desc)))
     return path.join(self._package_dir(pkg_desc), 'lib')
 
   def env_vars(self, pkg_desc):

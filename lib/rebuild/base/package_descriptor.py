@@ -1,80 +1,39 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import json, os.path as path
-from bes.common import check, object_util, string_util
+from collections import namedtuple
+from bes.common import cached_property, check, object_util, string_util
 from bes.compat import cmp
 
-from .build_system import build_system
 from .build_version import build_version
 from .requirement import requirement
 from .requirement_list import requirement_list
 
-class package_descriptor(object):
+class package_descriptor(namedtuple('package_descriptor', 'name, version, requirements, properties')):
 
   NAME_DELIMITER = '-'
 
   STR_PROPERTIES_DELIMITER = '; '
 
   PROPERTY_PKG_CONFIG_NAME = 'pkg_config_name'
-  
-  def __init__(self, name, version,
-               properties = None,
-               requirements = None):
-    check.check_string(name)
-#    check.check_build_version(version)
 
+  def __new__(clazz, name, version, properties = None, requirements = None):
+    check.check_string(name)
+    if not clazz.name_is_valid(name):
+      raise RuntimeError('Invalid name: \"%s\"' % (name))
+    version = build_version.validate_version(version)
     requirements = requirement_list(requirements)
     check.check_requirement_list(requirements)
-
+    requirements = clazz.parse_requirements(requirements)
     properties = properties or {}
-
-    if not self.name_is_valid(name):
-      raise RuntimeError('Invalid name: \"%s\"' % (name))
-    self._name = name
-    self._version = build_version.validate_version(version)
-
-    self._requirements = self.parse_requirements(requirements)
-    
-    self._properties = properties
-
-  @property
-  def name(self):
-    return self._name
-
-  @name.setter
-  def name(self, value):
-    raise RuntimeError('name is immutable.')
-
-  @property
-  def version(self):
-    return self._version
-
-  @version.setter
-  def version(self, value):
-    raise RuntimeError('version is immutable.')
-
-  @property
-  def requirements(self):
-    return self._requirements
-
-  @requirements.setter
-  def requirements(self, value):
-    raise RuntimeError('requirements are immutable.')
+    check.check_dict(properties)
+    return clazz.__bases__[0].__new__(clazz, name, version, requirements, properties)
   
-  @property 
-  def properties(self):
-    return self._properties
-  
-  @properties.setter
-  def properties(self, value):
-    raise RuntimeError('properties are immutable.')
-
-  @property
+  @cached_property
   def full_name(self):
     return self.make_full_name_str(self.name, self.version)
 
-  @property
+  @cached_property
   def tarball_filename(self):
     return '%s.tar.gz' % (self.full_name)
 
@@ -210,7 +169,7 @@ class package_descriptor(object):
       return name_cmp
     return build_version.compare(pi1.version, pi2.version)
 
-  @property
+  @cached_property
   def requirements_names(self):
     return set([ req.name for req in self.requirements ])
 

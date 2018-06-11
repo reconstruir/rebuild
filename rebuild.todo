@@ -518,7 +518,6 @@ nov 8
 - add support for build variables in command line
 
 nov 9
-- package_descriptor depends on dependency_resolver for a really dumb reason
 - for python recipes name and version should be toplevel not in properties
 
 nov 14
@@ -557,9 +556,6 @@ dec 21
 dec 27
 - fix env_vars in build scripts to be platform specific
 
-jan 5
-- full unit test for package_descriptor_list
-
 jan 9
 - rename step_make_instructions to step_instructions_write or something
 - fix instruction loading unit tests (test_instruction_list.py)
@@ -582,7 +578,6 @@ jan 10
 jan 13
 - fix checksum_manager._checksum_dir: check.check(level, build_target, 'build_target') either level is misnamed or
   the type is wrong
-- package_descriptor.__init__ figure out the correct type for version arg
 
 jan 14
 - git code will download even if --no-network is given
@@ -600,8 +595,6 @@ why the dependency is missing
 some python packages depend on setuptools at runtime because of pkg_resources.  python3 has that builtin so need a variable way to do this dependency onpyt for python2
 
 cleanup the shit that happens in ~/.rebuild/dev_tools/setup.sh to cleanup things like PKG_CONFIG_PATH.  also figure out a way to version these files so they update if the template changes
-
-figure out why shit package_descripttor.parse_requirements is needed.
 
 Feb 13
  - cleanup shit in build: Downloading git@git:rebuild.git@181b29f to /Users/ramiro/proj/third_party/BUILD/downloads/git@git_rebuild.git/181b29f.tar.gz
@@ -642,7 +635,6 @@ mar 17
 mar 18
  - split build_sytem into build_os and build_os_mask
  - reorg value_type, masked_value and recipe_parser_util into a coherent class hierarchy for values
- - make package_descriptor be a namedtuple and remove methods that check for immutable properties
  
 mar 19
  - figure out a way to add android ndk tool to all deps when building for android so dont have to use the one in ~/.rebuild/
@@ -862,3 +854,9 @@ rebuild.package.package_manager.PackageFilesConflictError: conflicts found betwe
 2018-06-09
  - package_manager.env_vars() needs to order package_names by dependency order
  
+- full unit test for package_descriptor_list
+- figure out why shit package_descripttor.parse_requirements is needed.
+- package_descriptor.__init__ figure out the correct type for version arg
+
+
+
