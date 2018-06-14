@@ -14,7 +14,7 @@ class archive_util(object):
   def autoconf_help(clazz, tarball):
     'Return the output of configure --help for an autoconf archive.'
     tmp_dir = temp_file.make_temp_dir()
-    archiver.extract(tarball, tmp_dir, strip_common_base = True)
+    archiver.extract(tarball, tmp_dir, strip_common_ancestor = True)
     confiugure_path = path.join(tmp_dir, 'configure')
     if not path.exists(confiugure_path):
       raise RuntimeError('No configure script found in %s' % (tarball))
@@ -36,8 +36,8 @@ class archive_util(object):
     dir2 = dir1 + clazz.ORIGINAL_DIR_TAIL
     if path.exists(dir2):
       raise RuntimeError('Dir already exists: %s' % (dir2))
-    archiver.extract(tarball, dir1, strip_common_base = True)
-    archiver.extract(tarball, dir2, strip_common_base = True)
+    archiver.extract(tarball, dir1, strip_common_ancestor = True)
+    archiver.extract(tarball, dir2, strip_common_ancestor = True)
     
   @classmethod
   def patch_make(clazz, working_dir):
@@ -60,13 +60,13 @@ class archive_util(object):
   def grep(clazz, tarball, pattern):
     'Return the output of ag (silver searcher) for an archive.'
     tmp_dir = temp_file.make_temp_dir()
-    archiver.extract(tarball, tmp_dir, strip_common_base = True)
+    archiver.extract(tarball, tmp_dir, strip_common_ancestor = True)
     result = execute.execute('ag %s .' % (pattern), cwd = tmp_dir, shell = True, raise_error = False).stdout
     file_util.remove(tmp_dir)
     return result
 
   @classmethod
-  def diff(clazz, archive1, archive2, strip_common_base = False):
+  def diff(clazz, archive1, archive2, strip_common_ancestor = False):
     'Return the output of diffing the contents of 2 archives.'
 
     members1 = archiver.members(archive1)

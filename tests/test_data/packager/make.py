@@ -102,7 +102,7 @@ def main():
 
     version_no_revision = '%s-%s' % (pi.name, pi.version)
 
-    archiver.extract(template_tarball, tmp_dir, base_dir = 'foo', strip_common_base = True)
+    archiver.extract(template_tarball, tmp_dir, base_dir = 'foo', strip_common_ancestor = True)
     working_dir = path.join(tmp_dir, 'foo')
     if DEBUG:
       print('working_dir=%s' % (working_dir))
