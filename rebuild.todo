@@ -43,7 +43,7 @@ jan 3:
   centralize the code to find builtin tools from PkgConfig.py
   fix issue in software/lib/libtiff/build.py that requires --disable-cxx
 - event though the PkgConfig module has its own pkg-config binary, when a software package needs pkg-config it still needs to be added to the tools
-- improve TarArchive.extract_members() performance by using extractall
+- improve TarArchive.extract() performance by using extractall
 with the members argument.  Same for ZipArchive
 
 jan 4
