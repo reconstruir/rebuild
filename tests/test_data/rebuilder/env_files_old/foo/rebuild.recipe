@@ -1,0 +1,61 @@
+!rebuild.recipe!
+
+package foo 1.0.0
+
+  steps
+    step_setup
+      
+    step_post_install
+      install_files
+        all: ${REBUILD_RECIPE_DIR}/files/bin/foo.py bin/foo.py
+        
+      tests
+        all: test-foo.sh
+        
+      skip_binary_third_party_prefix: True
+
+      env_files
+        all: foo_env1.sh
+        all: foo_env2.sh
+
+package bar 1.0.0
+
+  requirements
+    all: RUN foo >= 1.0.0
+
+  steps
+    step_setup
+      
+    step_post_install
+      install_files
+        all: ${REBUILD_RECIPE_DIR}/files/bin/bar.py bin/bar.py
+        
+#      tests
+#        all: test-bar.sh
+        
+      skip_binary_third_party_prefix: True
+
+      env_files
+        all: bar_env1.sh
+        all: bar_env2.sh
+
+package baz 1.0.0
+
+  requirements
+    all: RUN bar >= 1.0.0
+
+  steps
+    step_setup
+      
+    step_post_install
+      install_files
+        all: ${REBUILD_RECIPE_DIR}/files/bin/baz.py bin/baz.py
+        
+#      tests
+#        all: test-baz.sh
+        
+      skip_binary_third_party_prefix: True
+
+      env_files
+        all: baz_env1.sh
+        all: baz_env2.sh
