@@ -18,6 +18,24 @@ package water 1.0.0
       env_files
         all: water_env.sh
 
+package carb 1.0.0
+
+  steps
+    step_setup
+      
+    step_post_install
+      install_files
+        all: ${REBUILD_RECIPE_DIR}/files/bin/carb.py bin/carb.py
+        
+      tests
+        all: test-carb.sh
+        all: test-carb-env.sh
+        
+      skip_binary_third_party_prefix: True
+
+      env_files
+        all: water_env.sh
+
 package fiber 1.0.0
 
   steps
