@@ -15,7 +15,7 @@ package libbar 1.0.0
         
       tests
         all: test-libbar.sh
-        all: test-libbar-env-var.sh
+        all: test-libbar-env.sh
         
       skip_binary_third_party_prefix: True
 

@@ -2,6 +2,9 @@
 
 package libbaz 1.0.0
 
+  requirements
+    all: RUN libbar >= 1.0.0
+
   steps
     step_setup
 
@@ -11,5 +14,6 @@ package libbaz 1.0.0
         
       tests
         all: test-libbaz.sh
+        all: test-libbaz-env.sh
         
       skip_binary_third_party_prefix: True

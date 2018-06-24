@@ -10,7 +10,8 @@ package libfoo 1.0.0
         all: ${REBUILD_RECIPE_DIR}/files/bin/libfoo.py bin/libfoo.py
         
       tests
-        all: test-libfoo.sh test-libfoo-env-var.sh
+        all: test-libfoo.sh
+        all: test-libfoo-env.sh
         
       skip_binary_third_party_prefix: True
 
