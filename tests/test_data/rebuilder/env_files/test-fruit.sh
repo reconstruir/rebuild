@@ -3,10 +3,10 @@
 source ${REBUILD_SHELL_FRAMEWORK_DIR}/env/bes_framework.sh
 source ${REBUILD_SHELL_FRAMEWORK_DIR}/env/bes_testing.sh
 
-function test_env()
+function test_fruit_dot_py()
 {
-  bes_assert "[ $LIBFOO_ENV1 = libwater_env1 ]"
-  bes_assert "[ $LIBFOO_ENV2 = libwater_env2 ]"
+  output=$(fruit.py one two tre)
+  bes_assert "[ 'fruit: one two tre' = '$output' ]"
 }
 
 bes_testing_run_unit_tests

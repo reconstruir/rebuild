@@ -3,7 +3,7 @@
 import sys
 
 def main():
-  sys.stdout.write('libwater: ')
+  sys.stdout.write('fiber: ')
   for i, arg in enumerate(sys.argv[1:]):
     if i != 0:
       sys.stdout.write(' ')
@@ -12,4 +12,3 @@ def main():
 
 if __name__ == '__main__':
   raise SystemExit(main())
-

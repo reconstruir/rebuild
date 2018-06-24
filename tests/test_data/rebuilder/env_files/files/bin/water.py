@@ -3,7 +3,7 @@
 import sys
 
 def main():
-  sys.stdout.write('libfruit: ')
+  sys.stdout.write('water: ')
   for i, arg in enumerate(sys.argv[1:]):
     if i != 0:
       sys.stdout.write(' ')

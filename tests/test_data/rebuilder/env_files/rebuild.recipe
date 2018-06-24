@@ -1,60 +1,56 @@
 !rebuild.recipe!
 
-package libwater 1.0.0
+package water 1.0.0
 
   steps
     step_setup
       
     step_post_install
       install_files
-        all: ${REBUILD_RECIPE_DIR}/files/bin/libwater.py bin/libwater.py
+        all: ${REBUILD_RECIPE_DIR}/files/bin/water.py bin/water.py
         
       tests
-        all: test-libwater.sh
-        all: test-libwater-env.sh
+        all: test-water.sh
+        all: test-water-env.sh
         
       skip_binary_third_party_prefix: True
 
       env_files
-        all: libwater_env.sh
+        all: water_env.sh
 
-package libfiber 1.0.0
-
-  requirements
-    all: RUN libwater >= 1.0.0
+package fiber 1.0.0
 
   steps
     step_setup
       
     step_post_install
       install_files
-        all: ${REBUILD_RECIPE_DIR}/files/bin/libfiber.py bin/libfiber.py
-        all: ${REBUILD_RECIPE_DIR}/files/bin/libfiber_code_gen.py bin/libfiber_code_gen.py
+        all: ${REBUILD_RECIPE_DIR}/files/bin/fiber.py bin/fiber.py
         
       tests
-        all: test-libfiber.sh
-        all: test-libfiber-env.sh
+        all: test-fiber.sh
+        all: test-fiber-env.sh
         
       skip_binary_third_party_prefix: True
 
       env_files
-        all: libfiber_env.sh
+        all: fiber_env.sh
 
-package libfruit 1.0.0
+package fruit 1.0.0
 
   requirements
-    all: RUN libfiber >= 1.0.0
+    all: RUN fiber >= 1.0.0
 
   steps
     step_setup
 
     step_post_install
       install_files
-        all: ${REBUILD_RECIPE_DIR}/files/bin/libfruit.py bin/libfruit.py
+        all: ${REBUILD_RECIPE_DIR}/files/bin/fruit.py bin/fruit.py
         
       tests
-        all: test-libfruit.sh
-        all: test-libfruit-env.sh
+        all: test-fruit.sh
+        all: test-fruit-env.sh
         
       skip_binary_third_party_prefix: True
 

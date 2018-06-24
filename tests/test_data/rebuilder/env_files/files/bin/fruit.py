@@ -4,11 +4,15 @@ import subprocess, sys
 
 def main():
 
-  libwater_rv = subprocess.check_output(['libwater.py', 'a', 'b', 'c']).strip()
-  sys.stdout.write(libwater_rv)
+  water_rv = subprocess.check_output(['water.py', 'a', 'b', 'c']).strip()
+  sys.stdout.write(water_rv)
   sys.stdout.write(' # ')
   
-  sys.stdout.write('libfiber: ')
+  fiber_rv = subprocess.check_output(['fiber.py', 'a', 'b', 'c']).strip()
+  sys.stdout.write(fiber_rv)
+  sys.stdout.write(' # ')
+  
+  sys.stdout.write('fruit: ')
   for i, arg in enumerate(sys.argv[1:]):
     if i != 0:
       sys.stdout.write(' ')

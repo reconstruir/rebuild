@@ -5,9 +5,8 @@ source ${REBUILD_SHELL_FRAMEWORK_DIR}/env/bes_testing.sh
 
 function test_env()
 {
-  output=$(libwater.py one two tre)
-  bes_assert "[ 'libwater: one two tre' = '$output' ]"
+  bes_assert "[ $LIBFOO_ENV1 = water_env1 ]"
+  bes_assert "[ $LIBFOO_ENV2 = water_env2 ]"
 }
 
 bes_testing_run_unit_tests
-
