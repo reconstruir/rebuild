@@ -82,7 +82,7 @@ class artifact_manager(object):
     pkg_info = pkg.package_descriptor
     artifact_path_rel = self.artifact_path(pkg_info, build_target, relative = True)
     artifact_path_abs = self.artifact_path(pkg_info, build_target, relative = False)
-    file_util.copy(tarball, artifact_path_abs)
+    file_util.copy(tarball, artifact_path_abs, use_hard_link = True)
     if not self.no_git:
       git.add(self._root_dir, pkg_info.artifact_path(build_target))
     self._reset()
