@@ -34,7 +34,7 @@ package carb 1.0.0
       skip_binary_third_party_prefix: True
 
       env_files
-        all: water_env.sh
+        all: carb_env.sh
 
 package fiber 1.0.0
 
@@ -72,3 +72,5 @@ package fruit 1.0.0
         
       skip_binary_third_party_prefix: True
 
+      env_files
+        all: fruit_env.sh
