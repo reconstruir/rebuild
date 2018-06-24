@@ -38,6 +38,9 @@ package carb 1.0.0
 
 package fiber 1.0.0
 
+  requirements
+    all: RUN carb >= 1.0.0
+
   steps
     step_setup
       
