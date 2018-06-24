@@ -1,0 +1,60 @@
+!rebuild.recipe!
+
+package libwater 1.0.0
+
+  steps
+    step_setup
+      
+    step_post_install
+      install_files
+        all: ${REBUILD_RECIPE_DIR}/files/bin/libwater.py bin/libwater.py
+        
+      tests
+        all: test-libwater.sh
+        all: test-libwater-env.sh
+        
+      skip_binary_third_party_prefix: True
+
+      env_files
+        all: libwater_env.sh
+
+package libfiber 1.0.0
+
+  requirements
+    all: RUN libwater >= 1.0.0
+
+  steps
+    step_setup
+      
+    step_post_install
+      install_files
+        all: ${REBUILD_RECIPE_DIR}/files/bin/libfiber.py bin/libfiber.py
+        all: ${REBUILD_RECIPE_DIR}/files/bin/libfiber_code_gen.py bin/libfiber_code_gen.py
+        
+      tests
+        all: test-libfiber.sh
+        all: test-libfiber-env.sh
+        
+      skip_binary_third_party_prefix: True
+
+      env_files
+        all: libfiber_env.sh
+
+package libfruit 1.0.0
+
+  requirements
+    all: RUN libfiber >= 1.0.0
+
+  steps
+    step_setup
+
+    step_post_install
+      install_files
+        all: ${REBUILD_RECIPE_DIR}/files/bin/libfruit.py bin/libfruit.py
+        
+      tests
+        all: test-libfruit.sh
+        all: test-libfruit-env.sh
+        
+      skip_binary_third_party_prefix: True
+
