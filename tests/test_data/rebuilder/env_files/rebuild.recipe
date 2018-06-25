@@ -60,6 +60,7 @@ package fiber 1.0.0
 package fruit 1.0.0
 
   requirements
+    all: RUN water >= 1.0.0
     all: RUN fiber >= 1.0.0
 
   steps
