@@ -250,33 +250,34 @@ print("hook1 hook2")
     self.assertMultiLineEqual( expected, test.artifacts_contents['foo-1.0.0.tar.gz']['files/bin/foo.py'] )
     
   def test_env_files(self):
-    test = self._run_test(self.config(read_contents = True, read_checksums = True), self.data_dir(), 'env_files', 'foo', 'bar', 'baz')
+    test = self._run_test(self.config(read_contents = True, read_checksums = True), self.data_dir(), 'env_files', 'fruit')
     self.assertEqual( 0, test.result.exit_code )
-    self.assertEqual( [ 'bar-1.0.0.tar.gz', 'baz-1.0.0.tar.gz',  'foo-1.0.0.tar.gz' ], test.artifacts )
-    tgz = path.join(test.artifacts_dir, 'foo-1.0.0.tar.gz')
+    self.assertEqual( [ 'carb-1.0.0.tar.gz', 'fiber-1.0.0.tar.gz',  'fruit-1.0.0.tar.gz', 'water-1.0.0.tar.gz' ], test.artifacts )
     self.assertEqual( [
-      'env/foo_env1.sh',
-      'env/foo_env2.sh',
-      'files/bin/foo.py',
+      'env/carb_env.sh',
+      'files/bin/carb.py',
       'metadata/metadata.json',
-    ], test.artifacts_members['foo-1.0.0.tar.gz'])
+    ], test.artifacts_members['carb-1.0.0.tar.gz'])
     self.assertEqual( [
-      'env/bar_env1.sh',
-      'env/bar_env2.sh',
-      'files/bin/bar.py',
+      'env/water_env.sh',
+      'files/bin/water.py',
       'metadata/metadata.json',
-    ], test.artifacts_members['bar-1.0.0.tar.gz'])
+    ], test.artifacts_members['water-1.0.0.tar.gz'])
     self.assertEqual( [
-      'env/baz_env1.sh',
-      'env/baz_env2.sh',
-      'files/bin/baz.py',
+      'env/fiber_env.sh',
+      'files/bin/fiber.py',
       'metadata/metadata.json',
-    ], test.artifacts_members['baz-1.0.0.tar.gz'])
+    ], test.artifacts_members['fiber-1.0.0.tar.gz'])
+    self.assertEqual( [
+      'env/fruit_env.sh',
+      'files/bin/fruit.py',
+      'metadata/metadata.json',
+    ], test.artifacts_members['fruit-1.0.0.tar.gz'])
 
     expected = '''#!/usr/bin/env python
 print("hook1 hook2")
 '''
-
+    
   def test_custom_steps(self):
     test = self._run_test(self.config(read_contents = True, read_checksums = True), self.data_dir(), 'custom_step', 'foo')
     self.assertEqual( 0, test.result.exit_code )
