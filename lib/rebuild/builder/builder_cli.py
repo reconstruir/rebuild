@@ -44,6 +44,7 @@ class builder_cli(object):
     self.parser.add_argument('--recipes-only', action = 'store_true', help = 'Only read the recipes dont build them.')
     self.parser.add_argument('--no-network', action = 'store_true', help = 'Down go to the network.')
     self.parser.add_argument('--skip-tests', action = 'store_true', help = 'Skip the tests part of the build.')
+    self.parser.add_argument('--targets', action = 'store_true', help = 'Print the possible targets.')
     self.parser.add_argument('--scratch', action = 'store_true', help = 'Start from scratch by deleting existing data.')
     self.parser.add_argument('--filter', nargs = '+', default = None, help = 'filter the list of build files to the given list.')
     self.parser.add_argument('-r', '--root', action = 'store', type = str, default = 'BUILD', help = 'Root dir where to store the build.')
@@ -119,13 +120,17 @@ class builder_cli(object):
     config.performance = args.performance
     env = builder_env(config, available_packages)
     
-    build_blurb.blurb('rebuild', 'target=%s; host=%s' % (config.build_target.build_path, config.host_build_target.build_path))
-    build_blurb.blurb_verbose('rebuild', 'command line: %s' % (' '.join(sys.argv)))
-
     bldr = builder(env)
 
     resolved_args = bldr.check_and_resolve_cmd_line_args(target_packages)
-      
+
+    if args.targets:
+      build_blurb.blurb('rebuild', ' '.join(bldr.package_names()), fit = True)
+      return 1
+
+    build_blurb.blurb('rebuild', 'target=%s; host=%s' % (config.build_target.build_path, config.host_build_target.build_path))
+    build_blurb.blurb_verbose('rebuild', 'command line: %s' % (' '.join(sys.argv)))
+
     if resolved_args.invalid_args:
       build_blurb.blurb('rebuild', 'Invalid targets: %s' % (' '.join(resolved_args.invalid_args)))
       build_blurb.blurb('rebuild', 'possible targets:')
