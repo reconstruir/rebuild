@@ -3,6 +3,6 @@
 
 int main()
 {
-  assert( 1801 == papaya_foo(0) );
+  assert( 901 == papaya_foo(0) );
   return 0;
 }
