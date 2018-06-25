@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 
-import argparse
-import subprocess, sys
+import argparse, subprocess, os, sys
 
 HEADER = '''
 #ifndef {module_name}_h__
 #define {module_name}_h__
 
-extern int {module_name}_{function_name}();
+extern int {env1}{env2}{module_name}_{function_name}();
 
 #endif /* {module_name}_h__ */
 '''
@@ -15,7 +14,7 @@ extern int {module_name}_{function_name}();
 CODE = '''
 #include "{module_name}.h"
 
-int {module_name}_{function_name}()
+int {env1}{env2}{module_name}_{function_name}()
 {{
   return {return_value};
 }}
@@ -34,10 +33,22 @@ def main():
   else:
     template = CODE
 
+  if not 'CODEGEN_ENV1' in os.environ:
+    sys.stderr.write('codegen.py: env var CODEGEN_ENV1 not set.\n')
+    sys.stderr.flush()
+    raise SystemExit(1)
+  
+  if not 'CODEGEN_ENV2' in os.environ:
+    sys.stderr.write('codegen.py: env var CODEGEN_ENV2 not set.\n')
+    sys.stderr.flush()
+    raise SystemExit(1)
+  
   content = template.format(module_name = args.module_name,
                             function_name = args.function_name,
-                            return_value = args.return_value)
-                            
+                            return_value = args.return_value,
+                            env1 = os.environ['CODEGEN_ENV1'],
+                            env2 = os.environ['CODEGEN_ENV2'])
+  
   print(content)
   return 0
     

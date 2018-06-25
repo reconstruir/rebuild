@@ -16,6 +16,7 @@ papaya_prog1_main: $(POTATO_PROG1_MAIN_OBJS) $(MAKE_STATIC_LIB)
 	$(CC) -o $@ $(POTATO_PROG1_MAIN_OBJS) $(LDFLAGS) $(LOCAL_LDFLAGS) $(POTATO_PROG1_MAIN_LIBS)
 
 papaya_gen.h:
+	echo POTOFUCK $(CODEGEN_ENV1) $(CODEGEN_ENV2)
 	codegen.py papaya_gen --header myfunc 667 > $@
 
 papaya_gen.c: papaya_gen.h
