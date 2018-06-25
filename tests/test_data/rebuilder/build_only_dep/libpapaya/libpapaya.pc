@@ -1,0 +1,12 @@
+prefix=${REBUILD_PACKAGE_PREFIX}
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+sharedlibdir=${libdir}
+includedir=${prefix}/include
+
+Name: ${REBUILD_PACKAGE_NAME}
+Description: ${REBUILD_PACKAGE_DESCRIPTION}
+Version: ${REBUILD_PACKAGE_FULL_VERSION}
+
+Libs: -L${libdir} -L${sharedlibdir} -lpapaya
+Cflags: -I${includedir}

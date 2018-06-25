@@ -1,0 +1,33 @@
+!rebuild.recipe!
+
+package libpapaya 1.0.0
+
+  requirements
+    all: BUILD codegen >= 1.0.0
+
+  steps  
+    step_setup
+      tarball_dir:
+        all: libpapaya/src dest=${REBUILD_BUILD_DIR}
+        
+    step_make
+      make_flags
+        all: LDFLAGS="${REBUILD_REQUIREMENTS_LDFLAGS}"
+        all: CFLAGS="-std=c99 ${REBUILD_COMPILE_ARCH_FLAGS} ${REBUILD_REQUIREMENTS_CFLAGS}"
+        linux: CC=gcc
+        macos: CC=clang
+        #macos: AR=${AR_REPLACEMENT}
+      make_env
+        all: _TEST_MAKE_DIR=${REBUILD_RECIPE_DIR}/../../makefiles
+        
+    step_make_install
+      make_install_env
+        all: _TEST_MAKE_DIR=${REBUILD_RECIPE_DIR}/../../makefiles
+        
+    step_post_install
+      pc_files
+        all: libpapaya.pc
+      skip_binary_third_party_prefix: True
+      tests
+        all: test-libpapaya.c
+        #all: test-libpapaya-env-var-from-tool.c

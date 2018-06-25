@@ -1,0 +1,19 @@
+!rebuild.recipe!
+
+package codegen 1.0.0
+
+  steps
+    step_setup
+      
+    step_post_install
+      install_files
+        all: ${REBUILD_RECIPE_DIR}/files/bin/codegen.py bin/codegen.py
+        
+      tests
+        all: test-codegen.sh
+        all: test-codegen-env.sh
+        
+      skip_binary_third_party_prefix: True
+
+      env_files
+        all: codegen_env.sh
