@@ -143,13 +143,9 @@ class step(with_metaclass(step_register_meta, object)):
     os_env.update(env, script.requirements_manager.shell_env(script.resolve_deps(['RUN'], False)))
     os_env.update(env, os_env.make_shell_env(script.staged_files_dir))
 
-#    caca_env = os_env.make_clean_env(keep_keys = [ 'PYTHONPATH' ])
-#    for k, v in sorted(caca_env.items()):
-#      print('FUCK: BEFORE: %s=%s' % (k, v))
-#    script.requirements_manager.transform_env(caca_env, script.resolve_deps(['RUN'], False))
-#    for k, v in sorted(caca_env.items()):
-#      print('FUCK:  AFTER: %s=%s' % (k, v))
-    
+    run_build_deps = script.resolve_deps(['RUN', 'BUILD'], False)
+    env.update(script.requirements_manager.transform_env({}, run_build_deps.names()))
+      
     env['REBUILD_PYTHON_VERSION'] = '2.7'
     env['PYTHON'] = 'python%s' % (env['REBUILD_PYTHON_VERSION'])
     
