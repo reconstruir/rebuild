@@ -21,7 +21,23 @@ class test_requirement_list(unit_test):
       ( 'bar', None, None, None, None ),
       ( 'baz', None, None, None, None ),
     ], requirements )
-  
+
+  def test_parse_string_seq_list(self):
+    text = [ 'foo >= 1.2.3', 'orange >= 6.6.6', 'bar', 'baz', 'bar', 'orange >= 6.6.6' ]
+    requirements = RL.parse(text)
+    self.assertEqual( [
+      ( 'foo', '>=', '1.2.3', None, None ),
+      ( 'orange', '>=', '6.6.6', None, None ),
+      ( 'bar', None, None, None, None ),
+      ( 'baz', None, None, None, None ),
+    ], requirements )
+    self.assertEqual( [
+      ( 'foo', '>=', '1.2.3', None, None ),
+      ( 'orange', '>=', '6.6.6', None, None ),
+      ( 'bar', None, None, None, None ),
+      ( 'baz', None, None, None, None ),
+    ], requirements )
+    
   def test_to_string(self):
     reqs = RL([ R('foo', '>=', '1.2.3'), R('orange', '>=', '6.6.6'), R('bar', None, None), R('baz', None, None) ])
     self.assertEqual( 'foo >= 1.2.3 orange >= 6.6.6 bar baz', str(reqs) )
