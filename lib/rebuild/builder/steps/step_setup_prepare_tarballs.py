@@ -63,6 +63,7 @@ class step_setup_prepare_tarballs(step):
       base = tarball.get_property('base', None)
       strip_common_ancestor = tarball.get_property('strip_common_ancestor', True)
       self.blurb('Extracting %s to %s' % (path.relpath(tarball_path), path.relpath(dest)))
+      print('FOO: calling archiver.extract(%s, %s, base_dir=%s, strip_common_ancestor=%s' % (tarball_path, dest, base, strip_common_ancestor))
       archiver.extract(tarball_path,
                        dest,
                        base_dir = base,
