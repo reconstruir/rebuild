@@ -849,5 +849,7 @@ rebuild.package.package_manager.PackageFilesConflictError: conflicts found betwe
 - figure out why shit package_descripttor.parse_requirements is needed.
 - package_descriptor.__init__ figure out the correct type for version arg
 
-
+2018-06-25
+- some expensive operations on binaries like strip need to consider hard links
+- maybe rename manager to environment
 
