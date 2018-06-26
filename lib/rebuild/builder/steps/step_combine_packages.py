@@ -21,14 +21,31 @@ class _step_combine_packages_unpack(step):
   #@abstractmethod
   def execute(self, script, env, values, inputs):
     packages = values.get('packages')
+    archives = self._filenames(env, packages)
+    common_files = self._common_files(archives)
+    if common_files:
+      return self.result(False, 'conflicting files found between artifacts: %s' % (' '.join(common_files)))
+    for archive in archives:
+      self.blurb('Extracting %s to %s' % (path.relpath(archive), path.relpath(script.stage_dir)))
+      archiver.extract(archive,
+                       script.stage_dir,
+                       exclude = [ 'metadata/metadata.json' ])
+    return self.result(True)
+
+  @classmethod
+  def _filenames(clazz, env, packages):
+    filenames = []
     for package in packages:
       pdesc = package_descriptor(package.name, package.version)
       pmeta = env.artifact_manager.find_by_package_descriptor(pdesc, env.config.build_target, relative_filename = False)
-      self.blurb('Extracting %s to %s' % (path.relpath(pmeta.filename), path.relpath(script.stage_dir)))
-      archiver.extract(pmeta.filename,
-                       script.stage_dir,
-                       exclude = [ 'metadata' ])
-    return self.result(True)
+      filenames.append(pmeta.filename)
+    return filenames
+
+  @classmethod
+  def _common_files(clazz, archives):
+    common_files = archiver.common_files(archives)
+    common_files.remove('metadata/metadata.json')
+    return common_files
 
 class step_combine_packages(compound_step):
   'A step that combines other projects.'

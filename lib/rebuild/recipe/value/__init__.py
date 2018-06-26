@@ -19,8 +19,11 @@ from .value_key_values import value_key_values
 from .value_list_base import value_list_base
 from .value_origin import value_origin
 from .value_registry import value_registry
+from .value_requirement_list import value_requirement_list
 from .value_source_dir import value_source_dir
 from .value_source_tarball import value_source_tarball
 from .value_string import value_string
 from .value_string_list import value_string_list
 from .value_type import value_type
+
+
