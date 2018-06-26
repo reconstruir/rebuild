@@ -294,20 +294,15 @@ class package_manager(object):
 
   def env_vars(self, package_names):
     'Return the environment variables for the given package names.'
-#    assert False
-    print('FOO: package_names=%s' % (package_names))
     dep_map = self.db.dep_map()
-    print('FOO: dep_map=%s' % (dep_map))
-#    resolved_deps = dependency_resolver.resolve_deps(dep_map, package_names)
-#    print('FOO: resolved_deps=%s' % (resolved_deps))
     check.check_string_seq(package_names)
     package_names = object_util.listify(package_names)
     descriptors = [ self.descriptor_for_name(pkg_name) for pkg_name in package_names ]
     result = {}
     for pkg_desc in descriptors:
       os_env.update(result, self._env_vars_for_one_package(pkg_desc))
+    # need to resolve names and transform that
     env_files_env = self.transform_env({}, package_names)
-    print('FOO: env_files_env=%s' % (env_files_env))
     #os_env.update(result, env_files_env)
     return result
 
