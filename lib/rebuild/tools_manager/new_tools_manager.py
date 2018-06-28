@@ -35,7 +35,6 @@ class new_tools_manager(object):
   def ensure_tool(self, pkg_desc):
     check.check_package_descriptor(pkg_desc)
     if path.exists(self._package_root_dir(pkg_desc)):
-      print('already')
       return
     self._timer.start('%s: ensure_tool()' % (pkg_desc.full_name))
     project_name = self._make_package_name(pkg_desc)
@@ -47,6 +46,10 @@ class new_tools_manager(object):
                                               force_install = False)
     self._manager._save_system_setup_scripts(project_name, self._build_target)
     self._timer.stop()
+
+  def transform_env(self, pkg_desc, env):
+    project_name = self._make_package_name(pkg_desc)
+    return self._manager.transform_env(env, project_name, self._build_target)
 
   def _package_root_dir(self, pkg_desc):
     return path.join(self._root_dir, self._make_package_name(pkg_desc))

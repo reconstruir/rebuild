@@ -48,13 +48,14 @@ class test_new_tools_manager(script_unit_test):
   def test_ensure_tool(self):
     am = self._make_test_artifact_manager()
     tm = self._make_test_tm(am)
-#    packages = [
-#      PD.parse('tfoo-1.0.0'),
-#      PD.parse('tbar-1.0.0'),
-#      PD.parse('tbaz-1.0.0'),
-#    ]
-    tm.ensure_tool(PD.parse('tfoo-1.0.0'))
-
+    tfoo = PD.parse('tfoo-1.0.0')
+    tbar = PD.parse('tbar-1.0.0')
+    tbaz = PD.parse('tbaz-1.0.0')
+    tm.ensure_tool(tfoo)
+    env = tm.transform_env(tfoo, {})
+    for k, v in env.items():
+      print('CAA: %s: %s' % (k, v))
+    
   def xtest_install_and_use_a_tool(self):
     tm = self._make_test_tm()
     am = self._make_test_artifact_manager()
