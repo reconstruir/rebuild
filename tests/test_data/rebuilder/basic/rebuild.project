@@ -9,7 +9,4 @@ def rebuild_packages():
 #    'tools/tbar/build_101.recipe',
     'tools/tfoo/rebuild.recipe',
     'tools/tbaz/rebuild.recipe',
-    'shell_libs/libfoo/rebuild.recipe',
-    'shell_libs/libbar/rebuild.recipe',
-    'shell_libs/libbaz/rebuild.recipe',
   ]
