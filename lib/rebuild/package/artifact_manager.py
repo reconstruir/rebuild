@@ -112,46 +112,8 @@ class artifact_manager(object):
   
   def latest_available_packages(self, build_target):
     return self.available_packages(build_target).latest_versions()
-
+  
   def resolve_packages(self, package_names, build_target):
-    self._timer.start('old resolve_packages()')
-    o = self.old_resolve_packages(package_names, build_target)
-    self._timer.stop()
-    self._timer.start('new resolve_packages()')
-    n = self.new_resolve_packages(package_names, build_target)
-    self._timer.stop()
-    assert len(o) == len(n)
-    if False:
-#    if True:
-      for x, y in zip(o, n):
-        print('FOO: OLD: resolved: %s' % (str(x.metadata.package_descriptor.full_name)))
-        print('FOO: NEW: resolved: %s' % (str(y.full_name)))
-    return o
-  
-  def old_resolve_packages(self, package_names, build_target):
-#    assert False
-#    self._timer.start('resolve_packages(package_names %s, build_target %s)' % (package_names, build_target))
-    # FIXME: need to deal with multiple versions
-    result = []
-#    self._timer.start('available_packages(build_target %s)' % (str(build_target)))
-    available_packages = self.available_packages(build_target)
-#    self._timer.stop()
-    for package_name in package_names:
-#      self._timer.start('_find_latest_package(package_name %s)' % (package_name))
-      available_package = self._find_latest_package(package_name,
-                                                     available_packages)
-#      self._timer.stop()
-      if not available_package:
-#        self._timer.stop()
-        raise NotInstalledError('package \"%s\" not found' % (package_name))
-
-      result.append(available_package)
-
-    assert len(result) == len(package_names)
-#    self._timer.stop()
-    return result
-  
-  def new_resolve_packages(self, package_names, build_target):
 #    self._timer.start('resolve_packages(package_names %s, build_target %s)' % (package_names, build_target))
     # FIXME: need to deal with multiple versions
     result = []
@@ -160,7 +122,7 @@ class artifact_manager(object):
 #    self._timer.stop()
     for package_name in package_names:
 #      self._timer.start('_find_latest_package(package_name %s)' % (package_name))
-      available_package = self._caca_find_latest_package(package_name,
+      available_package = self._find_latest_package(package_name,
                                                          available_packages)
 #      self._timer.stop()
       if not available_package:
@@ -175,18 +137,6 @@ class artifact_manager(object):
   
   @classmethod
   def _find_latest_package(self, package_name, available_packages):
-    candidates = []
-    for available_package in available_packages:
-      if package_name == available_package.package_descriptor.name:
-        candidates.append(available_package)
-    if not candidates:
-      return None
-    if len(candidates) > 1:
-      candidates = sorted(candidates, cmp = package.descriptor_cmp)
-    return candidates[-1]
-
-  @classmethod
-  def _caca_find_latest_package(self, package_name, available_packages):
     check.check_package_metadata_list(available_packages)
     candidates = []
     for available_package in available_packages:
