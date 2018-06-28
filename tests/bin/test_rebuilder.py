@@ -298,7 +298,7 @@ print("hook1 hook2")
     self.assertEqual( [ 'libpotato-1.0.0.tar.gz', 'libstarch-1.0.0.tar.gz' ], test.artifacts )
     
   def _run_test(self, config, data_dir, cwd_subdir, *args):
-    rt = rebuilder_tester(self.run_script,
+    rt = rebuilder_tester(self._resolve_script(),
                           path.join(data_dir, cwd_subdir),
                           path.normpath(path.join(data_dir, '../sources')),
                           build_level.RELEASE,

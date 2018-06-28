@@ -1,7 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import os.path as path
-from bes.testing.unit_test import unit_test
+import codecs, os.path as path, subprocess, sys
 from bes.fs import file_checksum, file_checksum_list, file_find, temp_file
 from bes.archive import archiver
 from bes.common import string_util
@@ -20,8 +19,8 @@ class rebuilder_tester(object):
   
   result = namedtuple('result', 'tmp_dir, command, result, artifacts_dir, artifacts, artifacts_members, artifacts_contents, droppings, checksums, checksums_contents')
   
-  def __init__(self, runner, working_dir, source_dir, level, debug = False):
-    self._runner = runner
+  def __init__(self, script, working_dir, source_dir, level, debug = False):
+    self._script = script
     self._working_dir = working_dir
     self._source_dir = source_dir
     self._level = level
@@ -50,7 +49,7 @@ class rebuilder_tester(object):
     command = self._make_command(tmp_dir, *args)
     artifacts_dir = path.join(tmp_dir, 'artifacts', config.build_target.build_path)
     checksums_dir = path.join(tmp_dir, 'checksums', config.build_target.build_path)
-    result = self._runner(command, cwd = self._working_dir)
+    result = self.run_script(command, cwd = self._working_dir)
     artifacts = self._find_in_dir(artifacts_dir)
     checksums = self._find_in_dir(checksums_dir)
     droppings = self._find_in_dir(tmp_dir)
@@ -69,7 +68,9 @@ class rebuilder_tester(object):
         checksums_contents = self._load_checksums(config, checksums_dir, tmp_dir, checksums)
           
     if result.exit_code != 0 or self._debug:
-      unit_test.spew(result.stdout)
+      sys.stdout.write(result.stdout)
+      sys.stdout.write('\n')
+      sys.stdout.flush()
       
     return self.result(tmp_dir, command, result, artifacts_dir, artifacts, artifacts_members,
                        artifacts_contents, droppings, checksums, checksums_contents)
@@ -115,3 +116,30 @@ class rebuilder_tester(object):
       if not clazz._blacklist(member, [ 'bin/rebbe_', 'lib/librebbe_' ]):
         result[member] = archiver.extract_member_to_string(artifact, member).decode('utf8')
     return result
+
+  def make_command(self, args):
+    cmd = [ self._script ] + list(args)
+    return cmd
+
+  def run_script(self, args, cwd = None, env = None):
+    rv = self.run_script_raw(args, cwd = cwd, env = env)
+    if isinstance(rv.stdout, bytes):
+      stdout = codecs.decode(rv.stdout, 'utf-8')
+    else:
+      stdout = rv.stdout
+    if rv.exit_code != 0:
+      print(rv.stdout)
+    return self.exec_result(rv.exit_code, stdout)
+
+  def run_script_raw(self, args, cwd = None, env = None):
+    cmd = self.make_command(args)
+    return self._exec(cmd, cwd, env)
+  
+  exec_result = namedtuple('exec_result', 'exit_code,stdout')
+  @classmethod
+  def _exec(clazz, cmd, cwd, env):
+    process = subprocess.Popen(cmd, cwd = cwd, env = env, stdout = subprocess.PIPE, stderr = subprocess.STDOUT, shell = False)
+    stdout, _ = process.communicate()
+    exit_code = process.wait()
+    return clazz.exec_result(exit_code, stdout.strip())
+  
