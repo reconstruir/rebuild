@@ -90,6 +90,12 @@ class manager(object):
     pm = self._package_manager(project_name, build_target.system)
     return pm.transform_env(env, pm.list_all())
   
+  def bin_dir(self, project_name, build_target):
+    check.check_string(project_name)
+    check.check_build_target(build_target)
+    pm = self._package_manager(project_name, build_target.system)
+    return pm.bin_dir
+  
   def _load_config(self, build_target):
     self.log_i('loading config: %s' % (self.config_filename))
     if not path.exists(self.config_filename):

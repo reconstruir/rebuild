@@ -55,6 +55,7 @@ class test_new_tools_manager(script_unit_test):
     env = tm.transform_env(tfoo, {})
     for k, v in env.items():
       print('CAA: %s: %s' % (k, v))
+    print('bin_dir: %s' % (tm.bin_dir(tfoo)))
     
   def xtest_install_and_use_a_tool(self):
     tm = self._make_test_tm()

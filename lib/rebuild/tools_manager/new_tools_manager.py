@@ -51,6 +51,10 @@ class new_tools_manager(object):
     project_name = self._make_package_name(pkg_desc)
     return self._manager.transform_env(env, project_name, self._build_target)
 
+  def bin_dir(self, pkg_desc):
+    project_name = self._make_package_name(pkg_desc)
+    return self._manager.bin_dir(project_name, self._build_target)
+  
   def _package_root_dir(self, pkg_desc):
     return path.join(self._root_dir, self._make_package_name(pkg_desc))
 
