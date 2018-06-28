@@ -53,15 +53,6 @@ class artifact_manager(object):
   def reload_db(self):
     self._db = artifact_db(path.join(self._root_dir, 'artifacts.db'))
   
-  @classmethod
-  def _find_possible_artifacts(clazz, root_dir):
-    dirs = dir_util.list(root_dir, relative = False)
-    dirs = [ d for d in dirs if path.isdir(d) ]
-    result = []
-    for d in dirs:
-      result.extend(file_find.find(d, relative = False))
-    return result
-                  
   @property
   def root_dir(self):
     return self._root_dir
