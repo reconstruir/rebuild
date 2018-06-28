@@ -14,9 +14,9 @@ class new_tools_manager(object):
     check.check_string(root_dir)
     check.check_artifact_manager(artifact_manager)
     self._build_target = build_target.make_host_build_target()
-    self._root_dir = root_dir #path.join(path.abspath(root_dir), self._build_target.system)
+    self._root_dir = root_dir
     self._artifact_manager = artifact_manager
-    self._timer = debug_timer('ntm', level = 'error')
+    self._timer = debug_timer('tm', level = 'error')
     self._manager = manager(self._artifact_manager, self._build_target, root_dir = self._root_dir)
     
   @property
@@ -34,6 +34,9 @@ class new_tools_manager(object):
 
   def ensure_tool(self, pkg_desc):
     check.check_package_descriptor(pkg_desc)
+    if path.exists(self._package_root_dir(pkg_desc)):
+      print('already')
+      return
     self._timer.start('%s: ensure_tool()' % (pkg_desc.full_name))
     project_name = self._make_package_name(pkg_desc)
     self._timer.start('%s: resolve_and_update_packages' % (project_name))
@@ -44,54 +47,10 @@ class new_tools_manager(object):
                                               force_install = False)
     self._manager._save_system_setup_scripts(project_name, self._build_target)
     self._timer.stop()
-    
-#    self._timer.start('%s: compute run deps' % (pkg_desc.full_name))
-#    run_deps = self._artifact_manager.resolve_deps([ pkg_desc.name ], self._build_target, [ 'RUN' ], False)
-#    self._timer.stop()
-#
-#    self._timer.start('%s: compute tool deps' % (pkg_desc.full_name))
-#    tool_deps = self._artifact_manager.resolve_deps([ pkg_desc.name ], self._build_target, [ 'TOOL' ], False)
-#    self._timer.stop()
-#
-#    self._timer.start('%s: install dep run packages' % (pkg_desc.full_name))
-#    pm.install_packages(run_deps, self._build_target, [ 'RUN' ])
-#    self._timer.stop()
-#
-#    self._timer.start('%s: install package' % (pkg_desc.full_name))
-#    pm.install_packages( [ pkg_desc ], self._build_target, [ 'RUN' ])
-#    self._timer.stop()
-#
-#    self._ensure_tools(tool_deps)
-    self._timer.stop()
 
-  def _ensure_tools(self, tools):
-    self._timer.start('%s: ensure tools' % (' '.join([ t.name for t in tools ])))
-    check.check_package_descriptor_seq(tools)
-    for tool in tools:
-      self._ensure_tool(tool)
-    self._timer.stop()
-
-  def _ensure_tool(self, tool_pkg_desc):
-    self._timer.start('%s: ensure tool' % (tool_pkg_desc.full_name))
-    check.check_package_descriptor(tool_pkg_desc)
-    tool_root_dir = self._package_root_dir(tool_pkg_desc)
-    if path.exists(tool_root_dir):
-      return
-    pm = package_manager(tool_root_dir, self._artifact_manager)
-    pm.install_packages( [ tool_pkg_desc ], self._build_target, [ 'TOOL' ])
-    self._timer.stop()
-    
   def _package_root_dir(self, pkg_desc):
-    return path.join(self._root_dir, pkg_desc.full_name)
+    return path.join(self._root_dir, self._make_package_name(pkg_desc))
 
-  def _get_manager(self, pkg_desc):
-    self._timer.start('%s: _get_manager()' % (pkg_desc.full_name))
-    root_dir = self._package_root_dir(pkg_desc)
-    if root_dir not in self._package_managers:
-      self._package_managers[root_dir] = manager(self._artifact_manager, self._build_target, root_dir = root_dir)
-    self._timer.stop()
-    return self._package_managers[root_dir]
-  
   def environment(self, tools):
     self._timer.start('%s: _get_manager()' % (pkg_desc.full_name))
     root_dir = self._package_root_dir(pkg_desc)
