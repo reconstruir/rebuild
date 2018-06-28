@@ -61,18 +61,36 @@ class test_new_tools_manager(script_unit_test):
     rv = execute.execute([ exe, 'a', 'b', '666' ])
     self.assertEqual( 0, rv.exit_code )
     self.assertEqual( 'tfoo: a b 666', rv.stdout.strip() )
+
+  def test_one_tool_env(self):
+    tm = self._make_test_tm()
+    tfoo = PD.parse('tfoo-1.0.0')
+    tm.ensure_tool(tfoo)
+    env = tm.transform_env(tfoo, {})
+    self.assertEqual( 'tfoo_env1', env['TFOO_ENV1'] )
+    self.assertEqual( 'tfoo_env2', env['TFOO_ENV2'] )
     
-  def xtest_ensure_tool(self):
-    am = self._make_test_artifact_manager()
-    tm = self._make_test_tm(am)
+  def xtest_ensure_tools(self):
+    tm = self._make_test_tm()
     tfoo = PD.parse('tfoo-1.0.0')
     tbar = PD.parse('tbar-1.0.0')
     tbaz = PD.parse('tbaz-1.0.0')
-    tm.ensure_tool(tfoo)
+    tm.ensure_tools([ tfoo, tbar, tbaz ])
     env = tm.transform_env(tfoo, {})
     for k, v in env.items():
       print('CAA: %s: %s' % (k, v))
     print('bin_dir: %s' % (tm.bin_dir(tfoo,)))
 
+  def xtest_many_tool_env(self):
+    tm = self._make_test_tm()
+    tfoo = PD.parse('tfoo-1.0.0')
+    tbar = PD.parse('tbar-1.0.0')
+    tbaz = PD.parse('tbaz-1.0.0')
+    tm.ensure_tools([ tfoo, tbar, tbaz ])
+    env = tm.transform_env(tfoo, {})
+    self.assertEqual( 'tfoo_env1', env['TFOO_ENV1'] )
+    self.assertEqual( 'tfoo_env2', env['TFOO_ENV2'] )
+    
+    
 if __name__ == '__main__':
   script_unit_test.main()
