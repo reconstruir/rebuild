@@ -95,6 +95,12 @@ class manager(object):
     check.check_build_target(build_target)
     pm = self._package_manager(project_name, build_target.system)
     return pm.bin_dir
+
+  def tool_exe(self, project_name, build_target, tool_name):
+    check.check_string(project_name)
+    check.check_build_target(build_target)
+    pm = self._package_manager(project_name, build_target.system)
+    return pm.tool_exe(tool_name)
   
   def _load_config(self, build_target):
     self.log_i('loading config: %s' % (self.config_filename))

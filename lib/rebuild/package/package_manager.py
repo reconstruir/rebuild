@@ -8,7 +8,7 @@ from bes.system import log
 from bes.archive import archive, archiver
 from bes.common import check, object_util, string_util, variable
 from bes.dependency import dependency_resolver
-from bes.fs import file_util
+from bes.fs import file_path, file_util
 from bes.system import os_env, os_env_var
 
 from rebuild.base import build_system, requirement
@@ -83,6 +83,12 @@ class package_manager(object):
   def bin_dir(self):
     return self._bin_dir
 
+  def tool_exe(self, tool_name):
+    exe = path.join(self.bin_dir, tool_name)
+    if not file_path.is_executable(exe):
+      return None
+    return exe
+  
   @property
   def include_dir(self):
     return self._include_dir
