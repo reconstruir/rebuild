@@ -101,9 +101,6 @@ class artifact_manager(object):
     all_files = dir_util.list(d)
     return package_list([ self._get_package(f) for f in all_files ])
   
-  def latest_available_packages(self, build_target):
-    return self.available_packages(build_target).latest_versions()
-  
   def resolve_packages(self, package_names, build_target):
 #    self._timer.start('resolve_packages(package_names %s, build_target %s)' % (package_names, build_target))
     # FIXME: need to deal with multiple versions
@@ -114,7 +111,7 @@ class artifact_manager(object):
     for package_name in package_names:
 #      self._timer.start('_find_latest_package(package_name %s)' % (package_name))
       available_package = self._find_latest_package(package_name,
-                                                         available_packages)
+                                                    available_packages)
 #      self._timer.stop()
       if not available_package:
 #        self._timer.stop()
@@ -183,7 +180,7 @@ class artifact_manager(object):
   
   def _make_requirement_manager(self, build_target):
     rm = requirement_manager()
-    for package in self.latest_available_packages(build_target):
+    for package in self.available_packages(build_target).latest_versions():
       rm.add_package(package.package_descriptor)
     return rm
 
