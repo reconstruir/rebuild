@@ -101,8 +101,8 @@ class artifact_manager(object):
     all_files = dir_util.list(d)
     return package_list([ self._get_package(f) for f in all_files ])
   
-  def resolve_packages(self, package_names, build_target):
-#    self._timer.start('resolve_packages(package_names %s, build_target %s)' % (package_names, build_target))
+  def latest_packages(self, package_names, build_target):
+#    self._timer.start('latest_packages(package_names %s, build_target %s)' % (package_names, build_target))
     # FIXME: need to deal with multiple versions
     result = []
 #    self._timer.start('available_packages(build_target %s)' % (str(build_target)))
