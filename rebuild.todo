@@ -850,3 +850,6 @@ rebuild.package.package_manager.PackageFilesConflictError: conflicts found betwe
 - some expensive operations on binaries like strip need to consider hard links
 - maybe rename manager to environment
 - transform_env name is confusing
+
+2018-07-01
+- audit all requirements in third_party and properly deal with with all the hardneseses
