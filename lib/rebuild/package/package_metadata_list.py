@@ -25,8 +25,8 @@ class package_metadata_list(type_checked_list):
       if not md.name in latest:
         latest[md.name] = md
       else:
-        if md.build_version > latest[name].build_version:
-          latest[name] = md
+        if md.build_version > latest[md.name].build_version:
+          latest[md.name] = md
     result = package_metadata_list(latest.values())
     result.sort()
     return result

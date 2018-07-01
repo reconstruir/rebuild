@@ -29,11 +29,26 @@ class test_package_metadata_list(unit_test):
 
   def test_sort(self):
     l = PML()
+    l.append(self._make_md('foo', '1.0.1', 'macos', 'release'))
+    l.append(self._make_md('foo', '1.0.0', 'macos', 'release'))
+    l.append(self._make_md('bar', '2.0.0', 'macos', 'release'))
+    l.append(self._make_md('bar', '2.0.1', 'macos', 'release'))
+    l.sort()
+    self.assertEqual( 'bar-2.0.0', l[0].full_name )
+    self.assertEqual( 'bar-2.0.1', l[1].full_name )
+    self.assertEqual( 'foo-1.0.0', l[2].full_name )
+    self.assertEqual( 'foo-1.0.1', l[3].full_name )
+
+  def test_latest_versions(self):
+    l = PML()
     l.append(self._make_md('foo', '1.0.0', 'macos', 'release'))
     l.append(self._make_md('foo', '1.0.1', 'macos', 'release'))
-    l.sort()
-    for x in l:
-      print('X: %s' % (str(x.artifact_descriptor)))
+    l.append(self._make_md('bar', '2.0.0', 'macos', 'release'))
+    l.append(self._make_md('bar', '2.0.1', 'macos', 'release'))
+    latest = l.latest_versions()
+    self.assertEqual( 2, len(latest) )
+    self.assertEqual( 'bar-2.0.1', latest[0].full_name )
+    self.assertEqual( 'foo-1.0.1', latest[1].full_name )
       
   def _make_md(self, name, version, system, level):
     if system == 'macos':
