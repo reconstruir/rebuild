@@ -112,6 +112,9 @@ class artifact_manager(object):
   def list_all_by_metadata(self, build_target = None):
     return self._db.list_all_by_metadata(build_target = build_target)
 
+  def list_all_by_package_descriptor(self, build_target = None):
+    return self._db.list_all_by_package_descriptor(build_target = build_target)
+
   def list_latest_versions(self, build_target):
     return self.list_all_by_descriptor(build_target = build_target).latest_versions()
     
@@ -149,10 +152,12 @@ class artifact_manager(object):
     return self.get_requirement_manager(build_target).resolve_deps(names, build_target.system, hardness, include_names)
   
   def _make_requirement_manager(self, build_target):
+    self._timer.start('_make_requirement_manager() for %s' % (str(build_target)))
     rm = requirement_manager()
-    latest_versions = self.list_all_by_metadata(build_target = build_target).latest_versions()
-    for md in latest_versions:
-      rm.add_package(md.package_descriptor)
+    latest_versions = self.list_all_by_package_descriptor(build_target = build_target).latest_versions()
+    for pkg_desc in latest_versions:
+      rm.add_package(pkg_desc)
+    self._timer.stop()
     return rm
 
 check.register_class(artifact_manager, include_seq = False)
