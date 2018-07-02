@@ -126,14 +126,11 @@ class artifact_manager(object):
   @classmethod
   def _find_latest_package(self, package_name, available_packages):
     check.check_package_metadata_list(available_packages)
-    candidates = []
-    for available_package in available_packages:
-      if package_name == available_package.name:
-        candidates.append(available_package)
+    candidates = [ p for p in available_packages if p.name == package_name ]
     if not candidates:
       return None
     if len(candidates) > 1:
-      candidates = sorted(candidates, reverse = True) #, cmp = package.descriptor_cmp)
+      candidates = sorted(candidates, reverse = True)
     return candidates[-1]
   
   def list_all_by_descriptor(self, build_target = None):
@@ -162,7 +159,7 @@ class artifact_manager(object):
 
   def _get_package(self, tarball):
     if not tarball in self._package_cache:
-      self._package_cache[tarball] = package(tarball)
+     self._package_cache[tarball] = package(tarball)
     return self._package_cache[tarball]
 
   def get_requirement_manager(clazz, build_target):
@@ -180,8 +177,9 @@ class artifact_manager(object):
   
   def _make_requirement_manager(self, build_target):
     rm = requirement_manager()
-    for package in self.available_packages(build_target).latest_versions():
-      rm.add_package(package.package_descriptor)
+    latest_versions = self.list_all_by_metadata(build_target = build_target).latest_versions()
+    for md in latest_versions:
+      rm.add_package(md.package_descriptor)
     return rm
 
 check.register_class(artifact_manager, include_seq = False)
