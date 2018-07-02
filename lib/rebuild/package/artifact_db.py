@@ -4,6 +4,7 @@ import json, os.path as path
 from bes.fs import file_check
 from bes.common import check, string_util
 from bes.sqlite import sqlite
+from rebuild.base import package_descriptor,  package_descriptor_list, build_version
 
 from .artifact_descriptor import artifact_descriptor
 from .artifact_descriptor_list import artifact_descriptor_list
@@ -127,7 +128,7 @@ create table artifacts(
       sql = '''select name, version, revision, epoch, system, level, archs, distro from artifacts order by name asc, version asc, revision asc, epoch asc, system asc, level asc, archs asc, distro asc'''
       data = ()
     rows = self._db.select_namedtuples(sql, data)
-    values = [ self._load_artifact_descriptor(row) for row in rows ]
+    values = [ self._load_row_to_artifact_descriptor(row) for row in rows ]
     return artifact_descriptor_list(values = values)
   
   def list_all_by_metadata(self, build_target = None):
@@ -140,10 +141,24 @@ create table artifacts(
     rows = self._db.select_namedtuples(sql, data)
     if not rows:
       return package_metadata_list()
-    return self._load_rows_metadata_list(rows)
+    values = [ self._load_row_to_package_metadata(row) for row in rows ]
+    return package_metadata_list(values = values)
+
+  def list_all_by_package_descriptor(self, build_target = None):
+    if build_target:
+      sql = '''select name, version, revision, epoch, properties, requirements from artifacts where system=? and level=? and archs=? order by name asc, version asc, revision asc, epoch asc'''
+      data = self._build_target_to_sql_tuple(build_target)
+    else:
+      sql = '''select name, version, revision, epoch, properties, requirements from artifacts order by name asc, version asc, revision asc, epoch asc'''
+      data = ()
+    rows = self._db.select_namedtuples(sql, data)
+    if not rows:
+      return package_descriptor_list()
+    values = [ self._load_row_to_package_descriptor(row) for row in rows ]
+    return package_descriptor_list(values = values)
 
   @classmethod
-  def _load_artifact_descriptor(clazz, row):
+  def _load_row_to_artifact_descriptor(clazz, row):
     assert row
     return artifact_descriptor(row.name,
                                row.version,
@@ -160,23 +175,17 @@ create table artifacts(
     if not rows:
       return None
     assert(len(rows) == 1)
-    md = self._load_row_metadata(rows[0], adesc = adesc)
+    md = self._load_row_to_package_metadata(rows[0], adesc = adesc)
     return md
-
-  def _load_rows_metadata_list(self, rows):
-    assert rows
-    values = [ self._load_row_metadata(row) for row in rows ]
-    return package_metadata_list(values = values)
   
-  def _load_row_metadata(self, row, adesc = None):
+  def _load_row_to_package_metadata(self, row, adesc = None):
     assert row
-    adesc = adesc or self._load_artifact_descriptor(row)
+    adesc = adesc or self._load_row_to_artifact_descriptor(row)
     files_table_name = adesc.sql_table_name
     files = package_files(self._files_db.file_checksums(files_table_name),
                           self._files_db.file_checksums(self._make_env_files_table_name(files_table_name)),
                           row.files_checksum,
                           row.env_files_checksum)
-    #filename, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files
     md =  package_metadata(row.filename,
                            row.name,
                            row.version,
@@ -190,6 +199,13 @@ create table artifacts(
                            json.loads(row.properties),
                            files)
     return md
+  
+  def _load_row_to_package_descriptor(self, row):
+    assert row
+    return package_descriptor(row.name,
+                              build_version(row.version, row.revision, row.epoch),
+                              json.loads(row.properties),
+                              util.sql_decode_requirements(row.requirements))
   
   def find_artifact(self, adesc):
     check.check_artifact_descriptor(adesc)

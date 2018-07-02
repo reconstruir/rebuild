@@ -36,7 +36,6 @@ class new_tools_manager(object):
     check.check_package_descriptor(pkg_desc)
     if path.exists(self._package_root_dir(pkg_desc)):
       return
-    self._timer.start('%s: ensure_tool()' % (pkg_desc.full_name))
     project_name = self._make_package_name(pkg_desc)
     self._timer.start('%s: resolve_and_update_packages' % (project_name))
     self._manager.resolve_and_update_packages(project_name,
@@ -44,16 +43,20 @@ class new_tools_manager(object):
                                               self._build_target,
                                               allow_downgrade = False,
                                               force_install = False)
-    self._manager._save_system_setup_scripts(project_name, self._build_target)
     self._timer.stop()
+    self._manager._save_system_setup_scripts(project_name, self._build_target)
 
-  def shell_env(self, pkg_descs, env):
-    pkg_descs = object_util.listify(pkg_descs)
-    check.check_package_descriptor_list
-    project_name = self._make_package_name(pkg_desc)
-    return self._manager.transform_env(env, project_name, self._build_target)
+
+#    resolved_deps = self.artifact_manager.resolve_deps(package_names, build_target, ['RUN'], True)
     
-  def transform_env(self, pkg_desc, env):
+  def transform_env(self, pkg_descs, env):
+    pkg_descs = object_util.listify(pkg_descs)
+    check.check_package_descriptor_list(pkg_descs)
+    pkg_descs
+#    project_name = self._make_package_name(pkg_desc)
+#    return self._manager.transform_env(env, project_name, self._build_target)
+    
+  def _transform_one_env(self, pkg_desc, env):
     project_name = self._make_package_name(pkg_desc)
     return self._manager.transform_env(env, project_name, self._build_target)
 

@@ -99,7 +99,7 @@ class test_package(unittest.TestCase):
     tmp_staged_env_dir = path.join(tmp_stage_dir, 'env')
     temp_archive.write_items(tmp_staged_files_dir, items)
     temp_archive.write_items(tmp_staged_env_dir, env_items)
-    package.create_tarball(tarball_path, pi, bi, tmp_stage_dir)
+    package.create_package(tarball_path, pi, bi, tmp_stage_dir)
     return tarball_path
     
 if __name__ == '__main__':

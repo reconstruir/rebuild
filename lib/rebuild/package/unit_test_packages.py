@@ -58,13 +58,13 @@ class unit_test_packages(object):
     self.level = level
     self.debug = debug
 
-  def create_tarball(self, root_dir):
+  def create_package(self, root_dir):
     package = self.make_test_package(self.pm, debug = self.debug)
     artifact_path = package.metadata.package_descriptor.artifact_path(package.metadata.build_target)
     target_path = path.join(root_dir, artifact_path)
     file_util.rename(package.tarball, target_path)
     if self.debug:
-      print(('DEBUG: test_package.create_tarball() package=%s' % (target_path)))
+      print(('DEBUG: test_package.create_package() package=%s' % (target_path)))
     return target_path
 
   test_package = namedtuple('test_package', 'tarball,metadata')
@@ -84,7 +84,7 @@ class unit_test_packages(object):
     tmp_stage_files_dir = path.join(tmp_stage_dir, 'files')
     temp_file.write_temp_files(tmp_stage_files_dir, items)
     tmp_tarball = temp_file.make_temp_file(prefix = pm.package_descriptor.full_name, suffix = '.tar.gz', delete = not debug)
-    package.create_tarball(tmp_tarball, pm.package_descriptor, pm.build_target, tmp_stage_dir)
+    package.create_package(tmp_tarball, pm.package_descriptor, pm.build_target, tmp_stage_dir)
     return clazz.test_package(tmp_tarball, pm)
 
   _PKG_CONFIG_PC_TEMPLATE = '''
@@ -123,7 +123,7 @@ Cflags: -I${includedir}
     tmp_dir = temp_file.make_temp_dir(delete = not debug)
     pm = templates[desc]
     tp = clazz(desc, pm, system = 'macos', level = 'release', debug = debug)
-    return tp.create_tarball(tmp_dir)
+    return tp.create_package(tmp_dir)
 
   @classmethod
   def make_test_packages(clazz, packages, root_dir, debug = False):
@@ -131,7 +131,7 @@ Cflags: -I${includedir}
       for level in [ 'release', 'debug' ]:
         for desc, pm in packages.items():
           tp = clazz(desc, pm, system = system, level = level, debug = debug)
-          tp.create_tarball(root_dir)
+          tp.create_package(root_dir)
 
   @classmethod
   def publish_artifacts(clazz, am):
