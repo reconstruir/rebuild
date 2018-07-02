@@ -35,5 +35,18 @@ class artifact_descriptor_list(type_checked_list):
   def filter_by_system(self, system):
     'Return only the descriptors that match system.'
     return self.__class__([ adesc for adesc in self if adesc.system == system ])
+
+  def latest_versions(self):
+    'Return a list of only the lastest version of any artifact with multiple versions.'
+    latest = {}
+    for adesc in self:
+      name = adesc.name
+      if not name in latest:
+        latest[name] = adesc
+      else:
+        if adesc.build_version > latest[name].build_version:
+          latest[name] = adesc
+    result = artifact_descriptor_list(latest.values())
+    return sorted(result)
   
 check.register_class(artifact_descriptor_list, include_seq = False)
