@@ -39,6 +39,9 @@ class requirement_list(type_checked_list):
 
   @classmethod
   def parse(clazz, text, default_system_mask = None):
+    if check.is_string_seq(text):
+      text = ' '.join(text)
+    check.check_string(text)
     reqs = clazz([ req for req in requirement_parser.parse(text, default_system_mask = default_system_mask) ])
     reqs.remove_dups()
     return reqs

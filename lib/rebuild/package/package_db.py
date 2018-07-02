@@ -140,3 +140,13 @@ create table {files_table_name}(
                             util.sql_decode_requirements(row.requirements),
                             json.loads(row.properties),
                             files)
+
+  def dep_map(self):
+    rows = self._db.select_namedtuples('''select name, requirements from packages''')
+    if not rows:
+      return {}
+    dep_map = {}
+    for row in rows:
+      reqs = util.sql_decode_requirements(row.requirements)
+      dep_map[row.name] = set(reqs.names())
+    return dep_map

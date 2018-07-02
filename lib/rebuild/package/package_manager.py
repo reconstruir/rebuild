@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 # FIXME: theres no notion of transactions or anything else robust in this nice code
@@ -9,7 +8,7 @@ from bes.system import log
 from bes.archive import archive, archiver
 from bes.common import check, object_util, string_util, variable
 from bes.dependency import dependency_resolver
-from bes.fs import file_util
+from bes.fs import file_path, file_util
 from bes.system import os_env, os_env_var
 
 from rebuild.base import build_system, requirement
@@ -84,6 +83,12 @@ class package_manager(object):
   def bin_dir(self):
     return self._bin_dir
 
+  def tool_exe(self, tool_name):
+    exe = path.join(self.bin_dir, tool_name)
+    if not file_path.is_executable(exe):
+      return None
+    return exe
+  
   @property
   def include_dir(self):
     return self._include_dir
@@ -106,22 +111,22 @@ class package_manager(object):
       raise NotInstalledError('package %s not found' % (pkg_name))
     return entry.descriptor
 
-  def compilation_flags(self, pkg_names, static = False):
+  def compilation_flags(self, package_names, static = False):
     pkg_config_path = self.pkg_config_path
-    descriptors = [ self.descriptor_for_name(pkg_name) for pkg_name in pkg_names ]
+    descriptors = [ self.descriptor_for_name(pkg_name) for pkg_name in package_names ]
     pkg_config_names = object_util.flatten_list_of_lists([ pi.pkg_config_name for pi in descriptors ])
     cflags = pkg_config.cflags(pkg_config_names, PKG_CONFIG_PATH = pkg_config_path)
     libs = pkg_config.libs(pkg_config_names, PKG_CONFIG_PATH = pkg_config_path, static = static)
     return ( cflags, libs )
 
-  def caca_compilation_flags(self, pkg_names, static = False):
+  def caca_compilation_flags(self, package_names, static = False):
     instructions = instruction_list.load_dir(self._compile_instructions_dir)
 
     #instructions
     #for inst in 
     
 #    pkg_config_path = self.pkg_config_path
-#    descriptors = [ self.descriptor_for_name(pkg_name) for pkg_name in pkg_names ]
+#    descriptors = [ self.descriptor_for_name(pkg_name) for pkg_name in package_names ]
 #    pkg_config_names = object_util.flatten_list_of_lists([ pi.pkg_config_name for pi in descriptors ])
 #    cflags = pkg_config.cflags(pkg_config_names, PKG_CONFIG_PATH = pkg_config_path)
 #    libs = pkg_config.libs(pkg_config_names, PKG_CONFIG_PATH = pkg_config_path, static = static)
@@ -293,13 +298,18 @@ class package_manager(object):
     for pkg_name in packages:
       self.uninstall_package(pkg_name) #, build_target)
 
-  def env_vars(self, pkg_names):
+  def env_vars(self, package_names):
     'Return the environment variables for the given package names.'
-    pkg_names = object_util.listify(pkg_names)
-    descriptors = [ self.descriptor_for_name(pkg_name) for pkg_name in pkg_names ]
+    dep_map = self.db.dep_map()
+    check.check_string_seq(package_names)
+    package_names = object_util.listify(package_names)
+    descriptors = [ self.descriptor_for_name(pkg_name) for pkg_name in package_names ]
     result = {}
     for pkg_desc in descriptors:
       os_env.update(result, self._env_vars_for_one_package(pkg_desc))
+    # need to resolve names and transform that
+    env_files_env = self.transform_env({}, package_names)
+    #os_env.update(result, env_files_env)
     return result
 
   def _env_vars_for_one_package(self, pkg_desc):
@@ -325,16 +335,18 @@ class package_manager(object):
     os_env.update(env, all_env_vars)
     return env
 
-  def package_env_files(self, packages):
+  def package_env_files(self, package_names):
     'Return a list of env files for the given packages in the same order as packages.'
+    check.check_string_seq(package_names)
     result = []
-    for package in packages:
-      entry = self.db.find_package(package.name)
+    for package_name in package_names:
+      entry = self.db.find_package(package_name)
       result.extend([ f.filename for f in entry.files.env_files ])
     return result
   
-  def transform_env(self, env, packages):
-    files = self.package_env_files(packages)
+  def transform_env(self, env, package_names):
+    check.check_string_seq(package_names)
+    files = self.package_env_files(package_names)
     if not files:
       return {}
     if not path.isdir(self._env_dir):
@@ -351,3 +363,7 @@ class package_manager(object):
     if not package.is_package(filename):
       raise RuntimeError('Not a valid package: %s' % (filename))
     return package(filename)
+
+  def dep_map(self):
+    'Return a dependency map of the packages currently installed.'
+    return self.db.dep_map()

@@ -53,15 +53,6 @@ class artifact_manager(object):
   def reload_db(self):
     self._db = artifact_db(path.join(self._root_dir, 'artifacts.db'))
   
-  @classmethod
-  def _find_possible_artifacts(clazz, root_dir):
-    dirs = dir_util.list(root_dir, relative = False)
-    dirs = [ d for d in dirs if path.isdir(d) ]
-    result = []
-    for d in dirs:
-      result.extend(file_find.find(d, relative = False))
-    return result
-                  
   @property
   def root_dir(self):
     return self._root_dir
@@ -82,7 +73,7 @@ class artifact_manager(object):
     pkg_info = pkg.package_descriptor
     artifact_path_rel = self.artifact_path(pkg_info, build_target, relative = True)
     artifact_path_abs = self.artifact_path(pkg_info, build_target, relative = False)
-    file_util.copy(tarball, artifact_path_abs)
+    file_util.copy(tarball, artifact_path_abs, use_hard_link = True)
     if not self.no_git:
       git.add(self._root_dir, pkg_info.artifact_path(build_target))
     self._reset()
@@ -96,7 +87,9 @@ class artifact_manager(object):
 
   def available_packages(self, build_target):
     if build_target.build_path not in self._available_packages_map:
+      self._timer.start('compute available for %s' % (build_target.build_path))
       self._available_packages_map[build_target.build_path] = self._compute_available_packages(build_target)
+      self._timer.stop()
     return self._available_packages_map[build_target.build_path]
 
   def _compute_available_packages(self, build_target):
@@ -108,57 +101,47 @@ class artifact_manager(object):
     all_files = dir_util.list(d)
     return package_list([ self._get_package(f) for f in all_files ])
   
-  def latest_available_packages(self, build_target):
-    return self.available_packages(build_target).latest_versions()
-
-  def resolve_packages(self, package_names, build_target):
-    self._timer.start('resolve_packages(package_names %s, build_target %s)' % (package_names, build_target))
+  def latest_packages(self, package_names, build_target):
+#    self._timer.start('latest_packages(package_names %s, build_target %s)' % (package_names, build_target))
     # FIXME: need to deal with multiple versions
     result = []
-    self._timer.start('available_packages(build_target %s)' % (str(build_target)))
-    available_packages = self.available_packages(build_target)
-    self._timer.stop()
+#    self._timer.start('available_packages(build_target %s)' % (str(build_target)))
+    available_packages = self.list_all_by_metadata(build_target = build_target)
+#    self._timer.stop()
     for package_name in package_names:
-      self._timer.start('_find_package_by_name(package_name %s)' % (package_name))
-      available_package = self._find_package_by_name(package_name,
-                                                     available_packages)
-      self._timer.stop()
+#      self._timer.start('_find_latest_package(package_name %s)' % (package_name))
+      available_package = self._find_latest_package(package_name,
+                                                    available_packages)
+#      self._timer.stop()
       if not available_package:
-        self._timer.stop()
+#        self._timer.stop()
         raise NotInstalledError('package \"%s\" not found' % (package_name))
 
       result.append(available_package)
 
     assert len(result) == len(package_names)
-    self._timer.stop()
+#    self._timer.stop()
     return result
-
-  def find_package(self, build_target, pkg_desc):
-    check.check_build_target(build_target)
-    check.check_package_descriptor(pkg_desc)
-    for p in self.available_packages(build_target):
-      if pkg_desc.name == p.package_descriptor.name and pkg_desc.version == p.package_descriptor.version:
-        return p
-    return None
   
   @classmethod
-  def _find_package_by_name(self, package_name, available_packages):
-    candidates = []
-    for available_package in available_packages:
-      if package_name == available_package.package_descriptor.name:
-        candidates.append(available_package)
+  def _find_latest_package(self, package_name, available_packages):
+    check.check_package_metadata_list(available_packages)
+    candidates = [ p for p in available_packages if p.name == package_name ]
     if not candidates:
       return None
     if len(candidates) > 1:
-      candidates = sorted(candidates, cmp = package.descriptor_cmp)
+      candidates = sorted(candidates, reverse = True)
     return candidates[-1]
-
+  
   def list_all_by_descriptor(self, build_target = None):
-    self._db.list_all_by_descriptor(build_target = build_target)
+    return self._db.list_all_by_descriptor(build_target = build_target)
 
   def list_all_by_metadata(self, build_target = None):
-    self._db.list_all_by_metadata(build_target = build_target)
-  
+    return self._db.list_all_by_metadata(build_target = build_target)
+
+  def list_latest_versions(self, build_target):
+    return self.list_all_by_descriptor(build_target = build_target).latest_versions()
+    
   def find_by_package_descriptor(self, package_descriptor, build_target, relative_filename = True):
     check.check_package_descriptor(package_descriptor)
     check.check_build_target(build_target)
@@ -176,7 +159,7 @@ class artifact_manager(object):
 
   def _get_package(self, tarball):
     if not tarball in self._package_cache:
-      self._package_cache[tarball] = package(tarball)
+     self._package_cache[tarball] = package(tarball)
     return self._package_cache[tarball]
 
   def get_requirement_manager(clazz, build_target):
@@ -194,14 +177,9 @@ class artifact_manager(object):
   
   def _make_requirement_manager(self, build_target):
     rm = requirement_manager()
-    for package in self.latest_available_packages(build_target):
-      rm.add_package(package.package_descriptor)
+    latest_versions = self.list_all_by_metadata(build_target = build_target).latest_versions()
+    for md in latest_versions:
+      rm.add_package(md.package_descriptor)
     return rm
-
-  def list_all_by_descriptor(self):
-    return self._db.list_all_by_descriptor()
-
-  def list_all_by_metadata(self):
-    return self._db.list_all_by_metadata()
 
 check.register_class(artifact_manager, include_seq = False)

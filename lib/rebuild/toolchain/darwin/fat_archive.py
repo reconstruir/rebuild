@@ -75,7 +75,7 @@ class fat_archive(object):
     # Extract the normal non object files
     for thin_package in thin_packages:
       members = [ member_info.member for member_info in thin_package.members.normals ]
-      archiver.extract_members(thin_package.filename, members, tmp_repack_dir)
+      archiver.extract(thin_package.filename, members, tmp_repack_dir)
 
     # Re-pack the final fat archive
     archiver.create(fat_package_filename, tmp_repack_dir)

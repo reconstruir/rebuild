@@ -21,7 +21,7 @@ class unit_test_packages(object):
     'water-1.0.0-0': PM('', 'water', '1.0.0', 0, 0, 'macos', 'release', ARCHS, '', None, {}, FILES),
     'water-1.0.0-1': PM('', 'water', '1.0.0', 1, 0, 'macos', 'release', ARCHS, '', None, {}, FILES),
     'water-1.0.0-2': PM('', 'water', '1.0.0', 2, 0, 'macos', 'release', ARCHS, '', None, {}, FILES),
-    'fiber-1.0.0-0': PM('', 'fiber', '1.0.0', 2, 0, 'macos', 'release', ARCHS, '', None, {}, FILES),
+    'fiber-1.0.0-0': PM('', 'fiber', '1.0.0', 0, 0, 'macos', 'release', ARCHS, '', None, {}, FILES),
     'citrus-1.0.0-0': PM('', 'citrus', '1.0.0', 2, 0, 'macos', 'release', ARCHS, '', None, {}, FILES),
     'fructose-3.4.5-6': PM('', 'fructose', '3.4.5', 6, 0, 'macos', 'release', ARCHS, '', None, {}, FILES),
     'mercury-1.2.8-0': PM('', 'mercury', '1.2.8', 0, 0, 'macos', 'release', ARCHS, '', None, {}, FILES),

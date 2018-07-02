@@ -169,7 +169,7 @@ def main():
     return _command_extract(file_util.make_paths_absolute(args.archives),
                             args.dest_dir,
                             args.base_dir,
-                            args.strip_common_base)
+                            args.strip_common_ancestor)
   elif args.command == 'create':
     return _command_create(args.root_dir,
                            args.name,
@@ -225,18 +225,18 @@ def _command_patch_make(working_dir):
   print(patch)
   return 0
 
-def _command_extract(archives, dest_dir, base_dir, strip_common_base):
+def _command_extract(archives, dest_dir, base_dir, strip_common_ancestor):
   dest_dir = path.abspath(dest_dir)
   #print "         archives: ", archives
   #print "         dest_dir: ", dest_dir
   #print "         base_dir: ", base_dir
-  #print "strip_common_base: ", strip_common_base
+  #print "strip_common_ancestor: ", strip_common_ancestor
 
   for archive in archives:
     archiver.extract(archive,
                      dest_dir,
                      base_dir = None,
-                     strip_common_base = strip_common_base,
+                     strip_common_ancestor = strip_common_ancestor,
                      strip_head = None,
                      include = None,
                      exclude = None)
@@ -293,7 +293,7 @@ def _command_download(name, url, tag):
   return 0
 
 def _command_diff(archive1, archive2):
-  diff = archive_util.diff(archive1, archive2, strip_common_base = True)
+  diff = archive_util.diff(archive1, archive2, strip_common_ancestor = True)
   print(diff)
   return 0
 

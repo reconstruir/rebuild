@@ -1,7 +1,6 @@
 
 Use "reb" namespace for build
 
-Add pager support to build errors
 Add xcrun find support to use the right compilers on darwin
 Add c++ dialect support
 
@@ -20,21 +19,13 @@ dec 19
   pkg-config
 - deal with python packages clobbering each others easy-install.pth
   and such
-- build some python packages as eggs at least for practice
-- rename context.package_manager to context.deps_package_manager or so
 - change all_bin_dir in ToolPackageManager to be unix_path or such
-
-dec 22
-- fix ArtifactManager to not download anything in its __init__.  only
-when needed.
 
 dec 24
 - move the top level artifactory manager inside rebbe.
-- introduce the concept of a DownloadManager
 
 jan 1
 - mv ~/software/build.py to ~/projects/bin
-- finish adding proper return codes for ScriptRunner.build_script
 - finish moving checksuming to BuildScript
 
 jan 2
@@ -52,7 +43,7 @@ jan 3:
   centralize the code to find builtin tools from PkgConfig.py
   fix issue in software/lib/libtiff/build.py that requires --disable-cxx
 - event though the PkgConfig module has its own pkg-config binary, when a software package needs pkg-config it still needs to be added to the tools
-- improve TarArchive.extract_members() performance by using extractall
+- improve TarArchive.extract() performance by using extractall
 with the members argument.  Same for ZipArchive
 
 jan 4
@@ -68,12 +59,10 @@ jan 8
 - deal with cut-n-paste nature of python build steps
 
 jan 12
-- FIXME: provide abstraction for env vars with different names on differnet unices
 - make sure no unit test code executes in regular run
 - add paralelization support.  make build order return deps in chunks that can be parallelized
 
 jan 14
-- fix disaled handing in BuildScriptManager.
 - print decent error when a dependency is disabled
 
 jan 19
@@ -529,7 +518,6 @@ nov 8
 - add support for build variables in command line
 
 nov 9
-- package_descriptor depends on dependency_resolver for a really dumb reason
 - for python recipes name and version should be toplevel not in properties
 
 nov 14
@@ -568,9 +556,6 @@ dec 21
 dec 27
 - fix env_vars in build scripts to be platform specific
 
-jan 5
-- full unit test for package_descriptor_list
-
 jan 9
 - rename step_make_instructions to step_instructions_write or something
 - fix instruction loading unit tests (test_instruction_list.py)
@@ -593,7 +578,6 @@ jan 10
 jan 13
 - fix checksum_manager._checksum_dir: check.check(level, build_target, 'build_target') either level is misnamed or
   the type is wrong
-- package_descriptor.__init__ figure out the correct type for version arg
 
 jan 14
 - git code will download even if --no-network is given
@@ -611,8 +595,6 @@ why the dependency is missing
 some python packages depend on setuptools at runtime because of pkg_resources.  python3 has that builtin so need a variable way to do this dependency onpyt for python2
 
 cleanup the shit that happens in ~/.rebuild/dev_tools/setup.sh to cleanup things like PKG_CONFIG_PATH.  also figure out a way to version these files so they update if the template changes
-
-figure out why shit package_descripttor.parse_requirements is needed.
 
 Feb 13
  - cleanup shit in build: Downloading git@git:rebuild.git@181b29f to /Users/ramiro/proj/third_party/BUILD/downloads/git@git_rebuild.git/181b29f.tar.gz
@@ -653,7 +635,6 @@ mar 17
 mar 18
  - split build_sytem into build_os and build_os_mask
  - reorg value_type, masked_value and recipe_parser_util into a coherent class hierarchy for values
- - make package_descriptor be a namedtuple and remove methods that check for immutable properties
  
 mar 19
  - figure out a way to add android ndk tool to all deps when building for android so dont have to use the one in ~/.rebuild/
@@ -677,9 +658,6 @@ builder_script.py you suck so bad because file not found: %s' % (s))
 
 mar 23
 - unit tests for package_manager with different hadnessess
-- marking artifact_manager and requirement_manager poto and caca methids
-- s/artifact_manager.resolve_packages/find_packages/
-- add notion of TEST to hardness and make it a mask maybe
 - make the hardness masks lowercase all over
 
 mar 27
@@ -783,13 +761,7 @@ april 16
 - control-c when in the middle of package_tester doesnt interrupt
 - hook interface is fucked the abstract method warning doesnt happen if the signature of execute changes.
 
-steps that use args argument in execute:
-  step_artifact_create_test_package
-
-step_artifact_create_check_package might need to be retired
 egg check is either commented out or broken
-
-makefile in step_make might not work
 
 2018-04-17
  - add check for home directory droppings before and after a build to make sure tools are not crapping stuff there
@@ -801,7 +773,6 @@ makefile in step_make might not work
 2018-05-05
  - need hook tests that both pass and fail
  - value_install_file should be a subclass of value_file
- - change source_dir to recipe_dir
  - retire copy source to dir step
  - support mutliple tarballs like this
        tarball
@@ -816,8 +787,6 @@ makefile in step_make might not work
  - gettext subsiutions should be unified with script.substitutions instead of custom
  - any replacements should go through script.substituitions
  - value_base add notion of sources vs tarballs
- - make step_result a namtedtuple
- - all step values should subclass value_base
  - test_recipe_step need a unit tests with substitutions
  - make value_base subclasses be immutable somehow
 
@@ -849,9 +818,6 @@ makefile in step_make might not work
  - rebbe_retry.sh should have tools added to PATH
  - also make it more readable by using variables
 
-018-05-25
- - package_db.py move caching of files and env_files up one level so db does only db stuff
-
 018-05-26
  - add unit tests of debug level as well as some tools that require libs and the libs are debug but the tools release
    cause tools are always release
@@ -870,4 +836,20 @@ makefile in step_make might not work
 when python changed from using libedit to libreadline this error happened add a unit test
 rebuild.package.package_manager.PackageFilesConflictError: conflicts found between "libreadline" and "libedit": share/man/man3/history.3
  - make sure sourcing ~/.rebuild/foo/stuff/env/*.sh does so only for dependencies
+ - version comparison is shit
+ - need a unit test that does manager update with something that results in package resolution
+
+2018-06-09
+ - package_manager.env_vars() needs to order package_names by dependency order
  
+- full unit test for package_descriptor_list
+- figure out why shit package_descripttor.parse_requirements is needed.
+- package_descriptor.__init__ figure out the correct type for version arg
+
+2018-06-25
+- some expensive operations on binaries like strip need to consider hard links
+- maybe rename manager to environment
+- transform_env name is confusing
+
+2018-07-01
+- audit all requirements in third_party and properly deal with with all the hardneseses

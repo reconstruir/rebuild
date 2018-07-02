@@ -2,60 +2,95 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.testing.unit_test import unit_test
+from bes.testing.unit_test import script_unit_test
+from bes.common import cached_property
 from bes.fs import temp_file
 from bes.system import execute
-from rebuild.base import build_target, build_system, build_level, package_descriptor
+from rebuild.base import build_target, build_system, build_level, package_descriptor as PD
 from rebuild.package import artifact_manager
 from rebuild.tools_manager import new_tools_manager as TM
 from rebuild.package.unit_test_packages import unit_test_packages
 
-class test_new_tools_manager(unit_test):
+from _rebuild_testing.rebuilder_tester import rebuilder_tester
 
-  DEBUG = False
-#  DEBUG = True
+class test_new_tools_manager(script_unit_test):
+
+  __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/rebuilder'
+  __script__ = __file__, '../../../../bin/rebuilder.py'
+  
+  DEBUG = script_unit_test.DEBUG
+  #DEBUG = True
 
   TEST_BUILD_TARGET = build_target(build_system.LINUX, build_level.RELEASE)
 
+  @cached_property
+  def artifact_manager(self):
+    rt = rebuilder_tester(self._resolve_script(),
+                          path.join(self.data_dir(), 'basic'),
+                          path.normpath(path.join(self.data_dir(), '../sources')),
+                          build_level.RELEASE,
+                          debug = self.DEBUG)
+    config = rebuilder_tester.config(bt = self.TEST_BUILD_TARGET)
+    rv = rt.run(rebuilder_tester.config(), 'tfoo', 'tbar', 'tbaz')
+    am_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
+    if self.DEBUG:
+      print('\nartifact_manager dir:\n%s' % (am_dir))
+    am = artifact_manager(am_dir, address = None, no_git = True)
+    for artifact in rv.artifacts:
+      am.publish(path.join(rv.artifacts_dir, artifact), self.TEST_BUILD_TARGET, False)
+    return am
+  
   def _make_test_tm(self):
     root_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     tools_dir = path.join(root_dir, 'tools')
     if self.DEBUG:
-      print("\ntools_dir:\n", tools_dir)
-    return TM(tools_dir)
+      print('\ntools_manager dir:\n%s' % (tools_dir))
+    return TM(tools_dir, self.artifact_manager)
 
-  @classmethod
-  def _make_test_artifact_manager(clazz):
-    root_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
-    if clazz.DEBUG:
-      print("root_dir:\n%s\n" % (root_dir))
-    am = artifact_manager(root_dir, address = None, no_git = True)
-    unit_test_packages.make_test_packages(unit_test_packages.TEST_PACKAGES, am.root_dir)
-    return am
-  
-  def xtest_update(self):
+  def test_ensure_tool(self):
     tm = self._make_test_tm()
-    am = self._make_test_artifact_manager()
-    packages = [
-      package_descriptor.parse('water-1.0.0-0'),
-      package_descriptor.parse('mercury-1.2.8-0'),
-      package_descriptor.parse('arsenic-1.2.9-0'),
-    ]
-    tm.update(packages, am)
-
-  def xtest_install_and_use_a_tool(self):
+    tfoo = PD.parse('tfoo-1.0.0')
+    tm.ensure_tool(tfoo)
+    self.assertTrue( path.exists(tm.tool_exe(tfoo, 'tfoo.py')) )
+    
+  def test_use_tool(self):
     tm = self._make_test_tm()
-    am = self._make_test_artifact_manager()
-    water_desc = package_descriptor.parse('water-1.0.0-0')
-    packages = [
-      water_desc
-    ]
-    tm.update(packages, am)
-    tool_name = water_desc.name + '_script.sh'
-    exe = tm.tool_exe(water_desc, tool_name)
-    rv = execute.execute(exe)
+    tfoo = PD.parse('tfoo-1.0.0')
+    tm.ensure_tool(tfoo)
+    exe = tm.tool_exe(tfoo, 'tfoo.py')
+    rv = execute.execute([ exe, 'a', 'b', '666' ])
     self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( water_desc.full_name, rv.stdout.strip() )
+    self.assertEqual( 'tfoo: a b 666', rv.stdout.strip() )
 
+  def test_one_tool_env(self):
+    tm = self._make_test_tm()
+    tfoo = PD.parse('tfoo-1.0.0')
+    tm.ensure_tool(tfoo)
+    env = tm.transform_env(tfoo, {})
+    self.assertEqual( 'tfoo_env1', env['TFOO_ENV1'] )
+    self.assertEqual( 'tfoo_env2', env['TFOO_ENV2'] )
+    
+  def xtest_ensure_tools(self):
+    tm = self._make_test_tm()
+    tfoo = PD.parse('tfoo-1.0.0')
+    tbar = PD.parse('tbar-1.0.0')
+    tbaz = PD.parse('tbaz-1.0.0')
+    tm.ensure_tools([ tfoo, tbar, tbaz ])
+    env = tm.transform_env(tfoo, {})
+    for k, v in env.items():
+      print('CAA: %s: %s' % (k, v))
+    print('bin_dir: %s' % (tm.bin_dir(tfoo,)))
+
+  def xtest_many_tool_env(self):
+    tm = self._make_test_tm()
+    tfoo = PD.parse('tfoo-1.0.0')
+    tbar = PD.parse('tbar-1.0.0')
+    tbaz = PD.parse('tbaz-1.0.0')
+    tm.ensure_tools([ tfoo, tbar, tbaz ])
+    env = tm.transform_env(tfoo, {})
+    self.assertEqual( 'tfoo_env1', env['TFOO_ENV1'] )
+    self.assertEqual( 'tfoo_env2', env['TFOO_ENV2'] )
+    
+    
 if __name__ == '__main__':
-  unit_test.main()
+  script_unit_test.main()

@@ -23,8 +23,8 @@ class test_darwin_package_util(unit_test):
 
   def test_thin_to_fat_static(self):
     other_items = [
-      temp_archive.Item('foo.txt', content = 'foo.txt\n'),
-      temp_archive.Item('bar.txt', content = 'bar.txt\n'),
+      temp_archive.item('foo.txt', content = 'foo.txt\n'),
+      temp_archive.item('bar.txt', content = 'bar.txt\n'),
     ]
 
     i386_archive = self.__make_test_archive('lib/libsomething.a', 'i386', other_items)
@@ -56,18 +56,18 @@ class test_darwin_package_util(unit_test):
     
   def test_thin_to_fat_bad_normals_checksums(self):
     i386_other_items = [
-      temp_archive.Item('foo.txt', content = 'i386 foo.txt\n'),
-      temp_archive.Item('bar.txt', content = 'i386 bar.txt\n'),
+      temp_archive.item('foo.txt', content = 'i386 foo.txt\n'),
+      temp_archive.item('bar.txt', content = 'i386 bar.txt\n'),
     ]
     i386_archive = self.__make_test_archive('lib/libsomething.a', 'i386', i386_other_items)
     x86_64_other_items = [
-      temp_archive.Item('foo.txt', content = 'x86_64 foo.txt\n'),
-      temp_archive.Item('bar.txt', content = 'x86_64 bar.txt\n'),
+      temp_archive.item('foo.txt', content = 'x86_64 foo.txt\n'),
+      temp_archive.item('bar.txt', content = 'x86_64 bar.txt\n'),
     ]
     x86_64_archive = self.__make_test_archive('lib/libsomething.a', 'x86_64', x86_64_other_items)
     armv7_other_items = [
-      temp_archive.Item('foo.txt', content = 'armv7 foo.txt\n'),
-      temp_archive.Item('bar.txt', content = 'armv7 bar.txt\n'),
+      temp_archive.item('foo.txt', content = 'armv7 foo.txt\n'),
+      temp_archive.item('bar.txt', content = 'armv7 bar.txt\n'),
     ]
     armv7_archive = self.__make_test_archive('lib/libsomething.a', 'armv7', armv7_other_items)
 
@@ -88,7 +88,7 @@ class test_darwin_package_util(unit_test):
       
   def __make_test_archive(self, target, arch, other_items):
     items = [
-      temp_archive.Item(target, filename = self.__test_file('lib%s.a' % (arch))),
+      temp_archive.item(target, filename = self.__test_file('lib%s.a' % (arch))),
     ]
     return temp_archive.make_temp_archive(items + other_items, archive_extension.TGZ, prefix = '%s_' % (arch), delete = not self.DEBUG)
   

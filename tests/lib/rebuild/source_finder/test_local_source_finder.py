@@ -44,7 +44,7 @@ class source_dir_maker(object):
   # Any tarball will do for the tests as long as the file type is an archive
   @classmethod
   def make_tarball(clazz, ext):
-    return temp_archive.make_temp_archive([ temp_archive.Item('foo.txt', content = 'foo.txt\n') ], ext).filename
+    return temp_archive.make_temp_archive([ temp_archive.item('foo.txt', content = 'foo.txt\n') ], ext).filename
 
 class test_local_source_finder(unit_test):
 

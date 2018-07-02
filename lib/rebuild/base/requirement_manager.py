@@ -16,6 +16,10 @@ class requirement_manager(object):
   def __getitem__(self, key):
     return self._descriptor_map[key]
     
+  def __eq__(self, other):
+    check.check_requirement_manager(other)
+    return self._descriptor_map == other._descriptor_map
+    
   def add_package(self, descriptor):
     check.check_package_descriptor(descriptor)
     name = descriptor.name

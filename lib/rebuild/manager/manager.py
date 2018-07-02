@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
@@ -55,23 +54,22 @@ class manager(object):
     pm = self._package_manager(project_name, build_target.system)
     return pm.list_all()
 
-  ResolveResult = namedtuple('ResolveResult', 'available,missing,resolved')
-  def resolve_packages(self, package_names, build_target):
-    self.log_i('resolving: %s' % (' '.join(package_names)))
+  resolve_result = namedtuple('resolve_result', 'available,missing,resolved')
+  def _resolve_packages(self, package_names, build_target):
     resolved_deps = self.artifact_manager.resolve_deps(package_names, build_target, ['RUN'], True)
     resolved_names = [ desc.name for desc in resolved_deps ]
     available_packages = self.artifact_manager.available_packages(build_target)
     available_names = [ p.package_descriptor.name for p in available_packages ]
     missing_packages = dependency_resolver.check_missing(available_names, package_names)
     if missing_packages:
-      return self.ResolveResult(available_packages, missing_packages, [])
-    resolved = self.artifact_manager.resolve_packages(resolved_names, build_target)
+      return self.resolve_result(available_packages, missing_packages, [])
+    resolved = self.artifact_manager.latest_packages(resolved_names, build_target)
     resolved_descriptors = [ r.package_descriptor for r in resolved ]
     self.log_i('done resolving')
-    return self.ResolveResult(available_packages, [], resolved_descriptors)
+    return self.resolve_result(available_packages, [], resolved_descriptors)
 
   def resolve_and_update_packages(self, project_name, packages, build_target, allow_downgrade = False, force_install = False):
-    resolve_rv = self.resolve_packages(packages, build_target)
+    resolve_rv = self._resolve_packages(packages, build_target)
     if resolve_rv.missing:
       self.blurb('missing artifacts at %s: %s' % (self.artifact_manager.root_dir, ' '.join(resolve_rv.missing)))
       return []
@@ -85,6 +83,25 @@ class manager(object):
     pm.uninstall_packages(packages) #, build_target)
     return True
 
+  def transform_env(self, env, project_name, build_target):
+    check.check_dict(env)
+    check.check_string(project_name)
+    check.check_build_target(build_target)
+    pm = self._package_manager(project_name, build_target.system)
+    return pm.transform_env(env, pm.list_all())
+  
+  def bin_dir(self, project_name, build_target):
+    check.check_string(project_name)
+    check.check_build_target(build_target)
+    pm = self._package_manager(project_name, build_target.system)
+    return pm.bin_dir
+
+  def tool_exe(self, project_name, build_target, tool_name):
+    check.check_string(project_name)
+    check.check_build_target(build_target)
+    pm = self._package_manager(project_name, build_target.system)
+    return pm.tool_exe(tool_name)
+  
   def _load_config(self, build_target):
     self.log_i('loading config: %s' % (self.config_filename))
     if not path.exists(self.config_filename):

@@ -1,0 +1,6 @@
+programs/papaya_prog1/papaya_prog1_main.o
+papaya_prog1_main
+libpapaya.a
+libpapaya/amylopectin.o
+libpapaya/papaya.o
+libpapaya/common.o

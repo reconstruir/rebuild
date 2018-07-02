@@ -76,7 +76,7 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
                  archs,
                  None)
 
-  @property
+  @cached_property
   def full_name(self):
     return self.make_full_name_str(self.name, self.build_version)
 

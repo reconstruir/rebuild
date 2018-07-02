@@ -1,0 +1,13 @@
+prefix=${REBUILD_PACKAGE_PREFIX}
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+sharedlibdir=${libdir}
+includedir=${prefix}/include
+
+Name: ${REBUILD_PACKAGE_NAME}
+Description: ${REBUILD_PACKAGE_DESCRIPTION}
+Version: ${REBUILD_PACKAGE_FULL_VERSION}
+
+Requires: libstarch
+Libs: -L${libdir} -L${sharedlibdir} -lpotato -lstarch
+Cflags: -I${includedir}

@@ -138,6 +138,8 @@ create table artifacts(
       sql = '''select * from artifacts order by name asc, version asc, revision asc, epoch asc, system asc, level asc, archs asc, distro asc'''
       data = ()
     rows = self._db.select_namedtuples(sql, data)
+    if not rows:
+      return package_metadata_list()
     return self._load_rows_metadata_list(rows)
 
   @classmethod

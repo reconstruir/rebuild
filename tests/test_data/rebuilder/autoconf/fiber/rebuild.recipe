@@ -27,7 +27,7 @@ package fiber 1.0.0
   steps  
     step_autoconf
       tarball_dir
-         all: ${REBUILD_SOURCE_DIR}/../../../sources/${REBUILD_PACKAGE_NAME}-${REBUILD_PACKAGE_UPSTREAM_VERSION}
+         all: ${REBUILD_RECIPE_DIR}/../../../sources/${REBUILD_PACKAGE_NAME}-${REBUILD_PACKAGE_UPSTREAM_VERSION}
          
       configure_env
         linux: CFLAGS="-I${REBUILD_REQUIREMENTS_INCLUDE_DIR} -std=gnu99"

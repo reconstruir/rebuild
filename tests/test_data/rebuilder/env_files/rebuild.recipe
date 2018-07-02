@@ -1,0 +1,80 @@
+!rebuild.recipe!
+
+package water 1.0.0
+
+  steps
+    step_setup
+      
+    step_post_install
+      install_files
+        all: ${REBUILD_RECIPE_DIR}/files/bin/water.py bin/water.py
+        
+      tests
+        all: test-water.sh
+        all: test-water-env.sh
+        
+      skip_binary_third_party_prefix: True
+
+      env_files
+        all: water_env.sh
+
+package carb 1.0.0
+
+  steps
+    step_setup
+      
+    step_post_install
+      install_files
+        all: ${REBUILD_RECIPE_DIR}/files/bin/carb.py bin/carb.py
+        
+      tests
+        all: test-carb.sh
+        all: test-carb-env.sh
+        
+      skip_binary_third_party_prefix: True
+
+      env_files
+        all: carb_env.sh
+
+package fiber 1.0.0
+
+  requirements
+    all: RUN carb >= 1.0.0
+
+  steps
+    step_setup
+      
+    step_post_install
+      install_files
+        all: ${REBUILD_RECIPE_DIR}/files/bin/fiber.py bin/fiber.py
+        
+      tests
+        all: test-fiber.sh
+        all: test-fiber-env.sh
+        
+      skip_binary_third_party_prefix: True
+
+      env_files
+        all: fiber_env.sh
+
+package fruit 1.0.0
+
+  requirements
+    all: RUN water >= 1.0.0
+    all: RUN fiber >= 1.0.0
+
+  steps
+    step_setup
+
+    step_post_install
+      install_files
+        all: ${REBUILD_RECIPE_DIR}/files/bin/fruit.py bin/fruit.py
+        
+      tests
+        all: test-fruit.sh
+        all: test-fruit-env.sh
+        
+      skip_binary_third_party_prefix: True
+
+      env_files
+        all: fruit_env.sh

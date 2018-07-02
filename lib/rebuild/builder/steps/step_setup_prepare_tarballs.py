@@ -48,12 +48,12 @@ class step_setup_prepare_tarballs(step):
         tarball_address.download()
       dest = tarball_address.get_property('dest', '${REBUILD_SOURCE_UNPACKED_DIR}')
       base = tarball_address.get_property('base', None)
-      strip_common_base = tarball_address.get_property('strip_common_base', True)
+      strip_common_ancestor = tarball_address.get_property('strip_common_ancestor', True)
       self.blurb('Extracting %s to %s' % (path.relpath(downloaded_path), path.relpath(dest)))
       archiver.extract(downloaded_path,
                        dest,
                        base_dir = base,
-                       strip_common_base = strip_common_base)
+                       strip_common_ancestor = strip_common_ancestor)
 
     if tarball:
       tarball_path = tarball.sources()[0]
@@ -61,12 +61,13 @@ class step_setup_prepare_tarballs(step):
         return step_result(False, 'No tarball found for %s' % (script.descriptor.full_name))
       dest = tarball.get_property('dest', '${REBUILD_SOURCE_UNPACKED_DIR}')
       base = tarball.get_property('base', None)
-      strip_common_base = tarball.get_property('strip_common_base', True)
+      strip_common_ancestor = tarball.get_property('strip_common_ancestor', True)
       self.blurb('Extracting %s to %s' % (path.relpath(tarball_path), path.relpath(dest)))
+      print('FOO: calling archiver.extract(%s, %s, base_dir=%s, strip_common_ancestor=%s' % (tarball_path, dest, base, strip_common_ancestor))
       archiver.extract(tarball_path,
                        dest,
                        base_dir = base,
-                       strip_common_base = strip_common_base)
+                       strip_common_ancestor = strip_common_ancestor)
       
     if tarball_dir:
       self.blurb('Creating tarball %s from %s' % (path.relpath(tarball_dir.sources()[0]), tarball_dir.where))
@@ -75,11 +76,11 @@ class step_setup_prepare_tarballs(step):
         return step_result(False, 'No tarball found for %s' % (script.descriptor.full_name))
       dest = tarball_dir.get_property('dest', '${REBUILD_SOURCE_UNPACKED_DIR}')
       base = tarball_dir.get_property('base', None)
-      strip_common_base = tarball_dir.get_property('strip_common_base', True)
+      strip_common_ancestor = tarball_dir.get_property('strip_common_ancestor', True)
       self.blurb('Extracting %s to %s' % (path.relpath(tarball_path), path.relpath(dest)))
       archiver.extract(tarball_path,
                        dest,
                        base_dir = base,
-                       strip_common_base = strip_common_base)
+                       strip_common_ancestor = strip_common_ancestor)
       
     return step_result(True, None)

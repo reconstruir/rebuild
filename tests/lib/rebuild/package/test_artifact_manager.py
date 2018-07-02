@@ -6,7 +6,7 @@ from bes.testing.unit_test import unit_test
 from bes.fs import file_find, file_util, temp_file
 from bes.git import git
 from rebuild.base import build_arch, build_blurb, build_system, build_target, build_level, package_descriptor as PD
-from rebuild.package import artifact_manager, package
+from rebuild.package import artifact_manager, package, artifact_descriptor as AD
 from rebuild.package.unit_test_packages import unit_test_packages
 from rebuild.package.db_error import *
 
@@ -16,7 +16,7 @@ class test_artifact_manager(unit_test):
   #DEBUG = True
 
   LINUX_BT = build_target(build_system.LINUX, build_level.RELEASE)
-  DARWIN_BT = build_target(build_system.MACOS, build_level.RELEASE)
+  MACOS_BT = build_target(build_system.MACOS, build_level.RELEASE)
   
   @classmethod
   def _make_test_artifact_manager(clazz, address = None, items = None):
@@ -77,14 +77,14 @@ class test_artifact_manager(unit_test):
   def test_find_by_package_descriptor(self):
     am = self._make_test_artifacts_git_repo()
 
-    self.assertEqual( 'water-1.0.0', am.find_by_package_descriptor(PD('water', '1.0.0'), self.DARWIN_BT).package_descriptor.full_name )
-    self.assertEqual( 'water-1.0.0-1', am.find_by_package_descriptor(PD('water', '1.0.0-1'), self.DARWIN_BT).package_descriptor.full_name )
-    self.assertEqual( 'water-1.0.0-2', am.find_by_package_descriptor(PD('water', '1.0.0-2'), self.DARWIN_BT).package_descriptor.full_name )
-    self.assertEqual( 'fructose-3.4.5-6', am.find_by_package_descriptor(PD('fructose', '3.4.5-6'), self.DARWIN_BT).package_descriptor.full_name )
-    self.assertEqual( 'apple-1.2.3-1', am.find_by_package_descriptor(PD('apple', '1.2.3-1'), self.DARWIN_BT).package_descriptor.full_name )
-    self.assertEqual( 'orange-6.5.4-3', am.find_by_package_descriptor(PD('orange', '6.5.4-3'), self.DARWIN_BT).package_descriptor.full_name )
-    self.assertEqual( 'orange_juice-1.4.5', am.find_by_package_descriptor(PD('orange_juice', '1.4.5'), self.DARWIN_BT).package_descriptor.full_name )
-    self.assertEqual( 'pear_juice-6.6.6', am.find_by_package_descriptor(PD('pear_juice', '6.6.6'), self.DARWIN_BT).package_descriptor.full_name )
+    self.assertEqual( 'water-1.0.0', am.find_by_package_descriptor(PD('water', '1.0.0'), self.MACOS_BT).package_descriptor.full_name )
+    self.assertEqual( 'water-1.0.0-1', am.find_by_package_descriptor(PD('water', '1.0.0-1'), self.MACOS_BT).package_descriptor.full_name )
+    self.assertEqual( 'water-1.0.0-2', am.find_by_package_descriptor(PD('water', '1.0.0-2'), self.MACOS_BT).package_descriptor.full_name )
+    self.assertEqual( 'fructose-3.4.5-6', am.find_by_package_descriptor(PD('fructose', '3.4.5-6'), self.MACOS_BT).package_descriptor.full_name )
+    self.assertEqual( 'apple-1.2.3-1', am.find_by_package_descriptor(PD('apple', '1.2.3-1'), self.MACOS_BT).package_descriptor.full_name )
+    self.assertEqual( 'orange-6.5.4-3', am.find_by_package_descriptor(PD('orange', '6.5.4-3'), self.MACOS_BT).package_descriptor.full_name )
+    self.assertEqual( 'orange_juice-1.4.5', am.find_by_package_descriptor(PD('orange_juice', '1.4.5'), self.MACOS_BT).package_descriptor.full_name )
+    self.assertEqual( 'pear_juice-6.6.6', am.find_by_package_descriptor(PD('pear_juice', '6.6.6'), self.MACOS_BT).package_descriptor.full_name )
 
     self.assertEqual( 'water-1.0.0', am.find_by_package_descriptor(PD('water', '1.0.0'), self.LINUX_BT).package_descriptor.full_name )
     self.assertEqual( 'water-1.0.0-1', am.find_by_package_descriptor(PD('water', '1.0.0-1'), self.LINUX_BT).package_descriptor.full_name )
@@ -95,9 +95,42 @@ class test_artifact_manager(unit_test):
     self.assertEqual( 'orange_juice-1.4.5', am.find_by_package_descriptor(PD('orange_juice', '1.4.5'), self.LINUX_BT).package_descriptor.full_name )
     self.assertEqual( 'pear_juice-6.6.6', am.find_by_package_descriptor(PD('pear_juice', '6.6.6'), self.LINUX_BT).package_descriptor.full_name )
 
-  def xtest_latest_versions_for_build_target(self):
+  def test_list_latest_versions(self):
+    self.maxDiff = None
     am = self._make_test_artifacts_git_repo()
-    self.assertEqual( [], am.latest_versions_for_build_target(self.LINUX_BT) )
+    self.assertEqual( [
+      AD('apple', '1.2.3', 1, 0, 'linux', 'release', ['x86_64'], ''),
+      AD('arsenic', '1.2.9', 1, 0, 'linux', 'release', ['x86_64'], ''),
+      AD('citrus', '1.0.0', 2, 0, 'linux', 'release', ['x86_64'], ''),
+      AD('fiber', '1.0.0', 0, 0, 'linux', 'release', ['x86_64'], ''),
+      AD('fructose', '3.4.5', 6, 0, 'linux', 'release', ['x86_64'], ''),
+      AD('fruit', '1.0.0', 0, 0, 'linux', 'release', ['x86_64'], ''),
+      AD('mercury', '1.2.9', 0, 0, 'linux', 'release', ['x86_64'], ''),
+      AD('mercury_conflict', '3.2.1', 0, 0, 'linux', 'release', ['x86_64'], ''),
+      AD('orange', '6.5.4', 3, 0, 'linux', 'release', ['x86_64'], ''),
+      AD('orange_juice', '1.4.5', 0, 0, 'linux', 'release', ['x86_64'], ''),
+      AD('pear', '1.2.3', 1, 0, 'linux', 'release', ['x86_64'], ''),
+      AD('pear_juice', '6.6.6', 0, 0, 'linux', 'release', ['x86_64'], ''),
+      AD('smoothie', '1.0.0', 0, 0, 'linux', 'release', ['x86_64'], ''),
+      AD('water', '1.0.0', 2, 0, 'linux', 'release', ['x86_64'], ''),
+    ], am.list_latest_versions(self.LINUX_BT) )
+    
+    self.assertEqual( [
+      AD('apple', '1.2.3', 1, 0, 'macos', 'release', ['x86_64'], ''),
+      AD('arsenic', '1.2.9', 1, 0, 'macos', 'release', ['x86_64'], ''),
+      AD('citrus', '1.0.0', 2, 0, 'macos', 'release', ['x86_64'], ''),
+      AD('fiber', '1.0.0', 0, 0, 'macos', 'release', ['x86_64'], ''),
+      AD('fructose', '3.4.5', 6, 0, 'macos', 'release', ['x86_64'], ''),
+      AD('fruit', '1.0.0', 0, 0, 'macos', 'release', ['x86_64'], ''),
+      AD('mercury', '1.2.9', 0, 0, 'macos', 'release', ['x86_64'], ''),
+      AD('mercury_conflict', '3.2.1', 0, 0, 'macos', 'release', ['x86_64'], ''),
+      AD('orange', '6.5.4', 3, 0, 'macos', 'release', ['x86_64'], ''),
+      AD('orange_juice', '1.4.5', 0, 0, 'macos', 'release', ['x86_64'], ''),
+      AD('pear', '1.2.3', 1, 0, 'macos', 'release', ['x86_64'], ''),
+      AD('pear_juice', '6.6.6', 0, 0, 'macos', 'release', ['x86_64'], ''),
+      AD('smoothie', '1.0.0', 0, 0, 'macos', 'release', ['x86_64'], ''),
+      AD('water', '1.0.0', 2, 0, 'macos', 'release', ['x86_64'], ''),
+    ], am.list_latest_versions(self.MACOS_BT) )
     
 if __name__ == '__main__':
   unit_test.main()

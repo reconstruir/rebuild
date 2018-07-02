@@ -27,7 +27,7 @@ class builder_script(object):
     self.recipe = recipe
     self.build_target = build_target
     self.enabled = self.build_target.parse_expression(recipe.enabled)
-    self.source_dir = path.dirname(self.filename)
+    self.recipe_dir = path.dirname(self.filename)
     self._step_manager = step_manager('rebuild')
     self.working_dir = self._make_working_dir(self.env.config.builds_dir(self.build_target),
                                               self.descriptor.full_name,
@@ -57,12 +57,12 @@ class builder_script(object):
       'REBUILD_PACKAGE_NAME':  self.descriptor.name,
       'REBUILD_PACKAGE_UPSTREAM_VERSION':  self.descriptor.version.upstream_version,
       'REBUILD_PYTHON_PLATFORM_NAME':   self.build_target.system,
+      'REBUILD_RECIPE_DIR': path.abspath(self.recipe_dir),
       'REBUILD_REQUIREMENTS_BIN_DIR': self.requirements_manager.bin_dir,
       'REBUILD_REQUIREMENTS_DIR': self.requirements_manager.installation_dir,
       'REBUILD_REQUIREMENTS_INCLUDE_DIR': self.requirements_manager.include_dir,
       'REBUILD_REQUIREMENTS_LIB_DIR': self.requirements_manager.lib_dir,
       'REBUILD_REQUIREMENTS_SHARE_DIR': self.requirements_manager.share_dir,
-      'REBUILD_SOURCE_DIR': path.abspath(self.source_dir),
       'REBUILD_SOURCE_UNPACKED_DIR': self.source_unpacked_dir,
       'REBUILD_STAGE_FRAMEWORKS_DIR':  path.join(self.staged_files_dir, 'frameworks'),
       'REBUILD_STAGE_PREFIX_DIR':  self.staged_files_dir,

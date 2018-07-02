@@ -136,6 +136,7 @@ class package_tester(object):
     deps_packages = config.script.resolve_deps(['RUN', 'TEST'], False)
     timer.stop()
     all_packages = deps_packages + [ pd ]
+    all_packages_names = [ p.name for p in all_packages ]
 
     timer.start('install packages')
     pm.install_packages(deps_packages, config.script.build_target, ['RUN', 'TEST'])
@@ -164,8 +165,7 @@ class package_tester(object):
     shell_env = os_env.make_clean_env()
     os_env.update(shell_env, config.tools_manager.shell_env(resolved_tool_reqs), prepend = True)
     os_env.update(shell_env, pm.shell_env(all_packages), prepend = True)
-
-    transformed_env = pm.transform_env(shell_env, all_packages)
+    transformed_env = pm.transform_env(shell_env, all_packages_names)
     os_env.update(shell_env, transformed_env, prepend = True)
     
     test_source_with_replacements = path.join(test_root_dir, path.basename(test_source))

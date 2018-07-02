@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 # FIXME: add system and machine checking for install_tarball()
@@ -54,12 +53,12 @@ class tools_package_manager(object):
 
   def bin_dir(self, pkg_desc):
     if not self.is_installed(pkg_desc):
-      raise RuntimeError('package not installed: %s' % (pkg_desc))
+      raise RuntimeError('package not installed: %s' % (str(pkg_desc)))
     return path.join(self._package_dir(pkg_desc), 'bin')
 
   def lib_dir(self, pkg_desc):
     if not self.is_installed(pkg_desc):
-      raise RuntimeError('package not installed: %s' % (pkg_desc))
+      raise RuntimeError('package not installed: %s' % (str(pkg_desc)))
     return path.join(self._package_dir(pkg_desc), 'lib')
 
   def env_vars(self, pkg_desc):

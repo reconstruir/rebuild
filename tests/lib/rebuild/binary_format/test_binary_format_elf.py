@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-
 from bes.testing.unit_test import unit_test
 from rebuild.binary_format import binary_format_elf as elf
 
