@@ -5,15 +5,14 @@ from bes.common import check, string_util
 from bes.system import log
 from rebuild.base import build_blurb
 from bes.git import git
-from bes.fs import dir_util, file_checksum, file_find, file_util
+from bes.fs import file_util
 from bes.debug import debug_timer, noop_debug_timer
-from rebuild.base import package_descriptor, package_descriptor_list, requirement_manager
+from rebuild.base import requirement_manager
 
 from .artifact_db import artifact_db
 from .artifact_descriptor import artifact_descriptor
 from .db_error import *
 from .package import package
-from .package_list import package_list
 
 #log.configure('artifact_manager=debug')
 
@@ -67,16 +66,18 @@ class artifact_manager(object):
       return relative_path
     return path.join(self._root_dir, relative_path)
 
-  def publish(self, tarball, build_target, allow_replace):
-    pkg = package(tarball)
-    pkg_info = pkg.package_descriptor
-    artifact_path_rel = self.artifact_path(pkg_info, build_target, relative = True)
-    artifact_path_abs = self.artifact_path(pkg_info, build_target, relative = False)
+  def publish(self, tarball, build_target, allow_replace, metadata = None):
+    if not metadata:
+      metadata = package(tarball).metadata
+    check.check_package_metadata(metadata)
+    pkg_desc = metadata.package_descriptor
+    artifact_path_rel = self.artifact_path(pkg_desc, build_target, relative = True)
+    artifact_path_abs = self.artifact_path(pkg_desc, build_target, relative = False)
     file_util.copy(tarball, artifact_path_abs, use_hard_link = True)
     if not self.no_git:
-      git.add(self._root_dir, pkg_info.artifact_path(build_target))
+      git.add(self._root_dir, pkg_desc.artifact_path(build_target))
     self._reset()
-    pkg_metadata = pkg.metadata.clone_with_filename(artifact_path_rel)
+    pkg_metadata = metadata.clone_with_filename(artifact_path_rel)
     should_replace = allow_replace and self._db.has_artifact(pkg_metadata.artifact_descriptor)
     if should_replace:
       self._db.replace_artifact(pkg_metadata)

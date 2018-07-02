@@ -13,7 +13,7 @@ class step_result(namedtuple('step_result', 'success, message, failed_step, outp
       check.check_string(message)
     if outputs:
       check.check_dict(outputs)
-      outputs = copy.deepcopy(outputs)
+      outputs = copy.copy(outputs)
     else:
       outputs = {}
     return clazz.__bases__[0].__new__(clazz, success, message, failed_step, outputs)

@@ -148,7 +148,7 @@ unset REBUILD_STUFF_DIR
     return package(tarball).files
 
   @classmethod
-  def create_tarball(clazz, tarball_path, pkg_desc, build_target, stage_dir, timer = None):
+  def create_package(clazz, tarball_path, pkg_desc, build_target, stage_dir, timer = None):
     timer = timer or noop_debug_timer()
 
     properties = dict_util.filter_without_keys(pkg_desc.properties, [ 'export_compilation_flags_requirements' ])
@@ -160,21 +160,21 @@ unset REBUILD_STUFF_DIR
       properties[key] = [ str(x) for x in pkg_desc.properties[key] ]
       
     files_dir = path.join(stage_dir, 'files')
-    timer.start('create_tarball - find files')
+    timer.start('create_package - find files')
     files = file_find.find(files_dir, relative = True, file_type = file_find.FILE | file_find.LINK)
     timer.stop()
-    timer.start('create_tarball - files checksums')
+    timer.start('create_package - files checksums')
     files_checksum_list = file_checksum_list.from_files(files, root_dir = files_dir)
     timer.stop()
 
     env_files_dir = path.join(stage_dir, 'env')
-    timer.start('create_tarball - find env_files')
+    timer.start('create_package - find env_files')
     if path.isdir(env_files_dir):
       env_files = file_find.find(env_files_dir, relative = True, file_type = file_find.FILE | file_find.LINK)
     else:
       env_files = []
     timer.stop()
-    timer.start('create_tarball - env_files checksums')
+    timer.start('create_package - env_files checksums')
     env_files_checksum_list = file_checksum_list.from_files(env_files, root_dir = env_files_dir)
     timer.stop()
 
@@ -194,8 +194,8 @@ unset REBUILD_STUFF_DIR
                                 pkg_files)
     metadata_filename = path.join(stage_dir, clazz.METADATA_FILENAME)
     file_util.save(metadata_filename, content = metadata.to_json())
-    clazz._create_tarball(tarball_path, stage_dir, timer)
-    return tarball_path
+    clazz._create_package(tarball_path, stage_dir, timer)
+    return tarball_path, metadata
 
   @classmethod
   def _determine_manifest(clazz, stage_dir):
@@ -208,10 +208,10 @@ unset REBUILD_STUFF_DIR
     return sorted(files + links)
   
   @classmethod
-  def _create_tarball(clazz, tarball_filename, stage_dir, timer):
+  def _create_package(clazz, tarball_filename, stage_dir, timer):
     'Return the list of files to package.  Maybe could do some filtering here.  Using find because its faster that bes.fs.file_find.'
     if timer:
-      timer.start('create_tarball - determine manifest')
+      timer.start('create_package - determine manifest')
     files_to_package = clazz._determine_manifest(stage_dir)
     if timer:
       timer.stop()
@@ -219,7 +219,7 @@ unset REBUILD_STUFF_DIR
     manifest = temp_file.make_temp_file(content = '\n'.join(files_to_package))
     tar_cmd = [ 'tar', 'zcf', tarball_filename, '-C', stage_dir, '-T', manifest ]
     if timer:
-      timer.start('create_tarball - execute %s' % (' '.join(tar_cmd)))
+      timer.start('create_package - execute %s' % (' '.join(tar_cmd)))
     execute.execute(tar_cmd)
     if timer:
       timer.stop()

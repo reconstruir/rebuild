@@ -697,7 +697,7 @@ jan 15
 - remove disabled packages from all_scripts instead of just skipping them but first check nothing depends on it
 
 apr 2
- - package.create_tarball() does some weird shit with properties (export_compilation_flags_requirements)
+ - package.create_package() does some weird shit with properties (export_compilation_flags_requirements)
   
 apr 3
 need a package unit test with symlinks

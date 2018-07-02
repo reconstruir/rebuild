@@ -26,12 +26,16 @@ class step_artifact_create_make_package(step):
     assert tarball_name == script.descriptor.tarball_filename
     output_tarball_path = path.join(script.artifact_dir, script.descriptor.tarball_filename)
     self.blurb('creating tarball %s from %s' % (path.relpath(output_tarball_path), path.relpath(script.stage_dir)), fit = True)
-    staged_tarball = package.create_tarball(output_tarball_path,
-                                            script.descriptor,
-                                            script.build_target,
-                                            script.stage_dir)
+    staged_tarball, metadata = package.create_package(output_tarball_path,
+                                                      script.descriptor,
+                                                      script.build_target,
+                                                      script.stage_dir)
     self.blurb('staged tarball: %s' % (path.relpath(staged_tarball)))
-    return step_result(True, None, outputs = { 'staged_tarball': staged_tarball })
+    outputs = {
+      'staged_tarball': staged_tarball,
+      'metadata': metadata,
+    }
+    return step_result(True, None, outputs = outputs)
   
 class step_artifact_create_test_package(step):
   'Test an package with any tests give for it in its rebuildfile.'
@@ -89,9 +93,17 @@ class step_artifact_create_publish_package(step):
   #@abstractmethod
   def execute(self, script, env, values, inputs):
     staged_tarball = inputs.get('staged_tarball', None)
-    assert staged_tarball
+    if not staged_tarball or not path.isfile(staged_tarball):
+      message = 'Missing staged tarball for %s: ' % (str(script.descriptor))
+      self.log_d(message)
+      return step_result(False, message)
+    metadata = inputs.get('metadata', None)
+    if not metadata:
+      message = 'Missing metadata for %s: ' % (str(script.descriptor))
+      self.log_d(message)
+      return step_result(False, message)
     assert archiver.is_valid(staged_tarball)
-    published_tarball = env.artifact_manager.publish(staged_tarball, script.build_target, True)
+    published_tarball = env.artifact_manager.publish(staged_tarball, script.build_target, True, metadata = metadata)
     self.blurb('published tarball: %s' % (path.relpath(published_tarball)))
     return step_result(True, None, outputs = { 'published_tarball': published_tarball })
 

@@ -31,6 +31,14 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
     check.check_package_files(files)
     return clazz.__bases__[0].__new__(clazz, 2, filename, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files)
 
+  '''
+  def __deepcopy__(self, memo):
+    def to_simple_dict(self):
+      def _parse_dict_v2(clazz, o):
+    print('MEMO: %s - %s' % (memo, type(memo)))
+    assert False
+'''
+  
   @cached_property
   def build_version(self):
     return build_version(self.version, self.revision, self.epoch)
