@@ -85,25 +85,14 @@ class artifact_manager(object):
     return artifact_path_abs
 
   def latest_packages(self, package_names, build_target):
-#    self._timer.start('latest_packages(package_names %s, build_target %s)' % (package_names, build_target))
-    # FIXME: need to deal with multiple versions
     result = []
-#    self._timer.start('available_packages(build_target %s)' % (str(build_target)))
     available_packages = self.list_all_by_metadata(build_target = build_target)
-#    self._timer.stop()
     for package_name in package_names:
-#      self._timer.start('_find_latest_package(package_name %s)' % (package_name))
-      available_package = self._find_latest_package(package_name,
-                                                    available_packages)
-#      self._timer.stop()
+      available_package = self._find_latest_package(package_name, available_packages)
       if not available_package:
-#        self._timer.stop()
         raise NotInstalledError('package \"%s\" not found' % (package_name))
-
       result.append(available_package)
-
     assert len(result) == len(package_names)
-#    self._timer.stop()
     return result
   
   @classmethod
