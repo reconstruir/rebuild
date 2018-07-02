@@ -58,7 +58,6 @@ class artifact_manager(object):
     return self._root_dir
     
   def _reset(self):
-    self._available_packages_map = {}
     self._requirement_managers = {}
     
   def artifact_path(self, package_descriptor, build_target, relative = False):
@@ -85,22 +84,6 @@ class artifact_manager(object):
       self._db.add_artifact(pkg_metadata)
     return artifact_path_abs
 
-  def available_packages(self, build_target):
-    if build_target.build_path not in self._available_packages_map:
-      self._timer.start('compute available for %s' % (build_target.build_path))
-      self._available_packages_map[build_target.build_path] = self._compute_available_packages(build_target)
-      self._timer.stop()
-    return self._available_packages_map[build_target.build_path]
-
-  def _compute_available_packages(self, build_target):
-    d = path.join(self._root_dir, build_target.build_path)
-    if not path.exists(d):
-      return package_list()
-    if not path.isdir(d):
-      raise RuntimeError('Not a directory: %s' % (d))
-    all_files = dir_util.list(d)
-    return package_list([ self._get_package(f) for f in all_files ])
-  
   def latest_packages(self, package_names, build_target):
 #    self._timer.start('latest_packages(package_names %s, build_target %s)' % (package_names, build_target))
     # FIXME: need to deal with multiple versions
