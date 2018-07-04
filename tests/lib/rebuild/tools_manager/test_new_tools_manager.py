@@ -62,7 +62,7 @@ class test_new_tools_manager(script_unit_test):
     self.assertEqual( 0, rv.exit_code )
     self.assertEqual( 'tfoo: a b 666', rv.stdout.strip() )
 
-  def test_one_tool_env(self):
+  def xtest_one_tool_env(self):
     tm = self._make_test_tm()
     tfoo = PD.parse('tfoo-1.0.0')
     tm.ensure_tool(tfoo)

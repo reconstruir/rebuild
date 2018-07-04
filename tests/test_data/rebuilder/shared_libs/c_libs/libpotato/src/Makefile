@@ -8,7 +8,13 @@ LOCAL_LDFLAGS=-L.
 %.o: %.c
 	$(CC) $(CFLAGS) $(LOCAL_CFLAGS) -c $< -o $@
 
-all: libpotato.so potato_prog1_main
+ifdef REBUILD_NO_PROGRAMS
+	programs=
+else
+	programs=potato_prog1_main
+endif
+
+all: libpotato.so $(programs)
 
 LIBPOTATO_OBJS = libpotato/potato.o libpotato/common.o
 LIBPOTATO_HEADERS = libpotato/potato.h libpotato/common.h
@@ -23,12 +29,14 @@ potato_prog1_main: $(POTATO_PROG1_MAIN_OBJS) libpotato.so
 	$(CC) $(LDFLAGS) $(LOCAL_LDFLAGS) -o $@ $(POTATO_PROG1_MAIN_OBJS) $(POTATO_PROG1_MAIN_LIBS)
 
 clean:
-	rm -f $(LIBPOTATO_OBJS) $(POTATO_PROG1_MAIN_OBJS) libpotato.so potato_prog1_main
+	rm -f $(LIBPOTATO_OBJS) $(POTATO_PROG1_MAIN_OBJS) libpotato.so $(programs)
 
-install: potato_prog1_main libpotato.so $(LIBPOTATO_HEADERS)
+install: $(programs) libpotato.so $(LIBPOTATO_HEADERS)
 	mkdir -p $(prefix)/bin
 	mkdir -p $(prefix)/lib
 	mkdir -p $(prefix)/include/libpotato
-	install -m 755 potato_prog1_main $(prefix)/bin
+ifndef REBUILD_NO_PROGRAMS
+	install -m 755 $(programs) $(prefix)/bin
+endif
 	install -m 644 libpotato.so $(prefix)/lib
 	$(foreach header,$(LIBPOTATO_HEADERS),install -m 644 $(header) $(prefix)/include/libpotato;)

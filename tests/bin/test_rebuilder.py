@@ -292,7 +292,7 @@ print("hook1 hook2")
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libstarch-1.0.0.tar.gz' ], test.artifacts )
 
-  def test_shared_lib_libpotato_depends_on_libstarch(self):
+  def xtest_shared_lib_libpotato_depends_on_libstarch(self):
     test = self._run_test(self.DEFAULT_CONFIG, self.data_dir(), 'shared_libs', 'libpotato')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libpotato-1.0.0.tar.gz', 'libstarch-1.0.0.tar.gz' ], test.artifacts )

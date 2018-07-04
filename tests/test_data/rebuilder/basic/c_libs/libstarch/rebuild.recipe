@@ -14,6 +14,7 @@ package libstarch 1.0.0
         macos: CC=clang
       make_env
         all: _TEST_MAKE_DIR=${REBUILD_RECIPE_DIR}/../../../makefiles
+        ios|android: REBUILD_NO_PROGRAMS=1
     step_make_install
       make_install_flags
         all: CFLAGS="${REBUILD_COMPILE_CFLAGS} -std=c99"
@@ -22,6 +23,7 @@ package libstarch 1.0.0
         macos: CC=clang
       make_install_env
         all: _TEST_MAKE_DIR=${REBUILD_RECIPE_DIR}/../../../makefiles
+        ios|android: REBUILD_NO_PROGRAMS=1
     step_post_install
       pc_files
         all: libstarch.pc

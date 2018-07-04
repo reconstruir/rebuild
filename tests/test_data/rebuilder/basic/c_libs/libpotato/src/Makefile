@@ -3,7 +3,13 @@ include $(_TEST_MAKE_DIR)/common.mk
 MAKE_STATIC_LIB = libpotato.a
 MAKE_STATIC_LIB_OBJS = libpotato/potato.o libpotato/common.o
 
-all: $(MAKE_STATIC_LIB) potato_prog1_main
+ifdef REBUILD_NO_PROGRAMS
+	programs=
+else
+	programs=potato_prog1_main
+endif
+
+all: $(MAKE_STATIC_LIB) $(programs)
 
 LIBPOTATO_HEADERS = libpotato/potato.h libpotato/common.h
 
@@ -22,12 +28,14 @@ potato_gen.c: potato_gen.h
 	tbar_code_gen.py potato_gen myfunc 667 > $@
 
 clean:
-	rm -f $(MAKE_STATIC_LIB_OBJS) $(POTATO_PROG1_MAIN_OBJS) $(MAKE_STATIC_LIB) potato_prog1_main
+	rm -f $(MAKE_STATIC_LIB_OBJS) $(POTATO_PROG1_MAIN_OBJS) $(MAKE_STATIC_LIB) $(programs)
 
-install: potato_prog1_main $(MAKE_STATIC_LIB) $(LIBPOTATO_HEADERS)
+install: $(programs) $(MAKE_STATIC_LIB) $(LIBPOTATO_HEADERS)
 	mkdir -p $(prefix)/bin
 	mkdir -p $(prefix)/lib
 	mkdir -p $(prefix)/include/libpotato
-	install -m 755 potato_prog1_main $(prefix)/bin
+ifndef REBUILD_NO_PROGRAMS
+	install -m 755 $(programs) $(prefix)/bin
+endif
 	install -m 644 $(MAKE_STATIC_LIB) $(prefix)/lib
 	$(foreach header,$(LIBPOTATO_HEADERS),install -m 644 $(header) $(prefix)/include/libpotato;)

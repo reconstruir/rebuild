@@ -26,7 +26,7 @@ install: $(programs) libstarch.a $(LIBSTARCH_HEADERS)
 	mkdir -p $(prefix)/bin
 	mkdir -p $(prefix)/lib
 	mkdir -p $(prefix)/include/libstarch
-ifneq ($(REBUILD_NO_PROGRAMS),)
+ifndef REBUILD_NO_PROGRAMS
 	install -m 755 $(programs) $(prefix)/bin
 endif
 	install -m 644 libstarch.a $(prefix)/lib
