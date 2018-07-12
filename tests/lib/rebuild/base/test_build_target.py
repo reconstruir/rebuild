@@ -10,7 +10,7 @@ class test_build_target(unit_test):
     self.assertEqual( 'macos/x86_64/release', BT(BS.MACOS).build_path )
     self.assertEqual( 'macos/x86_64/debug', BT(BS.MACOS, BL.DEBUG).build_path )
     self.assertEqual( 'macos/x86_64/release', BT(BS.MACOS, BT.DEFAULT).build_path )
-    self.assertEqual( 'linux/x86_64/release', BT(BS.LINUX).build_path )
+    self.assertEqual( 'linux/x86_64/release', BT(BS.LINUX, archs = 'x86_64').build_path )
     self.assertEqual( 'ios/arm64-armv7/release', BT(BS.IOS).build_path )
     self.assertEqual( 'ios/arm64/release', BT(BS.IOS, archs = [ BA.ARM64 ]).build_path )
 
@@ -31,9 +31,9 @@ class test_build_target(unit_test):
   def test_parse_path(self):
     self.assertEqual( BT(system = BS.MACOS, level = BL.RELEASE), BT.parse_path('macos/x86_64/release') )
     self.assertEqual( BT(system = BS.MACOS, level = BL.DEBUG), BT.parse_path('macos/x86_64/debug') )
-    self.assertEqual( BT(system = BS.LINUX, level = BL.RELEASE), BT.parse_path('linux/x86_64/release') )
-    self.assertEqual( BT(system = BS.LINUX, level = BL.DEBUG), BT.parse_path('linux/x86_64/debug') )
-    self.assertEqual( BT(system = BS.LINUX, level = BL.DEBUG, distro = BS.RASPBIAN), BT.parse_path('linux.raspbian/x86_64/debug') )
+    self.assertEqual( BT(system = BS.LINUX, level = BL.RELEASE, archs = 'x86_64'), BT.parse_path('linux/x86_64/release') )
+    self.assertEqual( BT(system = BS.LINUX, level = BL.DEBUG, archs = 'x86_64'), BT.parse_path('linux/x86_64/debug') )
+    self.assertEqual( BT(system = BS.LINUX, level = BL.DEBUG, distro = BS.RASPBIAN), BT.parse_path('linux.raspbian/armv7/debug') )
     
 if __name__ == '__main__':
   unit_test.main()

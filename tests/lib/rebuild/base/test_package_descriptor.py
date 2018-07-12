@@ -123,8 +123,8 @@ class test_package_descriptor(unit_test):
   def test_artifact_path(self):
     self.assertEqual( 'macos/x86_64/release/foo-1.2.3-1.tar.gz', PD('foo', '1.2.3-1').artifact_path(build_target('macos', 'release')) )
     self.assertEqual( 'macos/x86_64/debug/foo-1.2.3-1.tar.gz', PD('foo', '1.2.3-1').artifact_path(build_target('macos', 'debug')) )
-    self.assertEqual( 'linux/x86_64/release/foo-1.2.3-1.tar.gz', PD('foo', '1.2.3-1').artifact_path(build_target('linux', 'release')) )
-    self.assertEqual( 'linux/x86_64/debug/foo-1.2.3-1.tar.gz', PD('foo', '1.2.3-1').artifact_path(build_target('linux', 'debug')) )
+    self.assertEqual( 'linux/x86_64/release/foo-1.2.3-1.tar.gz', PD('foo', '1.2.3-1').artifact_path(build_target('linux', 'release', archs = 'x86_64')) )
+    self.assertEqual( 'linux/x86_64/debug/foo-1.2.3-1.tar.gz', PD('foo', '1.2.3-1').artifact_path(build_target('linux', 'debug', archs = 'x86_64')) )
 
 if __name__ == '__main__':
   unit_test.main()
