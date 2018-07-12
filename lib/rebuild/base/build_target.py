@@ -11,15 +11,15 @@ from .build_system import build_system
 
 from collections import namedtuple
 
-class build_target(namedtuple('build_target', 'system,distro,level,archs,build_path')):
+class build_target(namedtuple('build_target', 'system, distro, level, archs, build_path')):
 
   DEFAULT = 'default'
 
   def __new__(clazz, system = DEFAULT, level = DEFAULT, archs = DEFAULT, distro = None):
     system = build_system.parse_system(system)
     level = clazz._determine_level(level)
-    archs = build_arch.determine_archs(system, archs)
     distro = clazz._determine_distro(system, distro)
+    archs = build_arch.determine_archs(system, archs, distro = distro)
     build_path = clazz._make_build_path(system, distro, archs, level)
     return clazz.__bases__[0].__new__(clazz, system, distro, level, archs, build_path)
 

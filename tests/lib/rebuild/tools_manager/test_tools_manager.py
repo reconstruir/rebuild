@@ -3,16 +3,17 @@
 #
 import os.path as path, unittest
 from bes.fs import temp_file
+from bes.testing.unit_test import unit_test
 from bes.system import execute
 from rebuild.base import build_target, build_system, build_level, package_descriptor
 from rebuild.package import artifact_manager
 from rebuild.tools_manager import tools_manager
 from rebuild.package.unit_test_packages import unit_test_packages
 
-class test_tools_manager(unittest.TestCase):
+class test_tools_manager(unit_test):
 
-  DEBUG = False
-#  DEBUG = True
+  DEBUG = unit_test.DEBUG
+  #DEBUG = True
 
   TEST_BUILD_TARGET = build_target(build_system.LINUX, build_level.RELEASE)
 
@@ -58,4 +59,4 @@ class test_tools_manager(unittest.TestCase):
     self.assertEqual( water_desc.full_name, rv.stdout.strip() )
 
 if __name__ == '__main__':
-  unittest.main()
+  unit_test.main()

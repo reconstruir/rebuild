@@ -46,7 +46,7 @@ class build_arch(object):
   DEFAULT_HOST_ARCHS = DEFAULT_ARCHS[build_system.HOST]
 
   @classmethod
-  def determine_archs(clazz, system, tentative_archs):
+  def determine_archs(clazz, system, tentative_archs, distro = None):
     result = []
     if system == build_system.LINUX:
       return clazz._determine_archs_linux(system, tentative_archs)
