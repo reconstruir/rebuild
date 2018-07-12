@@ -22,9 +22,9 @@ class build_arch(object):
     build_system.MACOS: [ I386, X86_64 ],
     build_system.IOS: [ ARM64, ARMV7 ],
     build_system.IOS_SIM: [ I386, X86_64 ],
-    build_system.LINUX: [ I386, X86_64 ],
+    build_system.LINUX: [ I386, X86_64, ARMV7 ],
   }
-  
+
   KNOWN_ARCHS = [ ARMV7, ARM64, I386, X86_64 ]
 
   HOST_ARCH = platform.machine()
