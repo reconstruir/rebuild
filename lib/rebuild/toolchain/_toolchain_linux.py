@@ -68,6 +68,8 @@ class _toolchain_linux(_toolchain_base):
       return [ '-m32' ]
     elif archs[0] == build_arch.X86_64:
       return [ '-m64' ]
+    elif archs[0] == build_arch.ARMV7:
+      return []
     else:
       raise ValueError('Invalid archs: %s' % (archs))
 
