@@ -33,7 +33,7 @@ class test_build_target(unit_test):
     self.assertEqual( BT(system = BS.MACOS, level = BL.DEBUG), BT.parse_path('macos/x86_64/debug') )
     self.assertEqual( BT(system = BS.LINUX, level = BL.RELEASE, archs = 'x86_64'), BT.parse_path('linux/x86_64/release') )
     self.assertEqual( BT(system = BS.LINUX, level = BL.DEBUG, archs = 'x86_64'), BT.parse_path('linux/x86_64/debug') )
-    self.assertEqual( BT(system = BS.LINUX, level = BL.DEBUG, distro = BS.RASPBIAN), BT.parse_path('linux.raspbian/armv7/debug') )
+    self.assertEqual( BT(system = BS.LINUX, level = BL.DEBUG, archs = 'armv7', distro = BS.RASPBIAN), BT.parse_path('linux.raspbian/armv7/debug') )
     
 if __name__ == '__main__':
   unit_test.main()
