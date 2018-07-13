@@ -40,6 +40,9 @@ class test_artifact_db(unit_test):
   
   DEBUG = unit_test.DEBUG
   #DEBUG = True
+
+  LINUX_BT = build_target(build_system.LINUX, build_level.RELEASE, archs = 'x86_64')
+  MACOS_BT = build_target(build_system.MACOS, build_level.RELEASE)
   
   def _make_tmp_db_path(self):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
@@ -176,14 +179,12 @@ class test_artifact_db(unit_test):
   def test_list_all_by_descriptor_with_build_target(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
-    linux_bt = build_target(build_system.LINUX, build_level.RELEASE)
-    macos_bt = build_target(build_system.MACOS, build_level.RELEASE)
     e1 = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, [], {}, self.TEST_FILES)
     e2 = PM('bar-5.6.7.tar.gz', 'bar', '5.6.7', 1, 0, 'linux', 'release', [ 'x86_64' ], None, [], {}, self.TEST_FILES2)
     db.add_artifact(e1)
     db.add_artifact(e2)
-    self.assertEqual( [ e2.artifact_descriptor ], db.list_all_by_descriptor(build_target = linux_bt) )
-    self.assertEqual( [ e1.artifact_descriptor ], db.list_all_by_descriptor(build_target = macos_bt) )
+    self.assertEqual( [ e2.artifact_descriptor ], db.list_all_by_descriptor(build_target = self.LINUX_BT) )
+    self.assertEqual( [ e1.artifact_descriptor ], db.list_all_by_descriptor(build_target = self.MACOS_BT) )
 
   def test_list_all_by_metadata(self):
     tmp_db = self._make_tmp_db_path()
@@ -198,14 +199,12 @@ class test_artifact_db(unit_test):
   def test_list_all_by_metadata_with_build_target(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
-    linux_bt = build_target(build_system.LINUX, build_level.RELEASE)
-    macos_bt = build_target(build_system.MACOS, build_level.RELEASE)
     e1 = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, [], {}, self.TEST_FILES)
     e2 = PM('bar-5.6.7.tar.gz', 'bar', '5.6.7', 1, 0, 'linux', 'release', [ 'x86_64' ], None, [], {}, self.TEST_FILES2)
     db.add_artifact(e1)
     db.add_artifact(e2)
-    self.assertEqual( [ e2 ], db.list_all_by_metadata(build_target = linux_bt) )
-    self.assertEqual( [ e1 ], db.list_all_by_metadata(build_target = macos_bt) )
+    self.assertEqual( [ e2 ], db.list_all_by_metadata(build_target = self.LINUX_BT) )
+    self.assertEqual( [ e1 ], db.list_all_by_metadata(build_target = self.MACOS_BT) )
     
   def test_list_all_by_package_descriptor(self):
     tmp_db = self._make_tmp_db_path()
@@ -222,16 +221,14 @@ class test_artifact_db(unit_test):
   def test_list_all_by_package_descriptor_with_build_target(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
-    linux_bt = build_target(build_system.LINUX, build_level.RELEASE)
-    macos_bt = build_target(build_system.MACOS, build_level.RELEASE)
     e1 = PM('foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', [ 'x86_64' ], None, [], {}, self.TEST_FILES)
     e2 = PM('bar-5.6.7.tar.gz', 'bar', '5.6.7', 1, 0, 'linux', 'release', [ 'x86_64' ], None, [], {}, self.TEST_FILES2)
     pd1 = PD('foo', '1.2.3-1')
     pd2 = PD('bar', '5.6.7-1')
     db.add_artifact(e1)
     db.add_artifact(e2)
-    self.assertEqual( [ pd2 ], db.list_all_by_package_descriptor(build_target = linux_bt) )
-    self.assertEqual( [ pd1 ], db.list_all_by_package_descriptor(build_target = macos_bt) )
+    self.assertEqual( [ pd2 ], db.list_all_by_package_descriptor(build_target = self.LINUX_BT) )
+    self.assertEqual( [ pd1 ], db.list_all_by_package_descriptor(build_target = self.MACOS_BT) )
     
 if __name__ == '__main__':
   unit_test.main()
