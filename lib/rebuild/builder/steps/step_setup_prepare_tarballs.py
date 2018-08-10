@@ -2,7 +2,7 @@
 
 import os.path as path
 
-from bes.common import check, dict_util, object_util
+from bes.common import bool_util, check, dict_util, object_util
 from bes.archive import archiver
 from bes.fs import file_util, temp_file
 
@@ -61,9 +61,8 @@ class step_setup_prepare_tarballs(step):
         return step_result(False, 'No tarball found for %s' % (script.descriptor.full_name))
       dest = tarball.get_property('dest', '${REBUILD_SOURCE_UNPACKED_DIR}')
       base = tarball.get_property('base', None)
-      strip_common_ancestor = tarball.get_property('strip_common_ancestor', True)
+      strip_common_ancestor = bool_util.parse_bool(tarball.get_property('strip_common_ancestor', 'True'))
       self.blurb('Extracting %s to %s' % (path.relpath(tarball_path), path.relpath(dest)))
-      print('FOO: calling archiver.extract(%s, %s, base_dir=%s, strip_common_ancestor=%s' % (tarball_path, dest, base, strip_common_ancestor))
       archiver.extract(tarball_path,
                        dest,
                        base_dir = base,
