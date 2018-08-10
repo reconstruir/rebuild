@@ -859,4 +859,7 @@ rebuild.package.package_manager.PackageFilesConflictError: conflicts found betwe
 - distro should always be valid
 - change archs to arch
 
-
+2018-08-04
+- add strip_common_ancestor property test for prepare tarballs
+- add base property test for prepare tarballs
+- maybe organize tests by step and cover all properties
