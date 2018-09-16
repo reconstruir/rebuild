@@ -1,12 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import hashlib, requests, urlparse
-#from bes.common import check, object_util
-#from collections import namedtuple
-#from bes.compat import StringIO
-
-#from .build_system import build_system
-#from .pcloud_hardness import pcloud_hardness
+import hashlib, os.path as path, requests, urlparse
 
 class pcloud(object):
 
@@ -16,7 +10,8 @@ class pcloud(object):
     digest = self._get_digest()
     password_digest = self._make_password_digest(digest, email, password)
     self._auth_token = self._get_auth_token(digest, email, password_digest)
-    print('auth token: %s' % (self._auth_token))
+    del email
+    del password
 
   def list_folder(self, folder_path):
     url = self._make_api_url('listfolder')
@@ -29,6 +24,29 @@ class pcloud(object):
     payload = response.json()
     return payload
 
+  def list_folder(self, folder_path):
+    url = self._make_api_url('listfolder')
+    params = {
+      'auth': self._auth_token,
+      'path': folder_path,
+    }
+    response = requests.get(url, params = params)
+    assert response.status_code == 200
+    payload = response.json()
+    return payload
+
+  def checksum_file(self, file_path):
+    url = self._make_api_url('checksumfile')
+    params = {
+      'auth': self._auth_token,
+      'path': file_path,
+    }
+    response  = requests.get(url, params = params)
+    assert response.status_code == 200
+    payload = response.json()
+    assert 'sha1' in payload
+    return payload['sha1']
+  
   @classmethod
   def _make_password_digest(clazz, digest, email, password):
     'Make a password digest.'
