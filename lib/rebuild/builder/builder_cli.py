@@ -39,7 +39,8 @@ class builder_cli(object):
     self.parser.add_argument('-s', '--system', action = 'store', type = str, default = build_target.DEFAULT, help = 'build_system.  One of (%s) [ %s ]' % (systems, build_system.DEFAULT))
     self.parser.add_argument('-a', '--archs', action = 'store', type = str, default = build_target.DEFAULT, help = 'Architectures to build for.  One of (%s) [ %s ]' % (all_archs, default_archs))
     self.parser.add_argument('-l', '--level', action = 'store', type = str, default = build_target.DEFAULT, help = 'Build level.  One of (%s) [ %s ]' % (build_levels, build_level.DEFAULT_LEVEL))
-    self.parser.add_argument('--distro', action = 'store', type = str, default = build_target.DEFAULT, help = 'Distro.  One of (%s) [ %s ]' % ('FIXME', 'FIXME2'))
+    # CACADEVACA
+    self.parser.add_argument('--distro', action = 'store', type = str, default = None, help = 'Distro.  One of (%s) [ %s ]' % ('FIXME', 'FIXME2'))
     self.parser.add_argument('--skip-to-step', action = 'store', type = str, help = 'Skip to the given step name. [ None ]')
     self.parser.add_argument('--deps-only', action = 'store_true', help = 'Only build dependencies')
     self.parser.add_argument('--recipes-only', action = 'store_true', help = 'Only read the recipes dont build them.')

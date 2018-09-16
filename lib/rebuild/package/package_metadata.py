@@ -12,6 +12,8 @@ from .util import util
 class package_metadata(namedtuple('package_metadata', 'format_version, filename, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files')):
 
   def __new__(clazz, filename, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files):
+    # CACADEVACA
+    distro = ''
     check.check_string(filename)
     check.check_string(name)
     check.check_string(version)
@@ -53,7 +55,7 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
 
   @cached_property
   def build_target(self):
-    return build_target(system = self.system, level = self.level, archs = self.archs, distro = self.distro)
+    return build_target(system = self.system, level = self.level, archs = self.archs, distro = self.distro or None)
     
   def to_json(self):
     return json_util.to_json(self.to_simple_dict(), indent = 2, sort_keys = True)

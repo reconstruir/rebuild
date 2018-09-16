@@ -863,3 +863,7 @@ rebuild.package.package_manager.PackageFilesConflictError: conflicts found betwe
 - add strip_common_ancestor property test for prepare tarballs
 - add base property test for prepare tarballs
 - maybe organize tests by step and cover all properties
+
+2018-09-14
+- fix the stupid distro issues
+- tee the rebuilder.py log somewhere that can be tailed

@@ -16,6 +16,9 @@ class build_target(namedtuple('build_target', 'system, distro, level, archs, bui
   DEFAULT = 'default'
 
   def __new__(clazz, system = DEFAULT, level = DEFAULT, archs = DEFAULT, distro = None):
+    # CACADEVACA
+    assert distro == None
+#    print('CACA: system=%s; ditro=%s' % (system, distro))
     system = build_system.parse_system(system)
     level = clazz._determine_level(level)
     distro = clazz._determine_distro(system, distro)
