@@ -13,27 +13,21 @@ class pcloud(object):
     del email
     del password
 
-  def list_folder(self, folder_path):
+  def list_folder(self, folder_path, recursive = False):
     url = self._make_api_url('listfolder')
     params = {
       'auth': self._auth_token,
       'path': folder_path,
+      'recursive': int(recursive),
     }
     response = requests.get(url, params = params)
     assert response.status_code == 200
     payload = response.json()
-    return payload
-
-  def list_folder(self, folder_path):
-    url = self._make_api_url('listfolder')
-    params = {
-      'auth': self._auth_token,
-      'path': folder_path,
-    }
-    response = requests.get(url, params = params)
-    assert response.status_code == 200
-    payload = response.json()
-    return payload
+    assert 'result' in payload
+    assert payload['result'] == 0
+    assert 'metadata' in payload
+    assert 'contents' in payload['metadata']
+    return payload['metadata']['contents']
 
   def checksum_file(self, file_path):
     url = self._make_api_url('checksumfile')
@@ -46,6 +40,19 @@ class pcloud(object):
     payload = response.json()
     assert 'sha1' in payload
     return payload['sha1']
+
+  def upload_file(self, folder_path, filename):
+    basename = path.basename(filename)
+    files = { filename: open(filename, 'rb') }
+    url = self._make_api_url('uploadfile')
+    params = {
+      'auth': self._auth_token,
+      'path': folder_path,
+      'filename': basename,
+    }
+    response  = requests.post(url, data = params, files = files)
+    assert response.status_code == 200
+    return response.json()
   
   @classmethod
   def _make_password_digest(clazz, digest, email, password):
