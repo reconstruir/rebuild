@@ -2,6 +2,8 @@
 
 import hashlib, os.path as path, requests, urlparse
 
+from .metadata import metadata
+
 class pcloud(object):
 
   API = 'https://api.pcloud.com'
@@ -13,7 +15,7 @@ class pcloud(object):
     del email
     del password
 
-  def list_folder(self, folder_path, recursive = False):
+  def list_folder(self, folder_path, recursive = False, checksums = False):
     url = self._make_api_url('listfolder')
     params = {
       'auth': self._auth_token,
@@ -27,7 +29,8 @@ class pcloud(object):
     assert payload['result'] == 0
     assert 'metadata' in payload
     assert 'contents' in payload['metadata']
-    return payload['metadata']['contents']
+    contents = payload['metadata']['contents']
+    return [ metadata.parse_dict(d) for d in contents ]
 
   def checksum_file(self, file_path):
     url = self._make_api_url('checksumfile')
