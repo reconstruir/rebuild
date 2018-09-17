@@ -3,6 +3,7 @@
 import hashlib, os.path as path, requests, urlparse
 from bes.common import check
 
+from .error import error
 from .metadata import metadata
 
 class pcloud(object):
@@ -64,20 +65,27 @@ class pcloud(object):
       params.update({ 'path': file_path })
     if file_id:
       params.update({ 'fileid': file_id })
-    response  = requests.get(url, params = params)
+    response = requests.get(url, params = params)
     assert response.status_code == 200
     payload = response.json()
-    assert 'sha1' in payload
-    return payload['sha1']
+    if 'sha1' in payload:
+      return payload['sha1']
+    assert 'result' in payload
+    raise error(payload['result'])
 
-  def upload_file(self, folder_path, filename):
-    basename = path.basename(filename)
-    files = { filename: open(filename, 'rb') }
+  def upload_file(self, cloud_path, local_path):
+    if not path.isfile(local_path):
+      raise IoError('File not found: %s' % (local_path))
+    if not path.isabs(cloud_path):
+      raise ValueError('cloud_path should be absolute: %s' % (cloud_path))
+    cloud_filename = path.basename(cloud_path)
+    cloud_dirname = path.dirname(cloud_path)
+    files = { cloud_filename: open(local_path, 'rb') }
     url = self._make_api_url('uploadfile')
     params = {
       'auth': self._auth_token,
-      'path': folder_path,
-      'filename': basename,
+      'path': cloud_dirname,
+      'filename': cloud_filename,
     }
     response  = requests.post(url, data = params, files = files)
     assert response.status_code == 200
