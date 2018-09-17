@@ -28,10 +28,38 @@ class pcloud(object):
     assert 'result' in payload
     assert payload['result'] == 0
     assert 'metadata' in payload
-    assert 'contents' in payload['metadata']
-    contents = payload['metadata']['contents']
-    return [ metadata.parse_dict(d) for d in contents ]
+    folder_metadata = payload['metadata']
+    assert 'contents' in folder_metadata
+    contents = folder_metadata['contents']
+    result = []
+    for item in contents:
+      result.append(metadata.parse_dict(item))
+#      if 'isfolder' in x:
+#        assert 'folderid' in x
+#      else:
+#        assert 'fileid' in x
+#      print('CACA: name=%s; %s' % (x['name'], str(pprint.pformat(x))))
+#    raise SystemExit() #assert False
+#      if 'isfolder' in x:
+#        assert 'folderid' in x
+#      else:
+#        assert 'fileid' in x
+#      print('CACA: name=%s; %s' % (x['name'], str(pprint.pformat(x))))
+#    raise SystemExit() #assert False
+#    contents = [ metadata.parse_dict(d) for d in contents ]
+#    if checksums:
+#      pass
+    return result
 
+  def _get_checksums(self, contents):
+    result = []
+    for c in contents:
+      if c.is_folder:
+        pass
+      else:
+        pass
+    return result
+  
   def checksum_file(self, file_path):
     url = self._make_api_url('checksumfile')
     params = {
