@@ -37,7 +37,7 @@ class pcloud(object):
     result = [ metadata.parse_dict(item) for item in contents ]
 #    if checksums:
 #      pass
-    return contents
+    return result
 
   def _get_checksums(self, contents):
     result = []
