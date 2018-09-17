@@ -1,6 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import hashlib, os.path as path, requests, urlparse
+from bes.common import check
 
 from .metadata import metadata
 
@@ -31,29 +32,38 @@ class pcloud(object):
     folder_metadata = payload['metadata']
     assert 'contents' in folder_metadata
     contents = folder_metadata['contents']
-#    result = []
-#    for item in contents:
-#      result.append(metadata.parse_dict(item))
     result = [ metadata.parse_dict(item) for item in contents ]
-#    if checksums:
-#      pass
+    if checksums:
+      result = self._get_checksums(result)
     return result
 
   def _get_checksums(self, contents):
-    result = []
-    for c in contents:
-      if c.is_folder:
-        pass
-      else:
-        pass
-    return result
+    return [ self._get_checksum(item) for item in contents ]
   
-  def checksum_file(self, file_path):
+  def _get_checksum(self, item):
+    check.check_metadata(item)
+    if item.is_folder:
+      new_contents = [ self._get_checksum(child_item) for child_item in item.contents ]
+      new_item = item.mutate_contents(new_contents)
+    else:
+      checksum = self.checksum_file(file_id = item.pcloud_id)
+      new_item = item.mutate_checksum(checksum)
+    return new_item
+    
+  def checksum_file(self, file_path = None, file_id = None):
+    if not file_path and not file_id:
+      raise ValueError('Etiher file_path or file_id should be given.')
+    elif file_path and file_id:
+      raise ValueError('Only one of file_path or file_id should be given.')
+                       
     url = self._make_api_url('checksumfile')
     params = {
       'auth': self._auth_token,
-      'path': file_path,
     }
+    if file_path:
+      params.update({ 'path': file_path })
+    if file_id:
+      params.update({ 'fileid': file_id })
     response  = requests.get(url, params = params)
     assert response.status_code == 200
     payload = response.json()
