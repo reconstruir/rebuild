@@ -38,6 +38,40 @@ class pcloud(object):
       result = self._get_checksums(result)
     return result
 
+  def create_folder(self, folder_name, folder_path = None, folder_id = None):
+    if not folder_path and not folder_id:
+      raise ValueError('Etiher folder_path or folder_id should be given.')
+    elif folder_path and folder_id:
+      raise ValueError('Only one of folder_path or folder_id should be given.')
+    if not folder_name:
+      raise ValueError('folder_name should be a valid: %s' % (folder_name))
+      
+    url = self._make_api_url('createfolder')
+    params = {
+      'auth': self._auth_token,
+      'name': folder_name,
+    }
+    if folder_path:
+      params.update({ 'path': folder_path })
+    if folder_id:
+      params.update({ 'folderid': folder_id })
+    print('FUCK: params=%s' % (params))
+    response = requests.get(url, params = params)
+    assert response.status_code == 200
+    payload = response.json()
+    import pprint
+    print('FUCK: %s' % (pprint.pformat(payload)))
+#    assert 'result' in payload
+#    assert payload['result'] == 0
+#    assert 'metadata' in payload
+#    folder_metadata = payload['metadata']
+#    assert 'contents' in folder_metadata
+#    contents = folder_metadata['contents']
+#    result = [ metadata.parse_dict(item) for item in contents ]
+#    if checksums:
+#      result = self._get_checksums(result)
+#    return result
+  
   def _get_checksums(self, contents):
     return [ self._get_checksum(item) for item in contents ]
   
@@ -78,6 +112,14 @@ class pcloud(object):
       raise IoError('File not found: %s' % (local_path))
     if not path.isabs(cloud_path):
       raise ValueError('cloud_path should be absolute: %s' % (cloud_path))
+
+    try:
+      cloud_checksum = self.checksum_file(file_path = cloud_path)
+    except error as ex:
+      if ex.code == error.PARENT_DIR_MISSING:
+        print('need to create dir for %s' % (cloud_path))
+        assert False
+    
     cloud_filename = path.basename(cloud_path)
     cloud_dirname = path.dirname(cloud_path)
     files = { cloud_filename: open(local_path, 'rb') }
