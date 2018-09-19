@@ -15,7 +15,7 @@ pc = pcloud('pcloud_rebuild@fateware.com',
 #FILENAME = '/home/ramiro/foo/sources/android/android-ndk-r17-darwin-x86_64.zip'
 #DEST_DIR = '/sources/android'
 
-LOCAL_FILENAME = '/home/ramiro/foo/sources/z/zlib-1.2.8.tar.gz'
+LOCAL_FILENAME = '/home/ramiro/sources/z/zlib-1.2.8.tar.gz'
 CLOUD_FILENAME = '/sources/test1/z/caca/zlib-1.2.8.tar.gz'
 
 #c = pc.checksum_file(file_path = CLOUD_FILENAME)

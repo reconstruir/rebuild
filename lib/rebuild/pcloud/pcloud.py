@@ -17,13 +17,23 @@ class pcloud(object):
     del email
     del password
 
-  def list_folder(self, folder_path, recursive = False, checksums = False):
+  def list_folder(self, folder_path = None, folder_id = None, checksums = False):
+    if not folder_path and not folder_id:
+      raise ValueError('Etiher folder_path or folder_id should be given.')
+    elif folder_path and folder_id:
+      raise ValueError('Only one of folder_path or folder_id should be given.')
+    if not folder_name:
+      raise ValueError('folder_name should be a valid: %s' % (folder_name))
     url = self._make_api_url('listfolder')
     params = {
       'auth': self._auth_token,
-      'path': folder_path,
+#      'path': folder_path,
       'recursive': int(recursive),
     }
+    if folder_path:
+      params.update({ 'path': folder_path })
+    if folder_id:
+      params.update({ 'folderid': folder_id })
     response = requests.get(url, params = params)
     assert response.status_code == 200
     payload = response.json()
