@@ -40,6 +40,20 @@ class pcloud_cli(object):
                            default = '/',
                            type = str,
                            help = 'The folder to list. [ / ]')
+
+    # mkdir
+    mkdir_parser = subparsers.add_parser('mkdir', help = 'List directory.')
+    self._add_common_options(mkdir_parser)
+    mkdir_parser.add_argument('-p', '--parents',
+                              action = 'store_true',
+                              default = False,
+                              help = 'no error if existing, make parent directories as needed. [ False ]')
+    mkdir_parser.add_argument('folder',
+                              action = 'store',
+                              default = None,
+                              type = str,
+                              help = 'The folder to make. [ None ]')
+    
     
     # checksum
     checksum_parser = subparsers.add_parser('chk', help = 'Checksum file.')
@@ -77,12 +91,12 @@ class pcloud_cli(object):
     raise RuntimeError('Invalid command: %s' % (args.command))
 
   def _add_common_options(self, parser):
-    parser.add_argument('-e', '--email',
+    parser.add_argument('-E', '--email',
                         action = 'store',
                         default = os.environ.get('PCLOUD_EMAIL', None),
                         type = str,
                         help = 'The pcloud account password. [ None ]')
-    parser.add_argument('-p', '--password',
+    parser.add_argument('-P', '--password',
                         action = 'store',
                         default = os.environ.get('PCLOUD_PASSWORD', None),
                         type = str,
@@ -132,6 +146,9 @@ class pcloud_cli(object):
     return 0
   
   def _command_checksum_file(self, filename):
+    pc = pcloud(self._email, self._password)
+    chk = pc.checksum_file(file_path = filename)
+    print(chk)
     return 0
   
   @classmethod
