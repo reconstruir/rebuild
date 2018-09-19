@@ -3,3 +3,4 @@
 from .error import error
 from .metadata import metadata
 from .pcloud import pcloud
+from .pcloud_cli import pcloud_cli
