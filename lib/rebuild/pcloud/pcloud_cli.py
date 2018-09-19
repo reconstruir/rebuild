@@ -1,6 +1,11 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import argparse, os, os.path as path
+from collections import namedtuple
+
+from bes.common import check
+from bes.text import text_table, text_cell_renderer
+from bes.compat import StringIO
 
 from rebuild.pcloud import pcloud
 
@@ -76,12 +81,45 @@ class pcloud_cli(object):
                         default = os.environ.get('PCLOUD_PASSWORD', None),
                         type = str,
                         help = 'The pcloud account password. [ None ]')
-  
+
+  class list_item_short(namedtuple('list_item_short', 'name, is_folder')):
+    
+    def __new__(clazz, item):
+      check.check_metadata(item)
+      name = item.name
+      is_folder = item.is_folder
+      return clazz.__bases__[0].__new__(clazz, name, is_folder)
+
+    def __str__(self):
+      buf = StringIO()
+      buf.write(self.name)
+      if self.is_folder:
+        buf.write('/')
+      return buf.getvalue()
+    
+  class list_item_long(namedtuple('list_item_long', 'size, name')):
+    
+    def __new__(clazz, item):
+      check.check_metadata(item)
+      if item.is_folder:
+        name = '%s/' % (item.name)
+      else:
+        name = item.name
+      size = item.size
+      return clazz.__bases__[0].__new__(clazz, size, name)
+
   def _command_list_folder(self, folder, recursive, checksums, long_form):
     pc = pcloud(self._email, self._password)
     items = pc.list_folder(folder, recursive = True, checksums = True)
-    for item in items:
-      print(str(item))
+    if not items:
+      return 0
+    if long_form:
+      items = [ self.list_item_long(item) for item in items ]
+      table = text_table(data = items)
+      print(table)
+    else:
+      items = [ self.list_item_short(item) for item in items ]
+      print(' '.join([ str(item) for item in items ]))
     return 0
   
   def _command_checksum_file(self, filename):
