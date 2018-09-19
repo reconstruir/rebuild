@@ -4,8 +4,9 @@ import argparse, os, os.path as path
 from collections import namedtuple
 
 from bes.common import check
-from bes.text import text_table, text_cell_renderer
 from bes.compat import StringIO
+from bes.fs import file_util
+from bes.text import text_table, text_cell_renderer
 
 from rebuild.pcloud import pcloud
 
@@ -30,6 +31,10 @@ class pcloud_cli(object):
                            action = 'store_true',
                            default = False,
                            help = 'Long form. [ False ]')
+    ls_parser.add_argument('-H', '--human-readable',
+                           action = 'store_true',
+                           default = False,
+                           help = 'Print human readable sizes. [ False ]')
     ls_parser.add_argument('folder',
                            action = 'store',
                            default = '/',
@@ -65,7 +70,8 @@ class pcloud_cli(object):
     self._email = args.email
     self._password = args.password
     if args.command == 'ls':
-      return self._command_list_folder(args.folder, args.recursive, args.checksums, args.long_form)
+      return self._command_list_folder(args.folder, args.recursive, args.checksums,
+                                       args.long_form, args.human_readable)
     elif args.command == 'chk':
       return self._command_checksum_file(args.filename)
     raise RuntimeError('Invalid command: %s' % (args.command))
@@ -97,25 +103,28 @@ class pcloud_cli(object):
         buf.write('/')
       return buf.getvalue()
     
-  class list_item_long(namedtuple('list_item_long', 'size, name')):
+  class list_item_long(namedtuple('list_item_long', 'size, name, content_type, checksum')):
     
-    def __new__(clazz, item):
+    def __new__(clazz, item, human_readable):
       check.check_metadata(item)
       if item.is_folder:
         name = '%s/' % (item.name)
       else:
         name = item.name
-      size = item.size
-      return clazz.__bases__[0].__new__(clazz, size, name)
+      if item.size:
+        size = file_util.sizeof_fmt(item.size)
+      else:
+        size = 'd'
+      return clazz.__bases__[0].__new__(clazz, size, name, item.content_type, item.checksum)
 
-  def _command_list_folder(self, folder, recursive, checksums, long_form):
+  def _command_list_folder(self, folder, recursive, checksums, long_form, human_readable):
     pc = pcloud(self._email, self._password)
-    items = pc.list_folder(folder, recursive = True, checksums = True)
+    items = pc.list_folder(folder, recursive = recursive, checksums = checksums)
     if not items:
       return 0
     if long_form:
-      items = [ self.list_item_long(item) for item in items ]
-      table = text_table(data = items)
+      items = [ self.list_item_long(item, human_readable) for item in items ]
+      table = text_table(data = items, column_delimiter = ' ')
       print(table)
     else:
       items = [ self.list_item_short(item) for item in items ]
