@@ -172,32 +172,45 @@ class pcloud(object):
     assert 'sha1' in payload
     return payload['sha1']
 
-  def upload_file(self, cloud_path, local_path):
+  def upload_file(self, local_path, cloud_filename, folder_path = None, folder_id = None):
     if not path.isfile(local_path):
       raise IoError('File not found: %s' % (local_path))
-    if not path.isabs(cloud_path):
-      raise ValueError('cloud_path should be absolute: %s' % (cloud_path))
+    if not folder_path and not folder_id:
+      raise ValueError('Etiher folder_path or folder_id should be given.')
+    elif folder_path and folder_id:
+      raise ValueError('Only one of folder_path or folder_id should be given.')
+    if path.isabs(cloud_filename):
+      raise ValueError('cloud_filename should be just a filename: %s' % (cloud_filename))
 
-    try:
-      cloud_checksum = self.checksum_file(file_path = cloud_path)
-    except error as ex:
-      if ex.code == error.PARENT_DIR_MISSING:
-        print('need to create dir for %s' % (cloud_path))
-        assert False
+#    try:
+#      cloud_checksum = self.checksum_file(file_path = cloud_path)
+#    except error as ex:
+#      if ex.code == error.PARENT_DIR_MISSING:
+#        print('need to create dir for %s' % (cloud_path))
+#        assert False
     
-    cloud_filename = path.basename(cloud_path)
-    cloud_dirname = path.dirname(cloud_path)
     files = { cloud_filename: open(local_path, 'rb') }
     url = self._make_api_url('uploadfile')
     params = {
       'auth': self._auth_token,
-      'path': cloud_dirname,
       'filename': cloud_filename,
     }
+    what = ''
+    if folder_path:
+      what = folder_path
+      params.update({ 'path': folder_path })
+    if folder_id:
+      what = folder_id
+      params.update({ 'folderid': folder_id })
     response  = requests.post(url, data = params, files = files)
     if response.status_code != 200:
       raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
-    return response.json()
+    payload = response.json()
+    assert 'result' in payload
+    if payload['result'] != 0:
+      raise pcloud_error(payload['result'], what)
+    assert 'metadata' in payload
+    return payload['metadata']
   
   @classmethod
   def _make_password_digest(clazz, digest, email, password):

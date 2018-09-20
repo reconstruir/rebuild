@@ -90,6 +90,25 @@ class pcloud_cli(object):
                                  default = '/',
                                  type = str,
                                  help = 'The folder to list. [ / ]')
+
+    # upload
+    upload_parser = subparsers.add_parser('upload', help = 'Upload file.')
+    self._add_common_options(upload_parser)
+    upload_parser.add_argument('-i', '--use-id',
+                               action = 'store_true',
+                               default = False,
+                               help = 'Use pcloud id instead of path. [ False ]')
+    upload_parser.add_argument('filename',
+                               action = 'store',
+                               default = None,
+                               type = str,
+                               help = 'The file to upload. [ None ]')
+    upload_parser.add_argument('folder',
+                               action = 'store',
+                               default = None,
+                               type = str,
+                               help = 'The destination folder or folder_id. [ None ]')
+
     
 ###    # Bulbs
 ###    bulbs_parser = subparsers.add_parser('bulbs', help = 'List bulbs.')
@@ -123,6 +142,8 @@ class pcloud_cli(object):
         return self._command_rmdir(args.folder)
       elif args.command == 'chk':
         return self._command_checksum_file(args.filename)
+      elif args.command == 'upload':
+        return self._command_upload(args.filename, args.folder, args.use_id)
     except pcloud_error as ex:
       print(str(ex))
       raise SystemExit(1)
@@ -215,6 +236,14 @@ class pcloud_cli(object):
     pc = pcloud(self._email, self._password)
     chk = pc.checksum_file(file_path = filename)
     print(chk)
+    return 0
+
+  def _command_upload(self, filename, folder, use_id):
+    pc = pcloud(self._email, self._password)
+    if use_id:
+      pc.upload_file(filename, path.basename(filename), folder_id = folder)
+    else:
+      pc.upload_file(filename, path.basename(filename), folder_path = folder)
     return 0
   
   @classmethod
