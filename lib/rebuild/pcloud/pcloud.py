@@ -2,6 +2,7 @@
 
 import hashlib, os.path as path, requests, urlparse
 from bes.common import check
+from bes.fs import file_path
 
 from .pcloud_error import pcloud_error
 from .pcloud_metadata import pcloud_metadata
@@ -106,7 +107,25 @@ class pcloud(object):
       raise pcloud_error(payload['result'], what)
     assert 'metadata' in payload
     return payload['metadata']
-    
+
+  def folder_exists(self, folder_path):
+    'Return True if the folder exists.'
+    try:
+      self.list_folder(folder_path = folder_path)
+      return True
+    except pcloud_error as ex:
+      pass
+    return False
+  
+  def ensure_folder(self, folder_path):
+    'Ensure that the given folder exits.  Create all parents.'
+    if not path.isabs(folder_path):
+      raise ValueError('folder_path should be absolute: %s' % (folder_path))
+    paths = file_path.decompose(folder_path)
+    for p in paths:
+      if not self.folder_exists(p):
+        self.create_folder(folder_path = p)
+  
   def delete_folder(self, folder_id = None, folder_path = None):
     if not folder_path and not folder_id:
       raise ValueError('Etiher folder_path or folder_id should be given.')
@@ -185,15 +204,9 @@ class pcloud(object):
     try:
       self.list_folder(folder_path = folder_path, folder_id = folder_id)
     except pcloud_error as ex:
-      print('need to create dir for: %s - %s' % (folder_path, folder_id))
-      assert False
-    
-#    try:
-#      cloud_checksum = self.checksum_file(file_path = cloud_path)
-#    except error as ex:
-#      if ex.code == error.PARENT_DIR_MISSING:
-#        print('need to create dir for %s' % (cloud_path))
-#        assert False
+      if folder_id:
+        raise ex
+      self.ensure_folder(folder_path)
     
     files = { cloud_filename: open(local_path, 'rb') }
     url = self._make_api_url('uploadfile')
