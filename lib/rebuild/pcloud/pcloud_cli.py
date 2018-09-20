@@ -46,6 +46,19 @@ class pcloud_cli(object):
                            type = str,
                            help = 'The folder to list. [ / ]')
 
+    # rm
+    rm_parser = subparsers.add_parser('rm', help = 'Remove file.')
+    self._add_common_options(rm_parser)
+    rm_parser.add_argument('-i', '--use-id',
+                           action = 'store_true',
+                           default = False,
+                           help = 'Use pcloud id instead of path. [ False ]')
+    rm_parser.add_argument('filename',
+                           action = 'store',
+                           default = None,
+                           type = str,
+                           help = 'The file to delete. [ None ]')
+    
     # mkdir
     mkdir_parser = subparsers.add_parser('mkdir', help = 'Make directory.')
     self._add_common_options(mkdir_parser)
@@ -102,6 +115,8 @@ class pcloud_cli(object):
       if args.command == 'ls':
         return self._command_ls(args.folder, args.recursive, args.checksums,
                                 args.long_form, args.use_id, args.human_readable)
+      elif args.command == 'rm':
+        return self._command_rm(args.filename, args.use_id)
       elif args.command == 'mkdir':
         return self._command_mkdir(args.folder, args.parents)
       elif args.command == 'rmdir':
@@ -178,6 +193,14 @@ class pcloud_cli(object):
       print(' '.join([ str(item) for item in items ]))
     return 0
 
+  def _command_rm(self, filename, use_id):
+    pc = pcloud(self._email, self._password)
+    if use_id:
+      items = pc.delete_file(file_id = filename)
+    else:
+      items = pc.delete_file(file_path = filename)
+    return 0
+  
   def _command_mkdir(self, folder, parents):
     pc = pcloud(self._email, self._password)
     rv = pc.create_folder(folder_path = folder)

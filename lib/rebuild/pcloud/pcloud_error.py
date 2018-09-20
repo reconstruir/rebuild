@@ -5,6 +5,7 @@ class pcloud_error(Exception):
   LOG_IN_REQUIRED = 1000
   PARENT_DIR_MISSING = 2002
   ALREADY_EXISTS = 2004
+  HTTP_ERROR = 9999
   
   CODES = {
     1002: 'No full path or folderid provided.',
@@ -19,6 +20,7 @@ class pcloud_error(Exception):
     2028: 'There are active shares or sharerequests for this folder.',
     4000: 'Too many login tries from this IP address.',
     5000: 'Internal error. Try again later.',
+    HTTP_ERROR: 'HTTP error.',
     ALREADY_EXISTS: 'File or folder alredy exists.',
     LOG_IN_REQUIRED: 'Log in required.',
     PARENT_DIR_MISSING: 'A component of parent directory does not exist.',

@@ -37,17 +37,43 @@ class pcloud(object):
     response = requests.get(url, params = params)
     payload = response.json()
     assert 'result' in payload
-    #assert payload['result'] == 0
-    if 'metadata' in payload:
-      folder_metadata = payload['metadata']
-      assert 'contents' in folder_metadata
-      contents = folder_metadata['contents']
-      result = [ pcloud_metadata.parse_dict(item) for item in contents ]
-      if checksums:
-        result = self._get_checksums(result)
-      return result
-    raise pcloud_error(payload['result'], what)
+    if payload['result'] != 0:
+      raise pcloud_error(payload['result'], what)
+    assert 'metadata' in payload
+    folder_metadata = payload['metadata']
+    assert 'contents' in folder_metadata
+    contents = folder_metadata['contents']
+    result = [ pcloud_metadata.parse_dict(item) for item in contents ]
+    if checksums:
+      result = self._get_checksums(result)
+    return result
 
+  def delete_file(self, file_path = None, file_id = None):
+    if not file_path and not file_id:
+      raise ValueError('Etiher file_path or file_id should be given.')
+    elif file_path and file_id:
+      raise ValueError('Only one of file_path or file_id should be given.')
+    url = self._make_api_url('deletefile')
+    params = {
+      'auth': self._auth_token,
+    }
+    what = ''
+    if file_path:
+      what = file_path
+      params.update({ 'path': file_path })
+    if file_id:
+      what = file_id
+      params.update({ 'fileid': file_id })
+    response = requests.get(url, params = params)
+    if response.status_code != 200:
+      raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
+    payload = response.json()
+    assert 'result' in payload
+    if payload['result'] != 0:
+      raise pcloud_error(payload['result'], what)
+    assert 'metadata' in payload
+    return payload['metadata']
+  
   def create_folder(self, folder_id = None, folder_name = None, folder_path = None):
     if folder_path:
       if folder_id:
@@ -59,7 +85,6 @@ class pcloud(object):
         raise ValueError('folder_id must be valid.')
       if not folder_name:
         raise ValueError('folder_name must be valid.')
-          
     url = self._make_api_url('createfolder')
     params = {
       'auth': self._auth_token,
@@ -73,12 +98,15 @@ class pcloud(object):
       params.update({ 'name': folder_name })
       what = '%s - %s' % (folderid, name)
     response = requests.get(url, params = params)
-    assert response.status_code == 200
+    if response.status_code != 200:
+      raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
     payload = response.json()
-    if 'metadata' in payload:
-      return payload['metadata']
-    raise pcloud_error(payload['result'], what)
-  
+    assert 'result' in payload
+    if payload['result'] != 0:
+      raise pcloud_error(payload['result'], what)
+    assert 'metadata' in payload
+    return payload['metadata']
+    
   def delete_folder(self, folder_id = None, folder_path = None):
     if not folder_path and not folder_id:
       raise ValueError('Etiher folder_path or folder_id should be given.')
@@ -97,7 +125,8 @@ class pcloud(object):
       params.update({ 'folderid': folder_id })
       what = folderid
     response = requests.get(url, params = params)
-    assert response.status_code == 200
+    if response.status_code != 200:
+      raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
     payload = response.json()
     print(payload)
     if 'metadata' in payload:
@@ -122,7 +151,6 @@ class pcloud(object):
       raise ValueError('Etiher file_path or file_id should be given.')
     elif file_path and file_id:
       raise ValueError('Only one of file_path or file_id should be given.')
-                       
     url = self._make_api_url('checksumfile')
     params = {
       'auth': self._auth_token,
@@ -135,12 +163,14 @@ class pcloud(object):
       what = file_id
       params.update({ 'fileid': file_id })
     response = requests.get(url, params = params)
-    assert response.status_code == 200
+    if response.status_code != 200:
+      raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
     payload = response.json()
-    if 'sha1' in payload:
-      return payload['sha1']
     assert 'result' in payload
-    raise pcloud_error(payload['result'], what)
+    if payload['result'] != 0:
+      raise pcloud_error(payload['result'], what)
+    assert 'sha1' in payload
+    return payload['sha1']
 
   def upload_file(self, cloud_path, local_path):
     if not path.isfile(local_path):
@@ -165,7 +195,8 @@ class pcloud(object):
       'filename': cloud_filename,
     }
     response  = requests.post(url, data = params, files = files)
-    assert response.status_code == 200
+    if response.status_code != 200:
+      raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
     return response.json()
   
   @classmethod
@@ -180,7 +211,8 @@ class pcloud(object):
     'Get a digest from pcloud to use with subsequent api calls.'
     url = clazz._make_api_url('getdigest')
     response = requests.get(url)
-    assert response.status_code == 200
+    if response.status_code != 200:
+      raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
     payload = response.json()
     assert 'digest' in payload
     return payload['digest']
@@ -196,7 +228,8 @@ class pcloud(object):
     }
     url = clazz._make_api_url('userinfo')
     response  = requests.get(url, params = params)
-    assert response.status_code == 200
+    if response.status_code != 200:
+      raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
     payload = response.json()
     assert 'auth' in payload
     return payload['auth']
