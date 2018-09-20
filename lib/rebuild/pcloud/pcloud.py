@@ -182,6 +182,12 @@ class pcloud(object):
     if path.isabs(cloud_filename):
       raise ValueError('cloud_filename should be just a filename: %s' % (cloud_filename))
 
+    try:
+      self.list_folder(folder_path = folder_path, folder_id = folder_id)
+    except pcloud_error as ex:
+      print('need to create dir for: %s - %s' % (folder_path, folder_id))
+      assert False
+    
 #    try:
 #      cloud_checksum = self.checksum_file(file_path = cloud_path)
 #    except error as ex:
