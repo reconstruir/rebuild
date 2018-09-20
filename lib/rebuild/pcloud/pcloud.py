@@ -79,6 +79,31 @@ class pcloud(object):
       return payload['metadata']
     raise pcloud_error(payload['result'], what)
   
+  def delete_folder(self, folder_id = None, folder_path = None):
+    if not folder_path and not folder_id:
+      raise ValueError('Etiher folder_path or folder_id should be given.')
+    elif folder_path and folder_id:
+      raise ValueError('Only one of folder_path or folder_id should be given.')
+          
+    url = self._make_api_url('deletefolder')
+    params = {
+      'auth': self._auth_token,
+    }
+    what = ''
+    if folder_path:
+      params.update({ 'path': folder_path })
+      what = folder_path
+    else:
+      params.update({ 'folderid': folder_id })
+      what = folderid
+    response = requests.get(url, params = params)
+    assert response.status_code == 200
+    payload = response.json()
+    print(payload)
+    if 'metadata' in payload:
+      return payload['metadata']
+    raise pcloud_error(payload['result'], what)
+  
   def _get_checksums(self, contents):
     return [ self._get_checksum(item) for item in contents ]
   

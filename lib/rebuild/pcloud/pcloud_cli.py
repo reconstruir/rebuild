@@ -6,7 +6,7 @@ from collections import namedtuple
 from bes.common import check
 from bes.compat import StringIO
 from bes.fs import file_util
-from bes.text import text_table, text_cell_renderer
+from bes.text import text_table
 
 from rebuild.pcloud import pcloud, pcloud_error
 
@@ -35,6 +35,10 @@ class pcloud_cli(object):
                            action = 'store_true',
                            default = False,
                            help = 'Print human readable sizes. [ False ]')
+    ls_parser.add_argument('-i', '--use-id',
+                           action = 'store_true',
+                           default = False,
+                           help = 'Use pcloud id instead of path. [ False ]')
     ls_parser.add_argument('folder',
                            action = 'store',
                            default = '/',
@@ -53,6 +57,15 @@ class pcloud_cli(object):
                               default = None,
                               type = str,
                               help = 'The folder to make. [ None ]')
+    
+    # rmdir
+    rmdir_parser = subparsers.add_parser('rmdir', help = 'Make directory.')
+    self._add_common_options(rmdir_parser)
+    rmdir_parser.add_argument('folder',
+                              action = 'store',
+                              default = None,
+                              type = str,
+                              help = 'The folder to remove. [ None ]')
     
     
     # checksum
@@ -87,9 +100,11 @@ class pcloud_cli(object):
     try:
       if args.command == 'ls':
         return self._command_ls(args.folder, args.recursive, args.checksums,
-                                args.long_form, args.human_readable)
+                                args.long_form, args.use_id, args.human_readable)
       elif args.command == 'mkdir':
         return self._command_mkdir(args.folder, args.parents)
+      elif args.command == 'rmdir':
+        return self._command_rmdir(args.folder)
       elif args.command == 'chk':
         return self._command_checksum_file(args.filename)
     except Exception as ex:
@@ -125,28 +140,34 @@ class pcloud_cli(object):
         buf.write('/')
       return buf.getvalue()
     
-  class list_item_long(namedtuple('list_item_long', 'size, name, content_type, checksum')):
+  class list_item_long(namedtuple('list_item_long', 'size, name, pcloud_id, content_type, checksum')):
     
     def __new__(clazz, item, human_readable):
       check.check_pcloud_metadata(item)
       if item.is_folder:
         name = '%s/' % (item.name)
+        content_type = 'dir'
       else:
         name = item.name
+        content_type = item.content_type
       if item.size:
         size = file_util.sizeof_fmt(item.size)
       else:
-        size = 'd'
-      return clazz.__bases__[0].__new__(clazz, size, name, item.content_type, item.checksum)
+        size = ''
+      return clazz.__bases__[0].__new__(clazz, size, name, item.pcloud_id, content_type, item.checksum)
 
-  def _command_ls(self, folder, recursive, checksums, long_form, human_readable):
+  def _command_ls(self, folder, recursive, checksums, long_form, use_id, human_readable):
     pc = pcloud(self._email, self._password)
-    items = pc.list_folder(folder, recursive = recursive, checksums = checksums)
+    if use_id:
+      items = pc.list_folder(folder_id = folder, recursive = recursive, checksums = checksums)
+    else:
+      items = pc.list_folder(folder_path = folder, recursive = recursive, checksums = checksums)
     if not items:
       return 0
     if long_form:
       items = [ self.list_item_long(item, human_readable) for item in items ]
-      table = text_table(data = items, column_delimiter = ' ')
+      table = text_table(data = items, column_delimiter = ' | ')
+      table.set_labels(tuple([ x.upper() for x in items[0]._fields ]))
       print(table)
     else:
       items = [ self.list_item_short(item) for item in items ]
@@ -156,6 +177,11 @@ class pcloud_cli(object):
   def _command_mkdir(self, folder, parents):
     pc = pcloud(self._email, self._password)
     rv = pc.create_folder(folder_path = folder)
+    return 0
+  
+  def _command_rmdir(self, folder):
+    pc = pcloud(self._email, self._password)
+    rv = pc.delete_folder(folder_path = folder)
     return 0
   
   def _command_checksum_file(self, filename):
