@@ -3,7 +3,7 @@
 import hashlib, os.path as path, requests, urlparse
 from bes.common import check
 
-from .error import error
+from .pcloud_error import pcloud_error
 from .metadata import metadata
 
 class pcloud(object):
@@ -27,57 +27,57 @@ class pcloud(object):
       'auth': self._auth_token,
       'recursive': int(recursive),
     }
+    what = ''
     if folder_path:
+      what = folder_path
       params.update({ 'path': folder_path })
     if folder_id:
+      what = folder_id
       params.update({ 'folderid': folder_id })
     response = requests.get(url, params = params)
-    assert response.status_code == 200
     payload = response.json()
     assert 'result' in payload
-    assert payload['result'] == 0
-    assert 'metadata' in payload
-    folder_metadata = payload['metadata']
-    assert 'contents' in folder_metadata
-    contents = folder_metadata['contents']
-    result = [ metadata.parse_dict(item) for item in contents ]
-    if checksums:
-      result = self._get_checksums(result)
-    return result
+    #assert payload['result'] == 0
+    if 'metadata' in payload:
+      folder_metadata = payload['metadata']
+      assert 'contents' in folder_metadata
+      contents = folder_metadata['contents']
+      result = [ metadata.parse_dict(item) for item in contents ]
+      if checksums:
+        result = self._get_checksums(result)
+      return result
+    raise pcloud_error(payload['result'], what)
 
-  def create_folder(self, folder_name, folder_path = None, folder_id = None):
-    if not folder_path and not folder_id:
-      raise ValueError('Etiher folder_path or folder_id should be given.')
-    elif folder_path and folder_id:
-      raise ValueError('Only one of folder_path or folder_id should be given.')
-    if not folder_name:
-      raise ValueError('folder_name should be a valid: %s' % (folder_name))
-      
+  def create_folder(self, folder_id = None, folder_name = None, folder_path = None):
+    if folder_path:
+      if folder_id:
+        raise ValueError('Only one of folder_path or folder_id can be given.')
+      if folder_name:
+        raise ValueError('Only one of folder_path or folder_name can be given.')
+    else:
+      if not folder_id:
+        raise ValueError('folder_id must be valid.')
+      if not folder_name:
+        raise ValueError('folder_name must be valid.')
+          
     url = self._make_api_url('createfolder')
     params = {
       'auth': self._auth_token,
-      'name': folder_name,
     }
+    what = ''
     if folder_path:
       params.update({ 'path': folder_path })
-    if folder_id:
+      what = folder_path
+    else:
       params.update({ 'folderid': folder_id })
-    print('FUCK: params=%s' % (params))
+      params.update({ 'name': folder_name })
+      what = '%s - %s' % (folderid, name)
     response = requests.get(url, params = params)
     assert response.status_code == 200
     payload = response.json()
-    import pprint
-    print('FUCK: %s' % (pprint.pformat(payload)))
-#    assert 'result' in payload
-#    assert payload['result'] == 0
-#    assert 'metadata' in payload
-#    folder_metadata = payload['metadata']
-#    assert 'contents' in folder_metadata
-#    contents = folder_metadata['contents']
-#    result = [ metadata.parse_dict(item) for item in contents ]
-#    if checksums:
-#      result = self._get_checksums(result)
-#    return result
+    if 'metadata' in payload:
+      return payload['metadata']
+    raise pcloud_error(payload['result'], what)
   
   def _get_checksums(self, contents):
     return [ self._get_checksum(item) for item in contents ]
@@ -102,9 +102,12 @@ class pcloud(object):
     params = {
       'auth': self._auth_token,
     }
+    what = ''
     if file_path:
+      what = file_path
       params.update({ 'path': file_path })
     if file_id:
+      what = file_id
       params.update({ 'fileid': file_id })
     response = requests.get(url, params = params)
     assert response.status_code == 200
@@ -112,7 +115,7 @@ class pcloud(object):
     if 'sha1' in payload:
       return payload['sha1']
     assert 'result' in payload
-    raise error(payload['result'])
+    raise pcloud_error(payload['result'], what)
 
   def upload_file(self, cloud_path, local_path):
     if not path.isfile(local_path):

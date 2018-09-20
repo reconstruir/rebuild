@@ -8,7 +8,7 @@ from bes.compat import StringIO
 from bes.fs import file_util
 from bes.text import text_table, text_cell_renderer
 
-from rebuild.pcloud import pcloud
+from rebuild.pcloud import pcloud, pcloud_error
 
 class pcloud_cli(object):
 
@@ -42,7 +42,7 @@ class pcloud_cli(object):
                            help = 'The folder to list. [ / ]')
 
     # mkdir
-    mkdir_parser = subparsers.add_parser('mkdir', help = 'List directory.')
+    mkdir_parser = subparsers.add_parser('mkdir', help = 'Make directory.')
     self._add_common_options(mkdir_parser)
     mkdir_parser.add_argument('-p', '--parents',
                               action = 'store_true',
@@ -83,11 +83,19 @@ class pcloud_cli(object):
     args = self._parser.parse_args()
     self._email = args.email
     self._password = args.password
-    if args.command == 'ls':
-      return self._command_list_folder(args.folder, args.recursive, args.checksums,
-                                       args.long_form, args.human_readable)
-    elif args.command == 'chk':
-      return self._command_checksum_file(args.filename)
+
+    try:
+      if args.command == 'ls':
+        return self._command_ls(args.folder, args.recursive, args.checksums,
+                                args.long_form, args.human_readable)
+      elif args.command == 'mkdir':
+        return self._command_mkdir(args.folder, args.parents)
+      elif args.command == 'chk':
+        return self._command_checksum_file(args.filename)
+    except pcloud_error as ex:
+      print(str(ex))
+      raise SystemExit(1)
+      
     raise RuntimeError('Invalid command: %s' % (args.command))
 
   def _add_common_options(self, parser):
@@ -131,7 +139,7 @@ class pcloud_cli(object):
         size = 'd'
       return clazz.__bases__[0].__new__(clazz, size, name, item.content_type, item.checksum)
 
-  def _command_list_folder(self, folder, recursive, checksums, long_form, human_readable):
+  def _command_ls(self, folder, recursive, checksums, long_form, human_readable):
     pc = pcloud(self._email, self._password)
     items = pc.list_folder(folder, recursive = recursive, checksums = checksums)
     if not items:
@@ -143,6 +151,11 @@ class pcloud_cli(object):
     else:
       items = [ self.list_item_short(item) for item in items ]
       print(' '.join([ str(item) for item in items ]))
+    return 0
+
+  def _command_mkdir(self, folder, parents):
+    pc = pcloud(self._email, self._password)
+    rv = pc.create_folder(folder_path = folder)
     return 0
   
   def _command_checksum_file(self, filename):
