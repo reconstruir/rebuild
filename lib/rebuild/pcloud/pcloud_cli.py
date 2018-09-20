@@ -8,7 +8,8 @@ from bes.compat import StringIO
 from bes.fs import file_util
 from bes.text import text_table
 
-from rebuild.pcloud import pcloud, pcloud_error
+from .pcloud import pcloud
+from .pcloud_error import pcloud_error
 
 class pcloud_cli(object):
 
@@ -107,7 +108,7 @@ class pcloud_cli(object):
         return self._command_rmdir(args.folder)
       elif args.command == 'chk':
         return self._command_checksum_file(args.filename)
-    except Exception as ex:
+    except pcloud_error as ex:
       print(str(ex))
       raise SystemExit(1)
       
@@ -146,12 +147,15 @@ class pcloud_cli(object):
       check.check_pcloud_metadata(item)
       if item.is_folder:
         name = '%s/' % (item.name)
-        content_type = 'dir'
+        content_type = 'folder'
       else:
         name = item.name
         content_type = item.content_type
       if item.size:
-        size = file_util.sizeof_fmt(item.size)
+        if human_readable:
+          size = file_util.sizeof_fmt(item.size)
+        else:
+          size = item.size
       else:
         size = ''
       return clazz.__bases__[0].__new__(clazz, size, name, item.pcloud_id, content_type, item.checksum)
@@ -166,7 +170,7 @@ class pcloud_cli(object):
       return 0
     if long_form:
       items = [ self.list_item_long(item, human_readable) for item in items ]
-      table = text_table(data = items, column_delimiter = ' | ')
+      table = text_table(data = items, column_delimiter = '  ')
       table.set_labels(tuple([ x.upper() for x in items[0]._fields ]))
       print(table)
     else:

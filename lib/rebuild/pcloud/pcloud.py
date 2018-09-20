@@ -110,7 +110,7 @@ class pcloud(object):
   def _get_checksum(self, item):
     check.check_pcloud_metadata(item)
     if item.is_folder:
-      new_contents = [ self._get_checksum(child_item) for child_item in item.contents ]
+      new_contents = [ self._get_checksum(child_item) for child_item in item.contents or [] ]
       new_item = item.mutate_contents(new_contents)
     else:
       checksum = self.checksum_file(file_id = item.pcloud_id)
