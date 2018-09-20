@@ -3,7 +3,7 @@
 from collections import namedtuple
 from bes.common import check
 
-class metadata(namedtuple('metadata', 'name, pcloud_id, is_folder, size, category, content_type, content_hash, contents, checksum')):
+class pcloud_metadata(namedtuple('pcloud_metadata', 'name, pcloud_id, is_folder, size, category, content_type, content_hash, contents, checksum')):
   '''
   Class representation for pcloud metadata
   https://docs.pcloud.com/structures/metadata.html
@@ -87,4 +87,4 @@ class metadata(namedtuple('metadata', 'name, pcloud_id, is_folder, size, categor
                           self.content_type, self.content_hash, contents,
                           self.checksum)
   
-check.register_class(metadata)
+check.register_class(pcloud_metadata)

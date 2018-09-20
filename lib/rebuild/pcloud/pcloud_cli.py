@@ -92,7 +92,7 @@ class pcloud_cli(object):
         return self._command_mkdir(args.folder, args.parents)
       elif args.command == 'chk':
         return self._command_checksum_file(args.filename)
-    except pcloud_error as ex:
+    except Exception as ex:
       print(str(ex))
       raise SystemExit(1)
       
@@ -113,7 +113,7 @@ class pcloud_cli(object):
   class list_item_short(namedtuple('list_item_short', 'name, is_folder')):
     
     def __new__(clazz, item):
-      check.check_metadata(item)
+      check.check_pcloud_metadata(item)
       name = item.name
       is_folder = item.is_folder
       return clazz.__bases__[0].__new__(clazz, name, is_folder)
@@ -128,7 +128,7 @@ class pcloud_cli(object):
   class list_item_long(namedtuple('list_item_long', 'size, name, content_type, checksum')):
     
     def __new__(clazz, item, human_readable):
-      check.check_metadata(item)
+      check.check_pcloud_metadata(item)
       if item.is_folder:
         name = '%s/' % (item.name)
       else:

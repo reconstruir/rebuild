@@ -4,7 +4,7 @@ import hashlib, os.path as path, requests, urlparse
 from bes.common import check
 
 from .pcloud_error import pcloud_error
-from .metadata import metadata
+from .pcloud_metadata import pcloud_metadata
 
 class pcloud(object):
 
@@ -42,7 +42,7 @@ class pcloud(object):
       folder_metadata = payload['metadata']
       assert 'contents' in folder_metadata
       contents = folder_metadata['contents']
-      result = [ metadata.parse_dict(item) for item in contents ]
+      result = [ pcloud_metadata.parse_dict(item) for item in contents ]
       if checksums:
         result = self._get_checksums(result)
       return result
@@ -83,7 +83,7 @@ class pcloud(object):
     return [ self._get_checksum(item) for item in contents ]
   
   def _get_checksum(self, item):
-    check.check_metadata(item)
+    check.check_pcloud_metadata(item)
     if item.is_folder:
       new_contents = [ self._get_checksum(child_item) for child_item in item.contents ]
       new_item = item.mutate_contents(new_contents)
