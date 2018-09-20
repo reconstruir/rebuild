@@ -126,13 +126,15 @@ class pcloud(object):
       if not self.folder_exists(p):
         self.create_folder(folder_path = p)
   
-  def delete_folder(self, folder_id = None, folder_path = None):
+  def delete_folder(self, folder_id = None, folder_path = None, recursive = False ):
     if not folder_path and not folder_id:
       raise ValueError('Etiher folder_path or folder_id should be given.')
     elif folder_path and folder_id:
       raise ValueError('Only one of folder_path or folder_id should be given.')
-          
-    url = self._make_api_url('deletefolder')
+    if recursive:
+      url = self._make_api_url('deletefolderrecursive')
+    else:
+      url = self._make_api_url('deletefolder')
     params = {
       'auth': self._auth_token,
     }
@@ -147,10 +149,10 @@ class pcloud(object):
     if response.status_code != 200:
       raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
     payload = response.json()
-    print(payload)
-    if 'metadata' in payload:
-      return payload['metadata']
-    raise pcloud_error(payload['result'], what)
+    assert 'result' in payload
+    if payload['result'] != 0:
+      raise pcloud_error(payload['result'], what)
+    return payload
   
   def _get_checksums(self, contents):
     return [ self._get_checksum(item) for item in contents ]

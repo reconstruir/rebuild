@@ -75,6 +75,14 @@ class pcloud_cli(object):
     # rmdir
     rmdir_parser = subparsers.add_parser('rmdir', help = 'Make directory.')
     self._add_common_options(rmdir_parser)
+    rmdir_parser.add_argument('-r', '--recursive',
+                              action = 'store_true',
+                              default = False,
+                              help = 'Recurse into subdirs. [ False ]')
+    rmdir_parser.add_argument('-i', '--use-id',
+                              action = 'store_true',
+                              default = False,
+                              help = 'Use pcloud id instead of path. [ False ]')
     rmdir_parser.add_argument('folder',
                               action = 'store',
                               default = None,
@@ -139,7 +147,7 @@ class pcloud_cli(object):
       elif args.command == 'mkdir':
         return self._command_mkdir(args.folder, args.parents)
       elif args.command == 'rmdir':
-        return self._command_rmdir(args.folder)
+        return self._command_rmdir(args.folder, args.recursive, args.use_id)
       elif args.command == 'chk':
         return self._command_checksum_file(args.filename)
       elif args.command == 'upload':
@@ -227,9 +235,12 @@ class pcloud_cli(object):
     rv = pc.create_folder(folder_path = folder)
     return 0
   
-  def _command_rmdir(self, folder):
+  def _command_rmdir(self, folder, recursive, use_id):
     pc = pcloud(self._email, self._password)
-    rv = pc.delete_folder(folder_path = folder)
+    if use_id:
+      rv = pc.delete_folder(folder_id = folder, recursive = recursive)
+    else:
+      rv = pc.delete_folder(folder_path = folder, recursive = recursive)
     return 0
   
   def _command_checksum_file(self, filename):
