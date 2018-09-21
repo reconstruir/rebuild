@@ -3,13 +3,14 @@
 import argparse, os, os.path as path
 from collections import namedtuple
 
-from bes.common import check
+from bes.common import check, node
 from bes.compat import StringIO
 from bes.fs import file_util
 from bes.text import text_table
 
 from .pcloud import pcloud
 from .pcloud_error import pcloud_error
+from .pcloud_metadata import pcloud_metadata
 
 class pcloud_cli(object):
 
@@ -20,14 +21,22 @@ class pcloud_cli(object):
     # ls
     ls_parser = subparsers.add_parser('ls', help = 'List directory.')
     self._add_common_options(ls_parser)
-    ls_parser.add_argument('-r', '--recursive',
+    ls_parser.add_argument('-R', '--recursive',
                            action = 'store_true',
                            default = False,
                            help = 'Recurse into subdirs. [ False ]')
-    ls_parser.add_argument('-c', '--checksums',
+    ls_parser.add_argument('-r', '--reversed',
                            action = 'store_true',
                            default = False,
+                           help = 'Reverese the order when sorting.. [ False ]')
+    ls_parser.add_argument('-c', '--checksums',
+                            action = 'store_true',
+                            default = False,
                            help = 'Also fetch file checksums. [ False ]')
+    ls_parser.add_argument('-T', '--tree',
+                           action = 'store_true',
+                           default = False,
+                           help = 'Show the results as a tree. [ False ]')
     ls_parser.add_argument('-l', '--long-form',
                            action = 'store_true',
                            default = False,
@@ -140,7 +149,7 @@ class pcloud_cli(object):
 
     try:
       if args.command == 'ls':
-        return self._command_ls(args.folder, args.recursive, args.checksums,
+        return self._command_ls(args.folder, args.recursive, args.reversed, args.tree, args.checksums,
                                 args.long_form, args.use_id, args.human_readable)
       elif args.command == 'rm':
         return self._command_rm(args.filename, args.use_id)
@@ -204,24 +213,54 @@ class pcloud_cli(object):
         size = ''
       return clazz.__bases__[0].__new__(clazz, size, name, item.pcloud_id, content_type, item.checksum)
 
-  def _command_ls(self, folder, recursive, checksums, long_form, use_id, human_readable):
+  def _command_ls(self, folder, recursive, reversed, tree, checksums, long_form, use_id, human_readable):
     pc = pcloud(self._email, self._password)
     if use_id:
       items = pc.list_folder(folder_id = folder, recursive = recursive, checksums = checksums)
     else:
       items = pc.list_folder(folder_path = folder, recursive = recursive, checksums = checksums)
-    if not items:
-      return 0
-    if long_form:
-      items = [ self.list_item_long(item, human_readable) for item in items ]
-      table = text_table(data = items, column_delimiter = '  ')
-      table.set_labels(tuple([ x.upper() for x in items[0]._fields ]))
-      print(table)
+    if tree:
+      self._print_items_tree(folder, items, human_readable)
     else:
-      items = [ self.list_item_short(item) for item in items ]
-      print(' '.join([ str(item) for item in items ]))
+      self._print_items(items, long_form, human_readable)
     return 0
 
+  def _make_item_node(self, item):
+    if item.is_folder:
+      if item.name != '/':
+        name = '%s/' % (item.name)
+      else:
+        name = '/'
+    else:
+      name = item.name
+    n = node(name)
+    for child in item.contents or []:
+      child_node = self._make_item_node(child)
+      n.children.append(child_node)
+    return n
+  
+  def _print_items_tree(self, folder, items, human_readable):
+    if not items:
+      return
+    root = self._make_item_node(pcloud_metadata(folder, 0, True, 0, None, 'dir', '0', items, 0))
+    print(root.to_string(indent = 2))
+
+  def _print_items(self, items, long_form, human_readable):
+    if not items:
+      return
+    if long_form:
+      data = [ self.list_item_long(item, human_readable) for item in items ]
+      table = text_table(data = data, column_delimiter = '  ')
+#      table.set_labels(tuple([ x.upper() for x in items[0]._fields ]))
+      print(table)
+    else:
+      data = [ self.list_item_short(item) for item in items ]
+      print(' '.join([ str(item) for item in data ]))
+    for item in items:
+      if item.contents:
+        print('\n%s:' % (item.name))
+        self._print_items(item.contents, long_form, human_readable)
+  
   def _command_rm(self, filename, use_id):
     pc = pcloud(self._email, self._password)
     if use_id:
