@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from rebuild.pcloud import metadata as M
+from rebuild.pcloud import pcloud_metadata as M
 
 class test_metadata(unit_test):
 

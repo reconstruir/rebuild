@@ -5,8 +5,10 @@ from collections import namedtuple
 
 from bes.common import check, node
 from bes.compat import StringIO
-from bes.fs import file_util
+from bes.fs import file_util, file_checksum_list
 from bes.text import text_table
+
+from rebuild.source_finder import source_tool
 
 from .pcloud import pcloud
 from .pcloud_error import pcloud_error
@@ -126,21 +128,19 @@ class pcloud_cli(object):
                                type = str,
                                help = 'The destination folder or folder_id. [ None ]')
 
-    
-###    # Bulbs
-###    bulbs_parser = subparsers.add_parser('bulbs', help = 'List bulbs.')
-###    self._add_common_options(bulbs_parser)
-###
-###
-###    command_group = self.parser.add_mutually_exclusive_group()
-###    command_group.add_argument('--list-all', action = 'store_true')
-###    command_group.add_argument('--modversion', nargs = '+', action = 'store',
-###                               help = 'Print the version for the given modules.')
-###    command_group.add_argument('--cflags', nargs = '+', action = 'store',
-###                               help = 'Print the cflags for the given modules.')
-###    command_group.add_argument('--print-requires', nargs = '+', action = 'store',
-###                               help = 'Print the requires property for the given modules.')
-###    self.pc = caca_pkg_config(self.PKG_CONFIG_PATH.path)
+    # sync
+    sync_parser = subparsers.add_parser('sync', help = 'Sync sources directory to pcloud.')
+    self._add_common_options(sync_parser)
+    sync_parser.add_argument('local_folder',
+                             action = 'store',
+                             default = None,
+                             type = str,
+                             help = 'The local folder to sync from. [ None ]')
+    sync_parser.add_argument('remote_folder',
+                             action = 'store',
+                             default = None,
+                             type = str,
+                             help = 'The remote folder to sync to. [ None ]')
     
   def main(self):
     args = self._parser.parse_args()
@@ -161,6 +161,8 @@ class pcloud_cli(object):
         return self._command_checksum_file(args.filename)
       elif args.command == 'upload':
         return self._command_upload(args.filename, args.folder, args.use_id)
+      elif args.command == 'sync':
+        return self._command_sync(args.local_folder, args.remote_folder)
     except pcloud_error as ex:
       print(str(ex))
       raise SystemExit(1)
@@ -251,7 +253,7 @@ class pcloud_cli(object):
     if long_form:
       data = [ self.list_item_long(item, human_readable) for item in items ]
       table = text_table(data = data, column_delimiter = '  ')
-#      table.set_labels(tuple([ x.upper() for x in items[0]._fields ]))
+      table.set_labels( ( 'SIZE', 'NAME', 'PCLOUD ID', 'CONTENT TYPE', 'CHECKSUM' ) )
       print(table)
     else:
       data = [ self.list_item_short(item) for item in items ]
@@ -295,6 +297,32 @@ class pcloud_cli(object):
     else:
       pc.upload_file(filename, path.basename(filename), folder_path = folder)
     return 0
+  
+  def _command_sync(self, local_folder, remote_folder):
+    print('sync %s to %s' % (local_folder, remote_folder))
+    print('updating local index: %s' % (local_folder))
+    source_tool.update_sources_index(local_folder)
+    index = file_checksum_list.load_checksums_file(path.join(local_folder, 'sources_index.json'))
+    #print(index)
+    pc = pcloud(self._email, self._password)
+    print('fetching remote file list: %s' % (remote_folder))
+    remote_files = pc.list_folder(folder_path = remote_folder, recursive = True, checksums = True)
+    print(remote_files)
+    return 0
+
+  @classmethod
+  def _flatten_items(clazz, items):
+    print('sync %s to %s' % (local_folder, remote_folder))
+    print('updating local index: %s' % (local_folder))
+    source_tool.update_sources_index(local_folder)
+    index = file_checksum_list.load_checksums_file(path.join(local_folder, 'sources_index.json'))
+    #print(index)
+    pc = pcloud(self._email, self._password)
+    print('fetching remote file list: %s' % (remote_folder))
+    remote_files = pc.list_folder(folder_path = remote_folder, recursive = True, checksums = True)
+    print(remote_files)
+    return 0
+  
   
   @classmethod
   def run(clazz):
