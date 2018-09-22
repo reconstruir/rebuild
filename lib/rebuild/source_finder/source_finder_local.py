@@ -4,7 +4,7 @@ import os.path as path
 from bes.fs import file_find
 from .source_finder import source_finder
 
-class local_source_finder(source_finder):
+class source_finder_local(source_finder):
 
   def __init__(self, where):
     self.where = path.abspath(where)

@@ -5,16 +5,16 @@ from bes.testing.unit_test import unit_test
 from bes.fs.testing import temp_content
 from bes.fs import temp_file
 from bes.git import repo
-from rebuild.source_finder import repo_source_finder
+from rebuild.source_finder import source_finder_git_repo
 import os.path as path
 
-from test_local_source_finder import source_dir_maker
+from test_source_finder_local import source_dir_maker
 
-class test_repo_source_finder(unit_test):
+class test_source_finder_git_repo(unit_test):
 
   _DEBUG = True
   
-  def test_repo_source_finder(self):
+  def test_source_finder_git_repo(self):
     tmp_source_repo = self._make_git_repo([
       'file a/alpha-1.2.3.tar.gz "${tarball}" 644',
       'file b/beta-1.2.3.tar.gz "${tarball}" 644',
@@ -23,13 +23,13 @@ class test_repo_source_finder(unit_test):
     if self._DEBUG:
       print('tmp_source_repo: %s' % (tmp_source_repo.root))
       print('       tmp_repo_dir: %s' % (tmp_repo_dir))
-    finder = repo_source_finder(tmp_repo_dir, tmp_source_repo.root)
+    finder = source_finder_git_repo(tmp_repo_dir, tmp_source_repo.root)
     self.assertEqual( path.join(tmp_repo_dir, 'a/alpha-1.2.3.tar.gz'),
                       finder.find_source('alpha', '1.2.3', 'linux') )
     self.assertEqual( [ 'a/alpha-1.2.3.tar.gz', 'b/beta-1.2.3.tar.gz' ],
                       finder.repo.find_all_files() )
 
-  def test_repo_source_finder_update(self):
+  def test_source_finder_git_repo_update(self):
     tmp_source_repo = self._make_git_repo([
       'file a/alpha-1.2.3.tar.gz "${tarball}" 644',
       'file b/beta-1.2.3.tar.gz "${tarball}" 644',
@@ -38,7 +38,7 @@ class test_repo_source_finder(unit_test):
     if self._DEBUG:
       print('tmp_source_repo: %s' % (tmp_source_repo.root))
       print('       tmp_repo_dir: %s' % (tmp_repo_dir))
-    f1 = repo_source_finder(tmp_repo_dir, tmp_source_repo.root)
+    f1 = source_finder_git_repo(tmp_repo_dir, tmp_source_repo.root)
     self.assertEqual( path.join(tmp_repo_dir, 'a/alpha-1.2.3.tar.gz'),
                       f1.find_source('alpha', '1.2.3', 'linux') )
     self.assertEqual( [ 'a/alpha-1.2.3.tar.gz', 'b/beta-1.2.3.tar.gz' ],
@@ -55,7 +55,7 @@ class test_repo_source_finder(unit_test):
     self.assertEqual( [ 'a/alpha-1.2.3.tar.gz', 'b/beta-1.2.3.tar.gz', 'g/gamma-1.2.3.tar.gz' ],
                       f1.repo.find_all_files() )
 
-  def test_repo_source_finder_update_once(self):
+  def test_source_finder_git_repo_update_once(self):
     tmp_source_repo = self._make_git_repo([
       'file a/alpha-1.2.3.tar.gz "${tarball}" 644',
       'file b/beta-1.2.3.tar.gz "${tarball}" 644',
@@ -64,7 +64,7 @@ class test_repo_source_finder(unit_test):
     if self._DEBUG:
       print('tmp_source_repo: %s' % (tmp_source_repo.root))
       print('       tmp_repo_dir: %s' % (tmp_repo_dir))
-    f1 = repo_source_finder(tmp_repo_dir, tmp_source_repo.root, update_only_once = True)
+    f1 = source_finder_git_repo(tmp_repo_dir, tmp_source_repo.root, update_only_once = True)
     self.assertEqual( path.join(tmp_repo_dir, 'a/alpha-1.2.3.tar.gz'),
                       f1.find_source('alpha', '1.2.3', 'linux') )
     self.assertEqual( [ 'a/alpha-1.2.3.tar.gz', 'b/beta-1.2.3.tar.gz' ],
@@ -80,7 +80,7 @@ class test_repo_source_finder(unit_test):
     self.assertEqual( [ 'a/alpha-1.2.3.tar.gz', 'b/beta-1.2.3.tar.gz' ],
                       f1.repo.find_all_files() )
 
-  def test_repo_source_finder_update_no_network(self):
+  def test_source_finder_git_repo_update_no_network(self):
     tmp_source_repo = self._make_git_repo([
       'file a/alpha-1.2.3.tar.gz "${tarball}" 644',
       'file b/beta-1.2.3.tar.gz "${tarball}" 644',
@@ -89,7 +89,7 @@ class test_repo_source_finder(unit_test):
     if self._DEBUG:
       print('tmp_source_repo: %s' % (tmp_source_repo.root))
       print('       tmp_repo_dir: %s' % (tmp_repo_dir))
-    f1 = repo_source_finder(tmp_repo_dir, tmp_source_repo.root, no_network = True)
+    f1 = source_finder_git_repo(tmp_repo_dir, tmp_source_repo.root, no_network = True)
     self.assertEqual( None, f1.find_source('alpha', '1.2.3', 'linux') )
     self.assertEqual( [], f1.repo.find_all_files() )
 
@@ -102,7 +102,7 @@ class test_repo_source_finder(unit_test):
     if self._DEBUG:
       print('tmp_source_repo: %s' % (tmp_source_repo.root))
       print('       tmp_repo_dir: %s' % (tmp_repo_dir))
-    f1 = repo_source_finder(tmp_repo_dir, tmp_source_repo.root)
+    f1 = source_finder_git_repo(tmp_repo_dir, tmp_source_repo.root)
     self.assertEqual( path.join(tmp_repo_dir, 'a/alpha-1.2.3.tar.gz'), f1.find_tarball('alpha-1.2.3.tar.gz') )
     
   @classmethod

@@ -4,7 +4,7 @@
 from bes.testing.unit_test import unit_test
 from rebuild.source_finder import hard_coded_source_finder
 
-from test_local_source_finder import source_dir_maker
+from test_source_finder_local import source_dir_maker
 
 class test_hard_coded_source_finder(unit_test):
 

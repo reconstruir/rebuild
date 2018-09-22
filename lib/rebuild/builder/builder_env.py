@@ -10,7 +10,7 @@ from rebuild.checksum import checksum_manager
 from rebuild.package import artifact_manager
 from rebuild.base import package_descriptor, requirement_manager
 from bes.git import git_download_cache, git_util
-from rebuild.source_finder import repo_source_finder, local_source_finder, source_finder_chain
+from rebuild.source_finder import source_finder_git_repo, source_finder_local, source_finder_chain
 from rebuild.recipe import recipe_load_env
 from .builder_script_manager import builder_script_manager
 from bes.fs import file_trash
@@ -38,10 +38,10 @@ class builder_env(object):
   def _make_source_finder(clazz, build_dir, source_dir, address, no_network):
     chain = source_finder_chain()
     if source_dir:
-     chain.add_finder(local_source_finder(source_dir))
+     chain.add_finder(source_finder_local(source_dir))
     else:
      root = path.join(build_dir, 'third_party_tarballs', git_util.sanitize_address(address))
-     chain.add_finder(repo_source_finder(root, address, no_network = no_network, update_only_once = True))
+     chain.add_finder(source_finder_git_repo(root, address, no_network = no_network, update_only_once = True))
     return chain
 
   @classmethod

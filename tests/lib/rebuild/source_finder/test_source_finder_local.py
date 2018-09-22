@@ -6,7 +6,7 @@ from bes.common import string_util
 from bes.fs.testing import temp_content
 from bes.fs import temp_file
 from bes.archive.temp_archive import archive_extension, temp_archive
-from rebuild.source_finder import local_source_finder
+from rebuild.source_finder import source_finder_local
 import os.path as path
 
 class source_dir_maker(object):
@@ -46,14 +46,14 @@ class source_dir_maker(object):
   def make_tarball(clazz, ext):
     return temp_archive.make_temp_archive([ temp_archive.item('foo.txt', content = 'foo.txt\n') ], ext).filename
 
-class test_local_source_finder(unit_test):
+class test_source_finder_local(unit_test):
 
   def test_local_finder_tar_gz(self):
     tmp_dir = source_dir_maker.make([
       'file a/alpha-1.2.3.tar.gz "${tarball}" 644',
       'file b/beta-1.2.3.tar.gz "${tarball}" 644',
     ])
-    finder = local_source_finder(tmp_dir)
+    finder = source_finder_local(tmp_dir)
     self.assertEqual( path.join(tmp_dir, 'a/alpha-1.2.3.tar.gz'),
                       finder.find_source('alpha', '1.2.3', 'linux') )
     
@@ -62,7 +62,7 @@ class test_local_source_finder(unit_test):
       'file a/alpha-1.2.3.tgz "${tarball}" 644',
       'file b/beta-1.2.3.tgz "${tarball}" 644',
     ])
-    finder = local_source_finder(tmp_dir)
+    finder = source_finder_local(tmp_dir)
     self.assertEqual( path.join(tmp_dir, 'a/alpha-1.2.3.tgz'),
                       finder.find_source('alpha', '1.2.3', 'linux') )
 
@@ -71,7 +71,7 @@ class test_local_source_finder(unit_test):
       'file a/alpha-1.2.3.bz2 "${tarball}" 644',
       'file b/beta-1.2.3.bz2 "${tarball}" 644',
     ])
-    finder = local_source_finder(tmp_dir)
+    finder = source_finder_local(tmp_dir)
     self.assertEqual( path.join(tmp_dir, 'a/alpha-1.2.3.bz2'),
                       finder.find_source('alpha', '1.2.3', 'linux') )
     
@@ -80,7 +80,7 @@ class test_local_source_finder(unit_test):
       'file a/alpha-1.2.3.zip "${tarball}" 644',
       'file b/beta-1.2.3.zip "${tarball}" 644',
     ])
-    finder = local_source_finder(tmp_dir)
+    finder = source_finder_local(tmp_dir)
     self.assertEqual( path.join(tmp_dir, 'a/alpha-1.2.3.zip'),
                       finder.find_source('alpha', '1.2.3', 'linux') )
     
@@ -90,7 +90,7 @@ class test_local_source_finder(unit_test):
       'file a/alpha-1.2.4.tar.gz "${tarball}" 644',
       'file a/alpha-1.2.5.tar.gz "${tarball}" 644',
     ])
-    finder = local_source_finder(tmp_dir)
+    finder = source_finder_local(tmp_dir)
     self.assertEqual( path.join(tmp_dir, 'a/alpha-1.2.3.tar.gz'),
                       finder.find_source('alpha', '1.2.3', 'linux') )
 
@@ -99,7 +99,7 @@ class test_local_source_finder(unit_test):
       'file a/alpha-1.2.3.tar.gz "${tarball}" 644',
       'file a/alpha-1.2.3.1.tar.gz "${tarball}" 644',
     ])
-    finder = local_source_finder(tmp_dir)
+    finder = source_finder_local(tmp_dir)
     self.assertEqual( path.join(tmp_dir, 'a/alpha-1.2.3.tar.gz'),
                       finder.find_source('alpha', '1.2.3', 'linux') )
     
@@ -108,7 +108,7 @@ class test_local_source_finder(unit_test):
       'file a/alpha-1.2.3.tar.gz "alpha-1.2.3.tar.gz" 644',
       'file b/beta-1.2.3.tar.gz "beta-1.2.3.tar.gz" 644',
     ])
-    finder = local_source_finder(tmp_dir)
+    finder = source_finder_local(tmp_dir)
     with self.assertRaises(RuntimeError) as context:
       finder.find_source('alpha', '1.2.3', 'linux')
     
@@ -117,7 +117,7 @@ class test_local_source_finder(unit_test):
       'file a/linux/alpha-linux-1.2.3.tar.gz "${tarball}" 644',
       'file a/macos/alpha-macos-1.2.3.tar.gz "${tarball}" 644',
     ])
-    finder = local_source_finder(tmp_dir)
+    finder = source_finder_local(tmp_dir)
     self.assertEqual( path.join(tmp_dir, 'a/linux/alpha-linux-1.2.3.tar.gz'),
                       finder.find_source('alpha', '1.2.3', 'linux') )
     self.assertEqual( path.join(tmp_dir, 'a/macos/alpha-macos-1.2.3.tar.gz'),
@@ -128,7 +128,7 @@ class test_local_source_finder(unit_test):
       'file a/linux/alpha-linux-1.2.3.tar.gz "${tarball}" 644',
       'file a/darwin/alpha-darwin-1.2.3.tar.gz "${tarball}" 644',
     ])
-    finder = local_source_finder(tmp_dir)
+    finder = source_finder_local(tmp_dir)
     self.assertEqual( path.join(tmp_dir, 'a/linux/alpha-linux-1.2.3.tar.gz'),
                       finder.find_source('alpha', '1.2.3', 'linux') )
     self.assertEqual( path.join(tmp_dir, 'a/darwin/alpha-darwin-1.2.3.tar.gz'),
@@ -139,7 +139,7 @@ class test_local_source_finder(unit_test):
       'file a/alpha-LINUX-1.2.3.tar.gz "${tarball}" 644',
       'file a/alpha-Darwin-1.2.3.tar.gz "${tarball}" 644',
     ])
-    finder = local_source_finder(tmp_dir)
+    finder = source_finder_local(tmp_dir)
     self.assertEqual( path.join(tmp_dir, 'a/alpha-LINUX-1.2.3.tar.gz'),
                       finder.find_source('alpha', '1.2.3', 'linux') )
     self.assertEqual( path.join(tmp_dir, 'a/alpha-Darwin-1.2.3.tar.gz'),
@@ -150,7 +150,7 @@ class test_local_source_finder(unit_test):
       'file a/alpha-1.2.3.tar.gz "${tarball}" 644',
       'file a/alpha-1.2.4.tar.gz "${tarball}" 644',
     ])
-    finder = local_source_finder(tmp_dir)
+    finder = source_finder_local(tmp_dir)
     self.assertEqual( path.join(tmp_dir, 'a/alpha-1.2.3.tar.gz'),
                       finder.find_tarball('alpha-1.2.3.tar.gz') )
     

@@ -5,7 +5,7 @@ from bes.git import repo
 from rebuild.base import build_blurb
 import os.path as path
 
-class repo_source_finder(source_finder):
+class source_finder_git_repo(source_finder):
 
   def __init__(self, root, address, no_network = False, update_only_once = False):
     self.repo = repo(root, address)
