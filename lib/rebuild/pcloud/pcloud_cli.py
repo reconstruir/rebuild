@@ -3,7 +3,7 @@
 import argparse, os, os.path as path
 from collections import namedtuple
 
-from bes.common import check, node
+from bes.common import check
 from bes.compat import StringIO
 from bes.fs import file_util, file_checksum_list
 from bes.text import text_table
@@ -227,24 +227,10 @@ class pcloud_cli(object):
       self._print_items(items, long_form, human_readable)
     return 0
 
-  def _make_item_node(self, item):
-    if item.is_folder:
-      if item.name != '/':
-        name = '%s/' % (item.name)
-      else:
-        name = '/'
-    else:
-      name = item.name
-    n = node(name)
-    for child in item.contents or []:
-      child_node = self._make_item_node(child)
-      n.children.append(child_node)
-    return n
-  
   def _print_items_tree(self, folder, items, human_readable):
     if not items:
       return
-    root = self._make_item_node(pcloud_metadata(folder, 0, True, 0, None, 'dir', '0', items, 0))
+    root = pcloud.items_to_tree(folder, items)
     print(root.to_string(indent = 2))
 
   def _print_items(self, items, long_form, human_readable):

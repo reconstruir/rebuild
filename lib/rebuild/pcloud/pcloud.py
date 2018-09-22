@@ -1,7 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import hashlib, os.path as path, requests, urlparse
-from bes.common import check
+from bes.common import check, node
 from bes.fs import file_path
 
 from .pcloud_error import pcloud_error
@@ -271,3 +271,22 @@ class pcloud(object):
   @classmethod
   def _make_api_url(clazz, method):
     return urlparse.urljoin(clazz.API, method)
+
+  @classmethod
+  def _make_item_node(clazz, item):
+    if item.is_folder:
+      if item.name != '/':
+        name = '%s/' % (item.name)
+      else:
+        name = '/'
+    else:
+      name = item.name
+    n = node(name)
+    for child in item.contents or []:
+      child_node = clazz._make_item_node(child)
+      n.children.append(child_node)
+    return n
+
+  @classmethod
+  def items_to_tree(clazz, folder, items):
+    return clazz._make_item_node(pcloud_metadata(folder, 0, True, 0, None, 'dir', '0', items or [], 0))

@@ -7,6 +7,7 @@ from bes.archive import archiver
 from bes.common import check, node
 from bes.compat import StringIO
 from bes.fs import file_checksum_list, file_find, file_util
+from bes.common import node
 from bes.text import text_table
 
 #from .pcloud import pcloud
