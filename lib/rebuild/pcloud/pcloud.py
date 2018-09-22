@@ -281,7 +281,7 @@ class pcloud(object):
         name = '/'
     else:
       name = item.name
-    n = node(name)
+    n = node(item)
     for child in item.contents or []:
       child_node = clazz._make_item_node(child)
       n.children.append(child_node)

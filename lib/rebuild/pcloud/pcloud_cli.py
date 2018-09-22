@@ -288,31 +288,58 @@ class pcloud_cli(object):
     print('sync %s to %s' % (local_folder, remote_folder))
     print('updating local index: %s' % (local_folder))
     source_tool.update_sources_index(local_folder)
-    index = file_checksum_list.load_checksums_file(path.join(local_folder, 'sources_index.json'))
-    #print(index)
+    local_checksums = file_checksum_list.load_checksums_file(path.join(local_folder, 'sources_index.json'))
+    local_checksums_dict = local_checksums.to_dict()
+    for k, v in local_checksums_dict.items():
+      print(' LOCAL: %s %s' % (k, v))
+#    print(index)
     pc = pcloud(self._email, self._password)
-    print('fetching remote file list: %s' % (remote_folder))
     remote_items = pc.list_folder(folder_path = remote_folder, recursive = True, checksums = True)
     remote_tree = pcloud.items_to_tree(remote_folder, remote_items)
     remote_paths = remote_tree.flat_paths()
     for p in remote_paths:
-      print(path.normpath(p.path))
+      pp = '/'.join([ x.name for x in p.path ])
+      pp = file_util.remove_head(pp, remote_folder)
+      print('REMOTE: %s %s' % (pp, p.node.data.checksum))
 #    print(remote_tree)
     return 0
 
-  @classmethod
-  def _flatten_items(clazz, items):
+  def _command_sync(self, local_folder, remote_folder):
     print('sync %s to %s' % (local_folder, remote_folder))
     print('updating local index: %s' % (local_folder))
     source_tool.update_sources_index(local_folder)
-    index = file_checksum_list.load_checksums_file(path.join(local_folder, 'sources_index.json'))
-    #print(index)
+    local_checksums = file_checksum_list.load_checksums_file(path.join(local_folder, 'sources_index.json'))
+    local_dict = local_checksums.to_dict()
+#    for k, v in local_dict.items():
+#      print(' LOCAL: %s %s' % (k, v))
     pc = pcloud(self._email, self._password)
-    print('fetching remote file list: %s' % (remote_folder))
-    remote_files = pc.list_folder(folder_path = remote_folder, recursive = True, checksums = True)
-    print(remote_files)
+    remote_items = pc.list_folder(folder_path = remote_folder, recursive = True, checksums = True)
+    remote_dict = self._items_to_dict(remote_folder, remote_items)
+#    for k, v in remote_dict.items():
+#      print('REMOTE: %s %s' % (k, v))
+    local_set = set(local_dict.items())
+    remote_set = set(remote_dict.items())
+    not_in_remote = local_set - remote_set
+    not_in_local = remote_set - local_set
+    for k, v in sorted(dict(not_in_remote).items()):
+      local_path = path.join(local_folder, k)
+      remote_path = path.join(remote_folder, k)
+      #print('NOT IN REMOTE: %s %s' % (k, v))
+      print('Uploading: %s' % (remote_path))
+      pc.upload_file(local_path, path.basename(local_path), folder_path = path.dirname(remote_path))
+    
     return 0
   
+  @classmethod
+  def _items_to_dict(clazz, folder, items):
+    tree = pcloud.items_to_tree(folder, items)
+    paths = tree.flat_paths()
+    result = {}
+    for next_path in paths:
+      ps = '/'.join([ x.name for x in next_path.path ])
+      ps = file_util.remove_head(ps, folder)
+      result[ps] = next_path.node.data.checksum
+    return result
   
   @classmethod
   def run(clazz):
