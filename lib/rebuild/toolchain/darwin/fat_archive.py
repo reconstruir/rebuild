@@ -15,7 +15,7 @@ class fat_archive(object):
     def __init__(self, member, dest_dir):
       self.member = member
       self.filename = path.join(dest_dir, member)
-      self.checksum = file_checksum.file_checksum(self.filename)
+      self.checksum = file_checksum.file_checksum(self.filename, 'sha256')
 
     def __str__(self):
       return str(self.member)
