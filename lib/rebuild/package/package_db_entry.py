@@ -2,7 +2,6 @@
 
 import json
 from collections import namedtuple
-from bes.fs import file_checksum, file_checksum_list
 from bes.common import cached_property, check, json_util, string_util
 from rebuild.base import build_version, package_descriptor, requirement_list
 from .util import util
