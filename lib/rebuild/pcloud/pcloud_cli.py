@@ -292,8 +292,12 @@ class pcloud_cli(object):
     #print(index)
     pc = pcloud(self._email, self._password)
     print('fetching remote file list: %s' % (remote_folder))
-    remote_files = pc.list_folder(folder_path = remote_folder, recursive = True, checksums = True)
-    print(remote_files)
+    remote_items = pc.list_folder(folder_path = remote_folder, recursive = True, checksums = True)
+    remote_tree = pcloud.items_to_tree(remote_folder, remote_items)
+    remote_paths = remote_tree.flat_paths()
+    for p in remote_paths:
+      print(path.normpath(p.path))
+#    print(remote_tree)
     return 0
 
   @classmethod
