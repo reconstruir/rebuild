@@ -36,7 +36,7 @@ class test_package_metadata(unit_test):
                       self.TEST_ENTRY.package_descriptor )
 
   def test_build_target(self):
-    self.assertEqual( build_target('macos', 'release', [ 'x86_64' ], ''), self.TEST_ENTRY.build_target )
+    self.assertEqual( build_target('macos', 'release', [ 'x86_64' ], None), self.TEST_ENTRY.build_target )
 
   def test_to_json(self):
     self.maxDiff = None

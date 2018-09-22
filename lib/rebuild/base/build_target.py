@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.system.compat import with_metaclass
@@ -17,7 +16,7 @@ class build_target(namedtuple('build_target', 'system, distro, level, archs, bui
 
   def __new__(clazz, system = DEFAULT, level = DEFAULT, archs = DEFAULT, distro = None):
     # CACADEVACA
-    assert distro == None
+    #assert distro == None
 #    print('CACA: system=%s; ditro=%s' % (system, distro))
     system = build_system.parse_system(system)
     level = clazz._determine_level(level)
