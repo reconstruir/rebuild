@@ -144,6 +144,13 @@ class pcloud_cli(object):
     
   def main(self):
     args = self._parser.parse_args()
+    if not args.email:
+      print('No pcloud email given.  Set PCLOUD_EMAIL or use the --email flag')
+      raise SystemExit(1)
+    if not args.password:
+      print('No pcloud password given.  Set PCLOUD_PASSWORD or use the --password flag')
+      raise SystemExit(1)
+    
     self._email = args.email
     self._password = args.password
 
@@ -283,26 +290,6 @@ class pcloud_cli(object):
     else:
       pc.upload_file(filename, path.basename(filename), folder_path = folder)
     return 0
-  
-  def _command_sync(self, local_folder, remote_folder):
-    print('sync %s to %s' % (local_folder, remote_folder))
-    print('updating local index: %s' % (local_folder))
-    source_tool.update_sources_index(local_folder)
-    local_checksums = file_checksum_list.load_checksums_file(path.join(local_folder, 'sources_index.json'))
-    local_checksums_dict = local_checksums.to_dict()
-    for k, v in local_checksums_dict.items():
-      print(' LOCAL: %s %s' % (k, v))
-#    print(index)
-    pc = pcloud(self._email, self._password)
-    remote_items = pc.list_folder(folder_path = remote_folder, recursive = True, checksums = True)
-    remote_tree = pcloud.items_to_tree(remote_folder, remote_items)
-    remote_paths = remote_tree.flat_paths()
-    for p in remote_paths:
-      pp = '/'.join([ x.name for x in p.path ])
-      pp = file_util.remove_head(pp, remote_folder)
-      print('REMOTE: %s %s' % (pp, p.node.data.checksum))
-#    print(remote_tree)
-    return 0
 
   def _command_sync(self, local_folder, remote_folder):
     print('sync %s to %s' % (local_folder, remote_folder))
@@ -327,7 +314,6 @@ class pcloud_cli(object):
       #print('NOT IN REMOTE: %s %s' % (k, v))
       print('Uploading: %s' % (remote_path))
       pc.upload_file(local_path, path.basename(local_path), folder_path = path.dirname(remote_path))
-    
     return 0
   
   @classmethod
