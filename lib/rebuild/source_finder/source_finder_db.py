@@ -15,15 +15,15 @@ class source_finder_db(object):
   
   def __init__(self, root):
     self._root = root
-    self._db_filename = path.join(self._root, self.DB_FILENAME)
+    self.db_filename = path.join(self._root, self.DB_FILENAME)
     self._db = {}
     self._reload_db()
 
   def _reload_db(self):
-    self._db = self._read_db_file(self._db_filename)
+    self._db = self._read_db_file(self.db_filename)
     current_sources = source_tool.find_sources(self._root)
     self._db = self._make_db(current_sources)
-    self._save_db_file(self._db_filename)
+    self._save_db_file(self.db_filename)
 
   def _make_db(self, sources):
     db = {}
@@ -52,3 +52,15 @@ class source_finder_db(object):
 
   def _save_db_file(self, filename):
     json_util.save_file(filename, self._db, indent = 2)
+
+  def checksum(self, filename):
+    return self._db[filename][2]
+
+  def checksum_dict(self):
+    d = {}
+    for filename, item in self._db.items():
+      d[filename] = item[2]
+    return d
+
+  def files(self):
+    return sorted(self._db.keys())

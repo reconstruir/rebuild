@@ -9,6 +9,7 @@ from bes.fs import file_util, file_checksum_list
 from bes.text import text_table
 
 from rebuild.source_finder import source_tool
+from rebuild.source_finder.source_finder_db import source_finder_db
 
 from .pcloud import pcloud
 from .pcloud_error import pcloud_error
@@ -293,14 +294,21 @@ class pcloud_cli(object):
 
   def _command_sync(self, local_folder, remote_folder):
     print('sync %s to %s' % (local_folder, remote_folder))
-    print('updating local index: %s' % (local_folder))
-    source_tool.update_sources_index(local_folder)
-    local_checksums = file_checksum_list.load_checksums_file(path.join(local_folder, 'sources_index.json'))
-    local_dict = local_checksums.to_dict()
+    print('reading local db: %s' % (local_folder))
+    db = source_finder_db(local_folder)
+    #source_tool.update_sources_index(local_folder)
+    #local_checksums = file_checksum_list.load_checksums_file(path.join(local_folder, 'sources_index.json'))
+    local_dict = db.checksum_dict()
 #    for k, v in local_dict.items():
 #      print(' LOCAL: %s %s' % (k, v))
     pc = pcloud(self._email, self._password)
+    remote_db_path = path.join(remote_folder, source_finder_db.DB_FILENAME)
+    
+    print('fetching remote db: %s' % (remote_folder))
+
+    print('fetching remote files: %s' % (remote_folder))
     remote_items = pc.list_folder(folder_path = remote_folder, recursive = True, checksums = True)
+    print('done fetching remote files: %s' % (remote_folder))
     remote_dict = self._items_to_dict(remote_folder, remote_items)
 #    for k, v in remote_dict.items():
 #      print('REMOTE: %s %s' % (k, v))
@@ -314,6 +322,8 @@ class pcloud_cli(object):
       #print('NOT IN REMOTE: %s %s' % (k, v))
       print('Uploading: %s' % (remote_path))
       pc.upload_file(local_path, path.basename(local_path), folder_path = path.dirname(remote_path))
+    print('Uploading db file: %s' % (db.db_filename))
+    pc.upload_file(db.db_filename, path.basename(db.db_filename), folder_path = remote_folder)
     return 0
   
   @classmethod
