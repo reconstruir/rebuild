@@ -290,3 +290,49 @@ class pcloud(object):
   @classmethod
   def items_to_tree(clazz, folder, items):
     return clazz._make_item_node(pcloud_metadata(folder, 0, True, 0, None, 'dir', '0', items or [], 0))
+
+  # File flags from https://docs.pcloud.com/methods/fileops/file_open.html
+#  O_READ = 0x0001
+  O_WRITE = 0x0002
+  O_CREAT = 0x0040
+  O_EXCL = 0x0080
+  O_TRUNC = 0x0200
+  O_APPEND = 0x0400
+
+#  path	string path to the file, for which the file descirptior is created.
+#fileid	int id of the folder, for which the file descirptior is created.
+#folderid	int id of the folder, in which new file is created and file descirptior is returned.
+#name	string name of the file, in which new file is created and file descirptior is returned.
+
+  # FIXME: check arguments for inconsistencies
+  def file_open(self, flags, file_path = None, file_id = None, folder_id = None, filename = None):
+    '''
+    if not file_path and not file_id:
+      raise ValueError('Etiher file_path or file_id should be given.')
+    elif file_path and file_id:
+      raise ValueError('Only one of file_path or file_id should be given.')
+    '''
+    url = self._make_api_url('file_open')
+    params = {
+      'auth': self._auth_token,
+      'flags': flags,
+    }
+    what = [ file_path, file_id, folder_id ]
+    what = ' - '.join([ x for x in what if x ])
+    if file_path:
+      params.update({ 'path': file_path })
+    if file_id:
+      params.update({ 'fileid': file_id })
+    if folder_id:
+      params.update({ 'folderid': folder_id })
+    if filename:
+      params.update({ 'name': filename })
+    response = requests.get(url, params = params)
+    if response.status_code != 200:
+      raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
+    payload = response.json()
+    assert 'result' in payload
+    if payload['result'] != 0:
+      raise pcloud_error(payload['result'], what)
+    assert 'fd' in payload
+    return payload['fd']

@@ -17,7 +17,7 @@ class pcloud_error(Exception):
     2003: 'Access denied. You do not have permissions to preform this operation.',
     2005: 'Directory does not exist.',
     2006: 'Folder is not empty.',
-    2007: 'Cannot delete the root folder.'
+    2007: 'Cannot delete the root folder.',
     2008: 'User is over quota.',
     2009: 'File not found.',
     2010: 'Invalid path.',
