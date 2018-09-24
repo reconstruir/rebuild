@@ -182,12 +182,7 @@ class pcloud_cli(object):
   def main(self):
     args = self._parser.parse_args()
 
-    if args.email or args.password:
-      credentials = pcloud_credentials.from_command_line_args(args.email, args.password)
-      del args.email
-      del args.password
-    else:
-      credentials = pcloud_credentials.from_environment()
+    credentials = pcloud_credentials.resolve_command_line(args)
 
     if not credentials.is_valid():
       print('No pcloud email or password given.  Set PCLOUD_EMAIL/PCLOUD_PASSWORD or use the --email/--password flag')

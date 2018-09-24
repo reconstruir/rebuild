@@ -1,8 +1,9 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import os
+import json, os
 from collections import namedtuple
 from bes.common import check
+from bes.fs import file_util
 
 class pcloud_credentials(namedtuple('pcloud_credentials', 'email, password')):
   
@@ -57,5 +58,22 @@ class pcloud_credentials(namedtuple('pcloud_credentials', 'email, password')):
                         default = None,
                         type = str,
                         help = 'The pcloud account password. [ None ]')
-  
+    parser.add_argument('--credentials',
+                        action = 'store',
+                        default = None,
+                        type = str,
+                        help = 'A pcloud credentials file. [ None ]')
+
+  @classmethod
+  def resolve_command_line(clazz, args):
+    if args.credentials:
+      credentials = pcloud_credentials.from_file(args.credentials)
+    elif args.email or args.password:
+      credentials = pcloud_credentials.from_command_line_args(args.email, args.password)
+      del args.email
+      del args.password
+    else:
+      credentials = pcloud_credentials.from_environment()
+    return credentials
+    
 check.register_class(pcloud_credentials)
