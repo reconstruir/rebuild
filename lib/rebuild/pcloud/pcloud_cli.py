@@ -32,7 +32,7 @@ class pcloud_cli(object):
     ls_parser.add_argument('-r', '--reversed',
                            action = 'store_true',
                            default = False,
-                           help = 'Reverese the order when sorting.. [ False ]')
+                           help = 'Reverese the order when sorting. [ False ]')
     ls_parser.add_argument('-c', '--checksums',
                             action = 'store_true',
                             default = False,
@@ -223,16 +223,7 @@ class pcloud_cli(object):
     raise RuntimeError('Invalid command: %s' % (args.command))
 
   def _add_common_options(self, parser):
-    parser.add_argument('-E', '--email',
-                        action = 'store',
-                        default = os.environ.get('PCLOUD_EMAIL', None),
-                        type = str,
-                        help = 'The pcloud account password. [ None ]')
-    parser.add_argument('-P', '--password',
-                        action = 'store',
-                        default = os.environ.get('PCLOUD_PASSWORD', None),
-                        type = str,
-                        help = 'The pcloud account password. [ None ]')
+    pcloud_credentials.add_command_line_args(parser)
 
   class list_item_short(namedtuple('list_item_short', 'name, is_folder')):
     

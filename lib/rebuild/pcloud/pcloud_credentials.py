@@ -45,4 +45,17 @@ class pcloud_credentials(namedtuple('pcloud_credentials', 'email, password')):
     assert 'password' in d
     return clazz(d['email'], d['password'])
   
+  @classmethod
+  def add_command_line_args(clazz, parser):
+    parser.add_argument('-E', '--email',
+                        action = 'store',
+                        default = None,
+                        type = str,
+                        help = 'The pcloud account password. [ None ]')
+    parser.add_argument('-P', '--password',
+                        action = 'store',
+                        default = None,
+                        type = str,
+                        help = 'The pcloud account password. [ None ]')
+  
 check.register_class(pcloud_credentials)
