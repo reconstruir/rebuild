@@ -12,6 +12,7 @@ class pcloud_error(Exception):
     1002: 'No full path or folderid provided.',
     1004: 'No fileid or path provided.',
     1006: 'Please provide flags.',
+    1007: 'Invalid or closed file descriptor.',
     2000: 'Log in failed.',
     2001: 'Invalid file/folder name.',
     2003: 'Access denied. You do not have permissions to preform this operation.',

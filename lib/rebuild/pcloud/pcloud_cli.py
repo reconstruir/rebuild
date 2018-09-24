@@ -14,6 +14,7 @@ from rebuild.source_finder.source_finder_db import source_finder_db
 from .pcloud import pcloud
 from .pcloud_error import pcloud_error
 from .pcloud_metadata import pcloud_metadata
+from .pcloud_credentials import pcloud_credentials
 
 class pcloud_cli(object):
 
@@ -105,12 +106,47 @@ class pcloud_cli(object):
     # checksum
     checksum_parser = subparsers.add_parser('chk', help = 'Checksum file.')
     self._add_common_options(checksum_parser)
+    checksum_parser.add_argument('-i', '--use-id',
+                                 action = 'store_true',
+                                 default = False,
+                                 help = 'Use pcloud id instead of path. [ False ]')
     checksum_parser.add_argument('filename',
                                  action = 'store',
                                  default = '/',
                                  type = str,
                                  help = 'The folder to list. [ / ]')
 
+    # download
+    download_parser = subparsers.add_parser('download', help = 'Download file.')
+    self._add_common_options(download_parser)
+    download_parser.add_argument('-i', '--use-id',
+                                 action = 'store_true',
+                                 default = False,
+                                 help = 'Use pcloud id instead of path. [ False ]')
+    download_parser.add_argument('filename',
+                                 action = 'store',
+                                 default = '/',
+                                 type = str,
+                                 help = 'The folder to list. [ / ]')
+    download_parser.add_argument('dest_filename',
+                                 action = 'store',
+                                 default = None,
+                                 type = str,
+                                 help = 'The detination filenamt. [ / ]')
+
+    # cat
+    cat_parser = subparsers.add_parser('cat', help = 'Cat file.')
+    self._add_common_options(cat_parser)
+    cat_parser.add_argument('-i', '--use-id',
+                            action = 'store_true',
+                            default = False,
+                            help = 'Use pcloud id instead of path. [ False ]')
+    cat_parser.add_argument('filename',
+                            action = 'store',
+                            default = '/',
+                            type = str,
+                            help = 'The folder to list. [ / ]')
+    
     # upload
     upload_parser = subparsers.add_parser('upload', help = 'Upload file.')
     self._add_common_options(upload_parser)
@@ -145,16 +181,21 @@ class pcloud_cli(object):
     
   def main(self):
     args = self._parser.parse_args()
-    if not args.email:
-      print('No pcloud email given.  Set PCLOUD_EMAIL or use the --email flag')
-      raise SystemExit(1)
-    if not args.password:
-      print('No pcloud password given.  Set PCLOUD_PASSWORD or use the --password flag')
-      raise SystemExit(1)
-    
-    self._email = args.email
-    self._password = args.password
 
+    if args.email or args.password:
+      credentials = pcloud_credentials.from_command_line_args(args.email, args.password)
+      del args.email
+      del args.password
+    else:
+      credentials = pcloud_credentials.from_environment()
+
+    if not credentials.is_valid():
+      print('No pcloud email or password given.  Set PCLOUD_EMAIL/PCLOUD_PASSWORD or use the --email/--password flag')
+      raise SystemExit(1)
+      
+    self._pcloud = pcloud(credentials)
+    del credentials
+      
     try:
       if args.command == 'ls':
         return self._command_ls(args.folder, args.recursive, args.reversed, args.tree, args.checksums,
@@ -166,7 +207,11 @@ class pcloud_cli(object):
       elif args.command == 'rmdir':
         return self._command_rmdir(args.folder, args.recursive, args.use_id)
       elif args.command == 'chk':
-        return self._command_checksum_file(args.filename)
+        return self._command_checksum_file(args.filename, args.use_id)
+      elif args.command == 'download':
+        return self._command_download(args.filename, args.dest_filename, args.use_id)
+      elif args.command == 'cat':
+        return self._command_cat(args.filename, args.use_id)
       elif args.command == 'upload':
         return self._command_upload(args.filename, args.folder, args.use_id)
       elif args.command == 'sync':
@@ -224,11 +269,10 @@ class pcloud_cli(object):
       return clazz.__bases__[0].__new__(clazz, size, name, item.pcloud_id, content_type, item.checksum)
 
   def _command_ls(self, folder, recursive, reversed, tree, checksums, long_form, use_id, human_readable):
-    pc = pcloud(self._email, self._password)
     if use_id:
-      items = pc.list_folder(folder_id = folder, recursive = recursive, checksums = checksums)
+      items = self._pcloud.list_folder(folder_id = folder, recursive = recursive, checksums = checksums)
     else:
-      items = pc.list_folder(folder_path = folder, recursive = recursive, checksums = checksums)
+      items = self._pcloud.list_folder(folder_path = folder, recursive = recursive, checksums = checksums)
     if tree:
       self._print_items_tree(folder, items, human_readable)
     else:
@@ -258,38 +302,51 @@ class pcloud_cli(object):
         self._print_items(item.contents, long_form, human_readable)
   
   def _command_rm(self, filename, use_id):
-    pc = pcloud(self._email, self._password)
     if use_id:
-      items = pc.delete_file(file_id = filename)
+      items = self._pcloud.delete_file(file_id = filename)
     else:
-      items = pc.delete_file(file_path = filename)
+      items = self._pcloud.delete_file(file_path = filename)
     return 0
   
   def _command_mkdir(self, folder, parents):
-    pc = pcloud(self._email, self._password)
-    rv = pc.create_folder(folder_path = folder)
+    rv = self._pcloud.create_folder(folder_path = folder)
     return 0
   
   def _command_rmdir(self, folder, recursive, use_id):
-    pc = pcloud(self._email, self._password)
     if use_id:
-      rv = pc.delete_folder(folder_id = folder, recursive = recursive)
+      rv = self._pcloud.delete_folder(folder_id = folder, recursive = recursive)
     else:
-      rv = pc.delete_folder(folder_path = folder, recursive = recursive)
+      rv = self._pcloud.delete_folder(folder_path = folder, recursive = recursive)
     return 0
   
-  def _command_checksum_file(self, filename):
-    pc = pcloud(self._email, self._password)
-    chk = pc.checksum_file(file_path = filename)
-    print(chk)
+  def _command_checksum_file(self, filename, use_id):
+    if use_id:
+      checksum = self._pcloud.checksum_file(file_id = filename)
+    else:
+      checksum = self._pcloud.checksum_file(ile_path = filename)
+    print(checksum)
+    return 0
+
+  def _command_download(self, filename, dest_filename, use_id):
+    if use_id:
+      self._pcloud.download_to_file(dest_filename, file_id = filename)
+    else:
+      self._pcloud.download_to_file(dest_filename, file_path = filename)
+    return 0
+
+  def _command_cat(self, filename, use_id):
+    if use_id:
+      data = self._pcloud.download_to_bytes(file_id = filename)
+    else:
+      data = self._pcloud.download_to_bytes(file_path = filename)
+    print(data)
     return 0
 
   def _command_upload(self, filename, folder, use_id):
-    pc = pcloud(self._email, self._password)
     if use_id:
-      pc.upload_file(filename, path.basename(filename), folder_id = folder)
+      self._pcloud.upload_file(filename, path.basename(filename), folder_id = folder)
     else:
-      pc.upload_file(filename, path.basename(filename), folder_path = folder)
+      self._pcloud.upload_file(filename, path.basename(filename), folder_path = folder)
     return 0
 
   def _command_sync(self, local_folder, remote_folder):
@@ -301,13 +358,12 @@ class pcloud_cli(object):
     local_dict = db.checksum_dict()
 #    for k, v in local_dict.items():
 #      print(' LOCAL: %s %s' % (k, v))
-    pc = pcloud(self._email, self._password)
     remote_db_path = path.join(remote_folder, source_finder_db.DB_FILENAME)
     
     print('fetching remote db: %s' % (remote_folder))
 
     print('fetching remote files: %s' % (remote_folder))
-    remote_items = pc.list_folder(folder_path = remote_folder, recursive = True, checksums = True)
+    remote_items = self._pcloud.list_folder(folder_path = remote_folder, recursive = True, checksums = True)
     print('done fetching remote files: %s' % (remote_folder))
     remote_dict = self._items_to_dict(remote_folder, remote_items)
 #    for k, v in remote_dict.items():
@@ -321,9 +377,9 @@ class pcloud_cli(object):
       remote_path = path.join(remote_folder, k)
       #print('NOT IN REMOTE: %s %s' % (k, v))
       print('Uploading: %s' % (remote_path))
-      pc.upload_file(local_path, path.basename(local_path), folder_path = path.dirname(remote_path))
+      self._pcloud.upload_file(local_path, path.basename(local_path), folder_path = path.dirname(remote_path))
     print('Uploading db file: %s' % (db.db_filename))
-    pc.upload_file(db.db_filename, path.basename(db.db_filename), folder_path = remote_folder)
+    self._pcloud.upload_file(db.db_filename, path.basename(db.db_filename), folder_path = remote_folder)
     return 0
   
   @classmethod

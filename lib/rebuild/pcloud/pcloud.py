@@ -1,22 +1,27 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import hashlib, os.path as path, requests, urlparse
+import hashlib, os.path as path, requests
+from io import BytesIO
+from collections import namedtuple
+
+from bes.compat.url_compat import urljoin
 from bes.common import check, node
 from bes.fs import file_path
 
 from .pcloud_error import pcloud_error
 from .pcloud_metadata import pcloud_metadata
 
+
 class pcloud(object):
 
   API = 'https://api.pcloud.com'
   
-  def __init__(self, email, password):
+  def __init__(self, credentials):
+    check.check_pcloud_credentials(credentials)
     digest = self._get_digest()
-    password_digest = self._make_password_digest(digest, email, password)
-    self._auth_token = self._get_auth_token(digest, email, password_digest)
-    del email
-    del password
+    password_digest = self._make_password_digest(digest, credentials.email, credentials.password)
+    self._auth_token = self._get_auth_token(digest, credentials.email, password_digest)
+    del credentials
 
   def list_folder(self, folder_path = None, folder_id = None, recursive = False, checksums = False):
     if not folder_path and not folder_id:
@@ -193,6 +198,35 @@ class pcloud(object):
     assert 'sha1' in payload
     return payload['sha1']
 
+  getfilelink_result = namedtuple('getfilelink_result', 'path, expires, hosts')
+  def getfilelink(self, file_path = None, file_id = None):
+    if not file_path and not file_id:
+      raise ValueError('Etiher file_path or file_id should be given.')
+    elif file_path and file_id:
+      raise ValueError('Only one of file_path or file_id should be given.')
+    url = self._make_api_url('getfilelink')
+    params = {
+      'auth': self._auth_token,
+    }
+    what = ''
+    if file_path:
+      what = file_path
+      params.update({ 'path': file_path })
+    if file_id:
+      what = file_id
+      params.update({ 'fileid': file_id })
+    response = requests.get(url, params = params)
+    if response.status_code != 200:
+      raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
+    payload = response.json()
+    assert 'result' in payload
+    if payload['result'] != 0:
+      raise pcloud_error(payload['result'], what)
+    assert 'path' in payload
+    assert 'expires' in payload
+    assert 'hosts' in payload#path, expires, hosts
+    return self.getfilelink_result(payload['path'], payload['expires'], payload['hosts'])
+
   def upload_file(self, local_path, cloud_filename, folder_path = None, folder_id = None):
     if not path.isfile(local_path):
       raise IoError('File not found: %s' % (local_path))
@@ -232,7 +266,28 @@ class pcloud(object):
       raise pcloud_error(payload['result'], what)
     assert 'metadata' in payload
     return payload['metadata']
-  
+
+  def download_to_file(self, target, file_path = None, file_id = None):
+    'Download file to target.'
+    links = self.getfilelink(file_path = file_path, file_id = file_id)
+    url = 'https://{host}{path}'.format(host = links.hosts[0], path = links.path)
+    req = requests.get(url, stream = True)
+    with open(target, 'wb') as fout:
+      for chunk in req.iter_content(chunk_size = 1024): 
+        if chunk: # filter out keep-alive new chunks
+          fout.write(chunk)
+
+  def download_to_bytes(self, file_path = None, file_id = None):
+    'Download file to target.'
+    links = self.getfilelink(file_path = file_path, file_id = file_id)
+    url = 'https://{host}{path}'.format(host = links.hosts[0], path = links.path)
+    req = requests.get(url, stream = True)
+    buf = BytesIO()
+    for chunk in req.iter_content(chunk_size = 1024): 
+      if chunk: # filter out keep-alive new chunks
+        buf.write(chunk)
+    return buf.getvalue()
+          
   @classmethod
   def _make_password_digest(clazz, digest, email, password):
     'Make a password digest.'
@@ -270,7 +325,7 @@ class pcloud(object):
   
   @classmethod
   def _make_api_url(clazz, method):
-    return urlparse.urljoin(clazz.API, method)
+    return urljoin(clazz.API, method)
 
   @classmethod
   def _make_item_node(clazz, item):
@@ -292,17 +347,11 @@ class pcloud(object):
     return clazz._make_item_node(pcloud_metadata(folder, 0, True, 0, None, 'dir', '0', items or [], 0))
 
   # File flags from https://docs.pcloud.com/methods/fileops/file_open.html
-#  O_READ = 0x0001
   O_WRITE = 0x0002
   O_CREAT = 0x0040
   O_EXCL = 0x0080
   O_TRUNC = 0x0200
   O_APPEND = 0x0400
-
-#  path	string path to the file, for which the file descirptior is created.
-#fileid	int id of the folder, for which the file descirptior is created.
-#folderid	int id of the folder, in which new file is created and file descirptior is returned.
-#name	string name of the file, in which new file is created and file descirptior is returned.
 
   # FIXME: check arguments for inconsistencies
   def file_open(self, flags, file_path = None, file_id = None, folder_id = None, filename = None):
@@ -327,12 +376,57 @@ class pcloud(object):
       params.update({ 'folderid': folder_id })
     if filename:
       params.update({ 'name': filename })
+    print('file_open params: %s' % (params))
     response = requests.get(url, params = params)
     if response.status_code != 200:
       raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
     payload = response.json()
+    print('file_open: PAYLOAD: %s' % (payload))
     assert 'result' in payload
     if payload['result'] != 0:
       raise pcloud_error(payload['result'], what)
     assert 'fd' in payload
     return payload['fd']
+
+  file_size_result = namedtuple('file_size_result', 'size, offset')
+  def file_size(self, fd):
+    url = self._make_api_url('file_size')
+    params = {
+      'auth': self._auth_token,
+      'fd': fd,
+    }
+    what = str(fd)
+    response = requests.get(url, params = params)
+    if response.status_code != 200:
+      raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
+    payload = response.json()
+    print('file_size: PAYLOAD: %s' % (payload))
+    assert 'result' in payload
+    if payload['result'] != 0:
+      raise pcloud_error(payload['result'], what)
+    assert 'size' in payload
+    assert 'offset' in payload
+    return self.file_size_result(payload['size'], payload['offset'])
+  
+  def file_read(self, fd, count):
+    url = self._make_api_url('file_read')
+    params = {
+      'auth': self._auth_token,
+      'fd': fd,
+      'count': count,
+    }
+    what = str(fd)
+    response = requests.get(url, params = params)
+    if response.status_code != 200:
+      raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
+    import pprint
+    print('RESPONSE: %s' % (pprint.pformat(response)))
+    print('CONTENT: %s' % (response.content))
+    print('CONTENT-TYPE: %s' % (response.content_type))
+#    payload = response.json()
+#    assert 'result' in payload
+#    if payload['result'] != 0:
+#      raise pcloud_error(payload['result'], what)
+#    assert 'fd' in payload
+#    return payload['fd']
+ 
