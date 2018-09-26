@@ -49,5 +49,10 @@ class test_source_finder_db_file(unit_test):
     f['c/baz.tgz'] = E('c/baz.tgz', 66.8, 'c3')
     self.assertMultiLineEqual( self.TEST_JSON, f.to_json() )
     
+  def test_files(self):
+    f = F.from_json(self.TEST_JSON)
+    print('FUCK: %s' % (type(f)))
+    self.assertEqual( [ 'a/foo.tgz', 'b/bar.tgz', 'c/baz.tgz' ], F.from_json(self.TEST_JSON).files() )
+    
 if __name__ == '__main__':
   unit_test.main()
