@@ -272,6 +272,7 @@ class pcloud(object):
     links = self.getfilelink(file_path = file_path, file_id = file_id)
     url = 'https://{host}{path}'.format(host = links.hosts[0], path = links.path)
     req = requests.get(url, stream = True)
+    file_util.ensure_file_dir(target)
     with open(target, 'wb') as fout:
       for chunk in req.iter_content(chunk_size = 1024): 
         if chunk: # filter out keep-alive new chunks

@@ -2,9 +2,10 @@
 
 import os
 from collections import namedtuple
+from bes.common import check
 from bes.fs import file_checksum, file_util
 
-class source_item(namedtuple('source_item', 'filename, mtime, checksum')):
+class source_finder_db_entry(namedtuple('source_finder_db_entry', 'filename, mtime, checksum')):
   
   def __new__(clazz, filename, mtime, checksum):
     return clazz.__bases__[0].__new__(clazz, filename, mtime, checksum)
@@ -17,4 +18,15 @@ class source_item(namedtuple('source_item', 'filename, mtime, checksum')):
       file_path = filename
     mtime = file_util.mtime(file_path)
     checksum = file_checksum.file_checksum(file_path, 'sha1')
-    return clazz.__bases__[0].__new__(clazz, filename, mtime, checksum)
+    return clazz(filename, mtime, checksum)
+
+  @classmethod
+  def from_list(clazz, l):
+    check.check_list(l)
+    filename = l[0]
+    mtime = l[1]
+    checksum = l[2]
+    return clazz(filename, mtime, checksum)
+
+  def to_list(self):
+    return list(self)

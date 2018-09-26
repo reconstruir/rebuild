@@ -2,7 +2,7 @@
 
 from .source_finder import source_finder
 
-class hard_coded_source_finder(source_finder):
+class source_finder_hard_coded(source_finder):
 
   def __init__(self, tarball, name, version):
     self._check_archive_valid(tarball)

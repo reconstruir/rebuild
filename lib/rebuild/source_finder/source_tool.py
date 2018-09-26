@@ -6,7 +6,7 @@ from bes.archive import archiver
 from bes.fs import file_checksum_list, file_find
 
 from .tarball_finder import tarball_finder
-from .source_item import source_item
+from .source_finder_db_entry import source_finder_db_entry
 
 class source_tool(object):
 

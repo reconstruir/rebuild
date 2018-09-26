@@ -15,7 +15,7 @@ from bes.text import text_table
 #from .pcloud_metadata import pcloud_metadata
 
 from .tarball_finder import tarball_finder
-from .source_item import source_item
+from .source_finder_db_entry import source_finder_db_entry
 from .source_tool import source_tool
 
 class source_tool_cli(object):
