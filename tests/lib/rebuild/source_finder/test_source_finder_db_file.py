@@ -51,8 +51,50 @@ class test_source_finder_db_file(unit_test):
     
   def test_files(self):
     f = F.from_json(self.TEST_JSON)
-    print('FUCK: %s' % (type(f)))
     self.assertEqual( [ 'a/foo.tgz', 'b/bar.tgz', 'c/baz.tgz' ], F.from_json(self.TEST_JSON).files() )
+
+  def test_delta(self):
+
+    JSON_A = '''{
+  "a/apple.tgz": [
+    "apple/foo.tgz", 
+    66.6, 
+    "c1"
+  ], 
+  "s/strawberry.tgz": [
+    "s/strawberry.tgz", 
+    66.7, 
+    "c2"
+  ], 
+  "k/kiwi.tgz": [
+    "k/kiwi.tgz", 
+    66.8, 
+    "c3"
+  ]
+}'''
+
+    JSON_B = '''{
+  "a/apple.tgz": [
+    "apple/foo.tgz", 
+    66.6, 
+    "c1"
+  ], 
+  "s/strawberry.tgz": [
+    "s/strawberry.tgz", 
+    66.7, 
+    "c2"
+  ], 
+  "k/kiwi.tgz": [
+    "k/kiwi.tgz", 
+    66.8, 
+    "c3"
+  ]
+}'''
+
+    fa = F.from_json(JSON_A)
+    fb = F.from_json(JSON_B)
+    d = fa.delta(fb)
+    print('DELTA: %s' % (str(d)))
     
 if __name__ == '__main__':
   unit_test.main()

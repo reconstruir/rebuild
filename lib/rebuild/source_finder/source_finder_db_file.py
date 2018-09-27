@@ -1,9 +1,9 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy, json, os.path as path
+from collections import namedtuple
 
 from bes.fs import file_checksum, file_util
-
 from bes.common import check, json_util
 
 from .source_finder_db_entry import source_finder_db_entry
@@ -20,11 +20,12 @@ class source_finder_db_file(object):
     return self._db[key]
 
   def __setitem__(self, key, item):
+    check.check_source_finder_db_entry(item)
     self._db[key] = item
-    
-  def __set_item____init__(self):
-    self._db = {}
 
+  def __iter__(self, o):
+    return iter(self._db)
+    
   def __eq__(self, o):
     if isinstance(o, self.__class__):
       return self._db == o._db
@@ -32,6 +33,9 @@ class source_finder_db_file(object):
       return self._db == o
     raise TypeError('Invalid type for o: %s' % (type(o)))
 
+  def get(self, key, default = None):
+    return self._db.get(key, default)
+  
   def save_to_file(self, filename):
     json_util.save_file(filename, self._db, indent = 2)
 
@@ -58,3 +62,24 @@ class source_finder_db_file(object):
   def files(self):
     return sorted(self._db.keys())
   
+  def checksum(self, filename):
+    return self._db[filename].checksum
+
+  def mtime(self, filename):
+    return self._db[filename].mtime
+
+  def items(self):
+    return self._db.items()
+
+  def checksum_dict(self):
+    d = {}
+    for filename, item in self._db.items():
+      d[filename] = item.checksum
+    return d
+  
+  delta_result = namedtuple('delta_result', 'common, conflicts, in_a_only, in_b_only')
+  def delta(self, other):
+    check.check_source_finder_db_file(other)
+    return None
+    
+check.register_class(source_finder_db_file)

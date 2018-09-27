@@ -1,6 +1,5 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import os
 from collections import namedtuple
 from bes.common import check
 from bes.fs import file_checksum, file_util
@@ -30,3 +29,5 @@ class source_finder_db_entry(namedtuple('source_finder_db_entry', 'filename, mti
 
   def to_list(self):
     return list(self)
+
+check.register_class(source_finder_db_entry)

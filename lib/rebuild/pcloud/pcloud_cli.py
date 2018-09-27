@@ -10,6 +10,7 @@ from bes.text import text_table
 
 from rebuild.source_finder import source_tool
 from rebuild.source_finder.source_finder_db import source_finder_db
+from rebuild.source_finder.source_finder_db_file import source_finder_db_file
 
 from .pcloud import pcloud
 from .pcloud_error import pcloud_error
@@ -347,7 +348,10 @@ class pcloud_cli(object):
     remote_db_path = path.join(remote_folder, source_finder_db.DB_FILENAME)
     
     print('fetching remote db: %s' % (remote_folder))
-
+    remote_db_json = self._pcloud.download_to_bytes(file_path = remote_db_path)
+    print('done fetching remote db: %s' % (remote_folder))
+    print(remote_db_json)
+    
     print('fetching remote files: %s' % (remote_folder))
     remote_items = self._pcloud.list_folder(folder_path = remote_folder, recursive = True, checksums = True)
     print('done fetching remote files: %s' % (remote_folder))
