@@ -80,6 +80,18 @@ class source_finder_db_file(object):
   delta_result = namedtuple('delta_result', 'common, conflicts, in_a_only, in_b_only')
   def delta(self, other):
     check.check_source_finder_db_file(other)
+    db_a = self
+    db_b = other
+    set_a = set(db_a.checksum_dict())
+    set_b = set(db_b.checksum_dict())
+    in_a_only = set_a - set_b
+    in_b_only = set_b - set_a
+    in_both = set_a | set_b
+
+    print('in_a_only: %s' % (str(in_a_only)))
+    print('in_b_only: %s' % (str(in_b_only)))
+    print('in_both: %s' % (str(in_both)))
+    
     return None
     
 check.register_class(source_finder_db_file)

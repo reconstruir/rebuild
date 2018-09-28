@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from bes.common import json_util
+from bes.common import json_util, string_util
 import json, os.path as path
 
 from rebuild.source_finder import source_finder_db_file as F
@@ -54,47 +54,31 @@ class test_source_finder_db_file(unit_test):
     self.assertEqual( [ 'a/foo.tgz', 'b/bar.tgz', 'c/baz.tgz' ], F.from_json(self.TEST_JSON).files() )
 
   def test_delta(self):
-
-    JSON_A = '''{
-  "a/apple.tgz": [
-    "apple/foo.tgz", 
-    66.6, 
-    "c1"
-  ], 
-  "s/strawberry.tgz": [
-    "s/strawberry.tgz", 
-    66.7, 
-    "c2"
-  ], 
-  "k/kiwi.tgz": [
-    "k/kiwi.tgz", 
-    66.8, 
-    "c3"
-  ]
-}'''
-
-    JSON_B = '''{
-  "a/apple.tgz": [
-    "apple/foo.tgz", 
-    66.6, 
-    "c1"
-  ], 
-  "s/strawberry.tgz": [
-    "s/strawberry.tgz", 
-    66.7, 
-    "c2"
-  ], 
-  "k/kiwi.tgz": [
-    "k/kiwi.tgz", 
-    66.8, 
-    "c3"
-  ]
-}'''
-
-    fa = F.from_json(JSON_A)
-    fb = F.from_json(JSON_B)
+    fa = self._parse_db('apple/foo.tgz 66.6 c1, s/strawberry.tgz 66.7 c2, k/kiwi.tgz 66.8 c3')
+    fb = self._parse_db('apple/foo.tgz 66.6 c1, s/strawberry.tgz 66.7 c2, k/kiwi.tgz 66.8 c3')
     d = fa.delta(fb)
     print('DELTA: %s' % (str(d)))
-    
+
+
+  @classmethod
+  def _parse_item(clazz, s):
+    parts = string_util.split_by_white_space(s, strip = True)
+    assert len(parts) == 3
+    name = parts[0]
+    mtime = float(parts[1])
+    checksum = parts[2]
+    return E(name, mtime, checksum)
+
+  @classmethod
+  def _parse_db(clazz, s):
+    db = {}
+    for x in s.split(','):
+      x = x.strip()
+      if x:
+        item = clazz._parse_item(x)
+        assert not item.filename in db
+        db[item.filename] = item
+    return F(db = db)
+  
 if __name__ == '__main__':
   unit_test.main()
