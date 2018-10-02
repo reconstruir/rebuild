@@ -26,6 +26,9 @@ class source_finder_db_file(object):
   def __iter__(self, o):
     return iter(self._db)
     
+  def items(self, o):
+    return sorted(self._db.values())
+    
   def __eq__(self, o):
     if isinstance(o, self.__class__):
       return self._db == o._db
@@ -88,6 +91,8 @@ class source_finder_db_file(object):
     in_b_only = set_b - set_a
     in_both = set_a | set_b
 
+    #delta_result = namedtuple('delta_result', 'common, conflicts, in_a_only, in_b_only')
+      
     print('in_a_only: %s' % (str(in_a_only)))
     print('in_b_only: %s' % (str(in_b_only)))
     print('in_both: %s' % (str(in_both)))

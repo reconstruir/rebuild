@@ -10,6 +10,9 @@ class source_finder_chain(object):
   def __init__(self):
     self._finders = []
 
+  def __str__(self):
+    return ', '.join([ str(f) for f in self._finders ])
+    
   def add_finder(self, finder):
     check.check(finder, source_finder)
     assert finder not in self._finders

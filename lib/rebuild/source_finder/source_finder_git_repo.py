@@ -12,6 +12,9 @@ class source_finder_git_repo(source_finder):
     self.no_network = no_network
     self.update_only_once = update_only_once
     self._updated = False
+
+  def __str__(self):
+    return 'git_repo:%s' % (self.repo)
     
   #@abstractmethod
   def find_source(self, name, version, system):
