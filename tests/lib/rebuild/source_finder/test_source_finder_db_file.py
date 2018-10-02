@@ -59,7 +59,6 @@ class test_source_finder_db_file(unit_test):
     d = fa.delta(fb)
     print('DELTA: %s' % (str(d)))
 
-
   @classmethod
   def _parse_item(clazz, s):
     parts = string_util.split_by_white_space(s, strip = True)
@@ -79,6 +78,14 @@ class test_source_finder_db_file(unit_test):
         assert not item.filename in db
         db[item.filename] = item
     return F(db = db)
+  
+  @classmethod
+  def _db_item_to_string(clazz, item):
+    return '%s %s %s' % (item.filename, item.mtime, item.checksum)
+  
+  @classmethod
+  def _db_to_string(clazz, db):
+    return ', '.join([ clazz._db_item_to_string(item) for item in db.items() ])
   
 if __name__ == '__main__':
   unit_test.main()
