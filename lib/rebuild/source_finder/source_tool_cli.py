@@ -11,19 +11,39 @@ from bes.common import node
 from bes.text import text_table
 
 #from .pcloud import pcloud
-#from .pcloud_error import pcloud_error
 #from .pcloud_metadata import pcloud_metadata
 
 from .tarball_finder import tarball_finder
 from .source_finder_db_entry import source_finder_db_entry
 from .source_tool import source_tool
 
+from rebuild.pcloud import pcloud, pcloud_error, pcloud_credentials
+
 class source_tool_cli(object):
 
   def __init__(self):
     self._parser = argparse.ArgumentParser(description = 'Tool to deal with rebuild sources.')
+    pcloud_credentials.add_command_line_args(self._parser)
     subparsers = self._parser.add_subparsers(help = 'commands', dest = 'command')
 
+    # publish
+    publish_parser = subparsers.add_parser('publish', help = 'Publish a source tarball to cloud.')
+    publish_parser.add_argument('filename',
+                                action = 'store',
+                                default = None,
+                                type = str,
+                                help = 'The tarball to publish to cloud. [ None ]')
+    publish_parser.add_argument('remote_folder',
+                                action = 'store',
+                                default = None,
+                                type = str,
+                                nargs = '?',
+                                help = 'Optional remote folder to publish to. [ None ]')
+    publish_parser.add_argument('--dry-run',
+                                action = 'store_true',
+                                default = False,
+                                help = 'Do not do any work.  Just print what would happen. [ False ]')
+    
     # find
     find_parser = subparsers.add_parser('find', help = 'Find source in a directory.')
     find_parser.add_argument('directory',
@@ -44,83 +64,18 @@ class source_tool_cli(object):
                            type = str,
                            help = 'The file to delete. [ None ]')
     
-    # mkdir
-    mkdir_parser = subparsers.add_parser('mkdir', help = 'Make directory.')
-    mkdir_parser.add_argument('-p', '--parents',
-                              action = 'store_true',
-                              default = False,
-                              help = 'no error if existing, make parent directories as needed. [ False ]')
-    mkdir_parser.add_argument('folder',
-                              action = 'store',
-                              default = None,
-                              type = str,
-                              help = 'The folder to make. [ None ]')
-    
-    # rmdir
-    rmdir_parser = subparsers.add_parser('rmdir', help = 'Make directory.')
-    rmdir_parser.add_argument('-r', '--recursive',
-                              action = 'store_true',
-                              default = False,
-                              help = 'Recurse into subdirs. [ False ]')
-    rmdir_parser.add_argument('-i', '--use-id',
-                              action = 'store_true',
-                              default = False,
-                              help = 'Use pcloud id instead of path. [ False ]')
-    rmdir_parser.add_argument('folder',
-                              action = 'store',
-                              default = None,
-                              type = str,
-                              help = 'The folder to remove. [ None ]')
-    
-    
-    # checksum
-    checksum_parser = subparsers.add_parser('chk', help = 'Checksum file.')
-    checksum_parser.add_argument('filename',
-                                 action = 'store',
-                                 default = '/',
-                                 type = str,
-                                 help = 'The folder to list. [ / ]')
-
-    # upload
-    upload_parser = subparsers.add_parser('upload', help = 'Upload file.')
-    upload_parser.add_argument('-i', '--use-id',
-                               action = 'store_true',
-                               default = False,
-                               help = 'Use pcloud id instead of path. [ False ]')
-    upload_parser.add_argument('filename',
-                               action = 'store',
-                               default = None,
-                               type = str,
-                               help = 'The file to upload. [ None ]')
-    upload_parser.add_argument('folder',
-                               action = 'store',
-                               default = None,
-                               type = str,
-                               help = 'The destination folder or folder_id. [ None ]')
-
-    
-###    # Bulbs
-###    bulbs_parser = subparsers.add_parser('bulbs', help = 'List bulbs.')
-###    self._add_common_options(bulbs_parser)
-###
-###
-###    command_group = self.parser.add_mutually_exclusive_group()
-###    command_group.add_argument('--list-all', action = 'store_true')
-###    command_group.add_argument('--modversion', nargs = '+', action = 'store',
-###                               help = 'Print the version for the given modules.')
-###    command_group.add_argument('--cflags', nargs = '+', action = 'store',
-###                               help = 'Print the cflags for the given modules.')
-###    command_group.add_argument('--print-requires', nargs = '+', action = 'store',
-###                               help = 'Print the requires property for the given modules.')
-###    self.pc = caca_pkg_config(self.PKG_CONFIG_PATH.path)
-    
   def main(self):
     args = self._parser.parse_args()
-#    self._email = args.email
-#    self._password = args.password
+    credentials = pcloud_credentials.resolve_command_line(args)
+    credentials.validate_or_bail()
+    self._pcloud = pcloud(credentials)
+    self._pcloud_root_dir = credentials.root_dir
+    del credentials
 
     if args.command == 'find':
       return self._command_find(args.directory)
+    elif args.command == 'publish':
+      return self._command_publish(args.filename, args.remote_folder, args.dry_run)
     elif args.command == 'sync':
       return self._command_sync(args.local_directory, args.remote_directory)
       
@@ -130,75 +85,33 @@ class source_tool_cli(object):
     source_tool.update_sources_index(directory)
     return 0
 
-  def _make_item_node(self, item):
-    if item.is_folder:
-      if item.name != '/':
-        name = '%s/' % (item.name)
+  def _remote_path(self, filename, remote_folder):
+    filename = path.basename(filename)
+    if remote_folder:
+      return path.join(self._pcloud_root_dir, remote_folder, filename)
+    else:
+      return path.join(self._pcloud_root_dir, filename[0].lower(), filename)
+  
+  def _command_publish(self, filename, remote_folder, dry_run):
+    if not path.isfile(filename):
+      raise IOError('File not found: %s' % (filename))
+    remote_path = self._remote_path(filename, remote_folder)
+    try:
+      remote_checksum = self._pcloud.checksum_file(file_path = remote_path)
+    except pcloud_error as ex:
+      if ex.code == pcloud_error.FILE_NOT_FOUND:
+        remote_checksum = None
       else:
-        name = '/'
+        raise ex
+    local_checksum = file_util.checksum('sha1', filename)
+    if remote_checksum == local_checksum:
+      print('Already exists: %s' % (remote_path))
+      return 0
+    if dry_run:
+      print('Would upload %s => %s' % (filename, remote_path))
     else:
-      name = item.name
-    n = node(name)
-    for child in item.contents or []:
-      child_node = self._make_item_node(child)
-      n.children.append(child_node)
-    return n
-  
-  def _print_items_tree(self, folder, items, human_readable):
-    if not items:
-      return
-    root = self._make_item_node(pcloud_metadata(folder, 0, True, 0, None, 'dir', '0', items, 0))
-    print(root.to_string(indent = 2))
-
-  def _print_items(self, items, long_form, human_readable):
-    if not items:
-      return
-    if long_form:
-      data = [ self.list_item_long(item, human_readable) for item in items ]
-      table = text_table(data = data, column_delimiter = '  ')
-      table.set_labels( ( 'SIZE', 'NAME', 'PCLOUD ID', 'CONTENT TYPE', 'CHECKSUM' ) )
-      print(table)
-    else:
-      data = [ self.list_item_short(item) for item in items ]
-      print(' '.join([ str(item) for item in data ]))
-    for item in items:
-      if item.contents:
-        print('\n%s:' % (item.name))
-        self._print_items(item.contents, long_form, human_readable)
-  
-  def _command_rm(self, filename, use_id):
-    pc = pcloud(self._email, self._password)
-    if use_id:
-      items = pc.delete_file(file_id = filename)
-    else:
-      items = pc.delete_file(file_path = filename)
-    return 0
-  
-  def _command_mkdir(self, folder, parents):
-    pc = pcloud(self._email, self._password)
-    rv = pc.create_folder(folder_path = folder)
-    return 0
-  
-  def _command_rmdir(self, folder, recursive, use_id):
-    pc = pcloud(self._email, self._password)
-    if use_id:
-      rv = pc.delete_folder(folder_id = folder, recursive = recursive)
-    else:
-      rv = pc.delete_folder(folder_path = folder, recursive = recursive)
-    return 0
-  
-  def _command_checksum_file(self, filename):
-    pc = pcloud(self._email, self._password)
-    chk = pc.checksum_file(file_path = filename)
-    print(chk)
-    return 0
-
-  def _command_upload(self, filename, folder, use_id):
-    pc = pcloud(self._email, self._password)
-    if use_id:
-      pc.upload_file(filename, path.basename(filename), folder_id = folder)
-    else:
-      pc.upload_file(filename, path.basename(filename), folder_path = folder)
+      print('Uploading %s => %s' % (filename, remote_path))
+      self._pcloud.upload_file(filename, path.basename(remote_path), folder_path = path.dirname(remote_path))
     return 0
   
   @classmethod

@@ -38,6 +38,9 @@ class pcloud_credentials(namedtuple('pcloud_credentials', 'email, password, root
 
   @classmethod
   def from_environment(clazz):
+    credentials = os.environ.get('PCLOUD_CREDENTIALS', None)
+    if credentials:
+      return pcloud_credentials.from_file(credentials)
     email = os.environ.get('PCLOUD_EMAIL', None)
     password = os.environ.get('PCLOUD_PASSWORD', None)
     root_dir = os.environ.get('PCLOUD_ROOT_DIR', None)

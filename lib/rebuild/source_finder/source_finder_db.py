@@ -2,7 +2,7 @@
 
 import os.path as path
 
-from bes.fs import file_checksum, file_util, temp_file
+from bes.fs import file_util, temp_file
 
 from bes.common import check, json_util
 

@@ -6,6 +6,7 @@ class pcloud_error(Exception):
   PARENT_DIR_MISSING = 2002
   ALREADY_EXISTS = 2004
   HTTP_ERROR = 9999
+  FILE_NOT_FOUND = 2009
   
   CODES = {
     1001: 'No full path or name/folderid provided.',
@@ -20,7 +21,7 @@ class pcloud_error(Exception):
     2006: 'Folder is not empty.',
     2007: 'Cannot delete the root folder.',
     2008: 'User is over quota.',
-    2009: 'File not found.',
+    FILE_NOT_FOUND: 'File not found.',
     2010: 'Invalid path.',
     2028: 'There are active shares or sharerequests for this folder.',
     4000: 'Too many login tries from this IP address.',
