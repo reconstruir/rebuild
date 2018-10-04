@@ -872,3 +872,6 @@ rebuild.package.package_manager.PackageFilesConflictError: conflicts found betwe
 2018-10-02
 - add manager test when a package gets removed
 
+2018-10-04
+- ming be ok to retire source_finder.find_source
+- add a find_tarball cache for source_finder

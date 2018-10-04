@@ -62,6 +62,7 @@ class step_setup_prepare_tarballs(step):
       dest = tarball.get_property('dest', '${REBUILD_SOURCE_UNPACKED_DIR}')
       base = tarball.get_property('base', None)
       strip_common_ancestor = bool_util.parse_bool(tarball.get_property('strip_common_ancestor', 'True'))
+      env.source_finder.ensure_source(tarball_path)
       self.blurb('Extracting %s to %s' % (path.relpath(tarball_path), path.relpath(dest)))
       archiver.extract(tarball_path,
                        dest,

@@ -3,24 +3,31 @@
 
 import os.path as path
 
+from bes.fs import file_trash
 from bes.common import check
+from bes.git import git_download_cache, git_util
+
 from rebuild.package import artifact_manager
 from rebuild.tools_manager import tools_manager
 from rebuild.checksum import checksum_manager
 from rebuild.package import artifact_manager
 from rebuild.base import build_blurb, package_descriptor, requirement_manager
-from bes.git import git_download_cache, git_util
-from rebuild.source_finder import source_finder_git_repo, source_finder_local, source_finder_chain
+from rebuild.source_finder import source_finder_git_repo, source_finder_local, source_finder_pcloud, source_finder_chain
 from rebuild.recipe import recipe_load_env
+from rebuild.pcloud import pcloud_credentials
+
 from .builder_script_manager import builder_script_manager
-from bes.fs import file_trash
 
 class builder_env(object):
 
   def __init__(self, config, filenames):
     build_blurb.add_blurb(self, 'rebuild')
     self.config = config
-    self.source_finder = self._make_source_finder(config.build_root, config.source_dir, config.third_party_address, config.no_network)
+    self.source_finder = self._make_source_finder(config.build_root,
+                                                  config.source_dir,
+                                                  config.source_git,
+                                                  config.source_pcloud,
+                                                  config.no_network)
     self.blurb('source_finder: %s' % (self.source_finder))
     self.checksum_manager = self._make_checksum_manager(config.build_root)
     self.tools_manager = self._make_tools_manager(config.build_root)
@@ -37,13 +44,24 @@ class builder_env(object):
     return self.requirement_manager.resolve_deps([descriptor.name], self.config.build_target.system, hardness, include_names)
   
   @classmethod
-  def _make_source_finder(clazz, build_dir, source_dir, address, no_network):
+  def _make_source_finder(clazz, build_dir, source_dir, source_git, source_pcloud, no_network):
     chain = source_finder_chain()
     if source_dir:
-      chain.add_finder(source_finder_local(source_dir))
-    elif address:
-      root = path.join(build_dir, 'third_party_tarballs', git_util.sanitize_address(address))
-      chain.add_finder(source_finder_git_repo(root, address, no_network = no_network, update_only_once = True))
+      finder = source_finder_local(source_dir)
+      chain.add_finder(finder)
+    if source_git:
+      root = path.join(build_dir, 'third_party_tarballs', git_util.sanitize_address(source_git))
+      finder = source_finder_git_repo(root, source_git, no_network = no_network, update_only_once = True)
+      chain.add_finder(finder)
+    if source_pcloud:
+      credentials = pcloud_credentials.from_file(source_pcloud)
+      if not credentials.is_valid():
+        raise RuntimeError('Invalid pcloud credentials: %s' % (source_pcloud))
+      root = path.join(build_dir, 'downloads', 'pcloud')
+      finder = source_finder_pcloud(credentials.root_dir, root, credentials, no_network = no_network)
+      chain.add_finder(finder)
+    if len(chain) == 0:
+        raise RuntimeError('No valid source finders given.')
     return chain
 
   @classmethod

@@ -3,20 +3,16 @@
 
 import sys
 #sys.dont_write_bytecode = True
-import argparse, copy, os, os.path as path
+import argparse, os, os.path as path
 
 from rebuild.base import build_arch, build_blurb, build_system, build_target, build_level
-from bes.key_value import key_value_parser
 from bes.fs import file_util
 
-from bes.system import host
 from bes.python import code
 
 from .builder import builder
 from .builder_config import builder_config
 from .builder_env import builder_env
-
-from bes.git import git_download_cache
 
 class builder_cli(object):
 
@@ -51,11 +47,13 @@ class builder_cli(object):
     self.parser.add_argument('--filter', nargs = '+', default = None, help = 'filter the list of build files to the given list.')
     self.parser.add_argument('-r', '--root', action = 'store', type = str, default = 'BUILD', help = 'Root dir where to store the build.')
     self.parser.add_argument('target_packages', action = 'append', nargs = '*', type = str)
-    self.parser.add_argument('--tps-address', default = None, #builder_config.DEFAULT_THIRD_PARTY_ADDRESS,
+    self.parser.add_argument('--source-git', default = None,
                              action = 'store', type = str,
-                             help = 'Third party sources address. [ %s ]' % (builder_config.DEFAULT_THIRD_PARTY_ADDRESS))
+                             help = 'Third party sources address. [ None ]')
     self.parser.add_argument('--source-dir', default = None, action = 'store', type = str,
-                             help = 'Local source directory to use instead of tps address. [ None]')
+                             help = 'Local source directory to use for sources. [ None]')
+    self.parser.add_argument('--source-pcloud', default = None, action = 'store', type = str,
+                             help = 'Pcloud credentials to use for sources sources. [ None]')
     self.parser.add_argument('--third-party-prefix', default = builder_config.DEFAULT_THIRD_PARTY_PREFIX,
                              action = 'store', type = str,
                              help = 'Prefix for third party source binaries. [ %s _]' % (builder_config.DEFAULT_THIRD_PARTY_PREFIX))
@@ -110,8 +108,9 @@ class builder_cli(object):
     config.skip_tests = args.skip_tests
     config.skip_to_step = args.skip_to_step
     config.source_dir = args.source_dir
+    config.source_pcloud = args.source_pcloud
     config.tools_only = args.tools_only
-    config.third_party_address = args.tps_address
+    config.source_git = args.source_git
     config.users = args.users
     config.verbose = args.verbose
     config.wipe = args.wipe

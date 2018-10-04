@@ -6,7 +6,7 @@ from collections import namedtuple
 
 from bes.compat.url_compat import urljoin
 from bes.common import check, node
-from bes.fs import file_path
+from bes.fs import file_path, file_util
 
 from .pcloud_error import pcloud_error
 from .pcloud_metadata import pcloud_metadata

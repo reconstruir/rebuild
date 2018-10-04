@@ -10,7 +10,6 @@ from bes.system import log
 
 class builder_config(object):
 
-#  DEFAULT_THIRD_PARTY_ADDRESS = 'git@git:third_party_tarballs.git'
   DEFAULT_THIRD_PARTY_PREFIX = 'rebbe_'
   
   def __init__(self):
@@ -21,23 +20,24 @@ class builder_config(object):
                                           archs = build_arch.DEFAULT_HOST_ARCHS)
     self.root_dir = None
     self.deps_only = False
-    self.recipes_only = False
     self.disabled = False
     self.keep_going = False
     self.no_checksums = False
     self.no_network = False
+    self.recipes_only = False
+    self.scratch = False
     self.skip_tests = False
     self.skip_to_step = None
     self.source_dir = None
-    self.tools_only = False
-    self.third_party_address = self.DEFAULT_THIRD_PARTY_ADDRESS
+    self.source_git = None
+    self.source_pcloud = None
+    self.third_party_prefix = self.DEFAULT_THIRD_PARTY_PREFIX
+    self.timestamp = time_util.timestamp()
     self.tmp_dir = None
+    self.tools_only = False
     self.users = False
     self.verbose = False
     self.wipe = False
-    self.scratch = False
-    self.third_party_prefix = self.DEFAULT_THIRD_PARTY_PREFIX
-    self.timestamp = time_util.timestamp()
     self._performance = False
     self.timer = noop_debug_timer('perf', 'debug') 
     self._performance = False
