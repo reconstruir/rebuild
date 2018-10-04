@@ -69,7 +69,7 @@ class source_finder_pcloud(source_finder):
     downloaded_filename = self._downloaded_filename(filename)
     if path.exists(downloaded_filename):
       return True
-    self.blurb('downloading tarball from pcloud:%s to ' % (path.join(self.remote_root_dir, filename),
-                                                           path.relpath(downloaded_filename)))
+    self.blurb('downloading tarball from pcloud:%s to %s' % (path.join(self.remote_root_dir, filename),
+                                                             path.relpath(downloaded_filename)))
     self._download_file(filename)
     return path.exists(downloaded_filename)
