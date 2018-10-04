@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.common import check
@@ -31,6 +30,12 @@ class source_finder_chain(object):
       if result:
         return result
     return None
+
+  def ensure_source(self, filename):
+    for finder in self._finders:
+      result = finder.find_tarball(filename)
+      if result:
+        return finder.ensure_source(filename)
   
 check.register_class(source_finder_chain, include_seq = False)
   

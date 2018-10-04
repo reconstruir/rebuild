@@ -40,10 +40,10 @@ class builder_env(object):
   def _make_source_finder(clazz, build_dir, source_dir, address, no_network):
     chain = source_finder_chain()
     if source_dir:
-     chain.add_finder(source_finder_local(source_dir))
-    else:
-     root = path.join(build_dir, 'third_party_tarballs', git_util.sanitize_address(address))
-     chain.add_finder(source_finder_git_repo(root, address, no_network = no_network, update_only_once = True))
+      chain.add_finder(source_finder_local(source_dir))
+    elif address:
+      root = path.join(build_dir, 'third_party_tarballs', git_util.sanitize_address(address))
+      chain.add_finder(source_finder_git_repo(root, address, no_network = no_network, update_only_once = True))
     return chain
 
   @classmethod

@@ -21,11 +21,11 @@ class pcloud_cli(object):
 
   def __init__(self):
     self._parser = argparse.ArgumentParser(description = 'Tool to interact with pcloud.')
+    pcloud_credentials.add_command_line_args(self._parser)
     subparsers = self._parser.add_subparsers(help = 'commands', dest = 'command')
 
     # ls
     ls_parser = subparsers.add_parser('ls', help = 'List directory.')
-    self._add_common_options(ls_parser)
     ls_parser.add_argument('-R', '--recursive',
                            action = 'store_true',
                            default = False,
@@ -62,7 +62,6 @@ class pcloud_cli(object):
 
     # rm
     rm_parser = subparsers.add_parser('rm', help = 'Remove file.')
-    self._add_common_options(rm_parser)
     rm_parser.add_argument('-i', '--use-id',
                            action = 'store_true',
                            default = False,
@@ -75,7 +74,6 @@ class pcloud_cli(object):
     
     # mkdir
     mkdir_parser = subparsers.add_parser('mkdir', help = 'Make directory.')
-    self._add_common_options(mkdir_parser)
     mkdir_parser.add_argument('-p', '--parents',
                               action = 'store_true',
                               default = False,
@@ -88,7 +86,6 @@ class pcloud_cli(object):
     
     # rmdir
     rmdir_parser = subparsers.add_parser('rmdir', help = 'Make directory.')
-    self._add_common_options(rmdir_parser)
     rmdir_parser.add_argument('-r', '--recursive',
                               action = 'store_true',
                               default = False,
@@ -106,7 +103,6 @@ class pcloud_cli(object):
     
     # checksum
     checksum_parser = subparsers.add_parser('chk', help = 'Checksum file.')
-    self._add_common_options(checksum_parser)
     checksum_parser.add_argument('-i', '--use-id',
                                  action = 'store_true',
                                  default = False,
@@ -119,7 +115,6 @@ class pcloud_cli(object):
 
     # download
     download_parser = subparsers.add_parser('download', help = 'Download file.')
-    self._add_common_options(download_parser)
     download_parser.add_argument('-i', '--use-id',
                                  action = 'store_true',
                                  default = False,
@@ -137,7 +132,6 @@ class pcloud_cli(object):
 
     # cat
     cat_parser = subparsers.add_parser('cat', help = 'Cat file.')
-    self._add_common_options(cat_parser)
     cat_parser.add_argument('-i', '--use-id',
                             action = 'store_true',
                             default = False,
@@ -150,7 +144,6 @@ class pcloud_cli(object):
     
     # upload
     upload_parser = subparsers.add_parser('upload', help = 'Upload file.')
-    self._add_common_options(upload_parser)
     upload_parser.add_argument('-i', '--use-id',
                                action = 'store_true',
                                default = False,
@@ -168,7 +161,10 @@ class pcloud_cli(object):
 
     # sync
     sync_parser = subparsers.add_parser('sync', help = 'Sync sources directory to pcloud.')
-    self._add_common_options(sync_parser)
+    sync_parser.add_argument('--dry-run',
+                               action = 'store_true',
+                               default = False,
+                               help = 'Do not do any work.  Just print what would happen. [ False ]')
     sync_parser.add_argument('local_folder',
                              action = 'store',
                              default = None,
@@ -184,11 +180,7 @@ class pcloud_cli(object):
     args = self._parser.parse_args()
 
     credentials = pcloud_credentials.resolve_command_line(args)
-
-    if not credentials.is_valid():
-      print('No pcloud email or password given.  Set PCLOUD_EMAIL/PCLOUD_PASSWORD or use the --email/--password flag')
-      raise SystemExit(1)
-      
+    credentials.validate_or_bail()
     self._pcloud = pcloud(credentials)
     del credentials
       
@@ -211,15 +203,12 @@ class pcloud_cli(object):
       elif args.command == 'upload':
         return self._command_upload(args.filename, args.folder, args.use_id)
       elif args.command == 'sync':
-        return self._command_sync(args.local_folder, args.remote_folder)
+        return self._command_sync(args.local_folder, args.remote_folder, args.dry_run)
     except pcloud_error as ex:
       print(str(ex))
       raise SystemExit(1)
       
     raise RuntimeError('Invalid command: %s' % (args.command))
-
-  def _add_common_options(self, parser):
-    pcloud_credentials.add_command_line_args(parser)
 
   class list_item_short(namedtuple('list_item_short', 'name, is_folder')):
     
@@ -336,7 +325,7 @@ class pcloud_cli(object):
       self._pcloud.upload_file(filename, path.basename(filename), folder_path = folder)
     return 0
 
-  def _command_sync(self, local_folder, remote_folder):
+  def _command_sync(self, local_folder, remote_folder, dry_run):
     print('sync %s to %s' % (local_folder, remote_folder))
     print('reading local db: %s' % (local_folder))
     db = source_finder_db(local_folder)
@@ -346,13 +335,18 @@ class pcloud_cli(object):
 #    for k, v in local_dict.items():
 #      print(' LOCAL: %s %s' % (k, v))
     remote_db_path = path.join(remote_folder, source_finder_db.DB_FILENAME)
-    
+
     print('fetching remote db: %s' % (remote_folder))
-    remote_db_json = self._pcloud.download_to_bytes(file_path = remote_db_path)
+    remote_db_content = self._pcloud.download_to_bytes(file_path = remote_db_path)
+    remote_db = source_finder_db.make_temp_db(remote_db_content, delete = False)
     print('done fetching remote db: %s' % (remote_folder))
-    print(remote_db_json)
+    file_util.save('/tmp/caca.json', content = remote_db_content)
+    print('temp: %s' % (remote_db.db_filename))
+    #print(remote_db_json)
+
+    assert False
     
-    print('fetching remote files: %s' % (remote_folder))
+    print('listing remote files and checksums: %s' % (remote_folder))
     remote_items = self._pcloud.list_folder(folder_path = remote_folder, recursive = True, checksums = True)
     print('done fetching remote files: %s' % (remote_folder))
     remote_dict = self._items_to_dict(remote_folder, remote_items)
@@ -366,10 +360,17 @@ class pcloud_cli(object):
       local_path = path.join(local_folder, k)
       remote_path = path.join(remote_folder, k)
       #print('NOT IN REMOTE: %s %s' % (k, v))
-      print('Uploading: %s' % (remote_path))
-      self._pcloud.upload_file(local_path, path.basename(local_path), folder_path = path.dirname(remote_path))
-    print('Uploading db file: %s' % (db.db_filename))
-    self._pcloud.upload_file(db.db_filename, path.basename(db.db_filename), folder_path = remote_folder)
+      if dry_run:
+        print('DRY-RUN: would upload %s -> %s' % (local_path, remote_path))
+      else:
+        print('Uploading: %s' % (remote_path))
+        self._pcloud.upload_file(local_path, path.basename(local_path), folder_path = path.dirname(remote_path))
+    if dry_run:
+      print('DRY-RUN: would upload db file: %s -> %s' % (db.db_filename, remote_folder))
+    else:
+      print('Uploading db file: %s' % (db.db_filename))
+      self._pcloud.upload_file(db.db_filename, path.basename(db.db_filename), folder_path = remote_folder)
+        
     return 0
   
   @classmethod

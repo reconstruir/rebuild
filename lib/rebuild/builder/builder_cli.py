@@ -51,7 +51,7 @@ class builder_cli(object):
     self.parser.add_argument('--filter', nargs = '+', default = None, help = 'filter the list of build files to the given list.')
     self.parser.add_argument('-r', '--root', action = 'store', type = str, default = 'BUILD', help = 'Root dir where to store the build.')
     self.parser.add_argument('target_packages', action = 'append', nargs = '*', type = str)
-    self.parser.add_argument('--tps-address', default = builder_config.DEFAULT_THIRD_PARTY_ADDRESS,
+    self.parser.add_argument('--tps-address', default = None, #builder_config.DEFAULT_THIRD_PARTY_ADDRESS,
                              action = 'store', type = str,
                              help = 'Third party sources address. [ %s ]' % (builder_config.DEFAULT_THIRD_PARTY_ADDRESS))
     self.parser.add_argument('--source-dir', default = None, action = 'store', type = str,

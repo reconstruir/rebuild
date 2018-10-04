@@ -77,7 +77,7 @@ class manager(object):
     return [ pi.name for pi in resolve_rv.resolved ]
 
   def uninstall_packages(self, project_name, packages, build_target):
-    self.log_i('%s - uninstalling: %s' % (package_name, ' '.join(packages)))
+    self.log_i('%s - uninstalling: %s' % (project_name, ' '.join(packages)))
     # FIXME: no dependents handling
     pm = self._package_manager(project_name, build_target)
     pm.uninstall_packages(packages) #, build_target)

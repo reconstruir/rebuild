@@ -21,3 +21,8 @@ class source_finder_hard_coded(source_finder):
   #@abstractmethod
   def find_tarball(self, filename):
     return self._tarball
+
+  #@abstractmethod
+  def ensure_source(self, filename):
+    pass
+  

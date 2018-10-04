@@ -25,6 +25,10 @@ class source_finder_git_repo(source_finder):
   def find_tarball(self, filename):
     self._update_if_needed()
     return self._find_by_filename(self.repo.root, filename)
+
+  #@abstractmethod
+  def ensure_source(self, filename):
+    pass
   
   def _update_once(self):
     if self._updated:
@@ -44,3 +48,4 @@ class source_finder_git_repo(source_finder):
       self._update_once()
     else:
       self._update()
+  

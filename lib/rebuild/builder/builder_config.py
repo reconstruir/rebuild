@@ -10,7 +10,7 @@ from bes.system import log
 
 class builder_config(object):
 
-  DEFAULT_THIRD_PARTY_ADDRESS = 'git@git:third_party_tarballs.git'
+#  DEFAULT_THIRD_PARTY_ADDRESS = 'git@git:third_party_tarballs.git'
   DEFAULT_THIRD_PARTY_PREFIX = 'rebbe_'
   
   def __init__(self):

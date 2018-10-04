@@ -19,3 +19,8 @@ class source_finder_local(source_finder):
   #@abstractmethod
   def find_tarball(self, filename):
     return self._find_by_filename(self.where, filename)
+
+  #@abstractmethod
+  def ensure_source(self, filename):
+    pass
+  

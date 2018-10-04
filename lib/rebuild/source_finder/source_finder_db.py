@@ -1,6 +1,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.fs import file_checksum, file_util
+import os.path as path
+
+from bes.fs import file_checksum, file_util, temp_file
 
 from bes.common import check, json_util
 
@@ -55,6 +57,13 @@ class source_finder_db(object):
   def delta(self, other):
     check.check_source_finder_dbe(other)
     return self._db.delta(other._db)
+
+  @classmethod
+  def make_temp_db(clazz, db_content, delete = True):
+    root = temp_file.make_temp_dir(delete = delete)
+    db_filename = path.join(root, clazz.DB_FILENAME)
+    file_util.save(db_filename, content = db_content)
+    return clazz(root)
 
 check.register_class(source_finder_db)
 

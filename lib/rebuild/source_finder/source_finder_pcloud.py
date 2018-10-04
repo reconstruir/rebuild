@@ -11,7 +11,7 @@ from rebuild.pcloud import pcloud
 
 class source_finder_pcloud(source_finder):
 
-  def __init__(self, remote_root_dir, local_root_dir, credentials):
+  def __init__(self, remote_root_dir, local_root_dir, credentials, no_network = False):
     check.check_pcloud_credentials(credentials)
     self.remote_root_dir = remote_root_dir
     self.local_root_dir = local_root_dir
@@ -32,10 +32,14 @@ class source_finder_pcloud(source_finder):
       return {}
 
   def _download_file(self, filename):
-    local_path = path.join(self._download_dir, filename)
-    file_util.ensure_file_dir(local_path)
+    downloaded_filename = self._downloaded_filename(filename)
+    file_util.ensure_file_dir(downloaded_filename)
     remote_path = path.join(self.remote_root_dir, filename)
-    self.pcloud.download_to_file(local_path, file_path = remote_path)
+    self.pcloud.download_to_file(downloaded_filename, file_path = remote_path)
+
+  @classmethod
+  def _downloaded_filename(self, filename):
+    return path.join(self._download_dir, filename)
     
   #@abstractmethod
   def find_source(self, name, version, system):
@@ -44,3 +48,11 @@ class source_finder_pcloud(source_finder):
   #@abstractmethod
   def find_tarball(self, filename):
     return self._find_by_filename(self.where, filename)
+
+  #@abstractmethod
+  def ensure_source(self, filename):
+    downloaded_filename = self._downloaded_filename(filename)
+    if path.exists(downloaded_filename):
+      return True
+    self._download_file(filename)
+    assert path.exists(downloaded_filename)

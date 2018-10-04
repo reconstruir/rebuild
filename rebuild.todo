@@ -868,3 +868,7 @@ rebuild.package.package_manager.PackageFilesConflictError: conflicts found betwe
 2018-09-14
 - fix the stupid distro issues
 - tee the rebuilder.py log somewhere that can be tailed
+
+2018-10-02
+- add manager test when a package gets removed
+
