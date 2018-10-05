@@ -11,7 +11,7 @@ from .source_finder_db_dict import source_finder_db_dict
 from .source_finder_db_entry import source_finder_db_entry
 from .source_tool import source_tool
 
-class source_finder_db_local(source_finder_db_base):
+class source_finder_db_file(source_finder_db_base):
 
   def __init__(self, root_dir):
     self._root_dir = root_dir
@@ -88,5 +88,5 @@ class source_finder_db_local(source_finder_db_base):
     file_util.save(db_filename, content = db_content)
     return clazz(root)
 
-check.register_class(source_finder_db_local)
+check.register_class(source_finder_db_file)
 
