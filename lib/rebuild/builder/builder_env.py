@@ -58,7 +58,7 @@ class builder_env(object):
       if not credentials.is_valid():
         raise RuntimeError('Invalid pcloud credentials: %s' % (source_pcloud))
       root = path.join(build_dir, 'downloads', 'pcloud')
-      finder = source_finder_pcloud(credentials.root_dir, root, credentials, no_network = no_network)
+      finder = source_finder_pcloud(root, credentials, no_network = no_network)
       chain.add_finder(finder)
     if len(chain) == 0:
         raise RuntimeError('No valid source finders given.')
