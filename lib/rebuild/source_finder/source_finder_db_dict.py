@@ -6,13 +6,12 @@ from collections import namedtuple
 from bes.fs import file_checksum, file_util
 from bes.common import check, json_util
 
+from .source_finder_db_base import source_finder_db_base
 from .source_finder_db_entry import source_finder_db_entry
 from .source_tool import source_tool
 
-class source_finder_db_dict(object):
+class source_finder_db_dict(source_finder_db_base):
 
-  DB_FILENAME = 'sources_db.json'
-  
   def __init__(self, db = None):
     db = db or {}
     check.check_dict(db)
