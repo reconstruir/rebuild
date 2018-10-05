@@ -20,14 +20,14 @@ class source_finder_db_base(object):
     'Save the db from its source.'
     pass
 
-  def __contains__(self, key):
-    return key in self._db
+  def __contains__(self, filename):
+    return filename in self._db
   
-  def __getitem__(self, key):
-    return self._db[key]
+  def __getitem__(self, filename):
+    return self._db[filename]
 
-  def __setitem__(self, key, item):
-    self._db[key] = item
+  def __setitem__(self, filename, entry):
+    self._db[filename] = entry
 
   def __iter__(self, o):
     return iter(self._db)
@@ -51,5 +51,5 @@ class source_finder_db_base(object):
   def dump(self):
     #check.check_source_finder_dbe(other)
     for filename in self.files():
-      item = db[filename]
-      print('%s' % (str(item)))
+      entry = db[filename]
+      print('%s' % (str(entry)))
