@@ -10,7 +10,7 @@ from bes.text import text_table
 
 from rebuild.source_finder import source_tool
 from rebuild.source_finder.source_finder_db import source_finder_db
-from rebuild.source_finder.source_finder_db_file import source_finder_db_file
+from rebuild.source_finder.source_finder_db_dict import source_finder_db_dict
 
 from .pcloud import pcloud
 from .pcloud_error import pcloud_error

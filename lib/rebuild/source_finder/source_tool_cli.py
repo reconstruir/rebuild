@@ -15,7 +15,7 @@ from bes.text import text_table
 
 from .tarball_finder import tarball_finder
 from .source_finder_db_entry import source_finder_db_entry
-from .source_finder_db_file import source_finder_db_file
+from .source_finder_db_dict import source_finder_db_dict
 from .source_finder_db import source_finder_db
 from .source_tool import source_tool
 
@@ -133,7 +133,7 @@ class source_tool_cli(object):
     return checksum
 
   def _sources_db_filename(self):
-    return path.join(self._pcloud_root_dir, source_finder_db_file.DB_FILENAME)
+    return path.join(self._pcloud_root_dir, source_finder_db_dict.DB_FILENAME)
   
   def _command_db(self, raw):
     db_path = self._sources_db_filename()

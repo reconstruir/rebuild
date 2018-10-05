@@ -7,7 +7,7 @@ from bes.fs import file_util, temp_file
 from bes.common import check, json_util
 
 from .source_finder_db_base import source_finder_db_base
-from .source_finder_db_file import source_finder_db_file
+from .source_finder_db_dict import source_finder_db_dict
 from .source_finder_db_entry import source_finder_db_entry
 from .source_tool import source_tool
 
@@ -20,7 +20,7 @@ class source_finder_db_local(source_finder_db_base):
   #@abstractmethod
   def load(self):
     'Load the db from its source.'
-    db = source_finder_db_file.from_file(self.db_filename)
+    db = source_finder_db_dict.from_file(self.db_filename)
     current_filenames = source_tool.find_sources(self._root_dir)
     # Check for new or modified files
     for filename in current_filenames:
@@ -47,7 +47,7 @@ class source_finder_db_local(source_finder_db_base):
     self._db.save_to_file(self.db_filename)
 
   def _make_db(self, sources):
-    db = source_finder_db_file()
+    db = source_finder_db_dict()
     for f in sources:
       p = path.join(self._root_dir, f)
       mtime = file_util.mtime(p)

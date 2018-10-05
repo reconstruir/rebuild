@@ -5,10 +5,10 @@ from bes.testing.unit_test import unit_test
 from bes.common import json_util, string_util
 import json, os.path as path
 
-from rebuild.source_finder import source_finder_db_file as F
+from rebuild.source_finder import source_finder_db_dict as F
 from rebuild.source_finder import source_finder_db_entry as E
 
-class test_source_finder_db_file(unit_test):
+class test_source_finder_db_dict(unit_test):
 
   TEST_JSON = '''{
   "a/foo.tgz": [

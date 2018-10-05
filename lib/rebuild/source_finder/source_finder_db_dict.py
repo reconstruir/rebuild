@@ -9,11 +9,13 @@ from bes.common import check, json_util
 from .source_finder_db_entry import source_finder_db_entry
 from .source_tool import source_tool
 
-class source_finder_db_file(object):
+class source_finder_db_dict(object):
 
   DB_FILENAME = 'sources_db.json'
   
   def __init__(self, db = None):
+    db = db or {}
+    check.check_dict(db)
     self._db = copy.deepcopy(db or {})
 
   def __contains__(self, key):
@@ -85,7 +87,7 @@ class source_finder_db_file(object):
   
   delta_result = namedtuple('delta_result', 'common, conflicts, in_a_only, in_b_only')
   def delta(self, other):
-    check.check_source_finder_db_file(other)
+    check.check_source_finder_db_dict(other)
     db_a = self
     db_b = other
     set_a = set(db_a.checksum_dict())
@@ -102,4 +104,4 @@ class source_finder_db_file(object):
     
     return None
     
-check.register_class(source_finder_db_file)
+check.register_class(source_finder_db_dict)

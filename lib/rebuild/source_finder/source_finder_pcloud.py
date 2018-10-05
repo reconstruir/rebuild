@@ -5,7 +5,7 @@ from bes.fs import file_find, file_util
 from bes.common import check, json_util
 
 from .source_finder import source_finder
-from .source_finder_db_file import source_finder_db_file
+from .source_finder_db_dict import source_finder_db_dict
 
 from rebuild.base import build_blurb
 from rebuild.pcloud import pcloud
@@ -28,12 +28,12 @@ class source_finder_pcloud(source_finder):
 
   def _load_db(self):
     try:
-      remote_db_file_path = path.join(self.remote_root_dir, source_finder_db_file.DB_FILENAME)
+      remote_db_file_path = path.join(self.remote_root_dir, source_finder_db_dict.DB_FILENAME)
       self.blurb('downloading sources db from pcloud:%s' % (remote_db_file_path))
       content = self.pcloud.download_to_bytes(file_path = remote_db_file_path)
-      return source_finder_db_file.from_json(content)
+      return source_finder_db_dict.from_json(content)
     except pcloud_error as ex:
-      return source_finder_db_file()
+      return source_finder_db_dict()
 
   def _update_filename_map(self):
     self._filename_map = {}
