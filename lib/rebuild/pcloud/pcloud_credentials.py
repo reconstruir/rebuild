@@ -13,7 +13,7 @@ class pcloud_credentials(namedtuple('pcloud_credentials', 'email, password, root
   def is_valid(self):
     return self.email and self.password and self.root_dir
 
-  def validate_or_bail(self):
+  def validate_or_raise(self, error_func):
     if self.is_valid():
       return
     if not self.email:
@@ -22,7 +22,10 @@ class pcloud_credentials(namedtuple('pcloud_credentials', 'email, password, root
       print('No pcloud password given.  Set PCLOUD_PASSWORD or use the --pcloud-password flag')
     if not self.root_dir:
       print('No pcloud root_dir given.  Set PCLOUD_ROOT_DIR or use the --pcloud-root-dir flag')
-    raise SystemExit(1)
+    raise error_func()
+  
+  def validate_or_bail(self):
+    self.validate_or_raise(lambda: SystemExit(1))
   
   @classmethod
   def from_file(clazz, filename):

@@ -13,10 +13,12 @@ from rebuild.pcloud import pcloud
 class source_finder_pcloud(source_finder):
 
   def __init__(self, local_root_dir, credentials, no_network = False):
-    if not credentials.is_valid():
-      raise RuntimeError('Invalid pcloud credentials.')
+    check.check_pcloud_credentials(credentials)
+    credentials.validate_or_raise(lambda: RuntimeError('Invalid pcloud credentials.'))
     build_blurb.add_blurb(self, 'rebuild')
     check.check_pcloud_credentials(credentials)
+    if not credentials.is_valid():
+      raise RuntimeError('Invalid pcloud credentials.')
     self.remote_root_dir = credentials.root_dir
     self.local_root_dir = local_root_dir
     self.pcloud = pcloud(credentials)
