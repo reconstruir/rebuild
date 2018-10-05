@@ -53,6 +53,19 @@ class test_source_finder_db_file(unit_test):
     f = F.from_json(self.TEST_JSON)
     self.assertEqual( [ 'a/foo.tgz', 'b/bar.tgz', 'c/baz.tgz' ], F.from_json(self.TEST_JSON).files() )
 
+  def test_mtime(self):
+    f = F.from_json(self.TEST_JSON)
+    self.assertEqual( 66.6, f.mtime('a/foo.tgz') )
+    
+  def test_checksum(self):
+    f = F.from_json(self.TEST_JSON)
+    self.assertEqual( 'c1', f.checksum('a/foo.tgz') )
+    
+  def test_contains(self):
+    f = F.from_json(self.TEST_JSON)
+    self.assertEqual( True, 'a/foo.tgz' in f )
+    self.assertEqual( False, 'notthere.tgz' in f )
+    
   def test_delta(self):
     fa = self._parse_db('apple/foo.tgz 66.6 c1, s/strawberry.tgz 66.7 c2, k/kiwi.tgz 66.8 c3')
     fb = self._parse_db('apple/foo.tgz 66.6 c1, s/strawberry.tgz 66.7 c2, k/kiwi.tgz 66.8 c3')

@@ -20,6 +20,24 @@ class source_finder_db(object):
     self._db = source_finder_db_file()
     self._update_db()
 
+  def __getitem__(self, key):
+    return self._db[key]
+
+  def __setitem__(self, key, item):
+    self._db[key] = item
+
+  def __iter__(self, o):
+    return iter(self._db)
+
+  def files(self):
+    return self._db.keys()
+  
+  def entries(self):
+    return self._db.values()
+
+  def dict_items(self):
+    return self._db.items()
+  
   def _update_db(self):
     self._db = source_finder_db_file.from_file(self.db_filename)
     current_sources = source_tool.find_sources(self._root)
@@ -47,9 +65,6 @@ class source_finder_db(object):
 
   def checksum(self, filename):
     return self._db.checksum(filename)
-
-  def files(self):
-    return self._db.files(filename)
 
   def checksum_dict(self):
     return self._db.checksum_dict()

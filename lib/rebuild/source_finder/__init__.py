@@ -11,3 +11,6 @@ from .source_finder_pcloud import source_finder_pcloud
 from .source_tool import source_tool
 from .source_tool_cli import source_tool_cli
 from .tarball_finder import tarball_finder
+from .source_finder_db_local import source_finder_db_local
+
+

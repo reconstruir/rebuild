@@ -15,6 +15,8 @@ from bes.text import text_table
 
 from .tarball_finder import tarball_finder
 from .source_finder_db_entry import source_finder_db_entry
+from .source_finder_db_file import source_finder_db_file
+from .source_finder_db import source_finder_db
 from .source_tool import source_tool
 
 from rebuild.pcloud import pcloud, pcloud_error, pcloud_credentials
@@ -43,6 +45,12 @@ class source_tool_cli(object):
                                 action = 'store_true',
                                 default = False,
                                 help = 'Do not do any work.  Just print what would happen. [ False ]')
+    # db
+    db_parser = subparsers.add_parser('db', help = 'Print the remote db.')
+    db_parser.add_argument('-r', '--raw',
+                           action = 'store_true',
+                           default = False,
+                           help = 'Print the raw json data. [ False ]')
     
     # find
     find_parser = subparsers.add_parser('find', help = 'Find source in a directory.')
@@ -78,6 +86,8 @@ class source_tool_cli(object):
       return self._command_publish(args.filename, args.remote_folder, args.dry_run)
     elif args.command == 'sync':
       return self._command_sync(args.local_directory, args.remote_directory)
+    elif args.command == 'db':
+      return self._command_db(args.raw)
       
     raise RuntimeError('Invalid command: %s' % (args.command))
 
@@ -96,13 +106,7 @@ class source_tool_cli(object):
     if not path.isfile(filename):
       raise IOError('File not found: %s' % (filename))
     remote_path = self._remote_path(filename, remote_folder)
-    try:
-      remote_checksum = self._pcloud.checksum_file(file_path = remote_path)
-    except pcloud_error as ex:
-      if ex.code == pcloud_error.FILE_NOT_FOUND:
-        remote_checksum = None
-      else:
-        raise ex
+    remote_checksum = self._checksum_file(filename, remote_folder)
     local_checksum = file_util.checksum('sha1', filename)
     if remote_checksum == local_checksum:
       print('Already exists: %s' % (remote_path))
@@ -112,6 +116,36 @@ class source_tool_cli(object):
     else:
       print('Uploading %s => %s' % (filename, remote_path))
       self._pcloud.upload_file(filename, path.basename(remote_path), folder_path = path.dirname(remote_path))
+      verification_checksum = self._checksum_file(filename, remote_folder)
+      if verification_checksum != local_checksum:
+        print('Failed to verify checksum.  Something went wrong.')
+    return 0
+
+  def _checksum_file(self, filename, remote_folder):
+    remote_path = self._remote_path(filename, remote_folder)
+    try:
+      checksum = self._pcloud.checksum_file(file_path = remote_path)
+    except pcloud_error as ex:
+      if ex.code == pcloud_error.FILE_NOT_FOUND:
+        checksum = None
+      else:
+        raise ex
+    return checksum
+
+  def _sources_db_filename(self):
+    return path.join(self._pcloud_root_dir, source_finder_db_file.DB_FILENAME)
+  
+  def _command_db(self, raw):
+    db_path = self._sources_db_filename()
+    db_content = self._pcloud.download_to_bytes(file_path = db_path)
+    if raw:
+      print(db_content)
+    else:
+      db = source_finder_db.make_temp_db(db_content)
+      print(db.files())
+      for filename in db.files():
+        item = db[filename]
+        print('%s' % (str(item)))
     return 0
   
   @classmethod

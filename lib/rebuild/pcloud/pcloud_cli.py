@@ -338,7 +338,7 @@ class pcloud_cli(object):
 
     print('fetching remote db: %s' % (remote_folder))
     remote_db_content = self._pcloud.download_to_bytes(file_path = remote_db_path)
-    remote_db = source_finder_db.make_temp_db(remote_db_content, delete = False)
+    remote_db = source_finder_db.make_temp_db(remote_db_content)
     print('done fetching remote db: %s' % (remote_folder))
     file_util.save('/tmp/caca.json', content = remote_db_content)
     print('temp: %s' % (remote_db.db_filename))

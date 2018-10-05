@@ -875,3 +875,5 @@ rebuild.package.package_manager.PackageFilesConflictError: conflicts found betwe
 2018-10-04
 - ming be ok to retire source_finder.find_source
 - add a find_tarball cache for source_finder
+- when downloading tarballs do to tmp file first use control-c to test during long download
+

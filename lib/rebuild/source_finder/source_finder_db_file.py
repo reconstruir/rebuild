@@ -16,6 +16,9 @@ class source_finder_db_file(object):
   def __init__(self, db = None):
     self._db = copy.deepcopy(db or {})
 
+  def __contains__(self, key):
+    return key in self._db
+    
   def __getitem__(self, key):
     return self._db[key]
 
@@ -25,9 +28,6 @@ class source_finder_db_file(object):
 
   def __iter__(self, o):
     return iter(self._db)
-    
-  def items(self, o):
-    return sorted(self._db.values())
     
   def __eq__(self, o):
     if isinstance(o, self.__class__):
@@ -62,17 +62,20 @@ class source_finder_db_file(object):
   def to_json(self):
     return json.dumps(self._db, indent = 2)
 
-  def files(self):
-    return sorted(self._db.keys())
-  
   def checksum(self, filename):
     return self._db[filename].checksum
 
   def mtime(self, filename):
     return self._db[filename].mtime
 
-  def items(self):
-    return self._db.items()
+  def files(self):
+    return sorted(self._db.keys())
+  
+  def entries(self):
+    return sorted(self._db.values())
+
+  def dict_items(self):
+    return sorted(self._db.items())
 
   def checksum_dict(self):
     d = {}
