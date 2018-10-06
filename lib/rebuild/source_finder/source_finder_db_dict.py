@@ -2,12 +2,11 @@
 
 import copy, json, os.path as path
 
-from bes.fs import file_checksum, file_util
+from bes.fs import file_util
 from bes.common import check, json_util
 
 from .source_finder_db_base import source_finder_db_base
 from .source_finder_db_entry import source_finder_db_entry
-from .source_tool import source_tool
 
 class source_finder_db_dict(source_finder_db_base):
 

@@ -47,7 +47,7 @@ class test_source_finder_db_dict(unit_test):
     f['a/foo.tgz'] = E('a/foo.tgz', 66.6, 'c1')
     f['b/bar.tgz'] = E('b/bar.tgz', 66.7, 'c2')
     f['c/baz.tgz'] = E('c/baz.tgz', 66.8, 'c3')
-    self.assertMultiLineEqual( self.TEST_JSON, f.to_json() )
+    self.assert_json_equal( self.TEST_JSON, f.to_json() )
     
   def test_files(self):
     f = F.from_json(self.TEST_JSON)
