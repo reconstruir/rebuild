@@ -97,5 +97,11 @@ class source_finder_db_base(object):
   def to_json(self):
     return json.dumps(self._db, indent = 2)
       
+  def find_by_checksum(self, checksum):
+    for entry in self._db.itervalues():
+      if entry.checksum == checksum:
+        return entry
+    return None
+      
 check.register_class(source_finder_db_base)
       

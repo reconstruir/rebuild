@@ -1,6 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import argparse, os, os.path as path
+import argparse, os, os.path as path, re
 from collections import namedtuple
 
 from bes.archive import archiver
@@ -54,6 +54,13 @@ class source_tool_cli(object):
                            default = False,
                            help = 'Print the raw json data. [ False ]')
     
+    # what
+    what_parser = subparsers.add_parser('what', help = 'What to find.  Either a filename or sha1 checksum.')
+#    what_parser.add_argument('-r', '--raw',
+#                             action = 'store_true',
+#                             default = False,
+#                             help = 'Print the raw json data. [ False ]')
+    
     # find
     find_parser = subparsers.add_parser('find', help = 'Find source in a directory.')
     find_parser.add_argument('directory',
@@ -90,6 +97,8 @@ class source_tool_cli(object):
       return self._command_sync(args.local_directory, args.remote_directory)
     elif args.command == 'db':
       return self._command_db(args.raw)
+    elif args.command == 'find':
+      return self._command_find(args.what)
       
     raise RuntimeError('Invalid command: %s' % (args.command))
 
@@ -157,6 +166,25 @@ class source_tool_cli(object):
       print(db.to_json())
     else:
       db.dump()
+    return 0
+
+  def _command_find(self, what):
+    db = source_finder_db_pcloud(self._pcloud)
+    db.load()
+    entry = None
+    if path.isfile(what):
+      blurb = 'checksum'
+      what = file_util.checksum('sha1', what)
+    if re.match('([a-f0-9A-F]{40})', what):
+      blurb = 'checksum'
+      entry = db.find_by_checksum(what)
+    else:
+      blurb = 'file'
+      entry = db.get(what, None)
+    if not entry:
+      print('%s not found: %s' % (blurb, what))
+      return 1
+    print('%s %s %s' % (entry.filename, entry.mtime, entry.checksum))
     return 0
   
   @classmethod
