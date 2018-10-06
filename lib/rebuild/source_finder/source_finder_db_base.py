@@ -53,7 +53,7 @@ class source_finder_db_base(object):
   def files(self):
     return sorted(self._db.keys())
 
-  def ENTRIES(self):
+  def entries(self):
     return sorted(self._db.values())
 
   def dict_items(self):
