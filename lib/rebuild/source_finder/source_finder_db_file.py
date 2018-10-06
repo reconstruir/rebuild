@@ -46,41 +46,6 @@ class source_finder_db_file(source_finder_db_base):
     'Save the db from its source.'
     self._db.save_to_file(self.db_filename)
 
-  def _make_db(self, sources):
-    db = source_finder_db_dict()
-    for f in sources:
-      p = path.join(self._root_dir, f)
-      mtime = file_util.mtime(p)
-      checksum = self._read_checksum(f)
-      db[f] = source_finder_db_entry(f, mtime, checksum)
-    return db
-      
-  def _read_checksum(self, filename):
-    p = path.join(self._root_dir, filename)
-    mtime = file_util.mtime(p)
-    item = self._db.get(filename, None)
-    if item:
-      if mtime == item[1]:
-        assert item[2]
-        return item[2]
-    return file_util.checksum('sha1', p)
-
-  def checksum(self, filename):
-    return self._db.checksum(filename)
-
-  def files(self):
-    return self._db.files()
-
-  def items(self):
-    return self._db.items()
-
-  def checksum_dict(self):
-    return self._db.checksum_dict()
-  
-  def delta(self, other):
-    check.check_source_finder_dbe(other)
-    return self._db.delta(other._db)
-
   @classmethod
   def make_temp_db(clazz, db_content, delete = True):
     root = temp_file.make_temp_dir(delete = delete)
@@ -88,5 +53,4 @@ class source_finder_db_file(source_finder_db_base):
     file_util.save(db_filename, content = db_content)
     return clazz(root)
 
-check.register_class(source_finder_db_file)
-
+#check.register_class(source_finder_db_file)
