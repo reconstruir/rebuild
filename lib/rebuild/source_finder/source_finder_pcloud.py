@@ -8,7 +8,7 @@ from .source_finder import source_finder
 from .source_finder_db_dict import source_finder_db_dict
 
 from rebuild.base import build_blurb
-from rebuild.pcloud import pcloud
+from rebuild.pcloud import pcloud, pcloud_error
 
 class source_finder_pcloud(source_finder):
 
@@ -41,7 +41,7 @@ class source_finder_pcloud(source_finder):
 
   def _update_filename_map(self):
     self._filename_map = {}
-    for file_path, entry in self.db.items():
+    for file_path, entry in self.db.dict_items():
       filename = path.basename(file_path)
       assert not filename in self._filename_map
       self._filename_map[filename] = entry

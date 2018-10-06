@@ -21,6 +21,7 @@ class pcloud(object):
     digest = self._get_digest()
     password_digest = self._make_password_digest(digest, credentials.email, credentials.password)
     self._auth_token = self._get_auth_token(digest, credentials.email, password_digest)
+    self.root_dir = credentials.root_dir
     del credentials
 
   def list_folder(self, folder_path = None, folder_id = None, recursive = False, checksums = False):

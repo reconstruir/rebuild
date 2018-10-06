@@ -35,12 +35,12 @@ class test_source_finder_db_dict(unit_test):
       'c/baz.tgz': E('c/baz.tgz', 66.8, 'c3'),
       }, F.from_json(self.TEST_JSON) )
     
-  def test_from_json_object(self):
+  def test_from_json_dict(self):
     self.assertEqual( {
       'a/foo.tgz': E('a/foo.tgz', 66.6, 'c1'),
       'b/bar.tgz': E('b/bar.tgz', 66.7, 'c2'),
       'c/baz.tgz': E('c/baz.tgz', 66.8, 'c3'),
-      }, F.from_json_object(json.loads(self.TEST_JSON)) )
+      }, F.from_json_dict(json.loads(self.TEST_JSON)) )
     
   def test_to_json(self):
     f = F()

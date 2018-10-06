@@ -20,10 +20,10 @@ class source_finder_db_dict(source_finder_db_base):
 
   @classmethod
   def from_json(clazz, s):
-    return clazz.from_json_object(json.loads(s))
+    return clazz.from_json_dict(json.loads(s))
     
   @classmethod
-  def from_json_object(clazz, o):
+  def from_json_dict(clazz, o):
     db = {}
     check.check_dict(o)
     for filename, list_item in o.items():
@@ -34,8 +34,5 @@ class source_finder_db_dict(source_finder_db_base):
   @classmethod
   def from_file(clazz, filename):
     return clazz.from_json(file_util.read(filename))
-    
-  def to_json(self):
-    return json.dumps(self._db, indent = 2)
     
 #check.register_class(source_finder_db_dict)

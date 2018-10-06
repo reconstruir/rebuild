@@ -16,6 +16,8 @@ from bes.text import text_table
 from .tarball_finder import tarball_finder
 from .source_finder_db_entry import source_finder_db_entry
 from .source_finder_db_dict import source_finder_db_dict
+from .source_finder_db_pcloud import source_finder_db_pcloud
+from .source_finder_db_entry import source_finder_db_entry
 from .source_finder_db import source_finder_db
 from .source_tool import source_tool
 
@@ -113,12 +115,25 @@ class source_tool_cli(object):
       return 0
     if dry_run:
       print('Would upload %s => %s' % (filename, remote_path))
-    else:
-      print('Uploading %s => %s' % (filename, remote_path))
-      self._pcloud.upload_file(filename, path.basename(remote_path), folder_path = path.dirname(remote_path))
-      verification_checksum = self._checksum_file(filename, remote_folder)
-      if verification_checksum != local_checksum:
-        print('Failed to verify checksum.  Something went wrong.')
+      return 0
+    
+    local_mtime = file_util.mtime(filename)
+    print('Uploading %s => %s' % (filename, remote_path))
+    self._pcloud.upload_file(filename, path.basename(remote_path), folder_path = path.dirname(remote_path))
+    verification_checksum = self._checksum_file(filename, remote_folder)
+    if verification_checksum != local_checksum:
+      print('Failed to verify checksum.  Something went wrong.')
+    db = source_finder_db_pcloud(self._pcloud)
+    print('Downloading db.')
+    key = file_util.remove_head(remote_path, self._pcloud_root_dir)
+    print(key)
+    db.load()
+    if key in db:
+      print('File alaready in db something is wrong: %s.' % (key))
+      return 1
+    db[key] = source_finder_db_entry(key, local_mtime, local_checksum)
+    print('Uploading db.')
+    db.save()
     return 0
 
   def _checksum_file(self, filename, remote_folder):
@@ -136,16 +151,12 @@ class source_tool_cli(object):
     return path.join(self._pcloud_root_dir, source_finder_db_dict.DB_FILENAME)
   
   def _command_db(self, raw):
-    db_path = self._sources_db_filename()
-    db_content = self._pcloud.download_to_bytes(file_path = db_path)
+    db = source_finder_db_pcloud(self._pcloud)
+    db.load()
     if raw:
-      print(db_content)
+      print(db.to_json())
     else:
-      db = source_finder_db.make_temp_db(db_content)
-      print(db.files())
-      for filename in db.files():
-        item = db[filename]
-        print('%s' % (str(item)))
+      db.dump()
     return 0
   
   @classmethod
