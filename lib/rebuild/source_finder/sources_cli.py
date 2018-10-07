@@ -47,6 +47,15 @@ class sources_cli(object):
                                 action = 'store_true',
                                 default = False,
                                 help = 'Do not do any work.  Just print what would happen. [ False ]')
+
+    # retire
+    retire_parser = subparsers.add_parser('retire', help = 'Retire a tarball in the database.')
+    retire_parser.add_argument('what',
+                               action = 'store',
+                               default = None,
+                               type = str,
+                               help = 'What to retire.  Can be a filename, checksum or local file name. [ None ]')
+    
     # db
     db_parser = subparsers.add_parser('db', help = 'Print the remote db.')
     db_parser.add_argument('-r', '--raw',
@@ -90,6 +99,8 @@ class sources_cli(object):
       return self._command_db(args.raw)
     elif args.command == 'find':
       return self._command_find(args.what)
+    elif args.command == 'retire':
+      return self._command_retire(args.what)
       
     raise RuntimeError('Invalid command: %s' % (args.command))
 
@@ -122,7 +133,6 @@ class sources_cli(object):
     db = source_finder_db_pcloud(self._pcloud)
     print('Downloading db.')
     key = file_util.remove_head(remote_path, self._pcloud_root_dir)
-    print(key)
     db.load()
     if key in db:
       print('File alaready in db something is wrong: %s.' % (key))
@@ -155,10 +165,11 @@ class sources_cli(object):
       db.dump()
     return 0
 
-  def _command_find(self, what):
+  def _do_find(self, what):
     db = source_finder_db_pcloud(self._pcloud)
     db.load()
     entry = None
+    blurb = ''
     if path.isfile(what):
       blurb = 'checksum'
       what = file_util.checksum('sha1', what)
@@ -168,10 +179,26 @@ class sources_cli(object):
     else:
       blurb = 'file'
       entry = db.get(what, None)
+    return ( db, blurb, entry )
+  
+  def _command_find(self, what):
+    db, blurb, entry = self._do_find(what)
     if not entry:
       print('%s not found: %s' % (blurb, what))
       return 1
     print('%s %s %s' % (entry.filename, entry.mtime, entry.checksum))
+    return 0
+  
+  def _command_retire(self, what):
+    db, blurb, entry = self._do_find(what)
+    if not entry:
+      print('%s not found: %s' % (blurb, what))
+      return 1
+    file_path = self._pcloud.make_path(entry.filename)
+    self._pcloud.delete_file(file_path = file_path)
+    del db[entry.filename]
+    print('Uploading db.')
+    db.save()
     return 0
   
   @classmethod

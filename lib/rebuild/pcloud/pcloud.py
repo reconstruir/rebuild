@@ -431,4 +431,7 @@ class pcloud(object):
 #      raise pcloud_error(payload['result'], what)
 #    assert 'fd' in payload
 #    return payload['fd']
- 
+
+  def make_path(self, f):
+    return path.join(self.root_dir, f)
+

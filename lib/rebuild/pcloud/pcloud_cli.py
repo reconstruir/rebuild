@@ -381,6 +381,7 @@ class pcloud_cli(object):
     for next_path in paths:
       ps = '/'.join([ x.name for x in next_path.path ])
       ps = file_util.remove_head(ps, folder)
+      ps = file_util.remove_head(ps, folder)
       result[ps] = next_path.node.data.checksum
     return result
   

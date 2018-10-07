@@ -37,6 +37,9 @@ class source_finder_db_base(object):
   def __getitem__(self, filename):
     return self._db[filename]
 
+  def __delitem__(self, filename):
+    del self._db[filename]
+
   def __setitem__(self, filename, entry):
     self._db[filename] = entry
 
