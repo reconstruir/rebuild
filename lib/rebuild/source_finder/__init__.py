@@ -9,7 +9,7 @@ from .source_finder_hard_coded import source_finder_hard_coded
 from .source_finder_local import source_finder_local
 from .source_finder_pcloud import source_finder_pcloud
 from .source_tool import source_tool
-from .source_tool_cli import source_tool_cli
+from .sources_cli import sources_cli
 from .tarball_finder import tarball_finder
 from .source_finder_db_file import source_finder_db_file
 

@@ -23,7 +23,7 @@ from .source_tool import source_tool
 
 from rebuild.pcloud import pcloud, pcloud_error, pcloud_credentials
 
-class source_tool_cli(object):
+class sources_cli(object):
 
   def __init__(self):
     self._parser = argparse.ArgumentParser(description = 'Tool to deal with rebuild sources.')
@@ -189,4 +189,4 @@ class source_tool_cli(object):
   
   @classmethod
   def run(clazz):
-    raise SystemExit(source_tool_cli().main())
+    raise SystemExit(sources_cli().main())
