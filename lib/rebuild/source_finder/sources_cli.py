@@ -54,20 +54,13 @@ class sources_cli(object):
                            default = False,
                            help = 'Print the raw json data. [ False ]')
     
-    # what
-    what_parser = subparsers.add_parser('what', help = 'What to find.  Either a filename or sha1 checksum.')
-#    what_parser.add_argument('-r', '--raw',
-#                             action = 'store_true',
-#                             default = False,
-#                             help = 'Print the raw json data. [ False ]')
-    
     # find
-    find_parser = subparsers.add_parser('find', help = 'Find source in a directory.')
-    find_parser.add_argument('directory',
+    find_parser = subparsers.add_parser('find', help = 'Find a tarball in the database.')
+    find_parser.add_argument('what',
                              action = 'store',
                              default = None,
                              type = str,
-                             help = 'The folder to find source in. [ None ]')
+                             help = 'What to find.  Can be a filename, checksum or local file name. [ None ]')
     
     # sync
     sync_parser = subparsers.add_parser('sync', help = 'Remove file.')
@@ -89,9 +82,7 @@ class sources_cli(object):
     self._pcloud_root_dir = credentials.root_dir
     del credentials
 
-    if args.command == 'find':
-      return self._command_find(args.directory)
-    elif args.command == 'publish':
+    if args.command == 'publish':
       return self._command_publish(args.filename, args.remote_folder, args.dry_run)
     elif args.command == 'sync':
       return self._command_sync(args.local_directory, args.remote_directory)
@@ -101,10 +92,6 @@ class sources_cli(object):
       return self._command_find(args.what)
       
     raise RuntimeError('Invalid command: %s' % (args.command))
-
-  def _command_find(self, directory):
-    source_tool.update_sources_index(directory)
-    return 0
 
   def _remote_path(self, filename, remote_folder):
     filename = path.basename(filename)
