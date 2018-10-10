@@ -23,20 +23,38 @@ class source_finder_pcloud(source_finder):
     self.local_root_dir = local_root_dir
     self.pcloud = pcloud(credentials)
     del credentials
-    self.db = self._load_db()
+    self._local_db_file_path = path.join(self.local_root_dir, source_finder_db_dict.DB_FILENAME)
+    self._remote_db_file_path = path.join(self.remote_root_dir, source_finder_db_dict.DB_FILENAME)
+    if no_network:
+      self.db = self._load_db_local()
+    else:
+      self.db = self._load_db_remote()
     self._update_filename_map()
     file_util.mkdir(self.local_root_dir)
     
   def __str__(self):
     return 'pcloud:%s' % (self.remote_root_dir)
 
-  def _load_db(self):
+  def _load_db_remote(self):
     try:
-      remote_db_file_path = path.join(self.remote_root_dir, source_finder_db_dict.DB_FILENAME)
-      self.blurb('downloading sources db from pcloud:%s' % (remote_db_file_path))
-      content = self.pcloud.download_to_bytes(file_path = remote_db_file_path)
-      return source_finder_db_dict.from_json(content)
+      self.blurb('pcloud: using remote db: %s' % (self._remote_db_file_path))
+      content = self.pcloud.download_to_bytes(file_path = self._remote_db_file_path)
+      sf = source_finder_db_dict.from_json(content)
+      file_util.save(path.join(self.local_root_dir, source_finder_db_dict.DB_FILENAME), content = content)
+      return sf
     except pcloud_error as ex:
+      return source_finder_db_dict()
+
+  def _load_db_local(self):
+    if not path.isfile(self._local_db_file_path):
+      self.blurb('pcloud: not local db found at: %s' % (self._local_db_file_path))
+      return source_finder_db_dict()
+    try:
+      self.blurb('pcloud: using local db: %s' % (self._local_db_file_path))
+      content = file_util.read(self._local_db_file_path)
+      return source_finder_db_dict.from_json(content)
+    except Exception as ex:
+      self.blurb('pcloud: local db is corrupt: %s' % (self._local_db_file_path))
       return source_finder_db_dict()
 
   def _update_filename_map(self):
