@@ -33,7 +33,7 @@ class caca_pkg_config_file(namedtuple('caca_pkg_config_file', 'filename,entries,
     resolved_properties = properties[:]
     resolved_properties.substitute_variables(resolved_variables.to_dict())
 
-    raw_reqs = resolved_properties.find_key(clazz.PROPERTY_REQUIRES)
+    raw_reqs = resolved_properties.find_by_key(clazz.PROPERTY_REQUIRES)
     if raw_reqs:
       reqs = clazz._parse_requirements(raw_reqs.value)
       resolved_properties.replace(clazz.PROPERTY_REQUIRES, key_value(clazz.PROPERTY_REQUIRES, reqs))
@@ -184,7 +184,7 @@ class caca_pkg_config_file(namedtuple('caca_pkg_config_file', 'filename,entries,
     return self.get_property(self.PROPERTY_REQUIRES)
 
   def get_property(self, name):
-    prop = self.resolved_properties.find_key(name)
+    prop = self.resolved_properties.find_by_key(name)
     if prop:
       return prop.value
     return None

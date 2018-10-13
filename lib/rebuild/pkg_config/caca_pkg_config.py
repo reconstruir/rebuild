@@ -58,8 +58,8 @@ class caca_pkg_config(object):
     'List all modules available.'
     result = []
     for name, pc_file in self.files.items():
-      desc = pc_file.resolved_properties.find_key('Description').value
-      prop_name = pc_file.resolved_properties.find_key('Name').value
+      desc = pc_file.resolved_properties.find_by_key('Description').value
+      prop_name = pc_file.resolved_properties.find_by_key('Name').value
       result.append(self._list_all_item(name, '%s - %s' % (prop_name, desc)))
     return sorted(result, key = lambda x: x.name.lower())
 
