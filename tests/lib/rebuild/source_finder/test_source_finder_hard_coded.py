@@ -8,20 +8,11 @@ from test_source_finder_local import source_dir_maker
 
 class test_source_finder_hard_coded(unit_test):
 
-  def test_find_source(self):
+  def test_find_tarball(self):
     tarball = source_dir_maker.make_tarball('tar.gz')
-    name = 'alpha'
-    version = '1.2.3'
-    finder = source_finder_hard_coded(tarball, name, version)
+    finder = source_finder_hard_coded(tarball)
     self.assertEqual( tarball,
-                      finder.find_source(name, version, 'linux') )
+                      finder.find_tarball('alpha-1.2.3.tar.gz') )
 
-  def test_find_source_not_found(self):
-    tarball = source_dir_maker.make_tarball('tar.gz')
-    name = 'alpha'
-    version = '1.2.3'
-    finder = source_finder_hard_coded(tarball, name, version)
-    self.assertEqual( None, finder.find_source('other', '25', 'linux') )
-    
 if __name__ == '__main__':
   unit_test.main()

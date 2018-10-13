@@ -13,10 +13,6 @@ class source_finder_local(source_finder):
     return 'local:%s' % (self.where)
     
   #@abstractmethod
-  def find_source(self, name, version, system):
-    return self._find_by_name_and_version(self.where, name, version, system)
-
-  #@abstractmethod
   def find_tarball(self, filename):
     return self._find_by_filename(self.where, filename)
 

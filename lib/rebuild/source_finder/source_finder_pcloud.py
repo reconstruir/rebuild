@@ -72,10 +72,6 @@ class source_finder_pcloud(source_finder):
 
   def _downloaded_filename(self, filename):
     return path.join(self.local_root_dir, filename)
-    
-  #@abstractmethod
-  def find_source(self, name, version, system):
-    return self._find_by_name_and_version(self.where, name, version, system)
 
   #@abstractmethod
   def find_tarball(self, filename):

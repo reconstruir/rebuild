@@ -17,11 +17,6 @@ class source_finder_git_repo(source_finder):
     return 'git_repo:%s' % (self.repo)
     
   #@abstractmethod
-  def find_source(self, name, version, system):
-    self._update_if_needed()
-    return self._find_by_name_and_version(self.repo.root, name, version, system)
-
-  #@abstractmethod
   def find_tarball(self, filename):
     self._update_if_needed()
     return self._find_by_filename(self.repo.root, filename)

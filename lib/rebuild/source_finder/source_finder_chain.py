@@ -22,13 +22,6 @@ class source_finder_chain(object):
     assert finder not in self._finders
     self._finders.append(finder)
     
-  def find_source(self, name, version, build_target):
-    for finder in self._finders:
-      result = finder.find_source(name, version, build_target)
-      if result:
-        return result
-    return None
-
   def find_tarball(self, filename):
     for finder in self._finders:
       result = finder.find_tarball(filename)
