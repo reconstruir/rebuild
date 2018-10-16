@@ -21,7 +21,7 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
     check.check_int(epoch)
     check.check_string(system)
     check.check_string(level)
-    check.check_string_seq(arch)
+    check.check_tuple(arch)
     check.check_string(distro)
     check.check_string(distro_version)
     if check.is_string(requirements):
@@ -83,7 +83,7 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
                  o['epoch'],
                  o['system'],
                  o['level'],
-                 o['arch'],
+                 tuple(o['arch']),
                  o['distro'],
                  o['distro_version'],
                  util.requirements_from_string_list(o['requirements']),

@@ -32,90 +32,88 @@ class build_arch(object):
     raise ValueError('Unknown host arch: %s' % (HOST_ARCH))
 
   DEFAULT_ARCHS = {
-    build_system.ANDROID: [ ARMV7 ],
-    #build_system.MACOS: [ I386, X86_64 ],
-    build_system.MACOS: [ X86_64 ],
-    build_system.IOS: [ ARM64, ARMV7 ],
-    build_system.IOS_SIM: [ I386, X86_64 ],
-    build_system.LINUX: [ HOST_ARCH ],
+    build_system.ANDROID: ( ARMV7, ),
+    #build_system.MACOS: ( I386, X86_64 ),
+    build_system.MACOS: ( X86_64, ),
+    build_system.IOS: ( ARM64, ARMV7 ),
+    build_system.IOS_SIM: ( I386, X86_64 ),
+    build_system.LINUX: ( X86_64, ),
   }
 
   DEFAULT_HOST_ARCHS = DEFAULT_ARCHS[build_system.HOST]
 
   @classmethod
-  def determine_arch(clazz, system, arch, distro):
-    result = []
-    if system == build_system.LINUX:
-      return clazz._determine_arch_linux(arch, distro)
-    elif system == build_system.MACOS:
-      return clazz._determine_arch_macos(arch)
-    elif system == build_system.IOS:
-      return clazz._determine_arch_ios(arch)
-    elif system == build_system.ANDROID:
-      return clazz._determine_arch_android(arch)
-    else:
-      raise ValueError('Invalid system: %s' % (str(system)))
+  def split(clazz, arch, delimiter = ','):
+    'Split an arch string by delimiter.'
+    check.check_string(arch)
+    return tuple([ a.strip() for a in arch.split(delimiter) ])
 
   @classmethod
-  def _determine_arch_linux(clazz, arch, distro):
-    if check.is_string(arch):
-      if arch in clazz.VALID_ARCHS[build_system.LINUX]:
-        return ( arch, )
-    elif check.check(arch, ( tuple, list )):
-      if len(arch) == 1 and arch[0] in clazz.VALID_ARCHS[build_system.LINUX]:
-        return ( arch[0], )
-    raise ValueError('Invalid linux arch: %s' % (str(arch)))
-
-  @classmethod
-  def _determine_arch_macos(clazz, arch):
-    if check.is_string(arch):
-      if arch in clazz.VALID_ARCHS[build_system.MACOS]:
-        return ( arch )
-    elif check.check(arch, ( tuple, list )):
-      if not False in [ a in clazz.VALID_ARCHS[build_system.LINUX] for a in arch ]:
-        return tuple(arch)
-    raise ValueError('Invalid linux arch: %s' % (str(arch)))
-
-  @classmethod
-  def _determine_arch_ios(clazz, arch):
-    if check.is_string(arch):
-      if arch in clazz.VALID_ARCHS[build_system.IOS]:
-        return ( arch )
-    elif check.check(arch, ( tuple, list )):
-      if not False in [ a in clazz.VALID_ARCHS[build_system.IOS] for a in arch ]:
-        return tuple(arch)
-    raise ValueError('Invalid ios arch: %s' % (str(arch)))
+  def join(clazz, arch, delimiter = ','):
+    'Join arch parts by delimiter.'
+    check.check_string_seq(arch)
+    arch = [ a.strip() for a in arch ]
+    return delimiter.join(arch)
   
   @classmethod
-  def _determine_arch_android(clazz, arch):
-    if check.is_string(arch):
-      if arch in clazz.VALID_ARCHS[build_system.ANDROID]:
-        return ( arch )
-    elif check.check(arch, ( tuple, list )):
-      if not False in [ a in clazz.VALID_ARCHS[build_system.ANDROID] for a in arch ]:
-        return tuple(arch)
-    raise ValueError('Invalid android arch: %s' % (str(arch)))
-  
-  @classmethod
-  def arch_is_valid(clazz, arch, system):
-    if system not in build_system.SYSTEMS:
-      raise ValueError('Unknown system: %d' % (system))
-    return arch in clazz.VALID_ARCHS[system]
+  def normalize(clazz, arch):
+   'Normalize arch into a tuple.'
+   if check.is_string(arch):
+     return tuple(sorted(clazz.split(arch)))
+   elif check.is_string_seq(arch):
+     result = []
+     for a in arch:
+       result.extend(list(clazz.split(a)))
+     return tuple(sorted(result))
+   else:
+     raise TypeError('Invalid type for arch: %s - %s' % (str(arch), type(arch)))
 
   @classmethod
-  def arch_to_string(clazz, arch, delimiter = ','):
-    if isinstance(arch, ( tuple, list ) ):
-      return delimiter.join(sorted(arch))
+  def check_arch(clazz, arch, system, distro):
+    'Check that arch is valid for system or raise an error.'
+    arch = clazz.validate(arch, system, distro)
+    if not arch:
+      raise ValueError('Invalid arch \"%s\" for system \"%s\" - %s' % (next_arch, system, arch))
     return arch
+    
+  @classmethod
+  def validate(clazz, arch, system, distro):
+    'Return True normalized arch if it is valid for system otherwise None.'
+    arch = clazz.normalize(arch)
+    check.check_string_seq(arch)
+    build_system.check_system(system)
+    valid_archs = clazz.VALID_ARCHS[system]
+    for next_arch in arch:
+      if not next_arch in valid_archs:
+        return None
+    return arch
+    
+  @classmethod
+  def default_arch(clazz, system, distro):
+    'Return the default arch for system.'
+    build_system.check_system(system)
+    if system == build_system.LINUX:
+      if distro == build_system.RASPBIAN:
+        return ( clazz.ARMV7, )
+    return clazz.DEFAULT_ARCHS[system]
+
+  # FIXME666 nothing is done with distro other than default case
+  @classmethod
+  def determine_arch(clazz, arch, system, distro):
+    build_system.check_system(system)
+    if not arch:
+      return clazz.default_arch(system, distro)
+    normalized_arch = clazz.normalize(arch)
+    clazz.check_arch(arch, system, distro)
+    return normalized_arch
 
   @classmethod
-  def parse_arch(clazz, system, s):
-    archs = s.split(',')
-    for arch in archs:
-      if not clazz.arch_is_valid(arch, system):
-        raise ValueError('Invalid arch \"%s\" for system \"%s\"' % (arch, system))
-    return tuple(sorted(archs))
+  def parse_arch(clazz, arch, system, distro):
+    normalized_arch = clazz.normalize(arch)
+    clazz.check_arch(arch, system, distro)
+    return normalized_arch
 
   @classmethod
   def arch_is_known(clazz, arch):
     return arch in clazz.KNOWN_ARCHS
+

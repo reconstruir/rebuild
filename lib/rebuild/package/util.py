@@ -29,6 +29,7 @@ class util(object):
 
   @classmethod
   def sql_encode_string_list(clazz, l, quoted = True):
+    check.check_string_seq(l)
     return clazz.sql_encode_string(json_util.to_json(l), quoted = quoted)
   
   @classmethod

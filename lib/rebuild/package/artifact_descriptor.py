@@ -17,15 +17,16 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
     check.check_int(epoch)
     check.check_string(system)
     check.check_string(level)
-    check.check_string_seq(arch)
+    check.check_tuple(arch)
     check.check_string(distro)
     check.check_string(distro_version)
     return clazz.__bases__[0].__new__(clazz, name, version, revision, epoch,
                                       system, level, arch, distro, distro_version)
 
   def __str__(self):
+    arch_str = ','.join(self.arch)
     return '%s;%s;%s;%s;%s;%s;%s;%s;%s' % (self.name, self.version, self.revision, self.epoch, self.system, self.level,
-                                           ','.join(self.arch), self.distro, self.distro_version)
+                                           arch_str, self.distro, self.distro_version)
 
   @cached_property
   def sql_table_name(self):

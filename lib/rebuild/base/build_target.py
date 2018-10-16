@@ -17,17 +17,17 @@ class build_target(namedtuple('build_target', 'system, distro, distro_version, a
     if distro is not None:
       check.check_string(distro)
     check.check_string(distro_version)
-    check.check(arch, ( check.STRING_TYPES, list, tuple ) )
+    arch = build_arch.check_arch(arch, system, distro)
     check.check_string(level)
     system = build_system.parse_system(system)
-    arch = build_arch.determine_arch(system, arch, distro)
+    arch = build_arch.determine_arch(arch, system, distro)
     level = build_level.parse_level(level)
     build_path = clazz._make_build_path(system, distro, distro_version, arch, level)
     return clazz.__bases__[0].__new__(clazz, system, distro, distro_version, arch, level, build_path)
 
   @classmethod
   def _arch_to_string(clazz, arch):
-    return build_arch.arch_to_string(arch, delimiter = '-')
+    return build_arch.join(arch, delimiter = '-')
   
   @classmethod
   def _make_build_path(clazz, system, distro, distro_version, arch, level):
@@ -109,6 +109,6 @@ class build_target(namedtuple('build_target', 'system, distro, distro_version, a
 
   @classmethod
   def make_host_build_target(clazz, level = build_level.RELEASE):
-    return clazz(host.SYSTEM, host.DISTRO, host.VERSION, ( host.ARCH ), level)
+    return clazz(host.SYSTEM, host.DISTRO, host.VERSION, ( host.ARCH, ), level)
   
 check.register_class(build_target)

@@ -1,6 +1,4 @@
-#!/usr/bin/env python
-#-*- coding:utf-8 -*-
-#
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
 from bes.common import dict_util, json_util, string_util
@@ -14,8 +12,8 @@ class unit_test_packages(object):
 
   __test__ = False
 
-  MACOS_ARCH = ( 'x86_64' )
-  LINUX_ARCH = ( 'x86_64' )
+  MACOS_ARCH = ( 'x86_64', )
+  LINUX_ARCH = ( 'x86_64', )
   FILES = package_files([], [])
   TEST_PACKAGES = {
     'water-1.0.0-0': PM('', 'water', '1.0.0', 0, 0, 'macos', 'release', MACOS_ARCH, '', '', None, {}, FILES),

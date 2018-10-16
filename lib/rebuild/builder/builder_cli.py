@@ -87,7 +87,7 @@ class builder_cli(object):
     
     args.system = build_system.parse_system(args.system)
     args.level = build_level.parse_level(args.level)
-    args.arch = build_arch.parse_arch(args.system, args.arch)
+    args.arch = build_arch.parse_arch(args.arch, args.system, args.distro)
     
     build_blurb.set_process_name('rebuild')
     build_blurb.set_verbose(args.verbose)
