@@ -31,10 +31,10 @@ class _toolchain_android(_toolchain_base):
     if not self.ndk_root:
       build_blurb.blurb('rebuild', '*** ERROR *** Trying to use android NDK but REBUILD_ANDROID_NDK_ROOT is not set.')
       return
-    self._triplet = self._REBUILD_ARCH_TO_TRIPLET[self.build_target.archs[0]]
+    self._triplet = self._REBUILD_ARCH_TO_TRIPLET[self.build_target.arch[0]]
     self._api = '26'
     self._api_dir = 'android-%s' % (self._api)
-    self._arch_dir = self._REBUILD_ARCH_TO_PLATFORM_ARCH[self.build_target.archs[0]]
+    self._arch_dir = self._REBUILD_ARCH_TO_PLATFORM_ARCH[self.build_target.arch[0]]
     self._platforms_dir = path.join(self.ndk_root, 'platforms')
     self._sysroot_platform_dir = path.join(self._platforms_dir, self._api_dir, self._arch_dir)
 
@@ -81,7 +81,7 @@ class _toolchain_android(_toolchain_base):
       'CXXFLAGS': cflags,
       'REBUILD_COMPILE_OPT_FLAGS': opt_flags,
       'REBUILD_COMPILE_ARCH_FLAGS': arch_flags,
-      'REBUILD_COMPILE_ARCHS': self.build_target.archs,
+      'REBUILD_COMPILE_ARCH': self.build_target.arch,
     }
     
     return env

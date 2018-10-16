@@ -35,7 +35,7 @@ class step_check_darwin_archs(step):
       return step_result(True, None)
       
     if path.isdir(script.staged_files_lib_dir):
-      expected_archs = script.build_target.archs
+      expected_archs = script.build_target.arch
       for lib in library.list_libraries(script.staged_files_lib_dir, relative = False):
         actual_archs = lipo.archs(lib)
         if not self.__matches(expected_archs, actual_archs):

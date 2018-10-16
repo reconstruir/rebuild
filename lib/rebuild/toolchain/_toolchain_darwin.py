@@ -60,7 +60,7 @@ class _toolchain_darwin(_toolchain_base):
       'CXXFLAGS': cxxflags,
       'REBUILD_COMPILE_OPT_FLAGS': opt_flags,
       'REBUILD_COMPILE_ARCH_FLAGS': arch_flags,
-      'REBUILD_COMPILE_ARCHS': self.build_target.arch,
+      'REBUILD_COMPILE_ARCH': self.build_target.arch,
     }
     
     return env

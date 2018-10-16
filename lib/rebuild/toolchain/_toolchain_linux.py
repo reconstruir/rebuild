@@ -56,7 +56,7 @@ class _toolchain_linux(_toolchain_base):
       'CXXFLAGS': cflags,
       'REBUILD_COMPILE_OPT_FLAGS': opt_flags,
       'REBUILD_COMPILE_ARCH_FLAGS': arch_flags,
-      'REBUILD_COMPILE_ARCHS': [],
+      'REBUILD_COMPILE_ARCH': [],
     }
     return env
 
