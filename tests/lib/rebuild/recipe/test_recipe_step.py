@@ -13,12 +13,15 @@ from test_steps import *
 class test_recipe_step(unit_test):
 
   TEST_ENV = testing_recipe_load_env()
+  BT_LINUX = build_target('linux', 'ubuntu', '18', ( 'x86_64' ), 'release')
+  BT_MACOS = build_target('macos', '', '', ( 'x86_64' ), 'release')
+  BT_ANDROID = build_target('android', '', '', ( 'armv7' ), 'release')
   
   def test_empty_defaults(self):
     text = '''\
 '''
     step = self._parse(text)
-    r = step.resolve_values({}, testing_recipe_load_env(build_target(system = 'linux')))
+    r = step.resolve_values({}, testing_recipe_load_env(self.BT_LINUX))
     expected = {
       'bool_value': False,
       'install_file_value': [],
@@ -33,7 +36,7 @@ class test_recipe_step(unit_test):
     }
     self.assertEqual( expected, r )
 
-    r = step.resolve_values({}, testing_recipe_load_env(build_target(system = 'macos')))
+    r = step.resolve_values({}, testing_recipe_load_env(self.BT_MACOS))
     self.assertEqual( expected, r )
 
   
@@ -52,7 +55,7 @@ key_values_value
   android: a=forandroid
 '''
     step = self._parse(text)
-    r = step.resolve_values({}, testing_recipe_load_env(build_target(system = 'linux')))
+    r = step.resolve_values({}, testing_recipe_load_env(self.BT_LINUX))
     expected = {
       'bool_value': True,
       'install_file_value': [],
@@ -66,7 +69,7 @@ key_values_value
       'git_address_value': None,
     }
     self.assertEqual( expected, r )
-    r = step.resolve_values({}, testing_recipe_load_env(build_target(system = 'macos')))
+    r = step.resolve_values({}, testing_recipe_load_env(self.BT_MACOS))
     expected = {
       'bool_value': True,
       'install_file_value': [],
@@ -80,7 +83,7 @@ key_values_value
       'git_address_value': None,
     }
     self.assertEqual( expected, r )
-    r = step.resolve_values({}, testing_recipe_load_env(build_target(system = 'android')))
+    r = step.resolve_values({}, testing_recipe_load_env(self.BT_ANDROID))
     expected = {
       'bool_value': True,
       'install_file_value': [],
@@ -103,7 +106,7 @@ git_address_value
   macos: macos_address macos_tag
 '''
     step = self._parse(text)
-    env = testing_recipe_load_env(build_target(system = 'linux'))
+    env = testing_recipe_load_env(self.BT_LINUX)
     r = step.resolve_values({}, env)
     expected = {
       'bool_value': False,
@@ -119,7 +122,7 @@ git_address_value
     }
     self.assertEqual( expected, r )
 
-    env = testing_recipe_load_env(build_target(system = 'macos'))
+    env = testing_recipe_load_env(self.BT_MACOS)
     r = step.resolve_values({}, env)
     expected = {
       'bool_value': False,

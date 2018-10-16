@@ -28,7 +28,7 @@ class test_package_metadata(unit_test):
     
   TEST_PROPERTIES = { 'p1': 'v1', 'p2': 6 }
 
-  TEST_ENTRY = PM('kiwi-6.7.8-2.tar.gz', 'kiwi', '6.7.8', 2, 0, 'macos', 'release', [ 'x86_64' ], '',
+  TEST_ENTRY = PM('kiwi-6.7.8-2.tar.gz', 'kiwi', '6.7.8', 2, 0, 'macos', 'release', [ 'x86_64' ], '', '',
                   TEST_REQUIREMENTS, TEST_PROPERTIES, TEST_FILES)
 
   def test_descriptor(self):
@@ -36,17 +36,18 @@ class test_package_metadata(unit_test):
                       self.TEST_ENTRY.package_descriptor )
 
   def test_build_target(self):
-    self.assertEqual( build_target('macos', 'release', [ 'x86_64' ], None), self.TEST_ENTRY.build_target )
+    self.assertEqual( build_target('macos', '', '', ( 'x86_64', ), 'release'), self.TEST_ENTRY.build_target )
 
   def test_to_json(self):
     self.maxDiff = None
     expected_json = '''\
 {
   "_format_version": 2, 
-  "archs": [
+  "arch": [
     "x86_64"
   ], 
   "distro": "", 
+  "distro_version": "", 
   "epoch": 0, 
   "filename": "kiwi-6.7.8-2.tar.gz", 
   "files": {
@@ -93,10 +94,11 @@ class test_package_metadata(unit_test):
     json = '''\
 {
   "_format_version": 2, 
-  "archs": [
+  "arch": [
     "x86_64"
   ], 
   "distro": "", 
+  "distro_version": "", 
   "epoch": 0, 
   "filename": "kiwi-6.7.8-2.tar.gz", 
   "files": {
@@ -153,8 +155,9 @@ class test_package_metadata(unit_test):
       'epoch': '0',
       'version': "'6.7.8'",
       'revision': '2',
-      'archs': '\'["x86_64"]\'',
+      'arch': '\'["x86_64"]\'',
       'distro': '\'\'',
+      'distro_version': '\'\'',
     }
     self.assertEqual( expected, self.TEST_ENTRY.to_sql_dict() )
 

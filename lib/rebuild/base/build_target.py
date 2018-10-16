@@ -10,47 +10,32 @@ from .build_system import build_system
 
 from collections import namedtuple
 
-class build_target(namedtuple('build_target', 'system, distro, level, archs, build_path')):
+class build_target(namedtuple('build_target', 'system, distro, distro_version, arch, level, build_path')):
 
-  DEFAULT = 'default'
-
-  def __new__(clazz, system = DEFAULT, level = DEFAULT, archs = DEFAULT, distro = None):
-    # CACADEVACA
-    #assert distro == None
-#    print('CACA: system=%s; ditro=%s' % (system, distro))
+  def __new__(clazz, system, distro, distro_version, arch, level):
+    check.check_string(system)
+    if distro is not None:
+      check.check_string(distro)
+    check.check_string(distro_version)
+    check.check(arch, ( check.STRING_TYPES, list, tuple ) )
+    check.check_string(level)
     system = build_system.parse_system(system)
-    level = clazz._determine_level(level)
-    distro = clazz._determine_distro(system, distro)
-    archs = build_arch.determine_archs(system, archs, distro = distro)
-    build_path = clazz._make_build_path(system, distro, archs, level)
-    return clazz.__bases__[0].__new__(clazz, system, distro, level, archs, build_path)
+    arch = build_arch.determine_arch(system, arch, distro)
+    level = build_level.parse_level(level)
+    build_path = clazz._make_build_path(system, distro, distro_version, arch, level)
+    return clazz.__bases__[0].__new__(clazz, system, distro, distro_version, arch, level, build_path)
 
   @classmethod
-  def _archs_to_string(clazz, archs):
-    return build_arch.archs_to_string(archs, delimiter = '-')
+  def _arch_to_string(clazz, arch):
+    return build_arch.arch_to_string(arch, delimiter = '-')
   
   @classmethod
-  def _determine_level(clazz, tentative_level):
-    if tentative_level == clazz.DEFAULT:
-      return build_level.DEFAULT_LEVEL
-    if not tentative_level in build_level.LEVELS:
-      raise RuntimeError('Invalid level: %s' % (tentative_level))
-    return tentative_level
-
-  @classmethod
-  def _determine_distro(clazz, system, tentative_distro):
-    'Distro only gets set when the host platform is linux.'
-    if tentative_distro == clazz.DEFAULT:
-      if system in [ build_system.LINUX ] and host.SYSTEM == system:
-        return host.DISTRO
-      return None
-    return tentative_distro
-
-  @classmethod
-  def _make_build_path(clazz, system, distro, archs, level):
+  def _make_build_path(clazz, system, distro, distro_version, arch, level):
+    system_parts = [ system ]
     if distro:
-      system = '%s.%s' % (system, distro)
-    parts = [ system, clazz._archs_to_string(archs), level ]
+      system_parts += [ distro, distro_version ]
+    system_path = '.'.join(system_parts)
+    parts = [ system_path, clazz._arch_to_string(arch), level ]
     return '/'.join(parts)
 
   def is_darwin(self):
@@ -88,7 +73,7 @@ class build_target(namedtuple('build_target', 'system, distro, level, archs, bui
   def parse_expression(self, expression):
     variables = {
       'system': self.system,
-      'archs': self._archs_to_string(self.archs),
+      'arch': self._arch_to_string(self.arch),
       'level': self.level,
       'distro': self.distro or 'None',
     }
@@ -111,17 +96,17 @@ class build_target(namedtuple('build_target', 'system, distro, level, archs, bui
     if len(parts) != 3:
       raise ValueError('Invalid build path: %s' % (s))
     system = parts[0]
-    archs = parts[1]
+    arch = parts[1]
     level = parts[2]
     distro = None
     if '.' in system:
       system, _, distro = system.partition('.')
-    if '-' in archs:
-      archs = archs.split('-')
-    return clazz(system = system, level = level, archs = archs, distro = distro)
+    if '-' in arch:
+      archs = arch.split('-')
+    return clazz(system, level = level, archs = archs, distro = distro)
 
   @classmethod
   def make_host_build_target(clazz, level = build_level.RELEASE):
-    return clazz(system = host.SYSTEM, level = level)
+    return clazz(host.SYSTEM, host.DISTRO, host.VERSION, ( host.ARCH ), level)
   
 check.register_class(build_target)

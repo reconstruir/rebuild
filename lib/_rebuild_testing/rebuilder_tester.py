@@ -12,9 +12,7 @@ class rebuilder_tester(object):
   class config(namedtuple('config', 'read_contents, read_checksums, build_target')):
 
     def __new__(clazz, read_contents = False, read_checksums = False, bt = None):
-      bt = bt or build_target(system = build_system.HOST,
-                              level = build_level.RELEASE,
-                              archs = build_arch.DEFAULT)
+      bt = bt or build_target.make_host_build_target(level = build_level.RELEASE)
       return clazz.__bases__[0].__new__(clazz, read_contents, read_checksums, bt)
   
   result = namedtuple('result', 'tmp_dir, command, result, artifacts_dir, artifacts, artifacts_members, artifacts_contents, droppings, checksums, checksums_contents')
@@ -97,6 +95,8 @@ class rebuilder_tester(object):
       replacements = {
         tmp_dir + path.sep: '',
         config.build_target.system: '$SYSTEM',
+        config.build_target.distro: '$DISTRO',
+        config.build_target.distro_version: '$DISTRO_VERSION',
       }
       new_filename = string_util.replace(checksum.filename, replacements)
       result.append(file_checksum(new_filename, checksum.checksum))

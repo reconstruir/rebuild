@@ -123,7 +123,8 @@ class artifact_manager(object):
     check.check_build_target(build_target)
     adesc = artifact_descriptor(package_descriptor.name, package_descriptor.version.upstream_version,
                                 package_descriptor.version.revision, package_descriptor.version.epoch,
-                                build_target.system, build_target.level, build_target.archs, build_target.distro)
+                                build_target.system, build_target.level, build_target.arch,
+                                build_target.distro, build_target.distro_version)
     return self.find_by_artifact_descriptor(adesc, relative_filename = relative_filename)
 
   def find_by_artifact_descriptor(self, artifact_descriptor, relative_filename = True):

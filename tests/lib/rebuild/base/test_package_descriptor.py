@@ -8,6 +8,11 @@ from bes.common import string_util
 
 class test_package_descriptor(unit_test):
 
+  BT_LINUX_RELEASE = build_target('linux', '', '', ( 'x86_64' ), 'release')
+  BT_MACOS_RELEASE = build_target('macos', '', '', ( 'x86_64' ), 'release')
+  BT_LINUX_DEBUG = build_target('linux', '', '', ( 'x86_64' ), 'debug')
+  BT_MACOS_DEBUG = build_target('macos', '', '', ( 'x86_64' ), 'debug')
+  
   def test_init(self):
     self.assertEqual( 'foo-1.2.3-1', PD('foo', '1.2.3-1', []).full_name )
     self.assertEqual( 'foo-1.2.3-1', PD('foo', '1.2.3-1', None).full_name )
@@ -121,10 +126,10 @@ class test_package_descriptor(unit_test):
     self.assertEqual( 'foo-1.2.3-1.tar.gz', PD('foo', '1.2.3-1').tarball_filename )
 
   def test_artifact_path(self):
-    self.assertEqual( 'macos/x86_64/release/foo-1.2.3-1.tar.gz', PD('foo', '1.2.3-1').artifact_path(build_target('macos', 'release')) )
-    self.assertEqual( 'macos/x86_64/debug/foo-1.2.3-1.tar.gz', PD('foo', '1.2.3-1').artifact_path(build_target('macos', 'debug')) )
-    self.assertEqual( 'linux/x86_64/release/foo-1.2.3-1.tar.gz', PD('foo', '1.2.3-1').artifact_path(build_target('linux', 'release', archs = 'x86_64')) )
-    self.assertEqual( 'linux/x86_64/debug/foo-1.2.3-1.tar.gz', PD('foo', '1.2.3-1').artifact_path(build_target('linux', 'debug', archs = 'x86_64')) )
+    self.assertEqual( 'macos/x86_64/release/foo-1.2.3-1.tar.gz', PD('foo', '1.2.3-1').artifact_path(self.BT_MACOS_RELEASE) )
+    self.assertEqual( 'macos/x86_64/debug/foo-1.2.3-1.tar.gz', PD('foo', '1.2.3-1').artifact_path(self.BT_MACOS_DEBUG) )
+    self.assertEqual( 'linux/x86_64/release/foo-1.2.3-1.tar.gz', PD('foo', '1.2.3-1').artifact_path(self.BT_LINUX_RELEASE) )
+    self.assertEqual( 'linux/x86_64/debug/foo-1.2.3-1.tar.gz', PD('foo', '1.2.3-1').artifact_path(self.BT_LINUX_DEBUG) )
 
 if __name__ == '__main__':
   unit_test.main()

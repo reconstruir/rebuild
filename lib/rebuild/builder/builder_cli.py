@@ -17,10 +17,13 @@ from .builder_env import builder_env
 class builder_cli(object):
 
   def __init__(self):
-    all_archs = ','.join(build_arch.DEFAULT_HOST_ARCHS)
-    default_archs = ','.join(build_arch.DEFAULT_ARCHS[build_system.HOST])
+    archs = ','.join(build_arch.DEFAULT_HOST_ARCHS)
     build_levels = ','.join(build_level.LEVELS)
     systems = ','.join(build_system.SYSTEMS)
+    default_system = build_system.HOST
+    default_level = build_level.RELEASE
+    default_arch = build_arch.HOST_ARCH
+    default_distro = build_system.HOST_DISTRO
     self.parser = argparse.ArgumentParser(description = 'Build packages.')
     self.parser.add_argument('-C', '--change-dir', action = 'store', type = str, default = None)
     self.parser.add_argument('-f', '--project-file', action = 'store', type = str, default = 'rebuild.project')
@@ -28,15 +31,14 @@ class builder_cli(object):
     self.parser.add_argument('-v', '--verbose', action = 'store_true', default = False)
     self.parser.add_argument('-w', '--wipe', action = 'store_true')
     self.parser.add_argument('-k', '--keep-going', action = 'store_true')
-    self.parser.add_argument('-d', '--disabled', action = 'store_true')
+    self.parser.add_argument('--disabled', action = 'store_true')
     self.parser.add_argument('-t', '--tools-only', action = 'store_true')
     self.parser.add_argument('-u', '--users', action = 'store_true', help = 'Rebuild users of given packages [ None ]')
     self.parser.add_argument('-j', '--jobs', action = 'store', type = int, help = 'Number of threads to use [ 1 ]')
-    self.parser.add_argument('-s', '--system', action = 'store', type = str, default = build_target.DEFAULT, help = 'build_system.  One of (%s) [ %s ]' % (systems, build_system.DEFAULT))
-    self.parser.add_argument('-a', '--archs', action = 'store', type = str, default = build_target.DEFAULT, help = 'Architectures to build for.  One of (%s) [ %s ]' % (all_archs, default_archs))
-    self.parser.add_argument('-l', '--level', action = 'store', type = str, default = build_target.DEFAULT, help = 'Build level.  One of (%s) [ %s ]' % (build_levels, build_level.DEFAULT_LEVEL))
-    # CACADEVACA
-    self.parser.add_argument('--distro', action = 'store', type = str, default = None, help = 'Distro.  One of (%s) [ %s ]' % ('FIXME', 'FIXME2'))
+    self.parser.add_argument('-s', '--system', action = 'store', type = str, default = default_system, help = 'build_system.  One of (%s) [ %s ]' % (systems, default_system))
+    self.parser.add_argument('-a', '--arch', action = 'store', type = str, default = default_arch, help = 'Architecture(s) to build for.  One or more of (%s) [ %s ]' % (archs, default_arch))
+    self.parser.add_argument('-l', '--level', action = 'store', type = str, default = default_level, help = 'Build level.  One of (%s) [ %s ]' % (build_levels, default_level))
+    self.parser.add_argument('-d', '--distro', action = 'store', type = str, default = default_distro, help = 'Distro. [ %s ]' % (default_distro))
     self.parser.add_argument('--skip-to-step', action = 'store', type = str, help = 'Skip to the given step name. [ None ]')
     self.parser.add_argument('--deps-only', action = 'store_true', help = 'Only build dependencies')
     self.parser.add_argument('--recipes-only', action = 'store_true', help = 'Only read the recipes dont build them.')
@@ -85,13 +87,13 @@ class builder_cli(object):
     
     args.system = build_system.parse_system(args.system)
     args.level = build_level.parse_level(args.level)
-    args.archs = build_arch.parse_archs(args.system, args.archs)
+    args.arch = build_arch.parse_arch(args.system, args.arch)
     
     build_blurb.set_process_name('rebuild')
     build_blurb.set_verbose(args.verbose)
 
-    bt = build_target(system = args.system, level = args.level, archs = args.archs, distro = args.distro)
-    
+    bt = build_target(args.system, args.distro, build_system.HOST_VERSION, args.arch, args.level)
+
     # Tests only run on desktop
     if not bt.is_desktop():
       args.skip_tests = True

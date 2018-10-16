@@ -5,7 +5,7 @@ import os.path as path
 from bes.testing.unit_test import script_unit_test
 from bes.fs import file_replace, tar_util, temp_file
 from bes.git import repo
-from rebuild.base import build_arch, build_level, build_system, build_target
+from rebuild.base import build_target
 from rebuild.toolchain import toolchain_testing
 from bes.testing.unit_test.unit_test_skip import skip_if
 
@@ -19,19 +19,9 @@ class test_rebuilder_script(script_unit_test):
   DEBUG = script_unit_test.DEBUG
   #DEBUG = True
 
-  BUILD_LEVEL = 'release'
-
-  HOST_BUILD_TARGET = build_target(system = build_system.HOST,
-                                   level = build_level.RELEASE,
-                                   archs = build_arch.DEFAULT)
-
-  IOS_BUILD_TARGET = build_target(system = build_system.IOS,
-                                  level = build_level.RELEASE,
-                                  archs = build_arch.DEFAULT)
-
-  ANDROID_BUILD_TARGET = build_target(system = build_system.ANDROID,
-                                      level = build_level.RELEASE,
-                                      archs = build_arch.DEFAULT)
+  HOST_BUILD_TARGET = build_target.make_host_build_target(level = 'release')
+  IOS_BUILD_TARGET = build_target('ios', '', '', ( 'arm64', ), 'release')
+  ANDROID_BUILD_TARGET = build_target('android', '', '', ( 'armv7', ), 'release')
   
   DEFAULT_CONFIG = rebuilder_tester.config()
   
@@ -118,9 +108,9 @@ class test_rebuilder_script(script_unit_test):
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
     self.assertEqual( [ 'fructose-3.4.5-6/sources.checksums', 'fructose-3.4.5-6/targets.checksums' ], test.checksums )
-    self.assertEqual( [ 'builds/$SYSTEM/x86_64/release/fructose-3.4.5-6_timestamp/temp/fructose-3.4.5-6.tar.gz', 'fructose/rebuild.recipe' ],
+    self.assertEqual( [ 'builds/$SYSTEM/$DISTRO/$DISTRO_VERSION/x86_64/release/fructose-3.4.5-6_timestamp/temp/fructose-3.4.5-6.tar.gz', 'fructose/rebuild.recipe' ],
                       test.checksums_contents['fructose-3.4.5-6/sources.checksums'].filenames() )
-    self.assertEqual( [ 'artifacts/$SYSTEM/x86_64/release/fructose-3.4.5-6.tar.gz' ],
+    self.assertEqual( [ 'artifacts/$SYSTEM/$DISTRO/$DISTRO_VERSION/x86_64/release/fructose-3.4.5-6.tar.gz' ],
                       test.checksums_contents['fructose-3.4.5-6/targets.checksums'].filenames() )
 
   def test_tool_tfoo(self):
@@ -301,7 +291,7 @@ print("hook1 hook2")
     rt = rebuilder_tester(self._resolve_script(),
                           path.join(data_dir, cwd_subdir),
                           path.normpath(path.join(data_dir, '../sources')),
-                          build_level.RELEASE,
+                          'release',
                           debug = self.DEBUG)
     return rt.run(config, *args)
   

@@ -1,7 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.system import host
-from rebuild.base import build_system, build_target
+from rebuild.base import build_arch, build_level, build_system, build_target
 from .toolchain import toolchain
 
 class toolchain_testing(object):
@@ -14,9 +14,10 @@ class toolchain_testing(object):
   def can_compile_ios(clazz):
     return host.is_macos()
 
+  BT = build_target(build_system.ANDROID, '', '', ( build_arch.ARMV7, ), build_level.RELEASE)
   @classmethod
   def android_toolchain_is_valid(clazz):
-    return toolchain.get_toolchain(build_target(system = build_system.ANDROID)).is_valid()
+    return toolchain.get_toolchain(clazz.BT).is_valid()
 
   @classmethod
   def can_compile_android(clazz):

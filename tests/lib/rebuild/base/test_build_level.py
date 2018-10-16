@@ -13,7 +13,9 @@ class test_build_level(unit_test):
     
   def test_parse_level(self):
     self.assertEqual( build_level.RELEASE, build_level.parse_level('release') )
-    self.assertEqual( build_level.RELEASE, build_level.parse_level('default') )
+    self.assertEqual( build_level.DEBUG, build_level.parse_level('debug') )
+    with self.assertRaises(ValueError) as context:
+      self.assertEqual( build_level.RELEASE, build_level.parse_level('optimized') )
     
 if __name__ == '__main__':
   unit_test.main()

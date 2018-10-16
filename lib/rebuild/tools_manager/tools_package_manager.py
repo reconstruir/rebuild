@@ -15,7 +15,7 @@ from rebuild.package import artifact_manager, package
 
 class tools_package_manager(object):
 
-  BUILD_TARGET = build_target(host.SYSTEM, build_level.RELEASE)
+  BUILD_TARGET = build_target.make_host_build_target(level = build_level.RELEASE)
 
   def __init__(self, root_dir):
     self.root_dir = root_dir

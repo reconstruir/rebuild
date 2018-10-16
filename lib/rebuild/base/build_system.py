@@ -21,6 +21,7 @@ class build_system(object):
   DARWIN = 'macos|ios|ios_sim'
   HOST = host.SYSTEM
   HOST_DISTRO = host.DISTRO
+  HOST_VERSION = host.VERSION
   DEFAULT = HOST
   
   DELIMITER = '|'

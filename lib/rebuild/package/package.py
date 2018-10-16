@@ -187,8 +187,9 @@ unset REBUILD_STUFF_DIR
                                 pkg_desc.version.epoch,
                                 build_target.system,
                                 build_target.level,
-                                build_target.archs,
-                                build_target.distro or '',
+                                build_target.arch,
+                                build_target.distro,
+                                build_target.distro_version,
                                 pkg_desc.requirements,
                                 properties,
                                 pkg_files)

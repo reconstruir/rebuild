@@ -881,3 +881,13 @@ rebuild.package.package_manager.PackageFilesConflictError: conflicts found betwe
 
 
 
+2018-10-14
+- change build_target to build_profile
+- validate build profile args with a platform db
+- rename 'manager' to 'reenv' renv reb 
+- use build_target_cli for builder_cli and manager_cli
+- cleanup build_target/profile command line in all those tools
+- FIXME666 arch is fucked for mobile platforms
+- manager_cli. get rid of opts
+- build_target compute arch from system if none
+- build target validation for nonsensical args line no distro and yes version

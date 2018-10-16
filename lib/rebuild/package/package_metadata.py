@@ -9,11 +9,11 @@ from .artifact_descriptor import artifact_descriptor
 from .package_files import package_files
 from .util import util
 
-class package_metadata(namedtuple('package_metadata', 'format_version, filename, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files')):
+class package_metadata(namedtuple('package_metadata', 'format_version, filename, name, version, revision, epoch, system, level, arch, distro, distro_version, requirements, properties, files')):
 
-  def __new__(clazz, filename, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files):
-    # CACADEVACA
-    distro = ''
+  def __new__(clazz, filename, name, version, revision, epoch, system,
+              level, arch, distro, distro_version, requirements,
+              properties, files):
     check.check_string(filename)
     check.check_string(name)
     check.check_string(version)
@@ -21,9 +21,9 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
     check.check_int(epoch)
     check.check_string(system)
     check.check_string(level)
-    check.check_string_seq(archs)
-    distro = distro or ''
+    check.check_string_seq(arch)
     check.check_string(distro)
+    check.check_string(distro_version)
     if check.is_string(requirements):
       requirements = requirement_list.parse(requirements)
     requirements = requirements or requirement_list()
@@ -31,7 +31,10 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
     properties = properties or {}
     check.check_dict(properties)
     check.check_package_files(files)
-    return clazz.__bases__[0].__new__(clazz, 2, filename, name, version, revision, epoch, system, level, archs, distro, requirements, properties, files)
+    return clazz.__bases__[0].__new__(clazz, 2, filename, name, version,
+                                      revision, epoch, system, level, arch,
+                                      distro, distro_version, requirements,
+                                      properties, files)
 
   '''
   def __deepcopy__(self, memo):
@@ -51,11 +54,13 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
 
   @cached_property
   def artifact_descriptor(self):
-    return artifact_descriptor(self.name, self.version, self.revision, self.epoch, self.system, self.level, self.archs, self.distro)
+    return artifact_descriptor(self.name, self.version, self.revision, self.epoch,
+                               self.system, self.level, self.arch, self.distro,
+                               self.distro_version)
 
   @cached_property
   def build_target(self):
-    return build_target(system = self.system, level = self.level, archs = self.archs, distro = self.distro or None)
+    return build_target(self.system, self.distro, self.distro_version, self.arch, self.level)
     
   def to_json(self):
     return json_util.to_json(self.to_simple_dict(), indent = 2, sort_keys = True)
@@ -78,8 +83,9 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
                  o['epoch'],
                  o['system'],
                  o['level'],
-                 o['archs'],
+                 o['arch'],
                  o['distro'],
+                 o['distro_version'],
                  util.requirements_from_string_list(o['requirements']),
                  o['properties'],
                  package_files.parse_dict(o['files']))
@@ -95,8 +101,9 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
       'epoch': self.epoch,
       'system': self.system,
       'level': self.level,
-      'archs': self.archs,
+      'arch': self.arch,
       'distro': self.distro,
+      'distro_version': self.distro_version,
       'requirements': util.requirements_to_string_list(self.requirements),
       'properties': self.properties,
       'files': self.files.to_simple_dict(),

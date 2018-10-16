@@ -37,7 +37,7 @@ class _toolchain_linux(_toolchain_base):
   def compiler_flags(self):
     'Return the compiler flags for the given darwin.'
 
-    arch_flags = self._make_arch_flags(self.build_target.archs)
+    arch_flags = self._make_arch_flags(self.build_target.arch)
     pic_flags = [ '-fPIC' ]
 
     if self.build_target.level == build_level.RELEASE:
