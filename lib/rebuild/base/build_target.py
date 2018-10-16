@@ -32,9 +32,11 @@ class build_target(namedtuple('build_target', 'system, distro, distro_version, a
   @classmethod
   def _make_build_path(clazz, system, distro, distro_version, arch, level):
     system_parts = [ system ]
-    if distro:
-      system_parts += [ distro, distro_version ]
-    system_path = '.'.join(system_parts)
+    if distro and distro != system:
+      system_parts += [ distro ]
+    if distro_version:
+      system_parts += [ distro_version ]
+    system_path = '-'.join(system_parts)
     parts = [ system_path, clazz._arch_to_string(arch), level ]
     return '/'.join(parts)
 

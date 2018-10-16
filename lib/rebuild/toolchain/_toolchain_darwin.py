@@ -41,7 +41,7 @@ class _toolchain_darwin(_toolchain_base):
 
     sysroot_cflags = self.sysroot_cflags()
     sysroot_cxxflags = self.sysroot_cxxflags()
-    arch_flags = self._make_arch_flags(self.build_target.archs)
+    arch_flags = self._make_arch_flags(self.build_target.arch)
 
     if self.build_target.level == build_level.RELEASE:
       opt_flags = [ '-O2' ]
@@ -60,7 +60,7 @@ class _toolchain_darwin(_toolchain_base):
       'CXXFLAGS': cxxflags,
       'REBUILD_COMPILE_OPT_FLAGS': opt_flags,
       'REBUILD_COMPILE_ARCH_FLAGS': arch_flags,
-      'REBUILD_COMPILE_ARCHS': self.build_target.archs,
+      'REBUILD_COMPILE_ARCHS': self.build_target.arch,
     }
     
     return env
