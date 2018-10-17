@@ -196,6 +196,11 @@ class manager_cli(object):
                         action = 'store',
                         default = self.DEFAULT_ROOT_DIR,
                         help = 'The root directory [ %s ]' % (self.DEFAULT_ROOT_DIR))
+    parser.add_argument('--distro',
+                        '-d',
+                        action = 'store',
+                        default = None,
+                        help = 'The distro [ None ]')
   def _packages_check_common_args(self, args):
     'Add common arguments for all the "packages" command'
     if args.artifacts:
@@ -276,7 +281,13 @@ class manager_cli(object):
       return ( None, 'Invalid system: %s' % (args.system) )
     if not args.level in build_level.LEVELS:
       return ( None, 'Invalid build_level: %s' % (args.level) )
-    return ( build_target(system, '', '', ( 'x86_64' ), args.level), None )
+    if system == 'linux':
+      distro = 'ubuntu'
+      distro_version = '18'
+    else:
+      distro = ''
+      distro_version = '10.10'
+    return ( build_target(system, distro, distro_version, 'x86_64', args.level), None )
 
   @classmethod
   def _validate_build_target(clazz, args):
@@ -337,6 +348,7 @@ remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir ${_root_dir}
 
   def _command_packages_update(self, root_dir, wipe, project_name, allow_downgrade,
                                force_install, dont_touch_update_script, bt):
+    print('root_dir: %s' % (root_dir))
     rm = manager(self.artifact_manager, bt, root_dir)
     success = rm.update_from_config(bt,
                                     wipe,

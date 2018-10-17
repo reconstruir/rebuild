@@ -153,6 +153,8 @@ packages: orange_juice pear_juice
       'packages',
       'print',
       '--root-dir', tmp_dir,
+      '--system', 'linux',
+      '--level', 'release',
       'test1'
     ]
     rv = self.run_script(args)
