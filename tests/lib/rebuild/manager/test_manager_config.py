@@ -4,7 +4,7 @@
 
 import unittest
 from bes.fs import tar_util, temp_file
-from rebuild.base import build_system, build_target
+from rebuild.base import build_target
 from rebuild.manager import manager_config
 
 class test_manager_config(unittest.TestCase):
@@ -32,22 +32,22 @@ packages: common10 common20
     tmp_config_filename = self.__make_test_config(self.TEST_CONFIG_INI)
     config = manager_config()
 
-    config.load_file(tmp_config_filename, build_target(build_system.MACOS))
+    config.load_file(tmp_config_filename, build_target.parse_path('macos-10.10/x86_64/release'))
     self.assertEqual( [ 'common1', 'common2', 'common3', 'common4', 'macos1', 'macos2' ], config['project1']['packages'] )
     self.assertEqual( 'project1 config', config['project1']['description'] )
 
     self.assertEqual( [ 'common10', 'common20' ], config['project2']['packages'] )
     self.assertEqual( 'project2 config', config['project2']['description'] )
 
-    config.load_file(tmp_config_filename, build_target(build_system.LINUX))
+    config.load_file(tmp_config_filename, build_target.parse_path('linux-ubuntu-18/x86_64/release'))
     self.assertEqual( [ 'common1', 'common2', 'common3', 'common4', 'linux1', 'linux2' ], config['project1']['packages'] )
     self.assertEqual( 'project1 config', config['project1']['description'] )
 
-    config.load_file(tmp_config_filename, build_target(build_system.ANDROID))
+    config.load_file(tmp_config_filename, build_target.parse_path('android/armv7/release'))
     self.assertEqual( [ 'common1', 'common2', 'common3', 'common4' ], config['project1']['packages'] )
     self.assertEqual( 'project1 config', config['project1']['description'] )
 
-    config.load_file(tmp_config_filename, build_target(build_system.IOS))
+    config.load_file(tmp_config_filename, build_target.parse_path('ios-12/arm64-armv7/release'))
     self.assertEqual( [ 'common1', 'common2', 'common3', 'common4' ], config['project1']['packages'] )
     self.assertEqual( 'project1 config', config['project1']['description'] )
     
