@@ -892,3 +892,5 @@ rebuild.package.package_manager.PackageFilesConflictError: conflicts found betwe
 - build_target compute arch from system if none
 - build target validation for nonsensical args line no distro and yes version
 
+2018-11-14
+- get rid of manager.DEFAULT_ROOT_DIR and its uses always require a root_dir be given
