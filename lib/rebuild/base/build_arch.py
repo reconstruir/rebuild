@@ -71,10 +71,10 @@ class build_arch(object):
   @classmethod
   def check_arch(clazz, arch, system, distro):
     'Check that arch is valid for system or raise an error.'
-    arch = clazz.validate(arch, system, distro)
-    if not arch:
-      raise ValueError('Invalid arch \"%s\" for system \"%s\" - %s' % (next_arch, system, arch))
-    return arch
+    validated_arch = clazz.validate(arch, system, distro)
+    if not validated_arch:
+      raise ValueError('Invalid arch \"%s\" for system \"%s\"' % (arch, system))
+    return validated_arch
     
   @classmethod
   def validate(clazz, arch, system, distro):
