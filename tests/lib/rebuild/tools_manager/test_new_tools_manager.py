@@ -21,7 +21,7 @@ class test_new_tools_manager(script_unit_test):
   DEBUG = script_unit_test.DEBUG
   #DEBUG = True
 
-  TEST_BUILD_TARGET = build_target(build_system.LINUX, build_level.RELEASE)
+  TEST_BUILD_TARGET = build_target.parse_path('linux-ubuntu-18/x86_64/release')
 
   @cached_property
   def artifact_manager(self):
