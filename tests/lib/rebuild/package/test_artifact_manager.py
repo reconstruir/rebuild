@@ -13,10 +13,11 @@ from rebuild.package.db_error import *
 class test_artifact_manager(unit_test):
 
   DEBUG = unit_test.DEBUG
-  DEBUG = True
+  #DEBUG = True
 
-  LINUX_BT = build_target('linux', '', '', ( 'x86_64', ), 'release')
-  MACOS_BT = build_target('macos', '', '', ( 'x86_64', ), 'release')
+  # These match what unit_test_packages use to make the testing packages
+  LINUX_BT = build_target('linux', 'ubuntu', '18', ( 'x86_64', ), 'release')
+  MACOS_BT = build_target('macos', '', '10.10', ( 'x86_64', ), 'release')
   
   @classmethod
   def _make_test_artifact_manager(clazz, address = None, items = None):
@@ -102,40 +103,40 @@ class test_artifact_manager(unit_test):
     self.maxDiff = None
     am = self._make_test_artifacts_git_repo()
     self.assertEqual( [
-      AD('apple', '1.2.3', 1, 0, 'linux', 'release', ( 'x86_64', ), '', ''),
-      AD('arsenic', '1.2.9', 1, 0, 'linux', 'release', ( 'x86_64', ), '', ''),
-      AD('citrus', '1.0.0', 2, 0, 'linux', 'release', ( 'x86_64', ), '', ''),
-      AD('fiber', '1.0.0', 0, 0, 'linux', 'release', ( 'x86_64', ), '', ''),
-      AD('fructose', '3.4.5', 6, 0, 'linux', 'release', ( 'x86_64', ), '', ''),
-      AD('fruit', '1.0.0', 0, 0, 'linux', 'release', ( 'x86_64', ), '', ''),
-      AD('mercury', '1.2.9', 0, 0, 'linux', 'release', ( 'x86_64', ), '', ''),
-      AD('mercury_conflict', '3.2.1', 0, 0, 'linux', 'release', ( 'x86_64', ), '', ''),
-      AD('orange', '6.5.4', 3, 0, 'linux', 'release', ( 'x86_64', ), '', ''),
-      AD('orange_juice', '1.4.5', 0, 0, 'linux', 'release', ( 'x86_64', ), '', ''),
-      AD('pear', '1.2.3', 1, 0, 'linux', 'release', ( 'x86_64', ), '', ''),
-      AD('pear_juice', '6.6.6', 0, 0, 'linux', 'release', ( 'x86_64', ), '', ''),
-      AD('smoothie', '1.0.0', 0, 0, 'linux', 'release', ( 'x86_64', ), '', ''),
-      AD('water', '1.0.0', 2, 0, 'linux', 'release', ( 'x86_64', ), '', ''),
+      AD('apple', '1.2.3', 1, 0, 'linux', 'release', ( 'x86_64', ), 'ubuntu', '18'),
+      AD('arsenic', '1.2.9', 1, 0, 'linux', 'release', ( 'x86_64', ), 'ubuntu', '18'),
+      AD('citrus', '1.0.0', 2, 0, 'linux', 'release', ( 'x86_64', ), 'ubuntu', '18'),
+      AD('fiber', '1.0.0', 0, 0, 'linux', 'release', ( 'x86_64', ), 'ubuntu', '18'),
+      AD('fructose', '3.4.5', 6, 0, 'linux', 'release', ( 'x86_64', ), 'ubuntu', '18'),
+      AD('fruit', '1.0.0', 0, 0, 'linux', 'release', ( 'x86_64', ), 'ubuntu', '18'),
+      AD('mercury', '1.2.9', 0, 0, 'linux', 'release', ( 'x86_64', ), 'ubuntu', '18'),
+      AD('mercury_conflict', '3.2.1', 0, 0, 'linux', 'release', ( 'x86_64', ), 'ubuntu', '18'),
+      AD('orange', '6.5.4', 3, 0, 'linux', 'release', ( 'x86_64', ), 'ubuntu', '18'),
+      AD('orange_juice', '1.4.5', 0, 0, 'linux', 'release', ( 'x86_64', ), 'ubuntu', '18'),
+      AD('pear', '1.2.3', 1, 0, 'linux', 'release', ( 'x86_64', ), 'ubuntu', '18'),
+      AD('pear_juice', '6.6.6', 0, 0, 'linux', 'release', ( 'x86_64', ), 'ubuntu', '18'),
+      AD('smoothie', '1.0.0', 0, 0, 'linux', 'release', ( 'x86_64', ), 'ubuntu', '18'),
+      AD('water', '1.0.0', 2, 0, 'linux', 'release', ( 'x86_64', ), 'ubuntu', '18'),
     ], am.list_latest_versions(self.LINUX_BT) )
     
   def test_list_latest_versions_macos(self):
     self.maxDiff = None
     am = self._make_test_artifacts_git_repo()
     self.assertEqual( [
-      AD('apple', '1.2.3', 1, 0, 'macos', 'release', ( 'x86_64', ), '', ''),
-      AD('arsenic', '1.2.9', 1, 0, 'macos', 'release', ( 'x86_64', ), '', ''),
-      AD('citrus', '1.0.0', 2, 0, 'macos', 'release', ( 'x86_64', ), '', ''),
-      AD('fiber', '1.0.0', 0, 0, 'macos', 'release', ( 'x86_64', ), '', ''),
-      AD('fructose', '3.4.5', 6, 0, 'macos', 'release', ( 'x86_64', ), '', ''),
-      AD('fruit', '1.0.0', 0, 0, 'macos', 'release', ( 'x86_64', ), '', ''),
-      AD('mercury', '1.2.9', 0, 0, 'macos', 'release', ( 'x86_64', ), '', ''),
-      AD('mercury_conflict', '3.2.1', 0, 0, 'macos', 'release', ( 'x86_64', ), '', ''),
-      AD('orange', '6.5.4', 3, 0, 'macos', 'release', ( 'x86_64', ), '', ''),
-      AD('orange_juice', '1.4.5', 0, 0, 'macos', 'release', ( 'x86_64', ), '', ''),
-      AD('pear', '1.2.3', 1, 0, 'macos', 'release', ( 'x86_64', ), '', ''),
-      AD('pear_juice', '6.6.6', 0, 0, 'macos', 'release', ( 'x86_64', ), '', ''),
-      AD('smoothie', '1.0.0', 0, 0, 'macos', 'release', ( 'x86_64', ), '', ''),
-      AD('water', '1.0.0', 2, 0, 'macos', 'release', ( 'x86_64', ), '', ''),
+      AD('apple', '1.2.3', 1, 0, 'macos', 'release', ( 'x86_64', ), '', '10.10'),
+      AD('arsenic', '1.2.9', 1, 0, 'macos', 'release', ( 'x86_64', ), '', '10.10'),
+      AD('citrus', '1.0.0', 2, 0, 'macos', 'release', ( 'x86_64', ), '', '10.10'),
+      AD('fiber', '1.0.0', 0, 0, 'macos', 'release', ( 'x86_64', ), '', '10.10'),
+      AD('fructose', '3.4.5', 6, 0, 'macos', 'release', ( 'x86_64', ), '', '10.10'),
+      AD('fruit', '1.0.0', 0, 0, 'macos', 'release', ( 'x86_64', ), '', '10.10'),
+      AD('mercury', '1.2.9', 0, 0, 'macos', 'release', ( 'x86_64', ), '', '10.10'),
+      AD('mercury_conflict', '3.2.1', 0, 0, 'macos', 'release', ( 'x86_64', ), '', '10.10'),
+      AD('orange', '6.5.4', 3, 0, 'macos', 'release', ( 'x86_64', ), '', '10.10'),
+      AD('orange_juice', '1.4.5', 0, 0, 'macos', 'release', ( 'x86_64', ), '', '10.10'),
+      AD('pear', '1.2.3', 1, 0, 'macos', 'release', ( 'x86_64', ), '', '10.10'),
+      AD('pear_juice', '6.6.6', 0, 0, 'macos', 'release', ( 'x86_64', ), '', '10.10'),
+      AD('smoothie', '1.0.0', 0, 0, 'macos', 'release', ( 'x86_64', ), '', '10.10'),
+      AD('water', '1.0.0', 2, 0, 'macos', 'release', ( 'x86_64', ), '', '10.10'),
     ], am.list_latest_versions(self.MACOS_BT) )
     
 if __name__ == '__main__':

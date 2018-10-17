@@ -13,9 +13,7 @@ from rebuild.package.unit_test_packages import unit_test_packages
 class test_tools_manager(unit_test):
 
   DEBUG = unit_test.DEBUG
-  #DEBUG = True
-
-  TEST_BUILD_TARGET = build_target.make_host_build_target(level = 'release')
+  DEBUG = True
 
   def _make_test_tm(self):
     root_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
