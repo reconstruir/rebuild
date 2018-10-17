@@ -4,7 +4,7 @@
 import os.path as path, unittest
 from bes.fs import file_find, file_util, temp_file
 from bes.system import host
-from rebuild.base import build_system, build_target, build_level, package_descriptor
+from rebuild.base import build_target, package_descriptor
 from rebuild.pkg_config import pkg_config
 from rebuild.package import artifact_manager, package, package_manager
 from rebuild.package import PackageFilesConflictError, PackageMissingRequirementsError
@@ -14,7 +14,7 @@ from rebuild.package.unit_test_packages import unit_test_packages
 
 class test_package_manager(unittest.TestCase):
 
-  TEST_BUILD_TARGET = build_target(build_system.LINUX, build_level.RELEASE, archs = 'x86_64')
+  TEST_BUILD_TARGET = build_target('linux', '', '', 'x86_64', 'release')
 
   ZLIB_CONTENTS = [
     'include/zconf.h',

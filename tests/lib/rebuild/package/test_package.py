@@ -91,7 +91,7 @@ class test_package(unittest.TestCase):
   def _make_package(self, dest_dir, name, version, system, build_level, items, env_items):
     pi = package_descriptor(name, version)
     tarball_path = path.join(dest_dir, pi.tarball_filename)
-    bi = build_target(system, build_level)
+    bi = build_target(system, '', '', ( 'x86_64' ), build_level)
     items = temp_archive.make_temp_item_list(items)
     env_items = temp_archive.make_temp_item_list(env_items)
     tmp_stage_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
