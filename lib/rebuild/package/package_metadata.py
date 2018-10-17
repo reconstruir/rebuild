@@ -3,7 +3,7 @@
 import json
 from collections import namedtuple
 from bes.common import cached_property, check, json_util, string_util
-from rebuild.base import build_target, build_version, package_descriptor, requirement_list
+from rebuild.base import build_arch, build_target, build_version, package_descriptor, requirement_list
 
 from .artifact_descriptor import artifact_descriptor
 from .package_files import package_files
@@ -21,6 +21,7 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
     check.check_int(epoch)
     check.check_string(system)
     check.check_string(level)
+    arch = build_arch.check_arch(arch, system, distro)
     check.check_tuple(arch)
     check.check_string(distro)
     check.check_string(distro_version)
