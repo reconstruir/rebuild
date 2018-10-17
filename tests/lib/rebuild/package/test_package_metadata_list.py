@@ -4,7 +4,7 @@ import os.path as path
 from bes.sqlite import sqlite
 from bes.testing.unit_test import unit_test
 from bes.fs import file_checksum_list as FCL
-from rebuild.base import build_system, build_target, package_descriptor, requirement_list as RL
+from rebuild.base import requirement_list as RL
 from rebuild.package import package_metadata as PM,  package_metadata_list as PML, package_files as PF
 from rebuild.package import package_files
 
@@ -51,12 +51,8 @@ class test_package_metadata_list(unit_test):
     self.assertEqual( 'foo-1.0.1', latest[1].full_name )
       
   def _make_md(self, name, version, system, level):
-    if system == 'macos':
-      archs = [ 'x86_64' ]
-    else:
-      archs = [ 'x86_64' ]
     artifact = '%s-%s.tar.gz' % (name, version)
-    return PM(artifact, name, version, 0, 0, system, level, archs, '', self.TEST_REQUIREMENTS, self.TEST_PROPERTIES, self.TEST_FILES)
+    return PM(artifact, name, version, 0, 0, system, level, 'x86_64', '', '', self.TEST_REQUIREMENTS, self.TEST_PROPERTIES, self.TEST_FILES)
     
 if __name__ == '__main__':
   unit_test.main()

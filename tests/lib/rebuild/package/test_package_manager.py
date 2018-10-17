@@ -14,7 +14,7 @@ from rebuild.package.unit_test_packages import unit_test_packages
 
 class test_package_manager(unittest.TestCase):
 
-  TEST_BUILD_TARGET = build_target('linux', '', '', 'x86_64', 'release')
+  TEST_BUILD_TARGET = build_target.parse_path('linux/x86_64/release')
 
   ZLIB_CONTENTS = [
     'include/zconf.h',

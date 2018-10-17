@@ -117,7 +117,7 @@ class build_target(namedtuple('build_target', 'system, distro, distro_version, a
     elif len(parts) == 2:
       distro = parts[0]
       distro_version = parts[1]
-    else:
+    elif len(parts) > 2:
       raise ValueError('Invalid system: %s' % (s))
     return system, distro, distro_version
 
