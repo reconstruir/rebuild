@@ -12,33 +12,31 @@ class unit_test_packages(object):
 
   __test__ = False
 
-  MACOS_ARCH = ( 'x86_64', )
-  LINUX_ARCH = ( 'x86_64', )
   FILES = package_files([], [])
   TEST_PACKAGES = {
-    'water-1.0.0-0': PM('', 'water', '1.0.0', 0, 0, 'macos', 'release', MACOS_ARCH, '', '', None, {}, FILES),
-    'water-1.0.0-1': PM('', 'water', '1.0.0', 1, 0, 'macos', 'release', MACOS_ARCH, '', '', None, {}, FILES),
-    'water-1.0.0-2': PM('', 'water', '1.0.0', 2, 0, 'macos', 'release', MACOS_ARCH, '', '', None, {}, FILES),
-    'fiber-1.0.0-0': PM('', 'fiber', '1.0.0', 0, 0, 'macos', 'release', MACOS_ARCH, '', '', None, {}, FILES),
-    'citrus-1.0.0-0': PM('', 'citrus', '1.0.0', 2, 0, 'macos', 'release', MACOS_ARCH, '', '', None, {}, FILES),
-    'fructose-3.4.5-6': PM('', 'fructose', '3.4.5', 6, 0, 'macos', 'release', MACOS_ARCH, '', '', None, {}, FILES),
-    'mercury-1.2.8-0': PM('', 'mercury', '1.2.8', 0, 0, 'macos', 'release', MACOS_ARCH, '', '', None, {}, FILES),
-    'mercury-1.2.8-1': PM('', 'mercury', '1.2.8', 1, 0, 'macos', 'release', MACOS_ARCH, '', '', None, {}, FILES),
-    'mercury-1.2.9-0': PM('', 'mercury', '1.2.9', 0, 0, 'macos', 'release', MACOS_ARCH, '', '', None, {}, FILES),
-    'mercury_conflict-3.2.1-0': PM('', 'mercury_conflict', '3.2.1', 0, 0, 'macos', 'release', MACOS_ARCH, '', '', None, {}, FILES),
-    'arsenic-1.2.9-0': PM('', 'arsenic', '1.2.9', 0, 0, 'macos', 'release', MACOS_ARCH, '', '', None, {}, FILES),
-    'arsenic-1.2.9-1': PM('', 'arsenic', '1.2.9', 1, 0, 'macos', 'release', MACOS_ARCH, '', '', None, {}, FILES),
-    'arsenic-1.2.10-0': PM('', 'arsenic', '1.2.10', 0, 0, 'macos', 'release', MACOS_ARCH, '', '', None, {}, FILES),
-    'apple-1.2.3-1': PM('', 'apple', '1.2.3', 1, 0, 'macos', 'release', MACOS_ARCH, '', '', 'fruit >= 1.0.0', {}, FILES),
-    'fruit-1.0.0-0': PM('', 'fruit', '1.0.0', 0, 0, 'macos', 'release', MACOS_ARCH, '', '', 'fructose >= 3.4.5-6 fiber >= 1.0.0-0 water >= 1.0.0-0', {}, FILES),
-    'pear-1.2.3-1': PM('', 'pear', '1.2.3', 1, 0, 'macos', 'release', MACOS_ARCH, '', '', 'fruit >= 1.0.0', {}, FILES),
-    'orange-6.5.4-3': PM('', 'orange', '6.5.4', 3, 0, 'macos', 'release', MACOS_ARCH, '', '', 'fruit >= 1.0.0-0 citrus >= 1.0.0-0', {}, FILES),
-    'orange_juice-1.4.5-0': PM('', 'orange_juice', '1.4.5', 0, 0, 'macos', 'release', MACOS_ARCH, '', '', 'orange >= 6.5.4-3', {}, FILES),
-    'pear_juice-6.6.6-0': PM('', 'pear_juice', '6.6.6', 0, 0, 'macos', 'release', MACOS_ARCH, '', '', 'pear >= 1.2.3-1', {}, FILES),
-    'smoothie-1.0.0-0': PM('', 'smoothie', '1.0.0', 0, 0, 'macos', 'release', MACOS_ARCH, '', '', 'orange >= 6.5.4-3 pear >= 1.2.3-1 apple >= 1.2.3-1', {}, FILES),
+    'water-1.0.0-0': PM('', 'water', '1.0.0', 0, 0, 'macos', 'release', 'x86_64', '', '', None, {}, FILES),
+    'water-1.0.0-1': PM('', 'water', '1.0.0', 1, 0, 'macos', 'release', 'x86_64', '', '', None, {}, FILES),
+    'water-1.0.0-2': PM('', 'water', '1.0.0', 2, 0, 'macos', 'release', 'x86_64', '', '', None, {}, FILES),
+    'fiber-1.0.0-0': PM('', 'fiber', '1.0.0', 0, 0, 'macos', 'release', 'x86_64', '', '', None, {}, FILES),
+    'citrus-1.0.0-0': PM('', 'citrus', '1.0.0', 2, 0, 'macos', 'release', 'x86_64', '', '', None, {}, FILES),
+    'fructose-3.4.5-6': PM('', 'fructose', '3.4.5', 6, 0, 'macos', 'release', 'x86_64', '', '', None, {}, FILES),
+    'mercury-1.2.8-0': PM('', 'mercury', '1.2.8', 0, 0, 'macos', 'release', 'x86_64', '', '', None, {}, FILES),
+    'mercury-1.2.8-1': PM('', 'mercury', '1.2.8', 1, 0, 'macos', 'release', 'x86_64', '', '', None, {}, FILES),
+    'mercury-1.2.9-0': PM('', 'mercury', '1.2.9', 0, 0, 'macos', 'release', 'x86_64', '', '', None, {}, FILES),
+    'mercury_conflict-3.2.1-0': PM('', 'mercury_conflict', '3.2.1', 0, 0, 'macos', 'release', 'x86_64', '', '', None, {}, FILES),
+    'arsenic-1.2.9-0': PM('', 'arsenic', '1.2.9', 0, 0, 'macos', 'release', 'x86_64', '', '', None, {}, FILES),
+    'arsenic-1.2.9-1': PM('', 'arsenic', '1.2.9', 1, 0, 'macos', 'release', 'x86_64', '', '', None, {}, FILES),
+    'arsenic-1.2.10-0': PM('', 'arsenic', '1.2.10', 0, 0, 'macos', 'release', 'x86_64', '', '', None, {}, FILES),
+    'apple-1.2.3-1': PM('', 'apple', '1.2.3', 1, 0, 'macos', 'release', 'x86_64', '', '', 'fruit >= 1.0.0', {}, FILES),
+    'fruit-1.0.0-0': PM('', 'fruit', '1.0.0', 0, 0, 'macos', 'release', 'x86_64', '', '', 'fructose >= 3.4.5-6 fiber >= 1.0.0-0 water >= 1.0.0-0', {}, FILES),
+    'pear-1.2.3-1': PM('', 'pear', '1.2.3', 1, 0, 'macos', 'release', 'x86_64', '', '', 'fruit >= 1.0.0', {}, FILES),
+    'orange-6.5.4-3': PM('', 'orange', '6.5.4', 3, 0, 'macos', 'release', 'x86_64', '', '', 'fruit >= 1.0.0-0 citrus >= 1.0.0-0', {}, FILES),
+    'orange_juice-1.4.5-0': PM('', 'orange_juice', '1.4.5', 0, 0, 'macos', 'release', 'x86_64', '', '', 'orange >= 6.5.4-3', {}, FILES),
+    'pear_juice-6.6.6-0': PM('', 'pear_juice', '6.6.6', 0, 0, 'macos', 'release', 'x86_64', '', '', 'pear >= 1.2.3-1', {}, FILES),
+    'smoothie-1.0.0-0': PM('', 'smoothie', '1.0.0', 0, 0, 'macos', 'release', 'x86_64', '', '', 'orange >= 6.5.4-3 pear >= 1.2.3-1 apple >= 1.2.3-1', {}, FILES),
    }
   
-  def __init__(self, desc, pm, system = 'macos', level = 'release', debug = False):
+  def __init__(self, desc, pm, system, level, distro, distro_version, debug = False):
     self.desc = desc
     self.pm = PM(pm.filename,
                  pm.name,
@@ -48,8 +46,8 @@ class unit_test_packages(object):
                  system,
                  level,
                  pm.arch,
-                 pm.distro,
-                 pm.distro_version,
+                 distro,
+                 distro_version,
                  pm.requirements,
                  pm.properties,
                  pm.files)
@@ -121,7 +119,7 @@ Cflags: -I${includedir}
   def make_simple_tarball(clazz, desc, templates, debug = False):
     tmp_dir = temp_file.make_temp_dir(delete = not debug)
     pm = templates[desc]
-    tp = clazz(desc, pm, system = 'macos', level = 'release', debug = debug)
+    tp = clazz(desc, pm, 'macos', 'release', '', '10.10', debug = debug)
     return tp.create_package(tmp_dir)
 
   @classmethod
@@ -129,7 +127,13 @@ Cflags: -I${includedir}
     for system in [ 'macos', 'linux' ]:
       for level in [ 'release', 'debug' ]:
         for desc, pm in packages.items():
-          tp = clazz(desc, pm, system = system, level = level, debug = debug)
+          if system == 'linux':
+            distro = 'ubuntu'
+            distro_version = '18'
+          else:
+            distro = ''
+            distro_version = '10.10'
+          tp = clazz(desc, pm, system, level, distro, distro_version, debug = debug)
           tp.create_package(root_dir)
 
   @classmethod
