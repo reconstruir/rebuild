@@ -100,12 +100,26 @@ class build_target(namedtuple('build_target', 'system, distro, distro_version, a
     system = parts[0]
     arch = parts[1]
     level = parts[2]
-    distro = None
-    if '.' in system:
-      system, _, distro = system.partition('.')
-    if '-' in arch:
-      archs = arch.split('-')
-    return clazz(system, level = level, archs = archs, distro = distro)
+    system, distro, distro_version = clazz._parse_system(system)
+    arch = build_arch.split(arch, delimiter = '-')
+    return clazz(system, distro, distro_version, arch, level)
+
+  @classmethod
+  def _parse_system(clazz, s):
+    parts = s.split('-')
+    if len(parts) < 1:
+      raise ValueError('Invalid system: %s' % (s))
+    distro = ''
+    distro_version = ''
+    system = parts.pop(0)
+    if len(parts) == 1:
+      distro_version = parts[0]
+    elif len(parts) == 2:
+      distro = parts[0]
+      distro_version = parts[1]
+    else:
+      raise ValueError('Invalid system: %s' % (s))
+    return system, distro, distro_version
 
   @classmethod
   def make_host_build_target(clazz, level = build_level.RELEASE):
