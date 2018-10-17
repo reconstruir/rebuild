@@ -2,7 +2,7 @@
 
 from collections import namedtuple
 from bes.common import cached_property, check, string_util
-from rebuild.base import build_target, build_version
+from rebuild.base import build_arch, build_target, build_version
 from .util import util
 
 class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revision, epoch, system, level, arch, distro, distro_version')):
@@ -17,6 +17,7 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
     check.check_int(epoch)
     check.check_string(system)
     check.check_string(level)
+    arch = build_arch.check_arch(arch, system, distro)
     check.check_tuple(arch)
     check.check_string(distro)
     check.check_string(distro_version)
