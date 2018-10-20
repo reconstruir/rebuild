@@ -18,16 +18,12 @@ from .package import package
 
 class artifact_manager(object):
 
-  DEFAULT_ROOT_DIR = path.expanduser('~/artifacts')
-
   def __init__(self, root_dir, address = None, no_git = False):
+    check.check_string(root_dir)
     log.add_logging(self, 'artifact_manager')
     build_blurb.add_blurb(self, 'artifact_manager')
 
-    if root_dir:
-      assert string_util.is_string(root_dir)
-    
-    self._root_dir = path.abspath(root_dir or self.DEFAULT_ROOT_DIR)
+    self._root_dir = path.abspath(root_dir)
     self.no_git = no_git
     
     file_util.mkdir(self._root_dir)

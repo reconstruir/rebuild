@@ -10,11 +10,6 @@ from bes.text import text_fit
 
 class package_cli(object):
 
-  TOOLS = 'tools'
-  UPDATE = 'update'
-
-  DEFAULT_ROOT_DIR = path.expanduser('~/.rebuild')
-  
   def __init__(self):
     self.parser = argparse.ArgumentParser()
     subparsers = self.parser.add_subparsers(help = 'commands', dest = 'command')

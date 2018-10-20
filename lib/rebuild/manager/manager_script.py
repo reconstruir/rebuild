@@ -8,8 +8,6 @@ from bes.fs import file_util
 
 class manager_script(object):
 
-  DEFAULT_ROOT_DIR = path.expanduser('~/.rebuild')
-  
   def __init__(self, template, basename):
     self.template = template
     self.basename = basename

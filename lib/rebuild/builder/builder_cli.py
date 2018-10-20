@@ -6,6 +6,7 @@ import sys
 import argparse, os, os.path as path
 
 from rebuild.base import build_arch, build_blurb, build_system, build_target, build_level
+from rebuild.base import build_target_cli
 from bes.fs import file_util
 
 from bes.python import code
@@ -14,7 +15,7 @@ from .builder import builder
 from .builder_config import builder_config
 from .builder_env import builder_env
 
-class builder_cli(object):
+class builder_cli(build_target_cli):
 
   def __init__(self):
     archs = ','.join(build_arch.DEFAULT_HOST_ARCHS)
@@ -25,6 +26,7 @@ class builder_cli(object):
     default_arch = build_arch.HOST_ARCH
     default_distro = build_system.HOST_DISTRO
     self.parser = argparse.ArgumentParser(description = 'Build packages.')
+    self.build_target_add_arguments(self.parser)
     self.parser.add_argument('-C', '--change-dir', action = 'store', type = str, default = None)
     self.parser.add_argument('-f', '--project-file', action = 'store', type = str, default = 'rebuild.project')
     self.parser.add_argument('-n', '--no-checksums', action = 'store_true')
@@ -35,10 +37,6 @@ class builder_cli(object):
     self.parser.add_argument('-t', '--tools-only', action = 'store_true')
     self.parser.add_argument('-u', '--users', action = 'store_true', help = 'Rebuild users of given packages [ None ]')
     self.parser.add_argument('-j', '--jobs', action = 'store', type = int, help = 'Number of threads to use [ 1 ]')
-    self.parser.add_argument('-s', '--system', action = 'store', type = str, default = default_system, help = 'build_system.  One of (%s) [ %s ]' % (systems, default_system))
-    self.parser.add_argument('-a', '--arch', action = 'store', type = str, default = default_arch, help = 'Architecture(s) to build for.  One or more of (%s) [ %s ]' % (archs, default_arch))
-    self.parser.add_argument('-l', '--level', action = 'store', type = str, default = default_level, help = 'Build level.  One of (%s) [ %s ]' % (build_levels, default_level))
-    self.parser.add_argument('-d', '--distro', action = 'store', type = str, default = default_distro, help = 'Distro. [ %s ]' % (default_distro))
     self.parser.add_argument('--skip-to-step', action = 'store', type = str, help = 'Skip to the given step name. [ None ]')
     self.parser.add_argument('--deps-only', action = 'store_true', help = 'Only build dependencies')
     self.parser.add_argument('--recipes-only', action = 'store_true', help = 'Only read the recipes dont build them.')
@@ -68,6 +66,7 @@ class builder_cli(object):
     
   def main(self):
     args = self.parser.parse_args()
+    bt = self.build_target_resolve(args)
     args.verbose = bool(args.verbose)
 
     if args.change_dir:
@@ -91,8 +90,6 @@ class builder_cli(object):
     
     build_blurb.set_process_name('rebuild')
     build_blurb.set_verbose(args.verbose)
-
-    bt = build_target(args.system, args.distro, build_system.HOST_VERSION, args.arch, args.level)
 
     # Tests only run on desktop
     if not bt.is_desktop():

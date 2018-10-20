@@ -26,7 +26,6 @@ dec 24
 - move the top level artifactory manager inside rebbe.
 
 jan 1
-- mv ~/software/build.py to ~/projects/bin
 - finish moving checksuming to BuildScript
 
 jan 2
@@ -893,6 +892,5 @@ rebuild.package.package_manager.PackageFilesConflictError: conflicts found betwe
 - build target validation for nonsensical args line no distro and yes version
 
 2018-11-14
-- get rid of manager.DEFAULT_ROOT_DIR and its uses always require a root_dir be given
 - manager_cli system, distro, etc is a mess need to cleanup
 - unit_test packages hard codes distro, distro_version

@@ -7,49 +7,40 @@ from .build_target import build_target
 
 class build_target_cli(object):
 
-  SYSTEM_CHOICES = [ 'default' ] + build_system.SYSTEMS
-  SYSTEM_DEFAULT = build_system.DEFAULT
-  ARCH_CHOICES = [ 'default' ] + build_arch.KNOWN_ARCHS
-  LEVEL_CHOICES = [ 'default' ] + build_level.LEVELS
-
-  BUILD_LEVELS_BLURB = ','.join(build_level.LEVELS)
-  ARCHS_BLURB = ','.join(build_arch.DEFAULT_HOST_ARCHS)
-  DEFAULT_ARCHS_BLURB = ','.join(build_arch.DEFAULT_HOST_ARCHS)
-  SYSTEM_CHOICES_BLURB = ','.join(SYSTEM_CHOICES)
-  
   def __init__(self):
     pass
 
-  def build_target_add_arguments(self, parser, use_none_defaults):
-    if use_none_defaults:
-      default_system = None
-      default_archs = None
-      default_level = None
-    else:
-      default_system = self.SYSTEM_DEFAULT
-      default_archs = []
-      default_level = build_level.DEFAULT_LEVEL
-            
-    parser.add_argument('-s', '--system',
-                        action = 'store',
-                        type = str,
-                        default = default_system,
-                        help = 'system to build for.  One of (%s) [ %s ]' % (self.SYSTEM_CHOICES_BLURB, self.SYSTEM_DEFAULT))
-    parser.add_argument('-a', '--archs',
-                        action = 'append',
-                        type = str, 
-                        choices = self.ARCH_CHOICES,
-                        default = default_archs,
-                        help = 'Architectures to build for.  One of (%s) [ %s ]' % (self.ARCHS_BLURB, self.DEFAULT_ARCHS_BLURB))
-    parser.add_argument('-l', '--level',
-                        action = 'store',
-                        type = str,
-                        default = default_level,
-                        choices = self.LEVEL_CHOICES,
-                        help = 'Build level.  One of (%s) [ %s ]' % (self.BUILD_LEVELS_BLURB, build_level.DEFAULT_LEVEL))
-    
+  def build_target_add_arguments(self, parser):
+    archs = ','.join(build_arch.DEFAULT_HOST_ARCHS)
+    build_levels = ','.join(build_level.LEVELS)
+    systems = ','.join(build_system.SYSTEMS)
+    default_system = build_system.HOST
+    default_level = build_level.RELEASE
+    default_arch = build_arch.HOST_ARCH
+    default_distro = build_system.HOST_DISTRO
+    self.parser.add_argument('-s', '--system',
+                             action = 'store',
+                             type = str,
+                             default = default_system,
+                             help = 'build_system.  One of (%s) [ %s ]' % (systems, default_system))
+    self.parser.add_argument('-a', '--arch',
+                             action = 'store',
+                             type = str,
+                             default = default_arch,
+                             help = 'Architecture(s) to build for.  One or more of (%s) [ %s ]' % (archs, default_arch))
+    self.parser.add_argument('-l', '--level',
+                             action = 'store',
+                             type = str,
+                             default = default_level,
+                             help = 'Build level.  One of (%s) [ %s ]' % (build_levels, default_level))
+    self.parser.add_argument('-d', '--distro',
+                             action = 'store',
+                             type = str,
+                             default = default_distro,
+                             help = 'Distro. [ %s ]' % (default_distro))
+
   def build_target_resolve(self, args):
-    args.system = build_system.parse_system(args.system or 'default')
-    args.level = build_level.parse_level(args.level or 'default')
-    #args.archs = build_arch.parse_archs(args.system, args.archs or 'default')
-    return build_target(system = args.system, level = args.level, archs = args.archs)
+    args.system = build_system.parse_system(args.system)
+    args.level = build_level.parse_level(args.level)
+    args.arch = build_arch.parse_arch(args.arch, args.system, args.distro)
+    return build_target(args.system, args.distro, build_system.HOST_VERSION, args.arch, args.level)

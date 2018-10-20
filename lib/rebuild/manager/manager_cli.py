@@ -189,7 +189,7 @@ class manager_cli(object):
     parser.add_argument('--artifacts',
                         '-a',
                         action = 'store',
-                        default = None,
+                        default = self.DEFAULT_ROOT_DIR,
                         help = 'The place to locate artifacts [ None ]')
     parser.add_argument('--root-dir',
                         '-r',
