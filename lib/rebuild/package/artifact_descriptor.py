@@ -62,4 +62,10 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
   def make_full_name_str(clazz, name, version):
     return '%s%s%s' % (name, '-', str(version))
 
+  def clone_with_mutation(self, field, value):
+    i = self._fields.index(field)
+    l = list(self)
+    l[i] = value
+    return self.__class__(*l)
+
 check.register_class(artifact_descriptor, include_seq = False)

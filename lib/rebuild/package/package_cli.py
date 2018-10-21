@@ -57,7 +57,7 @@ class package_cli(object):
 
   @classmethod
   def justified_label(clazz, label):
-    return label.rjust(12) #self.__get_label_length())
+    return label.rjust(20) #self.__get_label_length())
   
   @classmethod
   def fit_stuff(clazz, label, message):

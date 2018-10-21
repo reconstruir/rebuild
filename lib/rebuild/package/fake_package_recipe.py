@@ -127,3 +127,15 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
                                   properties = self.properties,
                                   requirements = self.requirements)
     return package.create_package(filename, pkg_desc, self.metadata.build_target, tmp_dir)
+
+  def mutate_name(self):
+    
+    tmp_dir = temp_file.make_temp_dir()
+    temp_file.write_temp_files(path.join(tmp_dir, 'files'), self.files)
+    temp_file.write_temp_files(path.join(tmp_dir, 'env'), self.env_files)
+    pkg_desc = package_descriptor(self.metadata.name,
+                                  self.metadata.build_version,
+                                  properties = self.properties,
+                                  requirements = self.requirements)
+    return package.create_package(filename, pkg_desc, self.metadata.build_target, tmp_dir)
+  
