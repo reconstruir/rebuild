@@ -9,14 +9,14 @@ from bes.archive import archiver
 from bes.key_value import key_value_parser
 from bes.system import host
 from bes.fs import file_util, temp_file
-from rebuild.base import build_arch, build_blurb, build_system, build_target, build_level
+from rebuild.base import build_arch, build_blurb, build_system, build_target, build_target_cli, build_level
 from rebuild.package import artifact_manager, package, package_tester
 from rebuild.tools_manager import tools_manager
 
 from .manager import manager
 from .manager_script import manager_script
 
-class manager_cli(object):
+class manager_cli(build_target_cli):
 
   TOOLS = 'tools'
   UPDATE = 'update'
@@ -171,23 +171,13 @@ class manager_cli(object):
 
   def _packages_add_common_args(self, parser):
     'Add common arguments for all the "packages" command'
+    self.build_target_add_arguments(parser)
     parser.add_argument('--verbose',
                         '-v',
                         action = 'store_true',
                         default = False,
                         help = 'Verbose debug spew [ False ]')
-    parser.add_argument('--system',
-                        '-s',
-                        action = 'store',
-                        default = host.SYSTEM,
-                        help = 'The system [ %s ]' % (host.SYSTEM))
-    parser.add_argument('--level',
-                        '-l',
-                        action = 'store',
-                        default = build_level.RELEASE,
-                        help = 'The build level [ %s ]' % (build_level.RELEASE))
     parser.add_argument('--artifacts',
-                        '-a',
                         action = 'store',
                         default = self.DEFAULT_ROOT_DIR,
                         help = 'The place to locate artifacts [ None ]')
@@ -196,20 +186,16 @@ class manager_cli(object):
                         action = 'store',
                         default = self.DEFAULT_ROOT_DIR,
                         help = 'The root directory [ %s ]' % (self.DEFAULT_ROOT_DIR))
-    parser.add_argument('--distro',
-                        '-d',
-                        action = 'store',
-                        default = None,
-                        help = 'The distro [ None ]')
+    
   def _packages_check_common_args(self, args):
     'Add common arguments for all the "packages" command'
     if args.artifacts:
       if not path.isdir(args.artifacts):
         raise RuntimeError('Not an artifacts directory: %s' % (args.artifacts))
-    args.build_target = self._validate_build_target(args)
     
   def main(self):
     args = self.parser.parse_args()
+    bt = self.build_target_resolve(args)
     subcommand = getattr(args, 'subcommand', None)
     if subcommand:
       command = '%s:%s' % (args.command, subcommand)
@@ -252,16 +238,19 @@ class manager_cli(object):
       return self._command_packages_uninstall(args.dest_dir,
                                               args.project_name,
                                               args.packages,
-                                              self._validate_build_target(args))
+                                              args.build_target)
     elif command in [ 'packages:print' ]:
       return self._command_packages_print(args.root_dir,
                                           args.project_name,
-                                          self._validate_build_target(args))
+                                          args.build_target)
     elif command in [ 'config:packages' ]:
-      bt = self._validate_build_target(args)
-      return self._command_config_packages(args.root_dir, args.project_name, bt)
+      return self._command_config_packages(args.root_dir, args.project_name, args.build_target)
     elif command == 'package:files':
       return self._command_package_files(args.package)
+    elif command == 'package:info':
+      return self._command_package_info(args.package)
+    elif command == 'package:metadata':
+      return self._command_package_info(args.package)
     elif command == 'package:info':
       return self._command_package_info(args.package)
     elif command == 'package:metadata':
@@ -273,29 +262,6 @@ class manager_cli(object):
     else:
       raise RuntimeError('Unknown command: %s' % (command))
     return 0
-
-  @classmethod
-  def _parse_build_target(clazz, args):
-    system = build_system.parse_system(args.system)
-    if not system in build_system.SYSTEMS:
-      return ( None, 'Invalid system: %s' % (args.system) )
-    if not args.level in build_level.LEVELS:
-      return ( None, 'Invalid build_level: %s' % (args.level) )
-    if system == 'linux':
-      distro = 'ubuntu'
-      distro_version = '18'
-    else:
-      distro = ''
-      distro_version = '10.10'
-    return ( build_target(system, distro, distro_version, 'x86_64', args.level), None )
-
-  @classmethod
-  def _validate_build_target(clazz, args):
-    bt, error_message = clazz._parse_build_target(args)
-    if not bt:
-      print(error_message)
-      raise SystemExit(1)
-    return bt
 
   def _command_tools_update(self):
     print("_command_tools_update()")

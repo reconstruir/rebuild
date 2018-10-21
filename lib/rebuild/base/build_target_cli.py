@@ -18,29 +18,30 @@ class build_target_cli(object):
     default_level = build_level.RELEASE
     default_arch = build_arch.HOST_ARCH
     default_distro = build_system.HOST_DISTRO
-    self.parser.add_argument('-s', '--system',
-                             action = 'store',
-                             type = str,
-                             default = default_system,
-                             help = 'build_system.  One of (%s) [ %s ]' % (systems, default_system))
-    self.parser.add_argument('-a', '--arch',
-                             action = 'store',
-                             type = str,
-                             default = default_arch,
-                             help = 'Architecture(s) to build for.  One or more of (%s) [ %s ]' % (archs, default_arch))
-    self.parser.add_argument('-l', '--level',
-                             action = 'store',
-                             type = str,
-                             default = default_level,
-                             help = 'Build level.  One of (%s) [ %s ]' % (build_levels, default_level))
-    self.parser.add_argument('-d', '--distro',
-                             action = 'store',
-                             type = str,
-                             default = default_distro,
-                             help = 'Distro. [ %s ]' % (default_distro))
+    parser.add_argument('-s', '--system',
+                        action = 'store',
+                        type = str,
+                        default = default_system,
+                        help = 'build_system.  One of (%s) [ %s ]' % (systems, default_system))
+    parser.add_argument('-a', '--arch',
+                        action = 'store',
+                        type = str,
+                        default = default_arch,
+                        help = 'Architecture(s) to build for.  One or more of (%s) [ %s ]' % (archs, default_arch))
+    parser.add_argument('-l', '--level',
+                        action = 'store',
+                        type = str,
+                        default = default_level,
+                        help = 'Build level.  One of (%s) [ %s ]' % (build_levels, default_level))
+    parser.add_argument('-d', '--distro',
+                        action = 'store',
+                        type = str,
+                        default = default_distro,
+                        help = 'Distro. [ %s ]' % (default_distro))
 
   def build_target_resolve(self, args):
     args.system = build_system.parse_system(args.system)
     args.level = build_level.parse_level(args.level)
     args.arch = build_arch.parse_arch(args.arch, args.system, args.distro)
-    return build_target(args.system, args.distro, build_system.HOST_VERSION, args.arch, args.level)
+    args.build_target = build_target(args.system, args.distro, build_system.HOST_VERSION, args.arch, args.level)
+    return args.build_target
