@@ -125,5 +125,5 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
     pkg_desc = package_descriptor(self.metadata.name,
                                   self.metadata.build_version,
                                   properties = self.properties,
-                                  requirements = self)
+                                  requirements = self.requirements)
     return package.create_package(filename, pkg_desc, self.metadata.build_target, tmp_dir)

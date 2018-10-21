@@ -34,8 +34,9 @@ class package_cli(object):
       print(p.raw_metadata)
     else:
       d = p.metadata.to_simple_dict()
+      files = d['files']
       del d['_format_version']
-      d['archs'] = ' '.join(d['archs'])
+      d['arch'] = ' '.join(d['arch'])
       d['properties'] = str(key_value_list.from_dict(d['properties']))
       d['requirements'] = '\n              '.join(d['requirements'])
       def _i(f):
@@ -43,12 +44,15 @@ class package_cli(object):
           return ' '.join(f)
         else:
           return f[0]
-      d['files'] = self.fit_stuff('files', ' '.join([ _i(f) for f in d['files'] ]))
+      d['files'] = self.fit_stuff('files', ' '.join([ _i(f) for f in files['files'] ]))
+      d['env_files'] = self.fit_stuff('env_files', ' '.join([ _i(f) for f in files['env_files'] ]))
+      d['files_checksum'] = files['files_checksum']
+      d['env_files_checksum'] = files['env_files_checksum']
       for key, value in sorted(d.items()):
-        if key == 'files':
+        if key in [ 'files', 'env_files' ]:
           print(value)
         else:
-          print('%12s: %s' % (key, value))
+          print('%20s: %s' % (key, value))
     return 0
 
   @classmethod
