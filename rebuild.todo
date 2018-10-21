@@ -896,3 +896,6 @@ rebuild.package.package_manager.PackageFilesConflictError: conflicts found betwe
 
 2018-11-21
 - determine if recipe "variables" are really needed
+- fix package_descriptor to accept version components instead of a string for version
+
+

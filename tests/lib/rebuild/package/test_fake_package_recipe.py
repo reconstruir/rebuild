@@ -18,7 +18,7 @@ class test_fake_package_recipe(unit_test):
   DEBUG = False
   #DEBUG = True
 
-  def test___init__(self):
+  def test___str__(self):
 
     AD('foo', '1.2.3', 0, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18')
     r = R(AD('foo', '1.2.3', 0, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
@@ -33,7 +33,27 @@ class test_fake_package_recipe(unit_test):
           RL.parse('apple >= 1.2.3 orange >= 6.6.6'),
           { 'prop1': 5, 'prop2': 'hi' }
           )
-    print(str(r))
+    expected = '''fake_package
+  metadata
+    name foo
+    version 1.2.3
+    revision 0
+    epoch 0
+    system linux
+    level release
+    arch ('x86_64',)
+    distro ubuntu
+    distro_version 18
+
+
+  requirements
+    all: apple >= 1.2.3
+    all: orange >= 6.6.6
+
+  properties
+    prop1=5
+    prop2=hi'''    
+    self.assertMultiLineEqual( expected, str(r) )
     
 if __name__ == '__main__':
   unit_test.main()

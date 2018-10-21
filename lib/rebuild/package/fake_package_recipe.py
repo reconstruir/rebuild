@@ -1,9 +1,13 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import re
+from os import path
 from collections import namedtuple
 from bes.common import check, node
 from bes.text import white_space
+from bes.fs import temp_file
+
+from rebuild.base import package_descriptor
+from .package import package
 
 class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, env_files, requirements, properties')):
   'Class to describe a fake package.  Fake packages are use for unit testing.'
@@ -113,3 +117,13 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
     for l in load:
       result.add_child(l)
     return result
+
+  def create_package(self, filename):
+    tmp_dir = temp_file.make_temp_dir()
+    temp_file.write_temp_files(path.join(tmp_dir, 'files'), self.files)
+    temp_file.write_temp_files(path.join(tmp_dir, 'env'), self.env_files)
+    pkg_desc = package_descriptor(self.metadata.name,
+                                  self.metadata.build_version,
+                                  properties = self.properties,
+                                  requirements = self)
+    return package.create_package(filename, pkg_desc, self.metadata.build_target, tmp_dir)
