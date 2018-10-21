@@ -195,7 +195,7 @@ class manager_cli(build_target_cli):
     
   def main(self):
     args = self.parser.parse_args()
-    bt = self.build_target_resolve(args)
+    self.build_target = self.build_target_resolve(args)
     subcommand = getattr(args, 'subcommand', None)
     if subcommand:
       command = '%s:%s' % (args.command, subcommand)
@@ -394,9 +394,7 @@ remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir ${_root_dir}
     am = artifact_manager(artifacts_dir, address = None, no_git = True)
     tm = tools_manager(tools_dir)
 
-    # FIXME666
-    target = build_target(opts.get('system', host.SYSTEM), '', '', ( 'x86_64' ), 'release')
-    build_blurb.blurb('tester', ' build_target: %s' % (str(target)))
+    build_blurb.blurb('tester', ' build_target: %s' % (str(self.build_target)))
     build_blurb.blurb('tester', '      tmp_dir: %s' % (tmp_dir))
     build_blurb.blurb('tester', 'artifacts_dir: %s' % (artifacts_dir))
 
