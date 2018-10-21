@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 
 from rebuild.package import artifact_manager
 from rebuild.tools_manager import new_tools_manager
@@ -14,7 +15,7 @@ def main():
     package_descriptor('gnu_bison', '3.0.4'),
    ]
   
-  tm = new_tools_manager('/tmp/coksuk', am)
+  tm = new_tools_manager('/tmp/new_tools', am)
   tm.ensure_tools(wanted)
   tm.ensure_tools(wanted)
 

@@ -5,19 +5,16 @@ from collections import namedtuple
 from bes.common import check, node
 from bes.text import white_space
 
-class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties, requirements, descriptor, instructions, steps, load, env_vars, variables')):
-
-  CHECK_UNKNOWN_PROPERTIES = True
+class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, env_files, requirements, properties')):
+  'Class to describe a fake package.  Fake packages are use for unit testing.'
   
-  def __new__(clazz, format_version, filename, enabled, properties, requirements,
-              descriptor, instructions, steps, load, env_vars, variables = None):
-    assert format_version == 2
-    if env_vars:
-      check.check_masked_value_list(env_vars)
-    if variables:
-      check.check_masked_value_list(variables)
-    return clazz.__bases__[0].__new__(clazz, format_version, filename, enabled, properties,
-                                      requirements, descriptor, instructions, steps, load, env_vars, variables)
+  def __new__(clazz, metadata, files, env_files, requirements, properties):
+    check.check_artifact_descriptor(metadata)
+    check.check_temp_item_seq(files)
+    check.check_temp_item_seq(env_files)
+    check.check_requirement_list(requirements)
+    check.check_dict(properties)
+    return clazz.__bases__[0].__new__(clazz, metadata, files, env_files, requirements, properties)
 
   def __str__(self):
     return self.to_string()
@@ -28,28 +25,35 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
   
   def _to_node(self):
     'A convenient way to make a recipe string is to build a graph first.'
-    root = node('package %s' % (self.descriptor.full_name))
-    if self.enabled != '':
-      root.add_child('enabled=%s' % (self.enabled))
+    root = node('fake_package')
+    metadata = root.add_child('metadata')
+    for field in self.metadata._fields:
+      value = getattr(self.metadata, field)
+      metadata.add_child('{field} {value}'.format(field = field, value = getattr(self.metadata, field)))
+    if self.files:
+      self._temp_item_seq_to_node('files', self.files)
       root.add_child('')
-    if self.variables:
-      root.children.append(self._masked_value_list_to_node('variables', self.variables))
-      root.add_child('')
-    if self.env_vars:
-      root.children.append(self._masked_value_list_to_node('env_vars', self.env_vars))
-      root.add_child('')
-    if self.properties:
-      root.children.append(self._properties_to_node(self.properties))
+    if self.env_files:
+      self._temp_item_seq_to_node('env_files', self.env_files)
       root.add_child('')
     if self.requirements:
       root.children.append(self._requirements_to_node('requirements', self.requirements))
       root.add_child('')
-    root.children.append(self._steps_to_node(self.steps))
-    if self.load:
+    if self.properties:
+      root.children.append(self._properties_to_node(self.properties))
       root.add_child('')
-      root.children.append(self._load_to_node(self.load))
     return root
 
+  @classmethod
+  def _temp_item_seq_to_node(clazz, label, items):
+    result = node(label)
+    for item in items:
+      check.check_temp_item(item)
+      item_node = result.add_child(item.filename)
+      for line in item.content.split('\n'):
+        item_node.add_child(line)
+    return result
+  
   @classmethod
   def _requirements_to_node(clazz, label, requirements):
     result = node(label)
@@ -69,16 +73,7 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
     assert isinstance(properties_node, node)
     assert key in properties
     value = properties[key]
-    if key in [ 'export_compilation_flags_requirements', 'extra_cflags', 'env_vars']:
-      properties_node.children.append(clazz._system_specific_property_to_node(key, properties))
-    elif key in [ 'download_url', 'pkg_config_name' ]:
-      properties_node.children.append(node('%s=%s' % (key, value)))
-    else:
-      if clazz.CHECK_UNKNOWN_PROPERTIES:
-        raise RuntimeError('Unknown property: %s' % (key))
-      else:
-        properties_node.children.append(node('%s=%s' % (key, value)))
-    del properties[key]
+    properties_node.children.append(node('%s=%s' % (key, value)))
 
   @classmethod
   def _system_specific_property_to_node(clazz, key, properties):
@@ -118,5 +113,3 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
     for l in load:
       result.add_child(l)
     return result
-  
-check.register_class(recipe)
