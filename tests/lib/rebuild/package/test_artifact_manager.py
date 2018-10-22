@@ -65,6 +65,7 @@ class test_artifact_manager(unit_test):
     if self.DEBUG:
       print("tmp_repo:\n%s\n" % (tmp_repo))
     self._make_test_artifacts(unit_test_packages.TEST_PACKAGES, tmp_repo)
+    #unit_test_packages.publish_artifacts(am)
     assert not git.is_repo(tmp_repo)
     git.init(tmp_repo)
     git.add(tmp_repo, '.')

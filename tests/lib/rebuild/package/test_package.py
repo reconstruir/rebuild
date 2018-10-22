@@ -100,6 +100,19 @@ class test_package(unittest.TestCase):
     temp_archive.write_items(tmp_staged_env_dir, env_items)
     package.create_package(tarball_path, pi, bi, tmp_stage_dir)
     return tarball_path
+
+  def test_package_descriptor_water2(self):
     
+    tmp_tarball = unit_test_packages.make_water(debug = self.DEBUG)
+    p = package(tmp_tarball)
+    self.assertEqual( 'water', p.package_descriptor.name )
+    self.assertEqual( build_version('1.0.0', '0', 0), p.package_descriptor.version )
+    self.assertEqual( [], p.package_descriptor.requirements )
+    self.assertEqual( {}, p.package_descriptor.properties )
+    self.assertEqual( [ 'bin/water_script.sh', 'docs/water_bar.txt', 'docs/water_foo.txt', 'lib/pkgconfig/water.pc' ], p.files )
+    self.assertEqual( [ 'lib/pkgconfig/water.pc' ], p.pkg_config_files )
+    self.assertEqual( 'macos', p.system )
+
+  
 if __name__ == '__main__':
   unittest.main()

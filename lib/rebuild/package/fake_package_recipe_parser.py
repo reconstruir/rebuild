@@ -5,31 +5,19 @@ from collections import namedtuple
 import os.path as path
 from bes.common import check, string_util
 from bes.compat import StringIO
-from bes.key_value import key_value, key_value_parser
-from bes.system import log
+#from bes.key_value import key_value, key_value_parser
 from bes.text import string_list, tree_text_parser
-from bes.python import code
 
 from rebuild.base import build_version, requirement, requirement_list, package_descriptor
 from rebuild.step.step_description import step_description
 from rebuild.recipe.value import value_type
 from rebuild.instruction import instruction_list
 
-from .masked_value import masked_value
-from .masked_value_list import masked_value_list
+from .fake_package_recipe import fake_package_recipe
 
-from .recipe import recipe
-from .recipe_parser_util import recipe_parser_util
-from .recipe_step import recipe_step
-from .recipe_step_list import recipe_step_list
-from .recipe_value import recipe_value
-
-from .value import value_file
-from .value import value_origin
-
-class recipe_parser_error(Exception):
+class fake_package_recipe_parser_error(Exception):
   def __init__(self, message, filename, line_number):
-    super(recipe_parser_error, self).__init__()
+    super(fake_package_recipe_parser_error, self).__init__()
     self.message = message
     self.filename = filename
     self.line_number = line_number
@@ -40,13 +28,10 @@ class recipe_parser_error(Exception):
     else:
       return '%s:%s: %s' % (self.filename, self.line_number, self.message)
     
-class recipe_parser(object):
+class fake_package_recipe_parser(object):
 
-  MAGIC = '!rebuild.recipe!'
-
-  def __init__(self, env, filename, text, starting_line_number = 0):
+  def __init__(self, filename, text, starting_line_number = 0):
     self.text = text
-    self.env = env
     self.filename = filename
     self.starting_line_number = starting_line_number
 
@@ -58,8 +43,6 @@ class recipe_parser(object):
     raise recipe_parser_error(msg, self.filename, line_number)
     
   def parse(self):
-    if not self.text.startswith(self.MAGIC):
-      self._error('text should start with recipe magic \"%s\"' % (self.MAGIC))
     try:
       tree = tree_text_parser.parse(self.text, strip_comments = True)
     except Exception as ex:
@@ -70,14 +53,14 @@ class recipe_parser(object):
     recipes = []
     if not root.children:
       self._error('invalid recipe', root)
-    if root.children[0].data.text != self.MAGIC:
-      self._error('invalid magic', root)
     for pkg_node in root.children[1:]:
       recipe = self._parse_package(pkg_node)
       recipes.append(recipe)
     return recipes
   
   def _parse_package(self, node):
+    print('CACA: node=%s' % (str(node)))
+    '''
     name, version = self._parse_package_header(node)
     enabled = True
     properties = {}
@@ -118,6 +101,7 @@ class recipe_parser(object):
     desc = package_descriptor(name, version, requirements = requirements, properties = properties)
     return recipe(2, self.filename, enabled, properties, requirements,
                   desc, instructions, steps, load, env_vars)
+'''
 
   def _parse_package_header(self, node):
     parts = string_util.split_by_white_space(node.data.text, strip = True)
@@ -229,23 +213,3 @@ class recipe_parser(object):
           self._error('error: %s: %s - %s' % (origin, text, str(ex)), node)
         values.append(value)
     return recipe_value(key, values)
-
-  def _parse_load(self, node):
-    loads = []
-    for child in node.children:
-      load_text = tree_text_parser.node_text_flat(child)
-      next_loads = string_list.parse(load_text)
-      loads.extend(next_loads)
-    return loads
-
-  def _load_code(self, loads, node):
-    for l in loads:
-      code_filename = path.join(path.dirname(self.filename), l)
-      if not path.isfile(code_filename):
-        self._error('python file to load not found: %s' % (code_filename), node)
-      tmp_globals = {}
-      tmp_locals = {}
-      code.execfile(code_filename, tmp_globals, tmp_locals)
-      for key, value in tmp_locals.items():
-        if check.is_class(value):
-          setattr(value, '__load_file__', code_filename)

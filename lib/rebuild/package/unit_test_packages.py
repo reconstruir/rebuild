@@ -181,3 +181,39 @@ Cflags: -I${includedir}
   @classmethod
   def make_arsenic(clazz, debug = False):
     return clazz.make_simple_tarball('arsenic-1.2.9-0', clazz.TEST_PACKAGES, debug = debug)
+
+  _TEST_PACKAGE_RECIPES='''
+fake_package
+  metadata
+    name tool_foo
+    version 1.2.3
+    revision 0
+    epoch 0
+    system linux
+    level release
+    arch x86_64
+    distro ubuntu
+    distro_version 18
+  
+  files
+    bin/tfoo.py
+      #!/usr/bin/env python
+      import sys
+      def main():
+        sys.stdout.write('tfoo: ')
+        for i, arg in enumerate(sys.argv[1:]):
+          if i != 0:
+            sys.stdout.write(' ')
+          sys.stdout.write(arg)
+        sys.stdout.write('\n')
+      
+      if __name__ == '__main__':
+        raise SystemExit(main())
+
+  env_files
+    tfoo_env.sh
+      #@REBUILD_HEAD@
+      export TFOO_ENV1=tfoo_env1
+      export TFOO_ENV2=tfoo_env2
+      #@REBUILD_TAIL@
+'''  
