@@ -3,9 +3,10 @@
 from collections import namedtuple
 
 import os.path as path
+from bes.fs import file_util, temp_item
 from bes.common import check, string_util
 from bes.compat import StringIO
-#from bes.key_value import key_value, key_value_parser
+from bes.key_value import key_value, key_value_list
 from bes.text import string_list, tree_text_parser
 
 from rebuild.base import build_version, requirement, requirement_list, package_descriptor
@@ -14,6 +15,7 @@ from rebuild.recipe.value import value_type
 from rebuild.instruction import instruction_list
 
 from .fake_package_recipe import fake_package_recipe
+from .artifact_descriptor import artifact_descriptor
 
 class fake_package_recipe_parser_error(Exception):
   def __init__(self, message, filename, line_number):
@@ -40,7 +42,7 @@ class fake_package_recipe_parser(object):
       line_number = pkg_node.data.line_number + self.starting_line_number
     else:
       line_number = None
-    raise recipe_parser_error(msg, self.filename, line_number)
+    raise fake_package_recipe_parser_error(msg, self.filename, line_number)
     
   def parse(self):
     try:
@@ -50,74 +52,74 @@ class fake_package_recipe_parser(object):
     return self._parse_tree(tree)
 
   def _parse_tree(self, root):
-    recipes = []
     if not root.children:
       self._error('invalid recipe', root)
-    for pkg_node in root.children[1:]:
+    recipes = []
+    for pkg_node in root.children:
       recipe = self._parse_package(pkg_node)
       recipes.append(recipe)
     return recipes
   
   def _parse_package(self, node):
-    print('CACA: node=%s' % (str(node)))
-    '''
-    name, version = self._parse_package_header(node)
-    enabled = True
-    properties = {}
+    if node.data.text != 'fake_package':
+      self._error('invalid fake_package', node)
+    metadata_node = node.find_child_by_text('metadata')
+    if not metadata_node:
+      self._error('no metadata found for fake_package', node)
+    metadata = self._parse_metadata(metadata_node)
+    files = []
+    env_files = []
     requirements = []
-    steps = []
-    instructions = []
-    enabled = 'True'
-    load = []
-    env_vars = None
-    for child in node.children:
-      text = child.data.text
-      if text.startswith('properties'):
-        properties = self._parse_properties(child)
-      elif text.startswith('requirements'):
-        requirements.extend(self._parse_requirements(child))
-      elif text.startswith('steps'):
-        steps = self._parse_steps(child)
-      elif text.startswith('enabled'):
-        enabled = self._parse_enabled(child)
-      elif text.startswith('load'):
-        load = self._parse_load(child)
-        self._load_code(load, child)
-      elif text.startswith('env_vars'):
-        env_vars = self._parse_env_vars(child)
-      elif text.startswith('instructions'):
-        instructions = self._parse_instructions(child)
-      elif text.startswith('export_compilation_flags_requirements'):
-        export_compilation_flags_requirements = self._parse_export_compilation_flags_requirements(child)
-        properties['export_compilation_flags_requirements'] = export_compilation_flags_requirements
-      else:
-        self._error('unknown recipe section: \"%s\"' % (text), node)
-    if env_vars:
-      poto1 = env_vars.resolve('macos', value_type.KEY_VALUES)
-      poto2 = env_vars.resolve('linux', value_type.KEY_VALUES)
-      d = poto1.to_dict()
-      d.update(poto2.to_dict())
-      properties['env_vars'] = d
-    desc = package_descriptor(name, version, requirements = requirements, properties = properties)
-    return recipe(2, self.filename, enabled, properties, requirements,
-                  desc, instructions, steps, load, env_vars)
-'''
+    properties = {}
+    files_node = node.find_child_by_text('files')
+    if files_node:
+      files = self._parse_files(files_node)
+    env_files_node = node.find_child_by_text('env_files')
+    if env_files_node:
+      env_files = self._parse_files(env_files_node)
+    return fake_package_recipe(metadata, files, env_files, requirements, properties)
 
-  def _parse_package_header(self, node):
-    parts = string_util.split_by_white_space(node.data.text, strip = True)
-    num_parts = len(parts)
-    if num_parts not in [ 2, 3 ]:
-      self._error('package section should begin with \"package $name $ver-$rev\" instead of \"%s\"' % (node.data.text), node)
-    if parts[0] != 'package':
-      self._error('package section should begin with \"package $name $ver-$rev\" instead of \"%s\"' % (node.data.text), node)
-    if num_parts == 2:
-      desc = package_descriptor.parse(parts[1])
-      return desc.name, desc.version
-    elif num_parts == 3:
-      return parts[1], parts[2]
+  def _parse_metadata(self, node):
+    d = self._parse_node_children_to_dict(node)
+    name = d['name']
+    version = d['version']
+    revision = d['revision']
+    epoch = d['epoch']
+    system = d['system']
+    level = d['level']
+    arch = d['arch']
+    distro = d['distro']
+    distro_version = d['distro_version']
+    return artifact_descriptor(name, version, revision, epoch,
+                               system, level, arch, distro,
+                               distro_version)
+
+  def _parse_files(self, node):
+    return [ self._parse_file(child) for child in node.children ]
+
+  def _parse_file(self, node):
+    filename = node.data.text
+    content = '\n'.join(self._parse_node_children_to_string_list(node)) + '\n'
+    if file_util.extension(filename) in [ 'sh', 'py' ]:
+      mode = 0o755
     else:
-      assert False
+      mode = 0o644
+    return temp_item(filename, content, mode)
 
+  @classmethod
+  def _parse_node_children_to_dict(clazz, node):
+    result = key_value_list()
+    for child in node.children:
+      result.append(key_value.parse(child.data.text))
+    return result.to_dict()
+  
+  @classmethod
+  def _parse_node_children_to_string_list(clazz, node):
+    result = string_list()
+    for child in node.children:
+      result.append(child.data.text)
+    return result
+  
   def _parse_enabled(self, node):
     enabled_text = tree_text_parser.node_text_flat(node)
     kv = key_value.parse(enabled_text, delimiter = '=')

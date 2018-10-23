@@ -13,7 +13,9 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
               arch, distro, distro_version):
     check.check_string(name)
     check.check_string(version)
+    revision = int(revision)
     check.check_int(revision)
+    epoch = int(epoch)
     check.check_int(epoch)
     check.check_string(system)
     check.check_string(level)

@@ -13,6 +13,10 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
   'Class to describe a fake package.  Fake packages are use for unit testing.'
   
   def __new__(clazz, metadata, files, env_files, requirements, properties):
+    files = files or []
+    env_files = env_files or []
+    requirements = requirements or []
+    properties = properties or {}
     check.check_artifact_descriptor(metadata)
     check.check_temp_item_seq(files)
     check.check_temp_item_seq(env_files)

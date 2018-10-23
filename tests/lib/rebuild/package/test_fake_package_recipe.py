@@ -20,8 +20,8 @@ class test_fake_package_recipe(unit_test):
             temp_item('bin/bar.sh', '#!/bin/bash\necho bar\nexit 1\n', 0o755),
           ],
           [
-            temp_item('foo_env.sh', '#@REBUILD_HEAD@\nexport FOO_ENV=foo\n', 0x644),
-            temp_item('bar_env.sh', '#@REBUILD_HEAD@\nexport BAR_ENV=bar\n', 0x644),
+            temp_item('foo_env.sh', '#@REBUILD_HEAD@\nexport FOO_ENV=foo\n', 0o644),
+            temp_item('bar_env.sh', '#@REBUILD_HEAD@\nexport BAR_ENV=bar\n', 0o644),
           ],
           RL.parse('apple >= 1.2.3 orange >= 6.6.6'),
           { 'prop1': 5, 'prop2': 'hi' }
