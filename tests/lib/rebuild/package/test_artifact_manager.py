@@ -43,8 +43,7 @@ class test_artifact_manager(unit_test):
   def test_artifact_path(self):
     am = self._make_test_artifact_manager()
     pi = PD('foo', '1.2.34-1')
-    bt = self.LINUX_BT
-    self.assertEqual( path.join(am.root_dir, pi.artifact_path(bt)), am.artifact_path(pi, bt) )
+    self.assertEqual( path.join(am.root_dir, pi.artifact_path(self.LINUX_BT)), am.artifact_path(pi, self.LINUX_BT) )
 
   _APPLE = '''
 fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18
@@ -54,10 +53,9 @@ fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18
     
   def test_publish(self):
     am = self._make_empty_artifact_manager()
-    bt = self.LINUX_BT
     tmp_tarball = fake_package_unit_test.create_one_package(self._APPLE)
     self.assertEqual( [], am.list_all_by_descriptor() )
-    filename = am.publish(tmp_tarball, bt, False)
+    filename = am.publish(tmp_tarball, self.LINUX_BT, False)
     self.assertTrue( path.exists(filename) )
     expected = [
       AD('apple', '1.2.3', 1, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
@@ -65,12 +63,16 @@ fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18
     self.assertEqual( expected, am.list_all_by_descriptor() )
 
   def test_publish_again_with_replace(self):
-    am = self._make_test_artifact_manager()
-    bt = self.LINUX_BT
-    tmp_tarball = unit_test_packages.make_apple()
-    filename = am.publish(tmp_tarball, bt, True)
+    am = self._make_empty_artifact_manager()
+    tmp_tarball = fake_package_unit_test.create_one_package(self._APPLE)
+    filename = am.publish(tmp_tarball, self.LINUX_BT, False)
     self.assertTrue( path.exists(filename) )
-    filename = am.publish(tmp_tarball, bt, True)
+    expected = [
+      AD('apple', '1.2.3', 1, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
+    ]
+    self.assertEqual( expected, am.list_all_by_descriptor() )
+    filename = am.publish(tmp_tarball, self.LINUX_BT, True)
+    self.assertEqual( expected, am.list_all_by_descriptor() )
 
   def test_publish_again_without_replace(self):
     am = self._make_test_artifact_manager()
