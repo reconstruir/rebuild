@@ -2,6 +2,8 @@
 
 import os.path as path, re
 
+from collections import namedtuple
+
 from bes.archive import archive, archiver
 from bes.common import check, dict_util, json_util, string_util
 from bes.fs import dir_util, file_check, file_checksum_list, file_find, file_mime, file_search, file_util, temp_file
@@ -146,6 +148,7 @@ unset REBUILD_STUFF_DIR
   def package_files(clazz, tarball):
     return package(tarball).files
 
+  _create_package_result = namedtuple('_create_package_result', 'filename, metadata')
   @classmethod
   def create_package(clazz, tarball_path, pkg_desc, build_target, stage_dir, timer = None):
     timer = timer or noop_debug_timer()
@@ -195,7 +198,7 @@ unset REBUILD_STUFF_DIR
     metadata_filename = path.join(stage_dir, clazz.METADATA_FILENAME)
     file_util.save(metadata_filename, content = metadata.to_json())
     clazz._create_package(tarball_path, stage_dir, timer)
-    return tarball_path, metadata
+    return clazz._create_package_result(tarball_path, metadata)
 
   @classmethod
   def _determine_manifest(clazz, stage_dir):

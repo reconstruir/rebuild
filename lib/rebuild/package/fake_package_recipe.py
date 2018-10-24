@@ -3,7 +3,7 @@
 from os import path
 from collections import namedtuple
 from bes.common import check, node
-from bes.text import tree_text_parser, white_space
+from bes.text import white_space
 from bes.fs import temp_file
 
 from rebuild.base import package_descriptor
@@ -142,22 +142,3 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
                                   properties = self.properties,
                                   requirements = self.requirements)
     return package.create_package(filename, pkg_desc, self.metadata.build_target, tmp_dir)
-
-  @classmethod
-  def parse(self, text):
-    try:
-      tree = tree_text_parser.parse(text, strip_comments = True)
-    except Exception as ex:
-      self._error('failed to parse: %s' % (ex.message))
-    return self._parse_tree(tree)
-
-  def _parse_tree(self, root):
-    recipes = []
-    if not root.children:
-      self._error('invalid recipe', root)
-    if root.children[0].data.text != self.MAGIC:
-      self._error('invalid magic', root)
-    for pkg_node in root.children[1:]:
-      recipe = self._parse_package(pkg_node)
-      recipes.append(recipe)
-    return recipes

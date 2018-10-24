@@ -1,22 +1,36 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import os.path as path, unittest
+import os.path as path
+
+from bes.testing.unit_test import unit_test
 from bes.fs import temp_file, temp_item
 from bes.archive import archiver, temp_archive
 from rebuild.base import build_level, build_target, build_system, build_version, package_descriptor, requirement, requirement_list
 from rebuild.package.package import package
 from rebuild.package.unit_test_packages import unit_test_packages
+from rebuild.package.fake_package_unit_test import fake_package_unit_test
 
-class test_package(unittest.TestCase):
+class test_package(unit_test):
 
   DEBUG = False
   #DEBUG = True
 
   def test_package_descriptor_water(self):
-    
-
-    tmp_tarball = unit_test_packages.make_water(debug = self.DEBUG)
+    content='''
+fake_package water 1.0.0 0 0 macos release x86_64 none 10.15
+  files
+    bin/water_script.sh
+      #!/bin/bash
+      echo foo
+    docs/water_bar.txt
+      foo
+    docs/water_foo.txt
+      bar
+    lib/pkgconfig/water.pc
+      foo
+'''
+    tmp_tarball, _ = fake_package_unit_test.create_one_package(content)
     p = package(tmp_tarball)
     self.assertEqual( 'water', p.package_descriptor.name )
     self.assertEqual( build_version('1.0.0', '0', 0), p.package_descriptor.version )
@@ -25,7 +39,7 @@ class test_package(unittest.TestCase):
     self.assertEqual( [ 'bin/water_script.sh', 'docs/water_bar.txt', 'docs/water_foo.txt', 'lib/pkgconfig/water.pc' ], p.files )
     self.assertEqual( [ 'lib/pkgconfig/water.pc' ], p.pkg_config_files )
     self.assertEqual( 'macos', p.system )
-
+    
   def test_package_descriptor_with_requirements(self):
     tmp_tarball = unit_test_packages.make_orange(debug = self.DEBUG)
     p = package(tmp_tarball)
@@ -103,18 +117,5 @@ class test_package(unittest.TestCase):
     package.create_package(tarball_path, pi, bi, tmp_stage_dir)
     return tarball_path
 
-  def test_package_descriptor_water2(self):
-    
-    tmp_tarball = unit_test_packages.make_water(debug = self.DEBUG)
-    p = package(tmp_tarball)
-    self.assertEqual( 'water', p.package_descriptor.name )
-    self.assertEqual( build_version('1.0.0', '0', 0), p.package_descriptor.version )
-    self.assertEqual( [], p.package_descriptor.requirements )
-    self.assertEqual( {}, p.package_descriptor.properties )
-    self.assertEqual( [ 'bin/water_script.sh', 'docs/water_bar.txt', 'docs/water_foo.txt', 'lib/pkgconfig/water.pc' ], p.files )
-    self.assertEqual( [ 'lib/pkgconfig/water.pc' ], p.pkg_config_files )
-    self.assertEqual( 'macos', p.system )
-
-  
 if __name__ == '__main__':
-  unittest.main()
+  unit_test.main()
