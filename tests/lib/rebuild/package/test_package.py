@@ -41,7 +41,7 @@ fake_package orange 6.5.4 3 0 linux release x86_64 ubuntu 18
 '''
   
   def test_package_descriptor_water(self):
-    tmp_tarball, _ = fake_package_unit_test.create_one_package(self._WATER)
+    tmp_tarball = fake_package_unit_test.create_one_package(self._WATER)
     p = package(tmp_tarball)
     self.assertEqual( 'water', p.package_descriptor.name )
     self.assertEqual( build_version('1.0.0', '0', 0), p.package_descriptor.version )
@@ -52,7 +52,7 @@ fake_package orange 6.5.4 3 0 linux release x86_64 ubuntu 18
     self.assertEqual( 'macos', p.system )
     
   def test_package_descriptor_with_requirements(self):
-    tmp_tarball, _ = fake_package_unit_test.create_one_package(self._ORANGE)
+    tmp_tarball = fake_package_unit_test.create_one_package(self._ORANGE)
     p = package(tmp_tarball)
     self.assertEqual( 'orange', p.package_descriptor.name )
     self.assertEqual( build_version('6.5.4', '3', 0), p.package_descriptor.version )
@@ -63,7 +63,7 @@ fake_package orange 6.5.4 3 0 linux release x86_64 ubuntu 18
     self.assertEqual( [ 'lib/pkgconfig/orange.pc' ], p.pkg_config_files )
 
   def test_is_package(self):
-    tmp_tarball, _ = fake_package_unit_test.create_one_package(self._WATER)
+    tmp_tarball = fake_package_unit_test.create_one_package(self._WATER)
     self.assertTrue( package.is_package(tmp_tarball) )
     self.assertFalse( package.is_package(temp_file.make_temp_file(content = 'notpackage')) )
 

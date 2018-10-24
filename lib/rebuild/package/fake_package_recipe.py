@@ -4,7 +4,7 @@ from os import path
 from collections import namedtuple
 from bes.common import check, node
 from bes.text import white_space
-from bes.fs import temp_file
+from bes.fs import file_util, temp_file
 
 from rebuild.base import package_descriptor
 from .package import package
@@ -124,8 +124,12 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
 
   def create_package(self, filename):
     tmp_dir = temp_file.make_temp_dir()
-    temp_file.write_temp_files(path.join(tmp_dir, 'files'), self.files)
-    temp_file.write_temp_files(path.join(tmp_dir, 'env'), self.env_files)
+    files_dir = path.join(tmp_dir, 'files')
+    env_files_dir = path.join(tmp_dir, 'env')
+    file_util.mkdir(files_dir)
+    file_util.mkdir(env_files_dir)
+    temp_file.write_temp_files(files_dir, self.files)
+    temp_file.write_temp_files(env_files_dir, self.env_files)
     pkg_desc = package_descriptor(self.metadata.name,
                                   self.metadata.build_version,
                                   properties = self.properties,

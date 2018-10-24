@@ -11,7 +11,7 @@ class fake_package_unit_test(object):
   @classmethod
   def create_one_package(clazz, recipe):
     recipe = clazz._parse_one_recipe(recipe)
-    return recipe.create_package(temp_file.make_temp_file())
+    return recipe.create_package(temp_file.make_temp_file()).filename
 
   @classmethod
   def _parse_one_recipe(clazz, recipe):

@@ -9,6 +9,8 @@ from rebuild.base import build_target, package_descriptor as PD
 from rebuild.package import artifact_manager, package, artifact_descriptor as AD
 from rebuild.package.unit_test_packages import unit_test_packages
 from rebuild.package.db_error import *
+from rebuild.package.fake_package_unit_test import fake_package_unit_test
+from rebuild.package import artifact_descriptor as AD
 
 class test_artifact_manager(unit_test):
 
@@ -16,8 +18,16 @@ class test_artifact_manager(unit_test):
   #DEBUG = True
 
   # These match what unit_test_packages use to make the testing packages
-  LINUX_BT = build_target('linux', 'ubuntu', '18', ( 'x86_64', ), 'release')
-  MACOS_BT = build_target('macos', '', '10.10', ( 'x86_64', ), 'release')
+  LINUX_BT = build_target('linux', 'ubuntu', '18', 'x86_64', 'release')
+  MACOS_BT = build_target('macos', '', '10.10', 'x86_64', 'release')
+
+  @classmethod
+  def _make_empty_artifact_manager(clazz):
+    root_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
+    if clazz.DEBUG:
+      print("root_dir:\n%s\n" % (root_dir))
+    am = artifact_manager(root_dir)
+    return am
   
   @classmethod
   def _make_test_artifact_manager(clazz, address = None, items = None):
@@ -36,12 +46,23 @@ class test_artifact_manager(unit_test):
     bt = self.LINUX_BT
     self.assertEqual( path.join(am.root_dir, pi.artifact_path(bt)), am.artifact_path(pi, bt) )
 
+  _APPLE = '''
+fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18
+  requirements
+    fruit >= 1.0.0
+'''
+    
   def test_publish(self):
-    am = self._make_test_artifact_manager()
+    am = self._make_empty_artifact_manager()
     bt = self.LINUX_BT
-    tmp_tarball = unit_test_packages.make_apple()
+    tmp_tarball = fake_package_unit_test.create_one_package(self._APPLE)
+    self.assertEqual( [], am.list_all_by_descriptor() )
     filename = am.publish(tmp_tarball, bt, False)
     self.assertTrue( path.exists(filename) )
+    expected = [
+      AD('apple', '1.2.3', 1, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
+    ]
+    self.assertEqual( expected, am.list_all_by_descriptor() )
 
   def test_publish_again_with_replace(self):
     am = self._make_test_artifact_manager()
