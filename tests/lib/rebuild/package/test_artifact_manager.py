@@ -126,10 +126,8 @@ fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18
 
   def test_list_latest_versions_linux(self):
     self.maxDiff = None
-    am = self._make_empty_artifact_manager()
-    tmp_packages = fake_package_unit_test.create_many_packages(self._PACKAGES)
-    for tmp_package in tmp_packages:
-      am.publish(tmp_package, self.LINUX_BT, False)
+    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
+    am = self._create_test_artifact_manager_with_packages(self.LINUX_BT, mutations)
     expected = [
       AD('apple', '1.2.3', 1, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
       AD('arsenic', '1.2.9', 1, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
@@ -149,11 +147,8 @@ fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18
 
   def test_list_latest_versions_macos(self):
     self.maxDiff = None
-    am = self._make_empty_artifact_manager()
     mutations = { 'system': 'macos', 'distro': 'none', 'distro_version': '10.14' }
-    tmp_packages = fake_package_unit_test.create_many_packages(self._PACKAGES, mutations)
-    for tmp_package in tmp_packages:
-      am.publish(tmp_package, self.MACOS_BT, False)
+    am = self._create_test_artifact_manager_with_packages(self.MACOS_BT, mutations)
     expected = [
       AD('apple', '1.2.3', 1, 0, 'macos', 'release', 'x86_64', 'none', '10.14'),
       AD('arsenic', '1.2.9', 1, 0, 'macos', 'release', 'x86_64', 'none', '10.14'),
@@ -171,6 +166,14 @@ fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18
     ]
     self.assertEqual( expected, am.list_latest_versions(self.MACOS_BT) )
 
+  @classmethod
+  def _create_test_artifact_manager_with_packages(clazz, build_target, mutations = {}):
+    am = clazz._make_empty_artifact_manager()
+    tmp_packages = fake_package_unit_test.create_many_packages(clazz._PACKAGES, mutations)
+    for tmp_package in tmp_packages:
+      am.publish(tmp_package, build_target, False)
+    return am
+    
   _PACKAGES = '''
 fake_package water 1.0.0 0 0 linux release x86_64 ubuntu 18
 
