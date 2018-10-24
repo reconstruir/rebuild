@@ -70,4 +70,11 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
     l[i] = value
     return self.__class__(*l)
 
+  def clone_with_mutations(self, mutations):
+    l = list(self)
+    for field, value in mutations.items():
+      i = self._fields.index(field)
+      l[i] = value
+    return self.__class__(*l)
+
 check.register_class(artifact_descriptor, include_seq = False)
