@@ -7,7 +7,7 @@ from bes.fs import temp_file
 from rebuild.base import build_target, package_descriptor as PD
 from rebuild.package import artifact_manager, artifact_descriptor as AD
 from rebuild.package.db_error import *
-from rebuild.package.fake_package_unit_test import fake_package_unit_test
+from rebuild.package.fake_package_unit_test import fake_package_unit_test as FPUT
 from rebuild.package import artifact_descriptor as AD
 
 class test_artifact_manager(unit_test):
@@ -18,16 +18,8 @@ class test_artifact_manager(unit_test):
   LINUX_BT = build_target('linux', 'ubuntu', '18', 'x86_64', 'release')
   MACOS_BT = build_target('macos', '', '10.14', 'x86_64', 'release')
 
-  @classmethod
-  def _make_empty_artifact_manager(clazz):
-    root_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
-    if clazz.DEBUG:
-      print("root_dir:\n%s\n" % (root_dir))
-    am = artifact_manager(root_dir)
-    return am
-  
   def test_artifact_path(self):
-    am = self._make_empty_artifact_manager()
+    am = FPUT.make_artifact_manager()
     pi = PD('foo', '1.2.34-1')
     self.assertEqual( path.join(am.root_dir, pi.artifact_path(self.LINUX_BT)), am.artifact_path(pi, self.LINUX_BT) )
 
@@ -38,8 +30,8 @@ fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18
 '''
     
   def test_publish(self):
-    am = self._make_empty_artifact_manager()
-    tmp_tarball = fake_package_unit_test.create_one_package(self._APPLE)
+    am = FPUT.make_artifact_manager()
+    tmp_tarball = FPUT.create_one_package(self._APPLE)
     self.assertEqual( [], am.list_all_by_descriptor() )
     filename = am.publish(tmp_tarball, self.LINUX_BT, False)
     self.assertTrue( path.exists(filename) )
@@ -49,8 +41,8 @@ fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18
     self.assertEqual( expected, am.list_all_by_descriptor() )
 
   def test_publish_again_with_replace(self):
-    am = self._make_empty_artifact_manager()
-    tmp_tarball = fake_package_unit_test.create_one_package(self._APPLE)
+    am = FPUT.make_artifact_manager()
+    tmp_tarball = FPUT.create_one_package(self._APPLE)
     filename = am.publish(tmp_tarball, self.LINUX_BT, False)
     self.assertTrue( path.exists(filename) )
     expected = [
@@ -61,8 +53,8 @@ fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18
     self.assertEqual( expected, am.list_all_by_descriptor() )
 
   def test_publish_again_without_replace(self):
-    am = self._make_empty_artifact_manager()
-    tmp_tarball = fake_package_unit_test.create_one_package(self._APPLE)
+    am = FPUT.make_artifact_manager()
+    tmp_tarball = FPUT.create_one_package(self._APPLE)
     filename = am.publish(tmp_tarball, self.LINUX_BT, False)
     self.assertTrue( path.exists(filename) )
     expected = [
@@ -74,7 +66,7 @@ fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18
     
   def test_find_by_package_descriptor_linux(self):
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
-    am = self._create_test_artifact_manager_with_packages(self.LINUX_BT, mutations)
+    am = FPUT.create_test_artifact_manager_with_packages(self.LINUX_BT, mutations)
     self.assertEqual( 'water-1.0.0', am.find_by_package_descriptor(PD('water', '1.0.0'), self.LINUX_BT).package_descriptor.full_name )
     self.assertEqual( 'water-1.0.0-1', am.find_by_package_descriptor(PD('water', '1.0.0-1'), self.LINUX_BT).package_descriptor.full_name )
     self.assertEqual( 'water-1.0.0-2', am.find_by_package_descriptor(PD('water', '1.0.0-2'), self.LINUX_BT).package_descriptor.full_name )
@@ -86,7 +78,7 @@ fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18
 
   def test_find_by_package_descriptor_macos(self):
     mutations = { 'system': 'macos', 'distro': '', 'distro_version': '10.14' }
-    am = self._create_test_artifact_manager_with_packages(self.MACOS_BT, mutations)
+    am = FPUT.create_test_artifact_manager_with_packages(self.MACOS_BT, mutations)
     self.assertEqual( 'water-1.0.0', am.find_by_package_descriptor(PD('water', '1.0.0'), self.MACOS_BT).package_descriptor.full_name )
     self.assertEqual( 'water-1.0.0-1', am.find_by_package_descriptor(PD('water', '1.0.0-1'), self.MACOS_BT).package_descriptor.full_name )
     self.assertEqual( 'water-1.0.0-2', am.find_by_package_descriptor(PD('water', '1.0.0-2'), self.MACOS_BT).package_descriptor.full_name )
@@ -99,7 +91,7 @@ fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18
   def test_list_latest_versions_linux(self):
     self.maxDiff = None
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
-    am = self._create_test_artifact_manager_with_packages(self.LINUX_BT, mutations)
+    am = FPUT.create_test_artifact_manager_with_packages(self.LINUX_BT, mutations)
     expected = [
       AD('apple', '1.2.3', 1, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
       AD('arsenic', '1.2.9', 1, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
@@ -120,7 +112,7 @@ fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18
   def test_list_latest_versions_macos(self):
     self.maxDiff = None
     mutations = { 'system': 'macos', 'distro': '', 'distro_version': '10.14' }
-    am = self._create_test_artifact_manager_with_packages(self.MACOS_BT, mutations)
+    am = FPUT.create_test_artifact_manager_with_packages(self.MACOS_BT, mutations)
     expected = [
       AD('apple', '1.2.3', 1, 0, 'macos', 'release', 'x86_64', '', '10.14'),
       AD('arsenic', '1.2.9', 1, 0, 'macos', 'release', 'x86_64', '', '10.14'),
@@ -138,13 +130,5 @@ fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18
     ]
     self.assertEqual( expected, am.list_latest_versions(self.MACOS_BT) )
 
-  @classmethod
-  def _create_test_artifact_manager_with_packages(clazz, build_target, mutations = {}):
-    am = clazz._make_empty_artifact_manager()
-    tmp_packages = fake_package_unit_test.create_many_packages(fake_package_unit_test.TEST_RECIPES, mutations)
-    for tmp_package in tmp_packages:
-      am.publish(tmp_package, build_target, False)
-    return am
-    
 if __name__ == '__main__':
   unit_test.main()

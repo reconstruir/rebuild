@@ -6,9 +6,12 @@ from bes.common import check
 
 from .fake_package_recipe_parser import fake_package_recipe_parser
 from .fake_package_recipe import fake_package_recipe
+from .artifact_manager import artifact_manager
 
 class fake_package_unit_test(object):
 
+  DEBUG = False
+  
   @classmethod
   def create_one_package(clazz, recipe, metadata_mutations = {}):
     recipe = clazz._parse_one_recipe(recipe, metadata_mutations)
@@ -41,6 +44,21 @@ class fake_package_unit_test(object):
       result = recipes
     return result
 
+  @classmethod
+  def make_artifact_manager(clazz):
+    root_dir = temp_file.make_temp_dir()
+    if clazz.DEBUG:
+      print("root_dir:\n%s\n" % (root_dir))
+    am = artifact_manager(root_dir)
+    return am
+  
+  @classmethod
+  def create_test_artifact_manager_with_packages(clazz, build_target, mutations = {}):
+    am = clazz.make_artifact_manager()
+    tmp_packages = fake_package_unit_test.create_many_packages(fake_package_unit_test.TEST_RECIPES, mutations)
+    for tmp_package in tmp_packages:
+      am.publish(tmp_package, build_target, False)
+    return am
     
   TEST_RECIPES = '''
 fake_package water 1.0.0 0 0 linux release x86_64 ubuntu 18
