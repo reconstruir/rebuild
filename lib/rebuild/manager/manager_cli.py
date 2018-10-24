@@ -203,7 +203,7 @@ class manager_cli(build_target_cli):
       command = args.command
 
     if hasattr(args, 'artifacts'):
-      self.artifact_manager = artifact_manager(args.artifacts, address = None, no_git = True)
+      self.artifact_manager = artifact_manager(args.artifacts)
     else:
       self.artifact_manager = artifact_manager(None)
 
@@ -391,7 +391,7 @@ remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir ${_root_dir}
     if not path.isdir(tools_dir):
       raise RuntimeError('Not an tools directory: %s' % (tools_dir))
 
-    am = artifact_manager(artifacts_dir, address = None, no_git = True)
+    am = artifact_manager(artifacts_dir)
     tm = tools_manager(tools_dir)
 
     build_blurb.blurb('tester', ' build_target: %s' % (str(self.build_target)))

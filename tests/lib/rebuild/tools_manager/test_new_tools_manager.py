@@ -35,7 +35,7 @@ class test_new_tools_manager(script_unit_test):
     am_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     if self.DEBUG:
       print('\nartifact_manager dir:\n%s' % (am_dir))
-    am = artifact_manager(am_dir, address = None, no_git = True)
+    am = artifact_manager(am_dir)
     for artifact in rv.artifacts:
       am.publish(path.join(rv.artifacts_dir, artifact), self.TEST_BUILD_TARGET, False)
     return am

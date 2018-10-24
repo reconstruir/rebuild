@@ -26,7 +26,7 @@ class test_tools_package_manager(unittest.TestCase):
     root_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
     if clazz.DEBUG:
       print("root_dir:\n%s\n" % (root_dir))
-    am = artifact_manager(root_dir, address = None, no_git = True)
+    am = artifact_manager(root_dir)
     unit_test_packages.make_test_packages(unit_test_packages.TEST_PACKAGES, am.root_dir)
     unit_test_packages.publish_artifacts(am)
     return am

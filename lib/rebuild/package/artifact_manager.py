@@ -18,23 +18,16 @@ from .package import package
 
 class artifact_manager(object):
 
-  def __init__(self, root_dir, address = None, no_git = False):
+  def __init__(self, root_dir):
     check.check_string(root_dir)
     log.add_logging(self, 'artifact_manager')
     build_blurb.add_blurb(self, 'artifact_manager')
 
     self._root_dir = path.abspath(root_dir)
-    self.no_git = no_git
     
     file_util.mkdir(self._root_dir)
-    #self.log_d('Creating instance with root_dir=%s; address=%s' % (self._root_dir, address))
-    #self.blurb('Creating instance with root_dir=%s; address=%s' % (self._root_dir, address))
-
-    if not self.no_git:
-      if address:
-        git.clone_or_pull(address, self._root_dir, enforce_empty_dir = False)
-      if not git.is_repo(self._root_dir):
-        git.init(self._root_dir)
+    #self.log_d('Creating instance with root_dir=%s' % (self._root_dir))
+    #self.blurb('Creating instance with root_dir=%s' % (self._root_dir))
 
     self._package_cache = {}
     self._reset()
@@ -70,8 +63,6 @@ class artifact_manager(object):
     artifact_path_rel = self.artifact_path(pkg_desc, build_target, relative = True)
     artifact_path_abs = self.artifact_path(pkg_desc, build_target, relative = False)
     file_util.copy(tarball, artifact_path_abs, use_hard_link = True)
-    if not self.no_git:
-      git.add(self._root_dir, pkg_desc.artifact_path(build_target))
     self._reset()
     pkg_metadata = metadata.clone_with_filename(artifact_path_rel)
     should_replace = allow_replace and self._db.has_artifact(pkg_metadata.artifact_descriptor)

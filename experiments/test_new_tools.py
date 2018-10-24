@@ -6,7 +6,7 @@ from rebuild.base import build_target, build_version, package_descriptor
 
 def main():
   bt = build_target.make_host_build_target()
-  am = artifact_manager('/home/ramiro/proj/third_party/BUILD/artifacts', no_git = True)
+  am = artifact_manager('/home/ramiro/proj/third_party/BUILD/artifacts')
 
   wanted =  [
     package_descriptor('gnu_automake', '1.15'),

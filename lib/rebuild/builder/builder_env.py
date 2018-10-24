@@ -74,7 +74,7 @@ class builder_env(object):
   
   @classmethod
   def _make_artifact_manager(clazz, build_dir):
-    return artifact_manager(path.join(build_dir, 'artifacts'), no_git = True)
+    return artifact_manager(path.join(build_dir, 'artifacts'))
 
   @classmethod
   def _make_tools_manager(clazz, build_dir):
