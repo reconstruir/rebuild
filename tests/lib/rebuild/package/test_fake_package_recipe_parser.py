@@ -23,24 +23,24 @@ class test_fake_package_recipe_parser(unit_test):
           temp_item('bin/tbar.py', '#!/usr/bin/env python\nprint(\'bar\')\nraise SystemExit(0)\n', 0o755),
         ],
         [
-          temp_item('tfoo.sh', 'export TFOO_ENV1=tfoo_env1\n', 0o644),
-          temp_item('tbar.sh', 'export TBAR_ENV1=tbar_env1\n', 0o644),
+          temp_item('tfoo_env.sh', 'export TFOO_ENV1=tfoo_env1\n', 0o755),
+          temp_item('tbar_env.sh', 'export TBAR_ENV1=tbar_env1\n', 0o755),
         ],
-        RL.parse(''), #apple >= 1.2.3 orange >= 6.6.6'),
-        { }, # 'prop1': 5, 'prop2': 'hi' }
+        RL.parse('apple >= 1.2.3 orange >= 6.6.6'),
+        { 'prop1': '5', 'prop2': 'hi' }
       )
     content = '''
 fake_package
   metadata
-    name = foo
-    version = 1.2.3
-    revision = 0
-    epoch = 0
-    system = linux
-    level = release
-    arch = x86_64
-    distro = ubuntu
-    distro_version = 18
+    name=foo
+    version=1.2.3
+    revision=0
+    epoch=0
+    system=linux
+    level=release
+    arch=x86_64
+    distro=ubuntu
+    distro_version=18
   
   files
     bin/tfoo.py
@@ -57,18 +57,23 @@ fake_package
     tfoo_env.sh
       export TFOO_ENV1=tfoo_env1
 
-  env_files
     tbar_env.sh
       export TBAR_ENV1=tbar_env1
+
+  requirements
+    apple >= 1.2.3
+    orange >= 6.6.6
+
+  properties
+    prop1=5
+    prop2=hi
 '''
     actual = self._parse(content)
     self.assertEqual( recipe.metadata, actual[0].metadata )
     self.assertEqual( recipe.properties, actual[0].properties )
     self.assertEqual( recipe.requirements, actual[0].requirements )
-    print('expected: %s' % (str(recipe.files)))
-    print('  actual: %s' % (str(actual[0].files)))
     self.assertEqual( recipe.files, actual[0].files )
-#    self.assertEqual( recipe.env_files, actual[0].env_files )
+    self.assertEqual( recipe.env_files, actual[0].env_files )
 
   @classmethod
   def _parse(self, text, starting_line_number = 0):
