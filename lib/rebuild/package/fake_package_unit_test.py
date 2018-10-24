@@ -59,7 +59,9 @@ class fake_package_unit_test(object):
     for tmp_package in tmp_packages:
       am.publish(tmp_package, build_target, False)
     return am
-    
+
+  WATER_RECIPE = 'fake_package water 1.0.0 0 0 linux release x86_64 ubuntu 18'
+  
   TEST_RECIPES = '''
 fake_package water 1.0.0 0 0 linux release x86_64 ubuntu 18
 
@@ -88,6 +90,7 @@ fake_package arsenic 1.2.10 0 0 linux release x86_64 ubuntu 18
 fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18
   requirements
     fruit >= 1.0.0
+
 fake_package fruit  1.0.0 0 0 linux release x86_64 ubuntu 18
   requirements
     fructose >= 3.4.5-6
@@ -116,5 +119,7 @@ fake_package smoothie 1.0.0 0 0 linux release x86_64 ubuntu 18
     orange >= 6.5.4-3
     pear >= 1.2.3 1-0
     apple >= 1.2.3-1
+
+
 '''
   
