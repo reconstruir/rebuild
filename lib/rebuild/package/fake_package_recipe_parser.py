@@ -2,7 +2,7 @@
 
 import os.path as path
 from bes.fs import file_util, temp_item
-from bes.common import check
+from bes.common import check, string_util
 from bes.key_value import key_value, key_value_list, key_value_parser
 from bes.compat import StringIO
 from bes.text import string_list, tree_text_parser
@@ -56,12 +56,9 @@ class fake_package_recipe_parser(object):
     return recipes
   
   def _parse_package(self, node):
-    if node.data.text != 'fake_package':
+    if not node.data.text.startswith('fake_package'):
       self._error('invalid fake_package', node)
-    metadata_node = node.find_child_by_text('metadata')
-    if not metadata_node:
-      self._error('no metadata found for fake_package', node)
-    metadata = self._parse_metadata(metadata_node)
+    metadata = self._parse_metadata(node)
     files = []
     env_files = []
     requirements = []
@@ -81,20 +78,13 @@ class fake_package_recipe_parser(object):
     return fake_package_recipe(metadata, files, env_files, requirements, properties)
 
   def _parse_metadata(self, node):
-    d = self._parse_node_children_to_dict(node)
-    name = d['name']
-    version = d['version']
-    revision = d['revision']
-    epoch = d['epoch']
-    system = d['system']
-    level = d['level']
-    arch = d['arch']
-    distro = d['distro']
-    distro_version = d['distro_version']
-    return artifact_descriptor(name, version, revision, epoch,
-                               system, level, arch, distro,
-                               distro_version)
-
+    parts = string_util.split_by_white_space(node.data.text, strip = True)
+    assert parts[0] == 'fake_package'
+    parts.pop(0)
+    if len(parts) != len(artifact_descriptor._fields):
+      self._error('invalid metadata for fake_package: \"%s\"' % (' '.join(parts)), node)
+    return artifact_descriptor(*parts)
+  
   def _parse_files(self, node):
     return [ self._parse_file(child) for child in node.children ]
 
@@ -107,13 +97,6 @@ class fake_package_recipe_parser(object):
       mode = 0o644
     return temp_item(filename, content, mode)
 
-  @classmethod
-  def _parse_node_children_to_dict(clazz, node):
-    result = key_value_list()
-    for child in node.children:
-      result.append(key_value.parse(child.data.text))
-    return result.to_dict()
-  
   @classmethod
   def _parse_node_children_to_string_list(clazz, node):
     result = string_list()

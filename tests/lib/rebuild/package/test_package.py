@@ -14,6 +14,8 @@ class test_package(unittest.TestCase):
   #DEBUG = True
 
   def test_package_descriptor_water(self):
+    
+
     tmp_tarball = unit_test_packages.make_water(debug = self.DEBUG)
     p = package(tmp_tarball)
     self.assertEqual( 'water', p.package_descriptor.name )

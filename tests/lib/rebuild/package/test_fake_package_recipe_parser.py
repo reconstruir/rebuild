@@ -13,7 +13,7 @@ from bes.fs import temp_file, temp_item
 class test_fake_package_recipe_parser(unit_test):
 
   DEBUG = False
-  DEBUG = True
+  #DEBUG = True
 
   def test_parse(self):
     recipe = \
@@ -30,17 +30,7 @@ class test_fake_package_recipe_parser(unit_test):
         { 'prop1': '5', 'prop2': 'hi' }
       )
     content = '''
-fake_package
-  metadata
-    name=foo
-    version=1.2.3
-    revision=0
-    epoch=0
-    system=linux
-    level=release
-    arch=x86_64
-    distro=ubuntu
-    distro_version=18
+fake_package foo 1.2.3 0 0 linux release x86_64 ubuntu 18
   
   files
     bin/tfoo.py
