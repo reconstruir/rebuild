@@ -141,68 +141,10 @@ fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18
   @classmethod
   def _create_test_artifact_manager_with_packages(clazz, build_target, mutations = {}):
     am = clazz._make_empty_artifact_manager()
-    tmp_packages = fake_package_unit_test.create_many_packages(clazz._PACKAGES, mutations)
+    tmp_packages = fake_package_unit_test.create_many_packages(fake_package_unit_test.TEST_RECIPES, mutations)
     for tmp_package in tmp_packages:
       am.publish(tmp_package, build_target, False)
     return am
-    
-  _PACKAGES = '''
-fake_package water 1.0.0 0 0 linux release x86_64 ubuntu 18
-
-fake_package water 1.0.0 1 0 linux release x86_64 ubuntu 18
-
-fake_package water 1.0.0 2 0 linux release x86_64 ubuntu 18
-
-fake_package fiber 1.0.0 0 0 linux release x86_64 ubuntu 18
-
-fake_package citrus 1.0.0 2 0 linux release x86_64 ubuntu 18
-
-fake_package fructose 3.4.5 6 0 linux release x86_64 ubuntu 18
-
-fake_package mercury 1.2.8 0 0 linux release x86_64 ubuntu 18
-
-fake_package mercury 1.2.8 1 0 linux release x86_64 ubuntu 18
-
-fake_package mercury 1.2.9 0 0 linux release x86_64 ubuntu 18
-
-fake_package arsenic 1.2.9 0 0 linux release x86_64 ubuntu 18
-
-fake_package arsenic 1.2.9 1 0 linux release x86_64 ubuntu 18
-
-fake_package arsenic 1.2.10 0 0 linux release x86_64 ubuntu 18
-
-fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18
-  requirements
-    fruit >= 1.0.0
-fake_package fruit  1.0.0 0 0 linux release x86_64 ubuntu 18
-  requirements
-    fructose >= 3.4.5-6
-    fiber >= 1.0.0-0
-    water >= 1.0.0-0
-
-fake_package pear 1.2.3 1 0 linux release x86_64 ubuntu 18
-  requirements
-    fruit >= 1.0.0
-
-fake_package orange 6.5.4 3 0 linux release x86_64 ubuntu 18
-  requirements
-    fruit >= 1.0.0
-    citrus >= 1.0.0
-
-fake_package orange_juice 1.4.5 0 0 linux release x86_64 ubuntu 18
-  requirements
-    orange >= 6.5.4-3
-
-fake_package pear_juice 6.6.6 0 0 linux release x86_64 ubuntu 18
-  requirements
-    pear >= 1.2.3 1-0
-    
-fake_package smoothie 1.0.0 0 0 linux release x86_64 ubuntu 18
-  requirements
-    orange >= 6.5.4-3
-    pear >= 1.2.3 1-0
-    apple >= 1.2.3-1
-'''
     
 if __name__ == '__main__':
   unit_test.main()

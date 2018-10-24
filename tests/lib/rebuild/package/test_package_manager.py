@@ -1,7 +1,8 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
-#
-import os.path as path, unittest
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
+
+import os.path as path
+from bes.testing.unit_test import unit_test
 from bes.fs import file_find, file_util, temp_file
 from bes.system import host
 from rebuild.base import build_target, package_descriptor
@@ -12,7 +13,7 @@ from rebuild.package.db_error import *
 from bes.archive import archiver, temp_archive
 from rebuild.package.unit_test_packages import unit_test_packages
 
-class test_package_manager(unittest.TestCase):
+class test_package_manager(unit_test):
 
   TEST_BUILD_TARGET = build_target.parse_path('linux-ubuntu-18/x86_64/release')
 
@@ -210,4 +211,4 @@ class test_package_manager(unittest.TestCase):
     }, pm.dep_map() )
 
 if __name__ == '__main__':
-  unittest.main()
+  unit_test.main()

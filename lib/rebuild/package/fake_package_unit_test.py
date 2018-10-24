@@ -40,3 +40,63 @@ class fake_package_unit_test(object):
     else:
       result = recipes
     return result
+
+    
+  TEST_RECIPES = '''
+fake_package water 1.0.0 0 0 linux release x86_64 ubuntu 18
+
+fake_package water 1.0.0 1 0 linux release x86_64 ubuntu 18
+
+fake_package water 1.0.0 2 0 linux release x86_64 ubuntu 18
+
+fake_package fiber 1.0.0 0 0 linux release x86_64 ubuntu 18
+
+fake_package citrus 1.0.0 2 0 linux release x86_64 ubuntu 18
+
+fake_package fructose 3.4.5 6 0 linux release x86_64 ubuntu 18
+
+fake_package mercury 1.2.8 0 0 linux release x86_64 ubuntu 18
+
+fake_package mercury 1.2.8 1 0 linux release x86_64 ubuntu 18
+
+fake_package mercury 1.2.9 0 0 linux release x86_64 ubuntu 18
+
+fake_package arsenic 1.2.9 0 0 linux release x86_64 ubuntu 18
+
+fake_package arsenic 1.2.9 1 0 linux release x86_64 ubuntu 18
+
+fake_package arsenic 1.2.10 0 0 linux release x86_64 ubuntu 18
+
+fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18
+  requirements
+    fruit >= 1.0.0
+fake_package fruit  1.0.0 0 0 linux release x86_64 ubuntu 18
+  requirements
+    fructose >= 3.4.5-6
+    fiber >= 1.0.0-0
+    water >= 1.0.0-0
+
+fake_package pear 1.2.3 1 0 linux release x86_64 ubuntu 18
+  requirements
+    fruit >= 1.0.0
+
+fake_package orange 6.5.4 3 0 linux release x86_64 ubuntu 18
+  requirements
+    fruit >= 1.0.0
+    citrus >= 1.0.0
+
+fake_package orange_juice 1.4.5 0 0 linux release x86_64 ubuntu 18
+  requirements
+    orange >= 6.5.4-3
+
+fake_package pear_juice 6.6.6 0 0 linux release x86_64 ubuntu 18
+  requirements
+    pear >= 1.2.3 1-0
+    
+fake_package smoothie 1.0.0 0 0 linux release x86_64 ubuntu 18
+  requirements
+    orange >= 6.5.4-3
+    pear >= 1.2.3 1-0
+    apple >= 1.2.3-1
+'''
+  
