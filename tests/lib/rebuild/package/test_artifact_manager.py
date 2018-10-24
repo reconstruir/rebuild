@@ -66,7 +66,7 @@ fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18
     
   def test_find_by_package_descriptor_linux(self):
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
-    am = FPUT.create_test_artifact_manager_with_packages(self.LINUX_BT, mutations)
+    am = FPUT.make_loaded_artifact_manager(FPUT.TEST_RECIPES, self.LINUX_BT, mutations)
     self.assertEqual( 'water-1.0.0', am.find_by_package_descriptor(PD('water', '1.0.0'), self.LINUX_BT).package_descriptor.full_name )
     self.assertEqual( 'water-1.0.0-1', am.find_by_package_descriptor(PD('water', '1.0.0-1'), self.LINUX_BT).package_descriptor.full_name )
     self.assertEqual( 'water-1.0.0-2', am.find_by_package_descriptor(PD('water', '1.0.0-2'), self.LINUX_BT).package_descriptor.full_name )
@@ -78,7 +78,7 @@ fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18
 
   def test_find_by_package_descriptor_macos(self):
     mutations = { 'system': 'macos', 'distro': '', 'distro_version': '10.14' }
-    am = FPUT.create_test_artifact_manager_with_packages(self.MACOS_BT, mutations)
+    am = FPUT.make_loaded_artifact_manager(FPUT.TEST_RECIPES, self.MACOS_BT, mutations)
     self.assertEqual( 'water-1.0.0', am.find_by_package_descriptor(PD('water', '1.0.0'), self.MACOS_BT).package_descriptor.full_name )
     self.assertEqual( 'water-1.0.0-1', am.find_by_package_descriptor(PD('water', '1.0.0-1'), self.MACOS_BT).package_descriptor.full_name )
     self.assertEqual( 'water-1.0.0-2', am.find_by_package_descriptor(PD('water', '1.0.0-2'), self.MACOS_BT).package_descriptor.full_name )
@@ -91,7 +91,7 @@ fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18
   def test_list_latest_versions_linux(self):
     self.maxDiff = None
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
-    am = FPUT.create_test_artifact_manager_with_packages(self.LINUX_BT, mutations)
+    am = FPUT.make_loaded_artifact_manager(FPUT.TEST_RECIPES, self.LINUX_BT, mutations)
     expected = [
       AD('apple', '1.2.3', 1, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
       AD('arsenic', '1.2.9', 1, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
@@ -112,7 +112,7 @@ fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18
   def test_list_latest_versions_macos(self):
     self.maxDiff = None
     mutations = { 'system': 'macos', 'distro': '', 'distro_version': '10.14' }
-    am = FPUT.create_test_artifact_manager_with_packages(self.MACOS_BT, mutations)
+    am = FPUT.make_loaded_artifact_manager(FPUT.TEST_RECIPES, self.MACOS_BT, mutations)
     expected = [
       AD('apple', '1.2.3', 1, 0, 'macos', 'release', 'x86_64', '', '10.14'),
       AD('arsenic', '1.2.9', 1, 0, 'macos', 'release', 'x86_64', '', '10.14'),

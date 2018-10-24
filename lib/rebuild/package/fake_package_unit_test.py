@@ -53,9 +53,9 @@ class fake_package_unit_test(object):
     return am
   
   @classmethod
-  def create_test_artifact_manager_with_packages(clazz, build_target, mutations = {}):
+  def make_loaded_artifact_manager(clazz, recipes, build_target, mutations = {}):
     am = clazz.make_artifact_manager()
-    tmp_packages = fake_package_unit_test.create_many_packages(fake_package_unit_test.TEST_RECIPES, mutations)
+    tmp_packages = fake_package_unit_test.create_many_packages(recipes, mutations)
     for tmp_package in tmp_packages:
       am.publish(tmp_package, build_target, False)
     return am
