@@ -76,9 +76,8 @@ class builder_env(object):
   def _make_artifact_manager(clazz, build_dir):
     return artifact_manager(path.join(build_dir, 'artifacts'))
 
-  @classmethod
-  def _make_tools_manager(clazz, build_dir):
-    return tools_manager(path.join(build_dir, 'tools'))
+  def _make_tools_manager(self, build_dir):
+    return tools_manager(path.join(build_dir, 'tools'), self.config.host_build_target)
 
   def update_tools(self, packages):
     check.check_package_descriptor_seq(packages)

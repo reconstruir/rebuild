@@ -1,6 +1,5 @@
-#!/usr/bin/env python
-#-*- coding:utf-8 -*-
-#
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
+
 import os.path as path, unittest
 from bes.fs import temp_file
 from bes.testing.unit_test import unit_test
@@ -8,7 +7,6 @@ from bes.system import execute
 from rebuild.base import build_target, build_system, build_level, package_descriptor
 from rebuild.package import artifact_manager
 from rebuild.tools_manager import tools_manager
-from rebuild.package.unit_test_packages import unit_test_packages
 from rebuild.package.fake_package_unit_test import fake_package_unit_test as FPUT
 
 class test_tools_manager(unit_test):
@@ -25,19 +23,10 @@ class test_tools_manager(unit_test):
       print("\ntools_dir:\n", tools_dir)
     return tools_manager(tools_dir, self.TEST_BUILD_TARGET)
 
-  @classmethod
-  def _make_test_artifact_manager(clazz):
-    root_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
-    if clazz.DEBUG:
-      print("root_dir:\n%s\n" % (root_dir))
-    am = artifact_manager(root_dir)
-    unit_test_packages.make_test_packages(unit_test_packages.TEST_PACKAGES, am.root_dir)
-    unit_test_packages.publish_artifacts(am)
-    return am
-  
   def test_update(self):
+    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
+    am = FPUT.make_loaded_artifact_manager(FPUT.TEST_RECIPES, self.TEST_BUILD_TARGET, mutations)
     tm = self._make_test_tm()
-    am = self._make_test_artifact_manager()
     packages = [
       package_descriptor.parse('water-1.0.0-0'),
       package_descriptor.parse('mercury-1.2.8-0'),

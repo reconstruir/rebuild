@@ -7,6 +7,7 @@ from bes.common import check
 from .fake_package_recipe_parser import fake_package_recipe_parser
 from .fake_package_recipe import fake_package_recipe
 from .artifact_manager import artifact_manager
+from .package import package
 
 class fake_package_unit_test(object):
 
@@ -57,10 +58,14 @@ class fake_package_unit_test(object):
     am = clazz.make_artifact_manager()
     tmp_packages = fake_package_unit_test.create_many_packages(recipes, mutations)
     for tmp_package in tmp_packages:
+      print('DUCK: PUBLISHING: %s' % (str(package(tmp_package).artifact_descriptor)))
       am.publish(tmp_package, build_target, False)
     return am
 
   WATER_RECIPE = 'fake_package water 1.0.0 0 0 linux release x86_64 ubuntu 18'
+  APPLE_RECIPE = '''fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18
+  requirements
+    fruit >= 1.0.0'''
   
   TEST_RECIPES = '''
 fake_package water 1.0.0 0 0 linux release x86_64 ubuntu 18

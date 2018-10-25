@@ -15,10 +15,9 @@ from rebuild.package import artifact_manager, package
 
 class tools_package_manager(object):
 
-  BUILD_TARGET = build_target.make_host_build_target(level = build_level.RELEASE)
-
-  def __init__(self, root_dir):
+  def __init__(self, root_dir, build_target):
     self.root_dir = root_dir
+    self.build_target = build_target
 
   def install_tarball(self, package_tarball):
     pkg = package(package_tarball)
@@ -48,7 +47,7 @@ class tools_package_manager(object):
     check.check_artifact_manager(artifact_manager)
     if self.is_installed(pkg_desc):
       return
-    package = artifact_manager.find_by_package_descriptor(pkg_desc, self.BUILD_TARGET, relative_filename = False)
+    package = artifact_manager.find_by_package_descriptor(pkg_desc, self.build_target, relative_filename = False)
     self.install_tarball(package.filename)
 
   def bin_dir(self, pkg_desc):

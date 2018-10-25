@@ -38,8 +38,6 @@ class test_package_manager(unit_test):
     if clazz.DEBUG:
       print("\nroot_dir:\n", root_dir)
     am = clazz._make_test_artifact_manager()
-#    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
-#    am = FPUT.make_loaded_artifact_manager(FPUT.TEST_RECIPES, clazz.TEST_BUILD_TARGET, mutations)
     return package_manager(pm_dir, am)
 
   @classmethod
@@ -57,7 +55,8 @@ class test_package_manager(unit_test):
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
     water_tarball = FPUT.create_one_package(FPUT.WATER_RECIPE, mutations)
     pm.install_tarball(water_tarball, ['BUILD', 'RUN'])
-
+    #self.assertEqual( 1, 4 )
+    
   def test_install_tarball_pkg_config(self):
     self.maxDiff = None
     pm = self._make_test_pm_with_am()
@@ -128,7 +127,8 @@ fake_package bar 1.0.0 0 0 linux release x86_64 ubuntu 18
 
   def test_install_tarball_missing_requirements(self):
     pm = self._make_test_pm_with_am()
-    apple_tarball = unit_test_packages.make_apple(debug = self.DEBUG)
+    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
+    apple_tarball = FPUT.create_one_package(FPUT.APPLE_RECIPE, mutations)
     with self.assertRaises(PackageMissingRequirementsError) as context:
       pm.install_tarball(apple_tarball, ['BUILD', 'RUN'])
     self.assertEqual( 'package apple missing requirements: fiber, fructose, water', context.exception.message )
@@ -167,9 +167,12 @@ fake_package bar 1.0.0 0 0 linux release x86_64 ubuntu 18
     root_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
     if clazz.DEBUG:
       print("root_dir:\n%s\n" % (root_dir))
-    am = artifact_manager(root_dir)
-    unit_test_packages.make_test_packages(unit_test_packages.TEST_PACKAGES, am.root_dir)
-    unit_test_packages.publish_artifacts(am)
+    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
+    am = FPUT.make_loaded_artifact_manager(FPUT.TEST_RECIPES, clazz.TEST_BUILD_TARGET, mutations)
+    for x in am.list_all_by_descriptor():
+      print('DUCK LOADED: %s' % (str(x)))
+    #    unit_test_packages.make_test_packages(unit_test_packages.TEST_PACKAGES, am.root_dir)
+#    unit_test_packages.publish_artifacts(am)
     return am
 
   def test_install_package(self):

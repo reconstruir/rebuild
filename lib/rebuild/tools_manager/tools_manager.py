@@ -8,11 +8,11 @@ from .tools_package_manager import tools_package_manager
 
 class tools_manager(object):
 
-  def __init__(self, tools_dir):
+  def __init__(self, tools_dir, build_target):
     assert tools_dir
     tools_dir = path.abspath(tools_dir)
-    self.tools_dir = path.join(tools_dir, host.SYSTEM)
-    self.package_manager = tools_package_manager(self.tools_dir)
+    self.tools_dir = path.join(tools_dir, build_target.build_path)
+    self.package_manager = tools_package_manager(self.tools_dir, build_target)
 
   def update(self, packages, am):
     check.check_package_descriptor_seq(packages)

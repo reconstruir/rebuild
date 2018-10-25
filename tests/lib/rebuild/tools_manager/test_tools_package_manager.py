@@ -5,7 +5,7 @@ import os.path as path, unittest
 from bes.fs import temp_file
 from bes.system import execute
 from rebuild.package import artifact_manager
-from rebuild.base import package_descriptor
+from rebuild.base import build_target, package_descriptor
 from rebuild.tools_manager import tools_package_manager
 from rebuild.package.unit_test_packages import unit_test_packages
 
@@ -19,7 +19,7 @@ class test_tools_package_manager(unittest.TestCase):
     pm_dir = path.join(root_dir, 'package_manager')
     if self.DEBUG:
       print("\nroot_dir:\n", root_dir)
-    return tools_package_manager(pm_dir)
+    return tools_package_manager(pm_dir, build_target.make_host_build_target())
 
   @classmethod
   def __make_test_artifact_manager(clazz):
