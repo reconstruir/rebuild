@@ -46,22 +46,19 @@ class fake_package_unit_test(object):
     return result
 
   @classmethod
-  def make_artifact_manager(clazz):
-    root_dir = temp_file.make_temp_dir()
-    if clazz.DEBUG:
+  def make_artifact_manager(clazz, debug = False, recipes = None, build_target = None, mutations = None):
+    root_dir = temp_file.make_temp_dir(delete = not debug)
+    if debug:
       print("root_dir:\n%s\n" % (root_dir))
     am = artifact_manager(root_dir)
+    if recipes:
+      mutations = mutations or {}
+      check.check_build_target(build_target)
+      tmp_packages = fake_package_unit_test.create_many_packages(recipes, mutations)
+      for tmp_package in tmp_packages:
+        am.publish(tmp_package, build_target, False)
     return am
   
-  @classmethod
-  def make_loaded_artifact_manager(clazz, recipes, build_target, mutations = {}):
-    am = clazz.make_artifact_manager()
-    tmp_packages = fake_package_unit_test.create_many_packages(recipes, mutations)
-    for tmp_package in tmp_packages:
-      print('DUCK: PUBLISHING: %s' % (str(package(tmp_package).artifact_descriptor)))
-      am.publish(tmp_package, build_target, False)
-    return am
-
   WATER_RECIPE = 'fake_package water 1.0.0 0 0 linux release x86_64 ubuntu 18'
   APPLE_RECIPE = '''fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18
   requirements

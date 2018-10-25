@@ -25,7 +25,7 @@ class test_tools_manager(unit_test):
 
   def test_update(self):
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
-    am = FPUT.make_loaded_artifact_manager(FPUT.TEST_RECIPES, self.TEST_BUILD_TARGET, mutations)
+    am = FPUT.make_artifact_manager(self.DEBUG, FPUT.TEST_RECIPES, self.TEST_BUILD_TARGET, mutations)
     tm = self._make_test_tm()
     packages = [
       package_descriptor.parse('water-1.0.0-0'),

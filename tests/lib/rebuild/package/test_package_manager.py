@@ -5,7 +5,7 @@ import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import file_find, file_util, temp_file
 from bes.system import host
-from rebuild.base import build_target, package_descriptor
+from rebuild.base import build_target as BT, package_descriptor
 from rebuild.pkg_config import pkg_config
 from rebuild.package import artifact_manager, package, package_manager
 from rebuild.package import PackageFilesConflictError, PackageMissingRequirementsError
@@ -16,7 +16,7 @@ from rebuild.package.fake_package_unit_test import fake_package_unit_test as FPU
 
 class test_package_manager(unit_test):
 
-  TEST_BUILD_TARGET = build_target.parse_path('linux-ubuntu-18/x86_64/release')
+  TEST_BUILD_TARGET = BT.parse_path('linux-ubuntu-18/x86_64/release')
 
   ZLIB_CONTENTS = [
     'include/zconf.h',
@@ -134,17 +134,35 @@ fake_package bar 1.0.0 0 0 linux release x86_64 ubuntu 18
     self.assertEqual( 'package apple missing requirements: fiber, fructose, water', context.exception.message )
 
   def test_install_tarball_with_manual_requirements(self):
+    foo_recipe = '''
+fake_package foo 1.0.0 0 0 linux release x86_64 ubuntu 18
+'''
+    bar_recipe = '''
+fake_package bar 1.0.0 0 0 linux release x86_64 ubuntu 18
+  requirements
+    foo >= 1.0.0
+'''
+
+    baz_recipe = '''
+fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
+  requirements
+    bar >= 1.0.0
+'''
+    
     pm = self._make_test_pm_with_am()
-    water_tarball = unit_test_packages.make_water(debug = self.DEBUG)
-    apple_tarball = unit_test_packages.make_apple(debug = self.DEBUG)
-    fructose_tarball = unit_test_packages.make_fructose(debug = self.DEBUG)
-    fiber_tarball = unit_test_packages.make_fiber(debug = self.DEBUG)
-    fruit_tarball = unit_test_packages.make_fruit(debug = self.DEBUG)
-    pm.install_tarball(water_tarball, ['BUILD', 'RUN'])
-    pm.install_tarball(fiber_tarball, ['BUILD', 'RUN'])
-    pm.install_tarball(fructose_tarball, ['BUILD', 'RUN'])
-    pm.install_tarball(fruit_tarball, ['BUILD', 'RUN'])
-    pm.install_tarball(apple_tarball, ['BUILD', 'RUN'])
+    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
+    bt = BT.parse_path('linux-ubuntu-18/x86_64/release')
+    foo_tarball = FPUT.create_one_package(foo_recipe, mutations)
+    bar_tarball = FPUT.create_one_package(bar_recipe, mutations)
+    baz_tarball = FPUT.create_one_package(baz_recipe, mutations)
+
+    pm._artifact_manager.publish(foo_tarball, bt, False)
+    pm._artifact_manager.publish(bar_tarball, bt, False)
+    pm._artifact_manager.publish(baz_tarball, bt, False)
+    
+    pm.install_tarball(foo_tarball, ['BUILD', 'RUN'])
+    pm.install_tarball(bar_tarball, ['BUILD', 'RUN'])
+    pm.install_tarball(baz_tarball, ['BUILD', 'RUN'])
 
   def test_uninstall(self):
     pm = self._make_test_pm_with_am()
@@ -164,16 +182,11 @@ fake_package bar 1.0.0 0 0 linux release x86_64 ubuntu 18
 
   @classmethod
   def _make_test_artifact_manager(clazz):
-    root_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
-    if clazz.DEBUG:
-      print("root_dir:\n%s\n" % (root_dir))
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
-    am = FPUT.make_loaded_artifact_manager(FPUT.TEST_RECIPES, clazz.TEST_BUILD_TARGET, mutations)
-    for x in am.list_all_by_descriptor():
-      print('DUCK LOADED: %s' % (str(x)))
-    #    unit_test_packages.make_test_packages(unit_test_packages.TEST_PACKAGES, am.root_dir)
-#    unit_test_packages.publish_artifacts(am)
-    return am
+    return FPUT.make_artifact_manager(debug = clazz.DEBUG,
+                                      recipes = FPUT.TEST_RECIPES,
+                                      build_target = clazz.TEST_BUILD_TARGET,
+                                      mutations = mutations)
 
   def test_install_package(self):
     pm = self._make_test_pm_with_am()
