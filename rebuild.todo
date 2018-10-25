@@ -900,3 +900,9 @@ rebuild.package.package_manager.PackageFilesConflictError: conflicts found betwe
 
 2018-11-23
 - test_manager.py has no unit tests
+
+2018-11-24
+- change the rebuilder tests in tests/rebuilder from such to something that can be more
+inline data drive like fake package.  somehting like fake recipe that parses and writes recipes
+and only then forks rebuilder.py.  might be tough
+

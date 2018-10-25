@@ -9,7 +9,6 @@ from bes.system import execute
 from rebuild.base import build_target, build_system, build_level, package_descriptor as PD
 from rebuild.package import artifact_manager
 from rebuild.tools_manager import new_tools_manager as TM
-from rebuild.package.unit_test_packages import unit_test_packages
 
 from _rebuild_testing.rebuilder_tester import rebuilder_tester
 
@@ -23,6 +22,8 @@ class test_new_tools_manager(script_unit_test):
 
   TEST_BUILD_TARGET = build_target.parse_path('linux-ubuntu-18/x86_64/release')
 
+  # the approach here is wrong.  dont use the tests of for rebuilder/ in basic
+  # instead use the fake package scheme
   @cached_property
   def artifact_manager(self):
     rt = rebuilder_tester(self._resolve_script(),
