@@ -144,7 +144,6 @@ class artifact_manager(object):
     rm = requirement_manager()
     latest_versions = self.list_all_by_package_descriptor(build_target = build_target).latest_versions()
     for pkg_desc in latest_versions:
-      print('FUCK: adding: %s' % (str(pkg_desc)))
       rm.add_package(pkg_desc)
     self._timer.stop()
     return rm

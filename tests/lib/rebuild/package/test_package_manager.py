@@ -11,10 +11,12 @@ from rebuild.package import artifact_manager, package, package_manager
 from rebuild.package import PackageFilesConflictError, PackageMissingRequirementsError
 from rebuild.package.db_error import *
 from bes.archive import archiver, temp_archive
-from rebuild.package.unit_test_packages import unit_test_packages
 from rebuild.package.fake_package_unit_test import fake_package_unit_test as FPUT
 
 class test_package_manager(unit_test):
+
+  DEBUG = unit_test.DEBUG
+  DEBUG = True
 
   TEST_BUILD_TARGET = BT.parse_path('linux-ubuntu-18/x86_64/release')
 
@@ -27,9 +29,6 @@ class test_package_manager(unit_test):
     'lib/pkgconfig/zlib.pc',
     'share/man/man3/zlib.3',
   ]
-
-  DEBUG = False
-  #DEBUG = True
 
   @classmethod
   def _make_test_pm_with_am(clazz):
@@ -57,22 +56,41 @@ class test_package_manager(unit_test):
     pm.install_tarball(water_tarball, ['BUILD', 'RUN'])
     
   def test_install_tarball_pkg_config(self):
+    recipe = '''
+fake_package libfoo 1.0.0 0 0 linux release x86_64 ubuntu 18
+  files
+    usr/lib/pkgconfig/libfoo.pc
+      prefix=${REBUILD_PACKAGE_PREFIX}
+      exec_prefix=${prefix}
+      libdir=${exec_prefix}/lib
+      includedir=${prefix}/include
+      
+      Name: libfoo
+      Description: libfoo
+      Version: 1.0.0
+      Libs: -L${libdir} -lfoo
+      Libs.private: -lfoo-private
+      Cflags: -I${includedir}
+'''
+
     self.maxDiff = None
     pm = self._make_test_pm_with_am()
-
-    water_tarball = unit_test_packages.make_water()
-    pm.install_tarball(water_tarball, ['BUILD', 'RUN'])
-
+    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
+    tarball = FPUT.create_one_package(recipe, metadata_mutations = mutations, debug = self.DEBUG)
+    pm.install_tarball(tarball, ['BUILD', 'RUN'])
+    self.assertEqual( [ 'libfoo-1.0.0' ], pm.list_all(include_version = True) )
+    
     PKG_CONFIG_PATH = pm.pkg_config_path
-
+    print('PKG_CONFIG_PATH: %s' % (PKG_CONFIG_PATH))
+    
     # list_all
     packages = pkg_config.list_all(PKG_CONFIG_PATH = PKG_CONFIG_PATH)
     # 2 because of the rebbe_ links
     self.assertEqual( 1, len(packages) )
-    self.assertEqual( set(['water']), set([ p[0] for p in packages ]) )
+    self.assertEqual( set(['libfoo']), set([ p[0] for p in packages ]) )
 
     # cflags
-    modules = [ 'water' ]
+    modules = [ 'libfoo' ]
     cflags = pkg_config.cflags(modules, PKG_CONFIG_PATH = PKG_CONFIG_PATH)
     expected_cflags = [
       '-I%s' % (path.join(pm.installation_dir, 'include')),
@@ -80,11 +98,11 @@ class test_package_manager(unit_test):
     self.assertEqual( expected_cflags, cflags )
 
     # libs
-    modules = [ 'water' ]
+    modules = [ 'libfoo' ]
     libs = pkg_config.libs(modules, PKG_CONFIG_PATH = PKG_CONFIG_PATH)
     expected_libs = [
       '-L%s' % (path.join(pm.installation_dir, 'lib')),
-      '-lwater',
+      '-lfoo',
     ]
     self.assertEqual( expected_libs, libs )
 
@@ -118,10 +136,10 @@ fake_package bar 1.0.0 0 0 linux release x86_64 ubuntu 18
   def test_install_tarball_already_installed(self):
     pm = self._make_empty_pm()
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
-    water_tarball = FPUT.create_one_package(FPUT.WATER_RECIPE, mutations)
-    pm.install_tarball(water_tarball, ['BUILD', 'RUN'])
+    tarball = FPUT.create_one_package(FPUT.WATER_RECIPE, mutations)
+    pm.install_tarball(tarball, ['BUILD', 'RUN'])
     with self.assertRaises(AlreadyInstalledError) as context:
-      pm.install_tarball(water_tarball, ['BUILD', 'RUN'])
+      pm.install_tarball(tarball, ['BUILD', 'RUN'])
     self.assertEqual( 'package water already installed', context.exception.message )
 
   def test_install_tarball_missing_requirements(self):
@@ -176,8 +194,8 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
     pm = self._make_empty_pm()
     self.assertFalse( pm.is_installed('water') )
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
-    water_tarball = FPUT.create_one_package(FPUT.WATER_RECIPE, mutations)
-    pm.install_tarball(water_tarball, ['BUILD', 'RUN'])
+    tarball = FPUT.create_one_package(FPUT.WATER_RECIPE, mutations)
+    pm.install_tarball(tarball, ['BUILD', 'RUN'])
     self.assertTrue( pm.is_installed('water') )
     self.assertFalse( pm.is_installed('notthere') )
 

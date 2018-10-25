@@ -14,16 +14,22 @@ class fake_package_unit_test(object):
   DEBUG = False
   
   @classmethod
-  def create_one_package(clazz, recipe, metadata_mutations = {}):
+  def create_one_package(clazz, recipe, metadata_mutations = {}, debug = False):
     recipe = clazz._parse_one_recipe(recipe, metadata_mutations)
-    return recipe.create_package(temp_file.make_temp_file()).filename
+    tmp_file = temp_file.make_temp_file(delete = not debug)
+    if debug:
+      print('tmp_file: %s' % (tmp_file))
+    return recipe.create_package(tmp_file).filename
 
   @classmethod
-  def create_many_packages(clazz, recipe, metadata_mutations = {}):
+  def create_many_packages(clazz, recipe, metadata_mutations = {}, debug = False):
     recipes = clazz._parse_many_recipes(recipe, metadata_mutations)
     result = []
     for r in recipes:
-      result.append(r.create_package(temp_file.make_temp_file()).filename)
+      tmp_file = temp_file.make_temp_file(delete = not debug)
+      if debug:
+        print('tmp_file: %s' % (tmp_file))
+      result.append(r.create_package(tmp_file).filename)
     return result
 
   @classmethod

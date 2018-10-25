@@ -60,8 +60,8 @@ class pkg_config(object):
   # FIXME: add option for more path args
   @classmethod
   def make_pkg_config_path(clazz, root_dir):
-    libdir = path.join(root_dir, 'lib/pkgconfig')
-    sharedir = path.join(root_dir, 'share/pkgconfig')
+    libdir = path.join(root_dir, 'usr/lib/pkgconfig')
+    sharedir = path.join(root_dir, 'usr/share/pkgconfig')
     return [ libdir, sharedir ]
 
   @classmethod
