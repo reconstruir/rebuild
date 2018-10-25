@@ -122,6 +122,11 @@ fake_package smoothie 1.0.0 0 0 linux release x86_64 ubuntu 18
     pear >= 1.2.3 1-0
     apple >= 1.2.3-1
 
+fake_package knife 1.0.0 0 0 linux release x86_64 ubuntu 18
+  files
+    bin/cut.sh
+      \#!/bin/bash
+      echo cut ; exit 0
 
 '''
   
