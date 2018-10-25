@@ -55,7 +55,6 @@ class test_package_manager(unit_test):
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
     water_tarball = FPUT.create_one_package(FPUT.WATER_RECIPE, mutations)
     pm.install_tarball(water_tarball, ['BUILD', 'RUN'])
-    #self.assertEqual( 1, 4 )
     
   def test_install_tarball_pkg_config(self):
     self.maxDiff = None
@@ -174,8 +173,10 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
     self.assertEqual( [], pm.list_all(include_version = True) )
     
   def test_is_installed(self):
-    pm = self._make_test_pm_with_am()
-    water_tarball = unit_test_packages.make_water(debug = self.DEBUG)
+    pm = self._make_empty_pm()
+    self.assertFalse( pm.is_installed('water') )
+    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
+    water_tarball = FPUT.create_one_package(FPUT.WATER_RECIPE, mutations)
     pm.install_tarball(water_tarball, ['BUILD', 'RUN'])
     self.assertTrue( pm.is_installed('water') )
     self.assertFalse( pm.is_installed('notthere') )
