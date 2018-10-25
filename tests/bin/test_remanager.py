@@ -2,20 +2,59 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
+
+from collections import namedtuple
+
 from bes.testing.unit_test import script_unit_test
 from bes.system import os_env, execute
 from bes.fs import file_util, temp_file
 from rebuild.package import artifact_manager
-from rebuild.package.unit_test_packages import unit_test_packages
+from rebuild.package.fake_package_unit_test import fake_package_unit_test as FPUT
+from rebuild.base import build_target as BT
 
 class test_remanager(script_unit_test):
+
+  TEST_BUILD_TARGET = BT.parse_path('linux-ubuntu-18/x86_64/release')
 
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/remanager'
   __script__ = __file__, '../../bin/remanager.py'
 
   DEBUG = False
-#g  DEBUG = True
-  
+#  DEBUG = True
+
+  def test_simple_config(self):
+    tmp_dir = self._make_temp_dir()
+    am = self._make_test_artifact_manager()
+    config = '''
+[common]
+artifacts_dir: /somewhere/not/there
+[test1]
+description: water only
+packages: water
+[test2]
+description: fiber only
+packages: fiber
+'''
+    file_util.save(path.join(tmp_dir, 'config'), content = config)
+    args = [
+      'packages',
+      'update',
+      '--artifacts', am.root_dir,
+      '--root-dir', tmp_dir,
+      'test1'
+    ]
+    rv = self.run_script(args)
+    self.assertEqual( 0, rv.exit_code )
+
+    args = [
+      'packages',
+      'print',
+      '--root-dir', tmp_dir,
+      'test1'
+    ]
+    rv = self.run_script(args)
+    self.assertEqual( [ 'water' ], rv.stdout.split('\n') )
+
   def test_update_first_time(self):
     tmp_dir = self._make_temp_dir()
     am = self._make_test_artifact_manager()
@@ -168,13 +207,19 @@ packages: orange_juice pear_juice
 
   @classmethod
   def _make_test_artifact_manager(clazz):
-    root_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
-    if clazz.DEBUG:
-      print("root_dir:\n%s\n" % (root_dir))
-    am = artifact_manager(root_dir)
-    unit_test_packages.make_test_packages(unit_test_packages.TEST_PACKAGES, am.root_dir)
-    unit_test_packages.publish_artifacts(am)
-    return am
-  
+    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
+    return FPUT.make_artifact_manager(debug = clazz.DEBUG,
+                                      recipes = FPUT.TEST_RECIPES,
+                                      build_target = clazz.TEST_BUILD_TARGET,
+                                      mutations = mutations)
+
+  _setup = namedtuple('_setup', 'tmp_dir, artifact_manager')
+  @classmethod
+  def _setup_test(clazz, config):
+    tmp_dir = self._make_temp_dir()
+    am = self._make_test_artifact_manager()
+    file_util.save(path.join(tmp_dir, 'config'), content = config)
+    return clazz._setup(tmp_dir, am, am)
+    
 if __name__ == '__main__':
   script_unit_test.main()
