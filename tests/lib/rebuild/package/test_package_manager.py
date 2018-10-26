@@ -59,7 +59,7 @@ class test_package_manager(unit_test):
     recipe = '''
 fake_package libfoo 1.0.0 0 0 linux release x86_64 ubuntu 18
   files
-    usr/lib/pkgconfig/libfoo.pc
+    lib/pkgconfig/libfoo.pc
       prefix=${REBUILD_PACKAGE_PREFIX}
       exec_prefix=${prefix}
       libdir=${exec_prefix}/lib

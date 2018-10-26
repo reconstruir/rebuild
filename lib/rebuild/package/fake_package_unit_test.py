@@ -120,7 +120,7 @@ fake_package orange_juice 1.4.5 0 0 linux release x86_64 ubuntu 18
 
 fake_package pear_juice 6.6.6 0 0 linux release x86_64 ubuntu 18
   requirements
-    pear >= 1.2.3 1-0
+    pear >= 1.2.3-1
     
 fake_package smoothie 1.0.0 0 0 linux release x86_64 ubuntu 18
   requirements

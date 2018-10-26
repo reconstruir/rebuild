@@ -23,8 +23,6 @@ class test_remanager(script_unit_test):
 #  DEBUG = True
 
   def test_simple_config(self):
-    tmp_dir = self._make_temp_dir()
-    am = self._make_test_artifact_manager()
     config = '''
 [common]
 artifacts_dir: /somewhere/not/there
@@ -35,12 +33,12 @@ packages: water
 description: fiber only
 packages: fiber
 '''
-    file_util.save(path.join(tmp_dir, 'config'), content = config)
+    test = self._setup_test(config)
     args = [
       'packages',
       'update',
-      '--artifacts', am.root_dir,
-      '--root-dir', tmp_dir,
+      '--artifacts', test.artifact_manager.root_dir,
+      '--root-dir', test.tmp_dir,
       'test1'
     ]
     rv = self.run_script(args)
@@ -49,15 +47,13 @@ packages: fiber
     args = [
       'packages',
       'print',
-      '--root-dir', tmp_dir,
+      '--root-dir', test.tmp_dir,
       'test1'
     ]
     rv = self.run_script(args)
     self.assertEqual( [ 'water' ], rv.stdout.split('\n') )
 
   def test_update_first_time(self):
-    tmp_dir = self._make_temp_dir()
-    am = self._make_test_artifact_manager()
     config = '''
 [common]
 artifacts_dir: /somewhere/not/there
@@ -68,12 +64,12 @@ packages: orange_juice
 description: test2
 packages: apple pear_juice
 '''
-    file_util.save(path.join(tmp_dir, 'config'), content = config)
+    test = self._setup_test(config)
     args = [
       'packages',
       'update',
-      '--artifacts', am.root_dir,
-      '--root-dir', tmp_dir,
+      '--artifacts', test.artifact_manager.root_dir,
+      '--root-dir', test.tmp_dir,
       'test1'
     ]
     rv = self.run_script(args)
@@ -82,15 +78,13 @@ packages: apple pear_juice
     args = [
       'packages',
       'print',
-      '--root-dir', tmp_dir,
+      '--root-dir', test.tmp_dir,
       'test1'
     ]
     rv = self.run_script(args)
     self.assertEqual( [ 'citrus', 'fiber', 'fructose', 'fruit', 'orange', 'orange_juice', 'water' ], rv.stdout.split('\n') )
 
   def test_update_two_times(self):
-    tmp_dir = self._make_temp_dir()
-    am = self._make_test_artifact_manager()
     config = '''
 [common]
 artifacts_dir: /somewhere/not/there
@@ -98,12 +92,12 @@ artifacts_dir: /somewhere/not/there
 description: test1
 packages: orange_juice
 '''
-    file_util.save(path.join(tmp_dir, 'config'), content = config)
+    test = self._setup_test(config)
     args = [
       'packages',
       'update',
-      '--artifacts', am.root_dir,
-      '--root-dir', tmp_dir,
+      '--artifacts', test.artifact_manager.root_dir,
+      '--root-dir', test.tmp_dir,
       'test1'
     ]
     rv = self.run_script(args)
@@ -111,7 +105,7 @@ packages: orange_juice
     args = [
       'packages',
       'print',
-      '--root-dir', tmp_dir,
+      '--root-dir', test.tmp_dir,
       'test1'
     ]
     rv = self.run_script(args)
@@ -123,12 +117,12 @@ artifacts_dir: /somewhere/not/there
 description: test1
 packages: orange_juice pear_juice
 '''
-    file_util.save(path.join(tmp_dir, 'config'), content = config)
+    file_util.save(path.join(test.tmp_dir, 'config'), content = config)
     args = [
       'packages',
       'update',
-      '--artifacts', am.root_dir,
-      '--root-dir', tmp_dir,
+      '--artifacts', test.artifact_manager.root_dir,
+      '--root-dir', test.tmp_dir,
       'test1'
     ]
     rv = self.run_script(args)
@@ -136,15 +130,13 @@ packages: orange_juice pear_juice
     args = [
       'packages',
       'print',
-      '--root-dir', tmp_dir,
+      '--root-dir', test.tmp_dir,
       'test1'
     ]
     rv = self.run_script(args)
     self.assertEqual( [ 'citrus', 'fiber', 'fructose', 'fruit', 'orange', 'orange_juice', 'pear', 'pear_juice', 'water' ], rv.stdout.split('\n') )
 
   def test_update_script(self):
-    tmp_dir = self._make_temp_dir()
-    am = self._make_test_artifact_manager()
     config = '''
 [common]
 artifacts_dir: /somewhere/not/there
@@ -152,12 +144,12 @@ artifacts_dir: /somewhere/not/there
 description: test1
 packages: orange_juice
 '''
-    file_util.save(path.join(tmp_dir, 'config'), content = config)
+    test = self._setup_test(config)
     args = [
       'packages',
       'update',
-      '--artifacts', am.root_dir,
-      '--root-dir', tmp_dir,
+      '--artifacts', test.artifact_manager.root_dir,
+      '--root-dir', test.tmp_dir,
       'test1'
     ]
     rv = self.run_script(args)
@@ -165,7 +157,7 @@ packages: orange_juice
     args = [
       'packages',
       'print',
-      '--root-dir', tmp_dir,
+      '--root-dir', test.tmp_dir,
       'test1'
     ]
     rv = self.run_script(args)
@@ -177,9 +169,9 @@ artifacts_dir: /somewhere/not/there
 description: test1
 packages: orange_juice pear_juice
 '''
-    file_util.save(path.join(tmp_dir, 'config'), content = config)
+    file_util.save(path.join(test.tmp_dir, 'config'), content = config)
     cmd = [
-      path.join(tmp_dir, 'update.sh'),
+      path.join(test.tmp_dir, 'update.sh'),
       'test1'
     ]
     env = os_env.make_clean_env(keep_keys = [ 'PYTHONPATH' ],
@@ -191,7 +183,7 @@ packages: orange_juice pear_juice
     args = [
       'packages',
       'print',
-      '--root-dir', tmp_dir,
+      '--root-dir', test.tmp_dir,
       '--system', 'linux',
       '--level', 'release',
       'test1'
@@ -199,9 +191,10 @@ packages: orange_juice pear_juice
     rv = self.run_script(args)
     self.assertEqual( [ 'citrus', 'fiber', 'fructose', 'fruit', 'orange', 'orange_juice', 'pear', 'pear_juice', 'water' ], rv.stdout.split('\n') )
 
-  def _make_temp_dir(self):
-    tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
-    if self.DEBUG:
+  @classmethod
+  def _make_temp_dir(clazz):
+    tmp_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
+    if clazz.DEBUG:
       print("tmp_dir: ", tmp_dir)
     return tmp_dir
 
@@ -216,10 +209,10 @@ packages: orange_juice pear_juice
   _setup = namedtuple('_setup', 'tmp_dir, artifact_manager')
   @classmethod
   def _setup_test(clazz, config):
-    tmp_dir = self._make_temp_dir()
-    am = self._make_test_artifact_manager()
+    tmp_dir = clazz._make_temp_dir()
+    am = clazz._make_test_artifact_manager()
     file_util.save(path.join(tmp_dir, 'config'), content = config)
-    return clazz._setup(tmp_dir, am, am)
+    return clazz._setup(tmp_dir, am)
     
 if __name__ == '__main__':
   script_unit_test.main()
