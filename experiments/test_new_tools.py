@@ -3,16 +3,17 @@
 from rebuild.package import artifact_manager
 from rebuild.tools_manager import new_tools_manager
 from rebuild.base import build_target, build_version, package_descriptor
+from rebuild.package.fake_package_unit_test import fake_package_unit_test as FPUT
 
 def main():
   bt = build_target.make_host_build_target()
-  am = artifact_manager('/home/ramiro/proj/third_party/BUILD/artifacts')
-
+  mutations = bt.to_dict()
+  del mutations['build_path']
+  am = FPUT.make_artifact_manager(debug = False, recipes = FPUT.TEST_RECIPES, build_target = bt,
+                                  mutations = mutations)
   wanted =  [
-    package_descriptor('gnu_automake', '1.15'),
-    package_descriptor('cython', '0.23.4'),
-    package_descriptor('swig', '3.0.12'),
-    package_descriptor('gnu_bison', '3.0.4'),
+    package_descriptor('orange_juice', '1.4.5'),
+    package_descriptor('smoothie', '1.0.0'),
    ]
   
   tm = new_tools_manager('/tmp/new_tools', am)

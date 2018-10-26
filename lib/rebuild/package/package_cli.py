@@ -3,32 +3,53 @@
 
 import argparse, os.path as path
 from bes.key_value import key_value_list
-from rebuild.package import package
 from bes.unix import terminal
 from bes.compat import StringIO
 from bes.text import text_fit
+
+from .artifact_manager import artifact_manager
+from .package import package
+from .package_manager import package_manager
 
 class package_cli(object):
 
   def __init__(self):
     self.parser = argparse.ArgumentParser()
-    subparsers = self.parser.add_subparsers(help = 'commands', dest = 'command')
+    self.commands_subparser = self.parser.add_subparsers(help = 'commands',
+                                                         dest = 'command')
+    # file:
+    self.file_parser = self.commands_subparser.add_parser('file', help = 'File')
+    self.file_subparsers = self.file_parser.add_subparsers(help = 'file commands', dest = 'subcommand')
 
-    # Metadata
-    metadata_parser = subparsers.add_parser('metadata', help = 'Print archive metadata')
+    # file:metadata
+    metadata_parser = self.file_subparsers.add_parser('metadata', help = 'Metadata tools')
     metadata_parser.add_argument('filename', action = 'store', help = 'The archive')
     metadata_parser.add_argument('--raw', '-r', action = 'store_true', help = 'Print the raw metadata')
     metadata_parser.add_argument('--checksums', '-c', action = 'store_true', help = 'Print file checksums')
 
+    # db:
+    self.db_parser = self.commands_subparser.add_parser('db', help = 'Db')
+    self.db_subparsers = self.db_parser.add_subparsers(help = 'db commands', dest = 'subcommand')
+
+    # db:print
+    print_parser = self.db_subparsers.add_parser('print', help = 'DB tools')
+    print_parser.add_argument('filename', action = 'store', help = 'The db filename')
+
   def main(self):
     args = self.parser.parse_args()
-    if args.command == 'metadata':
-      return self._command_metadata(args.filename, args.raw, args.checksums)
+    subcommand = getattr(args, 'subcommand', None)
+    if subcommand:
+      args.command = '%s:%s' % (args.command, subcommand)
+
+    if args.command == 'file:metadata':
+      return self._command_file_metadata(args.filename, args.raw, args.checksums)
+    elif args.command == 'db:print':
+      return self._command_db_print(args.filename)
     else:
       raise RuntimeError('Unknown command: %s' % (args.command))
     return 0
 
-  def _command_metadata(self, filename, raw, checksums):
+  def _command_file_metadata(self, filename, raw, checksums):
     p = package(filename)
     if raw:
       print(p.raw_metadata)
@@ -84,6 +105,13 @@ class package_cli(object):
     else:
       buf.write(message)
     return buf.getvalue().rstrip()
+
+  def _command_db_print(self, filename):
+    am = artifact_manager('/tmp/doo')
+    pm = package_manager(filename, am)
+    for p in pm.list_all(include_version = True):
+      print(str(p))
+    return 0
   
   @classmethod
   def run(clazz):

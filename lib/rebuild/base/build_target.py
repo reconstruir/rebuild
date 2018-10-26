@@ -56,12 +56,7 @@ class build_target(namedtuple('build_target', 'system, distro, distro_version, a
     return build_system.is_mobile(self.system)
 
   def to_dict(self):
-    return {
-      'system': self.system,
-      'archs': self.archs,
-      'level': self.level,
-      'distro': self.distro,
-    }
+    return self._asdict()
 
   @property
   def binary_format(self):

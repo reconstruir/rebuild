@@ -19,9 +19,9 @@ class artifact_cli(build_target_cli):
     db_parser = subparsers.add_parser('query', help = 'Query the artifacts db')
     db_parser.add_argument('--db', action = 'store', default = self.DEFAULT_DB, help = 'The artifacts db')
     db_parser.add_argument('--metadata', '-m', action = 'store_true', help = 'Load metadata')
-    db_parser.add_argument('--descriptor', '-d', action = 'store_true', help = 'Load descriptors')
+    db_parser.add_argument('--descriptor', action = 'store_true', help = 'Load descriptors')
     db_parser.add_argument('--name', '-n', action = 'store', default = None, help = 'Name to query')
-    self.build_target_add_arguments(db_parser, True)
+    self.build_target_add_arguments(db_parser)
     
   def main(self):
     self.args = self.parser.parse_args()

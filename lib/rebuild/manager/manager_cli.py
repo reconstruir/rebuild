@@ -26,10 +26,10 @@ class manager_cli(build_target_cli):
   def __init__(self):
     log.add_logging(self, 'remanage')
     self.parser = argparse.ArgumentParser()
-    self.commands_subparser = self.parser.add_subparsers(help = 'commands',
+    commands_subparser = self.parser.add_subparsers(help = 'commands',
                                                          dest = 'command')
     # A tool command
-    self.tools_parser = self.commands_subparser.add_parser('tools', help = 'Tools')
+    self.tools_parser = commands_subparser.add_parser('tools', help = 'Tools')
     self.tools_subparsers = self.tools_parser.add_subparsers(help = 'tools_commands', dest = 'subcommand')
 
     self.tools_subparsers.add_parser('update', help = 'Update installed tools')
@@ -42,7 +42,7 @@ class manager_cli(build_target_cli):
 
 
     # packages
-    self.packages_parser = self.commands_subparser.add_parser('packages', help = 'Packages')
+    self.packages_parser = commands_subparser.add_parser('packages', help = 'Packages')
     self.packages_subparsers = self.packages_parser.add_subparsers(help = 'packages_commands', dest = 'subcommand')
 
     self.packages_subparsers.add_parser('update', help = 'Update installed packages')
@@ -124,7 +124,7 @@ class manager_cli(build_target_cli):
                               help = 'Project name [ None ]')
 
     # package
-    self.package_parser = self.commands_subparser.add_parser('package', help = 'package')
+    self.package_parser = commands_subparser.add_parser('package', help = 'package')
     self.package_subparsers = self.package_parser.add_subparsers(help = 'package_commands', dest = 'subcommand')
 
     # package.files
@@ -140,7 +140,7 @@ class manager_cli(build_target_cli):
     package_metadata_parser.add_argument('package', action = 'store', help = 'package to list metadata for')
     
     # config
-    self.config_parser = self.commands_subparser.add_parser('config', help = 'Config')
+    self.config_parser = commands_subparser.add_parser('config', help = 'Config')
     self.config_subparsers = self.config_parser.add_subparsers(help = 'config_commands', dest = 'subcommand')
 
     self.config_subparsers.add_parser('packages', help = 'Print config packages')
@@ -154,7 +154,7 @@ class manager_cli(build_target_cli):
                                  help = 'Name of project [ None ]')
 
     # test
-    self.test_parser = self.commands_subparser.add_parser('test', help = 'Test')
+    self.test_parser = commands_subparser.add_parser('test', help = 'Test')
     self.test_parser.add_argument('-v', '--verbose', action = 'store_true')
     self.test_parser.add_argument('-l', '--level', action = 'store', type = str, default = 'release',
                                   help = 'Build level.  One of (%s) [ release ]' % (','.join(build_level.LEVELS)))
