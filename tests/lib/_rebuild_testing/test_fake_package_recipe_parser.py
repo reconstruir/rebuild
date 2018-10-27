@@ -3,12 +3,12 @@
 
 from os import path
 from bes.testing.unit_test import unit_test
-from rebuild.package.fake_package_recipe import fake_package_recipe as R
-from rebuild.package.fake_package_recipe_parser import fake_package_recipe_parser as P
 from rebuild.package import artifact_descriptor as AD
 from rebuild.base import requirement_list as RL
 
 from bes.fs import temp_file, temp_item
+
+from _rebuild_testing.fake_package_recipe_parser import fake_package_recipe as R, fake_package_recipe_parser as P
 
 class test_fake_package_recipe_parser(unit_test):
 

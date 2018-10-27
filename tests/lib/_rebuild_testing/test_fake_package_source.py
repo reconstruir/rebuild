@@ -2,9 +2,10 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from rebuild.package.fake_package_source import fake_package_source as S
 
 from bes.fs import temp_file, temp_item
+
+from _rebuild_testing.fake_package_source import fake_package_source as S
 
 class test_fake_package_source(unit_test):
 

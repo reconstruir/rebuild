@@ -93,22 +93,33 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
     bin/cut.exe
       sources
         main.c
-          \#include <stdio.h>
           int main(int argc, char* argv[]) {
             char* arg;
             if (argc < 2) {
-              fprintf(stderr, "Usage: cut.exe args\n");
+              fprintf(stderr, "Usage: cut.exe args\\n");
               return 1;
             }
-            fprintf(stdout, "cut.exe:");
-            for(arg = argv[1]; arg != NULL; arg++) {
-              fprintf(stdout, "%s", arg);
-            }
-            fprintf(stdout, "\n");
-            return 0;
-          }
+
 '''
-    
+###  c_program
+###    bin/cut.exe
+###      sources
+###        main.c
+###          \#include <stdio.h>
+###          int main(int argc, char* argv[]) {
+###            char* arg;
+###            if (argc < 2) {
+###              fprintf(stderr, "Usage: cut.exe args\n");
+###              return 1;
+###            }
+###            fprintf(stdout, "cut.exe:");
+###            for(arg = argv[1]; arg != NULL; arg++) {
+###              fprintf(stdout, "%s", arg);
+###            }
+###            fprintf(stdout, "\n");
+###            return 0;
+###          }
+  
   x_RECIPES = '''
 fake_package knife 1.0.0 0 0 linux release x86_64 ubuntu 18
   files

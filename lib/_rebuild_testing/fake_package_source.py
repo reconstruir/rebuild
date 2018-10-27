@@ -18,10 +18,10 @@ class fake_package_source(namedtuple('fake_package_source', 'filename, source_co
     return self.to_string()
 
   def to_string(self, depth = 0, indent = 2):
-    s = self._to_node().to_string(depth = depth, indent = indent).strip()
+    s = self.to_node().to_string(depth = depth, indent = indent).strip()
     return white_space.shorten_multi_line_spaces(s)
   
-  def _to_node(self):
+  def to_node(self):
     'A convenient way to make a string is to build a graph first.'
     root = node(self.filename)
     for line in self.source_code.split('\n'):
@@ -30,3 +30,5 @@ class fake_package_source(namedtuple('fake_package_source', 'filename, source_co
 
   def compile(self, object):
     assert False
+
+check.register_class(fake_package_source)
