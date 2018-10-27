@@ -906,3 +906,7 @@ rebuild.package.package_manager.PackageFilesConflictError: conflicts found betwe
 inline data drive like fake package.  somehting like fake recipe that parses and writes recipes
 and only then forks rebuilder.py.  might be tough
 
+2018-11-27
+- when parsing fake recipes checks when nodes are NOT supposed to have children
+
+

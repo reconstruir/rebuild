@@ -10,10 +10,11 @@ from bes.debug import debug_timer
 
 class new_tools_manager(object):
 
-  def __init__(self, root_dir, artifact_manager):
+  def __init__(self, root_dir, build_target, artifact_manager):
     check.check_string(root_dir)
+    check.check_build_target(build_target)
     check.check_artifact_manager(artifact_manager)
-    self._build_target = build_target.make_host_build_target()
+    self._build_target = build_target
     self._root_dir = root_dir
     self._artifact_manager = artifact_manager
     self._timer = debug_timer('tm', level = 'error')

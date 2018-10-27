@@ -9,6 +9,7 @@ from bes.system import execute
 from rebuild.base import build_target, build_system, build_level, package_descriptor as PD
 from rebuild.package import artifact_manager
 from rebuild.tools_manager import new_tools_manager as TM
+from rebuild.package.fake_package_unit_test import fake_package_unit_test as FPUT
 
 from _rebuild_testing.rebuilder_tester import rebuilder_tester
 
@@ -22,46 +23,36 @@ class test_new_tools_manager(script_unit_test):
 
   TEST_BUILD_TARGET = build_target.parse_path('linux-ubuntu-18/x86_64/release')
 
-  # the approach here is wrong.  dont use the tests of for rebuilder/ in basic
-  # instead use the fake package scheme
-  @cached_property
-  def artifact_manager(self):
-    rt = rebuilder_tester(self._resolve_script(),
-                          path.join(self.data_dir(), 'basic'),
-                          path.normpath(path.join(self.data_dir(), '../sources')),
-                          build_level.RELEASE,
-                          debug = self.DEBUG)
-    config = rebuilder_tester.config(bt = self.TEST_BUILD_TARGET)
-    rv = rt.run(rebuilder_tester.config(), 'tfoo', 'tbar', 'tbaz')
-    am_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
-    if self.DEBUG:
-      print('\nartifact_manager dir:\n%s' % (am_dir))
-    am = artifact_manager(am_dir)
-    for artifact in rv.artifacts:
-      am.publish(path.join(rv.artifacts_dir, artifact), self.TEST_BUILD_TARGET, False)
-    return am
+  @classmethod
+  def _make_test_artifact_manager(clazz):
+    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
+    return FPUT.make_artifact_manager(debug = clazz.DEBUG,
+                                      recipes = clazz._RECIPES,
+                                      build_target = clazz.TEST_BUILD_TARGET,
+                                      mutations = mutations)
   
   def _make_test_tm(self):
     root_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     tools_dir = path.join(root_dir, 'tools')
+    am = self._make_test_artifact_manager()
     if self.DEBUG:
       print('\ntools_manager dir:\n%s' % (tools_dir))
-    return TM(tools_dir, self.artifact_manager)
+    return TM(tools_dir, self.TEST_BUILD_TARGET, am)
 
   def test_ensure_tool(self):
     tm = self._make_test_tm()
-    tfoo = PD.parse('tfoo-1.0.0')
-    tm.ensure_tool(tfoo)
-    self.assertTrue( path.exists(tm.tool_exe(tfoo, 'tfoo.py')) )
+    knife_desc = PD.parse('knife-6.6.6')
+    tm.ensure_tool(knife_desc)
+    self.assertTrue( path.exists(tm.tool_exe(knife_desc, 'cut.sh')) )
     
   def test_use_tool(self):
     tm = self._make_test_tm()
-    tfoo = PD.parse('tfoo-1.0.0')
-    tm.ensure_tool(tfoo)
-    exe = tm.tool_exe(tfoo, 'tfoo.py')
+    knife_desc = PD.parse('knife-6.6.6')
+    tm.ensure_tool(knife_desc)
+    exe = tm.tool_exe(knife_desc, 'cut.sh')
     rv = execute.execute([ exe, 'a', 'b', '666' ])
     self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( 'tfoo: a b 666', rv.stdout.strip() )
+    self.assertEqual( 'cut: a b 666', rv.stdout.strip() )
 
   def xtest_one_tool_env(self):
     tm = self._make_test_tm()
@@ -91,7 +82,51 @@ class test_new_tools_manager(script_unit_test):
     env = tm.transform_env(tfoo, {})
     self.assertEqual( 'tfoo_env1', env['TFOO_ENV1'] )
     self.assertEqual( 'tfoo_env2', env['TFOO_ENV2'] )
+
+  _RECIPES = '''
+fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
+  files
+    bin/cut.sh
+     \#!/bin/sh
+     echo cut: ${1+"$@"} ; exit 0
+'''
     
-    
+  x_RECIPES = '''
+fake_package knife 1.0.0 0 0 linux release x86_64 ubuntu 18
+  files
+    bin/cut.sh
+     \#!/bin/bash
+      echo cut: ${1+"$@"}; exit 0
+###    static_c_library
+###      headers
+###        libknife/knife.h
+###          \#ifndef __KNIFE_H__
+###          \#define __KNIFE_H__
+###          extern int cut(int depth);
+###          \#endif /* __KNIFE_H__ */
+###      sources
+###        knife.c
+###          \#include <libknife/knife.h>
+###          int cut(int depth) {
+###            if (depth < 0 or depth > 10) {
+###              fprintf(stderr, "Invalid depth: %d\n", depth);
+###              return 1;
+###            }
+###            printf("cut depth %d\n", depth);
+###            return 0;
+###          }
+###    c_program
+###      bin/cut.exe
+###        \#include <libknife/knife.h>
+###        \#include <stdio.h>
+###        int main(int argc, char* argv[]) {
+###          if (argc != 2) {
+###            fprintf(stderr, "Usage: cut.exe depth\n");
+###            return 1;
+###          }
+###          return cut(depth);
+###        }
+'''
+  
 if __name__ == '__main__':
   script_unit_test.main()
