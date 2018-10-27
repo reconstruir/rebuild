@@ -5,7 +5,7 @@ from bes.testing.unit_test import unit_test
 from bes.fs import temp_file
 from rebuild.base import build_version, package_descriptor, requirement, requirement_list
 from rebuild.package.package import package
-from rebuild.unit_testing.fake_package_unit_test import fake_package_unit_test
+from _rebuild_testing.fake_package_unit_test import fake_package_unit_test
 
 class test_package(unit_test):
 

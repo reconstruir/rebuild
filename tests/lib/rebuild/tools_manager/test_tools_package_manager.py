@@ -9,7 +9,7 @@ from bes.system import execute
 from rebuild.package import artifact_manager
 from rebuild.base import build_target, package_descriptor
 from rebuild.tools_manager import tools_package_manager
-from rebuild.unit_testing.fake_package_unit_test import fake_package_unit_test as FPUT
+from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT
 from rebuild.base import build_target as BT
 
 class test_tools_package_manager(unit_test):

@@ -3,7 +3,7 @@
 from rebuild.package import artifact_manager
 from rebuild.tools_manager import new_tools_manager
 from rebuild.base import build_target, build_version, package_descriptor
-from rebuild.unit_testing.fake_package_unit_test import fake_package_unit_test as FPUT
+from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT
 
 def main():
   bt = build_target.make_host_build_target()
