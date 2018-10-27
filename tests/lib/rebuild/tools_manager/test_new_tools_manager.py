@@ -52,7 +52,7 @@ class test_new_tools_manager(script_unit_test):
     exe = tm.tool_exe(knife_desc, 'cut.sh')
     rv = execute.execute([ exe, 'a', 'b', '666' ])
     self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( 'cut: a b 666', rv.stdout.strip() )
+    self.assertEqual( 'cut.sh: a b 666', rv.stdout.strip() )
 
   def xtest_one_tool_env(self):
     tm = self._make_test_tm()
@@ -88,7 +88,25 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
   files
     bin/cut.sh
      \#!/bin/sh
-     echo cut: ${1+"$@"} ; exit 0
+     echo cut.sh: ${1+"$@"} ; exit 0
+  c_program
+    bin/cut.exe
+      sources
+        main.c
+          \#include <stdio.h>
+          int main(int argc, char* argv[]) {
+            char* arg;
+            if (argc < 2) {
+              fprintf(stderr, "Usage: cut.exe args\n");
+              return 1;
+            }
+            fprintf(stdout, "cut.exe:");
+            for(arg = argv[1]; arg != NULL; arg++) {
+              fprintf(stdout, "%s", arg);
+            }
+            fprintf(stdout, "\n");
+            return 0;
+          }
 '''
     
   x_RECIPES = '''
@@ -115,17 +133,6 @@ fake_package knife 1.0.0 0 0 linux release x86_64 ubuntu 18
 ###            printf("cut depth %d\n", depth);
 ###            return 0;
 ###          }
-###    c_program
-###      bin/cut.exe
-###        \#include <libknife/knife.h>
-###        \#include <stdio.h>
-###        int main(int argc, char* argv[]) {
-###          if (argc != 2) {
-###            fprintf(stderr, "Usage: cut.exe depth\n");
-###            return 1;
-###          }
-###          return cut(depth);
-###        }
 '''
   
 if __name__ == '__main__':

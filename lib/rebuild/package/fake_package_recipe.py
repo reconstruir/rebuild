@@ -83,45 +83,6 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
     value = properties[key]
     properties_node.children.append(node('%s=%s' % (key, value)))
 
-  @classmethod
-  def _system_specific_property_to_node(clazz, key, properties):
-    assert key in properties
-    value = properties[key]
-    assert isinstance(value, list)
-    child = node(key)
-    for i in value:
-      child.add_child(i)
-    return child
-
-  @classmethod
-  def _steps_to_node(clazz, steps):
-    result = node('steps')
-    for step in steps:
-      step_node = result.add_child(step.name)
-      for value in step.values:
-        if len(value.values) == 1 and value.values[0].mask is None:
-          step_node.add_child(str(value))
-        else:
-          value_node = step_node.add_child(value.key)
-          for masked_value in value.values:
-            masked_value_node = value_node.add_child(masked_value.to_string(quote = False))
-      result.add_child('')
-    return result
-
-  @classmethod
-  def _masked_value_list_to_node(clazz, key, mvl):
-    result = node(key)
-    for mv in mvl:
-      result.add_child(mv.to_string())
-    return result
-
-  @classmethod
-  def _load_to_node(clazz, load):
-    result = node('load')
-    for l in load:
-      result.add_child(l)
-    return result
-
   def create_package(self, filename):
     tmp_dir = temp_file.make_temp_dir()
     files_dir = path.join(tmp_dir, 'files')
