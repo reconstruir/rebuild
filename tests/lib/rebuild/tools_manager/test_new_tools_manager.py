@@ -9,7 +9,7 @@ from bes.system import execute
 from rebuild.base import build_target, build_system, build_level, package_descriptor as PD
 from rebuild.package import artifact_manager
 from rebuild.tools_manager import new_tools_manager as TM
-from rebuild.package.fake_package_unit_test import fake_package_unit_test as FPUT
+from rebuild.unit_testing.fake_package_unit_test import fake_package_unit_test as FPUT
 
 from _rebuild_testing.rebuilder_tester import rebuilder_tester
 

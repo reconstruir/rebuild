@@ -11,7 +11,7 @@ from rebuild.package import artifact_manager, package, package_manager
 from rebuild.package import PackageFilesConflictError, PackageMissingRequirementsError
 from rebuild.package.db_error import *
 from bes.archive import archiver, temp_archive
-from rebuild.package.fake_package_unit_test import fake_package_unit_test as FPUT
+from rebuild.unit_testing.fake_package_unit_test import fake_package_unit_test as FPUT
 
 class test_package_manager(unit_test):
 

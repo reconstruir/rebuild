@@ -7,7 +7,7 @@ from bes.text import white_space
 from bes.fs import file_util, temp_file
 
 from rebuild.base import package_descriptor
-from .package import package
+from rebuild.package import package
 
 class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, env_files, requirements, properties')):
   'Class to describe a fake package.  Fake packages are use for unit testing.'

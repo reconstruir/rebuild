@@ -8,9 +8,9 @@ from bes.compat import StringIO
 from bes.text import string_list, tree_text_parser
 
 from rebuild.base import requirement_list
+from rebuild.package import artifact_descriptor
 
 from .fake_package_recipe import fake_package_recipe
-from .artifact_descriptor import artifact_descriptor
 
 class fake_package_recipe_parser_error(Exception):
   def __init__(self, message, filename, line_number):

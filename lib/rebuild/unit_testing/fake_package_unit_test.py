@@ -6,8 +6,7 @@ from bes.common import check
 
 from .fake_package_recipe_parser import fake_package_recipe_parser
 from .fake_package_recipe import fake_package_recipe
-from .artifact_manager import artifact_manager
-from .package import package
+from rebuild.package import artifact_manager, package
 
 class fake_package_unit_test(object):
 

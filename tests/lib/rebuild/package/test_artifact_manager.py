@@ -7,7 +7,7 @@ from bes.fs import temp_file
 from rebuild.base import build_target, package_descriptor as PD
 from rebuild.package import artifact_manager, artifact_descriptor as AD
 from rebuild.package.db_error import *
-from rebuild.package.fake_package_unit_test import fake_package_unit_test as FPUT
+from rebuild.unit_testing.fake_package_unit_test import fake_package_unit_test as FPUT
 from rebuild.package import artifact_descriptor as AD
 
 class test_artifact_manager(unit_test):
