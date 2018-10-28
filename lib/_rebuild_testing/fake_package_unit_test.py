@@ -10,8 +10,6 @@ from rebuild.package import artifact_manager, package
 
 class fake_package_unit_test(object):
 
-  DEBUG = False
-  
   @classmethod
   def create_one_package(clazz, recipe, metadata_mutations = {}, debug = False):
     recipe = clazz._parse_one_recipe(recipe, metadata_mutations)
