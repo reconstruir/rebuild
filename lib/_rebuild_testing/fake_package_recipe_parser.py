@@ -11,6 +11,9 @@ from rebuild.base import requirement_list
 from rebuild.package import artifact_descriptor
 
 from .fake_package_recipe import fake_package_recipe
+from .fake_package_source import fake_package_source
+from .fake_package_recipe_parser_util import fake_package_recipe_parser_util
+from .fake_package_binary_object import fake_package_binary_object
 
 class fake_package_recipe_parser_error(Exception):
   def __init__(self, message, filename, line_number):
@@ -75,6 +78,10 @@ class fake_package_recipe_parser(object):
     properties_node = node.find_child_by_text('properties')
     if properties_node:
       properties = self._parse_properties(properties_node)
+    c_program_node = node.find_child_by_text('c_program')
+    if c_program_node:
+      c_programs = self._parse_binary_objects(c_program_node)
+      print('FUCK: %s' % (str(c_programs)))
     return fake_package_recipe(metadata, files, env_files, requirements, properties)
 
   def _parse_metadata(self, node):
@@ -122,3 +129,21 @@ class fake_package_recipe_parser(object):
       next_reqs = requirement_list.parse(req_text)
       reqs.extend(next_reqs)
     return requirement_list(reqs)
+
+  def _parse_binary_objects(self, node):
+    result = []
+    for child in node.children:
+      filename = child.data.text
+      bo = self._parse_binary_object(child)
+      result.append(bo)
+    return result
+
+  def _parse_binary_object(self, node):
+    sources = []
+    binary_object_filename = node.data.text
+    sources_node = node.find_child_by_text('sources')
+    if sources_node:
+      for source_child in sources_node.children:
+        source = fake_package_source.parse_node(source_child)
+        sources.append(source)
+    return fake_package_binary_object(node.data.text, sources, [])
