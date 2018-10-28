@@ -78,11 +78,11 @@ class fake_package_recipe_parser(object):
     properties_node = node.find_child_by_text('properties')
     if properties_node:
       properties = self._parse_properties(properties_node)
+    objects = {}
     c_program_node = node.find_child_by_text('c_program')
     if c_program_node:
-      c_programs = self._parse_binary_objects(c_program_node)
-      print('FUCK: %s' % (str(c_programs)))
-    return fake_package_recipe(metadata, files, env_files, requirements, properties)
+      objects['c_programs'] = self._parse_binary_objects(c_program_node)
+    return fake_package_recipe(metadata, files, env_files, requirements, properties, objects)
 
   def _parse_metadata(self, node):
     parts = string_util.split_by_white_space(node.data.text, strip = True)

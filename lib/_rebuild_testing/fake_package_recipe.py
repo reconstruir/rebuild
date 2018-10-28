@@ -9,10 +9,10 @@ from bes.fs import file_util, temp_file
 from rebuild.base import package_descriptor
 from rebuild.package import package
 
-class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, env_files, requirements, properties')):
+class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, env_files, requirements, properties, objects')):
   'Class to describe a fake package.  Fake packages are use for unit testing.'
   
-  def __new__(clazz, metadata, files, env_files, requirements, properties):
+  def __new__(clazz, metadata, files, env_files, requirements, properties, objects):
     files = files or []
     env_files = env_files or []
     requirements = requirements or []
@@ -22,7 +22,9 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
     check.check_temp_item_seq(env_files)
     check.check_requirement_list(requirements)
     check.check_dict(properties)
-    return clazz.__bases__[0].__new__(clazz, metadata, files, env_files, requirements, properties)
+    objects = objects or {}
+    check.check_dict(objects)
+    return clazz.__bases__[0].__new__(clazz, metadata, files, env_files, requirements, properties, objects)
 
   def __str__(self):
     return self.to_string()
@@ -99,4 +101,4 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
 
   def clone_with_mutations(self, metadata_mutations):
     metadata = self.metadata.clone_with_mutations(metadata_mutations)
-    return self.__class__(metadata, self.files, self.env_files, self.requirements, self.properties)
+    return self.__class__(metadata, self.files, self.env_files, self.requirements, self.properties, self.objects)
