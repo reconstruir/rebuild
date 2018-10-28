@@ -96,21 +96,13 @@ class fake_package_recipe_parser(object):
     return [ self._parse_file(child) for child in node.children ]
 
   def _parse_file(self, node):
-    filename = node.data.text
-    content = '\n'.join(self._parse_node_children_to_string_list(node)) + '\n'
+    filename, content = fake_package_recipe_parser_util.parse_file(node)
     if file_util.extension(filename) in [ 'sh', 'py' ]:
       mode = 0o755
     else:
       mode = 0o644
     return temp_item(filename, content, mode)
 
-  @classmethod
-  def _parse_node_children_to_string_list(clazz, node):
-    result = string_list()
-    for child in node.children:
-      result.append(child.data.text)
-    return result
-  
   def _parse_properties(self, node):
     properties = {}
     for child in node.children:
