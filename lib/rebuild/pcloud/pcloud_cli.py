@@ -299,7 +299,7 @@ class pcloud_cli(object):
     if use_id:
       checksum = self._pcloud.checksum_file(file_id = filename)
     else:
-      checksum = self._pcloud.checksum_file(ile_path = filename)
+      checksum = self._pcloud.checksum_file(file_path = filename)
     print(checksum)
     return 0
 
