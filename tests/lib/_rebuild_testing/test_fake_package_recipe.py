@@ -86,7 +86,7 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
           \#include <libfoo_static.h>
           \#include <stdio.h>
           int main() {
-            printf("%d\\n", FOO_STATIC_MAGIC_NUMBER);
+            printf("%d\\n", foo_static(10));
             return 0;
           }
       ldflags
@@ -97,7 +97,7 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
           \#include <libfoo_shared.h>
           \#include <stdio.h>
           int main() {
-            printf("%d\\n", FOO_SHARED_MAGIC_NUMBER);
+            printf("%d\\n", foo_shared(20));
             return 0;
           }
       ldflags
