@@ -88,7 +88,7 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
             return x + 1;
           }
       headers
-        foo.h
+        include/libfoo.h
           \#ifndef __FOO_H__
           \#define __FOO_H__
           extern int foo(int x);
@@ -96,21 +96,21 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
   shared_c_libs
     lib/libfoo.so
       sources
-        foo.c
-          int foo(int x) {
+        foo2.c
+          int foo2(int x) {
             return x + 1;
           }
       headers
-        foo.h
-          \#ifndef __FOO_H__
-          \#define __FOO_H__
-          extern int foo(int x);
-          \#endif /* __FOO_H__ */
+        include/libfoo2.h
+          \#ifndef __FOO2_H__
+          \#define __FOO2_H__
+          extern int foo2(int x);
+          \#endif /* __FOO2_H__ */
 
 '''
 
     tmp = temp_file.make_temp_file(suffix = '.tar.gz', delete = not self.DEBUG)
-    filename, metadata = self._parse(recipe)[0].create_package(tmp)
+    filename, metadata = self._parse(recipe)[0].create_package(tmp, debug = self.DEBUG)
     if self.DEBUG:
       print('tmp:\n%s' % (tmp))
 
@@ -118,6 +118,8 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
     self.assertEqual( [
       'files/bin/cut.exe',
       'files/bin/cut.sh',
+      'files/include/libfoo.h',
+      'files/include/libfoo2.h',
       'files/lib/libfoo.a',
       'files/lib/libfoo.so',
       'metadata/metadata.json',
@@ -127,6 +129,8 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
     self.assertEqual( [
       'bin/cut.exe',
       'bin/cut.sh',
+      'include/libfoo.h',
+      'include/libfoo2.h',
       'lib/libfoo.a',
       'lib/libfoo.so',
     ], p.files )

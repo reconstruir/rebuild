@@ -6,6 +6,10 @@ from bes.common import check, node
 from bes.text import white_space
 from bes.fs import file_util
 
+from collections import namedtuple
+
+from .fake_package_source import fake_package_source
+
 class fake_package_binary_object(namedtuple('fake_package_binary_object', 'filename, sources, headers')):
   'Class to describe fake source code for a package.'
   
@@ -37,13 +41,40 @@ class fake_package_binary_object(namedtuple('fake_package_binary_object', 'filen
 
   def compile(self, object):
     assert False
-    
+
+  _written_source = namedtuple('_written_source', 'filename, path, source_code')
   def write_files(self, where):
     sources = []
     headers = []
     root_dir = path.join(where, self.filename)
+
     for source in self.sources:
-      sources.append(source.write(root_dir))
+      p = source.write(root_dir)
+      sources.append(self._written_source(source.filename, p, source.source_code))
+      
     for header in self.headers:
-      headers.append(header.write(root_dir))
+      p = header.write(root_dir)
+      headers.append(self._written_source(header.filename, p, header.source_code))
+    
     return sources, headers
+
+  @classmethod
+  def parse_node(clazz, node):
+    sources = []
+    headers = []
+    binary_object_filename = node.data.text
+    sources_node = node.find_child_by_text('sources')
+    if sources_node:
+      for source_child in sources_node.children:
+        source = fake_package_source.parse_node(source_child)
+        sources.append(source)
+    headers_node = node.find_child_by_text('headers')
+    if headers_node:
+      for header_child in headers_node.children:
+        header = fake_package_source.parse_node(header_child)
+        headers.append(header)
+    return fake_package_binary_object(node.data.text, sources, headers)
+  
+  @classmethod
+  def parse_node_children(clazz, node):
+    return [ clazz.parse_node(child) for child in node.children ]

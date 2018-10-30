@@ -85,15 +85,15 @@ class fake_package_recipe_parser(object):
     
     c_programs_node = node.find_child_by_text('c_programs')
     if c_programs_node:
-      objects['c_programs'] = self._parse_binary_objects(c_programs_node)
+      objects['c_programs'] = fake_package_binary_object.parse_node_children(c_programs_node)
       
     static_c_libs_node = node.find_child_by_text('static_c_libs')
     if static_c_libs_node:
-      objects['static_c_libs'] = self._parse_binary_objects(static_c_libs_node)
+      objects['static_c_libs'] = fake_package_binary_object.parse_node_children(static_c_libs_node)
       
     shared_c_libs_node = node.find_child_by_text('shared_c_libs')
     if shared_c_libs_node:
-      objects['shared_c_libs'] = self._parse_binary_objects(shared_c_libs_node)
+      objects['shared_c_libs'] = fake_package_binary_object.parse_node_children(shared_c_libs_node)
       
     return fake_package_recipe(metadata, files, env_files, requirements, properties, objects)
 
@@ -134,21 +134,3 @@ class fake_package_recipe_parser(object):
       next_reqs = requirement_list.parse(req_text)
       reqs.extend(next_reqs)
     return requirement_list(reqs)
-
-  def _parse_binary_objects(self, node):
-    result = []
-    for child in node.children:
-      filename = child.data.text
-      bo = self._parse_binary_object(child)
-      result.append(bo)
-    return result
-
-  def _parse_binary_object(self, node):
-    sources = []
-    binary_object_filename = node.data.text
-    sources_node = node.find_child_by_text('sources')
-    if sources_node:
-      for source_child in sources_node.children:
-        source = fake_package_source.parse_node(source_child)
-        sources.append(source)
-    return fake_package_binary_object(node.data.text, sources, [])
