@@ -98,15 +98,24 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
     temp_file.write_temp_files(env_files_dir, self.env_files)
 
     tmp_compiler_dir = path.join(tmp_dir, 'objects')
+
+    cc = compiler(build_target.make_host_build_target())
     
     c_programs = self.objects.get('c_programs', [])
     for c_program in c_programs:
       sources, headers = c_program.write_files(tmp_compiler_dir)
-      cc = compiler(build_target.make_host_build_target())
       targets = cc.compile_c(sources)
       exe_filename = path.join(tmp_compiler_dir, c_program.filename, path.basename(c_program.filename))
       exe = cc.link_exe(exe_filename, [ target.object for target in targets ])
       file_util.copy(exe, path.join(files_dir, c_program.filename))
+      
+    static_c_libs = self.objects.get('static_c_libs', [])
+    for static_c_lib in static_c_libs:
+      sources, headers = static_c_lib.write_files(tmp_compiler_dir)
+      targets = cc.compile_c(sources)
+      lib_filename = path.join(tmp_compiler_dir, static_c_lib.filename, path.basename(static_c_lib.filename))
+      lib = cc.make_static_lib(lib_filename, [ target.object for target in targets ])
+      file_util.copy(lib, path.join(files_dir, static_c_lib.filename))
       
     pkg_desc = package_descriptor(self.metadata.name,
                                   self.metadata.build_version,

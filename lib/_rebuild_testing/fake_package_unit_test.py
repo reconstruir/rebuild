@@ -16,7 +16,7 @@ class fake_package_unit_test(object):
     tmp_file = temp_file.make_temp_file(delete = not debug)
     if debug:
       print('tmp_file: %s' % (tmp_file))
-    return recipe.create_package(tmp_file).filename
+    return recipe.create_package(tmp_file, debug = debug).filename
 
   @classmethod
   def create_many_packages(clazz, recipe, metadata_mutations = {}, debug = False):
@@ -26,7 +26,7 @@ class fake_package_unit_test(object):
       tmp_file = temp_file.make_temp_file(delete = not debug)
       if debug:
         print('tmp_file: %s' % (tmp_file))
-      result.append(r.create_package(tmp_file).filename)
+      result.append(r.create_package(tmp_file, debug = debug).filename)
     return result
 
   @classmethod

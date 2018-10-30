@@ -19,7 +19,7 @@ class test_new_tools_manager(script_unit_test):
   __script__ = __file__, '../../../../bin/rebuilder.py'
   
   DEBUG = script_unit_test.DEBUG
-  #DEBUG = True
+  DEBUG = True
 
   TEST_BUILD_TARGET = build_target.parse_path('linux-ubuntu-18/x86_64/release')
 

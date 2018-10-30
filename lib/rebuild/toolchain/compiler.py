@@ -45,6 +45,14 @@ class compiler(object):
     self._execute_cmd(cmd)
     return exe
   
+  def make_static_lib(self, lib, objects, arflags = None):
+    assert objects
+    objects = object_util.listify(objects)
+    cmd = '$AR $AR_FLAGS %s %s' % (lib, ' '.join(objects))
+    cmd = variable.substitute(cmd, self.variables)
+    self._execute_cmd(cmd)
+    return lib
+  
   @classmethod
   def _make_targets(clazz, sources, objects):
     assert sources
