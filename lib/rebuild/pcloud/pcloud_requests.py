@@ -3,14 +3,16 @@
 import requests
 from collections import namedtuple
 
+from bes.compat.url_compat import urljoin
+
 class pcloud_requests(object):
 
   API = 'https://api.pcloud.com'
 
   _response = namedtuple('_response', 'url, status_code, payload')
   @classmethod
-  def get_to_json(clazz, api_method, params):
-    url = self._make_api_url(api_method)
+  def get(clazz, api_method, params):
+    url = clazz._make_api_url(api_method)
     response = requests.get(url, params = params)
     if response.status_code == 200:
       payload = response.json()

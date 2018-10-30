@@ -29,7 +29,6 @@ class pcloud(object):
       raise ValueError('Etiher folder_path or folder_id should be given.')
     elif folder_path and folder_id:
       raise ValueError('Only one of folder_path or folder_id should be given.')
-    url = self._make_api_url('listfolder')
     params = {
       'auth': self._auth_token,
       'recursive': int(recursive),
@@ -41,9 +40,11 @@ class pcloud(object):
     if folder_id:
       what = folder_id
       params.update({ 'folderid': folder_id })
-    response = requests.get(url, params = params)
-    payload = response.json()
-    assert 'result' in payload
+    response = pcloud_requests.get('listfolder', params)
+    if response.status_code != 200:
+      raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
+    payload = response.payload
+    assert 'result' in response.payload
     if payload['result'] != 0:
       raise pcloud_error(payload['result'], what)
     assert 'metadata' in payload
