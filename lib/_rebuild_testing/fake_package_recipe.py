@@ -97,8 +97,9 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
     temp_file.write_temp_files(files_dir, self.files)
     temp_file.write_temp_files(env_files_dir, self.env_files)
 
+    tmp_compiler_dir = path.join(tmp_dir, 'objects')
+    
     c_programs = self.objects.get('c_programs', [])
-    tmp_compiler_dir = path.join(tmp_dir, 'binary_objects')
     for c_program in c_programs:
       sources, headers = c_program.write_files(tmp_compiler_dir)
       cc = compiler(build_target.make_host_build_target())

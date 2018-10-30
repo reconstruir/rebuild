@@ -98,7 +98,7 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
     bin/cut.sh
       \#!/bin/sh
       echo cut.sh: ${1+"$@"} ; exit 0
-  c_program
+  c_programs
     bin/cut.exe
       sources
         main.c
@@ -116,7 +116,7 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
             fprintf(stdout, "\\n");
             return 0;
           }
-  static_c_library
+  static_c_libs
     lib/libfoo.a
       sources
         foo.c
@@ -130,50 +130,6 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
           extern int foo(int x);
           \#endif /* __FOO_H__ */
 
-'''
-###  c_program
-###    bin/cut.exe
-###      sources
-###        main.c
-###          \#include <stdio.h>
-###          int main(int argc, char* argv[]) {
-###            char* arg;
-###            if (argc < 2) {
-###              fprintf(stderr, "Usage: cut.exe args\n");
-###              return 1;
-###            }
-###            fprintf(stdout, "cut.exe:");
-###            for(arg = argv[1]; arg != NULL; arg++) {
-###              fprintf(stdout, "%s", arg);
-###            }
-###            fprintf(stdout, "\n");
-###            return 0;
-###          }
-  
-  x_RECIPES = '''
-fake_package knife 1.0.0 0 0 linux release x86_64 ubuntu 18
-  files
-    bin/cut.sh
-     \#!/bin/bash
-      echo cut: ${1+"$@"}; exit 0
-###    static_c_library
-###      headers
-###        libknife/knife.h
-###          \#ifndef __KNIFE_H__
-###          \#define __KNIFE_H__
-###          extern int cut(int depth);
-###          \#endif /* __KNIFE_H__ */
-###      sources
-###        knife.c
-###          \#include <libknife/knife.h>
-###          int cut(int depth) {
-###            if (depth < 0 or depth > 10) {
-###              fprintf(stderr, "Invalid depth: %d\n", depth);
-###              return 1;
-###            }
-###            printf("cut depth %d\n", depth);
-###            return 0;
-###          }
 '''
   
 if __name__ == '__main__':

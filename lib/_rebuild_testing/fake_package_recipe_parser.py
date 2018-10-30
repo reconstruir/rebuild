@@ -82,12 +82,12 @@ class fake_package_recipe_parser(object):
     if properties_node:
       properties = self._parse_properties(properties_node)
     objects = {}
-    c_program_node = node.find_child_by_text('c_program')
-    if c_program_node:
-      objects['c_programs'] = self._parse_binary_objects(c_program_node)
-    static_c_library_node = node.find_child_by_text('static_c_library')
-    if static_c_library_node:
-      objects['static_c_libraries'] = self._parse_binary_objects(static_c_library_node)
+    c_programs_node = node.find_child_by_text('c_programs')
+    if c_programs_node:
+      objects['c_programs'] = self._parse_binary_objects(c_programs_node)
+    static_c_libs_node = node.find_child_by_text('static_c_libs')
+    if static_c_libs_node:
+      objects['static_c_libs'] = self._parse_binary_objects(static_c_libs_node)
     return fake_package_recipe(metadata, files, env_files, requirements, properties, objects)
 
   def _parse_metadata(self, node):
