@@ -129,7 +129,6 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
           \#define __FOO_H__
           extern int foo(int x);
           \#endif /* __FOO_H__ */
-
 '''
   
 if __name__ == '__main__':
