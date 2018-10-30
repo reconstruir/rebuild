@@ -1,13 +1,13 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.text import string_list
+from bes.text import string_list, tree_text_parser
     
 class fake_package_recipe_parser_util(object):
 
   @classmethod
   def parse_file(clazz, node):
     filename = node.data.text
-    content = '\n'.join(clazz.parse_node_children_to_string_list(node)) + '\n'
+    content = node.get_children_indented_text()
     return filename, content
 
   @classmethod

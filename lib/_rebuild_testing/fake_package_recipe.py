@@ -6,8 +6,9 @@ from bes.common import check, node
 from bes.text import white_space
 from bes.fs import file_util, temp_file
 
-from rebuild.base import package_descriptor
+from rebuild.base import build_target, package_descriptor
 from rebuild.package import package
+from rebuild.toolchain import compiler
 
 class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, env_files, requirements, properties, objects')):
   'Class to describe a fake package.  Fake packages are use for unit testing.'
@@ -85,14 +86,27 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
     value = properties[key]
     properties_node.children.append(node('%s=%s' % (key, value)))
 
-  def create_package(self, filename):
-    tmp_dir = temp_file.make_temp_dir()
+  def create_package(self, filename, debug = True):
+    tmp_dir = temp_file.make_temp_dir(delete = not debug)
+    if debug:
+      print('tmp_dir: %s' % (tmp_dir))
     files_dir = path.join(tmp_dir, 'files')
     env_files_dir = path.join(tmp_dir, 'env')
     file_util.mkdir(files_dir)
     file_util.mkdir(env_files_dir)
     temp_file.write_temp_files(files_dir, self.files)
     temp_file.write_temp_files(env_files_dir, self.env_files)
+
+    c_programs = self.objects.get('c_programs', [])
+    tmp_compiler_dir = path.join(tmp_dir, 'binary_objects')
+    for c_program in c_programs:
+      sources, headers = c_program.write_files(tmp_compiler_dir)
+      cc = compiler(build_target.make_host_build_target())
+      targets = cc.compile_c(sources)
+      exe_filename = path.join(tmp_compiler_dir, c_program.filename, path.basename(c_program.filename))
+      exe = cc.link_exe(exe_filename, [ target.object for target in targets ])
+      file_util.copy(exe, path.join(files_dir, c_program.filename))
+      
     pkg_desc = package_descriptor(self.metadata.name,
                                   self.metadata.build_version,
                                   properties = self.properties,

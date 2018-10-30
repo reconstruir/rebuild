@@ -4,6 +4,8 @@ from os import path
 from collections import namedtuple
 from bes.common import check, node
 from bes.text import white_space
+from bes.fs import file_util
+
 from .fake_package_recipe_parser_util import fake_package_recipe_parser_util
 
 class fake_package_source(namedtuple('fake_package_source', 'filename, source_code')):
@@ -34,7 +36,7 @@ class fake_package_source(namedtuple('fake_package_source', 'filename, source_co
     filename, source_code = fake_package_recipe_parser_util.parse_file(node)
     return clazz(filename, source_code)
     
-  def compile(self, object):
-    assert False
+  def write(self, where):
+    return file_util.save(path.join(where, self.filename), content = self.source_code)
 
 check.register_class(fake_package_source)

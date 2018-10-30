@@ -27,7 +27,8 @@ class test_fake_package_recipe_parser(unit_test):
           temp_item('tbar_env.sh', 'export TBAR_ENV1=tbar_env1\n', 0o755),
         ],
         RL.parse('apple >= 1.2.3 orange >= 6.6.6'),
-        { 'prop1': '5', 'prop2': 'hi' }
+        { 'prop1': '5', 'prop2': 'hi' },
+        {}
       )
     content = '''
 fake_package foo 1.2.3 0 0 linux release x86_64 ubuntu 18

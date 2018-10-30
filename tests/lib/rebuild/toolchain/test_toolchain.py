@@ -11,8 +11,8 @@ from bes.testing.unit_test.unit_test_skip import skip_if
 
 class test_toolchain(unit_test):
 
-  _DEBUG = True
-  _DEBUG = False
+  DEBUG = False
+  #DEBUG = True
 
   CC_SOURCE = r'''
 #include <stdio.h>
@@ -61,8 +61,8 @@ int main(int argc, char* argv[])
     
   @classmethod
   def _make_temp_dir(clazz):
-    tmp_dir = temp_file.make_temp_dir(delete = not clazz._DEBUG)
-    if clazz._DEBUG:
+    tmp_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
+    if clazz.DEBUG:
       print('tmp_dir: %s' % (tmp_dir))
     return tmp_dir
 

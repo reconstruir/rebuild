@@ -12,7 +12,7 @@ from _rebuild_testing.fake_package_recipe import fake_package_recipe as R
 class test_fake_package_recipe(unit_test):
 
   DEBUG = False
-  DEBUG = True
+  #DEBUG = True
 
   def test___str__(self):
     r = R(AD('foo', '1.2.3', 0, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
@@ -25,7 +25,8 @@ class test_fake_package_recipe(unit_test):
             temp_item('bar_env.sh', '#@REBUILD_HEAD@\nexport BAR_ENV=bar\n', 0o644),
           ],
           RL.parse('apple >= 1.2.3 orange >= 6.6.6'),
-          { 'prop1': 5, 'prop2': 'hi' }
+          { 'prop1': 5, 'prop2': 'hi' },
+          {}
     )
     expected = '''fake_package
   metadata
@@ -63,7 +64,8 @@ class test_fake_package_recipe(unit_test):
             temp_item('bar_env.sh', '#@REBUILD_HEAD@\nexport BAR_ENV=bar\n', 0o644),
           ],
           RL.parse('apple >= 1.2.3 orange >= 6.6.6'),
-          { 'prop1': 5, 'prop2': 'hi' }
+          { 'prop1': 5, 'prop2': 'hi' },
+          {}
     )
     filename, metadata = r.create_package(tmp)
     

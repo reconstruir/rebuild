@@ -1,19 +1,26 @@
-#!/usr/bin/env python
-#-*- coding:utf-8 -*-
-#
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import os.path as path
+import copy, os.path as path
 from .toolchain import toolchain
 from bes.fs import file_util
 from bes.common import object_util, variable
 from bes.system import execute
 
+from collections import namedtuple
+
 class compiler(object):
 
+  DEBUG = False
+  #DEBUG = True
+  
   def __init__(self, build_target):
     self.build_target = build_target
     self.toolchain = toolchain.get_toolchain(self.build_target)
+    self.variables = {}
+    self.variables.update(self.toolchain.compiler_environment())
+    self.variables.update(self.toolchain.compiler_flags_flat())
 
+  _target = namedtuple('_target', 'source, object')
   def compile_c(self, sources, objects = None, cflags = None):
     assert sources
     sources = object_util.listify(sources)
@@ -23,15 +30,20 @@ class compiler(object):
 
     for src, obj in targets:
       cmd = '$CC $CFLAGS -c $(SRC) -o $(OBJ)'
-      variables = {}
-      variables.update(self.toolchain.compiler_environment())
-      variables.update(self.toolchain.compiler_flags_flat())
+      variables = copy.deepcopy(self.variables)
       variables['SRC'] = src
       variables['OBJ'] = obj
       cmd = variable.substitute(cmd, variables)
-      print('CMD: %s' % (cmd))
-      execute.execute(cmd)
+      self._execute_cmd(cmd)
     return targets
+
+  def link_exe(self, exe, objects, ldflags = None):
+    assert objects
+    objects = object_util.listify(objects)
+    cmd = '$CC $LDFLAGS -o %s %s' % (exe, ' '.join(objects))
+    cmd = variable.substitute(cmd, self.variables)
+    self._execute_cmd(cmd)
+    return exe
   
   @classmethod
   def _make_targets(clazz, sources, objects):
@@ -43,8 +55,16 @@ class compiler(object):
       objects = [ clazz._make_object_filename(s) for s in sources ]
     sources = [ path.abspath(s) for s in sources ]
     objects = [ path.abspath(o) for o in objects ]
-    return [ x for x in zip(sources, objects) ]
+    return [ clazz._target(*x) for x in zip(sources, objects) ]
     
   @classmethod
   def _make_object_filename(clazz, source):
     return file_util.remove_extension(source) + '.o'
+  
+  @classmethod
+  def _execute_cmd(clazz, cmd):
+    if clazz.DEBUG:
+      print('COMPILER CMD: %s' % (cmd))
+    return execute.execute(cmd)
+
+  

@@ -4,6 +4,7 @@ from os import path
 from collections import namedtuple
 from bes.common import check, node
 from bes.text import white_space
+from bes.fs import file_util
 
 class fake_package_binary_object(namedtuple('fake_package_binary_object', 'filename, sources, headers')):
   'Class to describe fake source code for a package.'
@@ -36,3 +37,13 @@ class fake_package_binary_object(namedtuple('fake_package_binary_object', 'filen
 
   def compile(self, object):
     assert False
+    
+  def write_files(self, where):
+    sources = []
+    headers = []
+    root_dir = path.join(where, self.filename)
+    for source in self.sources:
+      sources.append(source.write(root_dir))
+    for header in self.headers:
+      headers.append(header.write(root_dir))
+    return sources, headers

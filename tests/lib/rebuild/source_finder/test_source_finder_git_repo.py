@@ -12,15 +12,16 @@ from test_source_finder_local import source_dir_maker
 
 class test_source_finder_git_repo(unit_test):
 
-  _DEBUG = True
+  DEBUG = False
+  #DEBUG = True
 
   def test_repo_find_tarball(self):
     tmp_source_repo = self._make_git_repo([
       'file a/alpha-1.2.3.tar.gz "${tarball}" 644',
       'file a/alpha-1.2.4.tar.gz "${tarball}" 644',
-    ], delete = not self._DEBUG)
-    tmp_repo_dir = temp_file.make_temp_dir(delete = not self._DEBUG)
-    if self._DEBUG:
+    ], delete = not self.DEBUG)
+    tmp_repo_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
+    if self.DEBUG:
       print('tmp_source_repo: %s' % (tmp_source_repo.root))
       print('       tmp_repo_dir: %s' % (tmp_repo_dir))
     f1 = source_finder_git_repo(tmp_repo_dir, tmp_source_repo.root)

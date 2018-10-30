@@ -12,7 +12,7 @@ from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FP
 class test_tools_manager(unit_test):
 
   DEBUG = unit_test.DEBUG
-  DEBUG = True
+  #DEBUG = True
 
   TEST_BUILD_TARGET = build_target.parse_path('linux-ubuntu-18/x86_64/release')
 

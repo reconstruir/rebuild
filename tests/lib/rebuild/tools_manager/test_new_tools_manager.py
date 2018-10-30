@@ -45,7 +45,7 @@ class test_new_tools_manager(script_unit_test):
     tm.ensure_tool(knife_desc)
     self.assertTrue( path.exists(tm.tool_exe(knife_desc, 'cut.sh')) )
     
-  def test_use_tool(self):
+  def test_use_shell_tool(self):
     tm = self._make_test_tm()
     knife_desc = PD.parse('knife-6.6.6')
     tm.ensure_tool(knife_desc)
@@ -53,6 +53,15 @@ class test_new_tools_manager(script_unit_test):
     rv = execute.execute([ exe, 'a', 'b', '666' ])
     self.assertEqual( 0, rv.exit_code )
     self.assertEqual( 'cut.sh: a b 666', rv.stdout.strip() )
+
+  def xtest_use_binary_tool(self):
+    tm = self._make_test_tm()
+    knife_desc = PD.parse('knife-6.6.6')
+    tm.ensure_tool(knife_desc)
+    exe = tm.tool_exe(knife_desc, 'cut.exe')
+    rv = execute.execute([ exe, 'a', 'b', '666' ])
+    self.assertEqual( 0, rv.exit_code )
+    self.assertEqual( 'cut.exe: a b 666', rv.stdout.strip() )
 
   def xtest_one_tool_env(self):
     tm = self._make_test_tm()
@@ -87,18 +96,39 @@ class test_new_tools_manager(script_unit_test):
 fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
   files
     bin/cut.sh
-     \#!/bin/sh
-     echo cut.sh: ${1+"$@"} ; exit 0
+      \#!/bin/sh
+      echo cut.sh: ${1+"$@"} ; exit 0
   c_program
     bin/cut.exe
       sources
         main.c
+          \#include <stdio.h>
           int main(int argc, char* argv[]) {
             char* arg;
             if (argc < 2) {
               fprintf(stderr, "Usage: cut.exe args\\n");
               return 1;
             }
+            fprintf(stdout, "cut.exe:");
+            for(arg = argv[1]; arg != NULL; arg++) {
+              fprintf(stdout, "%s", arg);
+            }
+            fprintf(stdout, "\\n");
+            return 0;
+          }
+  static_c_library
+    lib/libfoo.a
+      sources
+        foo.c
+          int foo(int x) {
+            return x + 1;
+          }
+      headers
+        foo.h
+          \#ifndef __FOO_H__
+          \#define __FOO_H__
+          extern int foo(int x);
+          \#endif /* __FOO_H__ */
 
 '''
 ###  c_program

@@ -16,7 +16,7 @@ from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FP
 class test_package_manager(unit_test):
 
   DEBUG = unit_test.DEBUG
-  DEBUG = True
+  #DEBUG = True
 
   TEST_BUILD_TARGET = BT.parse_path('linux-ubuntu-18/x86_64/release')
 
