@@ -90,8 +90,9 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
     tmp_dir = temp_file.make_temp_dir(delete = not debug)
     if debug:
       print('tmp_dir: %s' % (tmp_dir))
-    files_dir = path.join(tmp_dir, 'files')
-    env_files_dir = path.join(tmp_dir, 'env')
+    stage_dir = path.join(tmp_dir, 'stage')
+    files_dir = path.join(stage_dir, 'files')
+    env_files_dir = path.join(stage_dir, 'env')
     file_util.mkdir(files_dir)
     file_util.mkdir(env_files_dir)
     temp_file.write_temp_files(files_dir, self.files)
@@ -121,7 +122,7 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
                                   self.metadata.build_version,
                                   properties = self.properties,
                                   requirements = self.requirements)
-    return package.create_package(filename, pkg_desc, self.metadata.build_target, tmp_dir)
+    return package.create_package(filename, pkg_desc, self.metadata.build_target, stage_dir)
 
   def clone_with_mutations(self, metadata_mutations):
     metadata = self.metadata.clone_with_mutations(metadata_mutations)

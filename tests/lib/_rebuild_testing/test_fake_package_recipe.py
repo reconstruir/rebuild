@@ -4,6 +4,8 @@
 from os import path
 
 from bes.testing.unit_test import unit_test
+from bes.archive import archiver
+
 from rebuild.package import artifact_descriptor as AD, package
 from rebuild.base import requirement_list as RL
 
@@ -97,8 +99,16 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
     tmp = temp_file.make_temp_file(suffix = '.tar.gz', delete = not self.DEBUG)
     filename, metadata = self._parse(recipe)[0].create_package(tmp)
     if self.DEBUG:
-      print('tmp: %s' % (tmp))
+      print('tmp:\n%s' % (tmp))
 
+    # Assert that the package has exactly the members expected
+    self.assertEqual( [
+      'files/bin/cut.exe',
+      'files/bin/cut.sh',
+      'files/lib/libfoo.a',
+      'metadata/metadata.json',
+      ], archiver.members(tmp) )
+      
     p = package(tmp)
     self.assertEqual( [
       'bin/cut.exe',
