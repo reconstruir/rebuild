@@ -81,31 +81,35 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
             return 0;
           }
   static_c_libs
-    lib/libfoo.a
+    lib/libfoo_static.a
       sources
         foo.c
-          int foo(int x) {
-            return x + 1;
+          \#include <libfoo_static.h>
+          int foo_static(int x) {
+            return x + FOO_STATIC_MAGIC_NUMBER;
           }
       headers
-        include/libfoo.h
-          \#ifndef __FOO_H__
-          \#define __FOO_H__
-          extern int foo(int x);
-          \#endif /* __FOO_H__ */
+        include/libfoo_static.h
+          \#ifndef __FOO_STATIC_H__
+          \#define __FOO_STATIC_H__
+          \#define FOO_STATIC_MAGIC_NUMBER 1
+          extern int foo_static(int x);
+          \#endif /* __FOO_STATIC_H__ */
   shared_c_libs
-    lib/libfoo.so
+    lib/libfoo_shared.so
       sources
         foo2.c
-          int foo2(int x) {
-            return x + 1;
+          \#include <libfoo_shared.h>
+          int foo_shared(int x) {
+            return x + FOO_SHARED_MAGIC_NUMBER;
           }
       headers
-        include/libfoo2.h
-          \#ifndef __FOO2_H__
-          \#define __FOO2_H__
-          extern int foo2(int x);
-          \#endif /* __FOO2_H__ */
+        include/libfoo_shared.h
+          \#ifndef __FOO_SHARED_H__
+          \#define __FOO_SHARED_H__
+          \#define FOO_SHARED_MAGIC_NUMBER 2
+          extern int foo_shared(int x);
+          \#endif /* __FOO_SHARED_H__ */
 
 '''
 
@@ -118,10 +122,10 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
     self.assertEqual( [
       'files/bin/cut.exe',
       'files/bin/cut.sh',
-      'files/include/libfoo.h',
-      'files/include/libfoo2.h',
-      'files/lib/libfoo.a',
-      'files/lib/libfoo.so',
+      'files/include/libfoo_shared.h',
+      'files/include/libfoo_static.h',
+      'files/lib/libfoo_shared.so',
+      'files/lib/libfoo_static.a',
       'metadata/metadata.json',
       ], archiver.members(tmp) )
       
@@ -129,10 +133,10 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
     self.assertEqual( [
       'bin/cut.exe',
       'bin/cut.sh',
-      'include/libfoo.h',
-      'include/libfoo2.h',
-      'lib/libfoo.a',
-      'lib/libfoo.so',
+      'include/libfoo_shared.h',
+      'include/libfoo_static.h',
+      'lib/libfoo_shared.so',
+      'lib/libfoo_static.a',
     ], p.files )
     
   @classmethod

@@ -23,13 +23,14 @@ class compiler(object):
   _target = namedtuple('_target', 'source, object')
   def compile_c(self, sources, objects = None, cflags = None):
     assert sources
+    cflags = cflags or []
     sources = object_util.listify(sources)
     if objects:
       objects = object_util.listify(objects)
     targets = self._make_targets(sources, objects)
 
     for src, obj in targets:
-      cmd = '$CC $CFLAGS -c $(SRC) -o $(OBJ)'
+      cmd = '$CC $CFLAGS %s -c $(SRC) -o $(OBJ)' % (' '.join(cflags))
       variables = copy.deepcopy(self.variables)
       variables['SRC'] = src
       variables['OBJ'] = obj
