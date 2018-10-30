@@ -40,8 +40,9 @@ class compiler(object):
 
   def link_exe(self, exe, objects, ldflags = None):
     assert objects
+    ldflags = ldflags or []
     objects = object_util.listify(objects)
-    cmd = '$CC $LDFLAGS -o %s %s' % (exe, ' '.join(objects))
+    cmd = '$CC %s -o %s $LDFLAGS %s' % (' '.join(objects), exe, ' '.join(ldflags))
     cmd = variable.substitute(cmd, self.variables)
     self._execute_cmd(cmd)
     return exe
@@ -56,8 +57,9 @@ class compiler(object):
 
   def make_shared_lib(self, lib, objects, ldflags = None):
     assert objects
+    ldflags = ldflags or []
     objects = object_util.listify(objects)
-    cmd = '$CC -shared $LDFLAGS %s -o %s' % (' '.join(objects), lib)
+    cmd = '$CC -shared $LDFLAGS %s %s -o %s' % (' '.join(ldflags), ' '.join(objects), lib)
     cmd = variable.substitute(cmd, self.variables)
     self._execute_cmd(cmd)
     return lib

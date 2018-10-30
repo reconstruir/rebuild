@@ -89,11 +89,14 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
             printf("%d\\n", FOO_STATIC_MAGIC_NUMBER);
             return 0;
           }
+      ldflags
+        -lfoo_static
   static_c_libs
     lib/libfoo_static.a
       sources
         foo.c
           \#include <libfoo_static.h>
+          const int FOO_STATIC_MAGIC_NUMBER = 1;
           int foo_static(int x) {
             return x + FOO_STATIC_MAGIC_NUMBER;
           }
@@ -101,7 +104,7 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
         include/libfoo_static.h
           \#ifndef __FOO_STATIC_H__
           \#define __FOO_STATIC_H__
-          \#define FOO_STATIC_MAGIC_NUMBER 1
+          extern const int FOO_STATIC_MAGIC_NUMBER;
           extern int foo_static(int x);
           \#endif /* __FOO_STATIC_H__ */
   shared_c_libs

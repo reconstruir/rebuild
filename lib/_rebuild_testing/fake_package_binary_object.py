@@ -9,15 +9,18 @@ from bes.fs import file_util
 from collections import namedtuple
 
 from .fake_package_source import fake_package_source
+from .fake_package_recipe_parser_util import fake_package_recipe_parser_util
 
-class fake_package_binary_object(namedtuple('fake_package_binary_object', 'filename, sources, headers')):
+class fake_package_binary_object(namedtuple('fake_package_binary_object', 'filename, sources, headers, ldflags')):
   'Class to describe fake source code for a package.'
   
-  def __new__(clazz, filename, sources, headers):
+  def __new__(clazz, filename, sources, headers, ldflags):
     check.check_string(filename)
     check.check_fake_package_source_seq(sources)
     check.check_fake_package_source_seq(headers)
-    return clazz.__bases__[0].__new__(clazz, filename, sources, headers)
+    ldflags = ldflags or []
+    check.check_string_seq(ldflags)
+    return clazz.__bases__[0].__new__(clazz, filename, sources, headers, ldflags)
 
   def __str__(self):
     return self.to_string()
@@ -37,6 +40,10 @@ class fake_package_binary_object(namedtuple('fake_package_binary_object', 'filen
       headers_node = root.add_child('headers')
       for source in self.headers:
         headers_node.children.append(source.to_node())
+    if self.ldflags:
+      ldflags_node = root.add_child('ldflags')
+      for ldflag in self.ldflags:
+        ldflag_node.children.append(ldflag)
     return root
 
   def compile(self, object):
@@ -62,6 +69,7 @@ class fake_package_binary_object(namedtuple('fake_package_binary_object', 'filen
   def parse_node(clazz, node):
     sources = []
     headers = []
+    ldflags = []
     binary_object_filename = node.data.text
     sources_node = node.find_child_by_text('sources')
     if sources_node:
@@ -73,7 +81,10 @@ class fake_package_binary_object(namedtuple('fake_package_binary_object', 'filen
       for header_child in headers_node.children:
         header = fake_package_source.parse_node(header_child)
         headers.append(header)
-    return fake_package_binary_object(node.data.text, sources, headers)
+    ldflags_node = node.find_child_by_text('ldflags')
+    if ldflags_node:
+      ldflags = fake_package_recipe_parser_util.parse_node_children_to_string_list(ldflags_node)
+    return fake_package_binary_object(node.data.text, sources, headers, ldflags)
   
   @classmethod
   def parse_node_children(clazz, node):

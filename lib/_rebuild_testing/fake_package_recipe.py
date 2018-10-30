@@ -102,13 +102,16 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
 
     cc = compiler(build_target.make_host_build_target())
 
-    includes = []
+    include_path = []
+    lib_path = []
     
     static_c_libs = self.objects.get('static_c_libs', [])
     for static_c_lib in static_c_libs:
       sources, headers = static_c_lib.write_files(tmp_compiler_dir)
       include_dir = path.join(tmp_compiler_dir, static_c_lib.filename, 'include')
-      includes.append(include_dir)
+      lib_dir = path.join(tmp_compiler_dir, static_c_lib.filename)
+      include_path.append(include_dir)
+      lib_path.append(lib_dir)
       cflags = [ '-I%s' % (include_dir) ]
       targets = cc.compile_c([ source.path for source in sources ], cflags = cflags)
       lib_filename = path.join(tmp_compiler_dir, static_c_lib.filename, path.basename(static_c_lib.filename))
@@ -121,7 +124,9 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
     for shared_c_lib in shared_c_libs:
       sources, headers = shared_c_lib.write_files(tmp_compiler_dir)
       include_dir = path.join(tmp_compiler_dir, shared_c_lib.filename, 'include')
-      includes.append(include_dir)
+      lib_dir = path.join(tmp_compiler_dir, shared_c_lib.filename)
+      include_path.append(include_dir)
+      lib_path.append(lib_dir)
       cflags = [ '-I%s' % (include_dir) ]
       targets = cc.compile_c([ source.path for source in sources ], cflags = cflags)
       lib_filename = path.join(tmp_compiler_dir, shared_c_lib.filename, path.basename(shared_c_lib.filename))
@@ -134,11 +139,15 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
     for c_program in c_programs:
       sources, headers = c_program.write_files(tmp_compiler_dir)
       include_dir = path.join(tmp_compiler_dir, c_program.filename, 'include')
+      lib_dir = path.join(tmp_compiler_dir, c_program.filename)
       cflags = [ '-I%s' % (include_dir) ]
-      cflags += [ '-I%s' % (inc) for inc in includes ] 
+      cflags += [ '-I%s' % (inc) for inc in include_path ] 
+      ldflags = [ '-L%s' % (lib_dir) ]
+      ldflags += [ '-L%s' % (lib) for lib in lib_path ]
+      ldflags += c_program.ldflags or []
       targets = cc.compile_c([ source.path for source in sources ], cflags = cflags)
       exe_filename = path.join(tmp_compiler_dir, c_program.filename, path.basename(c_program.filename))
-      exe = cc.link_exe(exe_filename, [ target.object for target in targets ])
+      exe = cc.link_exe(exe_filename, [ target.object for target in targets ], ldflags = ldflags)
       file_util.copy(exe, path.join(files_dir, c_program.filename))
       
     pkg_desc = package_descriptor(self.metadata.name,
