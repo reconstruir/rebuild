@@ -52,6 +52,14 @@ class compiler(object):
     cmd = variable.substitute(cmd, self.variables)
     self._execute_cmd(cmd)
     return lib
+
+  def make_shared_lib(self, lib, objects, ldflags = None):
+    assert objects
+    objects = object_util.listify(objects)
+    cmd = '$CC -shared $LDFLAGS %s -o %s' % (' '.join(objects), lib)
+    cmd = variable.substitute(cmd, self.variables)
+    self._execute_cmd(cmd)
+    return lib
   
   @classmethod
   def _make_targets(clazz, sources, objects):

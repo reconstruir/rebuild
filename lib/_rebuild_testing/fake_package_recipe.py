@@ -118,6 +118,14 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
       lib = cc.make_static_lib(lib_filename, [ target.object for target in targets ])
       file_util.copy(lib, path.join(files_dir, static_c_lib.filename))
       
+    shared_c_libs = self.objects.get('shared_c_libs', [])
+    for shared_c_lib in shared_c_libs:
+      sources, headers = shared_c_lib.write_files(tmp_compiler_dir)
+      targets = cc.compile_c(sources)
+      lib_filename = path.join(tmp_compiler_dir, shared_c_lib.filename, path.basename(shared_c_lib.filename))
+      lib = cc.make_shared_lib(lib_filename, [ target.object for target in targets ])
+      file_util.copy(lib, path.join(files_dir, shared_c_lib.filename))
+      
     pkg_desc = package_descriptor(self.metadata.name,
                                   self.metadata.build_version,
                                   properties = self.properties,

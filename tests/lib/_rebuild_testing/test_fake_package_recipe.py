@@ -93,6 +93,19 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
           \#define __FOO_H__
           extern int foo(int x);
           \#endif /* __FOO_H__ */
+  shared_c_libs
+    lib/libfoo.so
+      sources
+        foo.c
+          int foo(int x) {
+            return x + 1;
+          }
+      headers
+        foo.h
+          \#ifndef __FOO_H__
+          \#define __FOO_H__
+          extern int foo(int x);
+          \#endif /* __FOO_H__ */
 
 '''
 
@@ -106,6 +119,7 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
       'files/bin/cut.exe',
       'files/bin/cut.sh',
       'files/lib/libfoo.a',
+      'files/lib/libfoo.so',
       'metadata/metadata.json',
       ], archiver.members(tmp) )
       
@@ -114,6 +128,7 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
       'bin/cut.exe',
       'bin/cut.sh',
       'lib/libfoo.a',
+      'lib/libfoo.so',
     ], p.files )
     
   @classmethod
