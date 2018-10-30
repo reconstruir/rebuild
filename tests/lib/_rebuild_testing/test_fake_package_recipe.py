@@ -80,6 +80,15 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
             fprintf(stdout, "\\n");
             return 0;
           }
+    bin/links_with_static.exe
+      sources
+        main.c
+          \#include <libfoo_static.h>
+          \#include <stdio.h>
+          int main() {
+            printf("%d\\n", FOO_STATIC_MAGIC_NUMBER);
+            return 0;
+          }
   static_c_libs
     lib/libfoo_static.a
       sources
@@ -122,6 +131,7 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
     self.assertEqual( [
       'files/bin/cut.exe',
       'files/bin/cut.sh',
+      'files/bin/links_with_static.exe',
       'files/include/libfoo_shared.h',
       'files/include/libfoo_static.h',
       'files/lib/libfoo_shared.so',
@@ -133,6 +143,7 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
     self.assertEqual( [
       'bin/cut.exe',
       'bin/cut.sh',
+      'bin/links_with_static.exe',
       'include/libfoo_shared.h',
       'include/libfoo_static.h',
       'lib/libfoo_shared.so',

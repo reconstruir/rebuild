@@ -101,21 +101,14 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
     tmp_compiler_dir = path.join(tmp_dir, 'objects')
 
     cc = compiler(build_target.make_host_build_target())
+
+    includes = []
     
-    c_programs = self.objects.get('c_programs', [])
-    for c_program in c_programs:
-      sources, headers = c_program.write_files(tmp_compiler_dir)
-      include_dir = path.join(tmp_compiler_dir, c_program.filename, 'include')
-      cflags = [ '-I%s' % (include_dir) ]
-      targets = cc.compile_c([ source.path for source in sources ], cflags = cflags)
-      exe_filename = path.join(tmp_compiler_dir, c_program.filename, path.basename(c_program.filename))
-      exe = cc.link_exe(exe_filename, [ target.object for target in targets ])
-      file_util.copy(exe, path.join(files_dir, c_program.filename))
-      
     static_c_libs = self.objects.get('static_c_libs', [])
     for static_c_lib in static_c_libs:
       sources, headers = static_c_lib.write_files(tmp_compiler_dir)
       include_dir = path.join(tmp_compiler_dir, static_c_lib.filename, 'include')
+      includes.append(include_dir)
       cflags = [ '-I%s' % (include_dir) ]
       targets = cc.compile_c([ source.path for source in sources ], cflags = cflags)
       lib_filename = path.join(tmp_compiler_dir, static_c_lib.filename, path.basename(static_c_lib.filename))
@@ -128,6 +121,7 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
     for shared_c_lib in shared_c_libs:
       sources, headers = shared_c_lib.write_files(tmp_compiler_dir)
       include_dir = path.join(tmp_compiler_dir, shared_c_lib.filename, 'include')
+      includes.append(include_dir)
       cflags = [ '-I%s' % (include_dir) ]
       targets = cc.compile_c([ source.path for source in sources ], cflags = cflags)
       lib_filename = path.join(tmp_compiler_dir, shared_c_lib.filename, path.basename(shared_c_lib.filename))
@@ -135,6 +129,17 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
       file_util.copy(lib, path.join(files_dir, shared_c_lib.filename))
       for header in headers:
         file_util.copy(header.path, path.join(files_dir, header.filename))
+      
+    c_programs = self.objects.get('c_programs', [])
+    for c_program in c_programs:
+      sources, headers = c_program.write_files(tmp_compiler_dir)
+      include_dir = path.join(tmp_compiler_dir, c_program.filename, 'include')
+      cflags = [ '-I%s' % (include_dir) ]
+      cflags += [ '-I%s' % (inc) for inc in includes ] 
+      targets = cc.compile_c([ source.path for source in sources ], cflags = cflags)
+      exe_filename = path.join(tmp_compiler_dir, c_program.filename, path.basename(c_program.filename))
+      exe = cc.link_exe(exe_filename, [ target.object for target in targets ])
+      file_util.copy(exe, path.join(files_dir, c_program.filename))
       
     pkg_desc = package_descriptor(self.metadata.name,
                                   self.metadata.build_version,
