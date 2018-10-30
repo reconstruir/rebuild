@@ -54,7 +54,7 @@ class test_new_tools_manager(script_unit_test):
     self.assertEqual( 0, rv.exit_code )
     self.assertEqual( 'cut.sh: a b 666', rv.stdout.strip() )
 
-  def xtest_use_binary_tool(self):
+  def test_use_binary_tool(self):
     tm = self._make_test_tm()
     knife_desc = PD.parse('knife-6.6.6')
     tm.ensure_tool(knife_desc)
@@ -104,14 +104,14 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
         main.c
           \#include <stdio.h>
           int main(int argc, char* argv[]) {
-            char* arg;
+            char** arg;
             if (argc < 2) {
               fprintf(stderr, "Usage: cut.exe args\\n");
               return 1;
             }
-            fprintf(stdout, "cut.exe:");
-            for(arg = argv[1]; arg != NULL; arg++) {
-              fprintf(stdout, "%s", arg);
+            fprintf(stdout, "cut.exe: ");
+            for(arg = argv + 1; *arg != NULL; ++arg) {
+              fprintf(stdout, "%s ", *arg);
             }
             fprintf(stdout, "\\n");
             return 0;
