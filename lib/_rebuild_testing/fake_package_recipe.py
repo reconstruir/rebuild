@@ -86,7 +86,7 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
     value = properties[key]
     properties_node.children.append(node('%s=%s' % (key, value)))
 
-  def create_package(self, filename, debug = True):
+  def create_package(self, filename, debug = False):
     tmp_dir = temp_file.make_temp_dir(delete = not debug)
     if debug:
       print('tmp_dir: %s' % (tmp_dir))
