@@ -39,7 +39,10 @@ packages: fiber
       'update',
       '--artifacts', test.artifact_manager.root_dir,
       '--root-dir', test.tmp_dir,
-      'test1'
+      'test1',
+      '--system', 'linux',
+      '--distro', 'ubuntu',
+      '--distro-version', '18',
     ]
     rv = self.run_script(args)
     self.assertEqual( 0, rv.exit_code )
@@ -48,7 +51,10 @@ packages: fiber
       'packages',
       'print',
       '--root-dir', test.tmp_dir,
-      'test1'
+      'test1',
+      '--system', 'linux',
+      '--distro', 'ubuntu',
+      '--distro-version', '18',
     ]
     rv = self.run_script(args)
     self.assertEqual( [ 'water' ], rv.stdout.split('\n') )
