@@ -101,6 +101,7 @@ class rebuilder_tester(object):
         tmp_dir + path.sep: '',
         long_form: '$BUILD_PATH',
         short_form: '$BUILD_PATH',
+        '-'.join(sorted(config.build_target.arch)): '$ARCH',
       }
       new_filename = string_util.replace(checksum.filename, replacements)
       result.append(file_checksum(new_filename, checksum.checksum))
