@@ -39,10 +39,10 @@ packages: fiber
       'update',
       '--artifacts', test.artifact_manager.root_dir,
       '--root-dir', test.tmp_dir,
-      'test1',
       '--system', 'linux',
       '--distro', 'ubuntu',
       '--distro-version', '18',
+      'test1',
     ]
     rv = self.run_script(args)
     self.assertEqual( 0, rv.exit_code )
@@ -51,10 +51,10 @@ packages: fiber
       'packages',
       'print',
       '--root-dir', test.tmp_dir,
-      'test1',
       '--system', 'linux',
       '--distro', 'ubuntu',
       '--distro-version', '18',
+      'test1'
     ]
     rv = self.run_script(args)
     self.assertEqual( [ 'water' ], rv.stdout.split('\n') )
@@ -76,6 +76,9 @@ packages: apple pear_juice
       'update',
       '--artifacts', test.artifact_manager.root_dir,
       '--root-dir', test.tmp_dir,
+      '--system', 'linux',
+      '--distro', 'ubuntu',
+      '--distro-version', '18',
       'test1'
     ]
     rv = self.run_script(args)
@@ -85,6 +88,9 @@ packages: apple pear_juice
       'packages',
       'print',
       '--root-dir', test.tmp_dir,
+      '--system', 'linux',
+      '--distro', 'ubuntu',
+      '--distro-version', '18',
       'test1'
     ]
     rv = self.run_script(args)
@@ -104,6 +110,9 @@ packages: orange_juice
       'update',
       '--artifacts', test.artifact_manager.root_dir,
       '--root-dir', test.tmp_dir,
+      '--system', 'linux',
+      '--distro', 'ubuntu',
+      '--distro-version', '18',
       'test1'
     ]
     rv = self.run_script(args)
@@ -112,6 +121,9 @@ packages: orange_juice
       'packages',
       'print',
       '--root-dir', test.tmp_dir,
+      '--system', 'linux',
+      '--distro', 'ubuntu',
+      '--distro-version', '18',
       'test1'
     ]
     rv = self.run_script(args)
@@ -129,6 +141,9 @@ packages: orange_juice pear_juice
       'update',
       '--artifacts', test.artifact_manager.root_dir,
       '--root-dir', test.tmp_dir,
+      '--system', 'linux',
+      '--distro', 'ubuntu',
+      '--distro-version', '18',
       'test1'
     ]
     rv = self.run_script(args)
@@ -137,6 +152,9 @@ packages: orange_juice pear_juice
       'packages',
       'print',
       '--root-dir', test.tmp_dir,
+      '--system', 'linux',
+      '--distro', 'ubuntu',
+      '--distro-version', '18',
       'test1'
     ]
     rv = self.run_script(args)
@@ -156,6 +174,9 @@ packages: orange_juice
       'update',
       '--artifacts', test.artifact_manager.root_dir,
       '--root-dir', test.tmp_dir,
+      '--system', 'linux',
+      '--distro', 'ubuntu',
+      '--distro-version', '18',
       'test1'
     ]
     rv = self.run_script(args)
@@ -164,6 +185,9 @@ packages: orange_juice
       'packages',
       'print',
       '--root-dir', test.tmp_dir,
+      '--system', 'linux',
+      '--distro', 'ubuntu',
+      '--distro-version', '18',
       'test1'
     ]
     rv = self.run_script(args)
