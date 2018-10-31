@@ -143,9 +143,9 @@ class test_library(unit_test):
       expected_deps = [
         '/lib/arm-linux-gnueabihf/libc.so.6',
         '/lib/arm-linux-gnueabihf/libdl.so.2',
-#        '/lib/arm-linux-gnueabihf/libncurses.so.5',
         '/lib/arm-linux-gnueabihf/libtinfo.so.5',
         '/lib/ld-linux-armhf.so.3',
+        '/usr/lib/arm-linux-gnueabihf/libarmmem.so',
       ]
     else:
       expected_deps = [
