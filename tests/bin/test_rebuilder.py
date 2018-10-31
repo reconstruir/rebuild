@@ -20,8 +20,8 @@ class test_rebuilder_script(script_unit_test):
   #DEBUG = True
 
   HOST_BUILD_TARGET = build_target.make_host_build_target(level = 'release')
-  IOS_BUILD_TARGET = build_target('ios', '', '', ( 'arm64', ), 'release')
-  ANDROID_BUILD_TARGET = build_target('android', '', '', ( 'armv7', ), 'release')
+  IOS_BUILD_TARGET = build_target('ios', None, '9', 'arm64', 'release')
+  ANDROID_BUILD_TARGET = build_target('android', '', '', 'armv7', 'release')
   
   DEFAULT_CONFIG = rebuilder_tester.config()
   
@@ -108,9 +108,9 @@ class test_rebuilder_script(script_unit_test):
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
     self.assertEqual( [ 'fructose-3.4.5-6/sources.checksums', 'fructose-3.4.5-6/targets.checksums' ], test.checksums )
-    self.assertEqual( [ 'builds/$SYSTEM-$DISTRO-$DISTRO_VERSION/x86_64/release/fructose-3.4.5-6_timestamp/temp/fructose-3.4.5-6.tar.gz', 'fructose/rebuild.recipe' ],
+    self.assertEqual( [ 'builds/$BUILD_PATH/x86_64/release/fructose-3.4.5-6_timestamp/temp/fructose-3.4.5-6.tar.gz', 'fructose/rebuild.recipe' ],
                       test.checksums_contents['fructose-3.4.5-6/sources.checksums'].filenames() )
-    self.assertEqual( [ 'artifacts/$SYSTEM-$DISTRO-$DISTRO_VERSION/x86_64/release/fructose-3.4.5-6.tar.gz' ],
+    self.assertEqual( [ 'artifacts/$BUILD_PATH/x86_64/release/fructose-3.4.5-6.tar.gz' ],
                       test.checksums_contents['fructose-3.4.5-6/targets.checksums'].filenames() )
 
   def test_tool_tfoo(self):
@@ -135,7 +135,7 @@ class test_rebuilder_script(script_unit_test):
 
   @skip_if(not toolchain_testing.can_compile_ios(), 'cannot compile ios')
   def test_lib_libstarch_ios_cross_compile(self):
-    test = self._run_test(rebuilder_tester.config(bt = self.IOS_BUILD_TARGET), self.data_dir(), 'basic', 'libstarch', '-s', 'ios')
+    test = self._run_test(rebuilder_tester.config(bt = self.IOS_BUILD_TARGET), self.data_dir(), 'basic', 'libstarch', '-s', 'ios', '-a', 'arm64', '-d', '', '--distro-version', '9')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libstarch-1.0.0.tar.gz' ], test.artifacts )
 

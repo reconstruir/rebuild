@@ -48,6 +48,7 @@ class rebuilder_tester(object):
     artifacts_dir = path.join(tmp_dir, 'artifacts', config.build_target.build_path)
     checksums_dir = path.join(tmp_dir, 'checksums', config.build_target.build_path)
     result = self.run_script(command, cwd = self._working_dir)
+    print('FUCK: finding artifacts in %s' % (artifacts_dir))
     artifacts = self._find_in_dir(artifacts_dir)
     checksums = self._find_in_dir(checksums_dir)
     droppings = self._find_in_dir(tmp_dir)
@@ -92,11 +93,14 @@ class rebuilder_tester(object):
     assert not tmp_dir.endswith(path.sep)
     result = file_checksum_list()
     for checksum in checksums:
+
+      long_form = '%s-%s-%s' % (config.build_target.system, config.build_target.distro, config.build_target.distro_version)
+      short_form = '%s-%s' % (config.build_target.system, config.build_target.distro_version)
+
       replacements = {
         tmp_dir + path.sep: '',
-        config.build_target.system: '$SYSTEM',
-        config.build_target.distro: '$DISTRO',
-        config.build_target.distro_version: '$DISTRO_VERSION',
+        long_form: '$BUILD_PATH',
+        short_form: '$BUILD_PATH',
       }
       new_filename = string_util.replace(checksum.filename, replacements)
       result.append(file_checksum(new_filename, checksum.checksum))

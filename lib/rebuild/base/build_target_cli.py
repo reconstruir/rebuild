@@ -18,6 +18,7 @@ class build_target_cli(object):
     default_level = build_level.RELEASE
     default_arch = build_arch.HOST_ARCH
     default_distro = build_system.HOST_DISTRO
+    default_distro_version = build_system.HOST_VERSION
     parser.add_argument('-s', '--system',
                         action = 'store',
                         type = str,
@@ -38,10 +39,15 @@ class build_target_cli(object):
                         type = str,
                         default = default_distro,
                         help = 'Distro. [ %s ]' % (default_distro))
+    parser.add_argument('--distro-version',
+                        action = 'store',
+                        type = str,
+                        default = default_distro_version,
+                        help = 'Distro Version. [ %s ]' % (default_distro_version))
 
   def build_target_resolve(self, args):
     args.system = build_system.parse_system(args.system)
     args.level = build_level.parse_level(args.level)
     args.arch = build_arch.parse_arch(args.arch, args.system, args.distro)
-    args.build_target = build_target(args.system, args.distro, build_system.HOST_VERSION, args.arch, args.level)
+    args.build_target = build_target(args.system, args.distro, args.distro_version, args.arch, args.level)
     return args.build_target
