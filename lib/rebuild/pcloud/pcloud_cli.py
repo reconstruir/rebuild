@@ -315,7 +315,7 @@ class pcloud_cli(object):
       data = self._pcloud.download_to_bytes(file_id = filename)
     else:
       data = self._pcloud.download_to_bytes(file_path = filename)
-    print(data)
+    print(data.decode('utf-8'))
     return 0
 
   def _command_upload(self, filename, folder, use_id):

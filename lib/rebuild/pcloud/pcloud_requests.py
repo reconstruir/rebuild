@@ -23,7 +23,7 @@ class pcloud_requests(object):
   
   @classmethod
   def get(clazz, api_method, params):
-    url = clazz._make_api_url(api_method)
+    url = clazz.make_api_url(api_method)
     data = urlencode(params).encode('utf-8')
     req = Request(url, data = data)
     response = urlopen(req)
@@ -34,7 +34,23 @@ class pcloud_requests(object):
     else:
       payload = None
     return clazz._response(url, status_code, payload)
-  
+
   @classmethod
-  def _make_api_url(clazz, method):
+  def download_to_stream(clazz, links, stream, file_path = None, file_id = None):
+    assert file_path or file_id
+    url = 'https://{host}{path}'.format(host = links.hosts[0], path = links.path)
+    response = urlopen(url)
+    status_code = response.getcode()
+    if status_code != 200:
+      return clazz._response(url, status_code, None)
+    chunk_size = 1024
+    while True:
+      chunk = response.read(chunk_size)
+      if not chunk:
+        break
+      stream.write(chunk)
+    return clazz._response(url, status_code, None)
+
+  @classmethod
+  def make_api_url(clazz, method):
     return urljoin(clazz.API, method)

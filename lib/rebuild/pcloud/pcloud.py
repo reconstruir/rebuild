@@ -1,10 +1,9 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import hashlib, os.path as path, requests
+import hashlib, os.path as path
 from io import BytesIO
 from collections import namedtuple
 
-from bes.compat.url_compat import urljoin
 from bes.common import check, node
 from bes.fs import file_path, file_util
 
@@ -243,7 +242,7 @@ class pcloud(object):
       self.ensure_folder(folder_path)
     
     files = { cloud_filename: open(local_path, 'rb') }
-    url = self._make_api_url('uploadfile')
+    url = pcloud_requests.make_api_url('uploadfile')
     params = {
       'auth': self._auth_token,
       'filename': cloud_filename,
@@ -255,6 +254,7 @@ class pcloud(object):
     if folder_id:
       what = folder_id
       params.update({ 'folderid': folder_id })
+    import requests
     response  = requests.post(url, data = params, files = files)
     if response.status_code != 200:
       raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
@@ -268,23 +268,19 @@ class pcloud(object):
   def download_to_file(self, target, file_path = None, file_id = None):
     'Download file to target.'
     links = self.getfilelink(file_path = file_path, file_id = file_id)
-    url = 'https://{host}{path}'.format(host = links.hosts[0], path = links.path)
-    req = requests.get(url, stream = True)
-    file_util.ensure_file_dir(target)
     with open(target, 'wb') as fout:
-      for chunk in req.iter_content(chunk_size = 1024): 
-        if chunk: # filter out keep-alive new chunks
-          fout.write(chunk)
+      response = pcloud_requests.download_to_stream(links, fout, file_path = file_path, file_id = file_id)
+      if response.status_code != 200:
+        raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
+      fout.close()
 
   def download_to_bytes(self, file_path = None, file_id = None):
     'Download file to target.'
     links = self.getfilelink(file_path = file_path, file_id = file_id)
-    url = 'https://{host}{path}'.format(host = links.hosts[0], path = links.path)
-    req = requests.get(url, stream = True)
     buf = BytesIO()
-    for chunk in req.iter_content(chunk_size = 1024): 
-      if chunk: # filter out keep-alive new chunks
-        buf.write(chunk)
+    response = pcloud_requests.download_to_stream(links, buf, file_path = file_path, file_id = file_id)
+    if response.status_code != 200:
+      raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
     return buf.getvalue()
           
   @classmethod
@@ -321,10 +317,6 @@ class pcloud(object):
     assert 'auth' in payload
     return payload['auth']
   
-  @classmethod
-  def _make_api_url(clazz, method):
-    return urljoin(clazz.API, method)
-
   @classmethod
   def _make_item_node(clazz, item):
     if item.is_folder:
