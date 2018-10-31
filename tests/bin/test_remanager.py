@@ -42,6 +42,7 @@ packages: fiber
       '--system', 'linux',
       '--distro', 'ubuntu',
       '--distro-version', '18',
+      '--level', 'release',
       'test1',
     ]
     rv = self.run_script(args)
@@ -54,6 +55,7 @@ packages: fiber
       '--system', 'linux',
       '--distro', 'ubuntu',
       '--distro-version', '18',
+      '--level', 'release',
       'test1'
     ]
     rv = self.run_script(args)
@@ -79,6 +81,7 @@ packages: apple pear_juice
       '--system', 'linux',
       '--distro', 'ubuntu',
       '--distro-version', '18',
+      '--level', 'release',
       'test1'
     ]
     rv = self.run_script(args)
@@ -91,6 +94,7 @@ packages: apple pear_juice
       '--system', 'linux',
       '--distro', 'ubuntu',
       '--distro-version', '18',
+      '--level', 'release',
       'test1'
     ]
     rv = self.run_script(args)
@@ -113,6 +117,7 @@ packages: orange_juice
       '--system', 'linux',
       '--distro', 'ubuntu',
       '--distro-version', '18',
+      '--level', 'release',
       'test1'
     ]
     rv = self.run_script(args)
@@ -124,6 +129,7 @@ packages: orange_juice
       '--system', 'linux',
       '--distro', 'ubuntu',
       '--distro-version', '18',
+      '--level', 'release',
       'test1'
     ]
     rv = self.run_script(args)
@@ -144,6 +150,7 @@ packages: orange_juice pear_juice
       '--system', 'linux',
       '--distro', 'ubuntu',
       '--distro-version', '18',
+      '--level', 'release',
       'test1'
     ]
     rv = self.run_script(args)
@@ -155,6 +162,7 @@ packages: orange_juice pear_juice
       '--system', 'linux',
       '--distro', 'ubuntu',
       '--distro-version', '18',
+      '--level', 'release',
       'test1'
     ]
     rv = self.run_script(args)
@@ -177,6 +185,7 @@ packages: orange_juice
       '--system', 'linux',
       '--distro', 'ubuntu',
       '--distro-version', '18',
+      '--level', 'release',
       'test1'
     ]
     rv = self.run_script(args)
@@ -188,6 +197,7 @@ packages: orange_juice
       '--system', 'linux',
       '--distro', 'ubuntu',
       '--distro-version', '18',
+      '--level', 'release',
       'test1'
     ]
     rv = self.run_script(args)
@@ -202,6 +212,10 @@ packages: orange_juice pear_juice
     file_util.save(path.join(test.tmp_dir, 'config'), content = config)
     cmd = [
       path.join(test.tmp_dir, 'update.sh'),
+      '--system', 'linux',
+      '--distro', 'ubuntu',
+      '--distro-version', '18',
+      '--level', 'release',
       'test1'
     ]
     env = os_env.make_clean_env(keep_keys = [ 'PYTHONPATH' ],
@@ -214,7 +228,10 @@ packages: orange_juice pear_juice
       'packages',
       'print',
       '--root-dir', test.tmp_dir,
+      '--level', 'release',
       '--system', 'linux',
+      '--distro', 'ubuntu',
+      '--distro-version', '18',
       '--level', 'release',
       'test1'
     ]
