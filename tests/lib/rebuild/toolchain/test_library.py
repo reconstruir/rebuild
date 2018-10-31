@@ -146,7 +146,7 @@ class test_library(unit_test):
         '/lib/arm-linux-gnueabihf/libtinfo.so.5',
         '/lib/ld-linux-armhf.so.3',
       ]
-      if host.DISTRO == 'raspian':
+      if host.DISTRO == 'raspbian':
         expected_deps.append('/usr/lib/arm-linux-gnueabihf/libarmmem.so')
     else:
       expected_deps = [

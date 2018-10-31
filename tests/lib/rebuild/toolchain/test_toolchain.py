@@ -5,6 +5,7 @@ import os.path as path
 from bes.testing.unit_test import unit_test
 from rebuild.base import build_target, build_system
 from rebuild.toolchain import compiler, toolchain, toolchain_testing
+from bes.system import host
 from bes.fs import file_util, temp_file
 from bes.common import object_util, variable
 from bes.testing.unit_test.unit_test_skip import skip_if
@@ -54,7 +55,7 @@ int main(int argc, char* argv[])
   def test_compile_cc_linux(self):
     tmp_dir = self._make_temp_dir()
     src = self._make_temp_source(tmp_dir, 'test.c', self.CC_SOURCE)
-    cc = self._make_compiler(build_system.LINUX, 'x86_64')
+    cc = self._make_compiler(build_system.LINUX, host.ARCH)
     targets = cc.compile_c(src)
     self.assertEqual( 1, len(targets) )
     self.assertTrue( path.exists(targets[0][1]) )
