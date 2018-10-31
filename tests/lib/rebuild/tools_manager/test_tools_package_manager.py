@@ -10,6 +10,7 @@ from rebuild.package import artifact_manager
 from rebuild.base import build_target, package_descriptor
 from rebuild.tools_manager import tools_package_manager
 from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT
+from _rebuild_testing.fake_package_recipes import fake_package_recipes as RECIPES
 from rebuild.base import build_target as BT
 
 class test_tools_package_manager(unit_test):
@@ -31,7 +32,7 @@ class test_tools_package_manager(unit_test):
   def _make_test_artifact_manager(clazz):
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
     return FPUT.make_artifact_manager(debug = clazz.DEBUG,
-                                      recipes = FPUT.TEST_RECIPES,
+                                      recipes = RECIPES.FOODS,
                                       build_target = clazz.TEST_BUILD_TARGET,
                                       mutations = mutations)
 

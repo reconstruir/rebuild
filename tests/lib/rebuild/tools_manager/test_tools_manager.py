@@ -8,6 +8,7 @@ from rebuild.base import build_target, build_system, build_level, package_descri
 from rebuild.package import artifact_manager
 from rebuild.tools_manager import tools_manager
 from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT
+from _rebuild_testing.fake_package_recipes import fake_package_recipes as RECIPES
 
 class test_tools_manager(unit_test):
 
@@ -25,7 +26,7 @@ class test_tools_manager(unit_test):
 
   def test_update(self):
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
-    am = FPUT.make_artifact_manager(self.DEBUG, FPUT.TEST_RECIPES, self.TEST_BUILD_TARGET, mutations)
+    am = FPUT.make_artifact_manager(self.DEBUG, RECIPES.FOODS, self.TEST_BUILD_TARGET, mutations)
     tm = self._make_test_tm()
     packages = [
       package_descriptor.parse('water-1.0.0-0'),

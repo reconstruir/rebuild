@@ -10,6 +10,7 @@ from rebuild.base import build_target, build_system, build_level, package_descri
 from rebuild.package import artifact_manager
 from rebuild.tools_manager import new_tools_manager as TM
 from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT
+from _rebuild_testing.fake_package_recipes import fake_package_recipes as RECIPES
 
 from _rebuild_testing.rebuilder_tester import rebuilder_tester
 
@@ -27,7 +28,7 @@ class test_new_tools_manager(script_unit_test):
   def _make_test_artifact_manager(clazz):
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
     return FPUT.make_artifact_manager(debug = clazz.DEBUG,
-                                      recipes = clazz._RECIPES,
+                                      recipes = RECIPES.KNIFE,
                                       build_target = clazz.TEST_BUILD_TARGET,
                                       mutations = mutations)
   
@@ -92,44 +93,5 @@ class test_new_tools_manager(script_unit_test):
     self.assertEqual( 'tfoo_env1', env['TFOO_ENV1'] )
     self.assertEqual( 'tfoo_env2', env['TFOO_ENV2'] )
 
-  _RECIPES = '''
-fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
-  files
-    bin/cut.sh
-      \#!/bin/sh
-      echo cut.sh: ${1+"$@"} ; exit 0
-  c_programs
-    bin/cut.exe
-      sources
-        main.c
-          \#include <stdio.h>
-          int main(int argc, char* argv[]) {
-            char** arg;
-            if (argc < 2) {
-              fprintf(stderr, "Usage: cut.exe args\\n");
-              return 1;
-            }
-            fprintf(stdout, "cut.exe: ");
-            for(arg = argv + 1; *arg != NULL; ++arg) {
-              fprintf(stdout, "%s ", *arg);
-            }
-            fprintf(stdout, "\\n");
-            return 0;
-          }
-  static_c_libs
-    lib/libfoo.a
-      sources
-        foo.c
-          int foo(int x) {
-            return x + 1;
-          }
-      headers
-        foo.h
-          \#ifndef __FOO_H__
-          \#define __FOO_H__
-          extern int foo(int x);
-          \#endif /* __FOO_H__ */
-'''
-  
 if __name__ == '__main__':
   script_unit_test.main()
