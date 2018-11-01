@@ -31,7 +31,7 @@ class test_artifact_manager(unit_test):
     filename = am.publish(tmp_tarball, self.LINUX_BT, False)
     self.assertTrue( path.exists(filename) )
     expected = [
-      AD('apple', '1.2.3', 1, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
+      AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'),
     ]
     self.assertEqual( expected, am.list_all_by_descriptor() )
 
@@ -41,7 +41,7 @@ class test_artifact_manager(unit_test):
     filename = am.publish(tmp_tarball, self.LINUX_BT, False)
     self.assertTrue( path.exists(filename) )
     expected = [
-      AD('apple', '1.2.3', 1, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
+      AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'),
     ]
     self.assertEqual( expected, am.list_all_by_descriptor() )
     filename = am.publish(tmp_tarball, self.LINUX_BT, True)
@@ -53,7 +53,7 @@ class test_artifact_manager(unit_test):
     filename = am.publish(tmp_tarball, self.LINUX_BT, False)
     self.assertTrue( path.exists(filename) )
     expected = [
-      AD('apple', '1.2.3', 1, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
+      AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'),
     ]
     self.assertEqual( expected, am.list_all_by_descriptor() )
     with self.assertRaises(AlreadyInstalledError) as context:
@@ -88,20 +88,20 @@ class test_artifact_manager(unit_test):
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
     am = FPUT.make_artifact_manager(self.DEBUG, RECIPES.FOODS, self.LINUX_BT, mutations)
     expected = [
-      AD('apple', '1.2.3', 1, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
-      AD('arsenic', '1.2.9', 1, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
-      AD('citrus', '1.0.0', 2, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
-      AD('fiber', '1.0.0', 0, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
-      AD('fructose', '3.4.5', 6, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
-      AD('fruit', '1.0.0', 0, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
-      AD('knife', '1.0.0', 0, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
-      AD('mercury', '1.2.9', 0, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
-      AD('orange', '6.5.4', 3, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
-      AD('orange_juice', '1.4.5', 0, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
-      AD('pear', '1.2.3', 1, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
-      AD('pear_juice', '6.6.6', 0, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
-      AD('smoothie', '1.0.0', 0, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
-      AD('water', '1.0.0', 2, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
+      AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('arsenic;1.2.9;1;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('citrus;1.0.0;2;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('fiber;1.0.0;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('fructose;3.4.5;6;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('fruit;1.0.0;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('knife;1.0.0;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('mercury;1.2.9;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('orange;6.5.4;3;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('orange_juice;1.4.5;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('pear;1.2.3;1;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('pear_juice;6.6.6;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('smoothie;1.0.0;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('water;1.0.0;2;0;linux;release;x86_64;ubuntu;18'),
     ]
     self.assertEqual( expected, am.list_latest_versions(self.LINUX_BT) )
 
@@ -110,20 +110,20 @@ class test_artifact_manager(unit_test):
     mutations = { 'system': 'macos', 'distro': '', 'distro_version': '10.14' }
     am = FPUT.make_artifact_manager(self.DEBUG, RECIPES.FOODS, self.MACOS_BT, mutations)
     expected = [
-      AD('apple', '1.2.3', 1, 0, 'macos', 'release', 'x86_64', '', '10.14'),
-      AD('arsenic', '1.2.9', 1, 0, 'macos', 'release', 'x86_64', '', '10.14'),
-      AD('citrus', '1.0.0', 2, 0, 'macos', 'release', 'x86_64', '', '10.14'),
-      AD('fiber', '1.0.0', 0, 0, 'macos', 'release', 'x86_64', '', '10.14'),
-      AD('fructose', '3.4.5', 6, 0, 'macos', 'release', 'x86_64', '', '10.14'),
-      AD('fruit', '1.0.0', 0, 0, 'macos', 'release', 'x86_64', '', '10.14'),
-      AD('knife', '1.0.0', 0, 0, 'macos', 'release', 'x86_64', '', '10.14'),
-      AD('mercury', '1.2.9', 0, 0, 'macos', 'release', 'x86_64', '', '10.14'),
-      AD('orange', '6.5.4', 3, 0, 'macos', 'release', 'x86_64', '', '10.14'),
-      AD('orange_juice', '1.4.5', 0, 0, 'macos', 'release', 'x86_64', '', '10.14'),
-      AD('pear', '1.2.3', 1, 0, 'macos', 'release', 'x86_64', '', '10.14'),
-      AD('pear_juice', '6.6.6', 0, 0, 'macos', 'release', 'x86_64', '', '10.14'),
-      AD('smoothie', '1.0.0', 0, 0, 'macos', 'release', 'x86_64', '', '10.14'),
-      AD('water', '1.0.0', 2, 0, 'macos', 'release', 'x86_64', '', '10.14'),
+      AD.parse('apple;1.2.3;1;0;macos;release;x86_64;;10.14'),
+      AD.parse('arsenic;1.2.9;1;0;macos;release;x86_64;;10.14'),
+      AD.parse('citrus;1.0.0;2;0;macos;release;x86_64;;10.14'),
+      AD.parse('fiber;1.0.0;0;0;macos;release;x86_64;;10.14'),
+      AD.parse('fructose;3.4.5;6;0;macos;release;x86_64;;10.14'),
+      AD.parse('fruit;1.0.0;0;0;macos;release;x86_64;;10.14'),
+      AD.parse('knife;1.0.0;0;0;macos;release;x86_64;;10.14'),
+      AD.parse('mercury;1.2.9;0;0;macos;release;x86_64;;10.14'),
+      AD.parse('orange;6.5.4;3;0;macos;release;x86_64;;10.14'),
+      AD.parse('orange_juice;1.4.5;0;0;macos;release;x86_64;;10.14'),
+      AD.parse('pear;1.2.3;1;0;macos;release;x86_64;;10.14'),
+      AD.parse('pear_juice;6.6.6;0;0;macos;release;x86_64;;10.14'),
+      AD.parse('smoothie;1.0.0;0;0;macos;release;x86_64;;10.14'),
+      AD.parse('water;1.0.0;2;0;macos;release;x86_64;;10.14'),
     ]
     self.assertEqual( expected, am.list_latest_versions(self.MACOS_BT) )
 
