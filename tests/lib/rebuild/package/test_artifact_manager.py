@@ -3,7 +3,7 @@
 
 import os.path as path
 from bes.testing.unit_test import unit_test
-from bes.fs import temp_file
+from bes.fs import file_find, temp_file
 from rebuild.base import build_target, package_descriptor as PD
 from rebuild.package import artifact_manager, artifact_descriptor as AD
 from rebuild.package.db_error import *
@@ -126,6 +126,89 @@ class test_artifact_manager(unit_test):
       AD.parse('water;1.0.0;2;0;macos;release;x86_64;;10.14'),
     ]
     self.assertEqual( expected, am.list_latest_versions(self.MACOS_BT) )
+
+  def test_remove_artifact(self):
+    self.maxDiff = None
+    mutations = { 'system': 'macos', 'distro': '', 'distro_version': '10.14' }
+    am = FPUT.make_artifact_manager(self.DEBUG, RECIPES.FOODS, self.MACOS_BT, mutations)
+    expected = [
+      AD.parse('apple;1.2.3;1;0;macos;release;x86_64;;10.14'),
+      AD.parse('arsenic;1.2.9;1;0;macos;release;x86_64;;10.14'),
+      AD.parse('citrus;1.0.0;2;0;macos;release;x86_64;;10.14'),
+      AD.parse('fiber;1.0.0;0;0;macos;release;x86_64;;10.14'),
+      AD.parse('fructose;3.4.5;6;0;macos;release;x86_64;;10.14'),
+      AD.parse('fruit;1.0.0;0;0;macos;release;x86_64;;10.14'),
+      AD.parse('knife;1.0.0;0;0;macos;release;x86_64;;10.14'),
+      AD.parse('mercury;1.2.9;0;0;macos;release;x86_64;;10.14'),
+      AD.parse('orange;6.5.4;3;0;macos;release;x86_64;;10.14'),
+      AD.parse('orange_juice;1.4.5;0;0;macos;release;x86_64;;10.14'),
+      AD.parse('pear;1.2.3;1;0;macos;release;x86_64;;10.14'),
+      AD.parse('pear_juice;6.6.6;0;0;macos;release;x86_64;;10.14'),
+      AD.parse('smoothie;1.0.0;0;0;macos;release;x86_64;;10.14'),
+      AD.parse('water;1.0.0;2;0;macos;release;x86_64;;10.14'),
+    ]
+    self.assertEqual( expected, am.list_latest_versions(self.MACOS_BT) )
+    self.assertEqual( [
+      'artifacts.db',
+      'macos-10.14/x86_64/release/apple-1.2.3-1.tar.gz',
+      'macos-10.14/x86_64/release/arsenic-1.2.10.tar.gz',
+      'macos-10.14/x86_64/release/arsenic-1.2.9-1.tar.gz',
+      'macos-10.14/x86_64/release/arsenic-1.2.9.tar.gz',
+      'macos-10.14/x86_64/release/citrus-1.0.0-2.tar.gz',
+      'macos-10.14/x86_64/release/fiber-1.0.0.tar.gz',
+      'macos-10.14/x86_64/release/fructose-3.4.5-6.tar.gz',
+      'macos-10.14/x86_64/release/fruit-1.0.0.tar.gz',
+      'macos-10.14/x86_64/release/knife-1.0.0.tar.gz',
+      'macos-10.14/x86_64/release/mercury-1.2.8-1.tar.gz',
+      'macos-10.14/x86_64/release/mercury-1.2.8.tar.gz',
+      'macos-10.14/x86_64/release/mercury-1.2.9.tar.gz',
+      'macos-10.14/x86_64/release/orange-6.5.4-3.tar.gz',
+      'macos-10.14/x86_64/release/orange_juice-1.4.5.tar.gz',
+      'macos-10.14/x86_64/release/pear-1.2.3-1.tar.gz',
+      'macos-10.14/x86_64/release/pear_juice-6.6.6.tar.gz',
+      'macos-10.14/x86_64/release/smoothie-1.0.0.tar.gz',
+      'macos-10.14/x86_64/release/water-1.0.0-1.tar.gz',
+      'macos-10.14/x86_64/release/water-1.0.0-2.tar.gz',
+      'macos-10.14/x86_64/release/water-1.0.0.tar.gz',
+      ], file_find.find(am.root_dir) )
+    am.remove_artifact(AD.parse('apple;1.2.3;1;0;macos;release;x86_64;;10.14'))
+    am.remove_artifact(AD.parse('smoothie;1.0.0;0;0;macos;release;x86_64;;10.14'))
+    expected = [
+      AD.parse('arsenic;1.2.9;1;0;macos;release;x86_64;;10.14'),
+      AD.parse('citrus;1.0.0;2;0;macos;release;x86_64;;10.14'),
+      AD.parse('fiber;1.0.0;0;0;macos;release;x86_64;;10.14'),
+      AD.parse('fructose;3.4.5;6;0;macos;release;x86_64;;10.14'),
+      AD.parse('fruit;1.0.0;0;0;macos;release;x86_64;;10.14'),
+      AD.parse('knife;1.0.0;0;0;macos;release;x86_64;;10.14'),
+      AD.parse('mercury;1.2.9;0;0;macos;release;x86_64;;10.14'),
+      AD.parse('orange;6.5.4;3;0;macos;release;x86_64;;10.14'),
+      AD.parse('orange_juice;1.4.5;0;0;macos;release;x86_64;;10.14'),
+      AD.parse('pear;1.2.3;1;0;macos;release;x86_64;;10.14'),
+      AD.parse('pear_juice;6.6.6;0;0;macos;release;x86_64;;10.14'),
+      AD.parse('water;1.0.0;2;0;macos;release;x86_64;;10.14'),
+    ]
+    self.assertEqual( expected, am.list_latest_versions(self.MACOS_BT) )
+    self.assertEqual( [
+      'artifacts.db',
+      'macos-10.14/x86_64/release/arsenic-1.2.10.tar.gz',
+      'macos-10.14/x86_64/release/arsenic-1.2.9-1.tar.gz',
+      'macos-10.14/x86_64/release/arsenic-1.2.9.tar.gz',
+      'macos-10.14/x86_64/release/citrus-1.0.0-2.tar.gz',
+      'macos-10.14/x86_64/release/fiber-1.0.0.tar.gz',
+      'macos-10.14/x86_64/release/fructose-3.4.5-6.tar.gz',
+      'macos-10.14/x86_64/release/fruit-1.0.0.tar.gz',
+      'macos-10.14/x86_64/release/knife-1.0.0.tar.gz',
+      'macos-10.14/x86_64/release/mercury-1.2.8-1.tar.gz',
+      'macos-10.14/x86_64/release/mercury-1.2.8.tar.gz',
+      'macos-10.14/x86_64/release/mercury-1.2.9.tar.gz',
+      'macos-10.14/x86_64/release/orange-6.5.4-3.tar.gz',
+      'macos-10.14/x86_64/release/orange_juice-1.4.5.tar.gz',
+      'macos-10.14/x86_64/release/pear-1.2.3-1.tar.gz',
+      'macos-10.14/x86_64/release/pear_juice-6.6.6.tar.gz',
+      'macos-10.14/x86_64/release/water-1.0.0-1.tar.gz',
+      'macos-10.14/x86_64/release/water-1.0.0-2.tar.gz',
+      'macos-10.14/x86_64/release/water-1.0.0.tar.gz',
+      ], file_find.find(am.root_dir) )
 
 if __name__ == '__main__':
   unit_test.main()

@@ -72,6 +72,15 @@ class artifact_manager(object):
       self._db.add_artifact(pkg_metadata)
     return artifact_path_abs
 
+  def remove_artifact(self, adesc):
+    check.check_artifact_descriptor(adesc)
+    md = self.find_by_artifact_descriptor(adesc, relative_filename = False)
+    if not md:
+      raise NotInstalledError('package \"%s\" not found' % (str(adesc)))
+    print('filename: %s' % (md.filename))
+    file_util.remove(md.filename)
+    self._db.remove_artifact(adesc)
+      
   def latest_packages(self, package_names, build_target):
     result = []
     available_packages = self.list_all_by_metadata(build_target = build_target)
@@ -114,9 +123,9 @@ class artifact_manager(object):
                                 build_target.distro, build_target.distro_version)
     return self.find_by_artifact_descriptor(adesc, relative_filename = relative_filename)
 
-  def find_by_artifact_descriptor(self, artifact_descriptor, relative_filename = True):
-    check.check_artifact_descriptor(artifact_descriptor)
-    md = self._db.get_artifact(artifact_descriptor)
+  def find_by_artifact_descriptor(self, adesc, relative_filename = True):
+    check.check_artifact_descriptor(adesc)
+    md = self._db.get_artifact(adesc)
     if relative_filename:
       return md
     return md.clone_with_filename(path.join(self._root_dir, md.filename))
