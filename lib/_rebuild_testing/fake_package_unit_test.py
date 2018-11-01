@@ -59,5 +59,5 @@ class fake_package_unit_test(object):
       check.check_build_target(build_target)
       tmp_packages = fake_package_unit_test.create_many_packages(recipes, mutations)
       for tmp_package in tmp_packages:
-        am.publish(tmp_package, build_target, False)
+        am.publish(tmp_package, build_target, False, None)
     return am

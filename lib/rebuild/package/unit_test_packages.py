@@ -57,7 +57,7 @@ class unit_test_packages(object):
 
   def create_package(self, root_dir):
     package = self.make_test_package(self.pm, debug = self.debug)
-    artifact_path = package.metadata.package_descriptor.artifact_path(package.metadata.build_target)
+    artifact_path = package.metadata.package_descriptor.artifact_path(package.metadata.build_target, False)
     target_path = path.join(root_dir, artifact_path)
     file_util.rename(package.tarball, target_path)
     if self.debug:

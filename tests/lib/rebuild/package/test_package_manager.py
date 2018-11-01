@@ -174,9 +174,9 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
     bar_tarball = FPUT.create_one_package(bar_recipe, mutations)
     baz_tarball = FPUT.create_one_package(baz_recipe, mutations)
 
-    pm._artifact_manager.publish(foo_tarball, bt, False)
-    pm._artifact_manager.publish(bar_tarball, bt, False)
-    pm._artifact_manager.publish(baz_tarball, bt, False)
+    pm._artifact_manager.publish(foo_tarball, bt, False, None)
+    pm._artifact_manager.publish(bar_tarball, bt, False, None)
+    pm._artifact_manager.publish(baz_tarball, bt, False, None)
     
     pm.install_tarball(foo_tarball, ['BUILD', 'RUN'])
     pm.install_tarball(bar_tarball, ['BUILD', 'RUN'])

@@ -51,20 +51,20 @@ class artifact_manager(object):
   def _reset(self):
     self._requirement_managers = {}
     
-  def artifact_path(self, package_descriptor, build_target, relative = False):
+  def artifact_path(self, package_descriptor, build_target, relative):
     filename = '%s.tar.gz' % (package_descriptor.full_name)
     relative_path = path.join(build_target.build_path, filename)
     if relative:
       return relative_path
     return path.join(self._root_dir, relative_path)
 
-  def publish(self, tarball, build_target, allow_replace, metadata = None):
+  def publish(self, tarball, build_target, allow_replace, metadata):
     if not metadata:
       metadata = package(tarball).metadata
     check.check_package_metadata(metadata)
     pkg_desc = metadata.package_descriptor
-    artifact_path_rel = self.artifact_path(pkg_desc, build_target, relative = True)
-    artifact_path_abs = self.artifact_path(pkg_desc, build_target, relative = False)
+    artifact_path_rel = self.artifact_path(pkg_desc, build_target, True)
+    artifact_path_abs = self.artifact_path(pkg_desc, build_target, False)
     file_util.copy(tarball, artifact_path_abs, use_hard_link = True)
     self._reset()
     pkg_metadata = metadata.clone_with_filename(artifact_path_rel)
@@ -77,7 +77,7 @@ class artifact_manager(object):
 
   def remove_artifact(self, adesc):
     check.check_artifact_descriptor(adesc)
-    md = self.find_by_artifact_descriptor(adesc, relative_filename = False)
+    md = self.find_by_artifact_descriptor(adesc, False)
     if not md:
       raise NotInstalledError('package \"%s\" not found' % (str(adesc)))
     file_util.remove(md.filename)
@@ -85,7 +85,7 @@ class artifact_manager(object):
       
   def latest_packages(self, package_names, build_target):
     result = []
-    available_packages = self.list_all_by_metadata(build_target = build_target)
+    available_packages = self.list_all_by_metadata(build_target)
     for package_name in package_names:
       available_package = self._find_latest_package(package_name, available_packages)
       if not available_package:
@@ -104,28 +104,28 @@ class artifact_manager(object):
       candidates = sorted(candidates, reverse = True)
     return candidates[-1]
   
-  def list_all_by_descriptor(self, build_target = None):
-    return self._db.list_all_by_descriptor(build_target = build_target)
+  def list_all_by_descriptor(self, build_target):
+    return self._db.list_all_by_descriptor(build_target)
 
-  def list_all_by_metadata(self, build_target = None):
-    return self._db.list_all_by_metadata(build_target = build_target)
+  def list_all_by_metadata(self, build_target):
+    return self._db.list_all_by_metadata(build_target)
 
-  def list_all_by_package_descriptor(self, build_target = None):
-    return self._db.list_all_by_package_descriptor(build_target = build_target)
+  def list_all_by_package_descriptor(self, build_target):
+    return self._db.list_all_by_package_descriptor(build_target)
 
   def list_latest_versions(self, build_target):
-    return self.list_all_by_descriptor(build_target = build_target).latest_versions()
+    return self.list_all_by_descriptor(build_target).latest_versions()
     
-  def find_by_package_descriptor(self, package_descriptor, build_target, relative_filename = True):
+  def find_by_package_descriptor(self, package_descriptor, build_target, relative_filename):
     check.check_package_descriptor(package_descriptor)
     check.check_build_target(build_target)
     adesc = artifact_descriptor(package_descriptor.name, package_descriptor.version.upstream_version,
                                 package_descriptor.version.revision, package_descriptor.version.epoch,
                                 build_target.system, build_target.level, build_target.arch,
                                 build_target.distro, build_target.distro_version)
-    return self.find_by_artifact_descriptor(adesc, relative_filename = relative_filename)
+    return self.find_by_artifact_descriptor(adesc, relative_filename)
 
-  def find_by_artifact_descriptor(self, adesc, relative_filename = True):
+  def find_by_artifact_descriptor(self, adesc, relative_filename):
     check.check_artifact_descriptor(adesc)
     md = self._db.get_artifact(adesc)
     if relative_filename:
@@ -153,7 +153,7 @@ class artifact_manager(object):
   def _make_requirement_manager(self, build_target):
     self._timer.start('_make_requirement_manager() for %s' % (str(build_target)))
     rm = requirement_manager()
-    latest_versions = self.list_all_by_package_descriptor(build_target = build_target).latest_versions()
+    latest_versions = self.list_all_by_package_descriptor(build_target).latest_versions()
     for pkg_desc in latest_versions:
       rm.add_package(pkg_desc)
     self._timer.stop()

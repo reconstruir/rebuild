@@ -49,7 +49,7 @@ fake_package mytool 1.2.3 1 0 linux release x86_64 ubuntu 18
     am = FPUT.make_artifact_manager()
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
     tmp_tarball = FPUT.create_one_package(recipe, mutations)
-    am.publish(tmp_tarball, bt, False)
+    am.publish(tmp_tarball, bt, False, None)
     desc = package_descriptor.parse('mytool-1.2.3-1')
     packages = [
       desc
