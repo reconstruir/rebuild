@@ -77,7 +77,6 @@ class artifact_manager(object):
     md = self.find_by_artifact_descriptor(adesc, relative_filename = False)
     if not md:
       raise NotInstalledError('package \"%s\" not found' % (str(adesc)))
-    print('filename: %s' % (md.filename))
     file_util.remove(md.filename)
     self._db.remove_artifact(adesc)
       
