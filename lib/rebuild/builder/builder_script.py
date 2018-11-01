@@ -49,6 +49,10 @@ class builder_script(object):
     self.temp_dir = path.join(self.working_dir, 'temp')
     self.python_lib_dir = path.join(self.staged_files_dir, 'lib/python')
     self.requirements_manager = package_manager(path.join(self.working_dir, 'requirements'), env.artifact_manager)
+    if env.caca_artifact_manager:
+      self.caca_requirements_manager = package_manager(self.requirements_manager.root_dir, env.caca_artifact_manager)
+    else:
+      self.caca_requirements_manager = None
     self.substitutions = {
       'REBUILD_BUILD_DIR': self.build_dir,
       'REBUILD_PACKAGE_DESCRIPTION':  self.descriptor.name,

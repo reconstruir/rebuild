@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os, os.path as path
@@ -17,16 +16,20 @@ class step_setup_install_requirements(step):
   def execute(self, script, env, values, inputs):
     package_desc = script.descriptor
     requirements = env.requirement_manager.resolve_deps([package_desc.name],
-                                                             env.config.build_target.system,
-                                                             ['BUILD', 'RUN'],
-                                                             False)
+                                                        env.config.build_target.system,
+                                                        ['BUILD', 'RUN'],
+                                                        False)
     build_blurb.blurb('rebuild', '%s - requirements: %s' % (package_desc.name, ' '.join([ p.name for p in requirements])))
 
     if not requirements:
       message = 'No requirements for %s' % (script.descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
-    
+
+#    try:
     script.requirements_manager.install_packages(requirements,
                                                  script.build_target, ['BUILD', 'RUN'])
+#    except Exception as ex:
+#      script.caca_requirements_manager.install_packages(requirements,
+#                                                        script.build_target, ['BUILD', 'RUN'])
     return step_result(True, None)

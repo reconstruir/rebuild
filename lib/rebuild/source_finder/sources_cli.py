@@ -131,14 +131,12 @@ class sources_cli(object):
     if verification_checksum != local_checksum:
       print('Failed to verify checksum.  Something went wrong.')
     db = source_finder_db_pcloud(self._pcloud)
-    print('Downloading db.')
     key = file_util.remove_head(remote_path, self._pcloud_root_dir)
     db.load()
     if key in db:
       print('File alaready in db something is wrong: %s.' % (key))
       return 1
     db[key] = source_finder_db_entry(key, local_mtime, local_checksum)
-    print('Uploading db.')
     db.save()
     return 0
 

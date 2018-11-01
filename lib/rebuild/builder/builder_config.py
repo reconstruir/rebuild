@@ -40,6 +40,8 @@ class builder_config(object):
     self.timer = noop_debug_timer('perf', 'debug') 
     self._performance = False
     self._trash_dir = None
+    self.artifacts_dir = None
+    self.download_only = False
     
   def builds_dir(self, build_target):
     return path.join(self.build_root, 'builds', build_target.build_path)

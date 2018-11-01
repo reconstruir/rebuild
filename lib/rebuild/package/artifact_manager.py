@@ -9,6 +9,7 @@ from bes.fs import file_util
 from bes.debug import debug_timer, noop_debug_timer
 from rebuild.base import requirement_manager
 
+from .artifact_manager_base import artifact_manager_base
 from .artifact_db import artifact_db
 from .artifact_descriptor import artifact_descriptor
 from .db_error import *
@@ -17,6 +18,7 @@ from .package import package
 #log.configure('artifact_manager=debug')
 
 class artifact_manager(object):
+#class artifact_manager(artifact_manager_base):
 
   def __init__(self, root_dir):
     check.check_string(root_dir)
@@ -38,6 +40,7 @@ class artifact_manager(object):
 
     self._db = artifact_db(path.join(self._root_dir, 'artifacts.db'))
 
+  #@abstractmethod
   def reload_db(self):
     self._db = artifact_db(path.join(self._root_dir, 'artifacts.db'))
   

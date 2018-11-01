@@ -60,7 +60,13 @@ class builder_cli(build_target_cli):
     self.parser.add_argument('--timestamp', default = None, action = 'store', type = str,
                              help = 'Timestamp to use for build working build directory droppings.  For predictable unit tests. [ None]')
     self.parser.add_argument('--performance', default = None, action = 'store_true',
-                             help = 'Print performance information. [ None]')
+                             help = 'Print performance information. [ None ]')
+    self.parser.add_argument('--artifacts', default = None,
+                             action = 'store', type = str,
+                             help = 'Prefix for third party source binaries. [ None ]')
+    self.parser.add_argument('--download-only', default = None, action = 'store_true',
+                             help = 'Only download stuff needed for the build without building anything. [ True ]')
+
     for g in self.parser._action_groups:
       g._group_actions.sort(key = lambda x: x.dest)
     
@@ -118,6 +124,8 @@ class builder_cli(build_target_cli):
     if args.timestamp:
       config.timestamp = args.timestamp
     config.performance = args.performance
+    config.download_only = args.download_only
+    config.artifacts_dir = args.artifacts
     env = builder_env(config, available_packages)
     
     bldr = builder(env)
