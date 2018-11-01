@@ -26,7 +26,7 @@ class builder(object):
       if excluded_package in self._env.script_manager.scripts:
         del self._env.script_manager.scripts[excluded_package]
 
-  def __match_arg_exact(self, arg):
+  def _match_arg_exact(self, arg):
     if arg in self._env.script_manager.scripts:
       return arg
     for package_name, script in self._env.script_manager.scripts.items():
@@ -37,7 +37,7 @@ class builder(object):
         return package_name
     return None
 
-  def __match_arg_with_pattern(self, arg):
+  def _match_arg_with_pattern(self, arg):
     result = []
     pattern = '*%s*' % (arg)
     for package_name, script in self._env.script_manager.scripts.items():
@@ -47,10 +47,10 @@ class builder(object):
     return result
 
   def _resolve_arg(self, arg):
-    exact_match = self.__match_arg_exact(arg)
+    exact_match = self._match_arg_exact(arg)
     if exact_match:
       return [ exact_match ]
-    result = self.__match_arg_with_pattern(arg)
+    result = self._match_arg_with_pattern(arg)
     return result
 
   _resolved_args = namedtuple('_resolved_args', 'package_names,invalid_args')

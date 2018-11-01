@@ -57,9 +57,11 @@ class pcloud_requests(object):
   def make_api_url(clazz, method):
     return urljoin(clazz.API, method)
 
+  '''
   @classmethod
   def upload(clazz, params, files):
     url = pcloud_requests.make_api_url('uploadfile')
     form = MultiPartForm()
     for key, value im params:
       form.add_field(key, value)
+'''

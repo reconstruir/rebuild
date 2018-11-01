@@ -140,7 +140,7 @@ class package_manager(object):
     return self._db
   
   def install_tarball(self, pkg_tarball, hardness):
-    self.log_e('installing tarball: %s for %s' % (pkg_tarball, ' '.join(hardness)))
+    self.log_i('installing tarball: %s for %s' % (pkg_tarball, ' '.join(hardness)))
     pkg = package(pkg_tarball)
 
     if self.is_installed(pkg.package_descriptor.name):

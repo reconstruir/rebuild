@@ -171,7 +171,7 @@ class builder_script(object):
       loaded_checksums = self.env.checksum_manager.load_checksums(self.descriptor,
                                                                   self.build_target)
       
-      # If the stored checksums don't match the current checksums, then we 
+      # If the stored checksums don't match the current checksums, then we need to rebuild
       if loaded_checksums:
         loaded_source_filenames = loaded_checksums.sources.filenames()
         loaded_target_filenames = loaded_checksums.targets.filenames()
@@ -179,7 +179,6 @@ class builder_script(object):
         current_source_filenames = current_checksums.sources.filenames()
         current_target_filenames = current_checksums.targets.filenames()
         if current_source_filenames != current_source_filenames:
-#          self.blurb('%s needs rebuilding because loaded and current source filenames are different.')
           return True
 
         if loaded_target_filenames != current_target_filenames:
