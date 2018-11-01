@@ -15,6 +15,8 @@ from collections import namedtuple
 
 from bes.compat.url_compat import urljoin
 
+from .foo import MultiPartForm
+
 class pcloud_requests(object):
 
   API = 'https://api.pcloud.com'
@@ -54,3 +56,10 @@ class pcloud_requests(object):
   @classmethod
   def make_api_url(clazz, method):
     return urljoin(clazz.API, method)
+
+  @classmethod
+  def upload(clazz, params, files):
+    url = pcloud_requests.make_api_url('uploadfile')
+    form = MultiPartForm()
+    for key, value im params:
+      form.add_field(key, value)

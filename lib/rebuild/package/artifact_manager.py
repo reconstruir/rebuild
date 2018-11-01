@@ -32,8 +32,8 @@ class artifact_manager(object):
     self._package_cache = {}
     self._reset()
     self.reload_db()
-    self._timer = debug_timer('am', 'error')
-#    self._timer = noop_debug_timer('am', 'error')
+#    self._timer = debug_timer('am', 'error')
+    self._timer = noop_debug_timer('am', 'error')
 #    self._sync_db()
 
     self._db = artifact_db(path.join(self._root_dir, 'artifacts.db'))

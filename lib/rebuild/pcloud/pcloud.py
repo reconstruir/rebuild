@@ -396,6 +396,27 @@ class pcloud(object):
     assert 'offset' in payload
     return self.file_size_result(payload['size'], payload['offset'])
   
+  def file_write(self, fd, count):
+    params = {
+      'auth': self._auth_token,
+      'fd': fd,
+      'count': count,
+    }
+    what = str(fd)
+    response = pcloud_requests.get('file_read', params)
+    if response.status_code != 200:
+      raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
+    import pprint
+    print('RESPONSE: %s' % (pprint.pformat(response)))
+    print('CONTENT: %s' % (response.content))
+    print('CONTENT-TYPE: %s' % (response.content_type))
+#    payload = response.payload
+#    assert 'result' in payload
+#    if payload['result'] != 0:
+#      raise pcloud_error(payload['result'], what)
+#    assert 'fd' in payload
+#    return payload['fd']
+
   def file_read(self, fd, count):
     params = {
       'auth': self._auth_token,

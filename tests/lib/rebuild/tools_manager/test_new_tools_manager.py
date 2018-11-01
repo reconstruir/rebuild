@@ -59,11 +59,26 @@ class test_new_tools_manager(script_unit_test):
     tm = self._make_test_tm()
     knife_desc = PD.parse('knife-6.6.6')
     tm.ensure_tool(knife_desc)
+
     exe = tm.tool_exe(knife_desc, 'cut.exe')
     rv = execute.execute([ exe, 'a', 'b', '666' ])
     self.assertEqual( 0, rv.exit_code )
     self.assertEqual( 'cut.exe: a b 666', rv.stdout.strip() )
 
+    exe = tm.tool_exe(knife_desc, 'links_with_static.exe')
+    rv = execute.execute([ exe ])
+    self.assertEqual( 0, rv.exit_code )
+    self.assertEqual( '11', rv.stdout.strip() )
+
+  def xtest_use_binary_tool_with_shared_lib(self):
+    tm = self._make_test_tm()
+    knife_desc = PD.parse('knife-6.6.6')
+    tm.ensure_tool(knife_desc)
+    exe = tm.tool_exe(knife_desc, 'links_with_shared.exe')
+    rv = execute.execute([ exe ])
+    self.assertEqual( 0, rv.exit_code )
+    self.assertEqual( '11', rv.stdout.strip() )
+    
   def xtest_one_tool_env(self):
     tm = self._make_test_tm()
     tfoo = PD.parse('tfoo-1.0.0')

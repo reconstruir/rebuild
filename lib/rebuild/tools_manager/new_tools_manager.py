@@ -6,7 +6,7 @@ from bes.system import host, os_env, os_env_var
 from rebuild.base import build_target, build_level
 from rebuild.package import package_manager
 from rebuild.manager import manager
-from bes.debug import debug_timer
+from bes.debug import debug_timer, noop_debug_timer
 
 class new_tools_manager(object):
 
@@ -17,7 +17,8 @@ class new_tools_manager(object):
     self._build_target = build_target
     self._root_dir = root_dir
     self._artifact_manager = artifact_manager
-    self._timer = debug_timer('tm', level = 'error')
+    #self._timer = debug_timer('tm', level = 'error')
+    self._timer = noop_debug_timer('am', 'error')
     self._manager = manager(self._artifact_manager, self._build_target, root_dir = self._root_dir)
     
   @property

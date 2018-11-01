@@ -909,4 +909,8 @@ and only then forks rebuilder.py.  might be tough
 2018-11-27
 - when parsing fake recipes checks when nodes are NOT supposed to have children
 
+2018-11-31
+- remove need for requests library for file upload
+
+
 
