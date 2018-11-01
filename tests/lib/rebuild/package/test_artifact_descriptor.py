@@ -24,5 +24,9 @@ class test_artifact_descriptor(unit_test):
     lb.pop(b._fields.index('name'))
     self.assertEqual( la, lb )
     
+  def test_parse(self):
+    self.assertEqual( AD('water', '1.0.0', 2, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
+                      AD.parse('water;1.0.0;2;0;linux;release;x86_64;ubuntu;18') )
+    
 if __name__ == '__main__':
   unit_test.main()

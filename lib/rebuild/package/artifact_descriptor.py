@@ -77,4 +77,11 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
       l[i] = value
     return self.__class__(*l)
 
+  @classmethod
+  def parse(clazz, s):
+    parts = s.split(';')
+    if len(parts) != 9:
+      raise ValueError('Invalid artifact descriptor: %s' % (s))
+    return clazz(*parts)
+  
 check.register_class(artifact_descriptor, include_seq = False)
