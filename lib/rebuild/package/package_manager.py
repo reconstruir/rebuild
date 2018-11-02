@@ -16,7 +16,6 @@ from rebuild.base import package_descriptor, package_descriptor_list
 from rebuild.instruction import instruction_list
 from rebuild.pkg_config import pkg_config
 
-from .artifact_manager import artifact_manager
 from .package import package
 from .package_db import package_db
 from .package_db_entry import package_db_entry

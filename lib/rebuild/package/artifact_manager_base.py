@@ -2,6 +2,7 @@
 
 from abc import abstractmethod, ABCMeta
 from bes.system.compat import with_metaclass
+from bes.common import check
 
 class artifact_manager_base(with_metaclass(ABCMeta, object)):
 
@@ -56,3 +57,5 @@ class artifact_manager_base(with_metaclass(ABCMeta, object)):
   @abstractmethod
   def resolve_deps(self, names, build_target, hardness, include_names):
     pass
+
+check.register_class(artifact_manager_base, name = 'artifact_manager', include_seq = False)

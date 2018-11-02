@@ -7,7 +7,6 @@ from bes.common import cached_property
 from bes.fs import temp_file
 from bes.system import execute
 from rebuild.base import build_target, build_system, build_level, package_descriptor as PD
-from rebuild.package import artifact_manager
 from rebuild.tools_manager import new_tools_manager as TM
 from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT
 from _rebuild_testing.fake_package_recipes import fake_package_recipes as RECIPES

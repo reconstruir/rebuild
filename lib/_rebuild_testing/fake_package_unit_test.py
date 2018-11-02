@@ -6,7 +6,7 @@ from bes.common import check
 
 from .fake_package_recipe_parser import fake_package_recipe_parser
 from .fake_package_recipe import fake_package_recipe
-from rebuild.package import artifact_manager, package
+from rebuild.package import artifact_manager_local, package
 
 class fake_package_unit_test(object):
 
@@ -53,7 +53,7 @@ class fake_package_unit_test(object):
     root_dir = temp_file.make_temp_dir(delete = not debug)
     if debug:
       print("root_dir:\n%s\n" % (root_dir))
-    am = artifact_manager(root_dir)
+    am = artifact_manager_local(root_dir)
     if recipes:
       mutations = mutations or {}
       check.check_build_target(build_target)

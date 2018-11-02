@@ -7,7 +7,7 @@ from bes.unix import terminal
 from bes.compat import StringIO
 from bes.text import text_fit
 
-from .artifact_manager import artifact_manager
+from .artifact_manager_local import artifact_manager_local
 from .package import package
 from .package_manager import package_manager
 
@@ -107,7 +107,7 @@ class package_cli(object):
     return buf.getvalue().rstrip()
 
   def _command_db_print(self, filename):
-    am = artifact_manager('/tmp/doo')
+    am = artifact_manager_local('/tmp/doo')
     pm = package_manager(filename, am)
     for p in pm.list_all(include_version = True):
       print(str(p))

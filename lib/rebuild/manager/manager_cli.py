@@ -10,7 +10,7 @@ from bes.key_value import key_value_parser
 from bes.system import host
 from bes.fs import file_util, temp_file
 from rebuild.base import build_arch, build_blurb, build_system, build_target, build_target_cli, build_level
-from rebuild.package import artifact_manager, package, package_tester
+from rebuild.package import artifact_manager_local, package, package_tester
 from rebuild.tools_manager import tools_manager
 
 from .manager import manager
@@ -203,9 +203,9 @@ class manager_cli(build_target_cli):
       command = args.command
 
     if hasattr(args, 'artifacts'):
-      self.artifact_manager = artifact_manager(args.artifacts)
+      self.artifact_manager = artifact_manager_local(args.artifacts)
     else:
-      self.artifact_manager = artifact_manager(None)
+      self.artifact_manager = artifact_manager_local(None)
 
     self.verbose = getattr(args, 'verbose', False)
 
@@ -391,7 +391,7 @@ remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir ${_root_dir}
     if not path.isdir(tools_dir):
       raise RuntimeError('Not an tools directory: %s' % (tools_dir))
 
-    am = artifact_manager(artifacts_dir)
+    am = artifact_manager_local(artifacts_dir)
     tm = tools_manager(tools_dir)
 
     build_blurb.blurb('tester', ' build_target: %s' % (str(self.build_target)))

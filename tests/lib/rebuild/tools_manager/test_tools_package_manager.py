@@ -6,7 +6,6 @@ import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import temp_file
 from bes.system import execute
-from rebuild.package import artifact_manager
 from rebuild.base import build_target, package_descriptor
 from rebuild.tools_manager import tools_package_manager
 from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT

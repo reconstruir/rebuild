@@ -17,7 +17,7 @@ from .package import package
 
 #log.configure('artifact_manager=debug')
 
-class artifact_manager(artifact_manager_base):
+class artifact_manager_local(artifact_manager_base):
 
   def __init__(self, root_dir):
     check.check_string(root_dir)
@@ -164,5 +164,3 @@ class artifact_manager(artifact_manager_base):
       rm.add_package(pkg_desc)
     self._timer.stop()
     return rm
-
-check.register_class(artifact_manager, include_seq = False)

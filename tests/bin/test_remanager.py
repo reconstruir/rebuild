@@ -8,7 +8,6 @@ from collections import namedtuple
 from bes.testing.unit_test import script_unit_test
 from bes.system import os_env, execute
 from bes.fs import file_util, temp_file
-from rebuild.package import artifact_manager
 from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT
 from _rebuild_testing.fake_package_recipes import fake_package_recipes as RECIPES
 from rebuild.base import build_target as BT

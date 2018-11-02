@@ -7,7 +7,7 @@ from bes.fs import file_find, file_util, temp_file
 from bes.system import host
 from rebuild.base import build_target as BT, package_descriptor
 from rebuild.pkg_config import pkg_config
-from rebuild.package import artifact_manager, package, package_manager
+from rebuild.package import artifact_manager_local, package, package_manager
 from rebuild.package import PackageFilesConflictError, PackageMissingRequirementsError
 from rebuild.package.db_error import *
 from bes.archive import archiver, temp_archive
@@ -47,7 +47,7 @@ class test_package_manager(unit_test):
     am_dir = path.join(root_dir, 'artifact_manager')
     if clazz.DEBUG:
       print("root_dir:\n%s\n" % (root_dir))
-    am = artifact_manager(am_dir)
+    am = artifact_manager_local(am_dir)
     return package_manager(pm_dir, am)
   
   def test_install_tarball_simple(self):

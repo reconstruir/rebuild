@@ -5,7 +5,6 @@ from bes.fs import temp_file
 from bes.testing.unit_test import unit_test
 from bes.system import execute
 from rebuild.base import build_target, build_system, build_level, package_descriptor
-from rebuild.package import artifact_manager
 from rebuild.tools_manager import tools_manager
 from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT
 from _rebuild_testing.fake_package_recipes import fake_package_recipes as RECIPES

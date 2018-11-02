@@ -9,7 +9,7 @@ from bes.git import git_download_cache, git_util
 
 from rebuild.tools_manager import tools_manager
 from rebuild.checksum import checksum_manager
-from rebuild.package import artifact_manager
+from rebuild.package import artifact_manager_local
 from rebuild.base import build_blurb, package_descriptor, requirement_manager
 from rebuild.source_finder import source_finder_git_repo, source_finder_local, source_finder_pcloud, source_finder_chain
 from rebuild.recipe import recipe_load_env
@@ -33,7 +33,7 @@ class builder_env(object):
     self.downloads_manager = self._make_downloads_manager(config.build_root)
     self.artifact_manager = self._make_artifact_manager(config.build_root)
     if self.config.artifacts_dir:
-      self.caca_artifact_manager = artifact_manager(self.config.artifacts_dir)
+      self.caca_artifact_manager = artifact_manager_local(self.config.artifacts_dir)
     else:
       self.caca_artifact_manager = None
     self.recipe_load_env = recipe_load_env(self)
@@ -77,7 +77,7 @@ class builder_env(object):
   
   @classmethod
   def _make_artifact_manager(clazz, build_dir):
-    return artifact_manager(path.join(build_dir, 'artifacts'))
+    return artifact_manager_local(path.join(build_dir, 'artifacts'))
 
   def _make_tools_manager(self, build_dir):
     return tools_manager(path.join(build_dir, 'tools'), self.config.host_build_target)
