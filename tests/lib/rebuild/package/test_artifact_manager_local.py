@@ -21,18 +21,18 @@ class test_artifact_manager_local(unit_test):
   MACOS_BT = build_target('macos', '', '10.14', 'x86_64', 'release')
 
   def test_publish(self):
-    am = FPUT.make_artifact_manager(debug = self.DEBUG)
-    tmp_tarball = FPUT.create_one_package(RECIPES.APPLE)
-    self.assertEqual( [], am.list_all_by_descriptor(None) )
-    filename = am.publish(tmp_tarball, self.LINUX_BT, False, None)
+    t = AMT(recipes = RECIPES.APPLE)
+    adesc = 'apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'
+    tmp_tarball = t.create_package(adesc)
+    filename = t.am.publish(tmp_tarball, self.LINUX_BT, False, None)
     self.assertTrue( path.exists(filename) )
     expected = [
       AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'),
     ]
-    self.assertEqual( expected, am.list_all_by_descriptor(None) )
+    self.assertEqual( expected, t.am.list_all_by_descriptor(None) )
     
   def test_artifact_path(self):
-    t = AMT(recipes = RECIPES.FOODS)
+    t = AMT(recipes = RECIPES.APPLE)
     self.assertEqual( [], t.am.list_all_by_descriptor(None) )
     t.publish('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18')
     self.assertEqual( 'linux-ubuntu-18/x86_64/release/apple-1.2.3-1.tar.gz',
