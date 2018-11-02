@@ -31,7 +31,7 @@ class builder_env(object):
     self.checksum_manager = self._make_checksum_manager(config.build_root)
     self.tools_manager = self._make_tools_manager(config.build_root)
     self.downloads_manager = self._make_downloads_manager(config.build_root)
-    self.artifact_manager = self._make_artifact_manager(config.build_root)
+    self.reload_artifact_manager()
     if self.config.artifacts_dir:
       self.caca_artifact_manager = artifact_manager_local(self.config.artifacts_dir)
     else:
@@ -74,10 +74,9 @@ class builder_env(object):
   @classmethod
   def _make_downloads_manager(clazz, build_dir):
     return git_download_cache(path.join(build_dir, 'downloads'))
-  
-  @classmethod
-  def _make_artifact_manager(clazz, build_dir):
-    return artifact_manager_local(path.join(build_dir, 'artifacts'))
+
+  def reload_artifact_manager(self):
+    self.artifact_manager = artifact_manager_local(path.join(self.config.build_root, 'artifacts'))
 
   def _make_tools_manager(self, build_dir):
     return tools_manager(path.join(build_dir, 'tools'), self.config.host_build_target)
