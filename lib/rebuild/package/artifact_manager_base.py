@@ -17,13 +17,22 @@ class artifact_manager_base(with_metaclass(ABCMeta, object)):
     log.add_logging(self, 'artifact_manager')
     build_blurb.add_blurb(self, 'artifact_manager')
     self._reset_requirement_managers()
-  
+    self._read_only = False
+    
+  @property
+  def read_only(self):
+    return self._read_only
+
+  @read_only.setter
+  def read_only(self, value):
+    self._read_only = value
+    
   @abstractmethod
   def publish(self, tarball, build_target, allow_replace, metadata):
     pass
     
   @abstractmethod
-  def remove_artifact(self, adesc):
+  def remove_artifact(self, artifact_descriptor):
     pass
   
   @abstractmethod
@@ -43,17 +52,17 @@ class artifact_manager_base(with_metaclass(ABCMeta, object)):
     pass
     
   @abstractmethod
-  def find_by_artifact_descriptor(self, adesc, relative_filename):
+  def find_by_artifact_descriptor(self, artifact_descriptor, relative_filename):
     pass
 
   def find_by_package_descriptor(self, package_descriptor, build_target, relative_filename):
     check.check_package_descriptor(package_descriptor)
     check.check_build_target(build_target)
-    adesc = artifact_descriptor(package_descriptor.name, package_descriptor.version.upstream_version,
+    artifact_descriptor = artifact_descriptor(package_descriptor.name, package_descriptor.version.upstream_version,
                                 package_descriptor.version.revision, package_descriptor.version.epoch,
                                 build_target.system, build_target.level, build_target.arch,
                                 build_target.distro, build_target.distro_version)
-    return self.find_by_artifact_descriptor(adesc, relative_filename)
+    return self.find_by_artifact_descriptor(artifact_descriptor, relative_filename)
  
  
   def latest_packages(self, package_names, build_target):

@@ -34,6 +34,9 @@ class artifact_manager_local(artifact_manager_base):
     
   #@abstractmethod
   def publish(self, tarball, build_target, allow_replace, metadata):
+    check.check_build_target(build_target)
+    if self._read_only:
+      raise RuntimeError('artifact_manager is read only.')
     if not metadata:
       metadata = package(tarball).metadata
     check.check_package_metadata(metadata)
@@ -53,6 +56,8 @@ class artifact_manager_local(artifact_manager_base):
   #@abstractmethod
   def remove_artifact(self, adesc):
     check.check_artifact_descriptor(adesc)
+    if self._read_only:
+      raise RuntimeError('artifact_manager is read only.')
     md = self.find_by_artifact_descriptor(adesc, False)
     if not md:
       raise NotInstalledError('package \"%s\" not found' % (str(adesc)))

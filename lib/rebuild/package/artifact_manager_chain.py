@@ -23,14 +23,24 @@ class artifact_manager_chain(artifact_manager_base):
   def add_artifact_manager(self, artifact_manager):
     check.check_artifact_manager(artifact_manager)
     self._managers.append(artifact_manager)
+
+  def _find_writable_manager(self):
+    can_publish = [ m for m in in self._managers if not m.read_only ]
+    if not can_publish:
+      raise RuntimeError('No writable artifact manager found.')
+    if len(can_publish) > 1:
+      raise RuntimeError('Too many writable artifact managers found.')
+    return can_publish[0]
     
   #@abstractmethod
   def publish(self, tarball, build_target, allow_replace, metadata):
-    raise RuntimeError('artifact_manager_chain is read only.')
+    m = self._find_writable_manager(self)
+    return m.publish(tarball, build_target, allow_replace, metadata)
 
   #@abstractmethod
-  def remove_artifact(self, adesc):
-    raise RuntimeError('artifact_manager_chain is read only.')
+  def remove_artifact(self, artifact_descriptor):
+    m = self._find_writable_manager(self)
+    return m.remove_artifact(artifact_descriptor)
   
   #@abstractmethod
   def list_all_by_descriptor(self, build_target):
@@ -55,11 +65,11 @@ class artifact_manager_chain(artifact_manager_base):
     return algorithm.unique(sorted(result))
   
   #@abstractmethod
-  def find_by_artifact_descriptor(self, adesc, relative_filename):
-    check.check_artifact_descriptor(adesc)
+  def find_by_artifact_descriptor(self, artifact_descriptor, relative_filename):
+    check.check_artifact_descriptor(artifact_descriptor)
     for m in self._managers:
       try:
-        return m.find_by_artifact_descriptor(adesc, relative_filename)
+        return m.find_by_artifact_descriptor(artifact_descriptor, relative_filename)
       except NotInstalledError as ex:
         pass
-    raise NotInstalledError('package \"%s\" not found' % (str(adesc)))    
+    raise NotInstalledError('package \"%s\" not found' % (str(artifact_descriptor)))    
