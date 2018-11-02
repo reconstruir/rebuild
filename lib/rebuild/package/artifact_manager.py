@@ -17,8 +17,7 @@ from .package import package
 
 #log.configure('artifact_manager=debug')
 
-class artifact_manager(object):
-#class artifact_manager(artifact_manager_base):
+class artifact_manager(artifact_manager_base):
 
   def __init__(self, root_dir):
     check.check_string(root_dir)
@@ -51,6 +50,7 @@ class artifact_manager(object):
   def _reset(self):
     self._requirement_managers = {}
     
+  #@abstractmethod
   def artifact_path(self, package_descriptor, build_target, relative):
     filename = '%s.tar.gz' % (package_descriptor.full_name)
     relative_path = path.join(build_target.build_path, filename)
@@ -58,6 +58,7 @@ class artifact_manager(object):
       return relative_path
     return path.join(self._root_dir, relative_path)
 
+  #@abstractmethod
   def publish(self, tarball, build_target, allow_replace, metadata):
     if not metadata:
       metadata = package(tarball).metadata
@@ -75,6 +76,7 @@ class artifact_manager(object):
       self._db.add_artifact(pkg_metadata)
     return artifact_path_abs
 
+  #@abstractmethod
   def remove_artifact(self, adesc):
     check.check_artifact_descriptor(adesc)
     md = self.find_by_artifact_descriptor(adesc, False)
@@ -83,6 +85,7 @@ class artifact_manager(object):
     file_util.remove(md.filename)
     self._db.remove_artifact(adesc)
       
+  #@abstractmethod
   def latest_packages(self, package_names, build_target):
     result = []
     available_packages = self.list_all_by_metadata(build_target)
@@ -104,18 +107,23 @@ class artifact_manager(object):
       candidates = sorted(candidates, reverse = True)
     return candidates[-1]
   
+  #@abstractmethod
   def list_all_by_descriptor(self, build_target):
     return self._db.list_all_by_descriptor(build_target)
 
+  #@abstractmethod
   def list_all_by_metadata(self, build_target):
     return self._db.list_all_by_metadata(build_target)
 
+  #@abstractmethod
   def list_all_by_package_descriptor(self, build_target):
     return self._db.list_all_by_package_descriptor(build_target)
 
+  #@abstractmethod
   def list_latest_versions(self, build_target):
     return self.list_all_by_descriptor(build_target).latest_versions()
     
+  #@abstractmethod
   def find_by_package_descriptor(self, package_descriptor, build_target, relative_filename):
     check.check_package_descriptor(package_descriptor)
     check.check_build_target(build_target)
@@ -125,6 +133,7 @@ class artifact_manager(object):
                                 build_target.distro, build_target.distro_version)
     return self.find_by_artifact_descriptor(adesc, relative_filename)
 
+  #@abstractmethod
   def find_by_artifact_descriptor(self, adesc, relative_filename):
     check.check_artifact_descriptor(adesc)
     md = self._db.get_artifact(adesc)
@@ -137,16 +146,13 @@ class artifact_manager(object):
      self._package_cache[tarball] = package(tarball)
     return self._package_cache[tarball]
 
-  def get_requirement_manager(clazz, build_target):
-    if not build_target.build_path in self._requirement_managers:
-      self._requirement_managers[build_target.build_path] = self._make_requirement_manager(build_target)
-    return self._requirement_managers[build_target.build_path]
-
+  #@abstractmethod
   def get_requirement_manager(self, build_target):
     if not build_target.build_path in self._requirement_managers:
       self._requirement_managers[build_target.build_path] = self._make_requirement_manager(build_target)
     return self._requirement_managers[build_target.build_path]
 
+  #@abstractmethod
   def resolve_deps(self, names, build_target, hardness, include_names):
     return self.get_requirement_manager(build_target).resolve_deps(names, build_target.system, hardness, include_names)
   
