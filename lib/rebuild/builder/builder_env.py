@@ -9,7 +9,7 @@ from bes.git import git_download_cache, git_util
 
 from rebuild.tools_manager import tools_manager
 from rebuild.checksum import checksum_manager
-from rebuild.package import artifact_manager_local
+from rebuild.package import artifact_manager_chain, artifact_manager_local
 from rebuild.base import build_blurb, package_descriptor, requirement_manager
 from rebuild.source_finder import source_finder_git_repo, source_finder_local, source_finder_pcloud, source_finder_chain
 from rebuild.recipe import recipe_load_env
@@ -32,10 +32,6 @@ class builder_env(object):
     self.tools_manager = self._make_tools_manager(config.build_root)
     self.downloads_manager = self._make_downloads_manager(config.build_root)
     self.reload_artifact_manager()
-    if self.config.artifacts_dir:
-      self.caca_artifact_manager = artifact_manager_local(self.config.artifacts_dir)
-    else:
-      self.caca_artifact_manager = None
     self.recipe_load_env = recipe_load_env(self)
     self.script_manager = builder_script_manager(filenames, self.config.build_target, self)
     self.requirement_manager = requirement_manager()
@@ -77,7 +73,18 @@ class builder_env(object):
 
   def reload_artifact_manager(self):
     self.artifact_manager = artifact_manager_local(path.join(self.config.build_root, 'artifacts'))
-
+    self.external_artifact_manager = None
+    return
+    self.artifact_manager = artifact_manager_chain()
+    build_artifact_manager = artifact_manager_local(path.join(self.config.build_root, 'artifacts'))
+    self.artifact_manager.add_artifact_manager(build_artifact_manager)
+    if self.config.artifacts_dir:
+      self.external_artifact_manager = artifact_manager_local(self.config.artifacts_dir)
+      self.external_artifact_manager.read_only = True
+      self.artifact_manager.add_artifact_manager(self.external_artifact_manager)
+    else:
+      self.external_artifact_manager = None
+      
   def _make_tools_manager(self, build_dir):
     return tools_manager(path.join(build_dir, 'tools'), self.config.host_build_target)
 

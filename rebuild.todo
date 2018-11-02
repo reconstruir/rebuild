@@ -915,4 +915,5 @@ and only then forks rebuilder.py.  might be tough
 - fix rebuilder envs to have to full path to the build_target including distro.
   right now its just linux or macos
 - add a download only option to rebuilder
-
+- rename BUILD/artifacts to BUILD/build_artifacts maybe
+- package_descriptor version shit

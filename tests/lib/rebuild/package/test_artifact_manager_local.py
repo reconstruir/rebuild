@@ -19,13 +19,8 @@ class test_artifact_manager_local(unit_test):
   LINUX_BT = build_target('linux', 'ubuntu', '18', 'x86_64', 'release')
   MACOS_BT = build_target('macos', '', '10.14', 'x86_64', 'release')
 
-  def test_artifact_path(self):
-    am = FPUT.make_artifact_manager()
-    pdesc = PD('foo', '1.2.34-1')
-    self.assertEqual( path.join(am.root_dir, pdesc.artifact_path(self.LINUX_BT)), am.artifact_path(pdesc, self.LINUX_BT, False) )
-    
   def test_publish(self):
-    am = FPUT.make_artifact_manager()
+    am = FPUT.make_artifact_manager(debug = self.DEBUG)
     tmp_tarball = FPUT.create_one_package(RECIPES.APPLE)
     self.assertEqual( [], am.list_all_by_descriptor(None) )
     filename = am.publish(tmp_tarball, self.LINUX_BT, False, None)
@@ -35,8 +30,16 @@ class test_artifact_manager_local(unit_test):
     ]
     self.assertEqual( expected, am.list_all_by_descriptor(None) )
 
+  def test_artifact_path(self):
+    am = FPUT.make_artifact_manager(debug = self.DEBUG)
+    tmp_tarball = FPUT.create_one_package(RECIPES.APPLE)
+    self.assertEqual( [], am.list_all_by_descriptor(None) )
+    filename = am.publish(tmp_tarball, self.LINUX_BT, False, None)
+    self.assertEqual( 'linux-ubuntu-18/x86_64/release/apple-1.2.3-1.tar.gz',
+                      am.artifact_path(PD('apple', '1.2.3-1'), self.LINUX_BT, True) )
+    
   def test_publish_again_with_replace(self):
-    am = FPUT.make_artifact_manager()
+    am = FPUT.make_artifact_manager(debug = self.DEBUG)
     tmp_tarball = FPUT.create_one_package(RECIPES.APPLE)
     filename = am.publish(tmp_tarball, self.LINUX_BT, False, None)
     self.assertTrue( path.exists(filename) )
@@ -48,7 +51,7 @@ class test_artifact_manager_local(unit_test):
     self.assertEqual( expected, am.list_all_by_descriptor(None) )
 
   def test_publish_again_without_replace(self):
-    am = FPUT.make_artifact_manager()
+    am = FPUT.make_artifact_manager(debug = self.DEBUG)
     tmp_tarball = FPUT.create_one_package(RECIPES.APPLE)
     filename = am.publish(tmp_tarball, self.LINUX_BT, False, None)
     self.assertTrue( path.exists(filename) )

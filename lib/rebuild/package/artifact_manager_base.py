@@ -6,6 +6,7 @@ from abc import abstractmethod, ABCMeta
 from bes.system.compat import with_metaclass
 from bes.common import check
 from bes.system import log
+from bes.debug import debug_timer, noop_debug_timer
 
 from rebuild.base import build_blurb, requirement_manager
 
@@ -18,6 +19,8 @@ class artifact_manager_base(with_metaclass(ABCMeta, object)):
     build_blurb.add_blurb(self, 'artifact_manager')
     self._reset_requirement_managers()
     self._read_only = False
+    #self._timer = debug_timer('am', 'error')
+    self._timer = noop_debug_timer('am', 'error')
     
   @property
   def read_only(self):
@@ -26,6 +29,10 @@ class artifact_manager_base(with_metaclass(ABCMeta, object)):
   @read_only.setter
   def read_only(self, value):
     self._read_only = value
+
+  @abstractmethod
+  def artifact_path(self, package_descriptor, build_target, relative):
+    pass
     
   @abstractmethod
   def publish(self, tarball, build_target, allow_replace, metadata):
@@ -36,21 +43,17 @@ class artifact_manager_base(with_metaclass(ABCMeta, object)):
     pass
   
   @abstractmethod
-  def list_all_by_descriptor(self, build_target = None):
+  def list_all_by_descriptor(self, build_target):
     pass
 
   @abstractmethod
-  def list_all_by_metadata(self, build_target = None):
+  def list_all_by_metadata(self, build_target):
     pass
 
   @abstractmethod
-  def list_all_by_package_descriptor(self, build_target = None):
+  def list_all_by_package_descriptor(self, build_target):
     pass
 
-  @abstractmethod
-  def list_latest_versions(self, build_target):
-    pass
-    
   @abstractmethod
   def find_by_artifact_descriptor(self, artifact_descriptor, relative_filename):
     pass
@@ -58,11 +61,11 @@ class artifact_manager_base(with_metaclass(ABCMeta, object)):
   def find_by_package_descriptor(self, package_descriptor, build_target, relative_filename):
     check.check_package_descriptor(package_descriptor)
     check.check_build_target(build_target)
-    artifact_descriptor = artifact_descriptor(package_descriptor.name, package_descriptor.version.upstream_version,
+    adesc = artifact_descriptor(package_descriptor.name, package_descriptor.version.upstream_version,
                                 package_descriptor.version.revision, package_descriptor.version.epoch,
                                 build_target.system, build_target.level, build_target.arch,
                                 build_target.distro, build_target.distro_version)
-    return self.find_by_artifact_descriptor(artifact_descriptor, relative_filename)
+    return self.find_by_artifact_descriptor(adesc, relative_filename)
  
  
   def latest_packages(self, package_names, build_target):
@@ -86,15 +89,6 @@ class artifact_manager_base(with_metaclass(ABCMeta, object)):
       candidates = sorted(candidates, reverse = True)
     return candidates[-1]
   
-  def artifact_path(self, package_descriptor, build_target, relative):
-    check.check_package_descriptor(package_descriptor)
-    check.check_build_target(build_target)
-    filename = '%s.tar.gz' % (package_descriptor.full_name)
-    relative_path = path.join(build_target.build_path, filename)
-    if relative:
-      return relative_path
-    return path.join(self._root_dir, relative_path)
-
   def _reset_requirement_managers(self):
     self._requirement_managers = {}
 

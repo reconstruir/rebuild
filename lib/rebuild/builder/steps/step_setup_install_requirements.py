@@ -26,10 +26,7 @@ class step_setup_install_requirements(step):
       self.log_d(message)
       return step_result(True, message)
 
-#    try:
     script.requirements_manager.install_packages(requirements,
                                                  script.build_target, ['BUILD', 'RUN'])
-#    except Exception as ex:
-#      script.caca_requirements_manager.install_packages(requirements,
-#                                                        script.build_target, ['BUILD', 'RUN'])
+
     return step_result(True, None)

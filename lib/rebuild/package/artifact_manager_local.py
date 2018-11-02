@@ -5,7 +5,6 @@ from bes.common import check, string_util
 from bes.system import log
 from rebuild.base import build_blurb
 from bes.fs import file_util
-from bes.debug import debug_timer, noop_debug_timer
 from rebuild.base import requirement_manager
 
 from .artifact_manager_base import artifact_manager_base
@@ -24,14 +23,28 @@ class artifact_manager_local(artifact_manager_base):
     self._root_dir = path.abspath(root_dir)
     file_util.mkdir(self._root_dir)
     self._db = artifact_db(path.join(self._root_dir, 'artifacts.db'))
-    #self._timer = debug_timer('am', 'error')
-    self._timer = noop_debug_timer('am', 'error')
-    self._db = artifact_db(path.join(self._root_dir, 'artifacts.db'))
 
   @property
   def root_dir(self):
     return self._root_dir
-    
+
+  #@abstractmethod
+  def artifact_path(self, pkg_desc, build_target, relative):
+    check.check_package_descriptor(pkg_desc)
+    check.check_build_target(build_target)
+    artifact_path_rel, artifact_path_abs = self._artifact_paths(pkg_desc, build_target)
+    if not path.isfile(artifact_path_abs):
+      return None
+    if relative:
+      return artifact_path_rel
+    return artifact_path_abs
+
+  def _artifact_paths(self, pkg_desc, build_target):
+    filename = '%s.tar.gz' % (pkg_desc.full_name)
+    artifact_path_rel = path.join(build_target.build_path, filename)
+    artifact_path_abs = path.join(self._root_dir, artifact_path_rel)
+    return artifact_path_rel, artifact_path_abs
+  
   #@abstractmethod
   def publish(self, tarball, build_target, allow_replace, metadata):
     check.check_build_target(build_target)
@@ -41,8 +54,7 @@ class artifact_manager_local(artifact_manager_base):
       metadata = package(tarball).metadata
     check.check_package_metadata(metadata)
     pkg_desc = metadata.package_descriptor
-    artifact_path_rel = self.artifact_path(pkg_desc, build_target, True)
-    artifact_path_abs = self.artifact_path(pkg_desc, build_target, False)
+    artifact_path_rel, artifact_path_abs = self._artifact_paths(pkg_desc, build_target)
     file_util.copy(tarball, artifact_path_abs, use_hard_link = True)
     self._reset_requirement_managers()
     pkg_metadata = metadata.clone_with_filename(artifact_path_rel)

@@ -4,6 +4,7 @@ from .artifact_cli import artifact_cli
 from .artifact_db import artifact_db
 from .artifact_descriptor import artifact_descriptor
 from .artifact_descriptor_list import artifact_descriptor_list
+from .artifact_manager_chain import artifact_manager_chain
 from .artifact_manager_local import artifact_manager_local
 from .env_dir import env_dir
 from .env_framework import env_framework

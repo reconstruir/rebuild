@@ -142,11 +142,13 @@ class builder(object):
   def _build_one_script(self, script, env):
     try:
       checksum_ignored = env.checksum_manager.is_ignored(script.descriptor.full_name)
-#      if env.caca_artifact_manager:
-#        p = env.caca_artifact_manager.find_by_package_descriptor(script.descriptor, script.build_target, relative_filename = False)
-#        needs_rebuilding = checksum_ignored or not p
-#      else:
-      needs_rebuilding = checksum_ignored or script.needs_rebuilding()
+      if False and env.external_artifact_manager:
+        package = env.external_artifact_manager.find_by_package_descriptor(script.descriptor,
+                                                                           script.build_target,
+                                                                           False)
+        needs_rebuilding = checksum_ignored or not package
+      else:
+        needs_rebuilding = checksum_ignored or script.needs_rebuilding()
       if not needs_rebuilding:
         # If the working directory is empty, it means no work happened and its useless
         if path.exists(script.working_dir) and dir_util.is_empty(script.working_dir):
