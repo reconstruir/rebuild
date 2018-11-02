@@ -20,9 +20,8 @@ from .package import package
 class artifact_manager_local(artifact_manager_base):
 
   def __init__(self, root_dir):
+    super(artifact_manager_local, self).__init__()
     check.check_string(root_dir)
-    log.add_logging(self, 'artifact_manager')
-    build_blurb.add_blurb(self, 'artifact_manager')
 
     self._root_dir = path.abspath(root_dir)
     
@@ -30,25 +29,16 @@ class artifact_manager_local(artifact_manager_base):
     #self.log_d('Creating instance with root_dir=%s' % (self._root_dir))
     #self.blurb('Creating instance with root_dir=%s' % (self._root_dir))
 
-    self._package_cache = {}
-    self._reset()
-    self.reload_db()
+    self._db = artifact_db(path.join(self._root_dir, 'artifacts.db'))
 #    self._timer = debug_timer('am', 'error')
     self._timer = noop_debug_timer('am', 'error')
 #    self._sync_db()
 
     self._db = artifact_db(path.join(self._root_dir, 'artifacts.db'))
 
-  #@abstractmethod
-  def reload_db(self):
-    self._db = artifact_db(path.join(self._root_dir, 'artifacts.db'))
-  
   @property
   def root_dir(self):
     return self._root_dir
-    
-  def _reset(self):
-    self._requirement_managers = {}
     
   #@abstractmethod
   def artifact_path(self, package_descriptor, build_target, relative):
@@ -67,7 +57,7 @@ class artifact_manager_local(artifact_manager_base):
     artifact_path_rel = self.artifact_path(pkg_desc, build_target, True)
     artifact_path_abs = self.artifact_path(pkg_desc, build_target, False)
     file_util.copy(tarball, artifact_path_abs, use_hard_link = True)
-    self._reset()
+    self._reset_requirement_managers()
     pkg_metadata = metadata.clone_with_filename(artifact_path_rel)
     should_replace = allow_replace and self._db.has_artifact(pkg_metadata.artifact_descriptor)
     if should_replace:
@@ -84,28 +74,6 @@ class artifact_manager_local(artifact_manager_base):
       raise NotInstalledError('package \"%s\" not found' % (str(adesc)))
     file_util.remove(md.filename)
     self._db.remove_artifact(adesc)
-      
-  #@abstractmethod
-  def latest_packages(self, package_names, build_target):
-    result = []
-    available_packages = self.list_all_by_metadata(build_target)
-    for package_name in package_names:
-      available_package = self._find_latest_package(package_name, available_packages)
-      if not available_package:
-        raise NotInstalledError('package \"%s\" not found' % (package_name))
-      result.append(available_package)
-    assert len(result) == len(package_names)
-    return result
-  
-  @classmethod
-  def _find_latest_package(self, package_name, available_packages):
-    check.check_package_metadata_list(available_packages)
-    candidates = [ p for p in available_packages if p.name == package_name ]
-    if not candidates:
-      return None
-    if len(candidates) > 1:
-      candidates = sorted(candidates, reverse = True)
-    return candidates[-1]
   
   #@abstractmethod
   def list_all_by_descriptor(self, build_target):
@@ -119,10 +87,6 @@ class artifact_manager_local(artifact_manager_base):
   def list_all_by_package_descriptor(self, build_target):
     return self._db.list_all_by_package_descriptor(build_target)
 
-  #@abstractmethod
-  def list_latest_versions(self, build_target):
-    return self.list_all_by_descriptor(build_target).latest_versions()
-    
   #@abstractmethod
   def find_by_package_descriptor(self, package_descriptor, build_target, relative_filename):
     check.check_package_descriptor(package_descriptor)
@@ -140,22 +104,8 @@ class artifact_manager_local(artifact_manager_base):
     if relative_filename:
       return md
     return md.clone_with_filename(path.join(self._root_dir, md.filename))
-
-  def _get_package(self, tarball):
-    if not tarball in self._package_cache:
-     self._package_cache[tarball] = package(tarball)
-    return self._package_cache[tarball]
-
-  #@abstractmethod
-  def get_requirement_manager(self, build_target):
-    if not build_target.build_path in self._requirement_managers:
-      self._requirement_managers[build_target.build_path] = self._make_requirement_manager(build_target)
-    return self._requirement_managers[build_target.build_path]
-
-  #@abstractmethod
-  def resolve_deps(self, names, build_target, hardness, include_names):
-    return self.get_requirement_manager(build_target).resolve_deps(names, build_target.system, hardness, include_names)
   
+  #@abstractmethod
   def _make_requirement_manager(self, build_target):
     self._timer.start('_make_requirement_manager() for %s' % (str(build_target)))
     rm = requirement_manager()
