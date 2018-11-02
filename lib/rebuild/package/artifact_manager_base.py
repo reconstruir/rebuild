@@ -7,7 +7,9 @@ from bes.system.compat import with_metaclass
 from bes.common import check
 from bes.system import log
 
-from rebuild.base import build_blurb
+from rebuild.base import build_blurb, requirement_manager
+
+from .artifact_descriptor import artifact_descriptor
 
 class artifact_manager_base(with_metaclass(ABCMeta, object)):
 
@@ -16,10 +18,6 @@ class artifact_manager_base(with_metaclass(ABCMeta, object)):
     build_blurb.add_blurb(self, 'artifact_manager')
     self._reset_requirement_managers()
   
-  @abstractmethod
-  def _make_requirement_manager(self, build_target):
-    pas
-    
   @abstractmethod
   def publish(self, tarball, build_target, allow_replace, metadata):
     pass
@@ -45,13 +43,19 @@ class artifact_manager_base(with_metaclass(ABCMeta, object)):
     pass
     
   @abstractmethod
-  def find_by_package_descriptor(self, package_descriptor, build_target, relative_filename):
-    pass
-
-  @abstractmethod
   def find_by_artifact_descriptor(self, adesc, relative_filename):
     pass
 
+  def find_by_package_descriptor(self, package_descriptor, build_target, relative_filename):
+    check.check_package_descriptor(package_descriptor)
+    check.check_build_target(build_target)
+    adesc = artifact_descriptor(package_descriptor.name, package_descriptor.version.upstream_version,
+                                package_descriptor.version.revision, package_descriptor.version.epoch,
+                                build_target.system, build_target.level, build_target.arch,
+                                build_target.distro, build_target.distro_version)
+    return self.find_by_artifact_descriptor(adesc, relative_filename)
+ 
+ 
   def latest_packages(self, package_names, build_target):
     result = []
     available_packages = self.list_all_by_metadata(build_target)
@@ -85,6 +89,15 @@ class artifact_manager_base(with_metaclass(ABCMeta, object)):
   def _reset_requirement_managers(self):
     self._requirement_managers = {}
 
+  def _make_requirement_manager(self, build_target):
+    self._timer.start('_make_requirement_manager() for %s' % (str(build_target)))
+    rm = requirement_manager()
+    latest_versions = self.list_all_by_package_descriptor(build_target).latest_versions()
+    for pkg_desc in latest_versions:
+      rm.add_package(pkg_desc)
+    self._timer.stop()
+    return rm
+    
   def get_requirement_manager(self, build_target):
     if not build_target.build_path in self._requirement_managers:
       self._requirement_managers[build_target.build_path] = self._make_requirement_manager(build_target)
