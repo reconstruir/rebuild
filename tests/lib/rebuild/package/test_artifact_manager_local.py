@@ -9,6 +9,7 @@ from rebuild.package import artifact_descriptor as AD
 from rebuild.package.db_error import *
 from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT
 from _rebuild_testing.fake_package_recipes import fake_package_recipes as RECIPES
+from _rebuild_testing.artifact_manager_tester import artifact_manager_tester as AMT
 from rebuild.package import artifact_descriptor as AD
 
 class test_artifact_manager_local(unit_test):
@@ -29,14 +30,13 @@ class test_artifact_manager_local(unit_test):
       AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'),
     ]
     self.assertEqual( expected, am.list_all_by_descriptor(None) )
-
+    
   def test_artifact_path(self):
-    am = FPUT.make_artifact_manager(debug = self.DEBUG)
-    tmp_tarball = FPUT.create_one_package(RECIPES.APPLE)
-    self.assertEqual( [], am.list_all_by_descriptor(None) )
-    filename = am.publish(tmp_tarball, self.LINUX_BT, False, None)
+    t = AMT(recipes = RECIPES.FOODS)
+    self.assertEqual( [], t.am.list_all_by_descriptor(None) )
+    t.publish('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18')
     self.assertEqual( 'linux-ubuntu-18/x86_64/release/apple-1.2.3-1.tar.gz',
-                      am.artifact_path(PD('apple', '1.2.3-1'), self.LINUX_BT, True) )
+                      t.am.artifact_path(PD('apple', '1.2.3-1'), self.LINUX_BT, True) )
     
   def test_publish_again_with_replace(self):
     am = FPUT.make_artifact_manager(debug = self.DEBUG)

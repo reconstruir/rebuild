@@ -917,3 +917,4 @@ and only then forks rebuilder.py.  might be tough
 - add a download only option to rebuilder
 - rename BUILD/artifacts to BUILD/build_artifacts maybe
 - package_descriptor version shit
+- fake_package_recipe.py rename metadata to adesc
