@@ -72,8 +72,8 @@ class artifact_manager_base(with_metaclass(ABCMeta, object)):
  
  
   def latest_packages(self, package_names, build_target):
-    self.log_i('latest_packages(package_names=%s, build_target=%s, relative_filename=%s)' % (' '.join(package_names),
-                                                                                             build_target.build_path))
+    self.log_i('latest_packages(package_names=%s, build_target=%s)' % (' '.join(package_names),
+                                                                       build_target.build_path))
     result = []
     available_packages = self.list_all_by_metadata(build_target)
     for package_name in package_names:
