@@ -14,6 +14,9 @@ class step_setup_install_requirements(step):
 
   #@abstractmethod
   def execute(self, script, env, values, inputs):
+    if env.config.download_only:
+      return step_result(True, 'skipping step_install_requirements because download_only is True')
+
     package_desc = script.descriptor
     requirements = env.requirement_manager.resolve_deps([package_desc.name],
                                                         env.config.build_target.system,

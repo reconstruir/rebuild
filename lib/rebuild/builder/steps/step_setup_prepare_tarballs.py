@@ -40,6 +40,8 @@ class step_setup_prepare_tarballs(step):
     
     if count > 1:
       return step_result(False, 'Only one of: tarball, tarball_address or tarball_dir can be given.')
+
+    for_extract = []
     
     if tarball_address:
       downloaded_path = tarball_address.downloaded_tarball_path()
@@ -47,40 +49,38 @@ class step_setup_prepare_tarballs(step):
         self.blurb('Downloading %s@%s to %s' % (tarball_address.address, tarball_address.revision, path.relpath(downloaded_path)))
         tarball_address.download()
       dest = tarball_address.get_property('dest', '${REBUILD_SOURCE_UNPACKED_DIR}')
-      base = tarball_address.get_property('base', None)
+      base_dir = tarball_address.get_property('base', None)
       strip_common_ancestor = tarball_address.get_property('strip_common_ancestor', True)
-      self.blurb('Extracting %s to %s' % (path.relpath(downloaded_path), path.relpath(dest)))
-      archiver.extract(downloaded_path,
-                       dest,
-                       base_dir = base,
-                       strip_common_ancestor = strip_common_ancestor)
+      for_extract.append(( downloaded_path, dest, base_dir, strip_common_ancestor ))
 
     if tarball:
       tarball_path = tarball.sources()[0]
       if not tarball_path:
         return step_result(False, 'No tarball found for %s' % (script.descriptor.full_name))
       dest = tarball.get_property('dest', '${REBUILD_SOURCE_UNPACKED_DIR}')
-      base = tarball.get_property('base', None)
+      base_dir = tarball.get_property('base', None)
       strip_common_ancestor = bool_util.parse_bool(tarball.get_property('strip_common_ancestor', 'True'))
       env.source_finder.ensure_source(tarball_path)
-      self.blurb('Extracting %s to %s' % (path.relpath(tarball_path), path.relpath(dest)))
-      archiver.extract(tarball_path,
-                       dest,
-                       base_dir = base,
-                       strip_common_ancestor = strip_common_ancestor)
-      
+      for_extract.append(( tarball_path, dest, base_dir, strip_common_ancestor ))
+     
     if tarball_dir:
       self.blurb('Creating tarball %s from %s' % (path.relpath(tarball_dir.sources()[0]), tarball_dir.where))
       tarball_path = tarball_dir.tarball()
       if not tarball_path:
         return step_result(False, 'No tarball found for %s' % (script.descriptor.full_name))
       dest = tarball_dir.get_property('dest', '${REBUILD_SOURCE_UNPACKED_DIR}')
-      base = tarball_dir.get_property('base', None)
+      base_dir = tarball_dir.get_property('base', None)
       strip_common_ancestor = tarball_dir.get_property('strip_common_ancestor', True)
+      for_extract.append(( tarball_path, dest, base_dir, strip_common_ancestor ))
+
+    if env.config.download_only:
+      return step_result(True, None, outputs = { '_skip_rest': True })
+      
+    for tarball_path, dest, base_dir, strip_common_ancestor in for_extract:
       self.blurb('Extracting %s to %s' % (path.relpath(tarball_path), path.relpath(dest)))
       archiver.extract(tarball_path,
                        dest,
-                       base_dir = base,
+                       base_dir = base_dir,
                        strip_common_ancestor = strip_common_ancestor)
       
     return step_result(True, None)

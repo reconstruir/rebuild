@@ -61,6 +61,8 @@ class step_manager(object):
       result = step.execute(script, env, step.values, outputs)
       script.timer.stop()
       outputs.update(result.outputs or {})
+      if result.outputs.get('_skip_rest', False):
+        break
       if not result.success:
         script.timer.stop()
         return step_result(False, message = result.message, failed_step = result.failed_step, outputs = outputs)

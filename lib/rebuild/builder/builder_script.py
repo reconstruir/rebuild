@@ -160,7 +160,10 @@ class builder_script(object):
     return result
 
   def _targets(self):
-    return [ self._path_normalize(self.env.artifact_manager.artifact_path(self.descriptor, self.build_target, False)) ]
+    p = self.env.artifact_manager.artifact_path(self.descriptor, self.build_target, False)
+    if not p:
+      return []
+    return [ self._path_normalize(p) ]
 
   def _current_checksums(self, all_scripts):
     return self.file_checksums(file_checksum_list.from_files(self._sources(all_scripts)),

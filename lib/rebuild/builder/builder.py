@@ -154,7 +154,11 @@ class builder(object):
         if path.exists(script.working_dir) and dir_util.is_empty(script.working_dir):
           file_util.remove(script.working_dir)
         return self._run_result(self.SCRIPT_CURRENT, None)
-      build_blurb.blurb('rebuild', '%s - building' % (script.descriptor.name))
+      if env.config.download_only:
+        action = 'downloading'
+      else:
+        action = 'building'
+      build_blurb.blurb('rebuild', '%s - %s' % (script.descriptor.name, action))
       script_result = script.execute()
       if script_result.success:
         return self._run_result(self.SCRIPT_SUCCESS, script_result)

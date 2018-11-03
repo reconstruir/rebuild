@@ -14,6 +14,9 @@ class step_setup_install_build_tool_requirements(step):
 
   #@abstractmethod
   def execute(self, script, env, values, inputs):
+    if env.config.download_only:
+      return step_result(True, 'skipping step_setup_install_build_tool_requirements because download_only is True')
+      
     package_desc = script.descriptor
     tools = script.resolve_deps(['TOOL'], False)
     build_blurb.blurb('rebuild', '%s - tool requirements: %s' % (package_desc.name, ' '.join([ t.name for t in tools ])))
