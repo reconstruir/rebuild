@@ -909,7 +909,7 @@ and only then forks rebuilder.py.  might be tough
 2018-11-27
 - when parsing fake recipes checks when nodes are NOT supposed to have children
 
-2018-11-31
+2018-10-31
 - remove need for requests library for file upload
 - fix requirements parser to add conditionals for python version somehow
 - fix rebuilder envs to have to full path to the build_target including distro.
@@ -918,3 +918,7 @@ and only then forks rebuilder.py.  might be tough
 - rename BUILD/artifacts to BUILD/build_artifacts maybe
 - package_descriptor version shit
 - fake_package_recipe.py rename metadata to adesc
+
+2018-11-3
+- check all instances of TOOL dependencies and make sure they are not actually BUILD
+

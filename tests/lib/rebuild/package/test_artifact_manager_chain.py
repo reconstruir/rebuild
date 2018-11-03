@@ -39,6 +39,10 @@ class test_artifact_manager_chain(unit_test):
     c.add_artifact_manager(t2.am)
 
     self.assertEqual( [ AD.parse(adesc1), AD.parse(adesc2) ], c.list_all_by_descriptor(None) )
+
+    rm = c.get_requirement_manager(self.LINUX_BT)
+    dm = rm.dependency_map( [ 'RUN' ], 'linux')
+    print(dm)
     
 if __name__ == '__main__':
   unit_test.main()

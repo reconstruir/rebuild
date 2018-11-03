@@ -87,8 +87,8 @@ class builder(object):
   def scratch_existing_data(self):
     dirs_to_scratch = [ 'artifacts', 'builds', 'checksums', 'tools' ]
     dirs = [ path.join(self._env.config.build_root, d) for d in dirs_to_scratch ]
+    self.blurb('scratching existing data: %s' % (' '.join([ path.relpath(d) for d in dirs ])))
     for d in dirs:
-      print('scratching existing data: %s' % (path.relpath(d)))
       file_util.remove(d)
     # Since we just killed the directory where the artifacts db lives we need to reload it
     self._env.reload_artifact_manager()

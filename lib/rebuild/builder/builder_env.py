@@ -72,9 +72,14 @@ class builder_env(object):
     return git_download_cache(path.join(build_dir, 'downloads'))
 
   def reload_artifact_manager(self):
-    self.artifact_manager = artifact_manager_local(path.join(self.config.build_root, 'artifacts'))
-    self.external_artifact_manager = None
-    return
+    use_chain = False
+    use_chain = True
+
+    if not use_chain:
+      self.artifact_manager = artifact_manager_local(path.join(self.config.build_root, 'artifacts'))
+      self.external_artifact_manager = None
+      return
+    
     self.artifact_manager = artifact_manager_chain()
     build_artifact_manager = artifact_manager_local(path.join(self.config.build_root, 'artifacts'))
     self.artifact_manager.add_artifact_manager(build_artifact_manager)

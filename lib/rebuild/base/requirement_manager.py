@@ -2,6 +2,8 @@
 
 from bes.common import algorithm, check, dict_util, object_util
 from bes.dependency import dependency_resolver, missing_dependency_error
+from bes.system import log
+from bes.compat import StringIO
 
 from .package_descriptor_list import package_descriptor_list
 from .requirement import requirement
@@ -10,6 +12,7 @@ from .requirement_list import requirement_list
 class requirement_manager(object):
 
   def __init__(self):
+    log.add_logging(self, 'requirement_manager')
     self._descriptor_map = {}
     self._is_tool_set = set()
 
@@ -20,15 +23,16 @@ class requirement_manager(object):
     check.check_requirement_manager(other)
     return self._descriptor_map == other._descriptor_map
     
-  def add_package(self, descriptor):
-    check.check_package_descriptor(descriptor)
-    name = descriptor.name
+  def add_package(self, pdesc):
+    check.check_package_descriptor(pdesc)
+    self.log_i('add_package(%s)' % (str(pdesc)))
+    name = pdesc.name
     if name in self._descriptor_map:
       raise ValueError('package \"%s\" already added.' % (name))
-    self._descriptor_map[name] = descriptor
-    tool_reqs = descriptor.requirements.filter_by_hardness(['TOOL'])
+    self._descriptor_map[name] = pdesc
+    tool_reqs = pdesc.requirements.filter_by_hardness(['TOOL'])
     self._is_tool_set |= set(tool_reqs.names())
-
+    
   def is_tool(self, name):
     check.check_string(name)
     return name in self._is_tool_set
@@ -48,6 +52,12 @@ class requirement_manager(object):
     for name in sorted(dep_map.keys()):
       print('%s%s: %s' % (label, name, ' '.join(sorted(dep_map[name]))))
   
+  def descriptor_map_to_string(self):
+    buf = StringIO()
+    for k, v in self._descriptor_map.items():
+      buf.write('%s: %s\n' % (k, str(v)))
+    return buf.getvalue().strip()
+
   def dependency_map(self, hardness, system):
     dep_map = {}
     for descriptor in self._descriptor_map.values():
@@ -60,6 +70,9 @@ class requirement_manager(object):
   
   def resolve_deps(self, names, system, hardness, include_names):
     'Resolve dependencies.'
+    self.log_i('resolve_deps(names=%s, system=%s, hardness=%s, include_names=%s)' % (' '.join(names),
+                                                                                     system, ' '.join(hardness),
+                                                                                     include_names))
     check.check_string_seq(names)
     names = object_util.listify(names)
     hardness = self._normalize_hardness(hardness)

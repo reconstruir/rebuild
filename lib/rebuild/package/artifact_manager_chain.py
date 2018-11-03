@@ -9,8 +9,6 @@ from .db_error import *
 from .artifact_descriptor_list import artifact_descriptor_list
 from .package_metadata_list import package_metadata_list
 
-#log.configure('artifact_manager=debug')
-
 class artifact_manager_chain(artifact_manager_base):
 
   def __init__(self):
@@ -41,7 +39,9 @@ class artifact_manager_chain(artifact_manager_base):
   #@abstractmethod
   def publish(self, tarball, build_target, allow_replace, metadata):
     m = self._find_writable_manager()
-    return m.publish(tarball, build_target, allow_replace, metadata)
+    result =  m.publish(tarball, build_target, allow_replace, metadata)
+    self._reset_requirement_managers()
+    return result
 
   #@abstractmethod
   def remove_artifact(self, artifact_descriptor):
@@ -81,4 +81,4 @@ class artifact_manager_chain(artifact_manager_base):
         return m.find_by_artifact_descriptor(artifact_descriptor, relative_filename)
       except NotInstalledError as ex:
         pass
-    raise NotInstalledError('package \"%s\" not found' % (str(artifact_descriptor)))    
+    raise NotInstalledError('package \"%s\" not found' % (str(artifact_descriptor)), artifact_descriptor)

@@ -58,17 +58,22 @@ class artifact_manager_base(with_metaclass(ABCMeta, object)):
   def find_by_artifact_descriptor(self, artifact_descriptor, relative_filename):
     pass
 
-  def find_by_package_descriptor(self, package_descriptor, build_target, relative_filename):
-    check.check_package_descriptor(package_descriptor)
+  def find_by_package_descriptor(self, pdesc, build_target, relative_filename):
+    check.check_package_descriptor(pdesc)
     check.check_build_target(build_target)
-    adesc = artifact_descriptor(package_descriptor.name, package_descriptor.version.upstream_version,
-                                package_descriptor.version.revision, package_descriptor.version.epoch,
+    self.log_i('by_package_descriptor(pdesc=%s, build_target=%s, relative_filename=%s)' % (str(pdesc),
+                                                                                           build_target.build_path,
+                                                                                           relative_filename))
+    adesc = artifact_descriptor(pdesc.name, pdesc.version.upstream_version,
+                                pdesc.version.revision, pdesc.version.epoch,
                                 build_target.system, build_target.level, build_target.arch,
                                 build_target.distro, build_target.distro_version)
     return self.find_by_artifact_descriptor(adesc, relative_filename)
  
  
   def latest_packages(self, package_names, build_target):
+    self.log_i('latest_packages(package_names=%s, build_target=%s, relative_filename=%s)' % (' '.join(package_names),
+                                                                                             build_target.build_path))
     result = []
     available_packages = self.list_all_by_metadata(build_target)
     for package_name in package_names:
@@ -93,6 +98,7 @@ class artifact_manager_base(with_metaclass(ABCMeta, object)):
     self._requirement_managers = {}
 
   def _make_requirement_manager(self, build_target):
+    self.log_i('_make_requirement_manager(build_target=%s)' % (build_target.build_path))
     self._timer.start('_make_requirement_manager() for %s' % (str(build_target)))
     rm = requirement_manager()
     latest_versions = self.list_all_by_package_descriptor(build_target).latest_versions()
@@ -107,7 +113,13 @@ class artifact_manager_base(with_metaclass(ABCMeta, object)):
     return self._requirement_managers[build_target.build_path]
 
   def resolve_deps(self, names, build_target, hardness, include_names):
-    return self.get_requirement_manager(build_target).resolve_deps(names, build_target.system, hardness, include_names)
+    self.log_i('resolve_deps(names=%s, build_target=%s, hardness=%s, include_names=%s)' % (' '.join(names),
+                                                                                           build_target.build_path,
+                                                                                           ' '.join(hardness),
+                                                                                           include_names))
+    rm = self.get_requirement_manager(build_target)
+    self.log_i('resolve_deps() requirements_manager dep_map=%s' % (rm.descriptor_map_to_string()))
+    return rm.resolve_deps(names, build_target.system, hardness, include_names)
 
   def list_latest_versions(self, build_target):
     return self.list_all_by_descriptor(build_target).latest_versions()
