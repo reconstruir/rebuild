@@ -4,7 +4,7 @@ import hashlib, os.path as path
 from io import BytesIO
 from collections import namedtuple
 
-from bes.common import check, node
+from bes.common import cached_property, check, node
 from bes.fs import file_path, file_util, temp_file
 
 from .pcloud_error import pcloud_error
@@ -17,19 +17,34 @@ class pcloud(object):
   
   def __init__(self, credentials):
     check.check_pcloud_credentials(credentials)
-    digest = self._get_digest()
-    password_digest = self._make_password_digest(digest, credentials.email, credentials.password)
-    self._auth_token = self._get_auth_token(digest, credentials.email, password_digest)
+    self.credentials = credentials
     self.root_dir = credentials.root_dir
-    del credentials
 
+  @cached_property
+  def digest(clazz):
+    'Get a digest from pcloud to use with subsequent api calls.'
+    response = pcloud_requests.get('getdigest', {})
+    if response.status_code != 200:
+      raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
+    payload = response.payload
+    assert 'digest' in payload
+    return payload['digest']
+
+  @cached_property
+  def auth_token(self):
+    password_digest = self._make_password_digest(self.digest, self.credentials.email, self.credentials.password)
+    auth_token = self._get_auth_token(self.digest, self.credentials.email, password_digest)
+    del self.credentials
+    self.credentials = None
+    return auth_token
+  
   def list_folder(self, folder_path = None, folder_id = None, recursive = False, checksums = False):
     if not folder_path and not folder_id:
       raise ValueError('Etiher folder_path or folder_id should be given.')
     elif folder_path and folder_id:
       raise ValueError('Only one of folder_path or folder_id should be given.')
     params = {
-      'auth': self._auth_token,
+      'auth': self.auth_token,
       'recursive': int(recursive),
     }
     what = ''
@@ -61,7 +76,7 @@ class pcloud(object):
     elif file_path and file_id:
       raise ValueError('Only one of file_path or file_id should be given.')
     params = {
-      'auth': self._auth_token,
+      'auth': self.auth_token,
     }
     what = ''
     if file_path:
@@ -92,7 +107,7 @@ class pcloud(object):
       if not folder_name:
         raise ValueError('folder_name must be valid.')
     params = {
-      'auth': self._auth_token,
+      'auth': self.auth_token,
     }
     what = ''
     if folder_path:
@@ -140,7 +155,7 @@ class pcloud(object):
     else:
       api_method = 'deletefolder'
     params = {
-      'auth': self._auth_token,
+      'auth': self.auth_token,
     }
     what = ''
     if folder_path:
@@ -177,7 +192,7 @@ class pcloud(object):
     elif file_path and file_id:
       raise ValueError('Only one of file_path or file_id should be given.')
     params = {
-      'auth': self._auth_token,
+      'auth': self.auth_token,
     }
     what = ''
     if file_path:
@@ -203,7 +218,7 @@ class pcloud(object):
     elif file_path and file_id:
       raise ValueError('Only one of file_path or file_id should be given.')
     params = {
-      'auth': self._auth_token,
+      'auth': self.auth_token,
     }
     what = ''
     if file_path:
@@ -244,7 +259,7 @@ class pcloud(object):
     files = { cloud_filename: open(local_path, 'rb') }
     url = pcloud_requests.make_api_url('uploadfile')
     params = {
-      'auth': self._auth_token,
+      'auth': self.auth_token,
       'filename': cloud_filename,
     }
     what = ''
@@ -292,16 +307,6 @@ class pcloud(object):
     password_digest_input = password + email_digest + digest
     digest_data = (password + email_digest + digest).encode('utf-8')
     return hashlib.sha1(digest_data).hexdigest()
-
-  @classmethod
-  def _get_digest(clazz):
-    'Get a digest from pcloud to use with subsequent api calls.'
-    response = pcloud_requests.get('getdigest', {})
-    if response.status_code != 200:
-      raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
-    payload = response.payload
-    assert 'digest' in payload
-    return payload['digest']
 
   @classmethod
   def _get_auth_token(clazz, digest, email, password_digest):
@@ -354,7 +359,7 @@ class pcloud(object):
       raise ValueError('Only one of file_path or file_id should be given.')
     '''
     params = {
-      'auth': self._auth_token,
+      'auth': self.auth_token,
       'flags': flags,
     }
     what = [ file_path, file_id, folder_id ]
@@ -382,7 +387,7 @@ class pcloud(object):
   file_size_result = namedtuple('file_size_result', 'size, offset')
   def file_size(self, fd):
     params = {
-      'auth': self._auth_token,
+      'auth': self.auth_token,
       'fd': fd,
     }
     what = str(fd)
@@ -400,7 +405,7 @@ class pcloud(object):
   
   def file_write(self, fd, count):
     params = {
-      'auth': self._auth_token,
+      'auth': self.auth_token,
       'fd': fd,
       'count': count,
     }
@@ -421,7 +426,7 @@ class pcloud(object):
 
   def file_read(self, fd, count):
     params = {
-      'auth': self._auth_token,
+      'auth': self.auth_token,
       'fd': fd,
       'count': count,
     }
