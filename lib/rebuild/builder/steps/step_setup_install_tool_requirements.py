@@ -6,16 +6,16 @@ import copy, os, os.path as path
 from rebuild.step import step, step_result
 from rebuild.base import build_blurb
 
-class step_setup_install_build_tool_requirements(step):
+class step_setup_install_tool_requirements(step):
   'Install package dependencies.'
 
   def __init__(self):
-    super(step_setup_install_build_tool_requirements, self).__init__()
+    super(step_setup_install_tool_requirements, self).__init__()
 
   #@abstractmethod
   def execute(self, script, env, values, inputs):
     if env.config.download_only:
-      return step_result(True, 'skipping step_setup_install_build_tool_requirements because download_only is True')
+      return step_result(True, 'skipping step_setup_install_tool_requirements because download_only is True')
       
     package_desc = script.descriptor
     tools = script.resolve_deps(['TOOL'], False)
