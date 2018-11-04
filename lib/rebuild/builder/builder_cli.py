@@ -100,7 +100,11 @@ class builder_cli(build_target_cli):
     # Tests only run on desktop
     if not bt.is_desktop():
       args.skip_tests = True
-    
+
+    if args.download_only and args.no_network:
+      build_blurb.blurb('rebuild', 'Only one of --download-only and --no-net can be given.')
+      return 1;
+      
     config = builder_config()
     config.build_root = path.abspath(path.abspath(args.root))
     config.build_target = bt
