@@ -141,7 +141,7 @@ class builder(object):
   
   def _build_one_script(self, script, env):
     try:
-      checksum_ignored = env.checksum_manager.is_ignored(script.descriptor.full_name)
+      checksum_ignored = env.checksum_manager.is_ignored(script.descriptor.full_name) or env.config.download_only
       if False and env.external_artifact_manager:
         package = env.external_artifact_manager.find_by_package_descriptor(script.descriptor,
                                                                            script.build_target,

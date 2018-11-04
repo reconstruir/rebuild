@@ -112,9 +112,10 @@ class builder_script(object):
   def execute(self):
     result = self._step_manager.execute(self, self.env)
     if result.success:
-      self.env.checksum_manager.save_checksums(self._current_checksums(self.env.script_manager.scripts),
-                                               self.descriptor,
-                                               self.build_target)
+      if not self.env.config.download_only:
+        self.env.checksum_manager.save_checksums(self._current_checksums(self.env.script_manager.scripts),
+                                                 self.descriptor,
+                                                 self.build_target)
     return result
 
   file_checksums = namedtuple('file_checksums', 'sources,targets')

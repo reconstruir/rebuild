@@ -923,3 +923,5 @@ and only then forks rebuilder.py.  might be tough
 - check all instances of TOOL dependencies and make sure they are not actually BUILD
 - s/step_setup_install_build_tool_requirements/step_setup_install_tool_requirements
 - consider implementing download_only by removing steps instead of by hacking steps to not do stuff
+- remove the logic to save checksums out of builder_script
+- --download-only and --no-net contradition
