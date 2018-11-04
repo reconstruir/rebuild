@@ -3,7 +3,8 @@
 import os.path as path
 from bes.common import check
 from bes.archive import archiver
-from rebuild.step import compound_step, step
+
+from rebuild.step import compound_step, step, step_result
 from rebuild.base import package_descriptor
 
 class _step_combine_packages_unpack(step):
@@ -20,6 +21,9 @@ class _step_combine_packages_unpack(step):
 
   #@abstractmethod
   def execute(self, script, env, values, inputs):
+    if env.config.download_only:
+      return step_result(True, None, outputs = { '_skip_rest': True })
+
     packages = values.get('packages')
     archives = self._filenames(env, packages)
     common_files = self._common_files(archives)
