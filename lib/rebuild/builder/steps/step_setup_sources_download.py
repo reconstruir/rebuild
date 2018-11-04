@@ -10,13 +10,13 @@ from bes.fs import file_util, temp_file
 from rebuild.step import step, step_result
 from rebuild.base import build_blurb
 
-class step_setup_prepare_tarballs(step):
+class step_setup_sources_download(step):
   'Prepare source tarballs..'
 
   _downloaded_tarball = namedtuple('_downloaded_tarball', 'filename, dest_dir, base_dir, strip_common_ancestor')
     
   def __init__(self):
-    super(step_setup_prepare_tarballs, self).__init__()
+    super(step_setup_sources_download, self).__init__()
 
   @classmethod
   def define_args(clazz):
@@ -79,13 +79,4 @@ class step_setup_prepare_tarballs(step):
     if env.config.download_only:
       return step_result(True, None, outputs = { '_skip_rest': True })
 
-    outputs = { 'downloaded_tarballs': downloaded_tarballs }
-    
-    for tarball_path, dest, base_dir, strip_common_ancestor in downloaded_tarballs:
-      self.blurb('Extracting %s to %s' % (path.relpath(tarball_path), path.relpath(dest)))
-      archiver.extract(tarball_path,
-                       dest,
-                       base_dir = base_dir,
-                       strip_common_ancestor = strip_common_ancestor)
-      
-    return step_result(True, None, outputs = outputs)
+    return step_result(True, None, outputs = { 'downloaded_tarballs': downloaded_tarballs })

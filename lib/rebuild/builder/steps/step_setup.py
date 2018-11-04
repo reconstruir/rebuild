@@ -9,15 +9,15 @@ from .step_setup_post_setup_hook import step_setup_post_setup_hook
 from .step_setup_post_unpack_hook import step_setup_post_unpack_hook
 from .step_setup_sources_unpack import step_setup_sources_unpack
 from .step_setup_prepare_environment import step_setup_prepare_environment
-from .step_setup_prepare_tarballs import step_setup_prepare_tarballs
+from .step_setup_sources_download import step_setup_sources_download
 
 class step_setup(compound_step):
   'A collection of multiple setup steps.'
   __steps__ = [
     step_setup_prepare_environment,
     step_setup_install_build_tool_requirements,
-    step_setup_prepare_tarballs,
-#    step_setup_sources_unpack,
+    step_setup_sources_download,
+    step_setup_sources_unpack,
     step_setup_patch,
     step_setup_post_unpack_hook,
     step_setup_install_requirements,
