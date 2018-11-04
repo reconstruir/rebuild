@@ -873,7 +873,6 @@ rebuild.package.package_manager.PackageFilesConflictError: conflicts found betwe
 
 2018-10-04
 - add a find_tarball cache for source_finder
-- when downloading tarballs do to tmp file first use control-c to test during long download
 
 2018-10-12
 - source finder chain unit tests for find_tarball
@@ -914,7 +913,6 @@ and only then forks rebuilder.py.  might be tough
 - fix requirements parser to add conditionals for python version somehow
 - fix rebuilder envs to have to full path to the build_target including distro.
   right now its just linux or macos
-- add a download only option to rebuilder
 - rename BUILD/artifacts to BUILD/build_artifacts maybe
 - package_descriptor version shit
 - fake_package_recipe.py rename metadata to adesc

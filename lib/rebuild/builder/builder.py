@@ -119,7 +119,11 @@ class builder(object):
   def _call_build_one_script(self, script):
     result = self._build_one_script(script, self._env)
     if result.status == self.SCRIPT_SUCCESS:
-      self.blurb('%s - SUCCESS' % (script.descriptor.name))
+      if self._env.config.download_only:
+        label = 'DOWNLOADED'
+      else:
+        label = 'SUCCESS'
+      self.blurb('%s - %s' % (script.descriptor.name, label))
       return self.EXIT_CODE_SUCCESS
     elif result.status == self.SCRIPT_FAILED:
       self.blurb('FAILED: %s - %s - %s' % (script.descriptor.name, result.script_result.failed_step.__class__.__name__, result.script_result.message))

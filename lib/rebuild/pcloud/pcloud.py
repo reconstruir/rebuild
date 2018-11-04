@@ -5,7 +5,7 @@ from io import BytesIO
 from collections import namedtuple
 
 from bes.common import check, node
-from bes.fs import file_path, file_util
+from bes.fs import file_path, file_util, temp_file
 
 from .pcloud_error import pcloud_error
 from .pcloud_metadata import pcloud_metadata
@@ -268,11 +268,13 @@ class pcloud(object):
   def download_to_file(self, target, file_path = None, file_id = None):
     'Download file to target.'
     links = self.getfilelink(file_path = file_path, file_id = file_id)
-    with open(target, 'wb') as fout:
+    tmp = temp_file.make_temp_file(suffix = '.download')
+    with open(tmp, 'wb') as fout:
       response = pcloud_requests.download_to_stream(links, fout, file_path = file_path, file_id = file_id)
       if response.status_code != 200:
         raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
       fout.close()
+      file_util.copy(tmp, target)
 
   def download_to_bytes(self, file_path = None, file_id = None):
     'Download file to target.'
