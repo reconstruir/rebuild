@@ -909,9 +909,6 @@ and only then forks rebuilder.py.  might be tough
 2018-10-31
 - remove need for requests library for file upload
 - fix requirements parser to add conditionals for python version somehow
-- fix rebuilder envs to have to full path to the build_target including distro.
-  right now its just linux or macos
-- rename BUILD/artifacts to BUILD/build_artifacts maybe
 - package_descriptor version shit
 - fake_package_recipe.py rename metadata to adesc
 
