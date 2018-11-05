@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import re
@@ -7,7 +6,7 @@ from collections import namedtuple
 from bes.compat import StringIO
 from bes.compat import cmp
 
-class build_version(namedtuple('build_version', 'upstream_version,revision,epoch')):
+class build_version(namedtuple('build_version', 'upstream_version, revision, epoch')):
   '''
   Manage package versions.  Inspired by the debian version format described here:
 
