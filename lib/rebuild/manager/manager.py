@@ -2,7 +2,7 @@
 
 import os.path as path
 from bes.common import algorithm
-from bes.fs import file_util
+from bes.fs import file_path, file_util
 from bes.common import check, object_util
 from bes.system import log, os_env
 from rebuild.base import build_blurb
@@ -30,15 +30,18 @@ class manager(object):
     self.config_filename = path.join(self.root_dir, self.CONFIG_FILENAME)
 
   @classmethod
-  def _project_subpath(clazz, project_name, system):
-    return path.join(project_name, system)
+  def _project_subpath(clazz, project_name, build_target):
+    # Remove the release/debug part of the path since its useless in this context
+    p = file_path.join(file_path.split(build_target.build_path)[0:-1])
+    return path.join(project_name, p)
     
-  def _project_root_dir(self, project_name, system):
-    subpath = self._project_subpath(project_name, system)
+  def _project_root_dir(self, project_name, build_target):
+    subpath = self._project_subpath(project_name, build_target)
     return path.join(self.root_dir, subpath)
     
-  def _package_manager(self, project_name, system):
-    subpath = self._project_subpath(project_name, system)
+  def _package_manager(self, project_name, build_target):
+    check.check_build_target(build_target)
+    subpath = self._project_subpath(project_name, build_target)
     if subpath not in self.package_managers:
       self.package_managers[project_name] = package_manager(path.join(self.root_dir, subpath),
                                                             self.artifact_manager,
@@ -46,12 +49,12 @@ class manager(object):
     return self.package_managers[project_name]
 
   def update_packages(self, project_name, packages, build_target, allow_downgrade = False, force_install = False):
-    pm = self._package_manager(project_name, build_target.system)
+    pm = self._package_manager(project_name, build_target)
     pm.install_packages(packages, build_target, [ 'RUN' ], allow_downgrade = allow_downgrade, force_install = force_install)
     pm.ensure_shell_framework()
     
   def installed_packages(self, project_name, build_target):
-    pm = self._package_manager(project_name, build_target.system)
+    pm = self._package_manager(project_name, build_target)
     return pm.list_all()
 
   resolve_result = namedtuple('resolve_result', 'available,missing,resolved')
@@ -87,19 +90,19 @@ class manager(object):
     check.check_dict(env)
     check.check_string(project_name)
     check.check_build_target(build_target)
-    pm = self._package_manager(project_name, build_target.system)
+    pm = self._package_manager(project_name, build_target)
     return pm.transform_env(env, pm.list_all())
   
   def bin_dir(self, project_name, build_target):
     check.check_string(project_name)
     check.check_build_target(build_target)
-    pm = self._package_manager(project_name, build_target.system)
+    pm = self._package_manager(project_name, build_target)
     return pm.bin_dir
 
   def tool_exe(self, project_name, build_target, tool_name):
     check.check_string(project_name)
     check.check_build_target(build_target)
-    pm = self._package_manager(project_name, build_target.system)
+    pm = self._package_manager(project_name, build_target)
     return pm.tool_exe(tool_name)
   
   def _load_config(self, build_target):
@@ -185,23 +188,32 @@ _@NAME@_root="$( command cd -P "$_root" > /dev/null && command pwd -P )"
 unset _this_file
 unset _root
 
-_rebuild_system_name()
+_rebuild_build_path()
 {
-  local _system='unknown'
-  case $(uname) in
-    Darwin)
+  local _system=$(uname | sed 's/Darwin/macos/' | tr '[:upper:]' '[:lower:]')
+  local _arch=$(uname -m)
+  local _version
+  local _distro
+  local _path
+
+  case $_system in
+    macos)
+      _version=$(defaults read loginwindow SystemVersionStampAsString | awk -F"." '{ printf("%s.%s\n", $1, $2); }')
       _system=macos
+      _path=${_system}-${_version}/${_arch}
       ;;
-	  Linux)
-      _system=linux
+	  linux)
+      _version=$(lsb_release -v -a 2> /dev/null | grep 'Release:' | awk '{ print $2; } '  | awk -F"." '{ print $1; } ')
+      _distro=$(lsb_release -v -a 2> /dev/null | grep 'Distributor ID:' | awk -F":" '{ print $2; } '  | awk -F"." '{ print $1; } '  | tr '[:upper:]' '[:lower:]'| awk '{ print $1; }')
+      _path=${_system}-${_distro}-${_version}/${_arch}
       ;;
 	esac
-  echo ${_system}
+  echo ${_path}
 }
 
 @NAME@_setup()
 {
-  local _system=$(_rebuild_system_name)
+  local _system=$(_rebuild_build_path)
   local _root=${_@NAME@_root}
   local _system_root=${_root}/${_system}
   local _prefix=${_system_root}/stuff
@@ -229,7 +241,7 @@ exec ${1+"$@"}
     system_setup_script = manager_script(self.SETUP_SYSTEM_SCRIPT_TEMPLATE, 'setup.sh')
     system_run_script = manager_script(self.SYSTEM_RUN_SCRIPT_TEMPLATE, 'run.sh')
     setup_script = manager_script(self.SETUP_SCRIPT_TEMPLATE, 'setup.sh')
-    pm = self._package_manager(project_name, build_target.system)
+    pm = self._package_manager(project_name, build_target)
     variables = {
       '@LIBRARY_PATH@': os_env.LD_LIBRARY_PATH_VAR_NAME,
       '@NAME@': project_name,
@@ -237,7 +249,7 @@ exec ${1+"$@"}
     }
     system_setup_script.save(pm.root_dir, variables)
     system_run_script.save(pm.root_dir, variables)
-    parent_dir = path.join(pm.root_dir, '..')
+    parent_dir = path.join(self.root_dir, project_name)
     setup_script.save(parent_dir, variables)
     system_run_script.save(parent_dir, variables)
   
@@ -245,7 +257,7 @@ exec ${1+"$@"}
     return self._load_config(build_target)
 
   def _wipe_project_dir(self, project_name, build_target):
-    project_root_dir = self._project_root_dir(project_name, build_target.system)
+    project_root_dir = self._project_root_dir(project_name, build_target)
     self.blurb('wiping root dir: %s' % (project_root_dir))
     self.log_i('%s - wiping: %s' % (project_name, project_root_dir))
     file_util.remove(project_root_dir)
