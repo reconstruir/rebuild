@@ -8,6 +8,7 @@ from bes.dependency import dependency_resolver
 from collections import namedtuple
 from rebuild.step import step_aborted
 from rebuild.base import build_blurb
+from rebuild.package.db_error import *
 
 from .builder_script import builder_script
 
@@ -144,37 +145,46 @@ class builder(object):
   _run_result = namedtuple('_run_result', 'status,script_result')
   
   def _build_one_script(self, script, env):
-    try:
-      checksum_ignored = env.checksum_manager.is_ignored(script.descriptor.full_name) or env.config.download_only
-      if False and env.external_artifact_manager:
-        package = env.external_artifact_manager.find_by_package_descriptor(script.descriptor,
-                                                                           script.build_target,
-                                                                           False)
-        needs_rebuilding = checksum_ignored or not package
-      else:
-        needs_rebuilding = checksum_ignored or script.needs_rebuilding()
-      if not needs_rebuilding:
-        # If the working directory is empty, it means no work happened and its useless
-        if path.exists(script.working_dir) and dir_util.is_empty(script.working_dir):
-          file_util.remove(script.working_dir)
-        return self._run_result(self.SCRIPT_CURRENT, None)
-      if env.config.download_only:
-        action = 'downloading'
-      else:
-        action = 'building'
-      build_blurb.blurb('rebuild', '%s - %s' % (script.descriptor.name, action))
+    if env.config.download_only:
+      return self._build_one_script_download_only(script, env)
+    else:
+      try:
+        return self._build_one_script_build(script, env)
+      except step_aborted as ex:
+        return self._run_result(self.SCRIPT_ABORTED, None)
+
+    assert False, 'Not Reached'
+
+  def _build_one_script_download_only(self, script, env):
+      build_blurb.blurb('rebuild', '%s - downloading' % (script.descriptor.name))
       script_result = script.execute()
       if script_result.success:
         return self._run_result(self.SCRIPT_SUCCESS, script_result)
       else:
         return self._run_result(self.SCRIPT_FAILED, script_result)
-
-    except step_aborted as ex:
-      return self._run_result(self.SCRIPT_ABORTED, None)
-
-    assert False, 'Not Reached'
-    return self._run_result(self.SCRIPT_FAILED, None)
   
+  def _build_one_script_build(self, script, env):
+    needs_rebuilding, reason = self._needs_rebuilding(script, env)
+    if not needs_rebuilding:
+      # If the working directory is empty, it means no work happened and its useless
+      if path.exists(script.working_dir) and dir_util.is_empty(script.working_dir):
+        file_util.remove(script.working_dir)
+      return self._run_result(self.SCRIPT_CURRENT, None)
+    build_blurb.blurb('rebuild', '%s - building because %s' % (script.descriptor.name, reason))
+    script_result = script.execute()
+    if script_result.success:
+      return self._run_result(self.SCRIPT_SUCCESS, script_result)
+    else:
+      return self._run_result(self.SCRIPT_FAILED, script_result)
+
+  def _needs_rebuilding(self, script, env):
+    if env.checksum_manager.is_ignored(script.descriptor.full_name):
+      return True, 'checksum_ignored'
+    if env.external_artifact_manager:
+      if env.external_artifact_manager.has_package_by_descriptor(script.descriptor, script.build_target):
+        return False, 'package found in AM'
+    return script.needs_rebuilding(), 'checksums'
+    
   def build_many_scripts(self, package_names):
 #    for name, script in self._env.script_manager.scripts.items():
 #      self._env.checksum_manager.set_sources(script.descriptor.full_name, script.sources)

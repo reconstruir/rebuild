@@ -919,3 +919,4 @@ and only then forks rebuilder.py.  might be tough
 - check all instances of TOOL dependencies and make sure they are not actually BUILD
 - consider implementing download_only by removing steps instead of by hacking steps to not do stuff
 - remove the logic to save checksums out of builder_script
+- rebuilder without local soources with --no-net stil ltries to download
