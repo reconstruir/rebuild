@@ -11,6 +11,7 @@ from bes.debug import debug_timer, noop_debug_timer
 from rebuild.base import build_blurb, requirement_manager
 
 from .artifact_descriptor import artifact_descriptor
+from .db_error import *
 
 class artifact_manager_base(with_metaclass(ABCMeta, object)):
 
@@ -70,6 +71,13 @@ class artifact_manager_base(with_metaclass(ABCMeta, object)):
                                 build_target.distro, build_target.distro_version)
     return self.find_by_artifact_descriptor(adesc, relative_filename)
  
+  def has_package_by_descriptor(self, pdesc, build_target):
+    try:
+      self.find_by_package_descriptor(pdesc, build_target, False)
+      return True
+    except NotInstalledError as ex:
+      pass
+    return False
  
   def latest_packages(self, package_names, build_target):
     self.log_i('latest_packages(package_names=%s, build_target=%s)' % (' '.join(package_names),
