@@ -122,17 +122,21 @@ class recipe_parser(object):
   def _parse_package_header(self, node):
     parts = string_util.split_by_white_space(node.data.text, strip = True)
     num_parts = len(parts)
-    if num_parts not in [ 2, 3 ]:
-      self._error('package section should begin with \"package $name $ver-$rev\" instead of \"%s\"' % (node.data.text), node)
+    if num_parts not in [ 3, 4 ]:
+      self._error('package section should begin with \"package $name $ver $rev\" instead of \"%s\"' % (node.data.text), node)
     if parts[0] != 'package':
-      self._error('package section should begin with \"package $name $ver-$rev\" instead of \"%s\"' % (node.data.text), node)
-    if num_parts == 2:
-      desc = package_descriptor.parse(parts[1])
-      return desc.name, desc.version
-    elif num_parts == 3:
-      return parts[1], parts[2]
-    else:
-      assert False
+      self._error('package section should begin with \"package $name $ver $rev\" instead of \"%s\"' % (node.data.text), node)
+    if num_parts == 3:
+      name = parts[1].strip()
+      version = build_version.parse(parts[2])
+      return name, version
+    elif num_parts == 4:
+      name = parts[1].strip()
+      version = build_version.parse(parts[2])
+      if version.revision != 0:
+        self._error('revision given multiple times: %s' % (node.data.text), node)
+      revision = parts[3].strip()
+      return name, build_version(version.upstream_version, revision, version.epoch)
 
   def _parse_enabled(self, node):
     enabled_text = tree_text_parser.node_text_flat(node)

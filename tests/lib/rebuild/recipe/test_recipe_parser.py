@@ -35,7 +35,7 @@ class test_recipe_parser(unit_test):
 
   def test_package_version_dash(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
 '''
     r = self._parse(text)
     self.assertEqual( 1, len(r) )
@@ -45,7 +45,7 @@ package foo-1.2.3-4
   def test_package_version_space(self):
     frame = inspect.getframeinfo(inspect.currentframe())
     text = '''!rebuild.recipe!
-package foo 1.2.3-4
+package foo 1.2.3 4
 '''
     r = self._parse(text, frame.lineno)
     self.assertEqual( 1, len(r) )
@@ -54,7 +54,7 @@ package foo 1.2.3-4
     
   def test_step_value_bool(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
   steps
     step_takes_bool
       bool_value: True
@@ -69,7 +69,7 @@ package foo-1.2.3-4
     self.maxDiff = None
     
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
   steps
     step_takes_bool
       bool_value
@@ -83,7 +83,7 @@ package foo-1.2.3-4
 
   def test_step_value_key_values(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
   steps
     step_takes_key_values
       key_values_value: a=5 b=6 c="x y"
@@ -97,7 +97,7 @@ package foo-1.2.3-4
 
   def test_step_value_key_values_with_mask(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
   steps
     step_takes_key_values
       key_values_value
@@ -112,7 +112,7 @@ package foo-1.2.3-4
 
   def test_step_value_string(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
   steps
     step_takes_string
       string_value: my string with spaces
@@ -124,7 +124,7 @@ package foo-1.2.3-4
 
   def test_step_value_string_with_quotes(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
   steps
     step_takes_string
       string_value: my string with "a quote"
@@ -136,7 +136,7 @@ package foo-1.2.3-4
 
   def test_step_value_string_with_comments(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
   steps
     step_takes_string
       string_value: my string # comment
@@ -148,7 +148,7 @@ package foo-1.2.3-4
     
   def test_step_value_string_with_hash_in_quotes(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
   steps
     step_takes_string
       string_value: "my string # with a hash"
@@ -160,7 +160,7 @@ package foo-1.2.3-4
     
   def test_step_value_string_list(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
   steps
     step_takes_string_list
       string_list_value: a b "x y"
@@ -174,7 +174,7 @@ package foo-1.2.3-4
 
   def test_step_value_string_list_with_mask(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
   steps
     step_takes_string_list
       string_list_value
@@ -189,7 +189,7 @@ package foo-1.2.3-4
 
   def test_step_value_string_list_with_comment(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
   steps
     step_takes_string_list
       string_list_value: a b "x y" # comment
@@ -201,7 +201,7 @@ package foo-1.2.3-4
     
   def test_step_value_string_list_with_quoted_hash(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
   steps
     step_takes_string_list
       string_list_value: a b "x # y"
@@ -213,7 +213,7 @@ package foo-1.2.3-4
     
   def test_step_value_key_values_multi_line(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
   steps
     step_takes_key_values
       key_values_value
@@ -230,7 +230,7 @@ package foo-1.2.3-4
     
   def test_step_value_key_values_many_masks(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
   steps
     step_takes_key_values
       key_values_value
@@ -255,7 +255,7 @@ step_takes_key_values
 
   def test_takes_all(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
   steps
     step_takes_all
       bool_value:
@@ -290,7 +290,7 @@ step_takes_all
     
   def test_compound_step(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
   steps
     step_compound
       bool_value:
@@ -325,7 +325,7 @@ step_compound
     
   def test_multiple_steps(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
   steps
     step_takes_bool
       bool_value:
@@ -367,7 +367,7 @@ step_takes_key_values
     text = '''!rebuild.recipe!
 #comment
 
-package foo-1.2.3-4
+package foo 1.2.3 4
   enabled=$system is MACOS
 
   properties
@@ -403,7 +403,7 @@ package foo-1.2.3-4
 '''
     r = self._parse(text)
     expected='''\
-package foo-1.2.3-4
+package foo 1.2.3 4
   enabled=$system is MACOS
 
   properties
@@ -437,7 +437,7 @@ package foo-1.2.3-4
 
   def test_step_load(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
   load
     test_loaded_step1.py
     test_loaded_step2.py
@@ -459,7 +459,7 @@ package foo-1.2.3-4
 
   def test_step_value_hook_list(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
   load
     test_loaded_hook1.py
     test_loaded_hook2.py
@@ -486,7 +486,7 @@ package foo-1.2.3-4
     
   def test_step_value_hook_list_with_mask(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
   load
     test_loaded_hook3.py
     test_loaded_hook4.py
@@ -513,7 +513,7 @@ package foo-1.2.3-4
 
   def test_step_value_file_list(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
 
   steps
     step_takes_file_list
@@ -526,7 +526,7 @@ package foo-1.2.3-4
 
   def test_step_value_file_list_with_properties(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
 
   steps
     step_takes_file_list
@@ -539,7 +539,7 @@ package foo-1.2.3-4
 
   def test_step_value_file(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
 
   steps
     step_takes_file
@@ -552,7 +552,7 @@ package foo-1.2.3-4
 
   def test_step_value_file_with_values(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
 
   steps
     step_takes_file
@@ -565,7 +565,7 @@ package foo-1.2.3-4
 
   def test_step_value_install_file(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
 
   steps
     step_takes_install_file
@@ -578,7 +578,7 @@ package foo-1.2.3-4
 
   def test_step_value_install_file_many(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
 
   steps
     step_takes_install_file
@@ -595,7 +595,7 @@ package foo-1.2.3-4
   def test_step_comments(self):
     text = '''!rebuild.recipe!
 # comment
-package foo-1.2.3-4 # comment
+package foo 1.2.3 4 # comment
 # comment
   # comment
   steps # comment
@@ -616,7 +616,7 @@ package foo-1.2.3-4 # comment
 
   def test_step_empty_value(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
   steps
     step_takes_bool
 '''
@@ -628,7 +628,7 @@ package foo-1.2.3-4
 
   def test_step_git_address(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
 
   steps
     step_takes_git_address
@@ -641,7 +641,7 @@ package foo-1.2.3-4
 
   def test_step_value_commented_out(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
   steps
     step_takes_file_list
       file_list_value
@@ -660,7 +660,7 @@ package foo-1.2.3-4
     self.assertEqual( self.data_path('test_file2.txt'), files[1].filename )
 
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
   steps
     step_takes_file_list
       file_list_value
@@ -679,7 +679,7 @@ package foo-1.2.3-4
 
   def test_step_value_file_list_empty(self):
     text = '''!rebuild.recipe!
-package foo-1.2.3-4
+package foo 1.2.3 4
   steps
     step_takes_file_list
       file_list_value

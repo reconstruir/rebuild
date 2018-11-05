@@ -28,7 +28,7 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
   
   def _to_node(self):
     'A convenient way to make a recipe string is to build a graph first.'
-    root = node('package %s' % (self.descriptor.full_name))
+    root = node('package %s %s %s' % (self.descriptor.name, self.descriptor.version.upstream_version, self.descriptor.version.revision))
     if self.enabled != '':
       root.add_child('enabled=%s' % (self.enabled))
       root.add_child('')

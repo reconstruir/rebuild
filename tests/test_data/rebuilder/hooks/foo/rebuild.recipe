@@ -1,6 +1,6 @@
 !rebuild.recipe!
 
-package foo-1.0.0
+package foo 1.0.0
   load
     hooks.py
 

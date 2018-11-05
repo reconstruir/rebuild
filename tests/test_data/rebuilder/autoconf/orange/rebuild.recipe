@@ -1,6 +1,6 @@
 !rebuild.recipe!
 
-package orange-6.5.4-3
+package orange 6.5.4 3
   instructions
     liborange1
       CFLAGS

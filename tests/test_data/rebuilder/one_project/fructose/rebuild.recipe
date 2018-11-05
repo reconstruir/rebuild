@@ -1,6 +1,6 @@
 !rebuild.recipe!
 
-package fructose 3.4.5-6
+package fructose 3.4.5 6
   steps
     step_autoconf
       tarball_dir
