@@ -198,7 +198,7 @@ _rebuild_build_path()
 
   case $_system in
     macos)
-      _version=$(defaults read loginwindow SystemVersionStampAsString | awk -F"." '{ printf("%s.%s\n", $1, $2); }')
+      _version=$(defaults read loginwindow SystemVersionStampAsString | awk -F"." '{ printf("%s.%s\\n", $1, $2); }')
       _system=macos
       _path=${_system}-${_version}/${_arch}
       ;;
