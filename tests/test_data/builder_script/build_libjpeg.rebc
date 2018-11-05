@@ -1,6 +1,6 @@
 !rebuild.recipe!
 
-package libjpeg-9a-1
+package libjpeg 9a 1
   properties
 
   steps  

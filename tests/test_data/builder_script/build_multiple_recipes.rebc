@@ -1,6 +1,6 @@
 !rebuild.recipe!
 
-package libsdl2-2.0.5
+package libsdl2 2.0.5
   enabled=$system is MACOS
 
   properties
@@ -16,7 +16,7 @@ package libsdl2-2.0.5
         all: --enable-static --disable-shared
         linux: --with-pic
 
-package libsdl2_image-2.0.1
+package libsdl2_image 2.0.1
   enabled=$system is MACOS
 
   properties
@@ -40,7 +40,7 @@ package libsdl2_image-2.0.1
              --enable-static --disable-shared
         linux: --with-pic
 
-package libsdl2_mixer-2.0.1
+package libsdl2_mixer 2.0.1
   enabled=$system is MACOS
 
   requirements
@@ -56,7 +56,7 @@ package libsdl2_mixer-2.0.1
         linux: --with-pic
         darwin: --disable-music-midi-native
 
-package libsdl2_ttf-2.0.13
+package libsdl2_ttf 2.0.13
   enabled=$system is MACOS
 
   properties
