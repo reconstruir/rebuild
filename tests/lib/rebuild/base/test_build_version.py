@@ -121,7 +121,7 @@ class test_version(unit_test):
     self.assertEqual( build_version('1.2.3', 0, 0), build_version.parse('1.2.3') )
     self.assertEqual( build_version('1.2.3', 1, 0), build_version.parse('1.2.3-1') )
     self.assertEqual( build_version('1.2.3', 0, 1), build_version.parse('1:1.2.3') )
-    self.assertEqual( build_version('1.2.3', 1, 1), build_version.parse('1:1.2.3-1') )
+    self.assertEqual( build_version('1.2.3', 1, 2), build_version.parse('2:1.2.3-1') )
 
   def test_parse_invalid(self):
     with self.assertRaises(RuntimeError) as context:
