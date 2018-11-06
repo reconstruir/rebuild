@@ -3,7 +3,7 @@
 import os.path as path
 from bes.common import check, object_util, string_util
 from bes.system import host, os_env, os_env_var
-from rebuild.base import build_target, build_level
+from rebuild.base import build_target, build_level, package_descriptor_list
 from rebuild.package import package_manager
 from rebuild.manager import manager
 from bes.debug import debug_timer, noop_debug_timer
@@ -36,27 +36,36 @@ class new_tools_manager(object):
 
   def ensure_tool(self, pkg_desc):
     check.check_package_descriptor(pkg_desc)
+    # If we created this tool dir before were done.  There is no possible update
+    # Update of tools requires a change in the version or revision.
     if path.exists(self._package_root_dir(pkg_desc)):
       return
-    project_name = self._make_package_name(pkg_desc)
-    self._timer.start('%s: resolve_and_update_packages' % (project_name))
-    self._manager.resolve_and_update_packages(project_name,
-                                              [ pkg_desc.name ],
-                                              self._build_target,
-                                              allow_downgrade = False,
-                                              force_install = False)
-    self._timer.stop()
-    self._manager._save_system_setup_scripts(project_name, self._build_target)
+    # Figure out the dependencies for this tool
+    resolved_tools = self._resolve_tools_deps(package_descriptor_list([pkg_desc]))
+    for tool in resolved_tools:
+      project_name = self._make_package_name(tool)
+      self._timer.start('%s: resolve_and_update_packages' % (project_name))
+      self._manager.resolve_and_update_packages(project_name,
+                                                [ tool.name ],
+                                                self._build_target,
+                                                allow_downgrade = False,
+                                                force_install = False)
+      self._timer.stop()
+      self._manager.save_system_setup_scripts(project_name, self._build_target)
 
-
-#    resolved_deps = self.artifact_manager.resolve_deps(package_names, build_target, ['RUN'], True)
-    
-  def transform_env(self, pkg_descs, env):
-    pkg_descs = object_util.listify(pkg_descs)
+  def _resolve_tools_deps(self, pkg_descs):
     check.check_package_descriptor_list(pkg_descs)
-    pkg_descs
-#    project_name = self._make_package_name(pkg_desc)
-#    return self._manager.transform_env(env, project_name, self._build_target)
+    return self._artifact_manager.resolve_deps(pkg_descs.names(), self._build_target, [ 'TOOL' ], True)
+
+  def transform_env(self, pkg_descs, env):
+    pkg_descs = package_descriptor_list(object_util.listify(pkg_descs))
+    check.check_package_descriptor_list(pkg_descs)
+    resolved_tools = self._resolve_tools_deps(pkg_descs)
+    env = {}
+    for tool in resolved_tools:
+      project_name = self._make_package_name(tool)
+      env = self._manager.transform_env(env, project_name, self._build_target)
+    return env
     
   def _transform_one_env(self, pkg_desc, env):
     project_name = self._make_package_name(pkg_desc)

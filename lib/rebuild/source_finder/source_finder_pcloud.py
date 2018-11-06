@@ -50,7 +50,7 @@ class source_finder_pcloud(source_finder):
       self.blurb('pcloud: not local db found at: %s' % (self._local_db_file_path))
       return source_finder_db_dict()
     try:
-      self.blurb('pcloud: using local db: %s' % (self._local_db_file_path))
+      self.blurb('pcloud: using local db: %s' % (path.relpath(self._local_db_file_path)))
       content = file_util.read(self._local_db_file_path)
       return source_finder_db_dict.from_json(content)
     except Exception as ex:

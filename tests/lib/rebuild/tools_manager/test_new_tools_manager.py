@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.testing.unit_test import script_unit_test
+from bes.testing.unit_test import unit_test
 from bes.common import cached_property
 from bes.fs import temp_file
 from bes.system import execute
@@ -10,43 +10,37 @@ from rebuild.base import build_target, build_system, build_level, package_descri
 from rebuild.tools_manager import new_tools_manager as TM
 from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT
 from _rebuild_testing.fake_package_recipes import fake_package_recipes as RECIPES
+from _rebuild_testing.artifact_manager_tester import artifact_manager_tester as AMT
 
 from _rebuild_testing.rebuilder_tester import rebuilder_tester
 
-class test_new_tools_manager(script_unit_test):
+class test_new_tools_manager(unit_test):
 
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/rebuilder'
   __script__ = __file__, '../../../../bin/rebuilder.py'
   
-  DEBUG = script_unit_test.DEBUG
+  DEBUG = unit_test.DEBUG
   DEBUG = True
 
   TEST_BUILD_TARGET = build_target.parse_path('linux-ubuntu-18/x86_64/release')
 
-  @classmethod
-  def _make_test_artifact_manager(clazz):
-    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
-    return FPUT.make_artifact_manager(debug = clazz.DEBUG,
-                                      recipes = RECIPES.KNIFE,
-                                      build_target = clazz.TEST_BUILD_TARGET,
-                                      mutations = mutations)
-  
   def _make_test_tm(self):
+    amt = AMT(recipes = RECIPES.KNIFE, debug = self.DEBUG)
+    amt.publish('knife;6.6.6;0;0;linux;release;x86_64;ubuntu;18')
     root_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     tools_dir = path.join(root_dir, 'tools')
-    am = self._make_test_artifact_manager()
     if self.DEBUG:
       print('\ntools_manager dir:\n%s' % (tools_dir))
-    return TM(tools_dir, self.TEST_BUILD_TARGET, am)
+    return TM(tools_dir, self.TEST_BUILD_TARGET, amt.am), amt.am, amt
 
   def test_ensure_tool(self):
-    tm = self._make_test_tm()
+    tm, am, amt = self._make_test_tm()
     knife_desc = PD.parse('knife-6.6.6')
     tm.ensure_tool(knife_desc)
     self.assertTrue( path.exists(tm.tool_exe(knife_desc, 'cut.sh')) )
     
   def test_use_shell_tool(self):
-    tm = self._make_test_tm()
+    tm, am, amt = self._make_test_tm()
     knife_desc = PD.parse('knife-6.6.6')
     tm.ensure_tool(knife_desc)
     exe = tm.tool_exe(knife_desc, 'cut.sh')
@@ -55,10 +49,9 @@ class test_new_tools_manager(script_unit_test):
     self.assertEqual( 'cut.sh: a b 666', rv.stdout.strip() )
 
   def test_use_binary_tool(self):
-    tm = self._make_test_tm()
+    tm, am, amt = self._make_test_tm()
     knife_desc = PD.parse('knife-6.6.6')
     tm.ensure_tool(knife_desc)
-
     exe = tm.tool_exe(knife_desc, 'cut.exe')
     rv = execute.execute([ exe, 'a', 'b', '666' ])
     self.assertEqual( 0, rv.exit_code )
@@ -69,8 +62,59 @@ class test_new_tools_manager(script_unit_test):
     self.assertEqual( 0, rv.exit_code )
     self.assertEqual( '11', rv.stdout.strip() )
 
+  def test_tool_env(self):
+    recipes = '''
+fake_package wood 1.0.0 0 0 linux release x86_64 ubuntu 18
+  files
+    bin/wood.py
+      \#!/usr/bin/env python
+      print('ffoo')
+      raise SystemExit(0)
+
+  env_files
+    wood_env.sh
+      export WOOD_ENV1=wood_env1
+
+fake_package steel 1.0.0 0 0 linux release x86_64 ubuntu 18
+  files
+    bin/steel.py
+      \#!/usr/bin/env python
+      print('fbar')
+      raise SystemExit(0)
+
+  env_files
+    steel_env.sh
+      export STEEL_ENV1=steel_env1
+
+fake_package cuchillo 1.0.0 0 0 linux release x86_64 ubuntu 18
+  files
+    bin/cuchillo.py
+      \#!/usr/bin/env python
+      print('fbaz')
+      raise SystemExit(0)
+
+  env_files
+    cuchillo_env.sh
+      export CUCHILLO_ENV1=cuchillo_env1
+
+  requirements
+    all: TOOL wood >= 1.0.0
+    all: TOOL steel >= 1.0.0
+
+'''
+    tm, am, amt = self._make_test_tm()
+    amt.add_recipes(recipes)
+    amt.publish('wood;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    amt.publish('steel;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    amt.publish('cuchillo;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    cuchillo = PD.parse('cuchillo-1.0.0')
+    tm.ensure_tool(cuchillo)
+    env = tm.transform_env(cuchillo, {})
+    print('ENV: %s' % (str(env)))
+    self.assertEqual( 'cuchillo_env1', env['CUCHILLO_ENV1'] )
+    
   def xtest_use_binary_tool_with_shared_lib(self):
-    tm = self._make_test_tm()
+    tm, am, amt = self._make_test_tm()
     knife_desc = PD.parse('knife-6.6.6')
     tm.ensure_tool(knife_desc)
     exe = tm.tool_exe(knife_desc, 'links_with_shared.exe')
@@ -79,7 +123,7 @@ class test_new_tools_manager(script_unit_test):
     self.assertEqual( '11', rv.stdout.strip() )
     
   def xtest_one_tool_env(self):
-    tm = self._make_test_tm()
+    tm, am, amt = self._make_test_tm()
     tfoo = PD.parse('tfoo-1.0.0')
     tm.ensure_tool(tfoo)
     env = tm.transform_env(tfoo, {})
@@ -87,7 +131,7 @@ class test_new_tools_manager(script_unit_test):
     self.assertEqual( 'tfoo_env2', env['TFOO_ENV2'] )
     
   def xtest_ensure_tools(self):
-    tm = self._make_test_tm()
+    tm, am, amt = self._make_test_tm()
     tfoo = PD.parse('tfoo-1.0.0')
     tbar = PD.parse('tbar-1.0.0')
     tbaz = PD.parse('tbaz-1.0.0')
@@ -98,7 +142,7 @@ class test_new_tools_manager(script_unit_test):
     print('bin_dir: %s' % (tm.bin_dir(tfoo,)))
 
   def xtest_many_tool_env(self):
-    tm = self._make_test_tm()
+    tm, am, amt = self._make_test_tm()
     tfoo = PD.parse('tfoo-1.0.0')
     tbar = PD.parse('tbar-1.0.0')
     tbaz = PD.parse('tbaz-1.0.0')
@@ -108,4 +152,4 @@ class test_new_tools_manager(script_unit_test):
     self.assertEqual( 'tfoo_env2', env['TFOO_ENV2'] )
 
 if __name__ == '__main__':
-  script_unit_test.main()
+  unit_test.main()

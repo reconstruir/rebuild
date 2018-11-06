@@ -147,7 +147,7 @@ class manager(object):
     self.log_i('%s - removed packages: %s' % (project_name, ' '.join(removed_packages)))
     if removed_packages:
       self.uninstall_packages(project_name, removed_packages, build_target)
-    self._save_system_setup_scripts(project_name, build_target)
+    self.save_system_setup_scripts(project_name, build_target)
     return True
   
   SETUP_SYSTEM_SCRIPT_TEMPLATE = '''
@@ -237,7 +237,7 @@ source "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/setup.sh"
 exec ${1+"$@"}
 '''
 
-  def _save_system_setup_scripts(self, project_name, build_target):
+  def save_system_setup_scripts(self, project_name, build_target):
     system_setup_script = manager_script(self.SETUP_SYSTEM_SCRIPT_TEMPLATE, 'setup.sh')
     system_run_script = manager_script(self.SYSTEM_RUN_SCRIPT_TEMPLATE, 'run.sh')
     setup_script = manager_script(self.SETUP_SCRIPT_TEMPLATE, 'setup.sh')
