@@ -110,8 +110,11 @@ fake_package cuchillo 1.0.0 0 0 linux release x86_64 ubuntu 18
     cuchillo = PD.parse('cuchillo-1.0.0')
     tm.ensure_tool(cuchillo)
     env = tm.transform_env(cuchillo, {})
-    print('ENV: %s' % (str(env)))
-    self.assertEqual( 'cuchillo_env1', env['CUCHILLO_ENV1'] )
+    self.assertEqual( {
+      'WOOD_ENV1': 'wood_env1',
+      'CUCHILLO_ENV1': 'cuchillo_env1',
+      'STEEL_ENV1': 'steel_env1',
+    }, env )
     
   def xtest_use_binary_tool_with_shared_lib(self):
     tm, am, amt = self._make_test_tm()
