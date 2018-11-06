@@ -75,6 +75,28 @@ fake_package wood 1.0.0 0 0 linux release x86_64 ubuntu 18
     wood_env.sh
       export WOOD_ENV1=wood_env1
 
+fake_package iron 1.0.0 0 0 linux release x86_64 ubuntu 18
+  files
+    bin/iron.py
+      \#!/usr/bin/env python
+      print('fbar')
+      raise SystemExit(0)
+
+  env_files
+    iron_env.sh
+      export IRON_ENV1=iron_env1
+
+fake_package carbon 1.0.0 0 0 linux release x86_64 ubuntu 18
+  files
+    bin/carbon.py
+      \#!/usr/bin/env python
+      print('fbar')
+      raise SystemExit(0)
+
+  env_files
+    carbon_env.sh
+      export CARBON_ENV1=carbon_env1
+
 fake_package steel 1.0.0 0 0 linux release x86_64 ubuntu 18
   files
     bin/steel.py
@@ -85,6 +107,10 @@ fake_package steel 1.0.0 0 0 linux release x86_64 ubuntu 18
   env_files
     steel_env.sh
       export STEEL_ENV1=steel_env1
+
+  requirements
+    all: RUN iron >= 1.0.0
+    all: RUN carbon >= 1.0.0
 
 fake_package cuchillo 1.0.0 0 0 linux release x86_64 ubuntu 18
   files
@@ -104,9 +130,11 @@ fake_package cuchillo 1.0.0 0 0 linux release x86_64 ubuntu 18
 '''
     tm, am, amt = self._make_test_tm()
     amt.add_recipes(recipes)
-    amt.publish('wood;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
-    amt.publish('steel;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    amt.publish('carbon;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
     amt.publish('cuchillo;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    amt.publish('iron;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    amt.publish('steel;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    amt.publish('wood;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
     cuchillo = PD.parse('cuchillo-1.0.0')
     tm.ensure_tool(cuchillo)
     env = tm.transform_env(cuchillo, {})
@@ -114,6 +142,8 @@ fake_package cuchillo 1.0.0 0 0 linux release x86_64 ubuntu 18
       'WOOD_ENV1': 'wood_env1',
       'CUCHILLO_ENV1': 'cuchillo_env1',
       'STEEL_ENV1': 'steel_env1',
+      'IRON_ENV1': 'iron_env1',
+      'CARBON_ENV1': 'carbon_env1',
     }, env )
     
   def xtest_use_binary_tool_with_shared_lib(self):
