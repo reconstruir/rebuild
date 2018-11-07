@@ -2,7 +2,7 @@
 
 from os import path
 
-from bes.common import check
+from bes.common import check, object_util
 from bes.fs import temp_file
 
 from rebuild.package import artifact_manager_local
@@ -43,7 +43,12 @@ class artifact_manager_tester(object):
     tmp_file = temp_file.make_temp_file()
     return recipe.create_package(tmp_file, debug = self._debug).filename
 
-  def publish(self, adesc, mutations = {}):
+  def publish(self, adescs, mutations = {}):
+    adescs = object_util.listify(adescs)
+    for adesc in adescs:
+      self._publish_one(adesc, mutations)
+
+  def _publish_one(self, adesc, mutations):
     if check.is_string(adesc):
       adesc = artifact_descriptor.parse(adesc)
     check.check_artifact_descriptor(adesc)

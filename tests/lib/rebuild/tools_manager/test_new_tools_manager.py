@@ -63,87 +63,9 @@ class test_new_tools_manager(unit_test):
     self.assertEqual( '11', rv.stdout.strip() )
 
   def test_tool_env(self):
-    recipes = '''
-fake_package wood 1.0.0 0 0 linux release x86_64 ubuntu 18
-  files
-    bin/wood.py
-      \#!/usr/bin/env python
-      print('ffoo')
-      raise SystemExit(0)
-
-  env_files
-    wood_env.sh
-      export WOOD_ENV1=wood_env1
-
-fake_package iron 1.0.0 0 0 linux release x86_64 ubuntu 18
-  files
-    bin/iron.py
-      \#!/usr/bin/env python
-      print('fbar')
-      raise SystemExit(0)
-
-  env_files
-    iron_env.sh
-      export IRON_ENV1=iron_env1
-
-fake_package carbon 1.0.0 0 0 linux release x86_64 ubuntu 18
-  files
-    bin/carbon.py
-      \#!/usr/bin/env python
-      print('fbar')
-      raise SystemExit(0)
-
-  env_files
-    carbon_env.sh
-      export CARBON_ENV1=carbon_env1
-
-fake_package steel 1.0.0 0 0 linux release x86_64 ubuntu 18
-  files
-    bin/steel_exe.py
-      \#!/usr/bin/env python
-      import sys
-      assert len(sys.argv) == 2
-      import steel
-      print('steel_exe.py: %d' % (steel.steel_func1(int(sys.argv[1]))))
-      raise SystemExit(0)
-    lib/python/steel.py
-      def steel_func1(x):
-        return x + 10
-
-  env_files
-    steel_env.sh
-      \#@REBUILD_HEAD@
-      export STEEL_ENV1=steel_env1
-      export PYTHONPATH=${PYTHONPATH}:${REBUILD_STUFF_DIR}/lib/python
-      \#@REBUILD_TAIL@
-
-  requirements
-    all: RUN iron >= 1.0.0
-    all: RUN carbon >= 1.0.0
-
-fake_package cuchillo 1.0.0 0 0 linux release x86_64 ubuntu 18
-  files
-    bin/cuchillo.py
-      \#!/usr/bin/env python
-      print('fbaz')
-      raise SystemExit(0)
-
-  env_files
-    cuchillo_env.sh
-      export CUCHILLO_ENV1=cuchillo_env1
-
-  requirements
-    all: TOOL wood >= 1.0.0
-    all: TOOL steel >= 1.0.0
-
-'''
     tm, am, amt = self._make_test_tm()
-    amt.add_recipes(recipes)
-    amt.publish('carbon;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
-    amt.publish('cuchillo;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
-    amt.publish('iron;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
-    amt.publish('steel;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
-    amt.publish('wood;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    amt.add_recipes(self.RECIPES)
+    amt.publish(self.DESCRIPTORS)
     cuchillo = PD.parse('cuchillo-1.0.0')
     tm.ensure_tool(cuchillo)
     env = tm.transform_env(cuchillo, os_env.clone_current_env())
@@ -246,5 +168,88 @@ fake_package cuchillo 1.0.0 0 0 linux release x86_64 ubuntu 18
     self.assertEqual( 'tfoo_env1', env['TFOO_ENV1'] )
     self.assertEqual( 'tfoo_env2', env['TFOO_ENV2'] )
 
+  RECIPES = '''
+fake_package wood 1.0.0 0 0 linux release x86_64 ubuntu 18
+  files
+    bin/wood.py
+      \#!/usr/bin/env python
+      print('ffoo')
+      raise SystemExit(0)
+
+  env_files
+    wood_env.sh
+      export WOOD_ENV1=wood_env1
+
+fake_package iron 1.0.0 0 0 linux release x86_64 ubuntu 18
+  files
+    bin/iron.py
+      \#!/usr/bin/env python
+      print('fbar')
+      raise SystemExit(0)
+
+  env_files
+    iron_env.sh
+      export IRON_ENV1=iron_env1
+
+fake_package carbon 1.0.0 0 0 linux release x86_64 ubuntu 18
+  files
+    bin/carbon.py
+      \#!/usr/bin/env python
+      print('fbar')
+      raise SystemExit(0)
+
+  env_files
+    carbon_env.sh
+      export CARBON_ENV1=carbon_env1
+
+fake_package steel 1.0.0 0 0 linux release x86_64 ubuntu 18
+  files
+    bin/steel_exe.py
+      \#!/usr/bin/env python
+      import sys
+      assert len(sys.argv) == 2
+      import steel
+      print('steel_exe.py: %d' % (steel.steel_func1(int(sys.argv[1]))))
+      raise SystemExit(0)
+    lib/python/steel.py
+      def steel_func1(x):
+        return x + 10
+
+  env_files
+    steel_env.sh
+      \#@REBUILD_HEAD@
+      export STEEL_ENV1=steel_env1
+      export PYTHONPATH=${PYTHONPATH}:${REBUILD_STUFF_DIR}/lib/python
+      \#@REBUILD_TAIL@
+
+  requirements
+    all: RUN iron >= 1.0.0
+    all: RUN carbon >= 1.0.0
+
+fake_package cuchillo 1.0.0 0 0 linux release x86_64 ubuntu 18
+  files
+    bin/cuchillo.py
+      \#!/usr/bin/env python
+      print('fbaz')
+      raise SystemExit(0)
+
+  env_files
+    cuchillo_env.sh
+      export CUCHILLO_ENV1=cuchillo_env1
+
+  requirements
+    all: TOOL wood >= 1.0.0
+    all: TOOL steel >= 1.0.0
+
+'''
+
+  DESCRIPTORS = [
+    'carbon;1.0.0;0;0;linux;release;x86_64;ubuntu;18',
+    'cuchillo;1.0.0;0;0;linux;release;x86_64;ubuntu;18',
+    'iron;1.0.0;0;0;linux;release;x86_64;ubuntu;18',
+    'steel;1.0.0;0;0;linux;release;x86_64;ubuntu;18',
+    'wood;1.0.0;0;0;linux;release;x86_64;ubuntu;18',
+  ]
+  
 if __name__ == '__main__':
   unit_test.main()
