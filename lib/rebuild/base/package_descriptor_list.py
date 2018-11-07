@@ -41,5 +41,18 @@ class package_descriptor_list(type_checked_list):
     result = package_descriptor_list(latest.values())
     result.sort()
     return result
+
+  @classmethod
+  def resolve(clazz, what):
+    if check.is_string(what):
+      return clazz([ package_descriptor.parse(pkg_descs) ])
+    elif check.is_string_seq(what):
+      return clazz([ package_descriptor.parse(p) for p in what ])
+    elif check.is_package_descriptor(what):
+      return clazz([ what ])
+    elif check.is_package_descriptor_seq(what):
+      return what
+    else:
+      raise TypeError('Cannot resolve to package descriptor list: %s - %s' % (str(what), type(what)))
   
 check.register_class(package_descriptor_list, include_seq = False)

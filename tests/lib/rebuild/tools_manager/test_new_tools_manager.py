@@ -36,38 +36,68 @@ class test_new_tools_manager(unit_test):
   def test_ensure_tool(self):
     tm, am, amt = self._make_test_tm()
     knife_desc = PD.parse('knife-6.6.6')
-    tm.ensure_tool(knife_desc)
-    self.assertTrue( path.exists(tm.tool_exe(knife_desc, 'cut.sh')) )
+    tm.ensure_tools(knife_desc)
+    self.assertEqual( [
+      'knife_6_6_6/linux-ubuntu-18/x86_64/db/packages.db',
+      'knife_6_6_6/linux-ubuntu-18/x86_64/env/framework/bin/bes_path.py',
+      'knife_6_6_6/linux-ubuntu-18/x86_64/env/framework/env/bes_framework.sh',
+      'knife_6_6_6/linux-ubuntu-18/x86_64/env/framework/env/bes_path.sh',
+      'knife_6_6_6/linux-ubuntu-18/x86_64/env/framework/env/bes_testing.sh',
+      'knife_6_6_6/linux-ubuntu-18/x86_64/env/knife_env.sh',
+      'knife_6_6_6/linux-ubuntu-18/x86_64/run.sh',
+      'knife_6_6_6/linux-ubuntu-18/x86_64/setup.sh',
+      'knife_6_6_6/linux-ubuntu-18/x86_64/stuff/bin/cut.exe',
+      'knife_6_6_6/linux-ubuntu-18/x86_64/stuff/bin/cut.sh',
+      'knife_6_6_6/linux-ubuntu-18/x86_64/stuff/bin/links_with_shared.exe',
+      'knife_6_6_6/linux-ubuntu-18/x86_64/stuff/bin/links_with_static.exe',
+      'knife_6_6_6/linux-ubuntu-18/x86_64/stuff/include/libfoo_shared.h',
+      'knife_6_6_6/linux-ubuntu-18/x86_64/stuff/include/libfoo_static.h',
+      'knife_6_6_6/linux-ubuntu-18/x86_64/stuff/lib/libfoo_shared.so',
+      'knife_6_6_6/linux-ubuntu-18/x86_64/stuff/lib/libfoo_static.a',
+      'knife_6_6_6/run.sh',
+      'knife_6_6_6/setup.sh',
+      ], file_find.find(tm.root_dir) )
     
   def test_use_shell_tool(self):
     tm, am, amt = self._make_test_tm()
-    knife_desc = PD.parse('knife-6.6.6')
-    tm.ensure_tool(knife_desc)
-    exe = tm.tool_exe(knife_desc, 'cut.sh')
-    rv = execute.execute([ exe, 'a', 'b', '666' ])
+    knife = PD.parse('knife-1.0.0')
+    tm.ensure_tools(knife)
+    rv = tm.run_tool(knife, [ 'cut.sh', 'a', 'b', '666' ])
     self.assertEqual( 0, rv.exit_code )
     self.assertEqual( 'cut.sh: a b 666', rv.stdout.strip() )
 
-  def test_use_binary_tool(self):
+  def test_use_python_tool(self):
     tm, am, amt = self._make_test_tm()
-    knife_desc = PD.parse('knife-6.6.6')
-    tm.ensure_tool(knife_desc)
-    exe = tm.tool_exe(knife_desc, 'cut.exe')
-    rv = execute.execute([ exe, 'a', 'b', '666' ])
+    amt.add_recipes(self.RECIPES)
+    amt.publish(self.DESCRIPTORS)
+    cuchillo = PD.parse('cuchillo-1.0.0')
+    tm.ensure_tools(cuchillo)
+    rv = tm.run_tool(PD.parse('steel-1.0.0'), [ 'steel_exe.py', '6' ])
     self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( 'cut.exe: a b 666', rv.stdout.strip() )
+    self.assertEqual( 'steel_exe.py: 16', rv.stdout.strip() )
 
-    exe = tm.tool_exe(knife_desc, 'links_with_static.exe')
-    rv = execute.execute([ exe ])
+  def test_use_binary_tool_static(self):
+    tm, am, amt = self._make_test_tm()
+    knife = PD.parse('knife-1.0.0')
+    tm.ensure_tools(knife)
+    rv = tm.run_tool(knife, [ 'links_with_static.exe' ])
     self.assertEqual( 0, rv.exit_code )
     self.assertEqual( '11', rv.stdout.strip() )
-
+    
+  def test_use_binary_tool_shared(self):
+    tm, am, amt = self._make_test_tm()
+    knife = PD.parse('knife-1.0.0')
+    tm.ensure_tools(knife)
+    rv = tm.run_tool(knife, [ 'links_with_shared.exe' ])
+    self.assertEqual( 0, rv.exit_code )
+    self.assertEqual( '22', rv.stdout.strip() )
+    
   def test_tool_env(self):
     tm, am, amt = self._make_test_tm()
     amt.add_recipes(self.RECIPES)
     amt.publish(self.DESCRIPTORS)
     cuchillo = PD.parse('cuchillo-1.0.0')
-    tm.ensure_tool(cuchillo)
+    tm.ensure_tools(cuchillo)
     env = tm.transform_env(cuchillo, os_env.clone_current_env())
     replacements = { tm.root_dir: '$ROOT_DIR' }
     env2 = copy.deepcopy(env)
@@ -78,10 +108,17 @@ class test_new_tools_manager(unit_test):
       'STEEL_ENV1': 'steel_env1',
       'IRON_ENV1': 'iron_env1',
       'CARBON_ENV1': 'carbon_env1',
-      'PYTHONPATH': ':$ROOT_DIR/steel_1_0_0/linux-ubuntu-18/x86_64/stuff/lib/python',
+      'PATH': '/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:.:$ROOT_DIR/steel_1_0_0/linux-ubuntu-18/x86_64/stuff/bin',
+      'PYTHONPATH': '$ROOT_DIR/steel_1_0_0/linux-ubuntu-18/x86_64/stuff/lib/python',
       '_BES_DEV_ROOT': '$ROOT_DIR/steel_1_0_0/linux-ubuntu-18/x86_64/env/framework',
     }, env2 )
 
+  def test_tool_installed_files(self):
+    tm, am, amt = self._make_test_tm()
+    amt.add_recipes(self.RECIPES)
+    amt.publish(self.DESCRIPTORS)
+    cuchillo = PD.parse('cuchillo-1.0.0')
+    tm.ensure_tools(cuchillo)
     self.assertEqual( [
       'cuchillo_1_0_0/linux-ubuntu-18/x86_64/db/packages.db',
       'cuchillo_1_0_0/linux-ubuntu-18/x86_64/env/cuchillo_env.sh',
@@ -125,49 +162,6 @@ class test_new_tools_manager(unit_test):
       'wood_1_0_0/setup.sh',
       ], file_find.find(tm.root_dir) )
     
-    exe = tm.tool_exe(PD.parse('steel-1.0.0'), 'steel_exe.py')
-    rv = execute.execute([ exe, '6' ], env = env)
-    self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( 'steel_exe.py: 16', rv.stdout.strip() )
-    
-  def xtest_use_binary_tool_with_shared_lib(self):
-    tm, am, amt = self._make_test_tm()
-    knife_desc = PD.parse('knife-6.6.6')
-    tm.ensure_tool(knife_desc)
-    exe = tm.tool_exe(knife_desc, 'links_with_shared.exe')
-    rv = execute.execute([ exe ])
-    self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( '11', rv.stdout.strip() )
-    
-  def xtest_one_tool_env(self):
-    tm, am, amt = self._make_test_tm()
-    tfoo = PD.parse('tfoo-1.0.0')
-    tm.ensure_tool(tfoo)
-    env = tm.transform_env(tfoo, {})
-    self.assertEqual( 'tfoo_env1', env['TFOO_ENV1'] )
-    self.assertEqual( 'tfoo_env2', env['TFOO_ENV2'] )
-    
-  def xtest_ensure_tools(self):
-    tm, am, amt = self._make_test_tm()
-    tfoo = PD.parse('tfoo-1.0.0')
-    tbar = PD.parse('tbar-1.0.0')
-    tbaz = PD.parse('tbaz-1.0.0')
-    tm.ensure_tools([ tfoo, tbar, tbaz ])
-    env = tm.transform_env(tfoo, {})
-    for k, v in env.items():
-      print('CAA: %s: %s' % (k, v))
-    print('bin_dir: %s' % (tm.bin_dir(tfoo,)))
-
-  def xtest_many_tool_env(self):
-    tm, am, amt = self._make_test_tm()
-    tfoo = PD.parse('tfoo-1.0.0')
-    tbar = PD.parse('tbar-1.0.0')
-    tbaz = PD.parse('tbaz-1.0.0')
-    tm.ensure_tools([ tfoo, tbar, tbaz ])
-    env = tm.transform_env(tfoo, {})
-    self.assertEqual( 'tfoo_env1', env['TFOO_ENV1'] )
-    self.assertEqual( 'tfoo_env2', env['TFOO_ENV2'] )
-
   RECIPES = '''
 fake_package wood 1.0.0 0 0 linux release x86_64 ubuntu 18
   files
@@ -219,7 +213,8 @@ fake_package steel 1.0.0 0 0 linux release x86_64 ubuntu 18
     steel_env.sh
       \#@REBUILD_HEAD@
       export STEEL_ENV1=steel_env1
-      export PYTHONPATH=${PYTHONPATH}:${REBUILD_STUFF_DIR}/lib/python
+      bes_PATH_append ${REBUILD_STUFF_DIR}/bin
+      bes_PYTHONPATH_append ${REBUILD_STUFF_DIR}/lib/python
       \#@REBUILD_TAIL@
 
   requirements

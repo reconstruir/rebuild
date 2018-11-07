@@ -161,7 +161,7 @@ function LD_LIBRARY_PATH_var_name()
     macos)
       _rv=DYLD_LIBRARY_PATH
       ;;
-    linux:*)
+    linux|*)
       _rv=LD_LIBRARY_PATH
       ;;
   esac

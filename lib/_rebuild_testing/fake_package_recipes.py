@@ -71,7 +71,6 @@ fake_package knife 1.0.0 0 0 linux release x86_64 ubuntu 18
     bin/cut.sh
       \#!/bin/bash
       echo cut ; exit 0
-
 '''
   
   KNIFE = '''
@@ -151,4 +150,12 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
           \#define FOO_SHARED_MAGIC_NUMBER 2
           extern int foo_shared(int x);
           \#endif /* __FOO_SHARED_H__ */
+
+  env_files
+    knife_env.sh
+      \#@REBUILD_HEAD@
+      bes_PATH_append ${REBUILD_STUFF_DIR}/bin
+      bes_PYTHONPATH_append ${REBUILD_STUFF_DIR}/lib/python
+      bes_LD_LIBRARY_PATH_append ${REBUILD_STUFF_DIR}/lib
+      \#@REBUILD_TAIL@
 '''
