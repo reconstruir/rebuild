@@ -1,6 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import os.path as path
+import copy, os.path as path
 from bes.common import check, object_util, string_util
 from bes.system import execute, host, os_env, os_env_var
 from rebuild.base import build_target, build_level, package_descriptor_list
@@ -57,13 +57,16 @@ class new_tools_manager(object):
     return self._artifact_manager.resolve_deps(pkg_descs.names(), self._build_target, [ 'TOOL' ], True)
 
   def transform_env(self, pkg_descs, env):
+    check.check_dict(env)
     pkg_descs = package_descriptor_list.resolve(pkg_descs)
     resolved_tools = self._resolve_tools_deps(pkg_descs)
-    env = {}
+    transformed_env = copy.deepcopy(env)
     for tool in resolved_tools:
       project_name = self._make_package_name(tool)
-      env = self._manager.transform_env(env, project_name, self._build_target)
-    return env
+      transformed_env = self._manager.transform_env(transformed_env, project_name, self._build_target)
+    if '_BES_DEV_ROOT' in transformed_env:
+      del transformed_env['_BES_DEV_ROOT']
+    return transformed_env
     
   def _transform_one_env(self, pkg_desc, env):
     project_name = self._make_package_name(pkg_desc)
@@ -82,8 +85,7 @@ class new_tools_manager(object):
       os_env_var(key).value = value
 
   def run_tool(self, pkg_descs, command, *args):
-    pkg_descs = package_descriptor_list.resolve(pkg_descs)
-    env = self.transform_env(pkg_descs, os_env.clone_current_env())
+    env = self.shell_env(pkg_descs)
     if 'env' in args:
       env.update(args['env'])
       del args['env']

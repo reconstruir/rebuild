@@ -110,7 +110,6 @@ class test_new_tools_manager(unit_test):
       'CARBON_ENV1': 'carbon_env1',
       'PATH': '/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:.:$ROOT_DIR/steel_1_0_0/linux-ubuntu-18/x86_64/stuff/bin',
       'PYTHONPATH': '$ROOT_DIR/steel_1_0_0/linux-ubuntu-18/x86_64/stuff/lib/python',
-      '_BES_DEV_ROOT': '$ROOT_DIR/steel_1_0_0/linux-ubuntu-18/x86_64/env/framework',
     }, env2 )
 
   def test_tool_installed_files(self):
