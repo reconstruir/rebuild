@@ -89,6 +89,4 @@ class new_tools_manager(object):
     if 'env' in args:
       env.update(args['env'])
       del args['env']
-    for k, v in env.items():
-      print('ENV: %s=%s' % (k, v))
     return execute.execute(command, env = env, *args)
