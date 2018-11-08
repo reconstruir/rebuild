@@ -921,3 +921,4 @@ and only then forks rebuilder.py.  might be tough
 2018-11-7
 - the bes_framework.sh used in rebuild env files maybe should be s/bes/rebuild
 - fix package_manager.export_variables_to_current_env
+- when doing transform env theres no decent assertion of the requested package descriptor is not installed

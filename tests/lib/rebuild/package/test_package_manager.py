@@ -293,10 +293,12 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
   def _make_cabbage_pm(self):
     t = AMT(recipes = self.VEGGIES)
     t.publish('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    t.publish('unset;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
     pm = self._make_caca_test_pm(t.am)
     cabbage = PD.parse('cabbage-1.0.0')
     bt = BT.parse_path('linux-ubuntu-18/x86_64/release')
     pm.install_package(cabbage, bt, [ 'RUN' ])
+    pm.install_package(PD.parse('unset-1.0.0'), bt, [ 'RUN' ])
     return pm, cabbage
 
   def test_transform_env_set(self):
@@ -304,7 +306,6 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
     env1 = {}
     env1_save = copy.deepcopy(env1)
     env2 = pm.transform_env(env1, [ 'cabbage' ])
-    import pprint
     dict_util.replace_values(env2, { '/private': '', pm.root_dir: '$ROOT_DIR' })
     self.assertEqual( env1_save, env1 )
     default_PATH = os_env.default_system_value('PATH')
@@ -332,6 +333,13 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
       'PYTHONPATH': '/p/lib/python:$ROOT_DIR/stuff/lib/python',
     }, env2 )
 
+  def test_transform_env_unset(self):
+    pm, cabbage = self._make_cabbage_pm()
+    env1 = {}
+    env2 = pm.transform_env(env1, [ 'unset' ])
+    self.assertEqual( {
+      'BAR': 'bar',
+    }, env2 )
     
   VEGGIES = '''fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
   files
@@ -344,6 +352,25 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
       bes_PATH_append ${REBUILD_STUFF_DIR}/bin
       bes_PYTHONPATH_append ${REBUILD_STUFF_DIR}/lib/python
       bes_LD_LIBRARY_PATH_append ${REBUILD_STUFF_DIR}/lib
+      \#@REBUILD_TAIL@
+
+fake_package unset 1.0.0 0 0 linux release x86_64 ubuntu 18
+  files
+    bin/unsetcut.sh
+      \#!/bin/bash
+      echo cabbage ; exit 0
+  env_files
+    unset1.sh
+      \#@REBUILD_HEAD@
+      export FOO=foo
+      \#@REBUILD_TAIL@
+    unset2.sh
+      \#@REBUILD_HEAD@
+      export BAR=bar
+      \#@REBUILD_TAIL@
+    unset3.sh
+      \#@REBUILD_HEAD@
+      unset FOO
       \#@REBUILD_TAIL@
 '''
     

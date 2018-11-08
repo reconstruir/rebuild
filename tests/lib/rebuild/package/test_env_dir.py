@@ -197,7 +197,6 @@ class test_env_dir(unit_test):
       'file 3.sh "unset FOO\n" 644',
     ])
     transformed_env = ed.transform_env(current_env)
-    print('FUCK: %s' % (transformed_env))
     self.assertEqual( {
       'BAR': 'bar',
     }, transformed_env )
