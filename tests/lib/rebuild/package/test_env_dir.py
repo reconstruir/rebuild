@@ -188,6 +188,19 @@ class test_env_dir(unit_test):
       'PYTHONPATH': ':/foo/lib/python',
       os_env.LD_LIBRARY_PATH_VAR_NAME: ':/foo/lib',
     }, transformed_env )
-  
+
+  def test_transform_env_unset(self):
+    current_env = {}
+    ed = self._make_temp_env_dir([
+      'file 1.sh "export FOO=foo\n" 644',
+      'file 2.sh "export BAR=bar\n" 644',
+      'file 3.sh "unset FOO\n" 644',
+    ])
+    transformed_env = ed.transform_env(current_env)
+    print('FUCK: %s' % (transformed_env))
+    self.assertEqual( {
+      'BAR': 'bar',
+    }, transformed_env )
+    
 if __name__ == '__main__':
   unit_test.main()
