@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy, difflib, os, os.path as path
@@ -66,12 +65,12 @@ class env_dir(object):
     buf = StringIO()
     buf.write('#!/bin/bash\n')
     buf.write('echo "----1----"\n')
-    buf.write('env\n')
+    buf.write('declare -px\n')
     buf.write('echo "----2----"\n')
     for f in self.files_abs:
       buf.write('source \"%s\"\n' % (f))
     buf.write('echo "----3----"\n')
-    buf.write('env\n')
+    buf.write('declare -px\n')
     buf.write('echo "----4----"\n')
     script = temp_file.make_temp_file(content = buf.getvalue())
     os.chmod(script, 0o755)
@@ -80,6 +79,8 @@ class env_dir(object):
     finally:
       file_util.remove(script)
     parser = text_line_parser(rv.stdout)
+    if rv.stderr:
+      raise RuntimeError(rv.stderr)
     env1 = self._parse_env_lines(parser.cut_lines('----1----', '----2----'))
     env2 = self._parse_env_lines(parser.cut_lines('----3----', '----4----'))
     delta = self._env_delta(env1, env2)
@@ -102,12 +103,26 @@ class env_dir(object):
   def _parse_env_lines(clazz, lines):
     result = {}
     for line in lines:
-      key, delimiter, value = line.text.partition('=')
-      assert delimiter == '='
+      key, value = clazz.parse_bash_declare_output(line.text)
       result[key] = value
     return result
+
+  _DECLARE_MARKER = 'declare -x '
+  @classmethod
+  def parse_bash_declare_output(clazz, text):
+    assert text.startswith(clazz._DECLARE_MARKER)
+    text = text[len(clazz._DECLARE_MARKER):]
+    equal_pos = text.find('=')
+    if equal_pos < 0:
+      return text, ''
+    key, delimiter, value = text.partition('=')
+    assert delimiter == '='
+    value = value.strip()
+    if len(value) >= 2 and value[0] == '"' and value[-1] == '"':
+      value = value[1:-1]      
+    return key, value
       
-  _delta = namedtuple('_delta', 'added,removed,changed')
+  _delta = namedtuple('_delta', 'added, removed, changed')
   @classmethod
   def _env_delta(clazz, env1, env2):
     'Return delta between env1 and env2.'

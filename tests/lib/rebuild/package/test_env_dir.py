@@ -3,12 +3,16 @@
 
 import copy, os, os.path as path
 from bes.testing.unit_test import unit_test
+from bes.system import os_env
 from bes.fs import file_util, temp_file
 from bes.fs.testing import temp_content
 from rebuild.package.env_dir import env_dir, action
 
 class test_env_dir(unit_test):
 
+  DEBUG = unit_test.DEBUG
+  #DEBUG = True
+  
   _save_environ = None
     
   @classmethod
@@ -143,8 +147,45 @@ class test_env_dir(unit_test):
       os.environ['PATH'] = save_path
 
   def _make_temp_env_dir(self, items, files = None):
-    tmp_dir = temp_content.write_items_to_temp_dir(items)
+    tmp_dir = temp_content.write_items_to_temp_dir(items, delete = not self.DEBUG)
+    if self.DEBUG:
+      print('tmp_dir:\n%s' % (tmp_dir))
     return env_dir(tmp_dir, files = files)
-      
+
+  def test_transform_env_append(self):
+    current_env = {
+      'LD_LIBRARY_PATH': '/p/lib',
+      'PYTHONPATH': '/p/lib/python',
+      'PATH': '/p/bin',
+    }
+    current_env_save = copy.deepcopy(current_env)
+    ed = self._make_temp_env_dir([
+      'file 1.sh "export PATH=$PATH:/foo/bin\n" 644',
+      'file 2.sh "export PYTHONPATH=$PYTHONPATH:/foo/lib/python\n" 644',
+      'file 3.sh "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/foo/lib\n" 644',
+    ])
+    transformed_env = ed.transform_env(current_env)
+    self.assertEqual( current_env_save, current_env )
+    self.assertEqual( {
+      'PATH': '/p/bin:/foo/bin',
+      'PYTHONPATH': '/p/lib/python:/foo/lib/python',
+      'LD_LIBRARY_PATH': '/p/lib:/foo/lib',
+    }, transformed_env )
+    
+  def test_transform_env_set(self):
+    current_env = {}
+    ed = self._make_temp_env_dir([
+      'file 1.sh "export PATH=$PATH:/foo/bin\n" 644',
+      'file 2.sh "export PYTHONPATH=$PYTHONPATH:/foo/lib/python\n" 644',
+      'file 3.sh "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/foo/lib\n" 644',
+    ])
+    transformed_env = ed.transform_env(current_env)
+    default_PATH = os_env.default_system_value('PATH')
+    self.assertEqual( {
+      'PATH': '%s:/foo/bin' % (default_PATH),
+      'PYTHONPATH': ':/foo/lib/python',
+      'LD_LIBRARY_PATH': ':/foo/lib',
+    }, transformed_env )
+  
 if __name__ == '__main__':
   unit_test.main()
