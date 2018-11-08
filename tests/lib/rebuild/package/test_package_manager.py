@@ -304,11 +304,12 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
     env1 = {}
     env1_save = copy.deepcopy(env1)
     env2 = pm.transform_env(env1, [ 'cabbage' ])
-    dict_util.replace_values(env2, { pm.root_dir: '$ROOT_DIR' })
+    import pprint
+    dict_util.replace_values(env2, { '/private': '', pm.root_dir: '$ROOT_DIR' })
     self.assertEqual( env1_save, env1 )
     default_PATH = os_env.default_system_value('PATH')
     self.assertEqual( {
-      'LD_LIBRARY_PATH': '$ROOT_DIR/stuff/lib',
+      os_env.LD_LIBRARY_PATH_VAR_NAME: '$ROOT_DIR/stuff/lib',
       'PATH': '%s:$ROOT_DIR/stuff/bin' % (default_PATH),
       'PYTHONPATH': '$ROOT_DIR/stuff/lib/python',
     }, env2 )
@@ -317,16 +318,16 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
     pm, cabbage = self._make_cabbage_pm()
     default_PATH = os_env.default_system_value('PATH')
     env1 = {
-      'LD_LIBRARY_PATH': '/p/lib',
+      os_env.LD_LIBRARY_PATH_VAR_NAME: '/p/lib',
       'PYTHONPATH': '/p/lib/python',
       'PATH': default_PATH,
     }
     env1_save = copy.deepcopy(env1)
     env2 = pm.transform_env(env1, [ 'cabbage' ])
-    dict_util.replace_values(env2, { pm.root_dir: '$ROOT_DIR' })
+    dict_util.replace_values(env2, { '/private': '', pm.root_dir: '$ROOT_DIR' })
     self.assertEqual( env1_save, env1 )
     self.assertEqual( {
-      'LD_LIBRARY_PATH': '/p/lib:$ROOT_DIR/stuff/lib',
+      os_env.LD_LIBRARY_PATH_VAR_NAME: '/p/lib:$ROOT_DIR/stuff/lib',
       'PATH': '%s:$ROOT_DIR/stuff/bin' % (default_PATH),
       'PYTHONPATH': '/p/lib/python:$ROOT_DIR/stuff/lib/python',
     }, env2 )
