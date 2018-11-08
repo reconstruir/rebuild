@@ -350,7 +350,10 @@ class package_manager(object):
       return {}
     if not path.isdir(self._env_dir):
       return {}
-    return env_dir(self._env_dir, files = files).transform_env(env)
+    result = env_dir(self._env_dir, files = files).transform_env(env)
+    if '_BES_DEV_ROOT' in result:
+      del result['_BES_DEV_ROOT']
+    return result
   
   def export_variables_to_current_env(self, packages):
     all_env_vars = self.env_vars([ p.name for p in packages])

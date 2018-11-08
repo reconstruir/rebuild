@@ -62,7 +62,7 @@ class test_new_tools_manager(unit_test):
     tm, am, amt = self._make_test_tm()
     knife = PD.parse('knife-1.0.0')
     tm.ensure_tools(knife)
-    rv = tm.run_tool(knife, [ 'cut.sh', 'a', 'b', '666' ])
+    rv = tm.run_tool(knife, [ 'cut.sh', 'a', 'b', '666' ], {})
     self.assertEqual( 0, rv.exit_code )
     self.assertEqual( 'cut.sh: a b 666', rv.stdout.strip() )
 
@@ -72,7 +72,7 @@ class test_new_tools_manager(unit_test):
     amt.publish(self.DESCRIPTORS)
     cuchillo = PD.parse('cuchillo-1.0.0')
     tm.ensure_tools(cuchillo)
-    rv = tm.run_tool(PD.parse('steel-1.0.0'), [ 'steel_exe.py', '6' ])
+    rv = tm.run_tool(PD.parse('steel-1.0.0'), [ 'steel_exe.py', '6' ], {})
     self.assertEqual( 0, rv.exit_code )
     self.assertEqual( 'steel_exe.py: 16', rv.stdout.strip() )
 
@@ -80,7 +80,7 @@ class test_new_tools_manager(unit_test):
     tm, am, amt = self._make_test_tm()
     knife = PD.parse('knife-1.0.0')
     tm.ensure_tools(knife)
-    rv = tm.run_tool(knife, [ 'links_with_static.exe' ])
+    rv = tm.run_tool(knife, [ 'links_with_static.exe' ], {})
     self.assertEqual( 0, rv.exit_code )
     self.assertEqual( '11', rv.stdout.strip() )
     
@@ -88,17 +88,17 @@ class test_new_tools_manager(unit_test):
     tm, am, amt = self._make_test_tm()
     knife = PD.parse('knife-1.0.0')
     tm.ensure_tools(knife)
-    rv = tm.run_tool(knife, [ 'links_with_shared.exe' ])
+    rv = tm.run_tool(knife, [ 'links_with_shared.exe' ], {})
     self.assertEqual( 0, rv.exit_code )
     self.assertEqual( '22', rv.stdout.strip() )
     
-  def test_tool_env(self):
+  def test_transform_env(self):
     tm, am, amt = self._make_test_tm()
     amt.add_recipes(self.RECIPES)
     amt.publish(self.DESCRIPTORS)
     cuchillo = PD.parse('cuchillo-1.0.0')
     tm.ensure_tools(cuchillo)
-    env = tm.transform_env(cuchillo, os_env.clone_current_env())
+    env = tm.transform_env(cuchillo, {})
     replacements = { tm.root_dir: '$ROOT_DIR' }
     env2 = copy.deepcopy(env)
     dict_util.replace_values(env2, replacements)

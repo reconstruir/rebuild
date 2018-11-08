@@ -64,8 +64,6 @@ class new_tools_manager(object):
     for tool in resolved_tools:
       project_name = self._make_package_name(tool)
       transformed_env = self._manager.transform_env(transformed_env, project_name, self._build_target)
-    if '_BES_DEV_ROOT' in transformed_env:
-      del transformed_env['_BES_DEV_ROOT']
     return transformed_env
     
   def _transform_one_env(self, pkg_desc, env):
@@ -84,8 +82,12 @@ class new_tools_manager(object):
     for key, value in self.shell_env(pkg_descs):
       os_env_var(key).value = value
 
-  def run_tool(self, pkg_descs, command, *args):
-    env = self.shell_env(pkg_descs)
+  def run_tool(self, pkg_descs, command, env, *args):
+    if env is None:
+      env = os_env.clone_current_env()
+    else:
+      check.check_dict(env)
+    env = self.transform_env(pkg_descs, env)
     if 'env' in args:
       env.update(args['env'])
       del args['env']

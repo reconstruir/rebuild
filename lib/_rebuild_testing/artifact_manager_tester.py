@@ -54,3 +54,7 @@ class artifact_manager_tester(object):
     check.check_artifact_descriptor(adesc)
     filename = self.create_package(adesc, mutations = mutations)
     self.am.publish(filename, adesc.build_target, False, None)
+
+  def dump(self):
+    for r in sorted(self._recipes.values()):
+      print(r.metadata)

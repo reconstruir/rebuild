@@ -5,7 +5,8 @@ import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import file_find, file_util, temp_file
 from bes.system import host
-from rebuild.base import build_target as BT, package_descriptor
+from bes.common import dict_util
+from rebuild.base import build_target as BT, package_descriptor as PD
 from rebuild.pkg_config import pkg_config
 from rebuild.package import artifact_manager_local, package, package_manager
 from rebuild.package import PackageFilesConflictError, PackageMissingRequirementsError
@@ -13,6 +14,7 @@ from rebuild.package.db_error import *
 from bes.archive import archiver, temp_archive
 from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT
 from _rebuild_testing.fake_package_recipes import fake_package_recipes as RECIPES
+from _rebuild_testing.artifact_manager_tester import artifact_manager_tester as AMT
 
 class test_package_manager(unit_test):
 
@@ -48,6 +50,14 @@ class test_package_manager(unit_test):
     if clazz.DEBUG:
       print("root_dir:\n%s\n" % (root_dir))
     am = artifact_manager_local(am_dir)
+    return package_manager(pm_dir, am)
+
+  @classmethod
+  def _make_caca_test_pm(clazz, am):
+    root_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
+    pm_dir = path.join(root_dir, 'package_manager')
+    if clazz.DEBUG:
+      print("\nroot_dir:\n", root_dir)
     return package_manager(pm_dir, am)
   
   def test_install_tarball_simple(self):
@@ -184,7 +194,7 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
 
   def test_uninstall(self):
     pm = self._make_test_pm_with_am()
-    pi = package_descriptor('water', '1.0.0')
+    pi = PD('water', '1.0.0')
     install_rv = pm.install_package(pi, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
     self.assertTrue( install_rv )
     self.assertEqual( [ 'water-1.0.0' ], pm.list_all(include_version = True) )
@@ -210,7 +220,7 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
 
   def test_install_package(self):
     pm = self._make_test_pm_with_am()
-    pi = package_descriptor('water', '1.0.0')
+    pi = PD('water', '1.0.0')
     install_rv = pm.install_package(pi, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
     self.assertTrue( install_rv )
     self.assertEqual( [ 'water-1.0.0' ], pm.list_all(include_version = True) )
@@ -218,12 +228,12 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
   def test_install_package_upgrade(self):
     pm = self._make_test_pm_with_am()
 
-    old_pi = package_descriptor('water', '1.0.0')
+    old_pi = PD('water', '1.0.0')
     install_rv = pm.install_package(old_pi, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
     self.assertTrue( install_rv )
     self.assertEqual( [ 'water-1.0.0' ], pm.list_all(include_version = True) )
 
-    new_pi = package_descriptor('water', '1.0.0-1')
+    new_pi = PD('water', '1.0.0-1')
     install_rv = pm.install_package(new_pi, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
     self.assertTrue( install_rv )
     self.assertEqual( [ 'water-1.0.0-1' ], pm.list_all(include_version = True) )
@@ -231,19 +241,19 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
   def test_install_package_same_version(self):
     pm = self._make_test_pm_with_am()
 
-    old_pi = package_descriptor('water', '1.0.0')
+    old_pi = PD('water', '1.0.0')
     install_rv = pm.install_package(old_pi, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
     self.assertTrue( install_rv )
     self.assertEqual( [ 'water-1.0.0' ], pm.list_all(include_version = True) )
 
-    new_pi = package_descriptor('water', '1.0.0')
+    new_pi = PD('water', '1.0.0')
     install_rv = pm.install_package(new_pi, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
     self.assertFalse( install_rv )
     self.assertEqual( [ 'water-1.0.0' ], pm.list_all(include_version = True) )
 
   def test_install_package_unknown(self):
     pm = self._make_test_pm_with_am()
-    pi = package_descriptor('notthere', '6.6.6-1')
+    pi = PD('notthere', '6.6.6-1')
     with self.assertRaises(NotInstalledError) as context:
       pm.install_package(pi, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
 
@@ -251,9 +261,9 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
     pm = self._make_test_pm_with_am()
 
     packages = [
-      package_descriptor.parse('water-1.0.0'),
-      package_descriptor.parse('mercury-1.2.8'),
-      package_descriptor.parse('arsenic-1.2.9'),
+      PD.parse('water-1.0.0'),
+      PD.parse('mercury-1.2.8'),
+      PD.parse('arsenic-1.2.9'),
     ]
 
     pm.install_packages(packages, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
@@ -263,11 +273,11 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
   def test_dep_map(self):
     pm = self._make_test_pm_with_am()
     packages = [
-      package_descriptor.parse('water-1.0.0'),
-      package_descriptor.parse('fiber-1.0.0'),
-      package_descriptor.parse('fructose-3.4.5-6'),
-      package_descriptor.parse('fruit-1.0.0'),
-      package_descriptor.parse('apple-1.2.3-1'),
+      PD.parse('water-1.0.0'),
+      PD.parse('fiber-1.0.0'),
+      PD.parse('fructose-3.4.5-6'),
+      PD.parse('fruit-1.0.0'),
+      PD.parse('apple-1.2.3-1'),
     ]
     pm.install_packages(packages, self.TEST_BUILD_TARGET, [ 'RUN' ])
     self.assertEqual( [ 'apple-1.2.3-1', 'fiber-1.0.0', 'fructose-3.4.5-6', 'fruit-1.0.0', 'water-1.0.0' ],
@@ -280,5 +290,37 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
       'water': set([]),
     }, pm.dep_map() )
 
+  def test_transform_env(self):
+    veggies = '''fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
+  files
+    bin/cut.sh
+      \#!/bin/bash
+      echo cabbage ; exit 0
+  env_files
+    cabbage_env.sh
+      \#@REBUILD_HEAD@
+      bes_PATH_append ${REBUILD_STUFF_DIR}/bin
+      bes_PYTHONPATH_append ${REBUILD_STUFF_DIR}/lib/python
+      bes_LD_LIBRARY_PATH_append ${REBUILD_STUFF_DIR}/lib
+      \#@REBUILD_TAIL@
+'''
+    t = AMT(recipes = veggies)
+    t.publish('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    pm = self._make_caca_test_pm(t.am)
+    cabbage = PD.parse('cabbage-1.0.0')
+    bt = BT.parse_path('linux-ubuntu-18/x86_64/release')
+    pm.install_package(cabbage, bt, [ 'RUN' ])
+    self.assertEqual( [ 'cabbage-1.0.0' ],
+                      pm.list_all(include_version = True) )
+    env1 = {}
+    env2 = pm.transform_env(env1, [ 'cabbage' ])
+    dict_util.replace_values(env2, { pm.root_dir: '$ROOT_DIR' })
+    self.assertEqual( {}, env1 )
+    self.assertEqual( {
+      'LD_LIBRARY_PATH': '$ROOT_DIR/stuff/lib',
+      'PATH': '/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:.:$ROOT_DIR/stuff/bin',
+      'PYTHONPATH': '$ROOT_DIR/stuff/lib/python',
+    }, env2 )
+    
 if __name__ == '__main__':
   unit_test.main()
