@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import os.path as path
+import copy, os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import file_find, file_util, temp_file
-from bes.system import host
+from bes.system import os_env
 from bes.common import dict_util
 from rebuild.base import build_target as BT, package_descriptor as PD
 from rebuild.pkg_config import pkg_config
@@ -290,8 +290,49 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
       'water': set([]),
     }, pm.dep_map() )
 
-  def test_transform_env(self):
-    veggies = '''fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
+  def _make_cabbage_pm(self):
+    t = AMT(recipes = self.VEGGIES)
+    t.publish('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    pm = self._make_caca_test_pm(t.am)
+    cabbage = PD.parse('cabbage-1.0.0')
+    bt = BT.parse_path('linux-ubuntu-18/x86_64/release')
+    pm.install_package(cabbage, bt, [ 'RUN' ])
+    return pm, cabbage
+
+  def test_transform_env_set(self):
+    pm, cabbage = self._make_cabbage_pm()
+    env1 = {}
+    env1_save = copy.deepcopy(env1)
+    env2 = pm.transform_env(env1, [ 'cabbage' ])
+    dict_util.replace_values(env2, { pm.root_dir: '$ROOT_DIR' })
+    self.assertEqual( env1_save, env1 )
+    default_PATH = os_env.default_system_value('PATH')
+    self.assertEqual( {
+      'LD_LIBRARY_PATH': '$ROOT_DIR/stuff/lib',
+      'PATH': '%s:$ROOT_DIR/stuff/bin' % (default_PATH),
+      'PYTHONPATH': '$ROOT_DIR/stuff/lib/python',
+    }, env2 )
+  
+  def test_transform_env_append(self):
+    pm, cabbage = self._make_cabbage_pm()
+    default_PATH = os_env.default_system_value('PATH')
+    env1 = {
+      'LD_LIBRARY_PATH': '/p/lib',
+      'PYTHONPATH': '/p/lib/python',
+      'PATH': default_PATH,
+    }
+    env1_save = copy.deepcopy(env1)
+    env2 = pm.transform_env(env1, [ 'cabbage' ])
+    dict_util.replace_values(env2, { pm.root_dir: '$ROOT_DIR' })
+    self.assertEqual( env1_save, env1 )
+    self.assertEqual( {
+      'LD_LIBRARY_PATH': '/p/lib:$ROOT_DIR/stuff/lib',
+      'PATH': '%s:$ROOT_DIR/stuff/bin' % (default_PATH),
+      'PYTHONPATH': '/p/lib/python:$ROOT_DIR/stuff/lib/python',
+    }, env2 )
+
+    
+  VEGGIES = '''fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
   files
     bin/cut.sh
       \#!/bin/bash
@@ -304,23 +345,6 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
       bes_LD_LIBRARY_PATH_append ${REBUILD_STUFF_DIR}/lib
       \#@REBUILD_TAIL@
 '''
-    t = AMT(recipes = veggies)
-    t.publish('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
-    pm = self._make_caca_test_pm(t.am)
-    cabbage = PD.parse('cabbage-1.0.0')
-    bt = BT.parse_path('linux-ubuntu-18/x86_64/release')
-    pm.install_package(cabbage, bt, [ 'RUN' ])
-    self.assertEqual( [ 'cabbage-1.0.0' ],
-                      pm.list_all(include_version = True) )
-    env1 = {}
-    env2 = pm.transform_env(env1, [ 'cabbage' ])
-    dict_util.replace_values(env2, { pm.root_dir: '$ROOT_DIR' })
-    self.assertEqual( {}, env1 )
-    self.assertEqual( {
-      'LD_LIBRARY_PATH': '$ROOT_DIR/stuff/lib',
-      'PATH': '/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:.:$ROOT_DIR/stuff/bin',
-      'PYTHONPATH': '$ROOT_DIR/stuff/lib/python',
-    }, env2 )
     
 if __name__ == '__main__':
   unit_test.main()
