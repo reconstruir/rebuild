@@ -154,7 +154,7 @@ class test_env_dir(unit_test):
 
   def test_transform_env_append(self):
     current_env = {
-      'LD_LIBRARY_PATH': '/p/lib',
+      os_env.LD_LIBRARY_PATH_VAR_NAME: '/p/lib',
       'PYTHONPATH': '/p/lib/python',
       'PATH': '/p/bin',
     }
@@ -162,14 +162,15 @@ class test_env_dir(unit_test):
     ed = self._make_temp_env_dir([
       'file 1.sh "export PATH=$PATH:/foo/bin\n" 644',
       'file 2.sh "export PYTHONPATH=$PYTHONPATH:/foo/lib/python\n" 644',
-      'file 3.sh "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/foo/lib\n" 644',
+      'file 3.sh "export %s=$%s:/foo/lib\n" 644' % (os_env.LD_LIBRARY_PATH_VAR_NAME,
+                                                    os_env.LD_LIBRARY_PATH_VAR_NAME),
     ])
     transformed_env = ed.transform_env(current_env)
     self.assertEqual( current_env_save, current_env )
     self.assertEqual( {
       'PATH': '/p/bin:/foo/bin',
       'PYTHONPATH': '/p/lib/python:/foo/lib/python',
-      'LD_LIBRARY_PATH': '/p/lib:/foo/lib',
+      os_env.LD_LIBRARY_PATH_VAR_NAME: '/p/lib:/foo/lib',
     }, transformed_env )
     
   def test_transform_env_set(self):
@@ -177,14 +178,15 @@ class test_env_dir(unit_test):
     ed = self._make_temp_env_dir([
       'file 1.sh "export PATH=$PATH:/foo/bin\n" 644',
       'file 2.sh "export PYTHONPATH=$PYTHONPATH:/foo/lib/python\n" 644',
-      'file 3.sh "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/foo/lib\n" 644',
+      'file 3.sh "export %s=$%s:/foo/lib\n" 644' % (os_env.LD_LIBRARY_PATH_VAR_NAME,
+                                                    os_env.LD_LIBRARY_PATH_VAR_NAME),
     ])
     transformed_env = ed.transform_env(current_env)
     default_PATH = os_env.default_system_value('PATH')
     self.assertEqual( {
       'PATH': '%s:/foo/bin' % (default_PATH),
       'PYTHONPATH': ':/foo/lib/python',
-      'LD_LIBRARY_PATH': ':/foo/lib',
+      os_env.LD_LIBRARY_PATH_VAR_NAME: ':/foo/lib',
     }, transformed_env )
   
 if __name__ == '__main__':
