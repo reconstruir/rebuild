@@ -98,7 +98,7 @@ class test_new_tools_manager(unit_test):
     amt.publish(self.DESCRIPTORS)
     cuchillo = PD.parse('cuchillo-1.0.0')
     tm.ensure_tools(cuchillo)
-    env = tm.transform_env(cuchillo, {})
+    env = tm.transform_env({}, cuchillo)
     replacements = { tm.root_dir: '$ROOT_DIR' }
     env2 = copy.deepcopy(env)
     dict_util.replace_values(env2, replacements)

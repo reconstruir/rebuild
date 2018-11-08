@@ -56,7 +56,7 @@ class new_tools_manager(object):
     check.check_package_descriptor_list(pkg_descs)
     return self._artifact_manager.resolve_deps(pkg_descs.names(), self._build_target, [ 'TOOL' ], True)
 
-  def transform_env(self, pkg_descs, env):
+  def transform_env(self, env, pkg_descs):
     check.check_dict(env)
     pkg_descs = package_descriptor_list.resolve(pkg_descs)
     resolved_tools = self._resolve_tools_deps(pkg_descs)
@@ -66,20 +66,17 @@ class new_tools_manager(object):
       transformed_env = self._manager.transform_env(transformed_env, project_name, self._build_target)
     return transformed_env
     
-  def _transform_one_env(self, pkg_desc, env):
-    project_name = self._make_package_name(pkg_desc)
-    return self._manager.transform_env(env, project_name, self._build_target)
-  
   def _package_root_dir(self, pkg_desc):
     return path.join(self._root_dir, self._make_package_name(pkg_desc))
   
-  def shell_env(self, pkg_descs):
-    pkg_descs = package_descriptor_list.resolve(pkg_descs)
-    return self.transform_env(pkg_descs, os_env.clone_current_env())
+#  def shell_env(self, pkg_descs):
+#    pkg_descs = package_descriptor_list.resolve(pkg_descs)
+#    return self.transform_env(os_env.clone_current_env(), pkg_descs)
 
   def export_variables_to_current_env(self, pkg_descs):
     pkg_descs = package_descriptor_list.resolve(pkg_descs)
-    for key, value in self.shell_env(pkg_descs):
+    env = self.transform_env(os_env.clone_current_env(), pkg_descs)
+    for key, value in env.items():
       os_env_var(key).value = value
 
   def run_tool(self, pkg_descs, command, env, *args):
@@ -87,7 +84,7 @@ class new_tools_manager(object):
       env = os_env.clone_current_env()
     else:
       check.check_dict(env)
-    env = self.transform_env(pkg_descs, env)
+    env = self.transform_env(env, pkg_descs)
     if 'env' in args:
       env.update(args['env'])
       del args['env']
