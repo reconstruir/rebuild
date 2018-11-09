@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os, os.path as path
@@ -154,19 +153,14 @@ class package_tester(object):
                                                               True)
     timer.stop()
     timer.start('tools update')
-    config.tools_manager.update(resolved_tool_reqs, config.artifact_manager)
+    config.tools_manager.ensure_tools(resolved_tool_reqs)
     timer.stop()
 
     saved_env = os_env.clone_current_env()
 
-    config.tools_manager.export_variables_to_current_env(resolved_tool_reqs)
-    pm.export_variables_to_current_env(all_packages)
-
     shell_env = os_env.make_clean_env()
-    os_env.update(shell_env, config.tools_manager.shell_env(resolved_tool_reqs), prepend = True)
-    os_env.update(shell_env, pm.shell_env(all_packages), prepend = True)
-    transformed_env = pm.transform_env(shell_env, all_packages_names)
-    os_env.update(shell_env, transformed_env, prepend = True)
+    shell_env = config.tools_manager.transform_env(shell_env, resolved_tool_reqs)
+    shell_env = pm.transform_env(shell_env, all_packages_names)
     
     test_source_with_replacements = path.join(test_root_dir, path.basename(test_source))
     substitutions = {}

@@ -84,6 +84,7 @@ class package(object):
     setup_tools.update_egg_directory(python_lib_dir)
 
   _ENV_FILE_HEAD_TEMPLATE = '''\
+# BEGIN @REBUILD_HEAD@
 _this_file="$( command readlink "$BASH_SOURCE" )" || _this_file="$BASH_SOURCE"
 _unresolved_root="${_this_file%/*}"
 REBUILD_ENV_DIR="$( command cd -P "$_unresolved_root" > /dev/null && command pwd -P )"
@@ -97,11 +98,17 @@ fi
 unset _framework_env_dir
 unset _this_file
 unset _unresolved_root
+# END @REBUILD_HEAD@
+
 '''
 
   _ENV_FILE_TAIL_TEMPLATE = '''\
+
+# BEGIN @REBUILD_TAIL@
 unset REBUILD_ENV_DIR
 unset REBUILD_STUFF_DIR
+# END @REBUILD_TAIL@
+
 '''
   
   def _variable_substitution_hook(self, where, installation_dir):

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy, os, os.path as path
@@ -24,6 +23,7 @@ class step_setup_install_tool_requirements(step):
       message = 'No tools for %s' % (script.descriptor.full_name)
       self.log_d(message)
       return step_result(True, message)
-      
-    env.update_tools(tools)
+
+    env.tools_manager.ensure_tools(tools)
+    
     return step_result(True, None)

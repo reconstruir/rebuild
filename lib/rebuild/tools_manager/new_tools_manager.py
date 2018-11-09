@@ -69,16 +69,6 @@ class new_tools_manager(object):
   def _package_root_dir(self, pkg_desc):
     return path.join(self._root_dir, self._make_package_name(pkg_desc))
   
-#  def shell_env(self, pkg_descs):
-#    pkg_descs = package_descriptor_list.resolve(pkg_descs)
-#    return self.transform_env(os_env.clone_current_env(), pkg_descs)
-
-  def export_variables_to_current_env(self, pkg_descs):
-    pkg_descs = package_descriptor_list.resolve(pkg_descs)
-    env = self.transform_env(os_env.clone_current_env(), pkg_descs)
-    for key, value in env.items():
-      os_env_var(key).value = value
-
   def run_tool(self, pkg_descs, command, env, *args):
     if env is None:
       env = os_env.clone_current_env()

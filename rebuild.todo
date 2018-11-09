@@ -920,10 +920,14 @@ and only then forks rebuilder.py.  might be tough
 
 2018-11-7
 - the bes_framework.sh used in rebuild env files maybe should be s/bes/rebuild
-- fix package_manager.export_variables_to_current_env
 - when doing transform env theres no decent assertion of the requested package descriptor is not installed
 - add checksuming to downloads
 - package_manager transform env does not do dependencies
 - add package_manager and new_tools_mananger transform env unit tests that use dependencies and assert that only what is needed is in the env
 
 - in step.py env.update(script.substitutions) might happen too early
+- add artifact manager chain tests for dups and other edge cases
+- env_dir/package_manager env_files test case where there are no files
+- addd MANPATH to bes_PATH_ kind of bash funcs also PERL5LIB
+- retire shell_env craps all over
+- audit env related stuff in both package_manager and tools_manager

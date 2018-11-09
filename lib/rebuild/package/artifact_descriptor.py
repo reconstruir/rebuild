@@ -31,6 +31,9 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
     return '%s;%s;%s;%s;%s;%s;%s;%s;%s' % (self.name, self.version, self.revision, self.epoch, self.system, self.level,
                                            arch_str, self.distro, self.distro_version)
 
+  def __hash__(self):
+    return hash(str(self))
+  
   @cached_property
   def sql_table_name(self):
     return string_util.replace_punctuation(str(self), '_')

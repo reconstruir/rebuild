@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import argparse, copy, os, os.path as path
@@ -11,7 +10,9 @@ from bes.system import host
 from bes.fs import file_util, temp_file
 from rebuild.base import build_arch, build_blurb, build_system, build_target, build_target_cli, build_level
 from rebuild.package import artifact_manager_local, package, package_tester
-from rebuild.tools_manager import tools_manager
+
+# This creates a dumb circular dependency
+#from rebuild.tools_manager import new_tools_manager
 
 from .manager import manager
 from .manager_script import manager_script
@@ -392,7 +393,7 @@ remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir ${_root_dir}
       raise RuntimeError('Not an tools directory: %s' % (tools_dir))
 
     am = artifact_manager_local(artifacts_dir)
-    tm = tools_manager(tools_dir)
+    tm = new_tools_manager(tools_dir, self.build_target, am)
 
     build_blurb.blurb('tester', ' build_target: %s' % (str(self.build_target)))
     build_blurb.blurb('tester', '      tmp_dir: %s' % (tmp_dir))

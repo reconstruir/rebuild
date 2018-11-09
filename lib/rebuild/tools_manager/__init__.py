@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-#-*- coding:utf-8 -*-
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from .tools_manager import tools_manager
 from .new_tools_manager import new_tools_manager
-from .tools_package_manager import tools_package_manager

@@ -39,13 +39,8 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
                                       distro, distro_version, requirements,
                                       properties, files)
 
-  '''
-  def __deepcopy__(self, memo):
-    def to_simple_dict(self):
-      def _parse_dict_v2(clazz, o):
-    print('MEMO: %s - %s' % (memo, type(memo)))
-    assert False
-'''
+  def __hash__(self):
+    return hash(str(self))
   
   @cached_property
   def build_version(self):

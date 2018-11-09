@@ -48,7 +48,6 @@ class rebuilder_tester(object):
     artifacts_dir = path.join(tmp_dir, 'artifacts', config.build_target.build_path)
     checksums_dir = path.join(tmp_dir, 'checksums', config.build_target.build_path)
     result = self.run_script(command, cwd = self._working_dir)
-    print('FUCK: finding artifacts in %s' % (artifacts_dir))
     artifacts = self._find_in_dir(artifacts_dir)
     checksums = self._find_in_dir(checksums_dir)
     droppings = self._find_in_dir(tmp_dir)

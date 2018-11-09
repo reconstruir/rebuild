@@ -57,6 +57,12 @@ class package_manager(object):
     self._share_dir = path.join(self._installation_dir, 'share')
     self._compile_instructions_dir = path.join(self._installation_dir, 'lib/rebuild_instructions')
     self._shell_framework_dir = path.join(self._env_dir, 'framework')
+    self._shell_env = {
+      os_env.LD_LIBRARY_PATH_VAR_NAME: self._lib_dir,
+      'PATH': self._bin_dir,
+      'PYTHONPATH': self._python_lib_dir,
+      'PKG_CONFIG_PATH': pkg_config.make_pkg_config_path_for_unix_env(self._installation_dir)
+    }
     
   @property
   def root_dir(self): 
@@ -323,17 +329,6 @@ class package_manager(object):
       result[key] = variable.substitute(value or '', variables)
     return result
 
-  def shell_env(self, packages):
-    env = {
-      os_env.LD_LIBRARY_PATH_VAR_NAME: self.lib_dir,
-      'PATH': self.bin_dir,
-      'PYTHONPATH': self._python_lib_dir,
-      'PKG_CONFIG_PATH': pkg_config.make_pkg_config_path_for_unix_env(self._installation_dir)
-    }
-    all_env_vars = self.env_vars([ p.name for p in packages])
-    os_env.update(env, all_env_vars)
-    return env
-
   def package_env_files(self, package_names):
     'Return a list of env files for the given packages in the same order as packages.'
     check.check_string_seq(package_names)
@@ -345,21 +340,18 @@ class package_manager(object):
   
   def transform_env(self, env, package_names):
     check.check_string_seq(package_names)
+    os_env.update(env, self._shell_env)
     files = self.package_env_files(package_names)
     if not files:
-      return {}
+      return env
     if not path.isdir(self._env_dir):
-      return {}
-    result = env_dir(self._env_dir, files = files).transform_env(env)
+      return env
+    ed = env_dir(self._env_dir, files = files)
+    result = ed.transform_env(env)
     if '_BES_DEV_ROOT' in result:
       del result['_BES_DEV_ROOT']
     return result
   
-  def export_variables_to_current_env(self, packages):
-    all_env_vars = self.env_vars([ p.name for p in packages])
-    for key, value in all_env_vars.items():
-      os_env_var(key).value = value
-
   def load_tarball(self, filename, build_target):
     'load a tarball and resturn a package object with requirements resolved according to packages currently installed.'
     if not package.is_package(filename):

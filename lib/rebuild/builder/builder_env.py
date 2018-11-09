@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
@@ -7,7 +6,7 @@ from bes.fs import file_trash
 from bes.common import check
 from bes.git import git_download_cache, git_util
 
-from rebuild.tools_manager import tools_manager
+from rebuild.tools_manager import new_tools_manager
 from rebuild.checksum import checksum_manager
 from rebuild.package import artifact_manager_chain, artifact_manager_local
 from rebuild.base import build_blurb, package_descriptor, requirement_manager
@@ -29,9 +28,11 @@ class builder_env(object):
                                                   config.no_network)
     self.blurb('source_finder: %s' % (self.source_finder))
     self.checksum_manager = self._make_checksum_manager(config.build_root)
-    self.tools_manager = self._make_tools_manager(config.build_root)
     self.downloads_manager = self._make_downloads_manager(config.build_root)
     self.reload_artifact_manager()
+    self.tools_manager = new_tools_manager(path.join(config.build_root, 'tools'),
+                                           self.config.host_build_target,
+                                           self.artifact_manager)
     self.recipe_load_env = recipe_load_env(self)
     self.script_manager = builder_script_manager(filenames, self.config.build_target, self)
     self.requirement_manager = requirement_manager()
@@ -82,11 +83,4 @@ class builder_env(object):
     else:
       self.external_artifact_manager = None
       
-  def _make_tools_manager(self, build_dir):
-    return tools_manager(path.join(build_dir, 'tools'), self.config.host_build_target)
-
-  def update_tools(self, packages):
-    check.check_package_descriptor_seq(packages)
-    self.tools_manager.update(packages, self.artifact_manager)
-
 check.register_class(builder_env, include_seq = False)

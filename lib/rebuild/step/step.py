@@ -140,29 +140,12 @@ class step(with_metaclass(step_register_meta, object)):
 
     env.update(script.substitutions)
     tool_deps = script.resolve_deps(['TOOL'], False)
-    run_deps = script.resolve_deps(['RUN'], False)
-    tools_env = script.env.tools_manager.shell_env(tool_deps)
-    requirements_env = script.requirements_manager.shell_env(run_deps)
-    staged_files_env = os_env.make_shell_env(script.staged_files_dir)
-    os_env.update(env, tools_env)
-    os_env.update(env, requirements_env)
-    os_env.update(env, staged_files_env)
-    if False:
-      tools_env = copy.deepcopy(tools_env)
-      requirements_env = copy.deepcopy(requirements_env)
-      staged_files_env = copy.deepcopy(staged_files_env)
-      replacements = { script.working_dir: '$WORKING', script.env.tools_manager.tools_dir: '$TOOLS' }
-      dict_util.replace_values(tools_env, replacements)
-      dict_util.replace_values(requirements_env, replacements)
-      dict_util.replace_values(staged_files_env, replacements)
-      import pprint
-      print('DUCK: %s: tools_env=%s' % (script.descriptor.name, pprint.pformat(tools_env)))
-      print('DUCK: %s: requirements_env=%s' % (script.descriptor.name, pprint.pformat(requirements_env)))
-      print('DUCK: %s: staged_files_env=%s' % (script.descriptor.name, pprint.pformat(staged_files_env)))
-    
     run_build_deps = script.resolve_deps(['RUN', 'BUILD'], False)
-    env.update(script.requirements_manager.transform_env({}, run_build_deps.names()))
-      
+    env = script.env.tools_manager.transform_env(env, tool_deps)
+    env = script.requirements_manager.transform_env(env, run_build_deps.names())
+    staged_files_env = os_env.make_shell_env(script.staged_files_dir)
+    os_env.update(env, staged_files_env)
+    
     env['REBUILD_PYTHON_VERSION'] = '2.7'
     env['PYTHON'] = 'python%s' % (env['REBUILD_PYTHON_VERSION'])
     
