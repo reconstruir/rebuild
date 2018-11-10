@@ -337,7 +337,7 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
     self.assertEqual( {
       '$LD_LIBRARY_PATH': '$ROOT_DIR/stuff/lib',
       'PKG_CONFIG_PATH': '$ROOT_DIR/stuff/lib/pkgconfig:$ROOT_DIR/stuff/share/pkgconfig',
-      'PATH': '$ROOT_DIR/stuff/bin:$DEFAULT_PATH',
+      'PATH': '$DEFAULT_PATH:$ROOT_DIR/stuff/bin',
       'PYTHONPATH': '$ROOT_DIR/stuff/lib/python',
     }, env2 )
 
