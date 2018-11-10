@@ -6,7 +6,7 @@ from bes.fs import file_trash
 from bes.common import check
 from bes.git import git_download_cache, git_util
 
-from rebuild.tools_manager import new_tools_manager
+from rebuild.tools_manager import tools_manager
 from rebuild.checksum import checksum_manager
 from rebuild.package import artifact_manager_chain, artifact_manager_local
 from rebuild.base import build_blurb, package_descriptor, requirement_manager
@@ -30,7 +30,7 @@ class builder_env(object):
     self.checksum_manager = self._make_checksum_manager(config.build_root)
     self.downloads_manager = self._make_downloads_manager(config.build_root)
     self.reload_artifact_manager()
-    self.tools_manager = new_tools_manager(path.join(config.build_root, 'tools'),
+    self.tools_manager = tools_manager(path.join(config.build_root, 'tools'),
                                            self.config.host_build_target,
                                            self.artifact_manager)
     self.recipe_load_env = recipe_load_env(self)

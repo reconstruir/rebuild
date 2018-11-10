@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from rebuild.package import artifact_manager
-from rebuild.tools_manager import new_tools_manager
+from rebuild.tools_manager import tools_manager
 from rebuild.base import build_target, build_version, package_descriptor
 from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT
 
@@ -16,7 +16,7 @@ def main():
     package_descriptor('smoothie', '1.0.0'),
    ]
   
-  tm = new_tools_manager('/tmp/new_tools', am)
+  tm = tools_manager('/tmp/new_tools', am)
   tm.ensure_tools(wanted)
   tm.ensure_tools(wanted)
 

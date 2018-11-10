@@ -12,7 +12,7 @@ from rebuild.base import build_arch, build_blurb, build_system, build_target, bu
 from rebuild.package import artifact_manager_local, package, package_tester
 
 # This creates a dumb circular dependency
-#from rebuild.tools_manager import new_tools_manager
+#from rebuild.tools_manager import tools_manager
 
 from .manager import manager
 from .manager_script import manager_script
@@ -393,7 +393,7 @@ remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir ${_root_dir}
       raise RuntimeError('Not an tools directory: %s' % (tools_dir))
 
     am = artifact_manager_local(artifacts_dir)
-    tm = new_tools_manager(tools_dir, self.build_target, am)
+    tm = tools_manager(tools_dir, self.build_target, am)
 
     build_blurb.blurb('tester', ' build_target: %s' % (str(self.build_target)))
     build_blurb.blurb('tester', '      tmp_dir: %s' % (tmp_dir))

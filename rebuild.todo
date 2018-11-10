@@ -931,3 +931,4 @@ and only then forks rebuilder.py.  might be tough
 - addd MANPATH to bes_PATH_ kind of bash funcs also PERL5LIB
 - retire shell_env craps all over
 - audit env related stuff in both package_manager and tools_manager
+- paclage_manager ops like package_env_files() dont check that the packages being requests indeed exists.  need an exception

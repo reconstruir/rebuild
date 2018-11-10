@@ -301,46 +301,136 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
     pm.install_package(PD.parse('unset-1.0.0'), bt, [ 'RUN' ])
     return pm, cabbage
 
-  def test_transform_env_set(self):
+  def _make_one_env_file_pm(self, code):
+    recipe = self.ONE_ENV_FILE_RECIPE % (code)
+    t = AMT(recipes = recipe)
+    t.publish('one_env_file;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    pm = self._make_caca_test_pm(t.am)
+    pdesc = PD.parse('one_env_file-1.0.0')
+    bt = BT.parse_path('linux-ubuntu-18/x86_64/release')
+    pm.install_package(pdesc, bt, [ 'RUN' ])
+    return pm
+
+  def _make_two_env_files_pm(self, code1, code2):
+    recipe = self.TWO_ENV_FILES_RECIPE % (code1, code2)
+    t = AMT(recipes = recipe)
+    t.publish('two_env_files;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    pm = self._make_caca_test_pm(t.am)
+    pdesc = PD.parse('two_env_files-1.0.0')
+    bt = BT.parse_path('linux-ubuntu-18/x86_64/release')
+    pm.install_package(pdesc, bt, [ 'RUN' ])
+    return pm
+  
+  def test_transform_env_input_not_mutated(self):
+    'Check that the environment passed into transform_env() is not mutated.'
     pm, cabbage = self._make_cabbage_pm()
-    env1 = {}
+    env1 = { 'FOO': 'foo', 'BAR': 'bar' }
     env1_save = copy.deepcopy(env1)
     env2 = pm.transform_env(env1, [ 'cabbage' ])
-    dict_util.replace_values(env2, { '/private': '', pm.root_dir: '$ROOT_DIR' })
-    self.assertEqual( env1_save, env1 )
-    default_PATH = os_env.default_system_value('PATH')
+    self.assert_dict_equal( env1_save, env1 )
+  
+  def test_transform_env_defaults(self):
+    'Check the defaults of transform_env() when the input env is empty.'
+    pm, cabbage = self._make_cabbage_pm()
+    env1 = {}
+    env2 = self._transform_env(pm, env1, [ 'cabbage' ])
     self.assertEqual( {
-      os_env.LD_LIBRARY_PATH_VAR_NAME: '$ROOT_DIR/stuff/lib',
-      'PATH': '%s:$ROOT_DIR/stuff/bin' % (default_PATH),
+      '$LD_LIBRARY_PATH': '$ROOT_DIR/stuff/lib',
+      'PKG_CONFIG_PATH': '$ROOT_DIR/stuff/lib/pkgconfig:$ROOT_DIR/stuff/share/pkgconfig',
+      'PATH': '$ROOT_DIR/stuff/bin:$DEFAULT_PATH',
       'PYTHONPATH': '$ROOT_DIR/stuff/lib/python',
     }, env2 )
-  
+
   def test_transform_env_append(self):
-    pm, cabbage = self._make_cabbage_pm()
-    default_PATH = os_env.default_system_value('PATH')
+    code = '''
+      bes_PATH_append /zzzz/bin
+      bes_PYTHONPATH_append /zzzz/lib/python
+      bes_LD_LIBRARY_PATH_append /zzzz/lib
+'''
+    pm = self._make_one_env_file_pm(code)
     env1 = {
-      os_env.LD_LIBRARY_PATH_VAR_NAME: '/p/lib',
+      'PATH': '$DEFAULT_PATH:/p/bin',
       'PYTHONPATH': '/p/lib/python',
-      'PATH': default_PATH,
+      '$LD_LIBRARY_PATH': '/p/lib',
     }
-    env1_save = copy.deepcopy(env1)
-    env2 = pm.transform_env(env1, [ 'cabbage' ])
-    dict_util.replace_values(env2, { '/private': '', pm.root_dir: '$ROOT_DIR' })
-    self.assertEqual( env1_save, env1 )
-    self.assertEqual( {
-      os_env.LD_LIBRARY_PATH_VAR_NAME: '/p/lib:$ROOT_DIR/stuff/lib',
-      'PATH': '%s:$ROOT_DIR/stuff/bin' % (default_PATH),
-      'PYTHONPATH': '/p/lib/python:$ROOT_DIR/stuff/lib/python',
-    }, env2 )
+    env2 = self._transform_env(pm, env1, [ 'one_env_file' ])
+    expected = {
+      'PATH': '$DEFAULT_PATH:/p/bin:$ROOT_DIR/stuff/bin:/zzzz/bin',
+      'PYTHONPATH': '/p/lib/python:$ROOT_DIR/stuff/lib/python:/zzzz/lib/python',
+      '$LD_LIBRARY_PATH':  '/p/lib:$ROOT_DIR/stuff/lib:/zzzz/lib',
+      'PKG_CONFIG_PATH': '$ROOT_DIR/stuff/lib/pkgconfig:$ROOT_DIR/stuff/share/pkgconfig',
+    }
+    self.assert_dict_equal( expected, env2 )
+
+  def test_transform_env_prepend(self):
+    code = '''
+      bes_PATH_prepend /zzzz/bin
+      bes_PYTHONPATH_prepend /zzzz/lib/python
+      bes_LD_LIBRARY_PATH_prepend /zzzz/lib
+'''
+    pm = self._make_one_env_file_pm(code)
+    env1 = {
+      'PATH': '$DEFAULT_PATH:/p/bin',
+      'PYTHONPATH': '/p/lib/python',
+      '$LD_LIBRARY_PATH': '/p/lib',
+    }
+    env2 = self._transform_env(pm, env1, [ 'one_env_file' ])
+    expected = {
+      'PATH': '/zzzz/bin:$DEFAULT_PATH:/p/bin:$ROOT_DIR/stuff/bin',
+      'PYTHONPATH': '/zzzz/lib/python:/p/lib/python:$ROOT_DIR/stuff/lib/python',
+      '$LD_LIBRARY_PATH':  '/zzzz/lib:/p/lib:$ROOT_DIR/stuff/lib',
+      'PKG_CONFIG_PATH': '$ROOT_DIR/stuff/lib/pkgconfig:$ROOT_DIR/stuff/share/pkgconfig',
+    }
+    self.assert_dict_equal( expected, env2 )
 
   def test_transform_env_unset(self):
-    pm, cabbage = self._make_cabbage_pm()
+    code1 = '''
+      export FOO=foo
+      export BAR=bar
+      export BAZ=baz
+'''
+    code2 = '''
+      unset BAR
+'''
+    pm = self._make_two_env_files_pm(code1, code2)
     env1 = {}
-    env2 = pm.transform_env(env1, [ 'unset' ])
-    self.assertEqual( {
-      'BAR': 'bar',
-    }, env2 )
-    
+    env2 = self._transform_env(pm, env1, [ 'two_env_files' ])
+    expected = {
+      '$LD_LIBRARY_PATH': '$ROOT_DIR/stuff/lib',
+      'PKG_CONFIG_PATH': '$ROOT_DIR/stuff/lib/pkgconfig:$ROOT_DIR/stuff/share/pkgconfig',
+      'PATH': '$DEFAULT_PATH:$ROOT_DIR/stuff/bin',
+      'PYTHONPATH': '$ROOT_DIR/stuff/lib/python',
+      'FOO': 'foo',
+      'BAZ': 'baz',
+    }
+    self.assert_dict_equal( expected, env2 )
+
+  ONE_ENV_FILE_RECIPE = '''
+fake_package one_env_file 1.0.0 0 0 linux release x86_64 ubuntu 18
+  env_files
+    file1.sh
+      \#@REBUILD_HEAD@
+      %s
+      \#@REBUILD_TAIL@
+  '''
+
+  TWO_ENV_FILES_RECIPE = '''
+fake_package two_env_files 1.0.0 0 0 linux release x86_64 ubuntu 18
+  files
+    bin/cut.sh
+      \#!/bin/bash
+      echo cabbage ; exit 0
+  env_files
+    file1.sh
+      \#@REBUILD_HEAD@
+      %s
+      \#@REBUILD_TAIL@
+    file2.sh
+      \#@REBUILD_HEAD@
+      %s
+      \#@REBUILD_TAIL@
+  '''
+  
   VEGGIES = '''fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
   files
     bin/cut.sh
@@ -350,8 +440,8 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
     cabbage_env.sh
       \#@REBUILD_HEAD@
       bes_PATH_append ${REBUILD_STUFF_DIR}/bin
-      bes_PYTHONPATH_append ${REBUILD_STUFF_DIR}/lib/python
-      bes_LD_LIBRARY_PATH_append ${REBUILD_STUFF_DIR}/lib
+      #bes_PYTHONPATH_append ${REBUILD_STUFF_DIR}/lib/python
+      #bes_LD_LIBRARY_PATH_append ${REBUILD_STUFF_DIR}/lib
       \#@REBUILD_TAIL@
 
 fake_package unset 1.0.0 0 0 linux release x86_64 ubuntu 18
@@ -373,6 +463,38 @@ fake_package unset 1.0.0 0 0 linux release x86_64 ubuntu 18
       unset FOO
       \#@REBUILD_TAIL@
 '''
-    
+
+  @classmethod
+  def _replace_input_env(clazz, env):
+    result = copy.deepcopy(env)
+    if '$LD_LIBRARY_PATH' in result:
+      result['LD_LIBRARY_PATH'] = result['$LD_LIBRARY_PATH']
+      del result['$LD_LIBRARY_PATH']
+    replacements = {
+      '$DEFAULT_PATH': os_env.DEFAULT_SYSTEM_PATH,
+    }
+    dict_util.replace_values(result, replacements)
+    return result
+  
+  @classmethod
+  def _replace_output_env(clazz, pm, env):
+    result = copy.deepcopy(env)
+    if os_env.LD_LIBRARY_PATH_VAR_NAME in result:
+      result['$LD_LIBRARY_PATH'] = result[os_env.LD_LIBRARY_PATH_VAR_NAME]
+      del result[os_env.LD_LIBRARY_PATH_VAR_NAME]
+    replacements = {
+      '/private': '',
+      pm.root_dir: '$ROOT_DIR',
+      os_env.DEFAULT_SYSTEM_PATH: '$DEFAULT_PATH',
+    }
+    dict_util.replace_values(result, replacements)
+    return result
+  
+  @classmethod
+  def _transform_env(clazz, pm, env, package_names):
+    env = clazz._replace_input_env(env)
+    result = pm.transform_env(env, package_names)
+    return clazz._replace_output_env(pm, result)
+  
 if __name__ == '__main__':
   unit_test.main()

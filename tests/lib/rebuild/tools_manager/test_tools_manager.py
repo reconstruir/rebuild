@@ -7,14 +7,14 @@ from bes.common import cached_property, dict_util, string_util
 from bes.fs import file_find, temp_file
 from bes.system import execute, os_env
 from rebuild.base import build_target, build_system, build_level, package_descriptor as PD
-from rebuild.tools_manager import new_tools_manager as TM
+from rebuild.tools_manager import tools_manager as TM
 from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT
 from _rebuild_testing.fake_package_recipes import fake_package_recipes as RECIPES
 from _rebuild_testing.artifact_manager_tester import artifact_manager_tester as AMT
 
 from _rebuild_testing.rebuilder_tester import rebuilder_tester
 
-class test_new_tools_manager(unit_test):
+class test_tools_manager(unit_test):
 
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/rebuilder'
   __script__ = __file__, '../../../../bin/rebuilder.py'

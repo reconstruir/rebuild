@@ -7,7 +7,7 @@ from rebuild.base import build_target, build_level, package_descriptor_list
 from rebuild.manager import manager
 from bes.debug import debug_timer, noop_debug_timer
 
-class new_tools_manager(object):
+class tools_manager(object):
 
   def __init__(self, root_dir, build_target, artifact_manager):
     check.check_string(root_dir)

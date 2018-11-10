@@ -335,19 +335,25 @@ class package_manager(object):
     result = []
     for package_name in package_names:
       entry = self.db.find_package(package_name)
+      assert entry
       result.extend([ f.filename for f in entry.files.env_files ])
     return result
   
   def transform_env(self, env, package_names):
     check.check_string_seq(package_names)
-    os_env.update(env, self._shell_env)
+    env = env or { 'PATH': os_env.default_system_value('PATH') }
+    if not 'PATH' in env:
+      env = copy.deepcopy(env)
+      env['PATH'] = os_env.default_system_value('PATH')
+    result = copy.deepcopy(env)
+    os_env.update(result, self._shell_env, prepend = False)
     files = self.package_env_files(package_names)
     if not files:
-      return env
+      return result
     if not path.isdir(self._env_dir):
-      return env
+      return result
     ed = env_dir(self._env_dir, files = files)
-    result = ed.transform_env(env)
+    result = ed.transform_env(result)
     if '_BES_DEV_ROOT' in result:
       del result['_BES_DEV_ROOT']
     return result
