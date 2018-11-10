@@ -2,7 +2,7 @@
 
 import copy, os.path as path
 from bes.common import check, object_util, string_util
-from bes.system import execute, host, os_env, os_env_var
+from bes.system import execute, os_env
 from rebuild.base import build_target, build_level, package_descriptor_list
 from rebuild.manager import manager
 from bes.debug import debug_timer, noop_debug_timer

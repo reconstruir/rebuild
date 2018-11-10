@@ -9,7 +9,7 @@ from bes.archive import archive, archiver
 from bes.common import check, object_util, string_util, variable
 from bes.dependency import dependency_resolver
 from bes.fs import file_path, file_util
-from bes.system import os_env, os_env_var
+from bes.system import os_env
 
 from rebuild.base import build_system, requirement
 from rebuild.base import package_descriptor, package_descriptor_list
@@ -302,32 +302,6 @@ class package_manager(object):
     #check.check_package_descriptor_seq(packages)
     for pkg_name in packages:
       self.uninstall_package(pkg_name) #, build_target)
-
-  def env_vars(self, package_names):
-    'Return the environment variables for the given package names.'
-    dep_map = self.db.dep_map()
-    check.check_string_seq(package_names)
-    package_names = object_util.listify(package_names)
-    descriptors = [ self.descriptor_for_name(pkg_name) for pkg_name in package_names ]
-    result = {}
-    for pkg_desc in descriptors:
-      os_env.update(result, self._env_vars_for_one_package(pkg_desc))
-    # need to resolve names and transform that
-    env_files_env = self.transform_env({}, package_names)
-    #os_env.update(result, env_files_env)
-    return result
-
-  def _env_vars_for_one_package(self, pkg_desc):
-    result = copy.deepcopy(pkg_desc.env_vars)
-    variables = {
-      'REBUILD_PACKAGE_ROOT_DIR': self._installation_dir,
-      'REBUILD_PACKAGE_FULL_VERSION': str(pkg_desc.version),
-      'REBUILD_PKG_NAME': pkg_desc.name,
-    }
-    
-    for key, value in result.items():
-      result[key] = variable.substitute(value or '', variables)
-    return result
 
   def package_env_files(self, package_names):
     'Return a list of env files for the given packages in the same order as packages.'

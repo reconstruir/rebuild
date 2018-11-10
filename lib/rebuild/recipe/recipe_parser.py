@@ -86,7 +86,6 @@ class recipe_parser(object):
     instructions = []
     enabled = 'True'
     load = []
-    env_vars = None
     for child in node.children:
       text = child.data.text
       if text.startswith('properties'):
@@ -100,8 +99,6 @@ class recipe_parser(object):
       elif text.startswith('load'):
         load = self._parse_load(child)
         self._load_code(load, child)
-      elif text.startswith('env_vars'):
-        env_vars = self._parse_env_vars(child)
       elif text.startswith('instructions'):
         instructions = self._parse_instructions(child)
       elif text.startswith('export_compilation_flags_requirements'):
@@ -109,15 +106,9 @@ class recipe_parser(object):
         properties['export_compilation_flags_requirements'] = export_compilation_flags_requirements
       else:
         self._error('unknown recipe section: \"%s\"' % (text), node)
-    if env_vars:
-      poto1 = env_vars.resolve('macos', value_type.KEY_VALUES)
-      poto2 = env_vars.resolve('linux', value_type.KEY_VALUES)
-      d = poto1.to_dict()
-      d.update(poto2.to_dict())
-      properties['env_vars'] = d
     desc = package_descriptor(name, version, requirements = requirements, properties = properties)
     return recipe(2, self.filename, enabled, properties, requirements,
-                  desc, instructions, steps, load, env_vars)
+                  desc, instructions, steps, load)
 
   def _parse_package_header(self, node):
     parts = string_util.split_by_white_space(node.data.text, strip = True)
@@ -163,15 +154,6 @@ class recipe_parser(object):
       next_reqs = requirement_list.parse(req_text)
       reqs.extend(next_reqs)
     return requirement_list(reqs)
-
-  def _parse_env_vars(self, node):
-    env_vars = []
-    for child in node.children:
-      text = tree_text_parser.node_text_flat(child)
-      child_origin = value_origin(self.filename, child.data.line_number, text)
-      value = masked_value.parse_mask_and_value(self.env, child_origin, text, value_type.KEY_VALUES)
-      env_vars.append(value)
-    return masked_value_list(env_vars)
 
   def _parse_export_compilation_flags_requirements(self, node):
     export_compilation_flags_requirements = []

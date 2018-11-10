@@ -81,7 +81,7 @@ jan 27
 - make the tmp_dir for testing be in the same place as unpacked, deps, etc
 - move the LD_LIBRARY_PATH hackery in PackageManager.__make_script() to a decent location
 - in __run_cpp_test() abstract the compiler name hardcoded to gcc now
-- SystemEnvironment.CLEAN_ENV_VARS might have to be system specific
+- os_env.CLEAN_ENV_VARS might have to be system specific
 - deal with the ugliness of BuildScript.all_scripts and BuildScript.checksum_dir
 
 feb 5
@@ -278,8 +278,6 @@ retire FileUtil.is_exe() and use binary detector instead
 feb 2
 - split EnvVar into the parts that hack the live environment and utils - also SystemEnvironment is confusing too.
 - make sure env var updates call unique
-
-- PackageManager and ToolsManager are inconsistent in env_vars related functions.  killall that chit
 
 feb 3
 - Step.py:#FIXME: unify the replacements here with those in step_pkg_config_make_pc.py
@@ -553,9 +551,6 @@ dec 21
 - fix enabled parsing for build.py<python_pyspotify>
 - add a unit test of pc_files and pc_file_variables
 
-dec 27
-- fix env_vars in build scripts to be platform specific
-
 jan 9
 - rename step_make_instructions to step_instructions_write or something
 - fix instruction loading unit tests (test_instruction_list.py)
@@ -667,9 +662,7 @@ mar 27
 install_target should be make_install_target
 when the name of the makefile changes from build.py to rebuild.recipe it doesnt recompile checkout checksums
 
-when done converting builder scripts retire the properties hacks in recipe_parser (for env_vars and export_compilation_flags_requirements)
 figure out the check_python_eggs mess
-env_vars should always default to empty being '' instead of None.  check package_manager.__env_vars_for_one_package as check tools_package_manager.env_vars()
 
 step_autoconf:
 instead of:
@@ -767,9 +760,6 @@ egg check is either commented out or broken
  - add check for home directory droppings before and after a build to make sure tools are not crapping stuff there
  - warnings in setup.sh when env dir exists but is empty
 
-2018-04-27
- - retire env_vars when replaced with env files
-
 2018-05-05
  - need hook tests that both pass and fail
  - value_install_file should be a subclass of value_file
@@ -794,13 +784,6 @@ egg check is either commented out or broken
  - notion of build "host" might be confusing with the notion of "host" in cross compiling
 
 2018-05-08
- - recipe_parser.py - fix this shit
-      poto1 = env_vars.resolve('macos', value_type.KEY_VALUES)
-      poto2 = env_vars.resolve('linux', value_type.KEY_VALUES)
-      d = poto1.to_dict()
-      d.update(poto2.to_dict())
-      properties['env_vars'] = d
-
  - distinction between value_file and value_file_list in recipes is confusing
  - test_recipe_step needs to test for defaults
  - enhance args_definition to keep track of the origin
@@ -840,8 +823,6 @@ rebuild.package.package_manager.PackageFilesConflictError: conflicts found betwe
  - need a unit test that does manager update with something that results in package resolution
 
 2018-06-09
- - package_manager.env_vars() needs to order package_names by dependency order
- 
 - full unit test for package_descriptor_list
 - figure out why shit package_descripttor.parse_requirements is needed.
 - package_descriptor.__init__ figure out the correct type for version arg
@@ -930,5 +911,4 @@ and only then forks rebuilder.py.  might be tough
 - env_dir/package_manager env_files test case where there are no files
 - addd MANPATH to bes_PATH_ kind of bash funcs also PERL5LIB
 - retire shell_env craps all over
-- audit env related stuff in both package_manager and tools_manager
 - paclage_manager ops like package_env_files() dont check that the packages being requests indeed exists.  need an exception

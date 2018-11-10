@@ -151,10 +151,6 @@ class package_descriptor(namedtuple('package_descriptor', 'name, version, requir
     return []
     
   @property
-  def env_vars(self):
-    return self.properties.get('env_vars', {})
-
-  @property
   def pkg_config_name(self):
     'Return the name of the .pc file for pkg config this package uses.'
     return object_util.listify(self.properties.get(self.PROPERTY_PKG_CONFIG_NAME, [ self.name ]))

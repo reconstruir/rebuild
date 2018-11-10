@@ -5,19 +5,17 @@ from collections import namedtuple
 from bes.common import check, node
 from bes.text import white_space
 
-class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties, requirements, descriptor, instructions, steps, load, env_vars, variables')):
+class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties, requirements, descriptor, instructions, steps, load, variables')):
 
   CHECK_UNKNOWN_PROPERTIES = True
   
   def __new__(clazz, format_version, filename, enabled, properties, requirements,
-              descriptor, instructions, steps, load, env_vars, variables = None):
+              descriptor, instructions, steps, load, variables = None):
     assert format_version == 2
-    if env_vars:
-      check.check_masked_value_list(env_vars)
     if variables:
       check.check_masked_value_list(variables)
     return clazz.__bases__[0].__new__(clazz, format_version, filename, enabled, properties,
-                                      requirements, descriptor, instructions, steps, load, env_vars, variables)
+                                      requirements, descriptor, instructions, steps, load, variables)
 
   def __str__(self):
     return self.to_string()
@@ -34,9 +32,6 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
       root.add_child('')
     if self.variables:
       root.children.append(self._masked_value_list_to_node('variables', self.variables))
-      root.add_child('')
-    if self.env_vars:
-      root.children.append(self._masked_value_list_to_node('env_vars', self.env_vars))
       root.add_child('')
     if self.properties:
       root.children.append(self._properties_to_node(self.properties))
@@ -69,7 +64,7 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
     assert isinstance(properties_node, node)
     assert key in properties
     value = properties[key]
-    if key in [ 'export_compilation_flags_requirements', 'extra_cflags', 'env_vars']:
+    if key in [ 'export_compilation_flags_requirements', 'extra_cflags' ]:
       properties_node.children.append(clazz._system_specific_property_to_node(key, properties))
     elif key in [ 'download_url', 'pkg_config_name' ]:
       properties_node.children.append(node('%s=%s' % (key, value)))

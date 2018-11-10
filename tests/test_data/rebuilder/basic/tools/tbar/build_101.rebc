@@ -1,10 +1,6 @@
-d!rebuild.recipe!
+!rebuild.recipe!
 
 package tbar-1.0.1
-  env_vars
-    all: TBAR_ENV1=foo101 TBAR_ENV2=bar101
-
-  properties
 
   requirements
     all: TOOL tfoo >= 1.0.0
