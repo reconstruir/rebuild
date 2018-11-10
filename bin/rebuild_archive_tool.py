@@ -29,7 +29,7 @@ def main():
                               action = 'store',
                               default = None,
                               help = 'Base dir to add to extracted archive [ None ]')
-  extract_parser.add_argument('--strip-common-base',
+  extract_parser.add_argument('--strip-common-ancestor',
                               '-s',
                               action = 'store_true',
                               default = False,
@@ -255,9 +255,9 @@ def _command_create(root_dir, name, version, revision):
   archiver.create(filename, root_dir, base_dir = base_dir)
 
 def _command_info(filename):
-  common_base = archiver.common_base(filename)
-  print('   filename: %s' % (filename))
-  print('common_base: %s' % (common_base))
+  common_ancestor = archiver.common_ancestor(filename)
+  print('       filename: %s' % (filename))
+  print('common_ancestor: %s' % (common_ancestor))
   return 0
 
 def _command_patch(args):
