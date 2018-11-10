@@ -5,7 +5,7 @@ import copy, os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import file_find, file_util, temp_file
 from bes.system import os_env
-from bes.common import dict_util
+from bes.common import check, dict_util, object_util
 from rebuild.base import build_target as BT, package_descriptor as PD
 from rebuild.pkg_config import pkg_config
 from rebuild.package import artifact_manager_local, package, package_manager
@@ -405,6 +405,62 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
     }
     self.assert_dict_equal( expected, env2 )
 
+
+  def test_installed_files(self):
+    recipe = '''
+fake_package many_files 1.0.0 0 0 linux release x86_64 ubuntu 18
+  files
+    bin/apple.sh
+      \#!/bin/bash
+      echo apple ; exit 0
+    bin/orange.sh
+      \#!/bin/bash
+      echo orange ; exit 0
+  env_files
+    foo.sh
+      \#@REBUILD_HEAD@
+      export FOO=foo
+      \#@REBUILD_TAIL@
+    bar.sh
+      \#@REBUILD_HEAD@
+      export BAR=bar
+      \#@REBUILD_TAIL@
+  '''
+
+    amt = self._make_test_amt(recipe, 'many_files;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    pm = self._make_caca_test_pm(amt.am)
+    self._install_package(pm, 'many_files-1.0.0', 'linux-ubuntu-18/x86_64/release')
+    self.assertEqual( [ 'many_files-1.0.0' ], pm.list_all(include_version = True) )
+    expected = [
+      'db/packages.db',
+      'env/bar.sh',
+      'env/foo.sh',
+      'env/framework/bin/bes_path.py',
+      'env/framework/env/bes_framework.sh',
+      'env/framework/env/bes_path.sh',
+      'env/framework/env/bes_testing.sh',
+      'stuff/bin/apple.sh',
+      'stuff/bin/orange.sh',
+    ]
+    self.assertEqual( expected, file_find.find(pm.root_dir, relative = True) )
+    
+  def _make_test_amt(self, recipes, publish):
+    amt = AMT(recipes = recipes)
+    publish = object_util.listify(publish)
+    check.check_string_seq(publish)
+    for p in publish:
+      amt.publish(p)
+    return amt
+
+  def _install_package(self, pm, desc, bt):
+    if check.is_string(desc):
+      desc = PD.parse(desc)
+    check.check_package_descriptor(desc)
+    if check.is_string(bt):
+      bt = BT.parse_path(bt)
+    check.check_build_target(bt)
+    pm.install_package(desc, bt, [ 'RUN' ])
+    
   ONE_ENV_FILE_RECIPE = '''
 fake_package one_env_file 1.0.0 0 0 linux release x86_64 ubuntu 18
   env_files
