@@ -911,3 +911,5 @@ and only then forks rebuilder.py.  might be tough
 - addd MANPATH to bes_PATH_ kind of bash funcs also PERL5LIB
 - retire shell_env craps all over
 - paclage_manager ops like package_env_files() dont check that the packages being requests indeed exists.  need an exception
+- requirement_manager could use a cache
+- extracting the android ndk seems ridiculously slow

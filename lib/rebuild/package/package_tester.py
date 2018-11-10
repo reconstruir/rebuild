@@ -144,7 +144,7 @@ class package_tester(object):
     pm.install_tarball(config.package_tarball, ['RUN', 'TEST'])
     timer.stop()
 
-    tool_reqs = pd.requirements.filter_by_hardness(['TOOL'])
+    tool_reqs = pd.requirements.filter_by(['TOOL'], config.script.env.config.host_build_target.system)
     tool_reqs_names = tool_reqs.names()
     timer.start('resolve tools deps')
     resolved_tool_reqs = config.artifact_manager.resolve_deps(tool_reqs_names,

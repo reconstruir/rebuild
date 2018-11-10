@@ -61,7 +61,7 @@ class requirement_manager(object):
   def dependency_map(self, hardness, system):
     dep_map = {}
     for descriptor in self._descriptor_map.values():
-      dep_map[descriptor.name] = set(descriptor.requirements.filter_by_hardness(hardness).filter_by_system(system).names())
+      dep_map[descriptor.name] = set(descriptor.requirements.filter_by(hardness, system).names())
     return dep_map
 
   @classmethod
@@ -81,12 +81,15 @@ class requirement_manager(object):
       desc = self._descriptor_map.get(name, None)
       if not desc:
         raise KeyError('Not found in packages: %s' % (name))
-      reqs.extend(desc.requirements.filter_by_hardness(hardness).filter_by_system(system))
+      reqs.extend(desc.requirements.filter_by(hardness, system))
+    self.log_i('resolve_deps() reqs=%s' % (str(reqs.names())))
     dep_map = self.dependency_map(hardness, system)
     result = package_descriptor_list(dependency_resolver.resolve_and_order_deps(reqs.names(), self._descriptor_map, dep_map))
+    self.log_i('resolve_deps() 1 result=%s' % (str(result.names())))
     if include_names:
       result += self.descriptors(names)
     result.remove_dups()
+    self.log_i('resolve_deps() 2 result=%s' % (str(result.names())))
     return result
 
 check.register_class(requirement_manager, include_seq = False)

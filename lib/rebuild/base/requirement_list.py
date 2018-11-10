@@ -59,6 +59,10 @@ class requirement_list(type_checked_list):
     'Return only the requirements that match system.'
     return requirement_list([ req for req in self if req.system_mask_matches(system) ])
 
+  def filter_by(self, hardness, system):
+    'Return only the requirements that match system.'
+    return requirement_list([ req for req in self if req.hardness_matches(hardness) and req.system_mask_matches(system) ])
+
   def names(self):
     'Return only the requirements that match system.'
     return [ req.name for req in self ]
