@@ -67,18 +67,16 @@ class package(object):
   def files(self):
     return self.metadata.files.files.filenames()
 
-  def extract_files(self, installation_dir):
+  def extract(self, installation_dir, env_dir):
     archiver.extract(self.tarball, installation_dir,
                      strip_head = self.FILES_DIR,
                      include = self.FILES_DIR + '/*')
     self._post_install_hooks(installation_dir)
-
-  def extract_env_files(self, env_dir, installation_dir):
     archiver.extract(self.tarball, env_dir,
                      strip_head = self.ENV_DIR,
                      include = self.ENV_DIR + '/*')
     self._variable_substitution_hook(env_dir, installation_dir)
-    
+
   def _update_python_config_files(self, installation_dir):
     python_lib_dir = path.join(installation_dir, 'lib/python')
     setup_tools.update_egg_directory(python_lib_dir)
