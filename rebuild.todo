@@ -833,7 +833,7 @@ rebuild.package.package_manager.PackageFilesConflictError: conflicts found betwe
 - transform_env name is confusing
 
 2018-07-01
-- audit all requirements in third_party and properly deal with with all the hardneseses
+- check all instances of TOOL dependencies and make sure they are not actually BUILD
 
 2018-07-12
 - build target should automatically be the host fix that shit.
@@ -894,7 +894,6 @@ and only then forks rebuilder.py.  might be tough
 - fake_package_recipe.py rename metadata to adesc
 
 2018-11-3
-- check all instances of TOOL dependencies and make sure they are not actually BUILD
 - consider implementing download_only by removing steps instead of by hacking steps to not do stuff
 - remove the logic to save checksums out of builder_script
 - rebuilder without local soources with --no-net stil ltries to download when wifi is truly down
