@@ -408,7 +408,7 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
 
   def test_installed_files(self):
     recipe = '''
-fake_package many_files 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18
   files
     bin/apple.sh
       \#!/bin/bash
@@ -426,11 +426,10 @@ fake_package many_files 1.0.0 0 0 linux release x86_64 ubuntu 18
       export BAR=bar
       \#@REBUILD_TAIL@
   '''
-
-    amt = self._make_test_amt(recipe, 'many_files;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    amt = self._make_test_amt(recipe, 'files;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
     pm = self._make_caca_test_pm(amt.am)
-    self._install_package(pm, 'many_files-1.0.0', 'linux-ubuntu-18/x86_64/release')
-    self.assertEqual( [ 'many_files-1.0.0' ], pm.list_all(include_version = True) )
+    self._install_package(pm, 'files-1.0.0', 'linux-ubuntu-18/x86_64/release')
+    self.assertEqual( [ 'files-1.0.0' ], pm.list_all(include_version = True) )
     expected = [
       'db/packages.db',
       'env/bar.sh',
@@ -441,6 +440,60 @@ fake_package many_files 1.0.0 0 0 linux release x86_64 ubuntu 18
       'env/framework/env/bes_testing.sh',
       'stuff/bin/apple.sh',
       'stuff/bin/orange.sh',
+    ]
+    self.assertEqual( expected, file_find.find(pm.root_dir, relative = True) )
+
+  def test_installed_files_only_files(self):
+    recipe = '''
+fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18
+  files
+    bin/apple.sh
+      \#!/bin/bash
+      echo apple ; exit 0
+    bin/orange.sh
+      \#!/bin/bash
+      echo orange ; exit 0
+  '''
+    amt = self._make_test_amt(recipe, 'files;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    pm = self._make_caca_test_pm(amt.am)
+    self._install_package(pm, 'files-1.0.0', 'linux-ubuntu-18/x86_64/release')
+    self.assertEqual( [ 'files-1.0.0' ], pm.list_all(include_version = True) )
+    expected = [
+      'db/packages.db',
+      'env/framework/bin/bes_path.py',
+      'env/framework/env/bes_framework.sh',
+      'env/framework/env/bes_path.sh',
+      'env/framework/env/bes_testing.sh',
+      'stuff/bin/apple.sh',
+      'stuff/bin/orange.sh',
+    ]
+    self.assertEqual( expected, file_find.find(pm.root_dir, relative = True) )
+
+  def test_installed_files_only_env_files(self):
+    recipe = '''
+fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18
+  env_files
+    foo.sh
+      \#@REBUILD_HEAD@
+      export FOO=foo
+      \#@REBUILD_TAIL@
+    bar.sh
+      \#@REBUILD_HEAD@
+      export BAR=bar
+      \#@REBUILD_TAIL@
+  '''
+    amt = self._make_test_amt(recipe, 'files;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    pm = self._make_caca_test_pm(amt.am)
+    self._install_package(pm, 'files-1.0.0', 'linux-ubuntu-18/x86_64/release')
+    self.assertEqual( [ 'files-1.0.0' ], pm.list_all(include_version = True) )
+    expected = [
+      'db/packages.db',
+      'env/bar.sh',
+      'env/foo.sh',
+      'env/framework/bin/bes_path.py',
+      'env/framework/env/bes_framework.sh',
+      'env/framework/env/bes_path.sh',
+      'env/framework/env/bes_testing.sh',
     ]
     self.assertEqual( expected, file_find.find(pm.root_dir, relative = True) )
     

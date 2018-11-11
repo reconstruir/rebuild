@@ -163,7 +163,7 @@ class package_manager(object):
       raise PackageFilesConflictError('conflicts found between \"%s\" and \"%s\": %s' % (pkg.package_descriptor.name,
                                                                                          conflict_packages_str,
                                                                                          conflicts_str))
-    pkg.extract(self._installation_dir, self._env_dir)
+    pkg.extract(self._root_dir, 'stuff', 'env')
     self.ensure_shell_framework()
     entry = package_db_entry(pkg.metadata.name,
                              pkg.metadata.version,

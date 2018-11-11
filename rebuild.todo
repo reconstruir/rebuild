@@ -122,15 +122,9 @@ feb 8
 - rename libexpat to expat plus any build.py that sets pkg_config_name and is fishy
 - rename libopenjpeg to libopenjp2 ???
 
-feb 9
-- rename unpacked_dir to build_dir or something and then add unpacked_dir that is what 
-
 feb 10
 - unify step_cleanup_binary_filenames.py and step_cleanup_library_filenames.py since
 they are essentially the same thing
-- change the fact zlib is needed for unit tests
-- disctinction between Context and BuildScriptEnv is not obvious
-- cut n paste zlib contents between test_Package and test_PackageManager
 
 feb 11
 - maybe figger out if scons needs setuptools
@@ -420,7 +414,7 @@ jul 23
 
 jul 24
 - the code that loads steps automatically should use ast and do the subclasses of Step instead of a string wildcard
-- fix the code in steps to download and unpack tarballs to do the work in execute not parse args.  also split out the find tarball step into its own step class
+
 
 jul 25
 - bes_refactor rename of files does not git add new files
@@ -745,7 +739,6 @@ april 9
 
 april 10
 - extra deps like stuff in shell scripts
-- unpack crazy slow use tar
 
 april 11
 - test of package upgrade because checksums changed missing
@@ -912,4 +905,6 @@ and only then forks rebuilder.py.  might be tough
 - retire shell_env craps all over
 - paclage_manager ops like package_env_files() dont check that the packages being requests indeed exists.  need an exception
 - requirement_manager could use a cache
-- extracting the android ndk seems ridiculously slow
+s/installation_dir/stuff_dir
+- package manager extract tests
+- cleanup test pm creation funcs in test_package_manager

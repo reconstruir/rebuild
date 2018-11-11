@@ -67,16 +67,26 @@ class package(object):
   def files(self):
     return self.metadata.files.files.filenames()
 
-  def extract(self, installation_dir, env_dir):
-    archiver.extract(self.tarball, installation_dir,
-                     strip_head = self.FILES_DIR,
-                     include = self.FILES_DIR + '/*')
-    self._post_install_hooks(installation_dir)
-    archiver.extract(self.tarball, env_dir,
-                     strip_head = self.ENV_DIR,
-                     include = self.ENV_DIR + '/*')
-    self._variable_substitution_hook(env_dir, installation_dir)
-
+  def extract(self, root_dir, stuff_dir_basename, env_dir_basename):
+    tmp_dir = temp_file.make_temp_dir(prefix = 'package.extract.', suffix = '.dir', dir = root_dir)
+    dst_stuff_dir = path.join(root_dir, stuff_dir_basename)
+    dst_env_dir = path.join(root_dir, env_dir_basename)
+    file_util.mkdir(dst_stuff_dir)
+    file_util.mkdir(dst_env_dir)
+    # tar cmd is 10x faster than archiver.  need to fix archiver
+    tar_cmd = [ 'tar', 'xf', self.tarball, '-C', tmp_dir ]
+    execute.execute(tar_cmd)
+    #archiver.extract_all(self.tarball, tmp_dir)
+    src_stuff_dir = path.join(tmp_dir, self.FILES_DIR)
+    src_env_dir = path.join(tmp_dir, self.ENV_DIR)
+    if path.isdir(src_stuff_dir):
+      dir_util.move_files(src_stuff_dir, dst_stuff_dir)
+    self._post_install_hooks(dst_stuff_dir)
+    if path.isdir(src_env_dir):
+      dir_util.move_files(src_env_dir, dst_env_dir)
+    self._variable_substitution_hook(dst_env_dir, dst_stuff_dir)
+    file_util.remove(tmp_dir)
+      
   def _update_python_config_files(self, installation_dir):
     python_lib_dir = path.join(installation_dir, 'lib/python')
     setup_tools.update_egg_directory(python_lib_dir)
