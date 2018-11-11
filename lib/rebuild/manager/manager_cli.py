@@ -144,15 +144,17 @@ class manager_cli(build_target_cli):
     self.config_parser = commands_subparser.add_parser('config', help = 'Config')
     self.config_subparsers = self.config_parser.add_subparsers(help = 'config_commands', dest = 'subcommand')
 
-    self.config_subparsers.add_parser('packages', help = 'Print config packages')
-
-    # config.packages
-    packages_parser = self.config_subparsers.add_parser('packages', help = 'Packages config')
+    # config:packages
+    packages_parser = self.config_subparsers.add_parser('packages', help = 'Print information about config packages.')
     self._packages_add_common_args(packages_parser)
     packages_parser.add_argument('project_name',
                                  action = 'store',
                                  default = None,
                                  help = 'Name of project [ None ]')
+
+    # config:projects
+    projects_parser = self.config_subparsers.add_parser('projects', help = 'Print information about config projects.')
+    self._packages_add_common_args(projects_parser)
 
     # test
     self.test_parser = commands_subparser.add_parser('test', help = 'Test')
@@ -246,6 +248,8 @@ class manager_cli(build_target_cli):
                                           args.build_target)
     elif command in [ 'config:packages' ]:
       return self._command_config_packages(args.root_dir, args.project_name, args.build_target)
+    elif command in [ 'config:projects' ]:
+      return self._command_config_projects(args.root_dir, args.build_target)
     elif command == 'package:files':
       return self._command_package_files(args.package)
     elif command == 'package:info':
@@ -306,6 +310,13 @@ class manager_cli(build_target_cli):
       return 1
     for p in sorted(packages):
       print(p)
+    return 0
+  
+  def _command_config_projects(self, root_dir, bt):
+    rm = manager(self.artifact_manager, bt, root_dir)
+    config = rm.config(bt)
+    for project in sorted(config.keys()):
+      print(project)
     return 0
   
   UPDATE_SCRIPT_TEMPLATE = '''#!/bin/bash
