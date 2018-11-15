@@ -81,6 +81,7 @@ class rebuilder_tester(object):
 
   @classmethod
   def _load_checksums(clazz, config, checksums_dir, tmp_dir, checksums):
+    print('CACA: checksums_dir=%s' % (checksums_dir))
     checksums_contents = {}
     for checksum in checksums:
       checksum_path = path.join(checksums_dir, checksum)
@@ -103,8 +104,9 @@ class rebuilder_tester(object):
         '-'.join(sorted(config.build_target.arch)): '$ARCH',
       }
       new_filename = string_util.replace(checksum.filename, replacements)
-      if new_filename.startswith('/home') or new_filename.startswith('/Users'):
-        continue
+      i = new_filename.rfind('$BUILD_PATH')
+      if i > 0:
+        new_filename = new_filename[i:]
       fc = file_checksum(new_filename, checksum.checksum)
       result.append(fc)
     return result
