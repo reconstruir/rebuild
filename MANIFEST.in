@@ -1,8 +1,5 @@
 include bin/rebuild_ar_replacement.py
-include lib/rebuild/package/shell_env_framework/bin/bes_path.py
 include lib/rebuild/package/shell_env_framework/env/bes_framework.sh
-include lib/rebuild/package/shell_env_framework/env/bes_path.sh
-include lib/rebuild/package/shell_env_framework/env/bes_testing.sh
 include lib/rebuild/pkg_config/pkg_config_binaries/linux/armv7/pkg-config-0.29.1
 include lib/rebuild/pkg_config/pkg_config_binaries/linux/x86_64/pkg-config-0.29.1
 include lib/rebuild/pkg_config/pkg_config_binaries/macos/x86_64/pkg-config-0.29.1

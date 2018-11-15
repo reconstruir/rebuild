@@ -9,10 +9,7 @@ class env_framework(object):
   _PACKAGE_PATH = 'shell_env_framework'
   
   _FILES = [
-    'bin/bes_path.py',
     'env/bes_framework.sh',
-    'env/bes_path.sh',
-    'env/bes_testing.sh',
   ]
   
   def __init__(self):
@@ -23,5 +20,8 @@ class env_framework(object):
       src_path = path.join(self._PACKAGE_PATH, f)
       dst_path = path.join(where, f)
       content = package.get_data_content(src_path, __file__, __name__)
+      if not content:
+        raise RuntimeError('Failed to get package data: %s' % (src_path))
       file_util.save(dst_path, content = content, mode = 0o755)
-      #assert not file_util.is_empty(dst_path)
+      if file_util.read(dst_path) != content:
+        raise RuntimeError('Failed to save %s.' % (dst_path))

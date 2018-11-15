@@ -314,10 +314,10 @@ class package_manager(object):
   
   def transform_env(self, env, package_names):
     check.check_string_seq(package_names)
-    env = env or { 'PATH': os_env.default_system_value('PATH') }
+    env = env or { 'PATH': os_env.DEFAULT_SYSTEM_PATH }
     if not 'PATH' in env:
       env = copy.deepcopy(env)
-      env['PATH'] = os_env.default_system_value('PATH')
+      env['PATH'] = os_env.DEFAULT_SYSTEM_PATH
     result = copy.deepcopy(env)
     os_env.update(result, self._shell_env, prepend = False)
     files = self.package_env_files(package_names)
@@ -327,8 +327,9 @@ class package_manager(object):
       return result
     ed = env_dir(self._env_dir, files = files)
     result = ed.transform_env(result)
-    if '_BES_DEV_ROOT' in result:
-      del result['_BES_DEV_ROOT']
+    for key, value in result.items():
+      if key.startswith('_BES'):
+        del result[key]
     return result
   
   def load_tarball(self, filename, build_target):
