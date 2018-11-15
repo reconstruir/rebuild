@@ -33,4 +33,5 @@ class step_setup_install_tool_requirements(step):
         tenv = env.tools_manager.transform_env(tenv, t)
       for key, value in tenv.items():
         os.environ[key] = value
-      return step_result(True, None)
+        
+    return step_result(True, None)

@@ -12,10 +12,10 @@ class step_result(namedtuple('step_result', 'success, message, failed_step, outp
     if message:
       check.check_string(message)
     if outputs:
-      check.check_dict(outputs)
       outputs = copy.copy(outputs)
     else:
       outputs = {}
+    check.check_dict(outputs)
     return clazz.__bases__[0].__new__(clazz, success, message, failed_step, outputs)
 
   def __str__(self):

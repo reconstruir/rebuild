@@ -59,6 +59,8 @@ class step_manager(object):
     for step in self._steps:
       script.timer.start('step %s' % (step.__class__.__name__))
       result = step.execute(script, env, step.values, outputs)
+      if not result:
+        raise RuntimeError('step failed to return a valid result: %s' % (str(step)))
       script.timer.stop()
       outputs.update(result.outputs or {})
       if result.outputs.get('_skip_rest', False):
