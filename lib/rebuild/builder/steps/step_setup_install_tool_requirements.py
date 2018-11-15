@@ -2,6 +2,7 @@
 
 import copy, os, os.path as path
 
+from bes.system import os_env
 from rebuild.step import step, step_result
 from rebuild.base import build_blurb
 
@@ -25,5 +26,11 @@ class step_setup_install_tool_requirements(step):
       return step_result(True, message)
 
     env.tools_manager.ensure_tools(tools)
-    
-    return step_result(True, None)
+
+    if False:
+      tenv = os_env.clone_current_env()
+      for t in tools:
+        tenv = env.tools_manager.transform_env(tenv, t)
+      for key, value in tenv.items():
+        os.environ[key] = value
+      return step_result(True, None)
