@@ -2,16 +2,16 @@
 
 if [ -n "$_BES_TRACE" ]; then echo "bes_framework.sh begin"; fi
 
-export _BES_BASIC_PATH=$(env -i bash -c "echo ${PATH}")
+_BES_BASIC_PATH=$(env -i bash -c "echo ${PATH}")
 
-export _BES_AWK=$(PATH=$_BES_BASIC_PATH which awk)
-export _BES_CUT=$(PATH=$_BES_BASIC_PATH which cut)
-export _BES_SED=$(PATH=$_BES_BASIC_PATH which sed)
-export _BES_REV=$(PATH=$_BES_BASIC_PATH which rev)
-export _BES_TR=$(PATH=$_BES_BASIC_PATH which tr)
+_BES_AWK=$(PATH=$_BES_BASIC_PATH which awk)
+_BES_CUT=$(PATH=$_BES_BASIC_PATH which cut)
+_BES_SED=$(PATH=$_BES_BASIC_PATH which sed)
+_BES_REV=$(PATH=$_BES_BASIC_PATH which rev)
+_BES_TR=$(PATH=$_BES_BASIC_PATH which tr)
 
-export _BES_UNAME=$(PATH=$_BES_BASIC_PATH which uname)
-export _BES_SYSTEM=$($_BES_UNAME | $_BES_TR '[:upper:]' '[:lower:]' | $_BES_SED 's/darwin/macos/')
+_BES_UNAME=$(PATH=$_BES_BASIC_PATH which uname)
+_BES_SYSTEM=$($_BES_UNAME | $_BES_TR '[:upper:]' '[:lower:]' | $_BES_SED 's/darwin/macos/')
 
 # remove duplicates from a path
 # from: https://unix.stackexchange.com/questions/14895/duplicate-entries-in-path-a-problem
