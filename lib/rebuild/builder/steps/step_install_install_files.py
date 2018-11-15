@@ -33,7 +33,7 @@ class step_install_install_files(step):
     for install_file in install_files:
       src = variable.substitute(install_file.filename, script.substitutions)
       if not path.isfile(src):
-        return step_result(False, 'File not found: %s' % (src))
+        return step_result(False, 'File not found at %s: %s' % (str(install_file.origin), path.relpath(src)))
       dst = path.join(script.staged_files_dir, install_file.dst_filename)
       dst_dir = path.dirname(dst)
       mode = file_util.mode(src)
