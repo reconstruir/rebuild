@@ -11,6 +11,11 @@ class step_setup_prepare_environment(step):
     super(step_setup_prepare_environment, self).__init__()
 
   #@abstractmethod
+  @classmethod
+  def define_args(clazz):
+    return ''
+    
+  #@abstractmethod
   def execute(self, script, env, values, inputs):
     # We want a clean environment for tools to work
     os_env.path_reset()
