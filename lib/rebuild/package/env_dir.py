@@ -19,6 +19,9 @@ instruction = namedtuple('instruction', 'key,value,action')
   
 class env_dir(object):
 
+  DEBUG = False
+  #DEBUG = True
+  
   def __init__(self, where, files = None):
     self._where = path.abspath(where)
     self._files = self._determine_files(self._where, files)
@@ -72,12 +75,15 @@ class env_dir(object):
     buf.write('echo "----3----"\n')
     buf.write('declare -px\n')
     buf.write('echo "----4----"\n')
-    script = temp_file.make_temp_file(content = buf.getvalue())
+    script = temp_file.make_temp_file(content = buf.getvalue(), delete = not self.DEBUG)
+    if self.DEBUG:
+      print('env_dir: script=%s' % (script))
     os.chmod(script, 0o755)
     try:
       rv = execute.execute(script, raise_error = True, shell = True, env = env)
     finally:
-      file_util.remove(script)
+      if not self.DEBUG:
+        file_util.remove(script)
     parser = text_line_parser(rv.stdout)
     if rv.stderr:
       raise RuntimeError(rv.stderr)
