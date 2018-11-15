@@ -103,7 +103,10 @@ class rebuilder_tester(object):
         '-'.join(sorted(config.build_target.arch)): '$ARCH',
       }
       new_filename = string_util.replace(checksum.filename, replacements)
-      result.append(file_checksum(new_filename, checksum.checksum))
+      if new_filename.startswith('/home') or new_filename.startswith('/Users'):
+        continue
+      fc = file_checksum(new_filename, checksum.checksum)
+      result.append(fc)
     return result
   
   @classmethod
@@ -128,7 +131,8 @@ class rebuilder_tester(object):
   def run_script(self, args, cwd = None, env = None):
     rv = self.run_script_raw(args, cwd = cwd, env = env)
     if isinstance(rv.stdout, bytes):
-      stdout = codecs.decode(rv.stdout, 'utf-8')
+#      stdout = codecs.decode(rv.stdout, 'utf-8')
+      stdout = rv.stdout
     else:
       stdout = rv.stdout
     if rv.exit_code != 0:
