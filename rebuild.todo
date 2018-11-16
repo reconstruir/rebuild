@@ -910,3 +910,5 @@ s/installation_dir/stuff_dir
 - cleanup test pm creation funcs in test_package_manager
 - keep the env clean only transform stuff that exists like dont do PKG_CONFIG_PATH unelss theres pc files
 - need to figure out way top speed up parsing of recipe files maybe a cache
+- rebuilder.py --scratch is messed up it causes ioerrors because of the db
+  in addition ... --scratch zlib' causes  KeyError: 'Not found in packages: gnu_m4'

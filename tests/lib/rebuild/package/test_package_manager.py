@@ -343,8 +343,8 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
 
   def test_transform_env_append(self):
     code = '''
-      bes_PATH_append /zzzz/bin
-      bes_PYTHONPATH_append /zzzz/lib/python
+      bes_env_path_append PATH /zzzz/bin
+      bes_env_path_append PYTHONPATH /zzzz/lib/python
       bes_LD_LIBRARY_PATH_append /zzzz/lib
 '''
     pm = self._make_one_env_file_pm(code)
@@ -364,8 +364,8 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
 
   def test_transform_env_prepend(self):
     code = '''
-      bes_PATH_prepend /zzzz/bin
-      bes_PYTHONPATH_prepend /zzzz/lib/python
+      bes_env_path_prepend PATH /zzzz/bin
+      bes_env_path_prepend PYTHONPATH /zzzz/lib/python
       bes_LD_LIBRARY_PATH_prepend /zzzz/lib
 '''
     pm = self._make_one_env_file_pm(code)
@@ -539,8 +539,8 @@ fake_package two_env_files 1.0.0 0 0 linux release x86_64 ubuntu 18
   env_files
     cabbage_env.sh
       \#@REBUILD_HEAD@
-      bes_PATH_append ${REBUILD_STUFF_DIR}/bin
-      #bes_PYTHONPATH_append ${REBUILD_STUFF_DIR}/lib/python
+      bes_env_path_append PATH ${REBUILD_STUFF_DIR}/bin
+      #bes_env_path_append PYTHONPATH ${REBUILD_STUFF_DIR}/lib/python
       #bes_LD_LIBRARY_PATH_append ${REBUILD_STUFF_DIR}/lib
       \#@REBUILD_TAIL@
 

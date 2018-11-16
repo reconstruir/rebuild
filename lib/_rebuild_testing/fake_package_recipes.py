@@ -154,8 +154,8 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
   env_files
     knife_env.sh
       \#@REBUILD_HEAD@
-      bes_PATH_append ${REBUILD_STUFF_DIR}/bin
-      bes_PYTHONPATH_append ${REBUILD_STUFF_DIR}/lib/python
+      bes_env_path_append PATH ${REBUILD_STUFF_DIR}/bin
+      bes_env_path_append PYTHONPATH ${REBUILD_STUFF_DIR}/lib/python
       bes_LD_LIBRARY_PATH_append ${REBUILD_STUFF_DIR}/lib
       \#@REBUILD_TAIL@
 '''

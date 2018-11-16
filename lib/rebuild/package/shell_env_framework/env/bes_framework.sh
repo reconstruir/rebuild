@@ -116,12 +116,12 @@ function bes_path_print()
   fi
   local pa=(`set -f; IFS=:; printf "%s\n" $PATH`)
   for item in ${pa[@]}; do
-    echo "${item}"
+    echo "${item/$HOME/\~}"
   done
   return 0
 }
 
-function bes_env_path_cleanup()
+function bes_env_path_sanitize()
 {
   local _var_name="$1"
   local _value=$(bes_var_get $_var_name)
@@ -259,64 +259,9 @@ function bes_var_set()
   eval "$1=\"\$2\""
 }
 
-function bes_PATH_cleanup()
-{
-  bes_env_path_cleanup PATH
-}
-
-function bes_PATH_prepend()
-{
-  bes_env_path_prepend PATH "$@"
-}
-
-function bes_PATH_append()
-{
-  bes_env_path_append PATH "$@"
-}
-
-function bes_PATH_remove()
-{
-  bes_env_path_remove PATH "$@"
-}
-
-function bes_PATH_append_cwd()
-{
-  bes_PATH_append $(pwd)
-}
-
-function bes_PATH_prepend_cwd()
-{
-  bes_PATH_prepend $(pwd)
-}
-
 function bes_PATH()
 {
   bes_path_print "$PATH"
-}
-
-function bes_PYTHONPATH_prepend()
-{
-  bes_env_path_prepend PYTHONPATH "$@"
-}
-
-function bes_PYTHONPATH_append()
-{
-  bes_env_path_append PYTHONPATH "$@"
-}
-
-function bes_PYTHONPATH_remove()
-{
-  bes_env_path_remove PYTHONPATH "$@"
-}
-
-function bes_PYTHONPATH_append_cwd()
-{
-  bes_PYTHONPATH_append $(pwd)
-}
-
-function bes_PYTHONPATH_prepend_cwd()
-{
-  bes_PYTHONPATH_prepend $(pwd)
 }
 
 function bes_PYTHONPATH()
@@ -355,16 +300,6 @@ function bes_LD_LIBRARY_PATH_remove()
   bes_env_path_remove $(LD_LIBRARY_PATH_var_name) "$@"
 }
 
-function bes_LD_LIBRARY_PATH_append_cwd()
-{
-  bes_LD_LIBRARY_PATH_append $(pwd)
-}
-
-function bes_LD_LIBRARY_PATH_prepend_cwd()
-{
-  bes_LD_LIBRARY_PATH_prepend $(pwd)
-}
-
 function bes_LD_LIBRARY_PATH_clear()
 {
   bes_env_path_clear $(LD_LIBRARY_PATH_var_name)
@@ -373,36 +308,6 @@ function bes_LD_LIBRARY_PATH_clear()
 function bes_LD_LIBRARY_PATH()
 {
   bes_path_print $(bes_var_get $(LD_LIBRARY_PATH_var_name))
-}
-
-function bes_MANPATH_prepend()
-{
-  bes_env_path_prepend MANPATH "$@"
-}
-
-function bes_MANPATH_append()
-{
-  bes_env_path_append MANPATH "$@"
-}
-
-function bes_MANPATH_remove()
-{
-  bes_env_path_remove MANPATH "$@"
-}
-
-function bes_MANPATH_append_cwd()
-{
-  bes_MANPATH_append $(pwd)
-}
-
-function bes_MANPATH_prepend_cwd()
-{
-  bes_MANPATH_prepend $(pwd)
-}
-
-function bes_MANPATH()
-{
-  bes_path_print $MANPATH
 }
 
 function bes_tab_title()

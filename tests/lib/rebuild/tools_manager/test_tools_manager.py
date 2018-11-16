@@ -202,8 +202,8 @@ fake_package steel 1.0.0 0 0 linux release x86_64 ubuntu 18
     steel_env.sh
       \#@REBUILD_HEAD@
       export STEEL_ENV1=steel_env1
-      bes_PATH_append ${REBUILD_STUFF_DIR}/bin
-      bes_PYTHONPATH_append ${REBUILD_STUFF_DIR}/lib/python
+      bes_env_path_append PATH ${REBUILD_STUFF_DIR}/bin
+      bes_env_path_append PYTHONPATH ${REBUILD_STUFF_DIR}/lib/python
       \#@REBUILD_TAIL@
 
   requirements
