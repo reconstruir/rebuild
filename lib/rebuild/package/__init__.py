@@ -6,8 +6,6 @@ from .artifact_descriptor import artifact_descriptor
 from .artifact_descriptor_list import artifact_descriptor_list
 from .artifact_manager_chain import artifact_manager_chain
 from .artifact_manager_local import artifact_manager_local
-from .env_dir import env_dir
-from .env_framework import env_framework
 from .package import package
 from .package_cli import package_cli
 from .package_files import package_files

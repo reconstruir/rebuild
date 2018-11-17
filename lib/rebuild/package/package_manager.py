@@ -10,6 +10,7 @@ from bes.common import check, object_util, string_util, variable
 from bes.dependency import dependency_resolver
 from bes.fs import file_path, file_util
 from bes.system import os_env
+from bes.env import env_dir, shell_framework
 
 from rebuild.base import build_system, requirement
 from rebuild.base import package_descriptor, package_descriptor_list
@@ -19,9 +20,7 @@ from rebuild.pkg_config import pkg_config
 from .package import package
 from .package_db import package_db
 from .package_db_entry import package_db_entry
-from .env_dir import env_dir
 from .db_error import *
-from .env_framework import env_framework
 
 class PackageFilesConflictError(Exception):
   def __init__(self, message):
@@ -176,7 +175,7 @@ class package_manager(object):
     self.db.add_package(entry)
 
   def ensure_shell_framework(self):
-    ef = env_framework()
+    ef = shell_framework()
     ef.extract(self._shell_framework_dir)
     
   def uninstall_package(self, pkg_name):
