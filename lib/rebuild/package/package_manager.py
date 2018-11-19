@@ -330,6 +330,12 @@ class package_manager(object):
       if key.startswith('_BES'):
         del result[key]
     return result
+
+  def expose_env(self, package_names):
+    old_env = os_env.clone_current_env()
+    new_env = self.transform_env(old_env, package_names)
+    for key, value in new_env.items():
+      os.environ[key] = value
   
   def load_tarball(self, filename, build_target):
     'load a tarball and resturn a package object with requirements resolved according to packages currently installed.'
