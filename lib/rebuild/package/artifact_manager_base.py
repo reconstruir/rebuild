@@ -6,7 +6,7 @@ from abc import abstractmethod, ABCMeta
 from bes.system.compat import with_metaclass
 from bes.common import check
 from bes.system import log
-from bes.debug import debug_timer, noop_debug_timer
+from bes.debug import debug_timer
 
 from rebuild.base import build_blurb, requirement_manager
 
@@ -20,8 +20,7 @@ class artifact_manager_base(with_metaclass(ABCMeta, object)):
     build_blurb.add_blurb(self, 'artifact_manager')
     self._reset_requirement_managers()
     self._read_only = False
-    #self._timer = debug_timer('am', 'error')
-    self._timer = noop_debug_timer('am', 'error')
+    self._timer = debug_timer('am', 'error', disabled = True)
     
   @property
   def read_only(self):

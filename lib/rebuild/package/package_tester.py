@@ -10,7 +10,7 @@ from bes.dependency import dependency_resolver
 from bes.common import algorithm, variable
 from bes.system import execute, os_env
 from bes.fs import file_replace
-from bes.debug import debug_timer, noop_debug_timer
+from bes.debug import debug_timer
 
 from .package import package
 from .package_manager import package_manager
@@ -117,8 +117,7 @@ class package_tester(object):
 
   @classmethod
   def _make_test_context(clazz, config, test_source):
-    #timer = debug_timer('am', 'error')
-    timer = noop_debug_timer('am', 'error')
+    timer = debug_timer('am', 'error', disabled = True)
     timer.start('_make_test_context()')
     test_name = path.splitext(path.basename(test_source))[0]
     test_root_dir = path.join(config.script.test_dir, test_name)

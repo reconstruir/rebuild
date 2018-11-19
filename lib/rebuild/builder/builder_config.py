@@ -5,7 +5,7 @@ import os.path as path
 from collections import namedtuple
 from rebuild.base import build_arch, build_level, build_system, build_target
 from bes.common import time_util
-from bes.debug import debug_timer, noop_debug_timer
+from bes.debug import debug_timer
 from bes.system import log
 
 class builder_config(object):
@@ -37,7 +37,7 @@ class builder_config(object):
     self.verbose = False
     self.wipe = False
     self._performance = False
-    self.timer = noop_debug_timer('perf', 'debug') 
+    self.timer = debug_timer('perf', 'debug', disabled = True) 
     self._performance = False
     self._trash_dir = None
     self.artifacts_dir = None
@@ -65,10 +65,10 @@ class builder_config(object):
       return
     self._performance = value
     if self._performance:
-      self.timer = debug_timer('perf', 'info')
+      self.timer = debug_timer('perf', 'info', disabled = False)
       log.configure('perf=info format=brief')
     else:
-      self.timer = noop_debug_timer('perf', 'debug') 
+      self.timer = debug_timer('perf', 'debug', disabled = True) 
   
   def _build_root_changed(self):
     self._trash_dir = path.join(self._build_root, '.trash')
