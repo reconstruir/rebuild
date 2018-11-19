@@ -26,12 +26,6 @@ class step_setup_install_tool_requirements(step):
       return step_result(True, message)
 
     env.tools_manager.ensure_tools(tools)
-
-    if False:
-      tenv = os_env.clone_current_env()
-      for t in tools:
-        tenv = env.tools_manager.transform_env(tenv, t)
-      for key, value in tenv.items():
-        os.environ[key] = value
+    env.tools_manager.expose_env(tools)
         
     return step_result(True, None)
