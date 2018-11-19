@@ -1,11 +1,11 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import copy, os.path as path
+import copy, os.path as path, os
 from bes.common import check, object_util, string_util
 from bes.system import execute, os_env
 from rebuild.base import build_target, build_level, package_descriptor_list
 from rebuild.manager import manager
-from bes.debug import debug_timer, noop_debug_timer
+from bes.debug import debug_timer
 
 class tools_manager(object):
 
@@ -16,8 +16,7 @@ class tools_manager(object):
     self._build_target = build_target
     self._root_dir = root_dir
     self._artifact_manager = artifact_manager
-    #self._timer = debug_timer('tm', level = 'error')
-    self._timer = noop_debug_timer('am', 'error')
+    self._timer = debug_timer('am', 'error', disabled = True)
     self._manager = manager(self._artifact_manager, self._build_target, root_dir = self._root_dir)
     
   @property
@@ -65,7 +64,13 @@ class tools_manager(object):
       project_name = self._make_package_name(tool)
       transformed_env = self._manager.transform_env(transformed_env, project_name, self._build_target)
     return transformed_env
-    
+
+  def expose_env(self, pkg_descs):
+    old_env = os_env.clone_current_env()
+    new_env = self.transform_env(old_env, pkg_descs)
+    for key, value in new_env.items():
+      os.environ[key] = value
+  
   def _package_root_dir(self, pkg_desc):
     return path.join(self._root_dir, self._make_package_name(pkg_desc))
   
