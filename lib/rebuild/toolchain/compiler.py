@@ -35,6 +35,7 @@ class compiler(object):
       variables['SRC'] = src
       variables['OBJ'] = obj
       cmd = variable.substitute(cmd, variables)
+      print(cmd)
       self._execute_cmd(cmd)
     return targets
 

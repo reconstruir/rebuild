@@ -912,3 +912,28 @@ s/installation_dir/stuff_dir
 - need to figure out way top speed up parsing of recipe files maybe a cache
 - rebuilder.py --scratch is messed up it causes ioerrors because of the db
   in addition ... --scratch zlib' causes  KeyError: 'Not found in packages: gnu_m4'
+
+in requirements:
+  android: TOOL android_ndk r15c
+vs
+  android: TOOL android_ndk == r15c
+does not cause a syntax error
+checksums should only be the recipe for a specific package not all the other ones that share the recipe file
+
+in requirements need to add the notion of arch
+  android: TOOL android_foo == 25
+vs
+  android-arm: TOOL android_foo_arm == 25
+  android-x86: TOOL android_foo_x86 == 28
+  
+in rebuild_sources.py when this happens:
+"Failed to verify checksum.  Something went wrong."
+the bad target is not removed
+its failed 2 times when the upload actually worked
+
+audit rebuild_sources.py to make sure that publish when the checksum is wrong does the right thing
+im .project files ass ability to import other projects
+consider makeing .project a custom recipe format
+maybe need  concept of BUILD_TOOL along with BUILD, RUN, TEST and rename TOOL to RUN_TOOL
+
+maybe change "load" in "recipe" to "python_code" to make it obvious

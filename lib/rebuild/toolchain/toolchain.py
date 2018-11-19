@@ -20,7 +20,8 @@ class toolchain(object):
   def get_toolchain(clazz, build_target):
     'Return the toolchain for this particular build target.'
     if build_target.system == build_system.ANDROID:
-      from ._toolchain_android import _toolchain_android
+      #from ._toolchain_android import _toolchain_android
+      from ._toolchain_android_standalone import _toolchain_android_standalone as _toolchain_android
       return _toolchain_android(build_target)
     elif build_target.system in [ build_system.IOS, build_system.IOS_SIM, build_system.MACOS ]:
       from ._toolchain_darwin import _toolchain_darwin
