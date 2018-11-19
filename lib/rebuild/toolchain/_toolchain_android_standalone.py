@@ -5,7 +5,7 @@ from bes.system import host
 from rebuild.base import build_arch, build_blurb, build_system, build_level
 import os, os.path as path
 
-class _toolchain_android_caca(_toolchain_base):
+class _toolchain_android_standalone(_toolchain_base):
 
   _REBUILD_ARCH_TO_TRIPLET = {
     build_arch.ARMV7: 'arm-linux-androideabi',
@@ -26,7 +26,7 @@ class _toolchain_android_caca(_toolchain_base):
   }
   
   def __init__(self, build_target):
-    super(_toolchain_android_caca, self).__init__(build_target)
+    super(_toolchain_android_standalone, self).__init__(build_target)
     self.ndk_root = os.environ.get('REBUILD_ANDROID_NDK_TOOLCHAIN_ARM_ROOT', None)
     if not self.ndk_root:
       build_blurb.blurb('rebuild', '*** ERROR *** Trying to use android NDK but REBUILD_ANDROID_NDK_TOOLCHAIN_ARM_ROOT is not set.')
