@@ -16,6 +16,8 @@ class builder_recipe_loader(object):
     recipes = clazz._load_recipes(env, filename)
     if clazz._recipe_version(filename) == 2:
       return recipes.recipes
+    # This is here in case the recipe version is changed in the future.
+    # There was a recipe v1 at some point during development that is retired.
     assert False
 
   _recipes = namedtuple('_recipes', 'filename,recipes')
