@@ -114,4 +114,4 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
       result.add_child(l)
     return result
   
-check.register_class(recipe)
+check.register_class(recipe, include_seq = False)

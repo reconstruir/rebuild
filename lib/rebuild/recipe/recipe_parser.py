@@ -23,6 +23,7 @@ from .recipe_parser_util import recipe_parser_util
 from .recipe_step import recipe_step
 from .recipe_step_list import recipe_step_list
 from .recipe_value import recipe_value
+from .recipe_list import recipe_list
 
 from .value import value_file
 from .value import value_origin
@@ -64,7 +65,7 @@ class recipe_parser(object):
       tree = tree_text_parser.parse(self.text, strip_comments = True)
     except Exception as ex:
       self._error('failed to parse: %s' % (ex.message))
-    return self._parse_tree(tree)
+    return recipe_list(self._parse_tree(tree))
 
   def _parse_tree(self, root):
     recipes = []
