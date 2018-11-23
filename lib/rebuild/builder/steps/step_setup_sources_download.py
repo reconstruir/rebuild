@@ -47,17 +47,17 @@ class step_setup_sources_download(step):
     downloaded_tarballs = []
     
     if tarball_address:
-      downloaded_path = tarball_address.downloaded_tarball_path()
-      if tarball_address.needs_download():
+      downloaded_path = tarball_address.downloaded_tarball_path(env.recipe_load_env)
+      if tarball_address.needs_download(env.recipe_load_env):
         self.blurb('Downloading %s@%s to %s' % (tarball_address.address, tarball_address.revision, path.relpath(downloaded_path)))
-        tarball_address.download()
+        tarball_address.download(env.recipe_load_env)
       dest = tarball_address.get_property('dest', '${REBUILD_SOURCE_UNPACKED_DIR}')
       base_dir = tarball_address.get_property('base', None)
       strip_common_ancestor = tarball_address.get_property('strip_common_ancestor', True)
       downloaded_tarballs.append(self._downloaded_tarball(downloaded_path, dest, base_dir, strip_common_ancestor))
 
     if tarball:
-      tarball_path = tarball.sources()[0]
+      tarball_path = tarball.sources(env.recipe_load_env)[0]
       if not tarball_path:
         return step_result(False, 'No tarball found for %s' % (script.descriptor.full_name))
       dest = tarball.get_property('dest', '${REBUILD_SOURCE_UNPACKED_DIR}')
@@ -67,7 +67,7 @@ class step_setup_sources_download(step):
       downloaded_tarballs.append(self._downloaded_tarball(tarball_path, dest, base_dir, strip_common_ancestor))
      
     if tarball_dir:
-      self.blurb('Creating tarball %s from %s' % (path.relpath(tarball_dir.sources()[0]), tarball_dir.where))
+      self.blurb('Creating tarball %s from %s' % (path.relpath(tarball_dir.sources(env.recipe_load_env)[0]), tarball_dir.where))
       tarball_path = tarball_dir.tarball()
       if not tarball_path:
         return step_result(False, 'No tarball found for %s' % (script.descriptor.full_name))

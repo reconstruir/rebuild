@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy, os.path as path
@@ -25,7 +24,7 @@ class builder_recipe_loader(object):
   @classmethod
   def _load_recipes_v2(clazz, env, filename):
     content = file_util.read(filename, codec = 'utf8')
-    parser = recipe_parser(env, filename, content)
+    parser = recipe_parser(filename, content)
     recipes = parser.parse()
     return clazz._recipes(filename, recipes)
   

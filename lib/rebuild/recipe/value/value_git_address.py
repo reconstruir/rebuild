@@ -7,8 +7,8 @@ from .value_base import value_base
 
 class value_git_address(value_base):
 
-  def __init__(self, env = None, origin = None, address = '', revision = '', properties = None):
-    super(value_git_address, self).__init__(env , origin, properties = properties)
+  def __init__(self, origin = None, address = '', revision = '', properties = None):
+    super(value_git_address, self).__init__(origin, properties = properties)
     check.check_string(address)
     check.check_string(revision)
     self._address = address
@@ -35,9 +35,9 @@ class value_git_address(value_base):
     return buf.getvalue()
 
   #@abstractmethod
-  def sources(self):
+  def sources(self, recipe_env):
     'Return a list of sources this caca provides or None if no sources.'
-    return [ self.downloaded_tarball_path() ]
+    return [ self.downloaded_tarball_path(recipe_env) ]
 
   #@abstractmethod
   def substitutions_changed(self):
@@ -45,7 +45,7 @@ class value_git_address(value_base):
   
   @classmethod
   #@abstractmethod
-  def parse(clazz, env, origin, text):
+  def parse(clazz, origin, text):
     parts = string_util.split_by_white_space(text)
     if len(parts) < 2:
       raise ValueError('%s: expected address and revision instead of: %s' % (origin, text))
@@ -53,7 +53,7 @@ class value_git_address(value_base):
     revision = parts[1]
     rest = string_util.replace(text, { address: '', revision: '' })
     properties = clazz.parse_properties(rest)
-    return clazz(env, origin = origin, address = address, revision = revision, properties = properties)
+    return clazz(origin = origin, address = address, revision = revision, properties = properties)
   
   @classmethod
   #@abstractmethod
@@ -66,16 +66,16 @@ class value_git_address(value_base):
     # FIXME
     return values[-1]
   
-  def downloaded_tarball_path(self):
-    return self.env.downloads_manager.tarball_path(self.address, self.revision)
+  def downloaded_tarball_path(self, recipe_env):
+    return recipe_env.downloads_manager.tarball_path(self.address, self.revision)
   
-  def download(self):
-    if not self.env.downloads_manager.has_tarball(self.address, self.revision):
-      assert self.needs_download()
-      self.env.downloads_manager.get_tarball(self.address, self.revision)
-    assert not self.needs_download()
+  def download(self, recipe_env):
+    if not recipe_env.downloads_manager.has_tarball(self.address, self.revision):
+      assert self.needs_download(recipe_env)
+      recipe_env.downloads_manager.get_tarball(self.address, self.revision)
+    assert not self.needs_download(recipe_env)
 
-  def needs_download(self):
-    return not path.isfile(self.downloaded_tarball_path())
+  def needs_download(self, recipe_env):
+    return not path.isfile(self.downloaded_tarball_path(recipe_env))
     
 check.register_class(value_git_address, include_seq = False)

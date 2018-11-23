@@ -8,13 +8,12 @@ from .value_registry import value_registry
 class value_factory(object):
 
   @classmethod
-  def create_with_class_name(clazz, env, origin, text, value_class_name):
-    check.check_recipe_load_env_base(env)
+  def create_with_class_name(clazz, origin, text, value_class_name):
     check.check_value_origin(origin)
     check.check_string(text)
     check.check_string(value_class_name)
     value_class = clazz.get_class(value_class_name)
-    return value_class.parse(env, origin, text)
+    return value_class.parse(origin, text)
   
   @classmethod
   def get_class(clazz, value_class_name):

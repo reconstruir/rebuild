@@ -8,8 +8,8 @@ from .value_type import value_type
 
 class value_string(value_base):
 
-  def __init__(self, env = None, origin = None, value = None):
-    super(value_string, self).__init__(env, origin)
+  def __init__(self, origin = None, value = None):
+    super(value_string, self).__init__(origin)
     if value is not None:
       check.check_string(value)
     self.value = value
@@ -24,7 +24,7 @@ class value_string(value_base):
     return self.value
 
   #@abstractmethod
-  def sources(self):
+  def sources(self, recipe_env):
     'Return a list of sources this caca provides or None if no sources.'
     return []
 
@@ -34,8 +34,8 @@ class value_string(value_base):
   
   @classmethod
   #@abstractmethod
-  def parse(clazz, env, origin, text):
-    return clazz(env = env, origin = origin, value = text)
+  def parse(clazz, origin, text):
+    return clazz(origin = origin, value = text)
   
   @classmethod
   #@abstractmethod

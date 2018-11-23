@@ -24,9 +24,9 @@ class value_hook(with_metaclass(hook_register_meta, value_base)):
 
   result = hook_result
   
-  def __init__(self, env = None, origin = None, properties = None):
+  def __init__(self, origin = None, properties = None):
     'Create a new hook.'
-    super(value_hook, self).__init__(env, origin, properties = properties)
+    super(value_hook, self).__init__(origin, properties = properties)
 
   def __eq__(self, other):
     return self.filename == other.filename
@@ -52,7 +52,7 @@ class value_hook(with_metaclass(hook_register_meta, value_base)):
     return path.abspath(filename)
 
   #@abstractmethod
-  def sources(self):
+  def sources(self, recipe_env):
     'Return a list of sources this caca provides or None if no sources.'
     return [ self.filename ]
 
@@ -62,13 +62,13 @@ class value_hook(with_metaclass(hook_register_meta, value_base)):
 
   @classmethod
   #@abstractmethod
-  def parse(clazz, env, origin, value):
+  def parse(clazz, origin, value):
     hook_name, _, rest = string_util.partition_by_white_space(value)
     hook_class = hook_registry.get(hook_name)
     if not hook_class:
       raise TypeError('%s: hook class not found: %s' % (origin, hook_name))
     properties = clazz.parse_properties(rest)
-    hook_instance = hook_class(env = env, origin = origin, properties = properties)
+    hook_instance = hook_class(origin = origin, properties = properties)
     return hook_instance
 
   @classmethod
@@ -76,14 +76,11 @@ class value_hook(with_metaclass(hook_register_meta, value_base)):
   def resolve(clazz, values, class_name):
     check.check_value_hook_seq(values)
     assert class_name == value_type.HOOK_LIST
-    env = None
     result_hooks = []
     for value in values:
       check.check_value_hook(value)
-      if not env:
-        env = value.env
       result_hooks.append(value)
-    result = value_hook_list(env = env, values = result_hooks)
+    result = value_hook_list(values = result_hooks)
     result.remove_dups()
     return result
   
@@ -98,7 +95,7 @@ class value_hook_list(value_list_base):
 
   __value_type__ = value_hook
   
-  def __init__(self, env = None, origin = None, values = None):
-    super(value_hook_list, self).__init__(env = env, origin = origin, values = values)
+  def __init__(self, origin = None, values = None):
+    super(value_hook_list, self).__init__(origin = origin, values = values)
   
 check.register_class(value_hook_list, include_seq = False)

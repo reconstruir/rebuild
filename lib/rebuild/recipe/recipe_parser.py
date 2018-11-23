@@ -45,9 +45,8 @@ class recipe_parser(object):
 
   MAGIC = '!rebuild.recipe!'
 
-  def __init__(self, env, filename, text, starting_line_number = 0):
+  def __init__(self, filename, text, starting_line_number = 0):
     self.text = text
-    self.env = env
     self.filename = filename
     self.starting_line_number = starting_line_number
 
@@ -161,7 +160,7 @@ class recipe_parser(object):
     for child in node.children:
       text = tree_text_parser.node_text_flat(child)
       child_origin = value_origin(self.filename, child.data.line_number, text)
-      value = masked_value.parse_mask_and_value(self.env, child_origin, text, value_type.STRING_LIST)
+      value = masked_value.parse_mask_and_value(child_origin, text, value_type.STRING_LIST)
       export_compilation_flags_requirements.append(value)
     return masked_value_list(export_compilation_flags_requirements)
 
@@ -187,10 +186,6 @@ class recipe_parser(object):
       more_values = self._parse_step_value(description, child)
       assert isinstance(more_values, recipe_value)
       values.append(more_values)
-
-#    recipe_file = value_file(env = self.env, filename = path.abspath(self.filename))
-#    values.insert(0, recipe_value('recipe_filename', masked_value_list([ masked_value(None, recipe_file) ])))
-
     return recipe_step(name, description, values)
 
   def _parse_step_value(self, description, node):
@@ -202,7 +197,7 @@ class recipe_parser(object):
       self._error('invalid config \"%s\" instead of: %s' % (key, ' '.join(args_definition.keys())), node)
 
     value_class_name = args_definition[key].class_name
-    value = recipe_parser_util.make_key_value(self.env, origin, node.data.text, value_class_name)
+    value = recipe_parser_util.make_key_value(origin, node.data.text, value_class_name)
     if value.value:
       assert not node.children
       values.append(masked_value(None, value.value, origin))
@@ -211,7 +206,7 @@ class recipe_parser(object):
         text = tree_text_parser.node_text_flat(child)
         child_origin = value_origin(self.filename, child.data.line_number, text)
         try:
-          value = masked_value.parse_mask_and_value(self.env, child_origin, text, value_class_name)
+          value = masked_value.parse_mask_and_value(child_origin, text, value_class_name)
         except RuntimeError as ex:
           self._error('error: %s: %s - %s' % (origin, text, str(ex)), node)
         values.append(value)

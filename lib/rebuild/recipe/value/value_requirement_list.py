@@ -8,8 +8,8 @@ from .value_type import value_type
 
 class value_requirement_list(value_base):
 
-  def __init__(self, env = None, origin = None, values = None):
-    super(value_requirement_list, self).__init__(env, origin)
+  def __init__(self, origin = None, values = None):
+    super(value_requirement_list, self).__init__(origin)
     values = values or requirement_list()
     if not check.is_requirement_list(values):
       values = requirement_list.parse(values)
@@ -29,7 +29,7 @@ class value_requirement_list(value_base):
     return self.values.to_string(delimiter = ' ')
 
   #@abstractmethod
-  def sources(self):
+  def sources(self, recipe_env):
     'Return a list of sources this caca provides or None if no sources.'
     return []
 
@@ -39,12 +39,12 @@ class value_requirement_list(value_base):
   
   @classmethod
   #@abstractmethod
-  def parse(clazz, env, origin, text):
+  def parse(clazz, origin, text):
     if not text:
       values = requirement_list()
     else:
       values = requirement_list.parse(text)
-    return clazz(env = env, origin = origin, values = values)
+    return clazz(origin = origin, values = values)
   
   @classmethod
   #@abstractmethod

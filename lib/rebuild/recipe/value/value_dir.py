@@ -6,8 +6,8 @@ from .value_file import value_file
 
 class value_dir(value_file):
 
-  def __init__(self, env = None, origin = None, filename = '', properties = None):
+  def __init__(self, origin = None, filename = '', properties = None):
     'Class to manage a recipe dir.'
-    super(value_dir, self).__init__(env = env, origin = origin, filename = filename, properties = properties)
+    super(value_dir, self).__init__(origin = origin, filename = filename, properties = properties)
 
 check.register_class(value_dir, include_seq = True)

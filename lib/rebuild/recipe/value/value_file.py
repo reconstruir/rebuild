@@ -10,9 +10,9 @@ from .value_list_base import value_list_base
 
 class value_file(value_base):
 
-  def __init__(self, env = None, origin = None, filename = '', properties = None):
+  def __init__(self, origin = None, filename = '', properties = None):
     'Class to manage a recipe file.'
-    super(value_file, self).__init__(env, origin, properties = properties)
+    super(value_file, self).__init__(origin, properties = properties)
     check.check_string(filename)
     self._filename = filename
 
@@ -45,7 +45,7 @@ class value_file(value_base):
       raise ValueError('Invalid value_type: %s' % (class_name))
 
   #@abstractmethod
-  def sources(self):
+  def sources(self, recipe_env):
     'Return a list of sources this caca provides or None if no sources.'
     return [ self.filename ]
 
@@ -55,7 +55,7 @@ class value_file(value_base):
   
   @classmethod
   #@abstractmethod
-  def parse(clazz, env, origin, text):
+  def parse(clazz, origin, text):
     base = path.dirname(origin.filename)
     filename, _, rest = string_util.partition_by_white_space(text)
     if filename.startswith('$'):
@@ -65,7 +65,7 @@ class value_file(value_base):
       if not path.isfile(filename_abs):
         raise RuntimeError('%s: file not found: %s' % (origin, filename_abs))
     properties = clazz.parse_properties(rest)
-    return value_file(env = env, origin = origin, filename = filename_abs, properties = properties)
+    return value_file(origin = origin, filename = filename_abs, properties = properties)
 
   @classmethod
   #@abstractmethod
@@ -82,14 +82,11 @@ class value_file(value_base):
   
   @classmethod
   def _resolve_file_list(clazz, values):
-    env = None
     result_values = []
     for value in values:
       check.check_value_file(value)
-      if not env:
-        env = value.env
       result_values.append(value)
-    result = value_file_list(env = env, values = result_values)
+    result = value_file_list(values = result_values)
     result.remove_dups()
     return result
   
@@ -105,7 +102,7 @@ class value_file_list(value_list_base):
 
   __value_type__ = value_file
   
-  def __init__(self, env = None, origin = None, values = None):
-    super(value_file_list, self).__init__(env = env, origin = origin, values = values)
+  def __init__(self, origin = None, values = None):
+    super(value_file_list, self).__init__(origin = origin, values = values)
 
 check.register_class(value_file_list, include_seq = False)

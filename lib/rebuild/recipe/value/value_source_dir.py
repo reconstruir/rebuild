@@ -8,8 +8,8 @@ from .value_base import value_base
 
 class value_source_dir(value_base):
 
-  def __init__(self, env = None, origin = None, where = '', properties = None):
-    super(value_source_dir, self).__init__(env, origin, properties = properties)
+  def __init__(self, origin = None, where = '', properties = None):
+    super(value_source_dir, self).__init__(origin, properties = properties)
     check.check_string(where)
     self.where = where
     self._tarball = None
@@ -25,7 +25,7 @@ class value_source_dir(value_base):
     return buf.getvalue()
 
   #@abstractmethod
-  def sources(self):
+  def sources(self, recipe_env):
     'Return a list of sources this caca provides or None if no sources.'
     return [ self._tarball ]
 
@@ -35,14 +35,14 @@ class value_source_dir(value_base):
   
   @classmethod
   #@abstractmethod
-  def parse(clazz, env, origin, text):
+  def parse(clazz, origin, text):
     parts = string_util.split_by_white_space(text)
     if len(parts) < 1:
       raise ValueError('%s: expected filename instead of: %s' % (origin, text))
     where = parts[0]
     rest = string_util.replace(text, { where: '' })
     properties = clazz.parse_properties(rest)
-    return clazz(env = env, origin = origin, where = where, properties = properties)
+    return clazz(origin = origin, where = where, properties = properties)
   
   @classmethod
   #@abstractmethod

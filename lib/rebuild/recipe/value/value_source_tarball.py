@@ -7,8 +7,8 @@ from .value_base import value_base
 
 class value_source_tarball(value_base):
 
-  def __init__(self, env = None, origin = None, filename = '', properties = None):
-    super(value_source_tarball, self).__init__(env, origin, properties = properties)
+  def __init__(self, origin = None, filename = '', properties = None):
+    super(value_source_tarball, self).__init__(origin, properties = properties)
     check.check_string(filename)
     self.filename = filename
 
@@ -23,9 +23,9 @@ class value_source_tarball(value_base):
     return buf.getvalue()
 
   #@abstractmethod
-  def sources(self):
+  def sources(self, recipe_env):
     'Return a list of sources this caca provides or None if no sources.'
-    return [ self.env.source_finder.find_tarball(self.filename) ]
+    return [ recipe_env.source_finder.find_tarball(self.filename) ]
 
   #@abstractmethod
   def substitutions_changed(self):
@@ -33,14 +33,14 @@ class value_source_tarball(value_base):
   
   @classmethod
   #@abstractmethod
-  def parse(clazz, env, origin, text):
+  def parse(clazz, origin, text):
     parts = string_util.split_by_white_space(text)
     if len(parts) < 1:
       raise ValueError('%s: expected filename instead of: %s' % (origin, text))
     filename = parts[0]
     rest = string_util.replace(text, { filename: '' })
     properties = clazz.parse_properties(rest)
-    return clazz(env = env, origin = origin, filename = filename, properties = properties)
+    return clazz(origin = origin, filename = filename, properties = properties)
   
   @classmethod
   #@abstractmethod

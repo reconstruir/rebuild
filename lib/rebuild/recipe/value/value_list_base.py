@@ -8,9 +8,9 @@ from .value_base import value_base
 
 class value_list_base(type_checked_list, value_base):
 
-  def __init__(self, env = None, origin = None, values = None):
+  def __init__(self, origin = None, values = None):
     type_checked_list.__init__(self, values = values)
-    value_base.__init__(self, env, origin)
+    value_base.__init__(self, origin)
 
   #@abstractmethod
   def value_to_string(self, quote, include_properties = True):
@@ -34,15 +34,15 @@ class value_list_base(type_checked_list, value_base):
     
   @classmethod
   #@abstractmethod
-  def parse(clazz, env, origin, text):
+  def parse(clazz, origin, text):
     strings = string_list.parse(text, options = string_list.KEEP_QUOTES)
     string_values, properties_text = clazz._split_values_and_properties(strings)
     values = []
     for string_value in string_values:
       value_text = string_value + ' ' + properties_text
-      value = clazz.value_type().parse(env, origin, value_text)
+      value = clazz.value_type().parse(origin, value_text)
       values.append(value)
-    return clazz(env = env, origin = origin, values = values)
+    return clazz(origin = origin, values = values)
 
   @classmethod
   #@abstractmethod
@@ -51,10 +51,10 @@ class value_list_base(type_checked_list, value_base):
     return clazz()
 
   #@abstractmethod
-  def sources(self):
+  def sources(self, recipe_env):
     result = []
     for value in self:
-      result.extend(value.sources())
+      result.extend(value.sources(recipe_env))
     return result
 
   @classmethod

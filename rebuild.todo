@@ -937,3 +937,5 @@ consider makeing .project a custom recipe format
 maybe need  concept of BUILD_TOOL along with BUILD, RUN, TEST and rename TOOL to RUN_TOOL
 
 maybe change "load" in "recipe" to "python_code" to make it obvious
+
+maybe get git of rebuild_load_env and just use the uber env for simplicity

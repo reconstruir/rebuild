@@ -50,7 +50,7 @@ class recipe_step(namedtuple('recipe_step', 'name,description,values')):
       if name not in result:
         if arg_def.default is not None:
           origin = value_origin('<default>', arg_def.line_number, arg_def.default)
-          value = recipe_parser_util.make_value(env, origin, arg_def.default, arg_def.class_name)
+          value = recipe_parser_util.make_value(origin, arg_def.default, arg_def.class_name)
           check.check_value_base(value)
           result[name] = value.resolve([ value ], arg_def.class_name)
         else:

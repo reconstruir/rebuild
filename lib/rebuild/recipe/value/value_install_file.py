@@ -9,8 +9,8 @@ from .value_list_base import value_list_base
 
 class value_install_file(value_base):
 
-  def __init__(self, env = None, origin = None, filename = '', dst_filename = '', properties = None):
-    super(value_install_file, self).__init__(env, origin, properties = properties)
+  def __init__(self, origin = None, filename = '', dst_filename = '', properties = None):
+    super(value_install_file, self).__init__(origin, properties = properties)
     self._filename = filename
     self._dst_filename = dst_filename
 
@@ -41,7 +41,7 @@ class value_install_file(value_base):
     return value_install_file_list()
 
   #@abstractmethod
-  def sources(self):
+  def sources(self, recipe_env):
     'Return a list of sources this caca provides or None if no sources.'
     return [ self.filename ]
 
@@ -51,7 +51,7 @@ class value_install_file(value_base):
 
   @classmethod
   #@abstractmethod
-  def parse(clazz, env, origin, text):
+  def parse(clazz, origin, text):
     parts = string_util.split_by_white_space(text)
     if len(parts) < 2:
       raise ValueError('%s: expected filename and dst_filename instead of: %s' % (origin, text))
@@ -60,20 +60,17 @@ class value_install_file(value_base):
     rest = text.replace(filename, '')
     rest = rest.replace(dst_filename, '')
     properties = clazz.parse_properties(rest)
-    return clazz(env = env, origin = origin, filename = filename, dst_filename = dst_filename, properties = properties)
+    return clazz(origin = origin, filename = filename, dst_filename = dst_filename, properties = properties)
 
   @classmethod
   #@abstractmethod
   def resolve(clazz, values, class_name):
     check.check_value_install_file_seq(values)
-    env = None
     result_values = []
     for value in values:
       check.check_value_install_file(value)
-      if not env:
-        env = value.env
       result_values.append(value)
-    result = value_install_file_list(env = env, values = result_values)
+    result = value_install_file_list(values = result_values)
     result.remove_dups()
     return result
   
@@ -83,7 +80,7 @@ class value_install_file_list(value_list_base):
 
   __value_type__ = value_install_file
   
-  def __init__(self, env = None, origin = None, values = None):
-    super(value_install_file_list, self).__init__(env = env, origin = origin, values = values)
+  def __init__(self, origin = None, values = None):
+    super(value_install_file_list, self).__init__(origin = origin, values = values)
 
 check.register_class(value_install_file_list, include_seq = False)

@@ -18,10 +18,7 @@ class value_register_meta(ABCMeta):
 
 class value_base(with_metaclass(value_register_meta, object)):
   
-  def __init__(self, env, origin, properties = None):
-    if env:
-      check.check_recipe_load_env_base(env)
-    self.env = env
+  def __init__(self, origin, properties = None):
     if origin:
       check.check_value_origin(origin)
     self.origin = origin
@@ -84,13 +81,13 @@ class value_base(with_metaclass(value_register_meta, object)):
     assert False
   
   @abstractmethod
-  def sources(self):
+  def sources(self, recipe_env):
     'Return a list of sources this caca provides or None if no sources.'
     assert False
 
   @classmethod
   @abstractmethod
-  def parse(clazz, env, origin, text):
+  def parse(clazz, origin, text):
     'Parse a value.'
     assert False
 

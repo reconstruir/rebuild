@@ -90,11 +90,11 @@ class step_manager(object):
   def has_steps(self):
     return len(self._steps) > 0
     
-  def sources(self):
+  def sources(self, env):
     sources = []
     for step in self:
       for key, value in step.values.items():
         if check.is_value_base(value):
-          sources.extend(value.sources())
+          sources.extend(value.sources(env))
     return algorithm.unique(sources)
   

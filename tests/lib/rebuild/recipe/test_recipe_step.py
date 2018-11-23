@@ -12,7 +12,6 @@ from test_steps import *
 
 class test_recipe_step(unit_test):
 
-  TEST_ENV = testing_recipe_load_env()
   BT_LINUX = build_target('linux', 'ubuntu', '18', ( 'x86_64' ), 'release')
   BT_MACOS = build_target('macos', '', '', ( 'x86_64' ), 'release')
   BT_ANDROID = build_target('android', '', '', ( 'armv7' ), 'release')
@@ -118,7 +117,7 @@ git_address_value
       'key_values_value': [],
       'string_list_value': [],
       'string_value': None,
-      'git_address_value': value_git_address(env, VO('caca', 1, 'caca'), 'linux_address', 'linux_tag'),
+      'git_address_value': value_git_address(VO('caca', 1, 'caca'), 'linux_address', 'linux_tag'),
     }
     self.assertEqual( expected, r )
 
@@ -134,7 +133,7 @@ git_address_value
       'key_values_value': [],
       'string_list_value': [],
       'string_value': None,
-      'git_address_value': value_git_address(env, VO('caca', 1, 'caca'), 'macos_address', 'macos_tag'),
+      'git_address_value': value_git_address(VO('caca', 1, 'caca'), 'macos_address', 'macos_tag'),
     }
     self.assertEqual( expected, r )
     
@@ -148,7 +147,7 @@ package foo 1.2.3 4
 '''
     indented_values = clazz._add_indent(s, 3)
     recipe_text = recipe_template % (indented_values)
-    r = recipe_parser(clazz.TEST_ENV, '<test>', recipe_text).parse()
+    r = recipe_parser('<test>', recipe_text).parse()
     return r[0].steps[0]
     
   @classmethod

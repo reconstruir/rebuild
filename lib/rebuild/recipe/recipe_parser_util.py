@@ -16,8 +16,7 @@ class recipe_parser_util(object):
     return key.strip()
 
   @classmethod
-  def make_key_value(clazz, env, origin, text, value_class_name):
-    check.check_recipe_load_env_base(env)
+  def make_key_value(clazz, origin, text, value_class_name):
     check.check_value_origin(origin)
     check.check_string(text)
     check.check_string(value_class_name)
@@ -31,12 +30,12 @@ class recipe_parser_util(object):
     value_text = value.strip() or None
     if not value_text:
       return key_value(key, None)
-    value = value_factory.create_with_class_name(env, origin, value_text, value_class_name)
+    value = value_factory.create_with_class_name(origin, value_text, value_class_name)
     return key_value(key, value)
 
   @classmethod
-  def make_value(clazz, env, origin, text, value_class_name):
-    return value_factory.create_with_class_name(env, origin, text, value_class_name)
+  def make_value(clazz, origin, text, value_class_name):
+    return value_factory.create_with_class_name(origin, text, value_class_name)
 
   @classmethod
   def value_default(clazz, class_name):

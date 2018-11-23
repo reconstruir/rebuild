@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from collections import namedtuple
@@ -18,15 +17,15 @@ class masked_value(namedtuple('masked_value', 'mask, value')):
   def __new__(clazz, mask, value, origin = None):
     if not check.is_value_base(value):
       if check.is_bool(value):
-        value = value_bool(env = None, origin = origin, value = value)
+        value = value_bool(origin = origin, value = value)
       elif check.is_int(value):
-        value = value_int(env = None, origin = origin, value = value)
+        value = value_int(origin = origin, value = value)
       elif check.is_string(value):
-        value = value_string(env = None, origin = origin, value = value)
+        value = value_string(origin = origin, value = value)
       elif check.is_string_list(value) or check.is_string_seq(value):
-        value = value_string_list(env = None, origin = origin, values = value)
+        value = value_string_list(origin = origin, values = value)
       elif check.is_key_value_list(value):
-        value = value_key_values(env = None, origin = origin, values = value)
+        value = value_key_values(origin = origin, values = value)
 
     if not check.is_value_base(value):
       raise TypeError('value should be subclass of value_base: %s - %s' % (str(value), type(value)))
@@ -64,12 +63,12 @@ class masked_value(namedtuple('masked_value', 'mask, value')):
     return buf.getvalue()
 
   @classmethod
-  def parse_mask_and_value(clazz, env, origin, text, class_name):
+  def parse_mask_and_value(clazz, origin, text, class_name):
     check.check_value_origin(origin)
     check.check_string(text)
     check.check_string(class_name)
     mask, delimiter, value = text.partition(':')
-    value = recipe_parser_util.make_value(env, origin, value.strip(), class_name)
+    value = recipe_parser_util.make_value(origin, value.strip(), class_name)
     return clazz(mask, value, origin)
 
   def mask_matches(self, system):

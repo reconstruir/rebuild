@@ -8,8 +8,8 @@ from .value_type import value_type
 
 class value_int(value_base):
 
-  def __init__(self, env = None, origin = None, value = None):
-    super(value_int, self).__init__(env, origin)
+  def __init__(self, origin = None, value = None):
+    super(value_int, self).__init__(origin)
     if value is not None:
       check.check_int(value)
     self.value = value
@@ -27,7 +27,7 @@ class value_int(value_base):
     return str(self.value)
 
   #@abstractmethod
-  def sources(self):
+  def sources(self, recipe_env):
     'Return a list of sources this caca provides or None if no sources.'
     return []
 
@@ -37,9 +37,9 @@ class value_int(value_base):
   
   @classmethod
   #@abstractmethod
-  def parse(clazz, env, origin, text):
+  def parse(clazz, origin, text):
     value = int(text)
-    return clazz(env, origin = origin, value = value)
+    return clazz(origin = origin, value = value)
   
   @classmethod
   #@abstractmethod
