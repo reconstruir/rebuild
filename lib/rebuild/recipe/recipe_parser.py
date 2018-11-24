@@ -7,7 +7,7 @@ from bes.common import check, string_util
 from bes.compat import StringIO
 from bes.key_value import key_value, key_value_parser
 from bes.system import log
-from bes.text import string_list, tree_text_parser
+from bes.text import string_list, tree_text_parser, text_fit
 from bes.python import code
 
 from rebuild.base import build_version, requirement, requirement_list, package_descriptor
@@ -196,7 +196,9 @@ class recipe_parser(object):
     key = recipe_parser_util.parse_key(origin, node.data.text)
     args_definition = description.step_class.args_definition()
     if not key in args_definition:
-      self._error('invalid config \"%s\" instead of: %s' % (key, ' '.join(args_definition.keys())), node)
+      valid_configs_lines = text_fit.fit_text(' '.join(args_definition.keys()), 80)
+      valid_configs_text = '\n    '.join(valid_configs_lines)
+      self._error('invalid config \"%s\"\nvalid configs:\n    %s' % (key, valid_configs_text), node)
 
     value_class_name = args_definition[key].class_name
     value_class = value_factory.get_class(value_class_name)
