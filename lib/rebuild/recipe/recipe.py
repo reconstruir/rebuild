@@ -79,7 +79,7 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
   def _system_specific_property_to_node(clazz, key, properties):
     assert key in properties
     value = properties[key]
-    assert isinstance(value, list)
+    check.check_masked_value_list(value)
     child = node(key)
     for i in value:
       child.add_child(i)

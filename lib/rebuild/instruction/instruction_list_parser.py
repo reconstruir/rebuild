@@ -41,7 +41,7 @@ class instruction_list_parser(object):
   @classmethod
   def _parse_requires(clazz, node):
     assert node.data.text == clazz.REQUIRES
-    text = tree_text_parser.node_children_text_flat(node)
+    text = node.get_text(node.CHILDREN_FLAT)
     return string_list.parse(text).to_set()
 
   @classmethod
@@ -49,7 +49,7 @@ class instruction_list_parser(object):
     key = node.data.text
     texts = []
     for child in node.children:
-      texts.append(tree_text_parser.node_text_flat(child))
+      texts.append(child.get_text(child.NODE_FLAT))
     value_text = ' '.join(texts)
     value = string_list.parse(value_text, options = string_list.KEEP_QUOTES)
     return { key: value }
