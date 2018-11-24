@@ -12,7 +12,10 @@ class step_install_post_install_hooks(step):
 
   @classmethod
   def define_args(clazz):
-    return 'post_install_hooks hook_list'
+    return '''
+    post_install_hooks hook_list
+    post_install_hooks_inline hook_list_inline
+    '''
     
   #@abstractmethod
   def execute(self, script, env, values, inputs):

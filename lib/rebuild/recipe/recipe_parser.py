@@ -12,6 +12,7 @@ from bes.python import code
 
 from rebuild.base import build_version, requirement, requirement_list, package_descriptor
 from rebuild.step.step_description import step_description
+
 from rebuild.recipe.value import value_type
 from rebuild.instruction import instruction_list
 
@@ -27,6 +28,7 @@ from .recipe_list import recipe_list
 
 from .value import value_file
 from .value import value_origin
+from .value import value_factory
 
 class recipe_parser_error(Exception):
   def __init__(self, message, filename, line_number):
@@ -130,7 +132,7 @@ class recipe_parser(object):
       return name, build_version(version.upstream_version, revision, version.epoch)
 
   def _parse_enabled(self, node):
-    enabled_text = tree_text_parser.node_text_flat(node)
+    enabled_text = node.get_text(node.NODE_FLAT)
     kv = key_value.parse(enabled_text, delimiter = '=')
     if kv.key != 'enabled':
       self._error('invalid "enabled" expression: %s' % (enabled_text))
@@ -139,7 +141,7 @@ class recipe_parser(object):
   def _parse_properties(self, node):
     properties = {}
     for child in node.children:
-      property_text = tree_text_parser.node_text_flat(child)
+      property_text = child.get_text(child.NODE_FLAT)
       try:
         values = key_value_parser.parse_to_dict(property_text, options = key_value_parser.KEEP_QUOTES)
         properties.update(values)
@@ -150,7 +152,7 @@ class recipe_parser(object):
   def _parse_requirements(self, node):
     reqs = []
     for child in node.children:
-      req_text = tree_text_parser.node_text_flat(child)
+      req_text = child.get_text(child.NODE_FLAT)
       next_reqs = requirement_list.parse(req_text)
       reqs.extend(next_reqs)
     return requirement_list(reqs)
@@ -158,14 +160,14 @@ class recipe_parser(object):
   def _parse_export_compilation_flags_requirements(self, node):
     export_compilation_flags_requirements = []
     for child in node.children:
-      text = tree_text_parser.node_text_flat(child)
+      text = child.get_text(child.NODE_FLAT)
       child_origin = value_origin(self.filename, child.data.line_number, text)
       value = masked_value.parse_mask_and_value(child_origin, text, value_type.STRING_LIST)
       export_compilation_flags_requirements.append(value)
     return masked_value_list(export_compilation_flags_requirements)
 
   def _parse_instructions(self, node):
-    text = tree_text_parser.node_text(node, include_root = False)
+    text = node.get_text(node.CHILDREN_INLINE)
     return instruction_list.parse(text)
 
   def _parse_steps(self, node):
@@ -197,13 +199,21 @@ class recipe_parser(object):
       self._error('invalid config \"%s\" instead of: %s' % (key, ' '.join(args_definition.keys())), node)
 
     value_class_name = args_definition[key].class_name
+    value_class = value_factory.get_class(value_class_name)
+    
+    text_is_inline = value_class.text_is_inline()
+    text_is_inline = False
+    
     value = recipe_parser_util.make_key_value(origin, node.data.text, value_class_name)
     if value.value:
       assert not node.children
       values.append(masked_value(None, value.value, origin))
     else:
       for child in node.children:
-        text = tree_text_parser.node_text_flat(child)
+        if text_is_inline:
+          text = child.get_text(child.CHILDREN_INLINE)
+        else:
+          text = child.get_text(child.NODE_FLAT)
         child_origin = value_origin(self.filename, child.data.line_number, text)
         try:
           value = masked_value.parse_mask_and_value(child_origin, text, value_class_name)
@@ -215,7 +225,7 @@ class recipe_parser(object):
   def _parse_load(self, node):
     loads = []
     for child in node.children:
-      load_text = tree_text_parser.node_text_flat(child)
+      load_text = child.get_text(child.NODE_FLAT)
       next_loads = string_list.parse(load_text)
       loads.extend(next_loads)
     return loads
