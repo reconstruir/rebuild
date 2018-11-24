@@ -4,9 +4,7 @@ from bes.compat import StringIO
 from bes.common import check, type_checked_list
 from .recipe import recipe
 from bes.system.compat import with_metaclass
-#from bes.common.json_util import serializable_register_meta
 
-#class recipe_list(with_metaclass(serializable_register_meta, type_checked_list)):
 class recipe_list(type_checked_list):
 
   __value_type__ = recipe
