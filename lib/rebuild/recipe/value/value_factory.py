@@ -2,7 +2,6 @@
 
 from bes.common import check
 
-
 from .value_registry import value_registry
 
 class value_factory(object):

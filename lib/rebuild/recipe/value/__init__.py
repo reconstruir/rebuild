@@ -12,6 +12,8 @@ from .value_file import value_file_list
 from .value_git_address import value_git_address
 from .value_hook import value_hook
 from .value_hook import value_hook_list
+from .value_hook_inline import value_hook_inline
+from .value_hook_inline import value_hook_list_inline
 from .value_install_file import value_install_file
 from .value_install_file import value_install_file_list
 from .value_int import value_int
