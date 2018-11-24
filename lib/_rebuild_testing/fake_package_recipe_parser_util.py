@@ -7,7 +7,7 @@ class fake_package_recipe_parser_util(object):
   @classmethod
   def parse_file(clazz, node):
     filename = node.data.text
-    content = node.get_children_indented_text()
+    content = node.get_text(node.CHILDREN_INLINE)
     return filename, content
 
   @classmethod

@@ -119,7 +119,7 @@ class fake_package_recipe_parser(object):
   def _parse_properties(self, node):
     properties = {}
     for child in node.children:
-      property_text = tree_text_parser.node_text_flat(child)
+      property_text = child.get_text(child.NODE_FLAT)
       try:
         values = key_value_parser.parse_to_dict(property_text, options = key_value_parser.KEEP_QUOTES)
         properties.update(values)
@@ -130,7 +130,7 @@ class fake_package_recipe_parser(object):
   def _parse_requirements(self, node):
     reqs = []
     for child in node.children:
-      req_text = tree_text_parser.node_text_flat(child)
+      req_text = child.get_text(child.NODE_FLAT)
       next_reqs = requirement_list.parse(req_text)
       reqs.extend(next_reqs)
     return requirement_list(reqs)
