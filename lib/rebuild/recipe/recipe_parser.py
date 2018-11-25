@@ -162,7 +162,7 @@ class recipe_parser(object):
     for child in node.children:
       text = child.get_text(child.NODE_FLAT)
       child_origin = value_origin(self.filename, child.data.line_number, text)
-      value = masked_value.parse_mask_and_value(child_origin, text, value_type.STRING_LIST)
+      value = masked_value.parse_mask_and_value(child_origin, text, child, value_type.STRING_LIST)
       export_compilation_flags_requirements.append(value)
     return masked_value_list(export_compilation_flags_requirements)
 
@@ -206,7 +206,7 @@ class recipe_parser(object):
     text_is_inline = value_class.text_is_inline()
     text_is_inline = False
     
-    value = recipe_parser_util.make_key_value(origin, node.data.text, value_class_name)
+    value = recipe_parser_util.make_key_value(origin, node.data.text, node, value_class_name)
     if value.value:
       assert not node.children
       values.append(masked_value(None, value.value, origin))
@@ -218,7 +218,7 @@ class recipe_parser(object):
           text = child.get_text(child.NODE_FLAT)
         child_origin = value_origin(self.filename, child.data.line_number, text)
         try:
-          value = masked_value.parse_mask_and_value(child_origin, text, value_class_name)
+          value = masked_value.parse_mask_and_value(child_origin, text, child, value_class_name)
         except RuntimeError as ex:
           self._error('error: %s: %s - %s' % (origin, text, str(ex)), node)
         values.append(value)

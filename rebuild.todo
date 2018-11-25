@@ -946,3 +946,4 @@ grep for "caca" and cleanup
 
 1. add node to origin
 2. change value_base.parse() to use node instead of text
+3. value_list_base passes the root node in .parse() need to figure this out

@@ -62,7 +62,10 @@ class value_hook(with_metaclass(hook_register_meta, value_base)):
 
   @classmethod
   #@abstractmethod
-  def parse(clazz, origin, value):
+  def parse(clazz, origin, value, node):
+    if origin:
+      check.check_value_origin(origin)
+    check.check_node(node)
     hook_name, _, rest = string_util.partition_by_white_space(value)
     hook_class = hook_registry.get(hook_name)
     if not hook_class:

@@ -55,7 +55,10 @@ class value_file(value_base):
   
   @classmethod
   #@abstractmethod
-  def parse(clazz, origin, text):
+  def parse(clazz, origin, text, node):
+    if origin:
+      check.check_value_origin(origin)
+    check.check_node(node)
     base = path.dirname(origin.filename)
     filename, _, rest = string_util.partition_by_white_space(text)
     if filename.startswith('$'):

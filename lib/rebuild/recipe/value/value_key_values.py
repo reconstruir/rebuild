@@ -34,7 +34,10 @@ class value_key_values(value_base):
   
   @classmethod
   #@abstractmethod
-  def parse(clazz, origin, value):
+  def parse(clazz, origin, value, node):
+    if origin:
+      check.check_value_origin(origin)
+    check.check_node(node)
     values = key_value_list.parse(value, options = key_value_list.KEEP_QUOTES)
     return clazz(origin = origin, values = values)
   

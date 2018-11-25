@@ -37,7 +37,10 @@ class value_int(value_base):
   
   @classmethod
   #@abstractmethod
-  def parse(clazz, origin, text):
+  def parse(clazz, origin, text, node):
+    if origin:
+      check.check_value_origin(origin)
+    check.check_node(node)
     value = int(text)
     return clazz(origin = origin, value = value)
   

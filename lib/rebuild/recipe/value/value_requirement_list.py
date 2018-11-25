@@ -39,7 +39,10 @@ class value_requirement_list(value_base):
   
   @classmethod
   #@abstractmethod
-  def parse(clazz, origin, text):
+  def parse(clazz, origin, text, node):
+    if origin:
+      check.check_value_origin(origin)
+    check.check_node(node)
     if not text:
       values = requirement_list()
     else:

@@ -38,7 +38,10 @@ class value_bool(value_base):
   
   @classmethod
   #@abstractmethod
-  def parse(clazz, origin, text):
+  def parse(clazz, origin, text, node):
+    if origin:
+      check.check_value_origin(origin)
+    check.check_node(node)
     value = bool_util.parse_bool(text)
     return clazz(origin = origin, value = value)
   

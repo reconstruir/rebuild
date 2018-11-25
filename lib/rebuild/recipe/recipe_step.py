@@ -4,6 +4,8 @@ from collections import namedtuple
 from bes.compat import StringIO
 from bes.common import check
 from bes.key_value import key_value_list
+from bes.text import tree_text_parser
+
 from .recipe_value_list import recipe_value_list
 from .recipe_parser_util import recipe_parser_util
 
@@ -50,7 +52,8 @@ class recipe_step(namedtuple('recipe_step', 'name,description,values')):
       if name not in result:
         if arg_def.default is not None:
           origin = value_origin('<default>', arg_def.line_number, arg_def.default)
-          value = recipe_parser_util.make_value(origin, arg_def.default, arg_def.class_name)
+          default_node = tree_text_parser.make_node(arg_def.default, arg_def.line_number)
+          value = recipe_parser_util.make_value(origin, arg_def.default, default_node, arg_def.class_name)
           check.check_value_base(value)
           result[name] = value.resolve([ value ], arg_def.class_name)
         else:

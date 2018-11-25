@@ -34,13 +34,16 @@ class value_list_base(type_checked_list, value_base):
     
   @classmethod
   #@abstractmethod
-  def parse(clazz, origin, text):
+  def parse(clazz, origin, text, node):
+    if origin:
+      check.check_value_origin(origin)
+    check.check_node(node)
     strings = string_list.parse(text, options = string_list.KEEP_QUOTES)
     string_values, properties_text = clazz._split_values_and_properties(strings)
     values = []
     for string_value in string_values:
       value_text = string_value + ' ' + properties_text
-      value = clazz.value_type().parse(origin, value_text)
+      value = clazz.value_type().parse(origin, value_text, node)
       values.append(value)
     return clazz(origin = origin, values = values)
 

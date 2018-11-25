@@ -64,12 +64,13 @@ class masked_value(namedtuple('masked_value', 'mask, value')):
     return buf.getvalue()
 
   @classmethod
-  def parse_mask_and_value(clazz, origin, text, class_name):
+  def parse_mask_and_value(clazz, origin, text, node, class_name):
     check.check_value_origin(origin)
     check.check_string(text)
+    check.check_node(node)
     check.check_string(class_name)
     mask, value = recipe_parser_util.split_mask_and_value(text)
-    value = recipe_parser_util.make_value(origin, value, class_name)
+    value = recipe_parser_util.make_value(origin, value, node, class_name)
     return clazz(mask, value, origin)
 
   def mask_matches(self, system):

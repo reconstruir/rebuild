@@ -92,7 +92,7 @@ class value_base(with_metaclass(value_register_meta, object)):
 
   @classmethod
   @abstractmethod
-  def parse(clazz, origin, text):
+  def parse(clazz, origin, text, node):
     'Parse a value.'
     assert False
 

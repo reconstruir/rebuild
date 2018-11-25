@@ -45,7 +45,10 @@ class value_git_address(value_base):
   
   @classmethod
   #@abstractmethod
-  def parse(clazz, origin, text):
+  def parse(clazz, origin, text, node):
+    if origin:
+      check.check_value_origin(origin)
+    check.check_node(node)
     parts = string_util.split_by_white_space(text)
     if len(parts) < 2:
       raise ValueError('%s: expected address and revision instead of: %s' % (origin, text))
