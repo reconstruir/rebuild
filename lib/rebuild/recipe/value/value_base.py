@@ -70,11 +70,6 @@ class value_base(with_metaclass(value_register_meta, object)):
   def substitute(self, text):
     return variable.substitute(text, self._substitutions)
 
-  @classmethod
-  def text_is_inline(clazz):
-    'Whether the text this value parses is inline.'
-    return False
-  
   @abstractmethod
   def substitutions_changed(self):
     'substitutions changed.'

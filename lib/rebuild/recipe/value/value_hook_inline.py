@@ -93,11 +93,6 @@ class value_hook_inline(with_metaclass(hook_inline_register_meta, value_base)):
     'Execute the hook.  Same semantics as step.execute.'
     pass
 
-  @classmethod
-  def text_is_inline(clazz):
-    'Whether the text this value parses is inline.'
-    return True
-  
 check.register_class(value_hook_inline, include_seq = True)
 
 class value_hook_list_inline(value_list_base):
@@ -107,9 +102,4 @@ class value_hook_list_inline(value_list_base):
   def __init__(self, origin = None, values = None):
     super(value_hook_list_inline, self).__init__(origin = origin, values = values)
 
-  @classmethod
-  def text_is_inline(clazz):
-    'is caca de vaca'
-    return True
-    
 check.register_class(value_hook_list_inline, include_seq = False)

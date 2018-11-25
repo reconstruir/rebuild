@@ -203,19 +203,13 @@ class recipe_parser(object):
     value_class_name = args_definition[key].class_name
     value_class = value_factory.get_class(value_class_name)
     
-    text_is_inline = value_class.text_is_inline()
-    text_is_inline = False
-    
     value = recipe_parser_util.make_key_value(origin, node.data.text, node, value_class_name)
     if value.value:
       assert not node.children
       values.append(masked_value(None, value.value, origin))
     else:
       for child in node.children:
-        if text_is_inline:
-          text = child.get_text(child.CHILDREN_INLINE)
-        else:
-          text = child.get_text(child.NODE_FLAT)
+        text = child.get_text(child.NODE_FLAT)
         child_origin = value_origin(self.filename, child.data.line_number, text)
         try:
           value = masked_value.parse_mask_and_value(child_origin, text, child, value_class_name)
