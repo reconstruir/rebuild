@@ -939,3 +939,10 @@ maybe need  concept of BUILD_TOOL along with BUILD, RUN, TEST and rename TOOL to
 maybe change "load" in "recipe" to "python_code" to make it obvious
 
 maybe get git of rebuild_load_env and just use the uber env for simplicity
+masked_value_list should inherited from typed_list then fix assert
+
+add a way to comment out mutiple lines
+grep for "caca" and cleanup
+
+1. add node to origin
+2. change value_base.parse() to use node instead of text
