@@ -78,5 +78,25 @@ class test_recipe_parser_util(unit_test):
     self.assertEqual( ( 'key', 0 ), RPU.make_key_value(self.TEST_ORIGIN, 'key: 0', 'int') )
     self.assertEqual( ( 'key', 666 ), RPU.make_key_value(self.TEST_ORIGIN, 'key:666', 'int') )
 
+  def test_split_mask_and_value(self):
+    self.assertEqual( ( 'all', 'foo' ), RPU.split_mask_and_value('all: foo') )
+    self.assertEqual( ( 'all', 'foo' ), RPU.split_mask_and_value('all:foo') )
+    self.assertEqual( ( 'all', 'foo' ), RPU.split_mask_and_value(' all:foo') )
+    self.assertEqual( ( 'all', 'foo' ), RPU.split_mask_and_value(' all:foo ') )
+    self.assertEqual( ( 'all', 'foo' ), RPU.split_mask_and_value(' all: foo ') )
+    self.assertEqual( ( 'all', 'foo' ), RPU.split_mask_and_value(' all :foo ') )
+    self.assertEqual( ( 'all', 'foo' ), RPU.split_mask_and_value(' all : foo ') )
+    self.assertEqual( ( 'all', 'foo' ), RPU.split_mask_and_value('all : foo') )
+
+  def test_strip_mask(self):
+    self.assertEqual( 'foo', RPU.strip_mask('all: foo') )
+    self.assertEqual( 'foo', RPU.strip_mask('all:foo') )
+    self.assertEqual( 'foo', RPU.strip_mask(' all:foo') )
+    self.assertEqual( 'foo', RPU.strip_mask(' all:foo ') )
+    self.assertEqual( 'foo', RPU.strip_mask(' all: foo ') )
+    self.assertEqual( 'foo', RPU.strip_mask(' all :foo ') )
+    self.assertEqual( 'foo', RPU.strip_mask(' all : foo ') )
+    self.assertEqual( 'foo', RPU.strip_mask('all : foo') )
+
 if __name__ == '__main__':
   unit_test.main()

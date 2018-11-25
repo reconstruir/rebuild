@@ -8,6 +8,20 @@ from .value import value_factory
 
 class recipe_parser_util(object):
 
+  MASK_DELIMITER = ':'
+
+  @classmethod
+  def split_mask_and_value(clazz, s):
+    mask, delimiter, value = s.partition(clazz.MASK_DELIMITER)
+    if delimiter != clazz.MASK_DELIMITER:
+      raise ValueError('no valid mask delimiter found: %s' % (s))
+    return ( mask.strip(), value.strip() )
+  
+  @classmethod
+  def strip_mask(clazz, s):
+    _, value = clazz.split_mask_and_value(s)
+    return value
+
   @classmethod
   def parse_key(clazz, origin, text):
     'Parse only the key'

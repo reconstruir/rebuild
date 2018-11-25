@@ -58,7 +58,8 @@ class masked_value(namedtuple('masked_value', 'mask, value')):
     buf = StringIO()
     buf.write(spaces)
     buf.write(self.mask)
-    buf.write(': ')
+    buf.write(recipe_parser_util.MASK_DELIMITER)
+    buf.write(' ')
     buf.write(self.value_to_string(quote = quote))
     return buf.getvalue()
 
@@ -67,8 +68,8 @@ class masked_value(namedtuple('masked_value', 'mask, value')):
     check.check_value_origin(origin)
     check.check_string(text)
     check.check_string(class_name)
-    mask, delimiter, value = text.partition(':')
-    value = recipe_parser_util.make_value(origin, value.strip(), class_name)
+    mask, value = recipe_parser_util.split_mask_and_value(text)
+    value = recipe_parser_util.make_value(origin, value, class_name)
     return clazz(mask, value, origin)
 
   def mask_matches(self, system):
