@@ -31,7 +31,7 @@ class value_definition(namedtuple('value_definition', 'name, class_name, default
   @classmethod
   def parse_many(clazz, text):
     result = {}
-    text = comments.strip_multi_line(text, strip_head = True, strip_tail = True, remove_empties = False)
+    text = comments.strip_in_lines(text, strip_head = True, strip_tail = True, remove_empties = False)
     lines = text.split('\n')
     for i, line in enumerate(lines):
       if line:
