@@ -52,11 +52,11 @@ class test_recipe_parser_util(unit_test):
   def test_make_key_value_value_key_values(self):
     self.assertEqual( ( 'key', None ), RPU.make_key_value(self.TEST_ORIGIN, 'key', TTP.make_node('key', 1), 'key_values') )
     self.assertEqual( ( 'key', None ), RPU.make_key_value(self.TEST_ORIGIN, 'key:', TTP.make_node('key:', 1), 'key_values') )
-    self.assertEqual( ( 'key', VKV(values = KVL([ ( 'foo', '5' ) ])) ),
+    self.assertEqual( ( 'key', VKV(value = KVL([ ( 'foo', '5' ) ])) ),
                       RPU.make_key_value(self.TEST_ORIGIN, 'key:foo=5', TTP.make_node('key:foo=5', 1), 'key_values') )
-    self.assertEqual( ( 'key', VKV(values = KVL([ ( 'foo', '5' ), ( 'bar', '7' ) ])) ),
+    self.assertEqual( ( 'key', VKV(value = KVL([ ( 'foo', '5' ), ( 'bar', '7' ) ])) ),
                       RPU.make_key_value(self.TEST_ORIGIN, 'key:foo=5 bar=7', TTP.make_node('key:foo=5 bar=7', 1), 'key_values') )
-    self.assertEqual( ( 'key', VKV(values = KVL([ ( 'foo', '"5 6"' ), ( 'bar', '"7 8"' ) ])) ),
+    self.assertEqual( ( 'key', VKV(value = KVL([ ( 'foo', '"5 6"' ), ( 'bar', '"7 8"' ) ])) ),
                       RPU.make_key_value(self.TEST_ORIGIN, 'key:foo="5 6" bar="7 8"', TTP.make_node('key:foo="5 6" bar="7 8"', 1), 'key_values') )
 
   def test_make_key_value_value_bool(self):

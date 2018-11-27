@@ -8,6 +8,9 @@ from bes.common import check, variable
 from bes.key_value import key_value_list
 
 from .value_registry import value_registry
+from .value_parsing import value_parsing
+from .value_origin import value_origin
+from .masked_value import masked_value
 
 class value_register_meta(ABCMeta):
 
@@ -29,7 +32,10 @@ class value_base(with_metaclass(value_register_meta, object)):
 
   def __str__(self):
     return self.value_to_string(True)
-
+  
+  def __repr__(self):
+    return repr(self.value)
+  
   def properties_to_string(self):
     if not self._properties:
       return None
@@ -87,6 +93,12 @@ class value_base(with_metaclass(value_register_meta, object)):
 
   @classmethod
   @abstractmethod
+  def _parse_plain_string(clazz, origin, s):
+    'Parse just a string.'
+    assert False
+
+  @classmethod
+  @abstractmethod
   def parse(clazz, origin, text, node):
     'Parse a value.'
     assert False
@@ -109,5 +121,25 @@ class value_base(with_metaclass(value_register_meta, object)):
       if ps:
         buf.write(' ')
         buf.write(ps)
-    
+
+  @classmethod
+  def _new_parse_simple(clazz, value_type, origin, node):
+    'Parse a value.'
+    result = []
+    text = node.data.text_no_comments
+    if ':' in text:
+      pv = value_parsing.parse_key_value(origin, text)
+      if pv.value:
+        root_plain_value = clazz._parse_plain_string(origin, pv.value)
+        root_masked_value = masked_value(None, value_type(origin = origin, value = root_plain_value))
+        result.append(root_masked_value)
+    for child in node.children:
+      child_origin = value_origin(origin.filename, child.data.line_number, child.data.text)
+      child_text = child.data.text_no_comments
+      child_pv = value_parsing.parse_mask_and_value(child_origin, child_text)
+      child_plain_value = clazz._parse_plain_string(child_origin, child_pv.value)
+      child_masked_value = masked_value(child_pv.mask, value_type(origin = child_origin, value = child_plain_value))
+      result.append(child_masked_value)
+    return result
+        
 check.register_class(value_base)

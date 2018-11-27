@@ -4,7 +4,7 @@ from bes.common import algorithm, check, type_checked_list
 from bes.compat import StringIO
 from rebuild.base import build_system
 
-from .value import value_factory
+from .value_factory import value_factory
 
 class masked_value_list(object):
 

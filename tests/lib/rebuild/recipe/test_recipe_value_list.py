@@ -2,23 +2,26 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from rebuild.recipe import recipe_value as RV, recipe_value_list as RVL, masked_value as MV, masked_value_list as MVL
+from rebuild.recipe import recipe_value as RV, recipe_value_list as RVL
 from bes.key_value import key_value_list as KVL
 from bes.text import string_list
 from rebuild.recipe.value import value_key_values as VKV
 from rebuild.recipe.value import value_definition as VD
+from rebuild.recipe.value import masked_value as MV, masked_value_list as MVL
+from rebuild.recipe.value import value_bool
+from rebuild.recipe.value import value_string_list
 
 class test_recipe_value_list(unit_test):
 
   def test_resolve(self):
     values = RVL([
-      RV('bool_value', [ MV('all', True) ]),
-      RV('string_list_value', [ MV('all', [ 'a', 'b', '"x y"' ]) ]),
+      RV('bool_value', [ MV('all', value_bool(value = True)) ]),
+      RV('string_list_value', [ MV('all', value_string_list(value = [ 'a', 'b', '"x y"' ])) ]),
       RV('key_values_value', [
-        MV('all', VKV(values = KVL([ ('a', 'forall'), ('b', '6') ]))),
-        MV('linux', VKV(values = KVL([ ('a', 'forlinux') ]))),
-        MV('macos', VKV(values = KVL([ ('a', 'formacos') ]))),
-        MV('android', VKV(values = KVL([ ('a', 'forandroid') ]))),
+        MV('all', VKV(value = KVL([ ('a', 'forall'), ('b', '6') ]))),
+        MV('linux', VKV(value = KVL([ ('a', 'forlinux') ]))),
+        MV('macos', VKV(value = KVL([ ('a', 'formacos') ]))),
+        MV('android', VKV(value = KVL([ ('a', 'forandroid') ]))),
         ]),
     ])
 

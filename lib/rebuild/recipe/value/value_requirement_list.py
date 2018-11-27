@@ -8,9 +8,9 @@ from .value_type import value_type
 
 class value_requirement_list(value_base):
 
-  def __init__(self, origin = None, values = None):
+  def __init__(self, origin = None, value = None):
     super(value_requirement_list, self).__init__(origin)
-    values = values or requirement_list()
+    values = value or requirement_list()
     if not check.is_requirement_list(values):
       values = requirement_list.parse(values)
     check.check_requirement_list(values)
@@ -47,7 +47,7 @@ class value_requirement_list(value_base):
       values = requirement_list()
     else:
       values = requirement_list.parse(text)
-    return clazz(origin = origin, values = values)
+    return clazz(origin = origin, value = values)
   
   @classmethod
   #@abstractmethod

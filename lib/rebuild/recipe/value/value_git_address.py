@@ -3,27 +3,27 @@
 import os.path as path
 from bes.common import check, string_util
 from bes.compat import StringIO
+from bes.git import git_address
 from .value_base import value_base
 
 class value_git_address(value_base):
 
-  def __init__(self, origin = None, address = '', revision = '', properties = None):
+  def __init__(self, origin = None, value = None, properties = None):
     super(value_git_address, self).__init__(origin, properties = properties)
-    check.check_string(address)
-    check.check_string(revision)
-    self._address = address
-    self._revision = revision
+    if value:
+      check.check_git_address(value)
+    self.value = value
 
   def __eq__(self, other):
-    return self._address == other._address and self._revision == other._revision
+    return self.value == other.value
 
   @property
   def address(self):
-    return self.substitute(self._address)
+    return self.substitute(self.value.address)
   
   @property
   def revision(self):
-    return self.substitute(self._revision)
+    return self.substitute(self.value.revision)
   
   #@abstractmethod
   def value_to_string(self, quote, include_properties = True):
@@ -56,7 +56,7 @@ class value_git_address(value_base):
     revision = parts[1]
     rest = string_util.replace(text, { address: '', revision: '' })
     properties = clazz.parse_properties(rest)
-    return clazz(origin = origin, address = address, revision = revision, properties = properties)
+    return clazz(origin = origin, value = git_address(address, revision), properties = properties)
   
   @classmethod
   #@abstractmethod

@@ -16,19 +16,18 @@ from rebuild.step.step_description import step_description
 from rebuild.recipe.value import value_type
 from rebuild.instruction import instruction_list
 
-from .masked_value import masked_value
-from .masked_value_list import masked_value_list
-
 from .recipe import recipe
+from .recipe_list import recipe_list
 from .recipe_parser_util import recipe_parser_util
 from .recipe_step import recipe_step
 from .recipe_step_list import recipe_step_list
 from .recipe_value import recipe_value
-from .recipe_list import recipe_list
 
+from .value import masked_value
+from .value import masked_value_list
+from .value import value_factory
 from .value import value_file
 from .value import value_origin
-from .value import value_factory
 
 class recipe_parser_error(Exception):
   def __init__(self, message, filename, line_number):
@@ -205,10 +204,11 @@ class recipe_parser(object):
 
     value = recipe_parser_util.make_key_value(origin, node.data.text, node, value_class_name)
 
-    if False:
+    if True:
       if hasattr(value_class, 'new_parse'):
         new_value = value_class.new_parse(origin, node)
-        print('CACA: new_value: %s' % (str(new_value)))
+        values.extend(new_value)
+        return recipe_value(key, values)
     
     if value.value:
       assert not node.children

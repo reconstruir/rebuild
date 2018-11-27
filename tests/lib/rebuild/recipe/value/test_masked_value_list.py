@@ -3,16 +3,18 @@
 
 from bes.testing.unit_test import unit_test
 from bes.text import tree_text_parser
-from rebuild.recipe import masked_value as V, masked_value_list as VL, recipe_parser as RP
+from rebuild.recipe import recipe_parser as RP
 from rebuild.base import build_system
 from rebuild.recipe.value import value_type as VT, value_origin as VO
+from rebuild.recipe.value import masked_value as V, masked_value_list as VL
+from rebuild.recipe.value import value_int
 
 class test_masked_value_list(unit_test):
 
   def test_append(self):
     r = VL()
-    r.append(V(None, 666))
-    r.append(V(None, 667))
+    r.append(V(None, value_int(value = 666)))
+    r.append(V(None, value_int(value = 667)))
     self.assertEqual( 2, len(r) )
     
   def test_resolve_int(self):

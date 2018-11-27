@@ -5,31 +5,12 @@ from bes.common import check
 from bes.compat import StringIO
 from rebuild.base import build_system
 
-from .value import value_bool
-from .value import value_int
-from .value import value_key_values
-from .value import value_string
-from .value import value_string_list
-from .value import value_parsing
+from .value_parsing import value_parsing
 
 class masked_value(namedtuple('masked_value', 'mask, value')):
 
   def __new__(clazz, mask, value, origin = None):
-    if not check.is_value_base(value):
-      if check.is_bool(value):
-        value = value_bool(origin = origin, value = value)
-      elif check.is_int(value):
-        value = value_int(origin = origin, value = value)
-      elif check.is_string(value):
-        value = value_string(origin = origin, value = value)
-      elif check.is_string_list(value) or check.is_string_seq(value):
-        value = value_string_list(origin = origin, values = value)
-      elif check.is_key_value_list(value):
-        value = value_key_values(origin = origin, values = value)
-
-    if not check.is_value_base(value):
-      raise TypeError('value should be subclass of value_base: %s - %s' % (str(value), type(value)))
-
+    check.check_value_base(value)
     if origin:
       check.check_value_origin(origin)
     return clazz.__bases__[0].__new__(clazz, mask, value)

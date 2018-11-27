@@ -3,7 +3,7 @@
 from collections import namedtuple
 from bes.common import check
 from bes.compat import StringIO
-from .masked_value_list import masked_value_list
+from .value import masked_value_list
 
 class recipe_value(namedtuple('recipe_value', 'key,values')):
 

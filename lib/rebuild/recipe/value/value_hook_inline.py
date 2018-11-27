@@ -99,7 +99,7 @@ class value_hook_list_inline(value_list_base):
 
   __value_type__ = value_hook_inline
   
-  def __init__(self, origin = None, values = None):
-    super(value_hook_list_inline, self).__init__(origin = origin, values = values)
+  def __init__(self, origin = None, value = None):
+    super(value_hook_list_inline, self).__init__(origin = origin, value = value)
 
 check.register_class(value_hook_list_inline, include_seq = False)

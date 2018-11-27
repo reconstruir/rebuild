@@ -7,9 +7,9 @@ from .value_base import value_base
 
 class value_key_values(value_base):
 
-  def __init__(self, origin = None, values = None):
+  def __init__(self, origin = None, value = None):
     super(value_key_values, self).__init__(origin)
-    values = values or key_value_list()
+    values = value or key_value_list()
     check.check_key_value_list(values)
     self.values = values
 
@@ -39,7 +39,7 @@ class value_key_values(value_base):
       check.check_value_origin(origin)
     check.check_node(node)
     values = key_value_list.parse(value, options = key_value_list.KEEP_QUOTES)
-    return clazz(origin = origin, values = values)
+    return clazz(origin = origin, value = values)
   
   @classmethod
   #@abstractmethod

@@ -9,9 +9,9 @@ from .value_type import value_type
 
 class value_string_list(value_base):
 
-  def __init__(self, origin = None, values = None):
+  def __init__(self, origin = None, value = None):
     super(value_string_list, self).__init__(origin)
-    values = values or string_list()
+    values = value or string_list()
     if not check.is_string_list(values):
       values = string_list(values)
     check.check_string_list(values)
@@ -48,7 +48,7 @@ class value_string_list(value_base):
       values = string_list()
     else:
       values = string_list.parse(text, options = string_list.KEEP_QUOTES)
-    return clazz(origin = origin, values = values)
+    return clazz(origin = origin, value = values)
   
   @classmethod
   #@abstractmethod

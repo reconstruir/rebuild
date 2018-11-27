@@ -21,7 +21,7 @@ class value_parsing(object):
 
   MASK_DELIMITER = ':'
 
-  parsed_value = namedtuple('parsed_value', 'mask, key, value')
+  parsed_value = namedtuple('parsed_value', 'mask, value')
 
   _mav = namedtuple('_mav', 'mask, value')
   @classmethod
@@ -45,17 +45,16 @@ class value_parsing(object):
     if not key:
       raise clazz.raise_error(origin, '%s: invalid step value key: \"%s\"' % (origin, text))
     if not delimiter:
-      return clazz.parsed_value(None, key, None)
+      return clazz.parsed_value(None, None)
     value_text = value.strip() or None
-    return clazz.parsed_value(None, key, value_text)
+    return clazz.parsed_value(None, value_text)
 
   @classmethod
-  def parse_mask_and_value(clazz, origin, key, text):
+  def parse_mask_and_value(clazz, origin, text):
     check.check_value_origin(origin)
-    check.check_string(key)
     check.check_string(text)
     mask, value = clazz.split_mask_and_value(text)
-    return clazz.parsed_value(mask, key, value)
+    return clazz.parsed_value(mask, value)
   
   @classmethod
   def raise_error(clazz, origin, msg, starting_line_number = None):

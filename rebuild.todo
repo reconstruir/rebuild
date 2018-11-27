@@ -948,4 +948,6 @@ grep for "caca" and cleanup
 2. change value_base.parse() to use node instead of text
 3. value_list_base passes the root node in .parse() need to figure this out
 
-not clear why masked_value __init__ accepts a bunch of non value_base options
+value_git_address, value_file and all should set self.value like everything else
+audit all value_base subclassess resolve() to make sure they do the right thing
+value_base.resolve() is misnamed should be more like "combine" or somehing better

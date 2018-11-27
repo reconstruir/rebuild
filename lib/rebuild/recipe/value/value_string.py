@@ -39,6 +39,18 @@ class value_string(value_base):
       check.check_value_origin(origin)
     check.check_node(node)
     return clazz(origin = origin, value = text)
+
+  @classmethod
+  #@abstractmethod
+  def _parse_plain_string(clazz, origin, s):
+    'Parse just a string.'
+    return s
+  
+  @classmethod
+  #@abstractmethod
+  def new_parse(clazz, origin, node):
+    'Parse a value.'
+    return clazz._new_parse_simple(value_string, origin, node)
   
   @classmethod
   #@abstractmethod

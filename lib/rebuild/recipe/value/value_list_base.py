@@ -8,10 +8,14 @@ from .value_base import value_base
 
 class value_list_base(type_checked_list, value_base):
 
-  def __init__(self, origin = None, values = None):
-    type_checked_list.__init__(self, values = values)
+  def __init__(self, origin = None, value = None):
+    type_checked_list.__init__(self, values = value)
     value_base.__init__(self, origin)
 
+  @property
+  def value(self):
+    return self.values
+    
   #@abstractmethod
   def value_to_string(self, quote, include_properties = True):
     buf = StringIO()
@@ -55,7 +59,7 @@ class value_list_base(type_checked_list, value_base):
       value_text = string_value + ' ' + properties_text
       value = clazz.value_type().parse(origin, value_text, node)
       values.append(value)
-    return clazz(origin = origin, values = values)
+    return clazz(origin = origin, value = values)
 
   @classmethod
   #@abstractmethod

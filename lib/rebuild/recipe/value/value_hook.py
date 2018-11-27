@@ -83,7 +83,7 @@ class value_hook(with_metaclass(hook_register_meta, value_base)):
     for value in values:
       check.check_value_hook(value)
       result_hooks.append(value)
-    result = value_hook_list(values = result_hooks)
+    result = value_hook_list(value = result_hooks)
     result.remove_dups()
     return result
   
@@ -98,7 +98,7 @@ class value_hook_list(value_list_base):
 
   __value_type__ = value_hook
   
-  def __init__(self, origin = None, values = None):
-    super(value_hook_list, self).__init__(origin = origin, values = values)
+  def __init__(self, origin = None, value = None):
+    super(value_hook_list, self).__init__(origin = origin, value = value)
   
 check.register_class(value_hook_list, include_seq = False)

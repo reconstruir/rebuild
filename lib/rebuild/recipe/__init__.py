@@ -1,7 +1,5 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from .masked_value import masked_value
-from .masked_value_list import masked_value_list
 from .recipe import recipe
 from .recipe_parser import recipe_parser, recipe_parser_error
 from .recipe_parser_util import recipe_parser_util

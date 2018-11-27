@@ -717,19 +717,18 @@ class test_recipe_step_values(unit_test):
 package foo 1.2.3 4
   steps
     step_takes_bool
-      bool_value : True #comment
-        all: False
-        linux: False #comment
-        android: True
+      bool_value: True
+        all: True
+        android: False
 '''
 
     r = self._parse(text)
-    import pprint
-    print('CACA STEP: %s' % (str(r[0].steps[0].values)))
-    self.assertEqual( 1, len(r) )
-    self.assertEqual( 'foo', r[0].descriptor.name )
-    self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
-    self.assertMultiLineEqual( 'step_takes_bool\n    bool_value: True', str(r[0].steps[0]) )
+    v = r[0].steps[0].values
+    print('CACA: %s=%s' % (v[0].key, repr(v[0].values)))
+    self.assertFalse( True )
+#    self.assertEqual( 'foo', r[0].descriptor.name )
+#    self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
+#    self.assertMultiLineEqual( 'step_takes_bool\n    bool_value: True', str(r[0].steps[0]) )
 
   @classmethod
   def _parse(self, text, starting_line_number = 0):
