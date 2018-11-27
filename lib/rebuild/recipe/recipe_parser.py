@@ -162,7 +162,7 @@ class recipe_parser(object):
     for child in node.children:
       text = child.get_text(child.NODE_FLAT)
       child_origin = value_origin(self.filename, child.data.line_number, text)
-      value = masked_value.parse_mask_and_value(child_origin, text, child, value_type.STRING_LIST)
+      value = self._caca_parse_mask_and_value(child_origin, text, child, value_type.STRING_LIST)
       export_compilation_flags_requirements.append(value)
     return masked_value_list(export_compilation_flags_requirements)
 
@@ -202,8 +202,14 @@ class recipe_parser(object):
 
     value_class_name = args_definition[key].class_name
     value_class = value_factory.get_class(value_class_name)
-    
+
     value = recipe_parser_util.make_key_value(origin, node.data.text, node, value_class_name)
+
+    if False:
+      if hasattr(value_class, 'new_parse'):
+        new_value = value_class.new_parse(origin, node)
+        print('CACA: new_value: %s' % (str(new_value)))
+    
     if value.value:
       assert not node.children
       values.append(masked_value(None, value.value, origin))
@@ -212,7 +218,7 @@ class recipe_parser(object):
         text = child.get_text(child.NODE_FLAT)
         child_origin = value_origin(self.filename, child.data.line_number, text)
         try:
-          value = masked_value.parse_mask_and_value(child_origin, text, child, value_class_name)
+          value = self._caca_parse_mask_and_value(child_origin, text, child, value_class_name)
         except RuntimeError as ex:
           self._error('error: %s: %s - %s' % (origin, text, str(ex)), node)
         values.append(value)
@@ -237,3 +243,14 @@ class recipe_parser(object):
       for key, value in tmp_locals.items():
         if check.is_class(value):
           setattr(value, '__load_file__', code_filename)
+
+  @classmethod
+  def _caca_parse_mask_and_value(clazz, origin, text, node, class_name):
+    check.check_value_origin(origin)
+    check.check_string(text)
+    check.check_node(node)
+    check.check_string(class_name)
+    mask, value = recipe_parser_util.split_mask_and_value(text)
+    value = recipe_parser_util.make_value(origin, value, node, class_name)
+    return masked_value(mask, value, origin)
+          

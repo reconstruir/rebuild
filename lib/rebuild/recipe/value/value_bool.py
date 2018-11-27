@@ -5,6 +5,8 @@ from bes.common import bool_util, check
 
 from .value_base import value_base
 from .value_type import value_type
+from .value_parsing import value_parsing
+from .value_origin import value_origin
 
 class value_bool(value_base):
 
@@ -44,6 +46,27 @@ class value_bool(value_base):
     check.check_node(node)
     value = bool_util.parse_bool(text)
     return clazz(origin = origin, value = value)
+
+  @classmethod
+  #@abstractmethod
+  def new_parse(clazz, origin, node):
+    'Parse a value.'
+    result = []
+    text = node.data.text_no_comments
+    if ':' in text:
+      pv = value_parsing.parse_key_value(origin, text)
+      pv = clazz._parsed_value_to_bool_value(pv)
+      key = pv.key
+      result.append(pv)
+    else:
+      key = text.strip()
+    for child in node.children:
+      child_origin = value_origin(origin.filename, child.data.line_number, child.data.text)
+      child_text = child.data.text_no_comments
+      cpv = value_parsing.parse_mask_and_value(child_origin, key, child_text)
+      cpv = clazz._parsed_value_to_bool_value(cpv)
+      result.append(cpv)
+    return result
   
   @classmethod
   #@abstractmethod
@@ -56,5 +79,11 @@ class value_bool(value_base):
     'Resolve a list of values if this type into a nice dictionary.'
     assert class_name == value_type.BOOL
     return values[-1].value
+
+  @classmethod
+  def _parsed_value_to_bool_value(clazz, pv):
+    'Parse a value.'
+    value = bool_util.parse_bool(pv.value or 'False')
+    return value_parsing.parsed_value(pv.mask, pv.key, value)
   
 check.register_class(value_bool, include_seq = True)

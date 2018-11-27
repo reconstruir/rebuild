@@ -52,7 +52,7 @@ package foo 1.2.3 4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
     
-  def test_step_value_bool(self):
+  def test_step_value_bool_no_mask(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
   steps
@@ -537,6 +537,20 @@ package foo 1.2.3 4
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_file_list\n    file_list_value: test_file1.txt test_file2.txt foo=5 bar=6', str(r[0].steps[0]) )
 
+  def xtest_step_value_file_list_with_properties_multi_line(self):
+    text = '''!rebuild.recipe!
+package foo 1.2.3 4
+
+  steps
+    step_takes_file_list
+      file_list_value: test_file1.txt test_file2.txt foo=5
+                       bar=6
+'''
+    r = P(self._filename_for_parser(), text).parse()
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 1, len(r[0].steps) )
+    self.assertMultiLineEqual( 'step_takes_file_list\n    file_list_value: test_file1.txt test_file2.txt foo=5 bar=6', str(r[0].steps[0]) )
+    
   def test_step_value_file(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
@@ -695,6 +709,31 @@ package foo 1.2.3 4
   def _filename_for_parser(self):
     'Return a fake filename for parser.  Some values need it to find files relatively to filename.'
     return self.data_path('whatever')
-    
+
+class test_recipe_step_values(unit_test):
+  
+  def xtest_step_value_bool_no_mask(self):
+    text = '''!rebuild.recipe!
+package foo 1.2.3 4
+  steps
+    step_takes_bool
+      bool_value : True #comment
+        all: False
+        linux: False #comment
+        android: True
+'''
+
+    r = self._parse(text)
+    import pprint
+    print('CACA STEP: %s' % (str(r[0].steps[0].values)))
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( 'foo', r[0].descriptor.name )
+    self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
+    self.assertMultiLineEqual( 'step_takes_bool\n    bool_value: True', str(r[0].steps[0]) )
+
+  @classmethod
+  def _parse(self, text, starting_line_number = 0):
+    return P(path.basename(__file__), text, starting_line_number = starting_line_number).parse()
+  
 if __name__ == '__main__':
   unit_test.main()

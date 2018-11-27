@@ -3,7 +3,7 @@
 
 from bes.testing.unit_test import unit_test
 from bes.text import tree_text_parser
-from rebuild.recipe import masked_value as V, masked_value_list as VL
+from rebuild.recipe import masked_value as V, masked_value_list as VL, recipe_parser as RP
 from rebuild.base import build_system
 from rebuild.recipe.value import value_type as VT, value_origin as VO
 
@@ -41,23 +41,23 @@ class test_masked_value_list(unit_test):
 
   @classmethod
   def _int(clazz, s):
-    return V.parse_mask_and_value(VO(__file__, 1, s), s, tree_text_parser.make_node(s, 1), VT.INT)
+    return RP._caca_parse_mask_and_value(VO(__file__, 1, s), s, tree_text_parser.make_node(s, 1), VT.INT)
     
   @classmethod
   def _string(clazz, s):
-    return V.parse_mask_and_value(VO(__file__, 1, s), s, tree_text_parser.make_node(s, 1), VT.STRING)
+    return RP._caca_parse_mask_and_value(VO(__file__, 1, s), s, tree_text_parser.make_node(s, 1), VT.STRING)
     
   @classmethod
   def _bool(clazz, s):
-    return V.parse_mask_and_value(VO(__file__, 1, s), s, tree_text_parser.make_node(s, 1), VT.BOOL)
+    return RP._caca_parse_mask_and_value(VO(__file__, 1, s), s, tree_text_parser.make_node(s, 1), VT.BOOL)
     
   @classmethod
   def _string_list(clazz, s):
-    return V.parse_mask_and_value(VO(__file__, 1, s), s, tree_text_parser.make_node(s, 1), VT.STRING_LIST)
+    return RP._caca_parse_mask_and_value(VO(__file__, 1, s), s, tree_text_parser.make_node(s, 1), VT.STRING_LIST)
     
   @classmethod
   def _key_values(clazz, s):
-    return V.parse_mask_and_value(VO(__file__, 1, s), s, tree_text_parser.make_node(s, 1), VT.KEY_VALUES)
+    return RP._caca_parse_mask_and_value(VO(__file__, 1, s), s, tree_text_parser.make_node(s, 1), VT.KEY_VALUES)
     
 if __name__ == '__main__':
   unit_test.main()

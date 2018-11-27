@@ -4,13 +4,13 @@ from collections import namedtuple
 from bes.common import check
 from bes.compat import StringIO
 from rebuild.base import build_system
-from .recipe_parser_util import recipe_parser_util
 
 from .value import value_bool
 from .value import value_int
 from .value import value_key_values
 from .value import value_string
 from .value import value_string_list
+from .value import value_parsing
 
 class masked_value(namedtuple('masked_value', 'mask, value')):
 
@@ -58,20 +58,10 @@ class masked_value(namedtuple('masked_value', 'mask, value')):
     buf = StringIO()
     buf.write(spaces)
     buf.write(self.mask)
-    buf.write(recipe_parser_util.MASK_DELIMITER)
+    buf.write(value_parsing.MASK_DELIMITER)
     buf.write(' ')
     buf.write(self.value_to_string(quote = quote))
     return buf.getvalue()
-
-  @classmethod
-  def parse_mask_and_value(clazz, origin, text, node, class_name):
-    check.check_value_origin(origin)
-    check.check_string(text)
-    check.check_node(node)
-    check.check_string(class_name)
-    mask, value = recipe_parser_util.split_mask_and_value(text)
-    value = recipe_parser_util.make_value(origin, value, node, class_name)
-    return clazz(mask, value, origin)
 
   def mask_matches(self, system):
     return build_system.mask_matches(self.mask or 'all', system)

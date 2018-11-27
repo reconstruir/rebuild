@@ -41,6 +41,16 @@ class value_list_base(type_checked_list, value_base):
     strings = string_list.parse(text, options = string_list.KEEP_QUOTES)
     string_values, properties_text = clazz._split_values_and_properties(strings)
     values = []
+
+    if False:
+      print('VLB.parse()          origin: _%s_' % (str(origin)))
+      print('VLB.parse()            text: _%s_' % (text))
+      print('VLB.parse()      value_type: %s' % (clazz.value_type()))
+      print('VLB.parse()         strings: %s' % (strings))
+      print('VLB.parse()   string_values: %s' % (string_values))
+      print('VLB.parse() properties_text: %s' % (properties_text))
+      print('')
+      
     for string_value in string_values:
       value_text = string_value + ' ' + properties_text
       value = clazz.value_type().parse(origin, value_text, node)
