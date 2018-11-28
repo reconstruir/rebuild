@@ -10,23 +10,23 @@ class value_requirement_list(value_base):
 
   def __init__(self, origin = None, value = None):
     super(value_requirement_list, self).__init__(origin)
-    values = value or requirement_list()
-    if not check.is_requirement_list(values):
-      values = requirement_list.parse(values)
-    check.check_requirement_list(values)
-    self.values = values
+    value = value or requirement_list()
+    if not check.is_requirement_list(value):
+      value = requirement_list.parse(values)
+    check.check_requirement_list(value)
+    self.value = value
 
   def __eq__(self, other):
     if check.is_requirement_list(other):
-      return self.values == other
-    return self.values == other.values
+      return self.value == other
+    return self.value == other.value
     
   def __iter__(self):
-    return iter(self.values)
+    return iter(self.value)
     
   #@abstractmethod
   def value_to_string(self, quote, include_properties = True):
-    return self.values.to_string(delimiter = ' ')
+    return self.value.to_string(delimiter = ' ')
 
   #@abstractmethod
   def sources(self, recipe_env):
@@ -44,10 +44,10 @@ class value_requirement_list(value_base):
       check.check_value_origin(origin)
     check.check_node(node)
     if not text:
-      values = requirement_list()
+      values= requirement_list()
     else:
-      values = requirement_list.parse(text)
-    return clazz(origin = origin, value = values)
+      value = requirement_list.parse(text)
+    return clazz(origin = origin, value = value)
   
   @classmethod
   #@abstractmethod
@@ -68,7 +68,7 @@ class value_requirement_list(value_base):
     result = requirement_list()
     for value in values:
       check.check_value_requirement_list(value)
-      result.extend(value.values)
+      result.extend(value.value)
     result.remove_dups()
     return result
   

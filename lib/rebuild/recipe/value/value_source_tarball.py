@@ -7,29 +7,30 @@ from .value_base import value_base
 
 class value_source_tarball(value_base):
 
-  def __init__(self, origin = None, filename = '', properties = None):
+  def __init__(self, origin = None, value = None, properties = None):
     super(value_source_tarball, self).__init__(origin, properties = properties)
-    check.check_string(filename)
-    self.filename = filename
+    if value:
+      check.check_string(value)
+    self.value = value
 
   def __eq__(self, other):
-    return self.filename == other.filename
+    return self.value == other.filename
     
   #@abstractmethod
   def value_to_string(self, quote, include_properties = True):
     buf = StringIO()
-    buf.write(self.filename)
+    buf.write(self.value)
     self._append_properties_string(buf, include_properties)
     return buf.getvalue()
 
   #@abstractmethod
   def sources(self, recipe_env):
     'Return a list of sources this caca provides or None if no sources.'
-    return [ recipe_env.source_finder.find_tarball(self.filename) ]
+    return [ recipe_env.source_finder.find_tarball(self.value) ]
 
   #@abstractmethod
   def substitutions_changed(self):
-    self.filename = self.substitute(self.filename)
+    self.value = self.substitute(self.value)
   
   @classmethod
   #@abstractmethod
@@ -43,7 +44,7 @@ class value_source_tarball(value_base):
     filename = parts[0]
     rest = string_util.replace(text, { filename: '' })
     properties = clazz.parse_properties(rest)
-    return clazz(origin = origin, filename = filename, properties = properties)
+    return clazz(origin = origin, value = filename, properties = properties)
   
   @classmethod
   #@abstractmethod

@@ -1,36 +1,44 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
+from collections import namedtuple
+
 from bes.common import algorithm, check, string_util
 from bes.compat import StringIO
 from bes.dependency import dependency_provider
+
 from .value_base import value_base
 from .value_list_base import value_list_base
 
+_install_file = namedtuple('_install_file', 'filename, dst_filename')
 class value_install_file(value_base):
 
-  def __init__(self, origin = None, filename = '', dst_filename = '', properties = None):
+  def __init__(self, origin = None, value = None, properties = None):
     super(value_install_file, self).__init__(origin, properties = properties)
-    self._filename = filename
-    self._dst_filename = dst_filename
+    if value:
+      assert isinstance(value, _install_file)
+    self.value = value
 
+  def __hash__(self):
+    return hash(self.value)
+    
   def __eq__(self, other):
-    return self._filename == other._filename and self._dst_filename == other._dst_filename
+    return self.value == other.value
 
   @property
   def filename(self):
-    return self.substitute(self._filename)
+    return self.substitute(self.value.filename)
   
   @property
   def dst_filename(self):
-    return self.substitute(self._dst_filename)
+    return self.substitute(self.value.dst_filename)
   
   #@abstractmethod
   def value_to_string(self, quote, include_properties = True):
     buf = StringIO()
-    buf.write(path.basename(self._filename))
+    buf.write(path.basename(self.value.filename))
     buf.write(' ')
-    buf.write(self._dst_filename)
+    buf.write(self.value.dst_filename)
     self._append_properties_string(buf, include_properties)
     return buf.getvalue()
 
@@ -63,7 +71,8 @@ class value_install_file(value_base):
     rest = text.replace(filename, '')
     rest = rest.replace(dst_filename, '')
     properties = clazz.parse_properties(rest)
-    return clazz(origin = origin, filename = filename, dst_filename = dst_filename, properties = properties)
+    value = _install_file(filename, dst_filename)
+    return clazz(origin = origin, value = value, properties = properties)
 
   @classmethod
   #@abstractmethod
