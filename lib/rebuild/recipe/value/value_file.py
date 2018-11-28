@@ -10,26 +10,27 @@ from .value_list_base import value_list_base
 
 class value_file(value_base):
 
-  def __init__(self, origin = None, filename = '', properties = None):
+  def __init__(self, origin = None, value = None, properties = None):
     'Class to manage a recipe file.'
     super(value_file, self).__init__(origin, properties = properties)
-    check.check_string(filename)
-    self._filename = filename
+    if value:
+      check.check_string(value)
+    self.value = value
 
   def __hash__(self):
-    return hash(self._filename)
+    return hash(self.value)
     
   @property
   def filename(self):
-    return self.substitute(self._filename)
+    return self.substitute(self.value)
     
   def __eq__(self, other):
-    return self._filename == other._filename
+    return self.value == other.value
     
   #@abstractmethod
   def value_to_string(self, quote, include_properties = True):
     buf = StringIO()
-    buf.write(path.basename(self._filename))
+    buf.write(path.basename(self.value))
     self._append_properties_string(buf, include_properties)
     return buf.getvalue()
 
@@ -68,7 +69,7 @@ class value_file(value_base):
       if not path.isfile(filename_abs):
         raise RuntimeError('%s: file not found: %s' % (origin, filename_abs))
     properties = clazz.parse_properties(rest)
-    return value_file(origin = origin, filename = filename_abs, properties = properties)
+    return value_file(origin = origin, value = filename_abs, properties = properties)
 
   @classmethod
   #@abstractmethod
