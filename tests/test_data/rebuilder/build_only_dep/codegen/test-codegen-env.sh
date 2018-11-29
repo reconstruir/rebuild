@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ${REBUILD_SHELL_FRAMEWORK_DIR}/env/rebuild_framework.sh
+source ${REBUILD_SHELL_FRAMEWORK_DIR}/rebuild_framework.sh
 
 function test_env_vars()
 {

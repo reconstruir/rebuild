@@ -434,7 +434,7 @@ fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18
       'db/packages.db',
       'env/bar.sh',
       'env/foo.sh',
-      'env/framework/env/rebuild_framework.sh',
+      'env/framework/rebuild_framework.sh',
       'stuff/bin/apple.sh',
       'stuff/bin/orange.sh',
     ]
@@ -457,7 +457,7 @@ fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18
     self.assertEqual( [ 'files-1.0.0' ], pm.list_all(include_version = True) )
     expected = [
       'db/packages.db',
-      'env/framework/env/rebuild_framework.sh',
+      'env/framework/rebuild_framework.sh',
       'stuff/bin/apple.sh',
       'stuff/bin/orange.sh',
     ]
@@ -484,7 +484,7 @@ fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18
       'db/packages.db',
       'env/bar.sh',
       'env/foo.sh',
-      'env/framework/env/rebuild_framework.sh',
+      'env/framework/rebuild_framework.sh',
     ]
     self.assertEqual( expected, file_find.find(pm.root_dir, relative = True) )
     
