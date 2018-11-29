@@ -892,7 +892,6 @@ and only then forks rebuilder.py.  might be tough
 - rebuilder without local soources with --no-net stil ltries to download when wifi is truly down
 
 2018-11-7
-- the bes_framework.sh used in rebuild env files maybe should be s/bes/rebuild
 - when doing transform env theres no decent assertion of the requested package descriptor is not installed
 - add checksuming to downloads
 - package_manager transform env does not do dependencies

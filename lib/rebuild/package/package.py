@@ -98,10 +98,10 @@ _unresolved_root="${_this_file%/*}"
 REBUILD_ENV_DIR="$( command cd -P "$_unresolved_root" > /dev/null && command pwd -P )"
 REBUILD_STUFF_DIR="$( command cd -P "$REBUILD_ENV_DIR/../stuff" > /dev/null && command pwd -P )"
 REBUILD_SHELL_FRAMEWORK_DIR=$REBUILD_ENV_DIR/framework
-export _BES_DEV_ROOT=$REBUILD_SHELL_FRAMEWORK_DIR
+export _REBUILD_DEV_ROOT=$REBUILD_SHELL_FRAMEWORK_DIR
 _framework_env_dir=$REBUILD_SHELL_FRAMEWORK_DIR/env
 if [ -d $_framework_env_dir ]; then
-  source $_framework_env_dir/bes_framework.sh
+  source $_framework_env_dir/rebuild_framework.sh
 fi
 unset _framework_env_dir
 unset _this_file
