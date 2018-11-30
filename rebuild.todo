@@ -951,3 +951,6 @@ grep for "caca" and cleanup
 value_git_address, value_file and all should set self.value like everything else
 audit all value_base subclassess resolve() to make sure they do the right thing
 value_base.resolve() is misnamed should be more like "combine" or somehing better
+
+when parsing recipes add checks that masks are valid all: linux: linux|android: etc
+recipe_value.default_value() argument class_name makes no sense its weird
