@@ -968,4 +968,8 @@ shell_env in python_egg is the wrong name
  - make code loading in recipes be inline now that text parsing children is better
  - value_vase._new_parse_simple() deal with the commented out code when the root text
    is missing a colon.  probably *not* needed.
+
+2018-11-29
+ - deal with the fact that lib/opencv/rebuild.recipe needs to escape triple quotes.
+   the recipe format should have a way to mark strings literal
    
