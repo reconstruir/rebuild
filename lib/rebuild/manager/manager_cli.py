@@ -326,7 +326,6 @@ remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir ${_root_dir}
 
   def _command_packages_update(self, root_dir, wipe, project_name, allow_downgrade,
                                force_install, dont_touch_update_script, bt):
-    print('root_dir: %s' % (root_dir))
     rm = manager(self.artifact_manager, bt, root_dir)
     success = rm.update_from_config(bt,
                                     wipe,
