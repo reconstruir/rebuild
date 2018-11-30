@@ -966,3 +966,6 @@ shell_env in python_egg is the wrong name
  - steps that require external tools should be plugins
  - decide if instructions are needed
  - make code loading in recipes be inline now that text parsing children is better
+ - value_vase._new_parse_simple() deal with the commented out code when the root text
+   is missing a colon.  probably *not* needed.
+   
