@@ -12,3 +12,9 @@ rebuild_dev()
   bes_setup $(_rebuild_dev_root) ${1+"$@"}
   return 0
 }
+
+rebuild_undev()
+{
+  bes_unsetup $(_rebuild_dev_root)
+  return 0
+}

@@ -255,6 +255,7 @@ jan 22
 the notion of a prefix is hardcoded for step_make and step_make_install
 
 deal with the out of the box situation on macs where "sudo xcodebuild -license" is needed before a package will build
+and also have a smoke test of the xcode command line tools being installed with instructions if failed
 
 
 export_compilation_flags_requirements should not be a property of the package but of the build
@@ -950,3 +951,17 @@ grep for "caca" and cleanup
 value_git_address, value_file and all should set self.value like everything else
 audit all value_base subclassess resolve() to make sure they do the right thing
 value_base.resolve() is misnamed should be more like "combine" or somehing better
+
+shell_env in python_egg is the wrong name
+
+2018-11-28
+ - rebuild_sources.py when publishing do sanity checks on the tarball like gzip -t
+ - _unsetup scripts need to unset any variables that were set
+   in the env for example in ncurses TERMINFO
+ - when a step fails the step name prints as NoneType
+ - doing macos: PATH=/poto/bin:$PATH for configure_env in a recipe causes an infinite loop
+   because of env variable substitution
+ - steps that require external tools should be plugins
+ - decide if instructions are needed
+ - make code loading in recipes be inline now that text parsing children is better
+ 

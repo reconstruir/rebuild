@@ -164,17 +164,27 @@ _@NAME@_setup()
 {
   local _root=${_@NAME@_root}
   local _prefix=${_root}/stuff
-  export PATH=${_prefix}/bin:${PATH}
-  export PYTHONPATH=${_prefix}/lib/python:${PYTHONPATH}
-  export PKG_CONFIG_PATH=${_prefix}/lib/pkgconfig:${PKG_CONFIG_PATH}
-  export @LIBRARY_PATH@=${_prefix}/lib:${@LIBRARY_PATH@}
-  export MANPATH=${_prefix}/man:${_prefix}/share/man:${MANPATH}
   local _env_dir=$_root/env
-  if [ -d $_env_dir -a -n "$(ls -A $_env_dir/*.sh)" ]; then
-    for f in $(find $_env_dir -maxdepth 1 -name "*.sh"); do
-      source "$f"
-    done
-  fi  
+  source $_env_dir/framework/rebuild_framework.sh
+  rebuild_env_path_prepend PATH ${_prefix}/bin
+  rebuild_env_path_prepend PYTHONPATH ${_prefix}/lib/python
+  rebuild_env_path_prepend PKG_CONFIG_PATH ${_prefix}/lib/pkgconfig
+  rebuild_LD_LIBRARY_PATH_prepend ${_prefix}/lib
+  rebuild_env_path_prepend MANPATH ${_prefix}/man
+  rebuild_source_all_sh_files $_env_dir
+}
+
+_@NAME@_unsetup()
+{
+  local _root=${_@NAME@_root}
+  local _prefix=${_root}/stuff
+  local _env_dir=$_root/env
+  source $_env_dir/framework/rebuild_framework.sh
+  rebuild_env_path_remove PATH ${_prefix}/bin
+  rebuild_env_path_remove PYTHONPATH ${_prefix}/lib/python
+  rebuild_env_path_remove PKG_CONFIG_PATH ${_prefix}/lib/pkgconfig
+  rebuild_LD_LIBRARY_PATH_remove ${_prefix}/lib
+  rebuild_env_path_remove MANPATH ${_prefix}/man
 }
 '''
 
@@ -217,17 +227,29 @@ _rebuild_build_path()
   local _root=${_@NAME@_root}
   local _system_root=${_root}/${_system}
   local _prefix=${_system_root}/stuff
-  export PATH=${_prefix}/bin:${PATH}
-  export PYTHONPATH=${_prefix}/lib/python:${PYTHONPATH}
-  export PKG_CONFIG_PATH=${_prefix}/lib/pkgconfig:${PKG_CONFIG_PATH}
-  export @LIBRARY_PATH@=${_prefix}/lib:${@LIBRARY_PATH@}
-  export MANPATH=${_prefix}/man:${_prefix}/share/man:${MANPATH}
   local _env_dir=$_system_root/env
-  if [ -d $_env_dir ]; then
-    for f in $(find $_env_dir -maxdepth 1 -name "*.sh"); do
-      source "$f"
-    done
-  fi  
+  source $_env_dir/framework/rebuild_framework.sh
+  rebuild_env_path_prepend PATH ${_prefix}/bin
+  rebuild_env_path_prepend PYTHONPATH ${_prefix}/lib/python
+  rebuild_env_path_prepend PKG_CONFIG_PATH ${_prefix}/lib/pkgconfig
+  rebuild_LD_LIBRARY_PATH_prepend ${_prefix}/lib
+  rebuild_env_path_prepend MANPATH ${_prefix}/man
+  rebuild_source_all_sh_files $_env_dir
+}
+
+@NAME@_unsetup()
+{
+  local _system=$(_rebuild_build_path)
+  local _root=${_@NAME@_root}
+  local _system_root=${_root}/${_system}
+  local _prefix=${_system_root}/stuff
+  local _env_dir=$_system_root/env
+  source $_env_dir/framework/rebuild_framework.sh
+  rebuild_env_path_remove PATH ${_prefix}/bin
+  rebuild_env_path_remove PYTHONPATH ${_prefix}/lib/python
+  rebuild_env_path_remove PKG_CONFIG_PATH ${_prefix}/lib/pkgconfig
+  rebuild_LD_LIBRARY_PATH_remove ${_prefix}/lib
+  rebuild_env_path_remove MANPATH ${_prefix}/man
 }
 '''
 
