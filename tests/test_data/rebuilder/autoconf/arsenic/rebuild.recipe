@@ -33,3 +33,4 @@ package arsenic 1.2.9
         linux: CFLAGS="-I${REBUILD_REQUIREMENTS_INCLUDE_DIR} -std=gnu99"
                LDFLAGS="-L${REBUILD_REQUIREMENTS_LIB_DIR}"
         macos: CFLAGS="${REBUILD_COMPILE_CFLAGS} ${REBUILD_COMPILE_ARCH_FLAGS} ${REBUILD_COMPILE_OPT_FLAGS}"
+        macos: CC=gcc CXX=g++

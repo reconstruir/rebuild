@@ -176,7 +176,7 @@ class package_manager(object):
 
   def ensure_shell_framework(self):
     ef = shell_framework()
-    ef.extract(self._shell_framework_dir)
+    ef.extract(self._shell_framework_dir, 'rebuild')
     
   def uninstall_package(self, pkg_name):
     self.log_i('uninstalling package: %s' % (pkg_name))
@@ -327,7 +327,7 @@ class package_manager(object):
     ed = env_dir(self._env_dir, files = files)
     result = ed.transform_env(result)
     for key, value in result.items():
-      if key.startswith('_BES'):
+      if key.startswith('_REBUILD'):
         del result[key]
     return result
 

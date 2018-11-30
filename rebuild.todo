@@ -255,6 +255,7 @@ jan 22
 the notion of a prefix is hardcoded for step_make and step_make_install
 
 deal with the out of the box situation on macs where "sudo xcodebuild -license" is needed before a package will build
+and also have a smoke test of the xcode command line tools being installed with instructions if failed
 
 
 export_compilation_flags_requirements should not be a property of the package but of the build
@@ -892,7 +893,6 @@ and only then forks rebuilder.py.  might be tough
 - rebuilder without local soources with --no-net stil ltries to download when wifi is truly down
 
 2018-11-7
-- the bes_framework.sh used in rebuild env files maybe should be s/bes/rebuild
 - when doing transform env theres no decent assertion of the requested package descriptor is not installed
 - add checksuming to downloads
 - package_manager transform env does not do dependencies
@@ -954,3 +954,15 @@ value_base.resolve() is misnamed should be more like "combine" or somehing bette
 
 when parsing recipes add checks that masks are valid all: linux: linux|android: etc
 recipe_value.default_value() argument class_name makes no sense its weird
+shell_env in python_egg is the wrong name
+
+2018-11-28
+ - rebuild_sources.py when publishing do sanity checks on the tarball like gzip -t
+ - _unsetup scripts need to unset any variables that were set
+   in the env for example in ncurses TERMINFO
+ - when a step fails the step name prints as NoneType
+ - doing macos: PATH=/poto/bin:$PATH for configure_env in a recipe causes an infinite loop
+   because of env variable substitution
+ - steps that require external tools should be plugins
+ - decide if instructions are needed
+ - make code loading in recipes be inline now that text parsing children is better

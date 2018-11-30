@@ -39,7 +39,7 @@ class test_tools_manager(unit_test):
     tm.ensure_tools(knife_desc)
     self.assertEqual( [
       'knife_6_6_6/linux-ubuntu-18/x86_64/db/packages.db',
-      'knife_6_6_6/linux-ubuntu-18/x86_64/env/framework/env/bes_framework.sh',
+      'knife_6_6_6/linux-ubuntu-18/x86_64/env/framework/rebuild_framework.sh',
       'knife_6_6_6/linux-ubuntu-18/x86_64/env/knife_env.sh',
       'knife_6_6_6/linux-ubuntu-18/x86_64/run.sh',
       'knife_6_6_6/linux-ubuntu-18/x86_64/setup.sh',
@@ -120,7 +120,7 @@ class test_tools_manager(unit_test):
     self.assertEqual( [
       'cuchillo_1_0_0/linux-ubuntu-18/x86_64/db/packages.db',
       'cuchillo_1_0_0/linux-ubuntu-18/x86_64/env/cuchillo_env.sh',
-      'cuchillo_1_0_0/linux-ubuntu-18/x86_64/env/framework/env/bes_framework.sh',
+      'cuchillo_1_0_0/linux-ubuntu-18/x86_64/env/framework/rebuild_framework.sh',
       'cuchillo_1_0_0/linux-ubuntu-18/x86_64/run.sh',
       'cuchillo_1_0_0/linux-ubuntu-18/x86_64/setup.sh',
       'cuchillo_1_0_0/linux-ubuntu-18/x86_64/stuff/bin/cuchillo.py',
@@ -128,7 +128,7 @@ class test_tools_manager(unit_test):
       'cuchillo_1_0_0/setup.sh',
       'steel_1_0_0/linux-ubuntu-18/x86_64/db/packages.db',
       'steel_1_0_0/linux-ubuntu-18/x86_64/env/carbon_env.sh',
-      'steel_1_0_0/linux-ubuntu-18/x86_64/env/framework/env/bes_framework.sh',
+      'steel_1_0_0/linux-ubuntu-18/x86_64/env/framework/rebuild_framework.sh',
       'steel_1_0_0/linux-ubuntu-18/x86_64/env/iron_env.sh',
       'steel_1_0_0/linux-ubuntu-18/x86_64/env/steel_env.sh',
       'steel_1_0_0/linux-ubuntu-18/x86_64/run.sh',
@@ -142,7 +142,7 @@ class test_tools_manager(unit_test):
       'steel_1_0_0/run.sh',
       'steel_1_0_0/setup.sh',
       'wood_1_0_0/linux-ubuntu-18/x86_64/db/packages.db',
-      'wood_1_0_0/linux-ubuntu-18/x86_64/env/framework/env/bes_framework.sh',
+      'wood_1_0_0/linux-ubuntu-18/x86_64/env/framework/rebuild_framework.sh',
       'wood_1_0_0/linux-ubuntu-18/x86_64/env/wood_env.sh',
       'wood_1_0_0/linux-ubuntu-18/x86_64/run.sh',
       'wood_1_0_0/linux-ubuntu-18/x86_64/setup.sh',
@@ -202,8 +202,8 @@ fake_package steel 1.0.0 0 0 linux release x86_64 ubuntu 18
     steel_env.sh
       \#@REBUILD_HEAD@
       export STEEL_ENV1=steel_env1
-      bes_env_path_append PATH ${REBUILD_STUFF_DIR}/bin
-      bes_env_path_append PYTHONPATH ${REBUILD_STUFF_DIR}/lib/python
+      rebuild_env_path_append PATH ${REBUILD_STUFF_DIR}/bin
+      rebuild_env_path_append PYTHONPATH ${REBUILD_STUFF_DIR}/lib/python
       \#@REBUILD_TAIL@
 
   requirements

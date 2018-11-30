@@ -39,3 +39,4 @@ package orange 6.5.4 3
       configure_env
         linux: CFLAGS="-I${REBUILD_REQUIREMENTS_INCLUDE_DIR} -std=gnu99"
                LDFLAGS="-L${REBUILD_REQUIREMENTS_LIB_DIR}"
+        macos: CC=gcc CXX=g++

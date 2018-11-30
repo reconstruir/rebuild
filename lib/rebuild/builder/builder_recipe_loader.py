@@ -6,7 +6,7 @@ from collections import namedtuple
 from bes.common import check
 from bes.fs import file_util
 
-from rebuild.recipe import recipe, recipe_parser
+from rebuild.recipe import recipe, recipe_parser, recipe_parser_error
 
 class builder_recipe_loader(object):
 
@@ -31,7 +31,8 @@ class builder_recipe_loader(object):
   @classmethod
   def _load_recipes(clazz, env, filename):
     version =  clazz._recipe_version(filename)
-    assert version in [ 2]
+    if not version in [ 2 ]:
+      raise recipe_parser_error('Invalid recipe magic header', filename, 1)
     return clazz._load_recipes_v2(env, filename)
   
   @classmethod
