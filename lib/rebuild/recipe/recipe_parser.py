@@ -202,14 +202,14 @@ class recipe_parser(object):
     value_class_name = args_definition[key].class_name
     value_class = value_factory.get_class(value_class_name)
 
-    value = recipe_parser_util.make_key_value(origin, node.data.text, node, value_class_name)
-
     if True:
       if hasattr(value_class, 'new_parse'):
         new_value = value_class.new_parse(origin, node)
         values.extend(new_value)
         return recipe_value(key, values)
-    
+
+    value = recipe_parser_util.make_key_value(origin, node.data.text, node, value_class_name)
+
     if value.value:
       assert not node.children
       values.append(masked_value(None, value.value, origin))

@@ -11,6 +11,7 @@ from .recipe_parser_util import recipe_parser_util
 
 from .value import value_origin
 from .value import value_type
+from .value import value_factory
 
 class recipe_step(namedtuple('recipe_step', 'name,description,values')):
 
@@ -52,8 +53,13 @@ class recipe_step(namedtuple('recipe_step', 'name,description,values')):
       if name not in result:
         if arg_def.default is not None:
           origin = value_origin('<default>', arg_def.line_number, arg_def.default)
-          default_node = tree_text_parser.make_node(arg_def.default, arg_def.line_number)
-          value = recipe_parser_util.make_value(origin, arg_def.default, default_node, arg_def.class_name)
+          value_class = value_factory.get_class(arg_def.class_name)
+          if hasattr(value_class, 'new_parse'):
+            text = '%s: %s' % (arg_def.name, arg_def.default)
+          else:
+            text = arg_def.default
+          default_node = tree_text_parser.make_node(text, arg_def.line_number)
+          value = recipe_parser_util.make_value(origin, text, default_node, arg_def.class_name)
           check.check_value_base(value)
           result[name] = value.resolve([ value ], arg_def.class_name)
         else:

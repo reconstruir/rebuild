@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy
@@ -13,8 +12,7 @@ class step_install_post_install_hooks(step):
   @classmethod
   def define_args(clazz):
     return '''
-    post_install_hooks hook_list
-    post_install_hooks_inline hook_list_inline
+    post_install_hooks hook
     '''
     
   #@abstractmethod

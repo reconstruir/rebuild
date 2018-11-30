@@ -11,7 +11,7 @@ class step_setup_post_setup_hook(step):
 
   @classmethod
   def define_args(clazz):
-    return 'post_setup_hooks hook_list'
+    return 'post_setup_hooks hook'
     
   #@abstractmethod
   def execute(self, script, env, values, inputs):

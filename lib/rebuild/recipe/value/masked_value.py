@@ -25,7 +25,7 @@ class masked_value(namedtuple('masked_value', 'mask, value')):
       return self._to_string_no_mask(depth, indent, quote)
 
   def value_to_string(self, quote = True):
-    return self.value.value_to_string(quote)
+    return self.value.value_to_string(quote = quote)
       
   def _to_string_no_mask(self, depth, indent, quote):
     spaces = depth * indent * ' '

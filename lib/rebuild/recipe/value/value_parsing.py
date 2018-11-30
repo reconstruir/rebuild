@@ -61,6 +61,6 @@ class value_parsing(object):
     starting_line_number = starting_line_number or 0
     check.check_value_origin(origin)
     check.check_string(msg)
-    raise value_error(msg, origin.filename, origin.line_number + starting_line_number)
+    raise value_parsing_error(msg, origin.filename, origin.line_number + starting_line_number)
 
   

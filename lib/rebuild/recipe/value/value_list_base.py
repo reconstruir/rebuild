@@ -57,7 +57,11 @@ class value_list_base(type_checked_list, value_base):
       
     for string_value in string_values:
       value_text = string_value + ' ' + properties_text
-      value = clazz.value_type().parse(origin, value_text, node)
+      value_class = clazz.value_type()
+      if hasattr(value_class, 'new_parse'):
+        value = value_class.new_parse(origin, node)
+      else:
+        value = value_class.parse(origin, value_text, node)
       values.append(value)
     return clazz(origin = origin, value = values)
 

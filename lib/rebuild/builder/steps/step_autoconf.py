@@ -67,7 +67,7 @@ class step_autoconf_pre_configure_hooks(step):
 
   @classmethod
   def define_args(clazz):
-    return 'pre_configure_hooks hook_list'
+    return 'pre_configure_hooks hook'
     
   #@abstractmethod
   def execute(self, script, env, values, inputs):
@@ -81,7 +81,7 @@ class step_autoconf_post_configure_hooks(step):
 
   @classmethod
   def define_args(clazz):
-    return 'post_configure_hooks hook_list'
+    return 'post_configure_hooks hook'
     
   #@abstractmethod
   def execute(self, script, env, values, inputs):

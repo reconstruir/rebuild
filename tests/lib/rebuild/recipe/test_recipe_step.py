@@ -8,6 +8,7 @@ from rebuild.recipe.value import value_file, value_file_list, value_git_address,
 from rebuild.recipe.value import value_origin as VO
 from bes.key_value import key_value as KV, key_value_list as KVL
 from bes.text import string_list
+from bes.git import git_address
 from test_steps import *
 
 class test_recipe_step(unit_test):
@@ -26,7 +27,7 @@ class test_recipe_step(unit_test):
       'install_file_value': [],
       'file_list_value': value_file_list(),
       'file_value': None,
-      'hook_list_value': [],
+      'hook_value': [],
       'int_value': None,
       'key_values_value': KVL(),
       'string_list_value': string_list(),
@@ -60,7 +61,7 @@ key_values_value
       'install_file_value': [],
       'file_list_value': [],
       'file_value': None,
-      'hook_list_value': [],
+      'hook_value': [],
       'int_value': None,
       'key_values_value': KVL([ ( 'a', 'forlinux' ), ( 'b', '6' ) ]),
       'string_list_value': ['a', 'b', '"x y"'],
@@ -74,7 +75,7 @@ key_values_value
       'install_file_value': [],
       'file_list_value': [],
       'file_value': None,
-      'hook_list_value': [],
+      'hook_value': [],
       'int_value': None,
       'key_values_value': KVL([ ( 'a', 'formacos' ), ( 'b', '6' ) ]),
       'string_list_value': ['a', 'b', '"x y"'],
@@ -88,7 +89,7 @@ key_values_value
       'install_file_value': [],
       'file_list_value': [],
       'file_value': None,
-      'hook_list_value': [],
+      'hook_value': [],
       'int_value': None,
       'key_values_value': KVL([ ( 'a', 'forandroid' ), ( 'b', '6' ) ]),
       'string_list_value': ['a', 'b', '"x y"'],
@@ -112,12 +113,13 @@ git_address_value
       'install_file_value': [],
       'file_list_value': [],
       'file_value': None,
-      'hook_list_value': [],
+      'hook_value': [],
       'int_value': None,
       'key_values_value': [],
       'string_list_value': [],
       'string_value': None,
-      'git_address_value': value_git_address(VO('caca', 1, 'caca'), 'linux_address', 'linux_tag'),
+      'git_address_value': value_git_address(origin = VO('caca', 1, 'caca'),
+                                             value = git_address('linux_address', 'linux_tag')),
     }
     self.assertEqual( expected, r )
 
@@ -128,12 +130,13 @@ git_address_value
       'install_file_value': [],
       'file_list_value': [],
       'file_value': None,
-      'hook_list_value': [],
+      'hook_value': [],
       'int_value': None,
       'key_values_value': [],
       'string_list_value': [],
       'string_value': None,
-      'git_address_value': value_git_address(VO('caca', 1, 'caca'), 'macos_address', 'macos_tag'),
+      'git_address_value': value_git_address(origin = VO('caca', 1, 'caca'),
+                                             value = git_address('macos_address', 'macos_tag')),
     }
     self.assertEqual( expected, r )
     

@@ -126,13 +126,20 @@ class value_base(with_metaclass(value_register_meta, object)):
   def _new_parse_simple(clazz, value_type, origin, node):
     'Parse a value.'
     result = []
-    text = node.data.text_no_comments
-    if ':' in text:
-      pv = value_parsing.parse_key_value(origin, text)
+    root_text = node.data.text_no_comments
+    if ':' in root_text:
+      pv = value_parsing.parse_key_value(origin, root_text)
       if pv.value:
         root_plain_value = clazz._parse_plain_string(origin, pv.value)
         root_masked_value = masked_value(None, value_type(origin = origin, value = root_plain_value))
         result.append(root_masked_value)
+    else:
+      root_text = root_text.strip()
+      print('CACA: root_text="%s"' % (root_text))
+      if root_text:
+        root_plain_value = clazz._parse_plain_string(origin, root_text)
+        root_masked_value = masked_value(None, value_type(origin = origin, value = root_plain_value))
+        #result.append(root_masked_value)
     for child in node.children:
       child_origin = value_origin(origin.filename, child.data.line_number, child.data.text)
       child_text = child.data.text_no_comments

@@ -57,6 +57,14 @@ class recipe_parser_util(object):
     return value_factory.create_with_class_name(origin, text, node, value_class_name)
 
   @classmethod
+  def make_value_caca(clazz, origin, text, node, value_class_name):
+    if origin:
+      check.check_value_origin(origin)
+    check.check_node(node)
+    check.check_string(value_class_name)
+    return value_factory.create_with_class_name(origin, text, node, value_class_name)
+
+  @classmethod
   def value_default(clazz, class_name):
     value_class = value_factory.get_class(class_name)
     return value_class.default_value(class_name)

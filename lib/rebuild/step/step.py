@@ -267,6 +267,16 @@ class step(with_metaclass(step_register_meta, object)):
     return step_result(True, None)
   
   @classmethod
+  def call_hooks_inline(clazz, hooks, script, env):
+    check.check_value_hook_list_inline(hooks)
+    for hook in hooks:
+      rv = hook.execute(script, env)
+      check.is_hook_result(rv)
+      if not rv.success:
+        return step_result(rv.success, rv.message)
+    return step_result(True, None)
+  
+  @classmethod
   def save_build_dir_logs(clazz, env, filenames):
     'Save any logs that exists to the logs/ dir'
     for filename in filenames:

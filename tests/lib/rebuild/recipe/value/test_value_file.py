@@ -13,7 +13,7 @@ class test_value_file(unit_test):
   PROPERTIES = key_value_list.parse('foo=x bar=y')
   
   def test_pickle(self):
-    v1 = value_file(origin = self.ORIGIN, filename = 'filename' , properties = self.PROPERTIES)
+    v1 = value_file(origin = self.ORIGIN, value = 'filename' , properties = self.PROPERTIES)
     s = pickle.dumps(v1)
     print('S: %s' % (s))
     v2 = pickle.loads(s)

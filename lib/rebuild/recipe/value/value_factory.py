@@ -13,8 +13,19 @@ class value_factory(object):
     check.check_node(node)
     check.check_string(value_class_name)
     value_class = clazz.get_class(value_class_name)
-    return value_class.parse(origin, text, node)
-  
+    if hasattr(value_class, 'new_parse'):
+      l = value_class.new_parse(origin, node)
+      if len(l) != 1:
+        print('       text: %s' % (text))
+        print('       node: %s' % (node))
+        print('value_class: %s' % (value_class))
+        print('     origin: %s' % (str(origin)))
+        print('          l: %s' % (l))
+      assert len(l) == 1
+      return l[0].value
+    else:
+      return value_class.parse(origin, text, node)
+
   @classmethod
   def get_class(clazz, value_class_name):
     check.check_string(value_class_name)

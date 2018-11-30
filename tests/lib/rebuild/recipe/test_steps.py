@@ -79,13 +79,13 @@ class step_takes_key_values(step):
   def execute(self, script, env, args):
     return step_result(True)
 
-class step_takes_hook_list(step):
+class step_takes_hook(step):
   def __init__(self):
-    super(step_takes_hook_list, self).__init__()
+    super(step_takes_hook, self).__init__()
     
   @classmethod
   def define_args(clazz):
-    return 'hook_list_value hook_list'
+    return 'hook_value hook'
   
   def execute(self, script, env, args):
     return step_result(True)
@@ -145,7 +145,7 @@ class step_takes_all(step):
       file_value              file
       install_file_value      install_file
       file_list_value         file_list
-      hook_list_value         hook_list
+      hook_value              hook
       int_value               int
       key_values_value        key_values
       string_value            string

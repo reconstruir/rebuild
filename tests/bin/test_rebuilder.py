@@ -218,7 +218,8 @@ class test_rebuilder_script(script_unit_test):
     ], test.artifacts_members['foo-1.0.0.tar.gz'])
     
   def test_hooks(self):
-    test = self._run_test(rebuilder_tester.config(read_contents = True, read_checksums = True), self.data_dir(), 'hooks', 'foo')
+    test = self._run_test(rebuilder_tester.config(read_contents = True, read_checksums = True),
+                          self.data_dir(), 'hooks', 'foo')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'foo-1.0.0.tar.gz' ], test.artifacts )
     tgz = path.join(test.artifacts_dir, 'foo-1.0.0.tar.gz')
@@ -230,7 +231,7 @@ class test_rebuilder_script(script_unit_test):
 print("hook1 hook2")
 '''
     self.assertMultiLineEqual( expected, test.artifacts_contents['foo-1.0.0.tar.gz']['files/bin/foo.py'] )
-    
+
   def test_env_files(self):
     test = self._run_test(rebuilder_tester.config(read_contents = True, read_checksums = True), self.data_dir(), 'env_files', 'fruit')
     self.assertEqual( 0, test.result.exit_code )
