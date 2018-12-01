@@ -5,6 +5,7 @@ from bes.common import check
 
 from .value_base import value_base
 from .value_type import value_type
+from .value_parsing import value_parsing
 
 class value_int(value_base):
 
@@ -38,11 +39,27 @@ class value_int(value_base):
   @classmethod
   #@abstractmethod
   def parse(clazz, origin, text, node):
+    assert False
     if origin:
       check.check_value_origin(origin)
     check.check_node(node)
     value = int(text)
     return clazz(origin = origin, value = value)
+
+  @classmethod
+  #@abstractmethod
+  def _parse_plain_string(clazz, origin, s):
+    'Parse just a string.'
+    try:
+      return int(s)
+    except Exception as ex:
+      value_parsing.raise_error(origin, 'Not a valid int: \"%s\"' % (s))
+      
+  @classmethod
+  #@abstractmethod
+  def new_parse(clazz, origin, node):
+    'Parse a value.'
+    return clazz._new_parse_simple(value_int, origin, node)
   
   @classmethod
   #@abstractmethod

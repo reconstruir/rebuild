@@ -60,7 +60,8 @@ class recipe_parser(object):
     
   def parse(self):
     if not self.text.startswith(self.MAGIC):
-      self._error('text should start with recipe magic \"%s\"' % (self.MAGIC))
+      first_line = self.text.split('\n')[0]
+      self._error('text should start with recipe magic \"%s\" instead of \"%s\"' % (self.MAGIC, first_line))
     try:
       tree = tree_text_parser.parse(self.text, strip_comments = True)
     except Exception as ex:
@@ -156,6 +157,7 @@ class recipe_parser(object):
       reqs.extend(next_reqs)
     return requirement_list(reqs)
 
+  # FIXME_DEC1
   def _parse_export_compilation_flags_requirements(self, node):
     export_compilation_flags_requirements = []
     for child in node.children:
@@ -164,6 +166,13 @@ class recipe_parser(object):
       value = self._caca_parse_mask_and_value(child_origin, text, child, value_type.STRING_LIST)
       export_compilation_flags_requirements.append(value)
     return masked_value_list(export_compilation_flags_requirements)
+
+  # FIXME_DEC1
+  def new_parse_export_compilation_flags_requirements(self, node):
+    origin = value_origin(self.filename, node.data.line_number, node.data.text)
+    value_class = value_factory.get_class(value_type.STRING_LIST)
+    value = value_class.new_parse(origin, node)
+    return masked_value_list(value)
 
   def _parse_instructions(self, node):
     text = node.get_text(node.CHILDREN_INLINE)
@@ -190,7 +199,7 @@ class recipe_parser(object):
     return recipe_step(name, description, values)
 
   def _parse_step_value(self, description, node):
-    origin = value_origin(self.filename, node.data.line_number, node.data.text)
+    origin = value_origin(self.filename, node.data.line_number, node.data.text, self.text)
     values = masked_value_list()
     key = recipe_parser_util.parse_key(origin, node.data.text)
     args_definition = description.step_class.args_definition()
@@ -250,6 +259,9 @@ class recipe_parser(object):
     check.check_string(text)
     check.check_node(node)
     check.check_string(class_name)
+    value_class = value_factory.get_class(class_name)
+    # FIXME_DEC1
+#    assert not hasattr(value_class, 'new_parse')
     mask, value = recipe_parser_util.split_mask_and_value(text)
     value = recipe_parser_util.make_value(origin, value, node, class_name)
     return masked_value(mask, value, origin)

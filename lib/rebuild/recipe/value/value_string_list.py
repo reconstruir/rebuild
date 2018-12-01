@@ -15,19 +15,19 @@ class value_string_list(value_base):
     if not check.is_string_list(values):
       values = string_list(values)
     check.check_string_list(values)
-    self.values = values
+    self.value = values
 
   def __eq__(self, other):
     if check.is_string_seq(other):
-      return self.values == other
-    return self.values == other.values
+      return self.value == other
+    return self.value == other.value
     
   def __iter__(self):
-    return iter(self.values)
+    return iter(self.value)
     
   #@abstractmethod
   def value_to_string(self, quote, include_properties = True):
-    return self.values.to_string(delimiter = ' ', quote = quote)
+    return self.value.to_string(delimiter = ' ', quote = quote)
 
   #@abstractmethod
   def sources(self, recipe_env):
@@ -36,11 +36,12 @@ class value_string_list(value_base):
 
   #@abstractmethod
   def substitutions_changed(self):
-    self.values.substitute_variables(self.substitutions)
+    self.value.substitute_variables(self.substitutions)
   
   @classmethod
   #@abstractmethod
   def parse(clazz, origin, text, node):
+    #assert False
     if origin:
       check.check_value_origin(origin)
     check.check_node(node)
@@ -49,7 +50,19 @@ class value_string_list(value_base):
     else:
       values = string_list.parse(text, options = string_list.KEEP_QUOTES)
     return clazz(origin = origin, value = values)
+
+  @classmethod
+  #@abstractmethod
+  def _parse_plain_string(clazz, origin, s):
+    'Parse just a string.'
+    return string_list.parse(s, options = string_list.KEEP_QUOTES)
   
+  @classmethod
+  #@abstractmethod
+  def xnew_parse(clazz, origin, node):
+    'Parse a value.'
+    return clazz._new_parse_simple(value_string_list, origin, node)
+
   @classmethod
   #@abstractmethod
   def default_value(clazz, class_name):
@@ -69,7 +82,7 @@ class value_string_list(value_base):
     result = string_list()
     for value in values:
       check.check_value_string_list(value)
-      result.extend(value.values)
+      result.extend(value.value)
     result.remove_dups()
     return result
   

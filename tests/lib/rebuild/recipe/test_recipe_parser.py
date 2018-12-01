@@ -10,6 +10,8 @@ from bes.key_value import key_value as KV, key_value_list as KVL
 from bes.fs import file_util, temp_file
 from test_steps import *
 
+from _rebuild_testing.recipe_parser_testing import recipe_parser_testing
+
 class test_recipe_parser(unit_test):
 
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/recipe_parser'
@@ -171,7 +173,7 @@ package foo 1.2.3 4
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_string\n    string_value: "my string # with a hash"', str(r[0].steps[0]) )
     
-  def test_step_value_string_list(self):
+  def test_step_value_string_listx(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
   steps
@@ -264,7 +266,7 @@ step_takes_key_values
     all: a=5 b=6 c="x y" d=7 e=8 f="kiwi apple"
     linux: a=linux
     macos: a=macos'''
-    self.assertEqual( expected, str(r[0].steps[0]) )
+    self.assertMultiLineEqual( expected, str(r[0].steps[0]) )
 
   def test_takes_all(self):
     text = '''!rebuild.recipe!
@@ -299,7 +301,7 @@ step_takes_all
     all: a=5 b=6 c="x y" d=7 e=8 f="kiwi apple"
     linux: a=linux
     macos: a=macos'''
-    self.assertEqual( expected, str(r[0].steps[0]) )
+    self.assertMultiLineEqual( expected, str(r[0].steps[0]) )
     
   def test_compound_step(self):
     text = '''!rebuild.recipe!
@@ -334,7 +336,7 @@ step_compound
     all: a=5 b=6 c="x y" d=7 e=8 f="kiwi apple"
     linux: a=linux
     macos: a=macos'''
-    self.assertEqual( expected, str(r[0].steps[0]) )
+    self.assertMultiLineEqual( expected, str(r[0].steps[0]) )
     
   def test_multiple_steps(self):
     text = '''!rebuild.recipe!
@@ -698,7 +700,7 @@ package foo 1.2.3 4
     values = step1.resolve_values({}, self.TEST_ENV)
     files = values['file_list_value']
     self.assertEqual( 1, len(files) )
-    self.assertEqual( self.data_path('test_file2.txt'), files[0].filename )
+    self.assertMultiLineEqual( self.data_path('test_file2.txt'), files[0].filename )
 
   def test_step_value_file_list_empty(self):
     text = '''!rebuild.recipe!
@@ -721,27 +723,176 @@ package foo 1.2.3 4
 
 class test_recipe_step_values(unit_test):
   
-  def xtest_step_value_bool_no_mask(self):
+  def xtest_step_value_string_list(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
   steps
-    step_takes_bool
-      bool_value: True
-        all: True
-        android: False
+    step_takes_string_list
+      string_list_value: a b "x y"
+                         c d "e f"
 '''
-
     r = self._parse(text)
-    v = r[0].steps[0].values
-    print('CACA: %s=%s' % (v[0].key, repr(v[0].values)))
-    self.assertFalse( True )
-#    self.assertEqual( 'foo', r[0].descriptor.name )
-#    self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
-#    self.assertMultiLineEqual( 'step_takes_bool\n    bool_value: True', str(r[0].steps[0]) )
+    r2 =  r[0].steps[0].values[0].values
+    print('R2: %s' % (r2[0].value))
+#    print('FUCK: %s' % (type(r[0].steps[0].values[0].values)))
+#    self.assertEqual( [
+#      ( None, True ),
+#    ], [ tuple(x) for x in r[0].steps[0].values[0].values ] )
+    
+#  steps  
+#    step_autoconf
+#      configure_env
+#        all: a=1
+#             b=1
 
-  @classmethod
-  def _parse(self, text, starting_line_number = 0):
-    return P(path.basename(__file__), text, starting_line_number = starting_line_number).parse()
+class test_recipe_step_value_bool(unit_test):
   
+  def test_inline(self):
+    value_text = '''\
+bool_value: True
+'''
+    values = recipe_parser_testing.parse_trivial_recipe('foo', '1.2.3.4', 'step_takes_bool', value_text)
+    self.assertEqual( [
+      ( None, True ),
+    ], [ tuple(x) for x in values ] )
+
+  def test_masked(self):
+    value_text = '''\
+bool_value
+  all: True
+'''
+    values = recipe_parser_testing.parse_trivial_recipe('foo', '1.2.3.4', 'step_takes_bool', value_text)
+    self.assertEqual( [
+      ( 'all', True ),
+    ], [ tuple(x) for x in values ] )
+
+  def test_masked_multiple_values(self):
+    value_text = '''\
+bool_value
+  all: True
+  android: False
+'''
+    values = recipe_parser_testing.parse_trivial_recipe('foo', '1.2.3.4', 'step_takes_bool', value_text)
+    self.assertEqual( [
+      ( 'all', True ),
+      ( 'android', False ),
+    ], [ tuple(x) for x in values ] )
+
+  def test_mixed(self):
+    value_text = '''\
+bool_value: True
+  all: True
+  android: False
+'''
+    values = recipe_parser_testing.parse_trivial_recipe('foo', '1.2.3.4', 'step_takes_bool', value_text)
+    self.assertEqual( [
+      ( None, True ),
+      ( 'all', True ),
+      ( 'android', False ),
+    ], [ tuple(x) for x in values ] )
+
+class test_recipe_step_value_string(unit_test):
+  
+  def test_inline(self):
+    value_text = '''\
+string_value: kiwi
+'''
+    values = recipe_parser_testing.parse_trivial_recipe('foo', '1.2.3.4', 'step_takes_string', value_text)
+    self.assertEqual( [
+      ( None, 'kiwi' ),
+    ], [ tuple(x) for x in values ] )
+
+  def xtest_inline_multiline(self):
+    value_text = '''\
+string_value: kiwi
+              foo
+'''
+    values = recipe_parser_testing.parse_trivial_recipe('foo', '1.2.3.4', 'step_takes_string', value_text)
+    self.assertEqual( [
+      ( None, 'kiwi\nfoo' ),
+    ], [ tuple(x) for x in values ] )
+
+    
+  def test_masked(self):
+    value_text = '''\
+string_value
+  all: kiwi
+'''
+    values = recipe_parser_testing.parse_trivial_recipe('foo', '1.2.3.4', 'step_takes_string', value_text)
+    self.assertEqual( [
+      ( 'all', 'kiwi' ),
+    ], [ tuple(x) for x in values ] )
+
+  def test_masked_multiple_values(self):
+    value_text = '''\
+string_value
+  all: kiwi
+  android: orange
+'''
+    values = recipe_parser_testing.parse_trivial_recipe('foo', '1.2.3.4', 'step_takes_string', value_text)
+    self.assertEqual( [
+      ( 'all', 'kiwi' ),
+      ( 'android', 'orange' ),
+    ], [ tuple(x) for x in values ] )
+
+  def test_mixed(self):
+    value_text = '''\
+string_value: kiwi
+  all: apple
+  android: orange
+'''
+    values = recipe_parser_testing.parse_trivial_recipe('foo', '1.2.3.4', 'step_takes_string', value_text)
+    self.assertEqual( [
+      ( None, 'kiwi' ),
+      ( 'all', 'apple' ),
+      ( 'android', 'orange' ),
+    ], [ tuple(x) for x in values ] )
+
+class test_recipe_step_value_int(unit_test):
+  
+  def test_inline(self):
+    value_text = '''\
+int_value: 666
+'''
+    values = recipe_parser_testing.parse_trivial_recipe('foo', '1.2.3.4', 'step_takes_int', value_text)
+    self.assertEqual( [
+      ( None, 666 ),
+    ], [ tuple(x) for x in values ] )
+
+  def test_masked(self):
+    value_text = '''\
+int_value
+  all: 666
+'''
+    values = recipe_parser_testing.parse_trivial_recipe('foo', '1.2.3.4', 'step_takes_int', value_text)
+    self.assertEqual( [
+      ( 'all', 666 ),
+    ], [ tuple(x) for x in values ] )
+
+  def test_masked_multiple_values(self):
+    value_text = '''\
+int_value
+  all: 666
+  android: 777
+'''
+    values = recipe_parser_testing.parse_trivial_recipe('foo', '1.2.3.4', 'step_takes_int', value_text)
+    self.assertEqual( [
+      ( 'all', 666 ),
+      ( 'android', 777 ),
+    ], [ tuple(x) for x in values ] )
+
+  def test_mixed(self):
+    value_text = '''\
+int_value: 666
+  all: 999
+  android: 777
+'''
+    values = recipe_parser_testing.parse_trivial_recipe('foo', '1.2.3.4', 'step_takes_int', value_text)
+    self.assertEqual( [
+      ( None, 666 ),
+      ( 'all', 999 ),
+      ( 'android', 777 ),
+    ], [ tuple(x) for x in values ] )
+    
 if __name__ == '__main__':
   unit_test.main()
