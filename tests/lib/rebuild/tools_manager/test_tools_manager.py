@@ -99,16 +99,16 @@ class test_tools_manager(unit_test):
     replacements = { tm.root_dir: '$ROOT_DIR' }
     env2 = copy.deepcopy(env)
     dict_util.replace_values(env2, replacements)
-    self.assertEqual( {
+    self.assert_dict_as_text_equal( {
       'WOOD_ENV1': 'wood_env1',
       'CUCHILLO_ENV1': 'cuchillo_env1',
       'STEEL_ENV1': 'steel_env1',
       'IRON_ENV1': 'iron_env1',
       'CARBON_ENV1': 'carbon_env1',
-      'PATH': '/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:.:$ROOT_DIR/steel_1_0_0/linux-ubuntu-18/x86_64/stuff/bin:$ROOT_DIR/wood_1_0_0/linux-ubuntu-18/x86_64/stuff/bin:$ROOT_DIR/cuchillo_1_0_0/linux-ubuntu-18/x86_64/stuff/bin',
-      'PYTHONPATH': '$ROOT_DIR/steel_1_0_0/linux-ubuntu-18/x86_64/stuff/lib/python:$ROOT_DIR/wood_1_0_0/linux-ubuntu-18/x86_64/stuff/lib/python:$ROOT_DIR/cuchillo_1_0_0/linux-ubuntu-18/x86_64/stuff/lib/python',
+      'PATH': '/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.:$ROOT_DIR/steel_1_0_0/linux-ubuntu-18/x86_64/stuff/bin:/private$ROOT_DIR/steel_1_0_0/linux-ubuntu-18/x86_64/stuff/bin:$ROOT_DIR/wood_1_0_0/linux-ubuntu-18/x86_64/stuff/bin:$ROOT_DIR/cuchillo_1_0_0/linux-ubuntu-18/x86_64/stuff/bin',
+      'PYTHONPATH': '$ROOT_DIR/steel_1_0_0/linux-ubuntu-18/x86_64/stuff/lib/python:/private$ROOT_DIR/steel_1_0_0/linux-ubuntu-18/x86_64/stuff/lib/python:$ROOT_DIR/wood_1_0_0/linux-ubuntu-18/x86_64/stuff/lib/python:$ROOT_DIR/cuchillo_1_0_0/linux-ubuntu-18/x86_64/stuff/lib/python',
       'PKG_CONFIG_PATH': '$ROOT_DIR/steel_1_0_0/linux-ubuntu-18/x86_64/stuff/lib/pkgconfig:$ROOT_DIR/steel_1_0_0/linux-ubuntu-18/x86_64/stuff/share/pkgconfig:$ROOT_DIR/wood_1_0_0/linux-ubuntu-18/x86_64/stuff/lib/pkgconfig:$ROOT_DIR/wood_1_0_0/linux-ubuntu-18/x86_64/stuff/share/pkgconfig:$ROOT_DIR/cuchillo_1_0_0/linux-ubuntu-18/x86_64/stuff/lib/pkgconfig:$ROOT_DIR/cuchillo_1_0_0/linux-ubuntu-18/x86_64/stuff/share/pkgconfig',
-      'LD_LIBRARY_PATH': '$ROOT_DIR/steel_1_0_0/linux-ubuntu-18/x86_64/stuff/lib:$ROOT_DIR/wood_1_0_0/linux-ubuntu-18/x86_64/stuff/lib:$ROOT_DIR/cuchillo_1_0_0/linux-ubuntu-18/x86_64/stuff/lib',
+      'DYLD_LIBRARY_PATH': '$ROOT_DIR/steel_1_0_0/linux-ubuntu-18/x86_64/stuff/lib:$ROOT_DIR/wood_1_0_0/linux-ubuntu-18/x86_64/stuff/lib:$ROOT_DIR/cuchillo_1_0_0/linux-ubuntu-18/x86_64/stuff/lib',
     }, env2 )
 
   def test_tool_installed_files(self):

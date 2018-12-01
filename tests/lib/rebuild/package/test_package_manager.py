@@ -327,7 +327,7 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
     env1 = { 'FOO': 'foo', 'BAR': 'bar' }
     env1_save = copy.deepcopy(env1)
     env2 = pm.transform_env(env1, [ 'cabbage' ])
-    self.assert_dict_equal( env1_save, env1 )
+    self.assert_dict_as_text_equal( env1_save, env1 )
   
   def test_transform_env_defaults(self):
     'Check the defaults of transform_env() when the input env is empty.'
@@ -335,53 +335,51 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
     env1 = {}
     env2 = self._transform_env(pm, env1, [ 'cabbage' ])
     self.assertEqual( {
-      '$LD_LIBRARY_PATH': '$ROOT_DIR/stuff/lib',
       'PKG_CONFIG_PATH': '$ROOT_DIR/stuff/lib/pkgconfig:$ROOT_DIR/stuff/share/pkgconfig',
-      'PATH': '$DEFAULT_PATH:$ROOT_DIR/stuff/bin',
+      'PATH': '$DEFAULT_PATH:$ROOT_DIR/stuff/bin:$ROOT_DIR/stuff/bin',
       'PYTHONPATH': '$ROOT_DIR/stuff/lib/python',
+      '$LD_LIBRARY_PATH': '$ROOT_DIR/stuff/lib',
     }, env2 )
 
   def test_transform_env_append(self):
     code = '''
       rebuild_env_path_append PATH /zzzz/bin
       rebuild_env_path_append PYTHONPATH /zzzz/lib/python
-      rebuild_LD_LIBRARY_PATH_append /zzzz/lib
 '''
     pm = self._make_one_env_file_pm(code)
     env1 = {
       'PATH': '$DEFAULT_PATH:/p/bin',
       'PYTHONPATH': '/p/lib/python',
-      '$LD_LIBRARY_PATH': '/p/lib',
     }
     env2 = self._transform_env(pm, env1, [ 'one_env_file' ])
     expected = {
       'PATH': '$DEFAULT_PATH:/p/bin:$ROOT_DIR/stuff/bin:/zzzz/bin',
       'PYTHONPATH': '/p/lib/python:$ROOT_DIR/stuff/lib/python:/zzzz/lib/python',
-      '$LD_LIBRARY_PATH':  '/p/lib:$ROOT_DIR/stuff/lib:/zzzz/lib',
+      '$LD_LIBRARY_PATH':  '$ROOT_DIR/stuff/lib',
       'PKG_CONFIG_PATH': '$ROOT_DIR/stuff/lib/pkgconfig:$ROOT_DIR/stuff/share/pkgconfig',
     }
-    self.assert_dict_equal( expected, env2 )
+    self.assert_dict_as_text_equal( expected, env2 )
 
   def test_transform_env_prepend(self):
     code = '''
       rebuild_env_path_prepend PATH /zzzz/bin
       rebuild_env_path_prepend PYTHONPATH /zzzz/lib/python
-      rebuild_LD_LIBRARY_PATH_prepend /zzzz/lib
+#      rebuild_LD_LIBRARY_PATH_prepend /zzzz/lib
 '''
     pm = self._make_one_env_file_pm(code)
     env1 = {
       'PATH': '$DEFAULT_PATH:/p/bin',
       'PYTHONPATH': '/p/lib/python',
-      '$LD_LIBRARY_PATH': '/p/lib',
+#      '$LD_LIBRARY_PATH': '/p/lib',
     }
     env2 = self._transform_env(pm, env1, [ 'one_env_file' ])
     expected = {
       'PATH': '/zzzz/bin:$DEFAULT_PATH:/p/bin:$ROOT_DIR/stuff/bin',
       'PYTHONPATH': '/zzzz/lib/python:/p/lib/python:$ROOT_DIR/stuff/lib/python',
-      '$LD_LIBRARY_PATH':  '/zzzz/lib:/p/lib:$ROOT_DIR/stuff/lib',
+      '$LD_LIBRARY_PATH':  '$ROOT_DIR/stuff/lib',
       'PKG_CONFIG_PATH': '$ROOT_DIR/stuff/lib/pkgconfig:$ROOT_DIR/stuff/share/pkgconfig',
     }
-    self.assert_dict_equal( expected, env2 )
+    self.assert_dict_as_text_equal( expected, env2 )
 
   def test_transform_env_unset(self):
     code1 = '''
@@ -403,8 +401,7 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
       'FOO': 'foo',
       'BAZ': 'baz',
     }
-    self.assert_dict_equal( expected, env2 )
-
+    self.assert_dict_as_text_equal( expected, env2 )
 
   def test_installed_files(self):
     recipe = '''
