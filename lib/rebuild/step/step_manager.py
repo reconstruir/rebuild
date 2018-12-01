@@ -36,6 +36,10 @@ class step_manager(object):
     self._steps = self._unroll_steps(steps)
     for step in self._steps:
       step.values = step.recipe.resolve_values(script.substitutions, env.recipe_load_env)
+      #if True:
+      if False:
+        for k, v in sorted(step.values.items()):
+          print('CONO: %s %s: %s' % (script.descriptor.name, k, v))
       
   @classmethod
   def _unroll_children_steps(clazz, step, result):
