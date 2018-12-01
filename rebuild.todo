@@ -972,4 +972,14 @@ shell_env in python_egg is the wrong name
 2018-11-29
  - deal with the fact that lib/opencv/rebuild.recipe needs to escape triple quotes.
    the recipe format should have a way to mark strings literal
-   
+ - introduce the concept of recipe minor version that gets revved and included in the recipe
+   version and thus in the hash to determine if need to rebuild a package if rebuild changes
+   in such a way that requires rebuild
+ - introduce a hash of the compilation environment in the recipe so if the compiler changes
+   need to rebuild
+ - do a lot of manual testing of control-c-ing both the manager and builder
+ - ~/.rebuild/update.sh should have better feed back for major operations to not give the
+   impression its stuck
+ - make the 'rebbe' prefix be customizable
+ - add a manager command to check the integrity of packages files based on checksums
+ - check that integrity after installing and warn the user if it failed 
