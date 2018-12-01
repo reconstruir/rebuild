@@ -171,7 +171,7 @@ _@NAME@_setup()
   rebuild_env_path_prepend PKG_CONFIG_PATH ${_prefix}/lib/pkgconfig
   rebuild_LD_LIBRARY_PATH_prepend ${_prefix}/lib
   rebuild_env_path_prepend MANPATH ${_prefix}/man
-  rebuild_source_all_sh_files $_env_dir
+  rebuild_source_dir $_env_dir
 }
 
 _@NAME@_unsetup()
@@ -234,7 +234,7 @@ _rebuild_build_path()
   rebuild_env_path_prepend PKG_CONFIG_PATH ${_prefix}/lib/pkgconfig
   rebuild_LD_LIBRARY_PATH_prepend ${_prefix}/lib
   rebuild_env_path_prepend MANPATH ${_prefix}/man
-  rebuild_source_all_sh_files $_env_dir
+  rebuild_source_dir $_env_dir
 }
 
 @NAME@_unsetup()
