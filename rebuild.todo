@@ -983,4 +983,7 @@ shell_env in python_egg is the wrong name
  - make the 'rebbe' prefix be customizable
  - add a manager command to check the integrity of packages files based on checksums
  - check that integrity after installing and warn the user if it failed
+ - test_recipe_step is a bit of mess for the hook tests also the way it makes a str to check the recipe is
+   weird and fragile and maybe not deterministic because of white space.  so better to check the structure
+   of recipes by turning them into dicts or something
  - need much better configure_flags type of value tests with masks and stuff
