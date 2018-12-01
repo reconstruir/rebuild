@@ -802,10 +802,19 @@ string_value: kiwi
       ( None, 'kiwi' ),
     ], [ tuple(x) for x in values ] )
 
-  def xtest_inline_multiline(self):
+  def test_colon_inline(self):
+    value_text = '''\
+string_value: a:b:c
+'''
+    values = recipe_parser_testing.parse_trivial_recipe('foo', '1.2.3.4', 'step_takes_string', value_text)
+    self.assertEqual( [
+      ( None, 'a:b:c' ),
+    ], [ tuple(x) for x in values ] )
+
+  def xxtest_inline_multiline(self):
     value_text = '''\
 string_value: kiwi
-              foo
+              foo:
 '''
     values = recipe_parser_testing.parse_trivial_recipe('foo', '1.2.3.4', 'step_takes_string', value_text)
     self.assertEqual( [
@@ -823,6 +832,7 @@ string_value
       ( 'all', 'kiwi' ),
     ], [ tuple(x) for x in values ] )
 
+    
   def test_masked_multiple_values(self):
     value_text = '''\
 string_value
