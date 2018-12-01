@@ -1,7 +1,7 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path, re
+from collections import namedtuple
 
 from bes.common import algorithm, object_util, string_util
 from bes.system import execute
@@ -18,9 +18,22 @@ class archive_util(object):
     confiugure_path = path.join(tmp_dir, 'configure')
     if not path.exists(confiugure_path):
       raise RuntimeError('No configure script found in %s' % (tarball))
-    help = execute.execute('./configure --help', cwd = tmp_dir, shell = True, raise_error = False).stdout
+    result = execute.execute('./configure --help', cwd = tmp_dir, shell = True, raise_error = False).stdout
     file_util.remove(tmp_dir)
-    return help
+    return result
+
+  _requirements = namedtuple('_requirements', 'filename, member, content')
+
+  @classmethod
+  def python_requirements(clazz, tarball):
+    'Return the requires.txt and requirements.txt files for a python packages.'
+    result = []
+    members = archiver.members(tarball)
+    requires = [ m for m in members if m.endswith('requires.txt') or m.endswith('requirements.txt') ]
+    for req in requires:
+      content = archiver.extract_member_to_string(tarball, req)
+      result.append(clazz._requirements(tarball, req, content))
+    return result
 
   ORIGINAL_DIR_TAIL = '.orig'
 

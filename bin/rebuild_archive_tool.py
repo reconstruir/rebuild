@@ -80,9 +80,9 @@ def main():
                                default = None,
                                help = 'git tag to download')
 
-  # Print
-  print_parser = subparsers.add_parser('print', help = 'Print archive contents')
-  print_parser.add_argument('filename', action = 'store', help = 'The archive')
+  # Contents
+  contents_parser = subparsers.add_parser('contents', help = 'Contents archive contents')
+  contents_parser.add_argument('filename', action = 'store', help = 'The archive')
 
   # Cat
   cat_parser = subparsers.add_parser('cat', help = 'Cat archive contents')
@@ -92,6 +92,15 @@ def main():
   # Help
   help_parser = subparsers.add_parser('help', help = 'Give the output of configure --help for the autoconf packages.')
   help_parser.add_argument('archive', action = 'store', help = 'The archive')
+
+  # Requirements
+  requirements_parser = subparsers.add_parser('requirements',
+                                              help = 'Return the content of requirements.txt for python packages..')
+  requirements_parser.add_argument('archives',
+                                   action = 'store',
+                                   default = None,
+                                   nargs = '+',
+                                   help = 'The archives to print requirements for. [ None ]')
 
   # Grep
   grep_parser = subparsers.add_parser('grep', help = 'Grep the contents of the archive using ag (silver searcher).')
@@ -151,12 +160,14 @@ def main():
 
   args = parser.parse_args()
 
-  if args.command == 'print':
-    return _command_print(args.filename)
+  if args.command == 'contents':
+    return _command_contents(args.filename)
   elif args.command == 'cat':
     return _command_cat(args.archive, args.members)
   elif args.command == 'help':
     return _command_help(args.archive)
+  elif args.command == 'requirements':
+    return _command_requirements(args.archives)
   elif args.command == 'grep':
     return _command_grep(args.archive, args.pattern)
   elif args.command == 'patch_prepare':
@@ -186,7 +197,7 @@ def main():
 
   return 0
 
-def _command_print(filename):
+def _command_contents(filename):
   members = archiver.members(filename)
   for member in members:
     print(member)
@@ -209,6 +220,15 @@ def _command_cat(archive, members):
 def _command_help(archive):
   help = archive_util.autoconf_help(archive)
   print(help)
+  return 0
+
+def _command_requirements(archives):
+  for archive in archives:
+    reqs = archive_util.python_requirements(archive)
+    for req in reqs:
+      print('%s - %s:' % (req.filename, req.member))
+      print('%s' % (req.content.strip()))
+      print('')
   return 0
 
 def _command_grep(archive, pattern):
