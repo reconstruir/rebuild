@@ -156,6 +156,6 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
       \#@REBUILD_HEAD@
       rebuild_env_path_append PATH ${REBUILD_STUFF_DIR}/bin
       rebuild_env_path_append PYTHONPATH ${REBUILD_STUFF_DIR}/lib/python
-      rebuild_LD_LIBRARY_PATH_append ${REBUILD_STUFF_DIR}/lib
+      rebuild_env_path_append LD_LIBRARY_PATH ${REBUILD_STUFF_DIR}/lib
       \#@REBUILD_TAIL@
 '''

@@ -364,7 +364,7 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
     code = '''
       rebuild_env_path_prepend PATH /zzzz/bin
       rebuild_env_path_prepend PYTHONPATH /zzzz/lib/python
-#      rebuild_LD_LIBRARY_PATH_prepend /zzzz/lib
+#      rebuild_env_path_prepend LD_LIBRARY_PATH /zzzz/lib
 '''
     pm = self._make_one_env_file_pm(code)
     env1 = {
@@ -538,7 +538,7 @@ fake_package two_env_files 1.0.0 0 0 linux release x86_64 ubuntu 18
       \#@REBUILD_HEAD@
       rebuild_env_path_append PATH ${REBUILD_STUFF_DIR}/bin
       #rebuild_env_path_append PYTHONPATH ${REBUILD_STUFF_DIR}/lib/python
-      #rebuild_LD_LIBRARY_PATH_append ${REBUILD_STUFF_DIR}/lib
+      #rebuild_env_path_append LD_LIBRARY_PATH ${REBUILD_STUFF_DIR}/lib
       \#@REBUILD_TAIL@
 
 fake_package unset 1.0.0 0 0 linux release x86_64 ubuntu 18
