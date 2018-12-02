@@ -95,7 +95,7 @@ class recipe_parser(object):
         export_compilation_flags_requirements = self._parse_export_compilation_flags_requirements(child)
         properties['export_compilation_flags_requirements'] = export_compilation_flags_requirements
       else:
-        self._error('unknown recipe section: \"%s\"' % (text), node)
+        self._error('unknown recipe section: \"%s\"' % (text), child)
     desc = package_descriptor(name, version, requirements = requirements, properties = properties)
     return recipe(2, self.filename, enabled, properties, requirements,
                   desc, instructions, steps, load)
