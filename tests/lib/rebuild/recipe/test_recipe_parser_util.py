@@ -5,7 +5,7 @@ from bes.testing.unit_test import unit_test
 from bes.key_value import key_value_list as KVL
 from bes.text import tree_text_parser as TTP
 from rebuild.recipe import recipe_parser_util as RPU
-from rebuild.recipe.value import value_type as VT, value_origin as VO, value_key_values as VKV
+from rebuild.recipe.value import value_type as VT, value_origin as VO, value_key_values as VKV, value_string_list as VSL
 
 class test_recipe_parser_util(unit_test):
 
@@ -46,8 +46,8 @@ class test_recipe_parser_util(unit_test):
   def test_make_key_value_value_string_list(self):
     self.assertEqual( ( 'key', None ), RPU.make_key_value(self.TEST_ORIGIN, 'key', TTP.make_node('key', 1), 'string_list') )
     self.assertEqual( ( 'key', None ), RPU.make_key_value(self.TEST_ORIGIN, 'key:', TTP.make_node('key:', 1), 'string_list') )
-    self.assertEqual( ( 'key', [ 'bar' ] ), RPU.make_key_value(self.TEST_ORIGIN, 'key:bar', TTP.make_node('key:bar', 1), 'string_list') )
-    self.assertEqual( ( 'key', [ 'foo', 'bar' ] ), RPU.make_key_value(self.TEST_ORIGIN, 'key:foo bar', TTP.make_node('key:foo bar', 1), 'string_list') )
+    self.assertEqual( ( 'key', VSL(value = [ 'bar' ]) ), RPU.make_key_value(self.TEST_ORIGIN, 'key:bar', TTP.make_node('key:bar', 1), 'string_list') )
+    self.assertEqual( ( 'key', VSL(value = [ 'foo', 'bar' ]) ), RPU.make_key_value(self.TEST_ORIGIN, 'key:foo bar', TTP.make_node('key:foo bar', 1), 'string_list') )
 
   def test_make_key_value_value_key_values(self):
     self.assertEqual( ( 'key', None ), RPU.make_key_value(self.TEST_ORIGIN, 'key', TTP.make_node('key', 1), 'key_values') )
