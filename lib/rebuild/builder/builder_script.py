@@ -26,7 +26,7 @@ class builder_script(object):
     self.timer = self.env.config.timer
     self.recipe = recipe
     self.build_target = build_target
-    self.enabled = self.build_target.parse_expression(recipe.enabled)
+    self.enabled = recipe.enabled.parse_expression(self.build_target)
     self.recipe_dir = path.dirname(self.filename)
     self._step_manager = step_manager('rebuild')
     self.working_dir = self._make_working_dir(self.env.config.builds_dir(self.build_target),

@@ -23,6 +23,7 @@ from .recipe_parser_util import recipe_parser_util
 from .recipe_step import recipe_step
 from .recipe_step_list import recipe_step_list
 from .recipe_value import recipe_value
+from .recipe_enabled import recipe_enabled
 
 from .value import masked_value
 from .value import masked_value_list
@@ -69,12 +70,11 @@ class recipe_parser(object):
   
   def _parse_package(self, node):
     name, version = self._parse_package_header(node)
-    enabled = True
     properties = {}
     requirements = []
     steps = []
     instructions = []
-    enabled = 'True'
+    enabled = recipe_enabled(value_origin(self.filename, 1, ''), 'True')
     load = []
     for child in node.children:
       text = child.data.text
@@ -124,7 +124,8 @@ class recipe_parser(object):
     kv = key_value.parse(enabled_text, delimiter = '=')
     if kv.key != 'enabled':
       self._error('invalid "enabled" expression: %s' % (enabled_text))
-    return kv.value
+    origin = value_origin(self.filename, node.data.line_number, enabled_text)
+    return recipe_enabled(origin, kv.value)
   
   def _parse_properties(self, node):
     properties = {}

@@ -14,6 +14,7 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
   def __new__(clazz, format_version, filename, enabled, properties, requirements,
               descriptor, instructions, steps, load, variables = None):
     check.check_int(format_version)
+    check.check_recipe_enabled(enabled)
     if format_version != 2:
       raise recipe_error('Invalid recipe format_version %d' % (format_version))
     check.check_string(filename)
@@ -33,7 +34,7 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
     'A convenient way to make a recipe string is to build a graph first.'
     root = node('package %s %s %s' % (self.descriptor.name, self.descriptor.version.upstream_version, self.descriptor.version.revision))
     if self.enabled != '':
-      root.add_child('enabled=%s' % (self.enabled))
+      root.add_child('enabled=%s' % (self.enabled.expression))
       root.add_child('')
     if self.variables:
       root.children.append(self._masked_value_list_to_node('variables', self.variables))

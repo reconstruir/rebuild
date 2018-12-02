@@ -991,4 +991,5 @@ shell_env in python_egg is the wrong name
  - value_key_values should use self.value instead of self.values
  - recipe variables might be able to retire
  - recipe instructions should be put aside
+ - theres appears not to be a rebuilder test with an enabled expression
  
