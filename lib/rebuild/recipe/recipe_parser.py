@@ -8,7 +8,6 @@ from bes.compat import StringIO
 from bes.key_value import key_value, key_value_parser
 from bes.system import log
 from bes.text import string_list, tree_text_parser, text_fit
-from bes.python import code
 
 from rebuild.base import build_version, requirement, requirement_list, package_descriptor
 from rebuild.step.step_description import step_description
@@ -75,7 +74,6 @@ class recipe_parser(object):
     steps = []
     instructions = []
     enabled = recipe_enabled(value_origin(self.filename, 1, ''), 'True')
-    load = []
     python_code = None
 
     # Need to deal with any inline python code first so its available for the rest of the recipe
@@ -93,9 +91,6 @@ class recipe_parser(object):
         steps = self._parse_steps(child)
       elif text.startswith('enabled'):
         enabled = self._parse_enabled(child)
-      elif text.startswith('load'):
-        load = self._parse_load(child)
-        self._load_code(load, child)
       elif text.startswith('instructions'):
         instructions = self._parse_instructions(child)
       elif text.startswith('export_compilation_flags_requirements'):
@@ -108,7 +103,7 @@ class recipe_parser(object):
         self._error('unknown recipe section: \"%s\"' % (text), child)
     desc = package_descriptor(name, version, requirements = requirements, properties = properties)
     return recipe(2, self.filename, enabled, properties, requirements,
-                  desc, instructions, steps, load, python_code)
+                  desc, instructions, steps, python_code)
 
   def _parse_package_header(self, node):
     parts = string_util.split_by_white_space(node.data.text, strip = True)
@@ -232,14 +227,6 @@ class recipe_parser(object):
         values.append(value)
     return recipe_value(key, values)
 
-  def _parse_load(self, node):
-    loads = []
-    for child in node.children:
-      load_text = child.get_text(child.NODE_FLAT)
-      next_loads = string_list.parse(load_text)
-      loads.extend(next_loads)
-    return loads
-
   def _parse_python_code(self, node):
     if node.data.text.strip() != 'python_code':
       self._error('python_code should be a string literal starting at line %d' % (node.data.line_number + 1), node)
@@ -254,18 +241,6 @@ class recipe_parser(object):
     exec(c, globals(), exec_locals)
     return original_python_code
   
-  def _load_code(self, loads, node):
-    for l in loads:
-      code_filename = path.join(path.dirname(self.filename), l)
-      if not path.isfile(code_filename):
-        self._error('python file to load not found: %s' % (code_filename), node)
-      tmp_globals = {}
-      tmp_locals = {}
-      code.execfile(code_filename, tmp_globals, tmp_locals)
-      for key, value in tmp_locals.items():
-        if check.is_class(value):
-          setattr(value, '__load_file__', code_filename)
-
   @classmethod
   def _caca_parse_mask_and_value(clazz, origin, text, node, class_name):
     check.check_value_origin(origin)

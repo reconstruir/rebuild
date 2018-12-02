@@ -413,10 +413,6 @@ jul 23
 - split todo files by project
 - figure out why bes_test.py always makes .pyc droppings
 
-jul 24
-- the code that loads steps automatically should use ast and do the subclasses of Step instead of a string wildcard
-
-
 jul 25
 - bes_refactor rename of files does not git add new files
 
@@ -548,15 +544,7 @@ dec 21
 
 jan 9
 - rename step_make_instructions to step_instructions_write or something
-- fix instruction loading unit tests (test_instruction_list.py)
 - need a unit test of writing instructions when a build script has them
-- finish refactoring vars
-x lib/rebuild/base/build_os_env.py
-x lib/rebuild/base/package_descriptor.py
-x lib/rebuild/package/package_manager.py
-lib/rebuild/recipe/recipe.py
-x lib/rebuild/tools_manager/tools_package_manager.py
-x lib/rebuild/tools_manager/tools_manager.py
 
 jan 10
 - finish refactoring rebuild.value from rebuild.recipe
@@ -640,8 +628,6 @@ mar 20
 mar 22
 - builder.wipe_build_dirs() doesnt deal with the host build target issue when building tool deps same with no checksums need to do resolutions before
 - depends_on is broken in builder
-- the steps loaded from third_party/lib/openssl/openssl_steps.py in third_party/lib/openssl/rebuild.recipe dont end up
-  in checksum sources
 - prune the scripts tree to avoid crawing and downloading shit that is irrelevant
 
 builder_script.py you suck so bad because file not found: %s' % (s))
@@ -723,13 +709,6 @@ copy third_party/privworld to great/...
 - add db multi process lock
 - add a in db lock when a package is being modified to deal with crashes
 - twisted might depend on hyperlink
-
-
-
-- major tasks
-- artifact factory db
-- env_dir loading in shell and in python
-- new tools manager
 
 april 7
 - get rid of artifact_manager.DEFAULT_PUBLISH_DIR
@@ -965,7 +944,6 @@ shell_env in python_egg is the wrong name
    because of env variable substitution
  - steps that require external tools should be plugins
  - decide if instructions are needed
- - make code loading in recipes be inline now that text parsing children is better
  - value_vase._new_parse_simple() deal with the commented out code when the root text
    is missing a colon.  probably *not* needed.
 

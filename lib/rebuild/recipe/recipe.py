@@ -7,12 +7,12 @@ from bes.text import text_line_parser, white_space
 
 from .recipe_error import recipe_error
 
-class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties, requirements, descriptor, instructions, steps, load, python_code')):
+class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties, requirements, descriptor, instructions, steps, python_code')):
 
   CHECK_UNKNOWN_PROPERTIES = True
   
   def __new__(clazz, format_version, filename, enabled, properties, requirements,
-              descriptor, instructions, steps, load, python_code):
+              descriptor, instructions, steps, python_code):
     check.check_int(format_version)
     check.check_recipe_enabled(enabled)
     if format_version != 2:
@@ -21,7 +21,7 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
     if python_code:
       check.check_string(python_code)
     return clazz.__bases__[0].__new__(clazz, format_version, filename, enabled, properties,
-                                      requirements, descriptor, instructions, steps, load, python_code)
+                                      requirements, descriptor, instructions, steps, python_code)
 
   def __str__(self):
     return self.to_string()
@@ -46,9 +46,6 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
       root.children.append(self._requirements_to_node('requirements', self.requirements))
       root.add_child('')
     root.children.append(self._steps_to_node(self.steps))
-    if self.load:
-      root.add_child('')
-      root.children.append(self._load_to_node(self.load))
     return root
 
   @classmethod
@@ -113,13 +110,6 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
       result.add_child(mv.to_string())
     return result
 
-  @classmethod
-  def _load_to_node(clazz, load):
-    result = node('load')
-    for l in load:
-      result.add_child(l)
-    return result
-  
   @classmethod
   def _python_code_to_node(clazz, python_code):
     result = node('python_code')
