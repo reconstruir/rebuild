@@ -7,21 +7,19 @@ from bes.text import white_space
 
 from .recipe_error import recipe_error
 
-class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties, requirements, descriptor, instructions, steps, load, variables')):
+class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties, requirements, descriptor, instructions, steps, load')):
 
   CHECK_UNKNOWN_PROPERTIES = True
   
   def __new__(clazz, format_version, filename, enabled, properties, requirements,
-              descriptor, instructions, steps, load, variables = None):
+              descriptor, instructions, steps, load):
     check.check_int(format_version)
     check.check_recipe_enabled(enabled)
     if format_version != 2:
       raise recipe_error('Invalid recipe format_version %d' % (format_version))
     check.check_string(filename)
-    if variables:
-      check.check_masked_value_list(variables)
     return clazz.__bases__[0].__new__(clazz, format_version, filename, enabled, properties,
-                                      requirements, descriptor, instructions, steps, load, variables)
+                                      requirements, descriptor, instructions, steps, load)
 
   def __str__(self):
     return self.to_string()
@@ -35,9 +33,6 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
     root = node('package %s %s %s' % (self.descriptor.name, self.descriptor.version.upstream_version, self.descriptor.version.revision))
     if self.enabled != '':
       root.add_child('enabled=%s' % (self.enabled.expression))
-      root.add_child('')
-    if self.variables:
-      root.children.append(self._masked_value_list_to_node('variables', self.variables))
       root.add_child('')
     if self.properties:
       root.children.append(self._properties_to_node(self.properties))

@@ -2,10 +2,6 @@
 
 package libsomething 1.0.0
 
-#  variables
-#    macos: _REBUILD_GETTEXT_VAR1=-DFOO_VAR1\=\"foo1\"
-#    linux: _REBUILD_GETTEXT_VAR2=-DFOO_VAR2\=\"foo2\"
-
   steps
 
     step_setup
