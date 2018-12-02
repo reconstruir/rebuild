@@ -5,13 +5,18 @@ from collections import namedtuple
 from bes.common import check, node
 from bes.text import white_space
 
+from .recipe_error import recipe_error
+
 class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties, requirements, descriptor, instructions, steps, load, variables')):
 
   CHECK_UNKNOWN_PROPERTIES = True
   
   def __new__(clazz, format_version, filename, enabled, properties, requirements,
               descriptor, instructions, steps, load, variables = None):
-    assert format_version == 2
+    check.check_int(format_version)
+    if format_version != 2:
+      raise recipe_error('Invalid recipe format_version %d' % (format_version))
+    check.check_string(filename)
     if variables:
       check.check_masked_value_list(variables)
     return clazz.__bases__[0].__new__(clazz, format_version, filename, enabled, properties,

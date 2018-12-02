@@ -17,6 +17,7 @@ from rebuild.recipe.value import value_type
 from rebuild.instruction import instruction_list
 
 from .recipe import recipe
+from .recipe_error import recipe_error
 from .recipe_list import recipe_list
 from .recipe_parser_util import recipe_parser_util
 from .recipe_step import recipe_step
@@ -29,19 +30,6 @@ from .value import value_factory
 from .value import value_file
 from .value import value_origin
 
-class recipe_parser_error(Exception):
-  def __init__(self, message, filename, line_number):
-    super(recipe_parser_error, self).__init__()
-    self.message = message
-    self.filename = filename
-    self.line_number = line_number
-
-  def __str__(self):
-    if not self.line_number:
-      return '%s: %s' % (self.filename, self.message)
-    else:
-      return '%s:%s: %s' % (self.filename, self.line_number, self.message)
-    
 class recipe_parser(object):
 
   MAGIC = '!rebuild.recipe!'
@@ -56,7 +44,7 @@ class recipe_parser(object):
       line_number = pkg_node.data.line_number + self.starting_line_number
     else:
       line_number = None
-    raise recipe_parser_error(msg, self.filename, line_number)
+    raise recipe_error(msg, self.filename, line_number)
     
   def parse(self):
     if not self.text.startswith(self.MAGIC):

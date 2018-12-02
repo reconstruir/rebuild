@@ -989,4 +989,6 @@ shell_env in python_egg is the wrong name
  - need much better configure_flags type of value tests with masks and stuff
  - fix value_error to accept an origin in its ctor instead of so many values
  - value_key_values should use self.value instead of self.values
+ - recipe variables might be able to retire
+ - recipe instructions should be put aside
  

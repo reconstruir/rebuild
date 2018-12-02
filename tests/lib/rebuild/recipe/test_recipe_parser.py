@@ -3,7 +3,7 @@
 
 import inspect, os.path as path
 from bes.testing.unit_test import unit_test
-from rebuild.recipe import recipe, recipe_parser as P, recipe_parser_error as ERR, recipe_step as RS, testing_recipe_load_env
+from rebuild.recipe import recipe, recipe_parser as P, recipe_error as ERR, recipe_step as RS, testing_recipe_load_env
 from rebuild.step import compound_step, step, step_result
 from rebuild.base import build_target
 from bes.key_value import key_value as KV, key_value_list as KVL

@@ -15,9 +15,9 @@ from .fake_package_source import fake_package_source
 from .fake_package_recipe_parser_util import fake_package_recipe_parser_util
 from .fake_package_binary_object import fake_package_binary_object
 
-class fake_package_recipe_parser_error(Exception):
+class fake_package_recipe_error(Exception):
   def __init__(self, message, filename, line_number):
-    super(fake_package_recipe_parser_error, self).__init__()
+    super(fake_package_recipe_error, self).__init__()
     self.message = message
     self.filename = filename
     self.line_number = line_number
@@ -40,7 +40,7 @@ class fake_package_recipe_parser(object):
       line_number = pkg_node.data.line_number + self.starting_line_number
     else:
       line_number = None
-    raise fake_package_recipe_parser_error(msg, self.filename, line_number)
+    raise fake_package_recipe_error(msg, self.filename, line_number)
     
   def parse(self):
     try:
