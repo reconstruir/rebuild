@@ -18,8 +18,8 @@ class value_string_list(value_base):
     self.value = values
 
   def __eq__(self, other):
-    if check.is_string_seq(other):
-      return self.value == other
+#    if check.is_string_seq(other):
+#      return self.value == other
     return self.value == other.value
     
   def __iter__(self):

@@ -14,7 +14,7 @@ class value_source_tarball(value_base):
     self.value = value
 
   def __eq__(self, other):
-    return self.value == other.filename
+    return self.value == other.value
     
   #@abstractmethod
   def value_to_string(self, quote, include_properties = True):
