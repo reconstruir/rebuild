@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import os.path as path
+import os.path as path, pprint
 from bes.common import check, dict_util
 from rebuild.base import build_blurb, package_descriptor, requirement, requirement_manager
 from bes.dependency import dependency_resolver, missing_dependency_error
@@ -81,3 +81,19 @@ class builder_script_manager(object):
     recipes = builder_recipe_loader.load(env.recipe_load_env, filename)
     scripts = [ builder_script(recipe, build_target, env) for recipe in recipes ]
     return scripts
+
+  def _step_values_as_dict(self):
+    result = {}
+    for name, script in self.scripts.items():
+      result[name] = script.step_values_as_dict()
+    return result
+
+  def print_step_values(self):
+    d = self._step_values_as_dict()
+    for package_name, step_values in sorted(d.items()):
+      for step_value in step_values:
+        step_name = step_value[0]
+        step_values = step_value[1]
+        for key, value in step_values.items():
+          if value:
+            print('%s: %s: %s: %s' % (package_name, step_name, key, pprint.pformat(value)))

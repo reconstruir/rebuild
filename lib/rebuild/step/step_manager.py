@@ -36,11 +36,16 @@ class step_manager(object):
     self._steps = self._unroll_steps(steps)
     for step in self._steps:
       step.values = step.recipe.resolve_values(script.substitutions, env.recipe_load_env)
-      #if True:
-      if False:
-        for k, v in sorted(step.values.items()):
-          print('CONO: %s %s: %s' % (script.descriptor.name, k, v))
-      
+
+  def step_values_as_dict(self):
+    result = []
+    for step in self._steps:
+      step_name = step.__class__.__name__
+      step_values = step.values
+      item = ( step_name, copy.deepcopy(step.values) )
+      result.append(item)
+    return result
+          
   @classmethod
   def _unroll_children_steps(clazz, step, result):
     assert isinstance(result, list)

@@ -30,6 +30,7 @@ class builder_cli(build_target_cli):
     self.parser.add_argument('-C', '--change-dir', action = 'store', type = str, default = None)
     self.parser.add_argument('-f', '--project-file', action = 'store', type = str, default = 'rebuild.project')
     self.parser.add_argument('-n', '--no-checksums', action = 'store_true')
+    self.parser.add_argument('--print-step-values', action = 'store_true')
     self.parser.add_argument('-v', '--verbose', action = 'store_true', default = False)
     self.parser.add_argument('-w', '--wipe', action = 'store_true')
     self.parser.add_argument('-k', '--keep-going', action = 'store_true')
@@ -130,7 +131,12 @@ class builder_cli(build_target_cli):
     config.performance = args.performance
     config.download_only = args.download_only
     config.artifacts_dir = args.artifacts
+    
     env = builder_env(config, available_packages)
+    
+    if args.print_step_values:
+      env.script_manager.print_step_values()
+      return 0
     
     bldr = builder(env)
 

@@ -71,7 +71,10 @@ class builder_script(object):
       'REBUILD_TEST_DIR': self.test_dir,
     }
     self._add_steps()
-    
+
+  def step_values_as_dict(self):
+    return self._step_manager.step_values_as_dict()
+  
   @property
   def descriptor(self):
     return self.recipe.descriptor
