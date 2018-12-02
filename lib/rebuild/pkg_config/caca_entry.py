@@ -13,7 +13,7 @@ class caca_entry(namedtuple('caca_entry', 'line,etype,value')):
   EQUAL = '='
 
   def __new__(clazz, line, etype, value):
-    check.check_line_token(line)
+    check.check_text_line(line)
     check.check_entry_type(etype)
     if value:
       check.check_key_value(value)
@@ -28,7 +28,7 @@ class caca_entry(namedtuple('caca_entry', 'line,etype,value')):
   @classmethod
   def parse(clazz, line):
     'Parse a pkg-config .pc file entry.'
-    check.check_line_token(line)
+    check.check_text_line(line)
     delimiter = clazz._first_delimiter(line.text_no_comments)
     value = None
     etype = None
