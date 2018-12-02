@@ -76,6 +76,13 @@ class recipe_parser(object):
     instructions = []
     enabled = recipe_enabled(value_origin(self.filename, 1, ''), 'True')
     load = []
+    python_code = None
+
+    # Need to deal with any inline python code first so its available for the rest of the recipe
+    python_code_node = node.find_child(lambda child: child.data.text == 'python_code')
+    if python_code_node:
+      python_code = self._parse_python_code(python_code_node)
+
     for child in node.children:
       text = child.data.text
       if text.startswith('properties'):
@@ -94,11 +101,14 @@ class recipe_parser(object):
       elif text.startswith('export_compilation_flags_requirements'):
         export_compilation_flags_requirements = self._parse_export_compilation_flags_requirements(child)
         properties['export_compilation_flags_requirements'] = export_compilation_flags_requirements
+      elif text.startswith('python_code'):
+        # already dealth with up top
+        pass
       else:
         self._error('unknown recipe section: \"%s\"' % (text), child)
     desc = package_descriptor(name, version, requirements = requirements, properties = properties)
     return recipe(2, self.filename, enabled, properties, requirements,
-                  desc, instructions, steps, load)
+                  desc, instructions, steps, load, python_code)
 
   def _parse_package_header(self, node):
     parts = string_util.split_by_white_space(node.data.text, strip = True)
@@ -230,6 +240,20 @@ class recipe_parser(object):
       loads.extend(next_loads)
     return loads
 
+  def _parse_python_code(self, node):
+    if node.data.text.strip() != 'python_code':
+      self._error('python_code should be a string literal starting at line %d' % (node.data.line_number + 1), node)
+    code_node = node.children[0]    
+    # fill the top of the code with empty lines so that the python error line numbers
+    # will match the line numbers in the recipe when compilation errors happen
+    original_python_code = code_node.data.text
+    filler_lines = '\n' * node.data.line_number
+    filled_source_code = filler_lines + original_python_code
+    c = compile(filled_source_code, self.filename, 'exec')
+    exec_locals = {}
+    exec(c, globals(), exec_locals)
+    return original_python_code
+  
   def _load_code(self, loads, node):
     for l in loads:
       code_filename = path.join(path.dirname(self.filename), l)

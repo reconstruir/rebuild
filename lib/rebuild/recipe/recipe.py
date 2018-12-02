@@ -3,23 +3,25 @@
 import re
 from collections import namedtuple
 from bes.common import check, node
-from bes.text import white_space
+from bes.text import text_line_parser, white_space
 
 from .recipe_error import recipe_error
 
-class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties, requirements, descriptor, instructions, steps, load')):
+class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties, requirements, descriptor, instructions, steps, load, python_code')):
 
   CHECK_UNKNOWN_PROPERTIES = True
   
   def __new__(clazz, format_version, filename, enabled, properties, requirements,
-              descriptor, instructions, steps, load):
+              descriptor, instructions, steps, load, python_code):
     check.check_int(format_version)
     check.check_recipe_enabled(enabled)
     if format_version != 2:
       raise recipe_error('Invalid recipe format_version %d' % (format_version))
     check.check_string(filename)
+    if python_code:
+      check.check_string(python_code)
     return clazz.__bases__[0].__new__(clazz, format_version, filename, enabled, properties,
-                                      requirements, descriptor, instructions, steps, load)
+                                      requirements, descriptor, instructions, steps, load, python_code)
 
   def __str__(self):
     return self.to_string()
@@ -31,6 +33,9 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
   def _to_node(self):
     'A convenient way to make a recipe string is to build a graph first.'
     root = node('package %s %s %s' % (self.descriptor.name, self.descriptor.version.upstream_version, self.descriptor.version.revision))
+    if self.python_code:
+      root.children.append(self._python_code_to_node(self.python_code))
+      root.add_child('')
     if self.enabled != '':
       root.add_child('enabled=%s' % (self.enabled.expression))
       root.add_child('')
@@ -113,6 +118,16 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
     result = node('load')
     for l in load:
       result.add_child(l)
+    return result
+  
+  @classmethod
+  def _python_code_to_node(clazz, python_code):
+    result = node('python_code')
+    parser = text_line_parser(python_code)
+    first_line_text = '> ' + parser[0].text
+    parser.prepend('  ' * 3)
+    parser.replace_line_text(1, first_line_text)
+    result.add_child(str(parser))
     return result
   
 check.register_class(recipe, include_seq = False)

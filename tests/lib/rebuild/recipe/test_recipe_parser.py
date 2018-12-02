@@ -450,28 +450,45 @@ package foo 1.2.3 4
     actual = r[0].to_string(indent = 2)
     self.assertMultiLineEqual( expected, actual )
 
-  def test_step_load(self):
+  def test_step_inline_python_code(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
-  load
-    test_loaded_step1.py
-    test_loaded_step2.py
-
   steps
-    test_loaded_step1
+    test_inline_step1
       bool_value: True
 
-    test_loaded_step2
+    test_inline_step2
       bool_value: True
+
+  python_code
+    > from rebuild.step import step
+      class test_inline_step1(step):
+        def __init__(self):
+          super(test_inline_step1, self).__init__()
+        @classmethod
+        def define_args(clazz):
+          return 'bool_value bool'
+        def execute(self, script, env, args):
+          return self.result(True)
+      class test_inline_step2(step):
+        def __init__(self):
+          super(test_inline_step2, self).__init__()
+        @classmethod
+        def define_args(clazz):
+          return 'bool_value bool'
+        def execute(self, script, env, args):
+          return self.result(True)
+
 '''
 
     r = P(self._filename_for_parser(), text).parse()
     self.assertEqual( 1, len(r) )
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
-    self.assertEqual( 'test_loaded_step1\n    bool_value: True', str(r[0].steps[0]) )
-    self.assertEqual( 'test_loaded_step2\n    bool_value: True', str(r[0].steps[1]) )
-
+    self.assertEqual( 'test_inline_step1\n    bool_value: True', str(r[0].steps[0]) )
+    self.assertEqual( 'test_inline_step2\n    bool_value: True', str(r[0].steps[1]) )
+    print(str(r[0]))
+    
   def test_step_value_hook(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
