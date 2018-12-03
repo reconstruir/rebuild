@@ -1,5 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+from .hook import hook
 from .hook_registry import hook_registry
 from .hook_result import hook_result
 from .masked_value import masked_value
@@ -14,7 +15,6 @@ from .value_file import value_file
 from .value_file import value_file_list
 from .value_git_address import value_git_address
 from .value_hook import value_hook
-from .value_hook import value_hook_list
 from .value_install_file import value_install_file
 from .value_install_file import value_install_file_list
 from .value_int import value_int
