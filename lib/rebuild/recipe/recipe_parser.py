@@ -230,7 +230,9 @@ class recipe_parser(object):
   def _parse_python_code(self, node):
     if node.data.text.strip() != 'python_code':
       self._error('python_code should be a string literal starting at line %d' % (node.data.line_number + 1), node)
-    code_node = node.children[0]    
+    if len(node.children) != 1:
+      self._error('python_code not found', node)
+    code_node = node.children[0]
     # fill the top of the code with empty lines so that the python error line numbers
     # will match the line numbers in the recipe when compilation errors happen
     original_python_code = code_node.data.text
