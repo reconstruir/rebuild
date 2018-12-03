@@ -13,9 +13,6 @@ class hook_register_meta(ABCMeta):
   def __new__(meta, name, bases, class_dict):
     clazz = ABCMeta.__new__(meta, name, bases, class_dict)
     hook_registry.register(clazz)
-    hook_class_module_name = getattr(clazz, '__hook_class_module_name__', None)
-#    if hook_class_module_name:
-#      setattr(sys.modules[hook_class_module_name], clazz.__name__, clazz)
     return clazz
 
 class hook(with_metaclass(hook_register_meta, object)):
@@ -26,6 +23,12 @@ class hook(with_metaclass(hook_register_meta, object)):
     'Create a new hook.'
     pass
 
+  def __eq__(self, other):
+    return self.__class__ == other.__class__
+
+  def __str__(self):
+    return self.__class__.__name__
+  
   @abstractmethod
   def execute(self, script, env):
     'Execute the hook.  Same semantics as step.execute()'
