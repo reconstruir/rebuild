@@ -975,3 +975,9 @@ shell_env in python_egg is the wrong name
 rem_test: FAILED:  rebuild/tests/lib/rebuild/package/test_package_manager.py:test_tools_manager.test_transform_env
 rem_test: FAILED:  rebuild/tests/lib/rebuild/recipe/test_recipe_parser_util.py:test_tools_manager.test_transform_env
 rem_test: FAILED:  rebuild/tests/lib/rebuild/tools_manager/test_tools_manager.py:test_tools_manager.test_transform_env
+ - supprt multiple python_code entries in recipe
+ - value_hook parsing doesnt support properties but it should
+ - cleanup the logging situation in step.py
+ - post_install_hooks should be post_install_hook also figure out the pluraliry of hooks
+ - step.call_hooks should be step.call_hook
+ 
