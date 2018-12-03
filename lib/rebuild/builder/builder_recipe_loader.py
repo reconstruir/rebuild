@@ -48,7 +48,7 @@ class builder_recipe_loader(object):
     parser = recipe_parser(filename, content)
     recipes = parser.parse()
 
-    if False
+    if False:
 #    if True:
       for r in recipes:
         clazz._test_pickle(filename, r)
