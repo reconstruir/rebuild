@@ -18,11 +18,6 @@ class value_bool(value_base):
       return self.value == other
     return self.value == other.value
   
-#  def __bool__(self):
-#    return self.value
-#  
-#  __nonzero__ = __bool__
-    
   #@abstractmethod
   def value_to_string(self, quote, include_properties = True):
     return str(self.value)
@@ -45,13 +40,17 @@ class value_bool(value_base):
   #@abstractmethod
   def _parse_plain_string(clazz, origin, s):
     'Parse just a string.'
-    return bool_util.parse_bool(s or False)
+    result = bool_util.parse_bool(s or False)
+    return result
   
   @classmethod
   #@abstractmethod
   def new_parse(clazz, origin, node):
     'Parse a value.'
-    return clazz._new_parse_simple(value_bool, origin, node)
+    clazz.log_d('new_parse: origin=%s' % (str(origin)))
+    result = clazz._new_parse_simple(value_bool, origin, node)
+    clazz.log_d('new_parse: result=%s' % (result))
+    return result
   
   @classmethod
   #@abstractmethod
@@ -62,7 +61,10 @@ class value_bool(value_base):
   #@abstractmethod
   def resolve(clazz, values, class_name):
     'Resolve a list of values if this type into a nice dictionary.'
+    clazz.log_d('resolve: values=%s; class_name=%s' % (values, class_name))
     assert class_name == value_type.BOOL
-    return values[-1].value
+    result = values[-1].value
+    clazz.log_d('resolve: result=%s' % (result))
+    return result
 
 check.register_class(value_bool, include_seq = True)

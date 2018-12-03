@@ -3,6 +3,7 @@
 from collections import namedtuple
 from abc import abstractmethod, ABCMeta
 
+from bes.system import log
 from bes.system.compat import with_metaclass
 from bes.common import check, variable
 from bes.key_value import key_value_list
@@ -17,6 +18,9 @@ class value_register_meta(ABCMeta):
   def __new__(meta, name, bases, class_dict):
     clazz = ABCMeta.__new__(meta, name, bases, class_dict)
     value_registry.register(clazz)
+    # add logging but only for the subclasses so log tags match the subclass
+    if clazz.__name__ != 'value_base':
+      log.add_logging(clazz, clazz.__name__)
     return clazz
 
 class value_base(with_metaclass(value_register_meta, object)):
@@ -98,6 +102,14 @@ class value_base(with_metaclass(value_register_meta, object)):
     assert False
 
   @classmethod
+  def _call_parse_plain_string(clazz, origin, s):
+    'Call _parse_plain_string with logging before and after for easy debugging.'
+    clazz.log_d('_parse_plain_string: origin=%s; s=\"%s\"' % (origin, s))
+    result = clazz._parse_plain_string(origin, s)
+    clazz.log_d('_parse_plain_string: result=%s - %s' % (result, type(result)))
+    return result
+    
+  @classmethod
   @abstractmethod
   def parse(clazz, origin, text, node):
     'Parse a value.'
@@ -125,27 +137,35 @@ class value_base(with_metaclass(value_register_meta, object)):
   @classmethod
   def _new_parse_simple(clazz, value_type, origin, node):
     'Parse a value.'
+    clazz.log_d('_new_parse_simple: value_type=%s; origin=%s; node=\n%s' % (value_type.__name__, origin, node.to_string(depth = 2)), multi_line = True)
     result = []
     root_text = node.data.text_no_comments
+    clazz.log_d('_new_parse_simple: root_text=\"%s\"' % (root_text))
     if ':' in root_text:
       pv = value_parsing.parse_key_value(origin, root_text)
+      clazz.log_d('_new_parse_simple: pv=%s' % (str(pv)))
       if pv.value:
-        root_plain_value = clazz._parse_plain_string(origin, pv.value)
+        root_plain_value = clazz._call_parse_plain_string(origin, pv.value)
         root_masked_value = masked_value(None, value_type(origin = origin, value = root_plain_value))
         result.append(root_masked_value)
 ###    else:
 ###      root_text = root_text.strip()
 ###      if root_text:
-###        root_plain_value = clazz._parse_plain_string(origin, root_text)
+###        root_plain_value = clazz._call_parse_plain_string(origin, root_text)
 ###        root_masked_value = masked_value(None, value_type(origin = origin, value = root_plain_value))
 ###        result.append(root_masked_value)
-    for child in node.children:
+    for i, child in enumerate(node.children):
       child_origin = value_origin(origin.filename, child.data.line_number, child.data.text, origin.recipe_text)
       child_text = child.data.text_no_comments
+      clazz.log_d('_new_parse_simple: %d: child_origin=%s; child_text=%s' % (i, child_origin, child_text))
       child_pv = value_parsing.parse_mask_and_value(child_origin, child_text)
-      child_plain_value = clazz._parse_plain_string(child_origin, child_pv.value)
+      clazz.log_d('_new_parse_simple: %d: child_pv=%s' % (i, str(child_pv)))
+      child_plain_value = clazz._call_parse_plain_string(child_origin, child_pv.value)
+      clazz.log_d('_new_parse_simple: %d: child_plain_value=%s' % (i, child_plain_value))
       child_masked_value = masked_value(child_pv.mask, value_type(origin = child_origin, value = child_plain_value))
+      clazz.log_d('_new_parse_simple: %d: child_masked_value=%s' % (i, str(child_masked_value)))
       result.append(child_masked_value)
+    clazz.log_d('_new_parse_simple: result=%s' % (str(result)))
     return result
         
 check.register_class(value_base)
