@@ -22,10 +22,37 @@ class builder_recipe_loader(object):
   _recipes = namedtuple('_recipes', 'filename,recipes')
 
   @classmethod
+  def _test_pickle(clazz, filename, recipe):
+    check.check_recipe(recipe)
+    import pickle
+    try:
+      picked_recipe = pickle.dumps(recipe)
+    except Exception as ex:
+      print('BAD: failed to pickle %s %s: %s' % (filename, recipe.descriptor.name, str(ex)))
+      return
+    try:
+      unpicked_recipe = pickle.loads(picked_recipe)
+    except Exception as ex:
+      print('BAD: failed to unpickle %s %s: %s' % (filename, recipe.descriptor.name, str(ex)))
+      return
+
+    try:
+      assert recipe == unpicked_recipe
+    except Exception as ex:
+      print('BAD: failed to assert unpickled same as original %s %s: %s' % (filename, recipe.descriptor.name, str(ex)))
+
+  
+  @classmethod
   def _load_recipes_v2(clazz, env, filename):
     content = file_util.read(filename, codec = 'utf8')
     parser = recipe_parser(filename, content)
     recipes = parser.parse()
+
+    if False
+#    if True:
+      for r in recipes:
+        clazz._test_pickle(filename, r)
+        
     return clazz._recipes(filename, recipes)
   
   @classmethod

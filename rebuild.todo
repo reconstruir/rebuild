@@ -969,4 +969,9 @@ shell_env in python_egg is the wrong name
  - value_key_values should use self.value instead of self.values
  - recipe instructions should be put aside
  - theres appears not to be a rebuilder test with an enabled expression
- 
+
+2018-12-01
+ - fix env_dir tests on linux
+rem_test: FAILED:  rebuild/tests/lib/rebuild/package/test_package_manager.py:test_tools_manager.test_transform_env
+rem_test: FAILED:  rebuild/tests/lib/rebuild/recipe/test_recipe_parser_util.py:test_tools_manager.test_transform_env
+rem_test: FAILED:  rebuild/tests/lib/rebuild/tools_manager/test_tools_manager.py:test_tools_manager.test_transform_env
