@@ -145,7 +145,7 @@ class sources_cli(object):
     try:
       checksum = self._pcloud.checksum_file(file_path = remote_path)
     except pcloud_error as ex:
-      if ex.code == pcloud_error.FILE_NOT_FOUND:
+      if ex.code in [ pcloud_error.FILE_NOT_FOUND, pcloud_error.PARENT_DIR_MISSING ]:
         checksum = None
       else:
         raise ex
