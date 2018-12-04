@@ -980,4 +980,32 @@ rem_test: FAILED:  rebuild/tests/lib/rebuild/tools_manager/test_tools_manager.py
  - cleanup the logging situation in step.py
  - post_install_hooks should be post_install_hook also figure out the pluraliry of hooks
  - step.call_hooks should be step.call_hook
- 
+2018-12-02
+ - foo_dev and foo_undev are weird and confusing need better names
+ - add remanager tool to visualize env
+ - rename remanager already
+ - the names for tools dirs are messed up ~/proj/third_party/BUILD/tools/gnu_m4_1_4_18 should be gnu_m4_1.4.18
+ - no error when 2 recipes define the same package name
+ - ability to import existing rebuild.projects kinda urgent
+ - might be nice for tester phase of build to tell what its doing to justify its slowness
+ - tarball address for a git module with submodules doesnt work
+#      tarball_address
+#        all: https://github.com/kubernetes-client/python.git v${REBUILD_PACKAGE_UPSTREAM_VERSION} dest=${REBUILD_BUILD_DIR}
+ - jargon: toolset instead of remanager
+
+rebuild_sources.py --pcloud-credentials ~/.pcloud.credentials publish colorama-0.3.9.tar.gz
+
+Delete a source manually and then try to re upload it causes a problem:
+
+Uploading colorama-0.3.9.tar.gz => /sources/c/colorama-0.3.9.tar.gz
+File alaready in db something is wrong: c/colorama-0.3.9.tar.gz.
+
+- when there are no requirements or tool requirements
+instead of:
+     rebuild: java_jdk8 - requirements:
+do:
+     rebuild: java_jdk8 - requirements (none)
+
+fix the freaking .Trashes issue
+
+version specification and locking for ~/.rebuild/config
