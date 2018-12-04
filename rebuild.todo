@@ -1006,6 +1006,4 @@ instead of:
 do:
      rebuild: java_jdk8 - requirements (none)
 
-fix the freaking .Trashes issue
-
 version specification and locking for ~/.rebuild/config
