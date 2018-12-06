@@ -255,7 +255,11 @@ class pcloud(object):
       if folder_id:
         raise ex
       self.ensure_folder(folder_path)
-    
+
+    if cloud_filename != path.basename(local_path):
+      old_local_path = local_path
+      local_path = path.join(temp_file.make_temp_dir(), cloud_filename)
+      file_util.copy(old_local_path, local_path, use_hard_link = True)
     files = { cloud_filename: open(local_path, 'rb') }
     url = pcloud_requests.make_api_url('uploadfile')
     params = {
