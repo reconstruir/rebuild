@@ -11,7 +11,7 @@ from bes.text import text_line_parser
 from bes.match import matcher_filename, matcher_multiple_filename
 from bes.python import setup_tools
 from bes.system import execute
-from rebuild.base import build_target, package_descriptor
+from rebuild.base import build_blurb, build_target, package_descriptor
 from bes.debug import debug_timer
 
 from .package_metadata import package_metadata
@@ -177,7 +177,14 @@ unset REBUILD_STUFF_DIR
       
     files_dir = path.join(stage_dir, 'files')
     timer.start('create_package - find files')
-    files = file_find.find(files_dir, relative = True, file_type = file_find.FILE | file_find.LINK)
+    if path.isdir(files_dir):
+      files = file_find.find(files_dir, relative = True, file_type = file_find.FILE | file_find.LINK)
+    else:
+      files = []
+
+    if not files:
+      build_blurb.blurb('rebuild', 'warning: No files to package found: %s' % (path.relpath(files_dir)))
+      
     timer.stop()
     timer.start('create_package - files checksums')
     files_checksum_list = file_checksum_list.from_files(files, root_dir = files_dir)
