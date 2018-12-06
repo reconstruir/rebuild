@@ -1007,3 +1007,9 @@ do:
      rebuild: java_jdk8 - requirements (none)
 
 version specification and locking for ~/.rebuild/config
+
+2018-12-04
+ - rebuild_sources should have an option for downloading from the web and ingesting that way as well as
+   a field in the db for the original url
+ - when ingesting a file with the exact same name as an existing file need to throw an error somehow
+ - when source finder fails to find an exact tarball it should show possible matches
