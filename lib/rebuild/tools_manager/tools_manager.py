@@ -1,7 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy, os.path as path, os
-from bes.common import check, object_util, string_util
+from bes.common import check, object_util
 from bes.system import execute, os_env
 from rebuild.base import build_target, build_level, package_descriptor_list
 from rebuild.manager import manager
@@ -28,10 +28,6 @@ class tools_manager(object):
     for package in pkg_descs:
       self._ensure_one_tool(package)
 
-  @classmethod
-  def _make_package_name(clazz, pkg_desc):
-    return string_util.replace_punctuation(pkg_desc.full_name, '_')
-
   def _ensure_one_tool(self, pkg_desc):
     check.check_package_descriptor(pkg_desc)
     # If we created this tool dir before were done.  There is no possible update
@@ -41,7 +37,7 @@ class tools_manager(object):
     # Figure out the dependencies for this tool
     resolved_tools = self._resolve_tools_deps(package_descriptor_list([pkg_desc]))
     for tool in resolved_tools:
-      project_name = self._make_package_name(tool)
+      project_name = tool.full_name
       self._timer.start('%s: resolve_and_update_packages' % (project_name))
       self._manager.resolve_and_update_packages(project_name,
                                                 [ tool.name ],
@@ -61,7 +57,7 @@ class tools_manager(object):
     resolved_tools = self._resolve_tools_deps(pkg_descs)
     transformed_env = copy.deepcopy(env)
     for tool in resolved_tools:
-      project_name = self._make_package_name(tool)
+      project_name = tool.full_name
       transformed_env = self._manager.transform_env(transformed_env, project_name, self._build_target)
     return transformed_env
 
@@ -72,7 +68,7 @@ class tools_manager(object):
       os.environ[key] = value
   
   def _package_root_dir(self, pkg_desc):
-    return path.join(self._root_dir, self._make_package_name(pkg_desc))
+    return path.join(self._root_dir, pkg_desc.full_name)
   
   def run_tool(self, pkg_descs, command, env, *args):
     if env is None:
