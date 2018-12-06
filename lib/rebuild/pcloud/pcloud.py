@@ -258,8 +258,11 @@ class pcloud(object):
 
     if cloud_filename != path.basename(local_path):
       old_local_path = local_path
-      local_path = path.join(temp_file.make_temp_dir(), cloud_filename)
+      tmp_dir = temp_file.make_temp_dir()
+      local_path = path.join(tmp_dir, cloud_filename)
       file_util.copy(old_local_path, local_path, use_hard_link = True)
+    else:
+      tmp_dir = None
     files = { cloud_filename: open(local_path, 'rb') }
     url = pcloud_requests.make_api_url('uploadfile')
     params = {
@@ -274,7 +277,11 @@ class pcloud(object):
       what = folder_id
       params.update({ 'folderid': folder_id })
     import requests
-    response  = requests.post(url, data = params, files = files)
+    try:
+      response  = requests.post(url, data = params, files = files)
+    finally:
+      if tmp_dir:
+        file_util.remove(tmp_dir)
     if response.status_code != 200:
       raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
     payload = response.json()
