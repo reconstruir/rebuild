@@ -36,8 +36,12 @@ class step_install_install_files(step):
         return step_result(False, 'File not found at %s: %s' % (str(install_file.origin), path.relpath(src)))
       dst = path.join(script.staged_files_dir, install_file.dst_filename)
       dst_dir = path.dirname(dst)
-      mode = file_util.mode(src)
-      self.blurb('Installing file %s in %s (%s)' % (src, dst_dir, mode))
+      property_mode = install_file.get_property('mode', None)
+      if property_mode:
+        mode = int(property_mode, 8)
+      else:
+        mode = file_util.mode(src)
+      self.blurb('Installing file %s in %s (mode=%s)' % (src, dst_dir, mode))
       file_util.mkdir(path.dirname(dst))
       shutil.copy(src, dst)
       os.chmod(dst, mode)
