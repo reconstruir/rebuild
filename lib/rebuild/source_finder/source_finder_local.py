@@ -21,3 +21,8 @@ class source_finder_local(source_finder):
     assert path.isabs(filename)
     return path.isfile(filename)
   
+  #@abstractmethod
+  def search(self, name):
+    pass
+
+  

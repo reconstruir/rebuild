@@ -17,5 +17,10 @@ class source_finder_hard_coded(source_finder):
 
   #@abstractmethod
   def ensure_source(self, filename):
-    pass
+    assert False
+  
+  #@abstractmethod
+  def search(self, name):
+    assert False
+
   

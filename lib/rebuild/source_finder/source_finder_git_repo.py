@@ -23,7 +23,11 @@ class source_finder_git_repo(source_finder):
 
   #@abstractmethod
   def ensure_source(self, filename):
-    pass
+    assert False
+    
+  #@abstractmethod
+  def search(self, name):
+    assert False
   
   def _update_once(self):
     if self._updated:

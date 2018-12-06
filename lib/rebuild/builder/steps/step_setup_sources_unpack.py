@@ -24,7 +24,10 @@ class step_setup_sources_unpack(step):
       return step_result(True, None)
       
     for t in downloaded_tarballs:
-      self.blurb('Extracting %s to %s' % (path.relpath(t.filename), path.relpath(t.dest_dir)))
+      self.blurb('Extracting %s to %s; base_dir=%s; strip_common_ancestor=%s' % (path.relpath(t.filename),
+                                                                                 path.relpath(t.dest_dir),
+                                                                                 t.base_dir,
+                                                                                 t.strip_common_ancestor))
       archiver.extract(t.filename,
                        t.dest_dir,
                        base_dir = t.base_dir,

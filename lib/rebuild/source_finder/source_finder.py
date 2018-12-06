@@ -16,6 +16,10 @@ class source_finder(with_metaclass(ABCMeta, object)):
   def ensure_source(self, filename):
     pass
 
+  @abstractmethod
+  def search(self, name):
+    pass
+
   @classmethod
   def _find_by_filename(self, where, filename):
     return tarball_finder.find_by_filename(where, filename)

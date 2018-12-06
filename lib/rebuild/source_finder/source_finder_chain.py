@@ -36,5 +36,11 @@ class source_finder_chain(object):
         return True
     return False
   
+  def search(self, name):
+    result = []
+    for finder in self._finders:
+      result.extend(finder.search(name))
+    return result
+  
 check.register_class(source_finder_chain, include_seq = False)
   

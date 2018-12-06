@@ -91,3 +91,11 @@ class source_finder_pcloud(source_finder):
                                                              path.relpath(downloaded_filename)))
     self._download_file(filename)
     return path.exists(downloaded_filename)
+
+  #@abstractmethod
+  def search(self, name):
+    result = []
+    for file_path, entry in self.db.dict_items():
+      if name.lower() in entry.filename.lower():
+        result.append(path.basename(entry.filename))
+    return result
