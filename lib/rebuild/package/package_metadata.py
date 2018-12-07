@@ -3,9 +3,8 @@
 import json
 from collections import namedtuple
 from bes.common import cached_property, check, json_util, string_util
-from rebuild.base import build_arch, build_target, build_version, package_descriptor, requirement_list
+from rebuild.base import artifact_descriptor,  build_arch, build_target, build_version, package_descriptor, requirement_list
 
-from .artifact_descriptor import artifact_descriptor
 from .package_files import package_files
 from .util import util
 

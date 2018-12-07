@@ -5,11 +5,10 @@ from bes.common import check, string_util
 from bes.system import log
 from rebuild.base import build_blurb
 from bes.fs import file_util
-from rebuild.base import requirement_manager
+from rebuild.base import artifact_descriptor, requirement_manager
 
 from .artifact_manager_base import artifact_manager_base
 from .artifact_db import artifact_db
-from .artifact_descriptor import artifact_descriptor
 from .db_error import *
 from .package import package
 

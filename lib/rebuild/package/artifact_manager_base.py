@@ -8,9 +8,8 @@ from bes.common import check
 from bes.system import log
 from bes.debug import debug_timer
 
-from rebuild.base import build_blurb, requirement_manager
+from rebuild.base import artifact_descriptor, build_blurb, requirement_manager
 
-from .artifact_descriptor import artifact_descriptor
 from .db_error import *
 
 class artifact_manager_base(with_metaclass(ABCMeta, object)):

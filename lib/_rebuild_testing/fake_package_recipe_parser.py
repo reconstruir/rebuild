@@ -7,8 +7,7 @@ from bes.key_value import key_value, key_value_list, key_value_parser
 from bes.compat import StringIO
 from bes.text import string_list, tree_text_parser
 
-from rebuild.base import requirement_list
-from rebuild.package import artifact_descriptor
+from rebuild.base import artifact_descriptor, requirement_list
 
 from .fake_package_recipe import fake_package_recipe
 from .fake_package_source import fake_package_source

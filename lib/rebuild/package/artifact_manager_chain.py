@@ -1,12 +1,10 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.common import check
-from rebuild.base import package_descriptor_list
+from rebuild.base import artifact_descriptor_list, package_descriptor_list
 
 from .artifact_manager_base import artifact_manager_base
 from .db_error import *
-
-from .artifact_descriptor_list import artifact_descriptor_list
 from .package_metadata_list import package_metadata_list
 
 class artifact_manager_chain(artifact_manager_base):

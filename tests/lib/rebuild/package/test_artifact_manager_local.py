@@ -4,13 +4,11 @@
 import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import file_find, temp_file
-from rebuild.base import build_target, package_descriptor as PD
-from rebuild.package import artifact_descriptor as AD
+from rebuild.base import artifact_descriptor as AD, build_target, package_descriptor as PD
 from rebuild.package.db_error import *
 from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT
 from _rebuild_testing.fake_package_recipes import fake_package_recipes as RECIPES
 from _rebuild_testing.artifact_manager_tester import artifact_manager_tester as AMT
-from rebuild.package import artifact_descriptor as AD
 
 class test_artifact_manager_local(unit_test):
 

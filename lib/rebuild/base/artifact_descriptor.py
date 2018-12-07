@@ -1,9 +1,11 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from collections import namedtuple
-from bes.common import cached_property, check, string_util
-from rebuild.base import build_arch, build_target, build_version
-from .util import util
+from bes.common import cached_property, check, json_util, string_util
+
+from .build_arch import build_arch
+from .build_target import build_target
+from .build_version import build_version
 
 class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revision, epoch, system, level, arch, distro, distro_version')):
 
@@ -54,11 +56,17 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
       self.epoch,
       self.system,
       self.level,
-      util.sql_encode_string_list(self.arch, quoted = False),
+      self._sql_encode_string_list(self.arch),
       self.distro,
       self.distro_version,
     )
 
+  @classmethod
+  def _sql_encode_string_list(clazz, l):
+    check.check_string_seq(l)
+    s = json_util.to_json(l)
+    return s if s is not None else 'null'
+  
   @cached_property
   def full_name(self):
     return self.make_full_name_str(self.name, self.build_version)

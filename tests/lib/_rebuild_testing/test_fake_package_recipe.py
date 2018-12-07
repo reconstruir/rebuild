@@ -6,8 +6,8 @@ from os import path
 from bes.testing.unit_test import unit_test
 from bes.archive import archiver
 
-from rebuild.package import artifact_descriptor as AD, package
-from rebuild.base import requirement_list as RL
+from rebuild.package import package
+from rebuild.base import artifact_descriptor as AD, requirement_list as RL
 
 from bes.fs import temp_file, temp_item
 

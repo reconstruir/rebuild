@@ -6,7 +6,7 @@ from bes.common import check, object_util
 from bes.fs import temp_file
 
 from rebuild.package import artifact_manager_local
-from rebuild.package import artifact_descriptor
+from rebuild.base import artifact_descriptor
 
 from .fake_package_recipe_parser import fake_package_recipe_parser
 
