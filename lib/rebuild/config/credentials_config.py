@@ -27,7 +27,6 @@ class credentials_config(object):
       if description is not None:
         del values['description']
       for next_cred_type in string_util.split_by_white_space(cred_type, strip = True):
-        key = self._make_key(next_cred_type, provider)
         if not next_cred_type in self._credentials:
           self._credentials[next_cred_type] = {}
         if provider in self._credentials[next_cred_type]:
@@ -48,9 +47,5 @@ class credentials_config(object):
         result.append(value)
     return result
   
-  @classmethod
-  def _make_key(clazz, cred_type, provider):
-    return '%s:%s' % (cred_type, provider)
-
 check.register_class(credentials_config, include_seq = False)
   
