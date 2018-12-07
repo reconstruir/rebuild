@@ -28,11 +28,18 @@ class credentials_config(object):
         del values['description']
       for next_cred_type in string_util.split_by_white_space(cred_type, strip = True):
         key = self._make_key(next_cred_type, provider)
-        self._credentials[key] = self._credential(description, provider, next_cred_type, values, section.origin)
+        if not next_cred_type in self._credentials:
+          self._credentials[next_cred_type] = {}
+        if provider in self._credentials[next_cred_type]:
+          raise self.error('Credential of type \"\%s\" for provider \"%s\" already exists.' % (next_cred_type, provider), section.origin)
+        self._credentials[next_cred_type][provider] = self._credential(description, provider, next_cred_type, values, section.origin)
     
   def find(self, cred_type, provider):
-    key = self._make_key(cred_type, provider)
-    return self._credentials.get(key, None)
+    if not cred_type in self._credentials:
+      raise self.error('No credential of type \"\%s\" for provider \"%s\" found.' % (next_cred_type, provider), section.origin)
+    if not provider in self._credentials[cred_type]:
+      raise self.error('No credential of type \"\%s\" for provider \"%s\" found.' % (next_cred_type, provider), section.origin)
+    return self._credentials[cred_type][provider]
 
   def find_by_provider(self, provider):
     result = []
