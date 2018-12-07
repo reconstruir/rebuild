@@ -42,7 +42,8 @@ class package_manager(object):
 
   def __init__(self, root_dir, artifact_manager, log_tag = 'package_manager'):
     log.add_logging(self, log_tag)
-    check.check_artifact_manager(artifact_manager)
+    if artifact_manager:
+      check.check_artifact_manager(artifact_manager)
     self._root_dir = root_dir
     self._artifact_manager = artifact_manager
     self._database_path = path.join(self._root_dir, 'db/packages.db')
