@@ -11,8 +11,10 @@ from .credentials_config import credentials_config
 
 class accounts_config(object):
 
-  _config = namedtuple('_config', 'provider, credentials, origin')
+  error = simple_config.error
   
+  _config = namedtuple('_config', 'provider, credentials, origin')
+
   def __init__(self, config, source):
     check.check_string(config)
 
@@ -34,7 +36,7 @@ class accounts_config(object):
   @classmethod
   def _make_config(clazz, section, cm):
     provider = section.find_by_key('provider')
-    values = section.to_dict()
+    values = section.to_dict(resolve_env_vars = True)
     del values['provider']
     cred = cm.find('upload', provider)
     upload_config = clazz._config(provider, dict_util.combine(values, cred.values), section.origin)

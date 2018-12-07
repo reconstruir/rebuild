@@ -4,7 +4,6 @@
 import os
 from bes.testing.unit_test import unit_test
 from rebuild.config import accounts_config
-from bes.config.simple_config import error as config_error
 
 class test_accounts_config(unit_test):
     
@@ -63,19 +62,21 @@ sources
   root_dir: /sources
 '''
 
-    os.environ['SEKRET1'] = 'sekret1'
-    os.environ['SEKRET2'] = 'sekret2'
-    ac = accounts_config(text, '<test>')
-    del os.environ['SEKRET1']
-    del os.environ['SEKRET2']
-    self.assertEqual( ( 'pcloud', { 'password': 'sekret2', 'root_dir': '/artifacts', 'email': 'upload@bar.com' }, ( '<test>', 14 ) ),
-                      ac.artifacts_upload )
-    self.assertEqual( ( 'pcloud', { 'password': 'sekret1', 'root_dir': '/artifacts', 'email': 'download@bar.com' }, ( '<test>', 14 ) ),
-                      ac.artifacts_download )
-    self.assertEqual( ( 'pcloud', { 'password': 'sekret2', 'root_dir': '/sources', 'email': 'upload@bar.com' }, ( '<test>', 18 ) ),
-                      ac.sources_upload )
-    self.assertEqual( ( 'pcloud', { 'password': 'sekret1', 'root_dir': '/sources', 'email': 'download@bar.com' }, ( '<test>', 18 ) ),
-                      ac.sources_download )
+    try:
+      os.environ['SEKRET1'] = 'sekret1'
+      os.environ['SEKRET2'] = 'sekret2'
+      ac = accounts_config(text, '<test>')
+      self.assertEqual( ( 'pcloud', { 'password': 'sekret2', 'root_dir': '/artifacts', 'email': 'upload@bar.com' }, ( '<test>', 14 ) ),
+                        ac.artifacts_upload )
+      self.assertEqual( ( 'pcloud', { 'password': 'sekret1', 'root_dir': '/artifacts', 'email': 'download@bar.com' }, ( '<test>', 14 ) ),
+                        ac.artifacts_download )
+      self.assertEqual( ( 'pcloud', { 'password': 'sekret2', 'root_dir': '/sources', 'email': 'upload@bar.com' }, ( '<test>', 18 ) ),
+                        ac.sources_upload )
+      self.assertEqual( ( 'pcloud', { 'password': 'sekret1', 'root_dir': '/sources', 'email': 'download@bar.com' }, ( '<test>', 18 ) ),
+                        ac.sources_download )
+    finally:
+      del os.environ['SEKRET1']
+      del os.environ['SEKRET2']
     
   def test_env_var_missing(self):
     text='''
@@ -100,7 +101,7 @@ sources
   root_dir: /sources
 '''
 
-    with self.assertRaises(config_error) as context:
+    with self.assertRaises(accounts_config.error) as context:
       accounts_config(text, '<test>')
     
 if __name__ == '__main__':
