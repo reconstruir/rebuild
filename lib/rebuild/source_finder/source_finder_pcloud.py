@@ -1,8 +1,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import json, os.path as path
-from bes.fs import file_find, file_util
-from bes.common import check, json_util
+import os.path as path
+from bes.fs import file_util
+from bes.common import check
 
 from .source_finder import source_finder
 from .source_finder_db_dict import source_finder_db_dict
