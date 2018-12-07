@@ -296,7 +296,7 @@ class pcloud(object):
     links = self.getfilelink(file_path = file_path, file_id = file_id)
     tmp = temp_file.make_temp_file(suffix = '.download')
     with open(tmp, 'wb') as fout:
-      response = pcloud_requests.download_to_stream(links, fout, file_path = file_path, file_id = file_id)
+      response = pcloud_requests.download_to_stream(links, fout)
       if response.status_code != 200:
         raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
       fout.close()
@@ -306,7 +306,7 @@ class pcloud(object):
     'Download file to target.'
     links = self.getfilelink(file_path = file_path, file_id = file_id)
     buf = BytesIO()
-    response = pcloud_requests.download_to_stream(links, buf, file_path = file_path, file_id = file_id)
+    response = pcloud_requests.download_to_stream(links, buf)
     if response.status_code != 200:
       raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
     return buf.getvalue()
