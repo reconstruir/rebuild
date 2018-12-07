@@ -7,7 +7,7 @@ from bes.common import check, dict_util, string_util, variable
 from bes.system import os_env_var
 from bes.config.simple_config import error, simple_config
 
-class credential_manager(object):
+class credentials_config(object):
 
   _credential = namedtuple('_credential', 'description, provider, type, values, origin')
   
@@ -67,5 +67,5 @@ class credential_manager(object):
       result[var] = os_var.value
     return result
   
-check.register_class(credential_manager, include_seq = False)
+check.register_class(credentials_config, include_seq = False)
   

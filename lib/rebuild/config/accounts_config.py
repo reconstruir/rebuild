@@ -7,7 +7,7 @@ from bes.common import check, dict_util
 from bes.config.simple_config import error, simple_config
 from bes.fs import file_util
 
-from .credential_manager import credential_manager
+from .credentials_config import credentials_config
 
 class accounts_config(object):
 
@@ -16,7 +16,7 @@ class accounts_config(object):
   def __init__(self, config, source):
     check.check_string(config)
 
-    cm = credential_manager(config, source)
+    cm = credentials_config(config, source)
     
     self._credentials = {}
     c = simple_config.from_text(config, source = source)
