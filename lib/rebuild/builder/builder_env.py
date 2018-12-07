@@ -40,7 +40,7 @@ class builder_env(object):
     for script in self.script_manager.scripts.values():
       self.requirement_manager.add_package(script.descriptor)
 
-    # FIXME: use config.accounts for something
+    # FIXME: use config.accounts_config for something
       
   def resolve_deps(self, descriptor, hardness, include_names):
     return self.requirement_manager.resolve_deps([descriptor.name], self.config.build_target.system, hardness, include_names)

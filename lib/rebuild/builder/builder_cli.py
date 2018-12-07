@@ -65,7 +65,7 @@ class builder_cli(build_target_cli):
     self.parser.add_argument('--artifacts', default = None,
                              action = 'store', type = str,
                              help = 'Prefix for third party source binaries. [ None ]')
-    self.parser.add_argument('--accounts', default = None,
+    self.parser.add_argument('--accounts-config', default = None,
                              action = 'store', type = str,
                              help = 'Configuration file for accounts used for artifacts and sources upload/download. [ None ]')
     self.parser.add_argument('--download-only', default = None, action = 'store_true',
@@ -135,11 +135,11 @@ class builder_cli(build_target_cli):
     config.download_only = args.download_only
     config.artifacts_dir = args.artifacts
 
-    if args.accounts:
-      config.accounts = self._load_accounts_config(args.accounts)
+    if args.accounts_config:
+      config.accounts_config = self._load_accounts_config(args.accounts_config)
     else:
       # FIXME: use a "local" account
-      config.accounts = None
+      config.accounts_config = None
       
     env = builder_env(config, available_packages)
     

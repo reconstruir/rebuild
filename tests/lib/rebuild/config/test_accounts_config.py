@@ -3,7 +3,7 @@
 
 import os
 from bes.testing.unit_test import unit_test
-from rebuild.source_finder import accounts_config
+from rebuild.config import accounts_config
 from bes.config.simple_config import error as config_error
 
 class test_accounts_config(unit_test):
