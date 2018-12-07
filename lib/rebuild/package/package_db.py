@@ -77,14 +77,14 @@ create table {files_table_name}(
   def add_package(self, entry):
     check.check_package_db_entry(entry)
     d =  {
-      'name': sql_encoding.sql_encode_string(entry.name),
-      'version': sql_encoding.sql_encode_string(entry.version),
+      'name': sql_encoding.encode_string(entry.name),
+      'version': sql_encoding.encode_string(entry.version),
       'revision': str(entry.revision),
       'epoch': str(entry.epoch),
-      'requirements': sql_encoding.sql_encode_requirements(entry.requirements),
-      'properties': sql_encoding.sql_encode_dict(entry.properties),
-      'files_checksum': sql_encoding.sql_encode_string(entry.files.files_checksum),
-      'env_files_checksum': sql_encoding.sql_encode_string(entry.files.env_files_checksum),
+      'requirements': sql_encoding.encode_requirements(entry.requirements),
+      'properties': sql_encoding.encode_dict(entry.properties),
+      'files_checksum': sql_encoding.encode_string(entry.files.files_checksum),
+      'env_files_checksum': sql_encoding.encode_string(entry.files.env_files_checksum),
     }
     keys = ', '.join(d.keys())
     values = ', '.join(d.values())
@@ -137,7 +137,7 @@ create table {files_table_name}(
                             row.version,
                             row.revision,
                             row.epoch,
-                            sql_encoding.sql_decode_requirements(row.requirements),
+                            sql_encoding.decode_requirements(row.requirements),
                             json.loads(row.properties),
                             files)
 
@@ -147,6 +147,6 @@ create table {files_table_name}(
       return {}
     dep_map = {}
     for row in rows:
-      reqs = sql_encoding.sql_decode_requirements(row.requirements)
+      reqs = sql_encoding.decode_requirements(row.requirements)
       dep_map[row.name] = set(reqs.names())
     return dep_map

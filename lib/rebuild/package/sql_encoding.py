@@ -7,7 +7,7 @@ from rebuild.base import requirement_list
 class sql_encoding(object):
 
   @classmethod
-  def sql_encode_string(clazz, s, quoted = True):
+  def encode_string(clazz, s, quoted = True):
     if s is None:
       return 'null'
     if quoted:
@@ -15,23 +15,23 @@ class sql_encoding(object):
     return s
 
   @classmethod
-  def sql_encode_string_list(clazz, l, quoted = True):
+  def encode_string_list(clazz, l, quoted = True):
     check.check_string_seq(l)
-    return clazz.sql_encode_string(json_util.to_json(l), quoted = quoted)
+    return clazz.encode_string(json_util.to_json(l), quoted = quoted)
   
   @classmethod
-  def sql_encode_requirements(clazz, reqs):
+  def encode_requirements(clazz, reqs):
     check.check_requirement_list(reqs)
-    return clazz.sql_encode_string_list(reqs.to_string_list())
+    return clazz.encode_string_list(reqs.to_string_list())
 
   @classmethod
-  def sql_decode_requirements(clazz, text):
+  def decode_requirements(clazz, text):
     return requirement_list.from_string_list(json.loads(text))
   
   @classmethod
-  def sql_encode_dict(clazz, d):
-    return clazz.sql_encode_string(json_util.to_json(d, sort_keys = True))
+  def encode_dict(clazz, d):
+    return clazz.encode_string(json_util.to_json(d, sort_keys = True))
 
   @classmethod
-  def sql_encode_files(clazz, files):
-    return clazz.sql_encode_string(json_util.to_json(files.to_simple_list()))
+  def encode_files(clazz, files):
+    return clazz.encode_string(json_util.to_json(files.to_simple_list()))
