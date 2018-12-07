@@ -22,7 +22,7 @@ class test_artifact_manager_local(unit_test):
     t = AMT(recipes = RECIPES.APPLE)
     adesc = 'apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'
     tmp_tarball = t.create_package(adesc)
-    filename = t.am.publish(tmp_tarball, self.LINUX_BT, False, None)
+    filename = t.am.publish(tmp_tarball.filename, self.LINUX_BT, False, tmp_tarball.metadata)
     self.assertTrue( path.exists(filename) )
     expected = [
       AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'),
@@ -39,26 +39,26 @@ class test_artifact_manager_local(unit_test):
   def test_publish_again_with_replace(self):
     am = FPUT.make_artifact_manager(debug = self.DEBUG)
     tmp_tarball = FPUT.create_one_package(RECIPES.APPLE)
-    filename = am.publish(tmp_tarball, self.LINUX_BT, False, None)
+    filename = am.publish(tmp_tarball.filename, self.LINUX_BT, False, tmp_tarball.metadata)
     self.assertTrue( path.exists(filename) )
     expected = [
       AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'),
     ]
     self.assertEqual( expected, am.list_all_by_descriptor(None) )
-    filename = am.publish(tmp_tarball, self.LINUX_BT, True, None)
+    filename = am.publish(tmp_tarball.filename, self.LINUX_BT, True, tmp_tarball.metadata)
     self.assertEqual( expected, am.list_all_by_descriptor(None) )
 
   def test_publish_again_without_replace(self):
     am = FPUT.make_artifact_manager(debug = self.DEBUG)
     tmp_tarball = FPUT.create_one_package(RECIPES.APPLE)
-    filename = am.publish(tmp_tarball, self.LINUX_BT, False, None)
+    filename = am.publish(tmp_tarball.filename, self.LINUX_BT, False, tmp_tarball.metadata)
     self.assertTrue( path.exists(filename) )
     expected = [
       AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'),
     ]
     self.assertEqual( expected, am.list_all_by_descriptor(None) )
     with self.assertRaises(AlreadyInstalledError) as context:
-      am.publish(tmp_tarball, self.LINUX_BT, False, None)
+      am.publish(tmp_tarball.filename, self.LINUX_BT, False, tmp_tarball.metadata)
     
   def test_find_by_package_descriptor_linux(self):
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }

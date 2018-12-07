@@ -42,7 +42,7 @@ fake_package orange 6.5.4 3 0 linux release x86_64 ubuntu 18
   
   def test_package_descriptor_water(self):
     tmp_tarball = fake_package_unit_test.create_one_package(self._WATER)
-    p = package(tmp_tarball)
+    p = package(tmp_tarball.filename)
     self.assertEqual( 'water', p.package_descriptor.name )
     self.assertEqual( build_version('1.0.0', '0', 0), p.package_descriptor.version )
     self.assertEqual( [], p.package_descriptor.requirements )
@@ -53,7 +53,7 @@ fake_package orange 6.5.4 3 0 linux release x86_64 ubuntu 18
     
   def test_package_descriptor_with_requirements(self):
     tmp_tarball = fake_package_unit_test.create_one_package(self._ORANGE)
-    p = package(tmp_tarball)
+    p = package(tmp_tarball.filename)
     self.assertEqual( 'orange', p.package_descriptor.name )
     self.assertEqual( build_version('6.5.4', '3', 0), p.package_descriptor.version )
     self.assertEqual( requirement_list.parse('fruit >= 1.0.0-0 citrus >= 1.0.0-0'), p.package_descriptor.requirements )
@@ -64,7 +64,7 @@ fake_package orange 6.5.4 3 0 linux release x86_64 ubuntu 18
 
   def test_is_package(self):
     tmp_tarball = fake_package_unit_test.create_one_package(self._WATER)
-    self.assertTrue( package.is_package(tmp_tarball) )
+    self.assertTrue( package.is_package(tmp_tarball.filename) )
     self.assertFalse( package.is_package(temp_file.make_temp_file(content = 'notpackage')) )
 
 if __name__ == '__main__':

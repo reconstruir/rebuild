@@ -41,7 +41,7 @@ class artifact_manager_tester(object):
     if mutations:
       recipe = recipe.clone_with_mutations(mutations)
     tmp_file = temp_file.make_temp_file()
-    return recipe.create_package(tmp_file, debug = self._debug).filename
+    return recipe.create_package(tmp_file, debug = self._debug)
 
   def publish(self, adescs, mutations = {}):
     adescs = object_util.listify(adescs)
@@ -52,8 +52,8 @@ class artifact_manager_tester(object):
     if check.is_string(adesc):
       adesc = artifact_descriptor.parse(adesc)
     check.check_artifact_descriptor(adesc)
-    filename = self.create_package(adesc, mutations = mutations)
-    self.am.publish(filename, adesc.build_target, False, None)
+    pkg = self.create_package(adesc, mutations = mutations)
+    self.am.publish(pkg.filename, adesc.build_target, False, pkg.metadata)
 
   def dump(self):
     for r in sorted(self._recipes.values()):

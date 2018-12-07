@@ -10,7 +10,6 @@ from rebuild.base import artifact_descriptor, requirement_manager
 from .artifact_manager_base import artifact_manager_base
 from .artifact_db import artifact_db
 from .db_error import *
-from .package import package
 
 #log.configure('artifact_manager=debug')
 
@@ -47,10 +46,9 @@ class artifact_manager_local(artifact_manager_base):
   #@abstractmethod
   def publish(self, tarball, build_target, allow_replace, metadata):
     check.check_build_target(build_target)
+    check.check_package_metadata(metadata)
     if self._read_only:
       raise RuntimeError('artifact_manager is read only.')
-    if not metadata:
-      metadata = package(tarball).metadata
     check.check_package_metadata(metadata)
     pkg_desc = metadata.package_descriptor
     artifact_path_rel, artifact_path_abs = self._artifact_paths(pkg_desc, build_target)

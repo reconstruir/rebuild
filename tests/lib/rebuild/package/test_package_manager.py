@@ -64,7 +64,7 @@ class test_package_manager(unit_test):
     pm = self._make_empty_pm()
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
     water_tarball = FPUT.create_one_package(RECIPES.WATER, mutations)
-    pm.install_tarball(water_tarball, ['BUILD', 'RUN'])
+    pm.install_tarball(water_tarball.filename, ['BUILD', 'RUN'])
     
   def test_install_tarball_pkg_config(self):
     recipe = '''
@@ -87,8 +87,8 @@ fake_package libfoo 1.0.0 0 0 linux release x86_64 ubuntu 18
     self.maxDiff = None
     pm = self._make_test_pm_with_am()
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
-    tarball = FPUT.create_one_package(recipe, metadata_mutations = mutations, debug = self.DEBUG)
-    pm.install_tarball(tarball, ['BUILD', 'RUN'])
+    pkg = FPUT.create_one_package(recipe, metadata_mutations = mutations, debug = self.DEBUG)
+    pm.install_tarball(pkg.filename, ['BUILD', 'RUN'])
     self.assertEqual( [ 'libfoo-1.0.0' ], pm.list_all(include_version = True) )
     
     PKG_CONFIG_PATH = pm.pkg_config_path
@@ -140,17 +140,17 @@ fake_package bar 1.0.0 0 0 linux release x86_64 ubuntu 18
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
     foo_tarball = FPUT.create_one_package(foo_recipe, mutations)
     bar_tarball = FPUT.create_one_package(bar_recipe, mutations)
-    pm.install_tarball(foo_tarball, ['BUILD', 'RUN'])
+    pm.install_tarball(foo_tarball.filename, ['BUILD', 'RUN'])
     with self.assertRaises(PackageFilesConflictError) as context:
-      pm.install_tarball(bar_tarball, ['BUILD', 'RUN'])
+      pm.install_tarball(bar_tarball.filename, ['BUILD', 'RUN'])
 
   def test_install_tarball_already_installed(self):
     pm = self._make_empty_pm()
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
-    tarball = FPUT.create_one_package(RECIPES.WATER, mutations)
-    pm.install_tarball(tarball, ['BUILD', 'RUN'])
+    water = FPUT.create_one_package(RECIPES.WATER, mutations)
+    pm.install_tarball(water.filename, ['BUILD', 'RUN'])
     with self.assertRaises(AlreadyInstalledError) as context:
-      pm.install_tarball(tarball, ['BUILD', 'RUN'])
+      pm.install_tarball(water.filename, ['BUILD', 'RUN'])
     self.assertEqual( 'package water already installed', context.exception.message )
 
   def test_install_tarball_missing_requirements(self):
@@ -158,7 +158,7 @@ fake_package bar 1.0.0 0 0 linux release x86_64 ubuntu 18
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
     apple_tarball = FPUT.create_one_package(RECIPES.APPLE, mutations)
     with self.assertRaises(PackageMissingRequirementsError) as context:
-      pm.install_tarball(apple_tarball, ['BUILD', 'RUN'])
+      pm.install_tarball(apple_tarball.filename, ['BUILD', 'RUN'])
     self.assertEqual( 'package apple missing requirements: fiber, fructose, water', context.exception.message )
 
   def test_install_tarball_with_manual_requirements(self):
@@ -184,13 +184,13 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
     bar_tarball = FPUT.create_one_package(bar_recipe, mutations)
     baz_tarball = FPUT.create_one_package(baz_recipe, mutations)
 
-    pm._artifact_manager.publish(foo_tarball, bt, False, None)
-    pm._artifact_manager.publish(bar_tarball, bt, False, None)
-    pm._artifact_manager.publish(baz_tarball, bt, False, None)
+    pm._artifact_manager.publish(foo_tarball.filename, bt, False, foo_tarball.metadata)
+    pm._artifact_manager.publish(bar_tarball.filename, bt, False, bar_tarball.metadata)
+    pm._artifact_manager.publish(baz_tarball.filename, bt, False, baz_tarball.metadata)
     
-    pm.install_tarball(foo_tarball, ['BUILD', 'RUN'])
-    pm.install_tarball(bar_tarball, ['BUILD', 'RUN'])
-    pm.install_tarball(baz_tarball, ['BUILD', 'RUN'])
+    pm.install_tarball(foo_tarball.filename, ['BUILD', 'RUN'])
+    pm.install_tarball(bar_tarball.filename, ['BUILD', 'RUN'])
+    pm.install_tarball(baz_tarball.filename, ['BUILD', 'RUN'])
 
   def test_uninstall(self):
     pm = self._make_test_pm_with_am()
@@ -205,8 +205,8 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
     pm = self._make_empty_pm()
     self.assertFalse( pm.is_installed('water') )
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
-    tarball = FPUT.create_one_package(RECIPES.WATER, mutations)
-    pm.install_tarball(tarball, ['BUILD', 'RUN'])
+    pkg = FPUT.create_one_package(RECIPES.WATER, mutations)
+    pm.install_tarball(pkg.filename, ['BUILD', 'RUN'])
     self.assertTrue( pm.is_installed('water') )
     self.assertFalse( pm.is_installed('notthere') )
 
