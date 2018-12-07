@@ -20,8 +20,7 @@ credential
   email: foo2@bar.com
   password: sekret2
 '''
-    
-    cm = CM(text)
+    cm = CM(text, '<test>')
     c = cm.find('download', 'pcloud')
     self.assertEqual( {
       'email': 'foo1@bar.com',
@@ -41,8 +40,7 @@ credential
   email: foo@bar.com
   password: sekret
 '''
-    
-    cm = CM(text)
+    cm = CM(text, '<test>')
     c = cm.find('download', 'pcloud')
     self.assertEqual( {
       'email': 'foo@bar.com',

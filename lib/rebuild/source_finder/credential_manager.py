@@ -9,7 +9,7 @@ from bes.config.simple_config import error, simple_config
 
 class credential_manager(object):
 
-  _credential = namedtuple('_credential', 'type, provider, values, origin')
+  _credential = namedtuple('_credential', 'description, provider, type, values, origin')
   
   def __init__(self, config, source):
     check.check_string(config)
@@ -18,14 +18,17 @@ class credential_manager(object):
     sections = c.find_sections('credential')
     for section in sections:
       values = section.to_dict()
+      description = section.find_by_key('description', raise_error = False)
       provider = section.find_by_key('provider')
       cred_type = section.find_by_key('type')
       del values['type']
       del values['provider']
+      if description is not None:
+        del values['description']
       values = self._resolve_variables(values, section.origin)
       for next_cred_type in string_util.split_by_white_space(cred_type, strip = True):
         key = self._make_key(next_cred_type, provider)
-        self._credentials[key] = self._credential(next_cred_type, provider, values, section.origin)
+        self._credentials[key] = self._credential(description, provider, next_cred_type, values, section.origin)
     
   def find(self, cred_type, provider):
     key = self._make_key(cred_type, provider)
