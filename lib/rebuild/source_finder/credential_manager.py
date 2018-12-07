@@ -29,6 +29,13 @@ class credential_manager(object):
     key = self._make_key(cred_type, provider)
     return self._credentials.get(key, None)
 
+  def find_by_provider(self, provider):
+    result = []
+    for key, value in self._credentials.items():
+      if value.provider == provider:
+        result.append(value)
+    return result
+  
   @classmethod
   def _make_key(clazz, cred_type, provider):
     return '%s:%s' % (cred_type, provider)
