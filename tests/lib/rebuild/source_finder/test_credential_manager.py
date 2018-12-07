@@ -6,7 +6,7 @@ from rebuild.source_finder import credential_manager as CM
 
 class test_credential_manager(unit_test):
 
-  def test_foo(self):
+  def test_separate(self):
     text = '''\
 credential
   provider: pcloud
@@ -31,6 +31,27 @@ credential
     self.assertEqual( {
       'email': 'foo2@bar.com',
       'password': 'sekret2',
+    }, c.values )
+    
+  def test_combined(self):
+    text = '''\
+credential
+  provider: pcloud
+  type: upload download
+  email: foo@bar.com
+  password: sekret
+'''
+    
+    cm = CM(text)
+    c = cm.find('download', 'pcloud')
+    self.assertEqual( {
+      'email': 'foo@bar.com',
+      'password': 'sekret',
+    }, c.values )
+    c = cm.find('upload', 'pcloud')
+    self.assertEqual( {
+      'email': 'foo@bar.com',
+      'password': 'sekret',
     }, c.values )
     
 if __name__ == '__main__':
