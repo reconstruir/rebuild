@@ -15,30 +15,29 @@ class credentials_config(object):
   def __init__(self, config, source):
     check.check_string(config)
     self._credentials = {}
-    c = simple_config.from_text(config, source)
+    c = simple_config.from_text(config, source = source)
     sections = c.find_sections('credential')
     for section in sections:
       values = section.to_dict(resolve_env_vars = True)
       description = section.find_by_key('description', raise_error = False)
       provider = section.find_by_key('provider')
-      cred_type = section.find_by_key('type')
-      del values['type']
+      purposes = string_util.split_by_white_space(section.find_by_key('purpose'), strip = True)
+      del values['purpose']
       del values['provider']
       if description is not None:
         del values['description']
-      for next_cred_type in string_util.split_by_white_space(cred_type, strip = True):
-        if not next_cred_type in self._credentials:
-          self._credentials[next_cred_type] = {}
-        if provider in self._credentials[next_cred_type]:
-          raise self.error('Credential of type \"\%s\" for provider \"%s\" already exists.' % (next_cred_type, provider), section.origin)
-        self._credentials[next_cred_type][provider] = self._credential(description, provider, next_cred_type, values, section.origin)
+      for purpose in purposes:
+        if not purpose in self._credentials:
+          self._credentials[purpose] = {}
+        if provider in self._credentials[purpose]:
+          raise self.error('Credential with purpose \"%s\" for provider \"%s\" already exists.' % (purpose, provider), section.origin)
+        credentials = self._credential(description, provider, purpose, values, section.origin)
+        self._credentials[purpose][provider] = credentials
     
-  def find(self, cred_type, provider):
-    if not cred_type in self._credentials:
-      raise self.error('No credential of type \"\%s\" for provider \"%s\" found.' % (next_cred_type, provider), section.origin)
-    if not provider in self._credentials[cred_type]:
-      raise self.error('No credential of type \"\%s\" for provider \"%s\" found.' % (next_cred_type, provider), section.origin)
-    return self._credentials[cred_type][provider]
+  def find(self, purpose, provider):
+    if not purpose in self._credentials or not provider in self._credentials[purpose]:
+      raise self.error('No credential with purpose \"%s\" for provider \"%s\" found.' % (purpose, provider), None)
+    return self._credentials[purpose][provider]
 
   def find_by_provider(self, provider):
     result = []

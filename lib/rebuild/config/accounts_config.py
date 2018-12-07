@@ -3,7 +3,7 @@
 import os.path as path
 from collections import namedtuple
 
-from bes.common import check, dict_util
+from bes.common import check, dict_util, string_util
 from bes.config.simple_config import error, simple_config
 from bes.fs import file_util
 
@@ -13,28 +13,43 @@ class accounts_config(object):
 
   error = simple_config.error
   
-  _config = namedtuple('_config', 'provider, credentials, origin')
-
+  _account = namedtuple('_account', 'name, description, purpose, provider, upload_values, download_values, origin')
+  
   def __init__(self, config, source):
     check.check_string(config)
+    credentials = credentials_config(config, source)
 
-    cm = credentials_config(config, source)
-    
-    self._credentials = {}
+    self._accounts = {}
     c = simple_config.from_text(config, source = source)
-    
-    sections = c.find_sections('artifacts')
-    if len(sections) != 1:
-      raise error('more that on artifacts section found', sections[1].origin)
-    self.artifacts_upload, self.artifacts_download = self._make_config(sections[0], cm)
+    sections = c.find_sections('account')
+    for section in sections:
+      values = section.to_dict(resolve_env_vars = True)
+      name = section.find_by_key('name')
+      description = section.find_by_key('description', raise_error = False)
+      provider = section.find_by_key('provider')
+      purposes = string_util.split_by_white_space(section.find_by_key('purpose'), strip = True)
+      del values['name']
+      del values['purpose']
+      del values['provider']
+      if description is not None:
+        del values['description']
+      for purpose in purposes:
+        if not purpose in self._accounts:
+          self._accounts[purpose] = {}
+        if name in self._accounts[purpose]:
+          raise self.error('Account with purpose \"%s\" and name \"%s\" already exists.' % (purpose, name), section.origin)
+        upload_values = dict_util.combine(values, credentials.find('upload', provider).values)
+        download_values = dict_util.combine(values, credentials.find('download', provider).values)
+        account = self._account(name, description, purpose, provider, upload_values, download_values, section.origin)
+        self._accounts[purpose][name] = account
 
-    sections = c.find_sections('sources')
-    if len(sections) != 1:
-      raise error('more that on sources section found', sections[1].origin)
-    self.sources_upload, self.sources_download = self._make_config(sections[0], cm)
-
+  def find(self, purpose, name):
+    if not purpose in self._accounts or not name in self._accounts[purpose]:
+      raise self.error('No account with purpose \"%s\" and name \"%s\" found.' % (purpose, name), None)
+    return self._accounts[purpose][name]
+        
   @classmethod
-  def _make_config(clazz, section, cm):
+  def _make_account(clazz, section, cm):
     provider = section.find_by_key('provider')
     values = section.to_dict(resolve_env_vars = True)
     del values['provider']
@@ -43,7 +58,6 @@ class accounts_config(object):
     cred = cm.find('download', provider)
     download_config = clazz._config(provider, dict_util.combine(values, cred.values), section.origin)
     return upload_config, download_config
-
   
   @classmethod
   def from_file(clazz, filename):

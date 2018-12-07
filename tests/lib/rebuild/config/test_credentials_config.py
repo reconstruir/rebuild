@@ -10,13 +10,13 @@ class test_credentials_config(unit_test):
     text = '''\
 credential
   provider: pcloud
-  type: download
+  purpose: download
   email: foo1@bar.com
   password: sekret1
 
 credential
   provider: pcloud
-  type: upload
+  purpose: upload
   email: foo2@bar.com
   password: sekret2
 '''
@@ -36,7 +36,7 @@ credential
     text = '''\
 credential
   provider: pcloud
-  type: upload download
+  purpose: upload download
   email: foo@bar.com
   password: sekret
 '''

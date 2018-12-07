@@ -11,98 +11,37 @@ class test_accounts_config(unit_test):
     text='''
 credential
   provider: pcloud
-  type: download
+  purpose: download
   email: download@bar.com
   password: sekret1
 
 credential
   provider: pcloud
-  type: upload
+  purpose: upload
   email: upload@bar.com
   password: sekret2
 
-artifacts
+account
+  name: mine_pcloud
+  description: mine personal pcloud account
+  purpose: artifacts sources
   provider: pcloud
-  root_dir: /artifacts
-
-sources
-  provider: pcloud
-  root_dir: /sources
+  root_dir: /mydir
 '''
     ac = accounts_config(text, '<test>')
-    self.assertEqual( ( 'pcloud', { 'password': 'sekret2', 'root_dir': '/artifacts', 'email': 'upload@bar.com' }, ( '<test>', 14 ) ),
-                      ac.artifacts_upload )
-    self.assertEqual( ( 'pcloud', { 'password': 'sekret1', 'root_dir': '/artifacts', 'email': 'download@bar.com' }, ( '<test>', 14 ) ),
-                      ac.artifacts_download )
-    self.assertEqual( ( 'pcloud', { 'password': 'sekret2', 'root_dir': '/sources', 'email': 'upload@bar.com' }, ( '<test>', 18 ) ),
-                      ac.sources_upload )
-    self.assertEqual( ( 'pcloud', { 'password': 'sekret1', 'root_dir': '/sources', 'email': 'download@bar.com' }, ( '<test>', 18 ) ),
-                      ac.sources_download )
-
-  def test_env_var(self):
-    text='''
-credential
-  provider: pcloud
-  type: download
-  email: download@bar.com
-  password: ${SEKRET1}
-
-credential
-  provider: pcloud
-  type: upload
-  email: upload@bar.com
-  password: ${SEKRET2}
-
-artifacts
-  provider: pcloud
-  root_dir: /artifacts
-
-sources
-  provider: pcloud
-  root_dir: /sources
-'''
-
-    try:
-      os.environ['SEKRET1'] = 'sekret1'
-      os.environ['SEKRET2'] = 'sekret2'
-      ac = accounts_config(text, '<test>')
-      self.assertEqual( ( 'pcloud', { 'password': 'sekret2', 'root_dir': '/artifacts', 'email': 'upload@bar.com' }, ( '<test>', 14 ) ),
-                        ac.artifacts_upload )
-      self.assertEqual( ( 'pcloud', { 'password': 'sekret1', 'root_dir': '/artifacts', 'email': 'download@bar.com' }, ( '<test>', 14 ) ),
-                        ac.artifacts_download )
-      self.assertEqual( ( 'pcloud', { 'password': 'sekret2', 'root_dir': '/sources', 'email': 'upload@bar.com' }, ( '<test>', 18 ) ),
-                        ac.sources_upload )
-      self.assertEqual( ( 'pcloud', { 'password': 'sekret1', 'root_dir': '/sources', 'email': 'download@bar.com' }, ( '<test>', 18 ) ),
-                        ac.sources_download )
-    finally:
-      del os.environ['SEKRET1']
-      del os.environ['SEKRET2']
-    
-  def test_env_var_missing(self):
-    text='''
-credential
-  provider: pcloud
-  type: download
-  email: download@bar.com
-  password: ${SEKRET1}
-
-credential
-  provider: pcloud
-  type: upload
-  email: upload@bar.com
-  password: ${SEKRET2}
-
-artifacts
-  provider: pcloud
-  root_dir: /artifacts
-
-sources
-  provider: pcloud
-  root_dir: /sources
-'''
-
-    with self.assertRaises(accounts_config.error) as context:
-      accounts_config(text, '<test>')
+    #import pprint
+    #print(pprint.pformat(ac._accounts))
+    a = ac.find('artifacts', 'mine_pcloud')
+    self.assertEqual( {
+      'email': 'download@bar.com',
+      'password': 'sekret1',
+      'root_dir': '/mydir',
+    }, a.download_values )
+    self.assertEqual( {
+      'email': 'upload@bar.com',
+      'password': 'sekret2',
+      'root_dir': '/mydir',
+    }, a.upload_values )
     
 if __name__ == '__main__':
   unit_test.main()
