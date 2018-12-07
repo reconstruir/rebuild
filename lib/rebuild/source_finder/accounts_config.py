@@ -9,7 +9,7 @@ from bes.fs import file_util
 
 from .credential_manager import credential_manager
 
-class artifacts_config(object):
+class accounts_config(object):
 
   _config = namedtuple('_config', 'provider, credentials, origin')
   
@@ -47,5 +47,5 @@ class artifacts_config(object):
   def from_file(clazz, filename):
     return clazz(file_util.read(filename), source = filename)
   
-check.register_class(artifacts_config, include_seq = False)
+check.register_class(accounts_config, include_seq = False)
   

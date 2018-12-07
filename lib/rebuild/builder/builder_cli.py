@@ -65,6 +65,9 @@ class builder_cli(build_target_cli):
     self.parser.add_argument('--artifacts', default = None,
                              action = 'store', type = str,
                              help = 'Prefix for third party source binaries. [ None ]')
+    self.parser.add_argument('--accounts', default = None,
+                             action = 'store', type = str,
+                             help = 'Configuration file for accounts used for artifacts and sources upload/download. [ None ]')
     self.parser.add_argument('--download-only', default = None, action = 'store_true',
                              help = 'Only download stuff needed for the build without building anything. [ True ]')
 
@@ -131,7 +134,13 @@ class builder_cli(build_target_cli):
     config.performance = args.performance
     config.download_only = args.download_only
     config.artifacts_dir = args.artifacts
-    
+
+    if args.accounts:
+      config.accounts = self._load_accounts_config(args.accounts)
+    else:
+      # FIXME: use a "local" account
+      config.accounts = None
+      
     env = builder_env(config, available_packages)
     
     if args.print_step_values:
@@ -188,3 +197,10 @@ class builder_cli(build_target_cli):
     if not callable(func):
       raise RuntimeError('not callable: %s' % (func))
     return func()
+
+  @classmethod
+  def _load_accounts_config(clazz, filename):
+    from rebuild.source_finder import accounts_config
+    if not path.exists(filename):
+      raise RuntimeError('artifacts config file not found: %s' % (filename))
+    return accounts_config.from_file(filename)

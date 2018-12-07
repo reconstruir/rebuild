@@ -3,10 +3,10 @@
 
 import os
 from bes.testing.unit_test import unit_test
-from rebuild.source_finder import artifacts_config
+from rebuild.source_finder import accounts_config
 from bes.config.simple_config import error as config_error
 
-class test_artifacts_config(unit_test):
+class test_accounts_config(unit_test):
     
   def test_basic(self):
     text='''
@@ -30,7 +30,7 @@ sources
   provider: pcloud
   root_dir: /sources
 '''
-    ac = artifacts_config(text, '<test>')
+    ac = accounts_config(text, '<test>')
     self.assertEqual( ( 'pcloud', { 'password': 'sekret2', 'root_dir': '/artifacts', 'email': 'upload@bar.com' }, ( '<test>', 14 ) ),
                       ac.artifacts_upload )
     self.assertEqual( ( 'pcloud', { 'password': 'sekret1', 'root_dir': '/artifacts', 'email': 'download@bar.com' }, ( '<test>', 14 ) ),
@@ -65,7 +65,7 @@ sources
 
     os.environ['SEKRET1'] = 'sekret1'
     os.environ['SEKRET2'] = 'sekret2'
-    ac = artifacts_config(text, '<test>')
+    ac = accounts_config(text, '<test>')
     del os.environ['SEKRET1']
     del os.environ['SEKRET2']
     self.assertEqual( ( 'pcloud', { 'password': 'sekret2', 'root_dir': '/artifacts', 'email': 'upload@bar.com' }, ( '<test>', 14 ) ),
@@ -101,7 +101,7 @@ sources
 '''
 
     with self.assertRaises(config_error) as context:
-      artifacts_config(text, '<test>')
+      accounts_config(text, '<test>')
     
 if __name__ == '__main__':
   unit_test.main()

@@ -1,6 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from .artifacts_config import artifacts_config
+from .accounts_config import accounts_config
 from .source_finder import source_finder
 from .source_finder_chain import source_finder_chain
 from .source_finder_db_entry import source_finder_db_entry
