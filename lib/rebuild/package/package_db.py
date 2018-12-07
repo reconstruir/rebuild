@@ -9,7 +9,7 @@ from .db_error import *
 from .files_db import files_db
 from .package_db_entry import package_db_entry
 from .package_files import package_files
-from .util import util
+from .sql_encoding import sql_encoding
 
 class package_db(object):
 
@@ -77,14 +77,14 @@ create table {files_table_name}(
   def add_package(self, entry):
     check.check_package_db_entry(entry)
     d =  {
-      'name': util.sql_encode_string(entry.name),
-      'version': util.sql_encode_string(entry.version),
+      'name': sql_encoding.sql_encode_string(entry.name),
+      'version': sql_encoding.sql_encode_string(entry.version),
       'revision': str(entry.revision),
       'epoch': str(entry.epoch),
-      'requirements': util.sql_encode_requirements(entry.requirements),
-      'properties': util.sql_encode_dict(entry.properties),
-      'files_checksum': util.sql_encode_string(entry.files.files_checksum),
-      'env_files_checksum': util.sql_encode_string(entry.files.env_files_checksum),
+      'requirements': sql_encoding.sql_encode_requirements(entry.requirements),
+      'properties': sql_encoding.sql_encode_dict(entry.properties),
+      'files_checksum': sql_encoding.sql_encode_string(entry.files.files_checksum),
+      'env_files_checksum': sql_encoding.sql_encode_string(entry.files.env_files_checksum),
     }
     keys = ', '.join(d.keys())
     values = ', '.join(d.values())
@@ -137,7 +137,7 @@ create table {files_table_name}(
                             row.version,
                             row.revision,
                             row.epoch,
-                            util.sql_decode_requirements(row.requirements),
+                            sql_encoding.sql_decode_requirements(row.requirements),
                             json.loads(row.properties),
                             files)
 
@@ -147,6 +147,6 @@ create table {files_table_name}(
       return {}
     dep_map = {}
     for row in rows:
-      reqs = util.sql_decode_requirements(row.requirements)
+      reqs = sql_encoding.sql_decode_requirements(row.requirements)
       dep_map[row.name] = set(reqs.names())
     return dep_map

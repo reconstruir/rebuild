@@ -4,7 +4,7 @@ import json
 from bes.common import check, json_util, string_util
 from rebuild.base import requirement_list
 
-class util(object):
+class sql_encoding(object):
 
   @classmethod
   def sql_encode_string(clazz, s, quoted = True):

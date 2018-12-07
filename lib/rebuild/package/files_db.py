@@ -3,7 +3,6 @@
 from bes.common import check
 from bes.fs import file_checksum, file_checksum_list
 from .db_error import *
-from .util import util
 
 class files_db(object):
 

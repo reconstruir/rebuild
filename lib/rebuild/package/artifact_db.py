@@ -11,7 +11,7 @@ from .files_db import files_db
 from .package_files import package_files
 from .package_metadata import package_metadata
 from .package_metadata_list import package_metadata_list
-from .util import util
+from .sql_encoding import sql_encoding
 
 class artifact_db(object):
 
@@ -79,20 +79,20 @@ create table artifacts(
   @classmethod
   def _metadata_to_sql_keys_and_values(self, md):
     d =  {
-      'name': util.sql_encode_string(md.name),
-      'filename': util.sql_encode_string(md.filename),
-      'version': util.sql_encode_string(md.version),
+      'name': sql_encoding.sql_encode_string(md.name),
+      'filename': sql_encoding.sql_encode_string(md.filename),
+      'version': sql_encoding.sql_encode_string(md.version),
       'revision': str(md.revision),
       'epoch': str(md.epoch),
-      'system': util.sql_encode_string(md.system),
-      'level': util.sql_encode_string(md.level),
-      'arch': util.sql_encode_string_list(md.arch),
-      'distro': util.sql_encode_string(md.distro),
-      'distro_version': util.sql_encode_string(md.distro_version),
-      'requirements': util.sql_encode_requirements(md.requirements),
-      'properties': util.sql_encode_dict(md.properties),
-      'files_checksum': util.sql_encode_string(md.files.files_checksum),
-      'env_files_checksum': util.sql_encode_string(md.files.env_files_checksum),
+      'system': sql_encoding.sql_encode_string(md.system),
+      'level': sql_encoding.sql_encode_string(md.level),
+      'arch': sql_encoding.sql_encode_string_list(md.arch),
+      'distro': sql_encoding.sql_encode_string(md.distro),
+      'distro_version': sql_encoding.sql_encode_string(md.distro_version),
+      'requirements': sql_encoding.sql_encode_requirements(md.requirements),
+      'properties': sql_encoding.sql_encode_dict(md.properties),
+      'files_checksum': sql_encoding.sql_encode_string(md.files.files_checksum),
+      'env_files_checksum': sql_encoding.sql_encode_string(md.files.env_files_checksum),
     }
     keys = ', '.join(d.keys())
     values = ', '.join(d.values())
@@ -118,7 +118,7 @@ create table artifacts(
 
   @classmethod
   def _build_target_to_sql_tuple(clazz, bt):
-    return ( bt.system, bt.level, util.sql_encode_string_list(bt.arch, quoted = False) )
+    return ( bt.system, bt.level, sql_encoding.sql_encode_string_list(bt.arch, quoted = False) )
   
   def list_all_by_descriptor(self, build_target = None):
     if build_target:
@@ -197,7 +197,7 @@ create table artifacts(
                            tuple(json.loads(row.arch)),
                            row.distro,
                            row.distro_version,
-                           util.sql_decode_requirements(row.requirements),
+                           sql_encoding.sql_decode_requirements(row.requirements),
                            json.loads(row.properties),
                            files)
     return md
@@ -207,7 +207,7 @@ create table artifacts(
     return package_descriptor(row.name,
                               build_version(row.version, row.revision, row.epoch),
                               json.loads(row.properties),
-                              util.sql_decode_requirements(row.requirements))
+                              sql_encoding.sql_decode_requirements(row.requirements))
   
   def find_artifact(self, adesc):
     check.check_artifact_descriptor(adesc)

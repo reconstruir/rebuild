@@ -4,7 +4,6 @@ import json
 from collections import namedtuple
 from bes.common import cached_property, check, json_util, string_util
 from rebuild.base import build_version, package_descriptor, requirement, requirement_list
-from .util import util
 from .package_files import package_files
 
 class package_db_entry(namedtuple('package_db_entry', 'format_version,name,version,revision,epoch,requirements,properties,files')):

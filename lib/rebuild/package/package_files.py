@@ -3,7 +3,7 @@
 from collections import namedtuple
 from bes.fs import file_checksum_list
 from bes.common import check
-from .util import util
+from .sql_encoding import sql_encoding
 
 class package_files(namedtuple('package_files', 'files, env_files, files_checksum, env_files_checksum')):
 
@@ -44,8 +44,8 @@ class package_files(namedtuple('package_files', 'files, env_files, files_checksu
   def to_sql_dict(self):
     'Return a dict suitable to use directly with sqlite insert commands'
     d =  {
-      'files_checksum': util.sql_encode_string(self.files_checksum),
-      'env_files_checksum': util.sql_encode_string(self.env_files_checksum),
+      'files_checksum': sql_encoding.sql_encode_string(self.files_checksum),
+      'env_files_checksum': sql_encoding.sql_encode_string(self.env_files_checksum),
     }
     return d
 
