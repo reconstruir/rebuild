@@ -83,7 +83,7 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
                  tuple(o['arch']),
                  o['distro'],
                  o['distro_version'],
-                 util.requirements_from_string_list(o['requirements']),
+                 requirement_list.from_string_list(o['requirements']),
                  o['properties'],
                  package_files.parse_dict(o['files']))
   

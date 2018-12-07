@@ -48,7 +48,7 @@ class package_db_entry(namedtuple('package_db_entry', 'format_version,name,versi
                  o['version'],
                  o['revision'],
                  o['epoch'],
-                 util.requirements_from_string_list(o['requirements']),
+                 requirement_list.from_string_list(o['requirements']),
                  o['properties'],
                  package_files.parse_dict(o['files']))
   
