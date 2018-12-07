@@ -50,7 +50,7 @@ class value_base(with_metaclass(value_register_meta, object)):
     return key_value_list.parse(text, options = key_value_list.KEEP_QUOTES)
 
   def get_property(self, key, default_value = None):
-    kv = self._properties.find_by_last_key(key)
+    kv = self._properties.find_by_key_backwards(key)
     if not kv:
       value = default_value
     else:
