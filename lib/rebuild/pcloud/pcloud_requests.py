@@ -4,7 +4,7 @@ import json
 from collections import namedtuple
 
 from bes.compat.url_compat import urljoin
-from bes.common import url_util
+from bes.url import url_util
 
 class pcloud_requests(object):
 

@@ -2,7 +2,7 @@
 
 import os
 from os import path
-from bes.common import url_util
+from bes.url import url_util
 from bes.fs import file_util, temp_file
 from bes.archive import archiver, archive_extension
 from rebuild.binary_format import binary_detector
