@@ -15,11 +15,6 @@ class util(object):
     return result
 
   @classmethod
-  def requirements_to_string_list(clazz, reqs):
-    check.check_requirement_list(reqs)
-    return [ str(r) for r in reqs ]
-
-  @classmethod
   def sql_encode_string(clazz, s, quoted = True):
     if s is None:
       return 'null'
@@ -34,7 +29,8 @@ class util(object):
   
   @classmethod
   def sql_encode_requirements(clazz, reqs):
-    return clazz.sql_encode_string_list(clazz.requirements_to_string_list(reqs))
+    check.check_requirement_list(reqs)
+    return clazz.sql_encode_string_list(reqs.to_string_list())
 
   @classmethod
   def sql_decode_requirements(clazz, text):

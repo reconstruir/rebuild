@@ -101,7 +101,7 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
       'arch': self.arch,
       'distro': self.distro,
       'distro_version': self.distro_version,
-      'requirements': util.requirements_to_string_list(self.requirements),
+      'requirements': self.requirements.to_string_list(),
       'properties': self.properties,
       'files': self.files.to_simple_dict(),
     }

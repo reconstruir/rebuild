@@ -70,5 +70,16 @@ class requirement_list(type_checked_list):
   @staticmethod
   def _check_cast_func(clazz, obj):
     return clazz([ x for x in obj ])
+
+  def to_string_list(self):
+    return [ str(r) for r in self ]
+
+  @classmethod
+  def from_string_list(clazz, l):
+    check.check_string_seq(l)
+    result = requirement_list()
+    for n in l:
+      result.extend(requirement_list.parse(n))
+    return result
   
 check.register_class(requirement_list, include_seq = False, cast_func = requirement_list._check_cast_func)
