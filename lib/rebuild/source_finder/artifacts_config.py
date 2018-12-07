@@ -5,19 +5,21 @@ from collections import namedtuple
 
 from bes.common import check, dict_util
 from bes.config.simple_config import error, simple_config
+from bes.fs import file_util
+
 from .credential_manager import credential_manager
 
 class artifacts_config(object):
 
   _config = namedtuple('_config', 'provider, credentials, origin')
   
-  def __init__(self, config):
+  def __init__(self, config, source):
     check.check_string(config)
 
-    cm = credential_manager(config)
+    cm = credential_manager(config, source)
     
     self._credentials = {}
-    c = simple_config.from_text(config)
+    c = simple_config.from_text(config, source = source)
     
     sections = c.find_sections('artifacts')
     if len(sections) != 1:
@@ -39,14 +41,11 @@ class artifacts_config(object):
     cred = cm.find('download', provider)
     download_config = clazz._config(provider, dict_util.combine(values, cred.values), section.origin)
     return upload_config, download_config
-  
-  def find(self, cred_type, provider):
-    key = self._make_key(cred_type, provider)
-    return self._credentials.get(key, None)
 
+  
   @classmethod
-  def _make_key(clazz, cred_type, provider):
-    return '%s:%s' % (cred_type, provider)
-      
+  def from_file(clazz, filename):
+    return clazz(file_util.read(filename), source = filename)
+  
 check.register_class(artifacts_config, include_seq = False)
   
