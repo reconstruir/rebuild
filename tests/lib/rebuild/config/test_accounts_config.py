@@ -29,8 +29,6 @@ account
   root_dir: /mydir
 '''
     ac = accounts_config(text, '<test>')
-    #import pprint
-    #print(pprint.pformat(ac._accounts))
     a = ac.find('artifacts', 'mine_pcloud')
     self.assertEqual( {
       'email': 'download@bar.com',
@@ -42,6 +40,52 @@ account
       'password': 'sekret2',
       'root_dir': '/mydir',
     }, a.upload_values )
+    
+  def test_combined_upload_download(self):
+    text='''
+credential
+  provider: pcloud
+  purpose: download upload
+  email: foo@bar.com
+  password: sekret
+
+account
+  name: mine_pcloud
+  description: mine personal pcloud account
+  purpose: artifacts sources
+  provider: pcloud
+  root_dir: /mydir
+'''
+    ac = accounts_config(text, '<test>')
+    a = ac.find('artifacts', 'mine_pcloud')
+    self.assertEqual( {
+      'email': 'foo@bar.com',
+      'password': 'sekret',
+      'root_dir': '/mydir',
+    }, a.download_values )
+    self.assertEqual( {
+      'email': 'foo@bar.com',
+      'password': 'sekret',
+      'root_dir': '/mydir',
+    }, a.upload_values )
+
+  def test_missing_upload(self):
+    text='''
+credential
+  provider: pcloud
+  purpose: download
+  email: download@bar.com
+  password: sekret1
+
+account
+  name: mine_pcloud
+  description: mine personal pcloud account
+  purpose: artifacts sources
+  provider: pcloud
+  root_dir: /mydir
+'''
+    with self.assertRaises(accounts_config.error) as context:
+      accounts_config(text, '<test>')
     
 if __name__ == '__main__':
   unit_test.main()
