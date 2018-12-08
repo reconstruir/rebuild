@@ -60,6 +60,12 @@ class builder_config(object):
   def performance(self):
     return self._performance
 
+  @property
+  def storage_cache_dir(self):
+    if not self._build_root:
+      raise AttributeError('build_root has not been set yet.')
+    return path.join(self._build_root, 'storage_cache')
+
   @performance.setter
   def performance(self, value):
     if value == self._performance:

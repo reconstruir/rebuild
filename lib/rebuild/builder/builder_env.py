@@ -32,8 +32,8 @@ class builder_env(object):
     self.downloads_manager = self._make_downloads_manager(config.build_root)
     self.reload_artifact_manager()
     self.tools_manager = tools_manager(path.join(config.build_root, 'tools'),
-                                           self.config.host_build_target,
-                                           self.artifact_manager)
+                                       self.config.host_build_target,
+                                       self.artifact_manager)
     self.recipe_load_env = recipe_load_env(self)
     self.script_manager = builder_script_manager(filenames, self.config.build_target, self)
     self.requirement_manager = requirement_manager()
@@ -41,7 +41,7 @@ class builder_env(object):
     for script in self.script_manager.scripts.values():
       self.requirement_manager.add_package(script.descriptor)
 
-    local_storage_dir = path.join(config.build_root, 'local_storage')
+    local_storage_dir = path.join(config.storage_cache_dir, 'local')
     self.storage_config = self._make_storage_config(config.storage_config, local_storage_dir)
       
   def resolve_deps(self, descriptor, hardness, include_names):

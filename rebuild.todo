@@ -1017,4 +1017,5 @@ version specification and locking for ~/.rebuild/config
 2018-12-07
  - ingesting step for fetching the original sources from the web
  - maybe rename the artifact_manager staged_artifact_manager or something
- 
+ - classes that use class registry need a way to prevent abstract class or otherwise special classes
+   from registering
