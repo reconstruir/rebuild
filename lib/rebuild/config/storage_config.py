@@ -13,7 +13,8 @@ class storage_config(object):
 
   error = simple_config.error
   
-  _storage = namedtuple('_storage', 'name, description, purpose, provider, upload_values, download_values, origin')
+  _credentials = namedtuple('_credentials', 'upload, download')
+  _storage = namedtuple('_storage', 'name, description, purpose, provider, credentials, origin')
   
   def __init__(self, config, source):
     check.check_string(config)
@@ -40,7 +41,12 @@ class storage_config(object):
           raise self.error('Storage with purpose \"%s\" and name \"%s\" already exists.' % (purpose, name), section.origin)
         upload_values = dict_util.combine(values, credentials.find('upload', provider).values)
         download_values = dict_util.combine(values, credentials.find('download', provider).values)
-        storage = self._storage(name, description, purpose, provider, upload_values, download_values, section.origin)
+        storage = self._storage(name,
+                                description,
+                                purpose,
+                                provider,
+                                self._credentials(upload_values, download_values),
+                                section.origin)
         self._config[purpose][name] = storage
 
   def find(self, purpose, name):

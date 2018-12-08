@@ -34,12 +34,12 @@ storage
       'email': 'download@bar.com',
       'password': 'sekret1',
       'root_dir': '/mydir',
-    }, a.download_values )
+    }, a.credentials.download )
     self.assertEqual( {
       'email': 'upload@bar.com',
       'password': 'sekret2',
       'root_dir': '/mydir',
-    }, a.upload_values )
+    }, a.credentials.upload )
     
   def test_combined_upload_download(self):
     text='''
@@ -62,12 +62,12 @@ storage
       'email': 'foo@bar.com',
       'password': 'sekret',
       'root_dir': '/mydir',
-    }, a.download_values )
+    }, a.credentials.download )
     self.assertEqual( {
       'email': 'foo@bar.com',
       'password': 'sekret',
       'root_dir': '/mydir',
-    }, a.upload_values )
+    }, a.credentials.upload )
 
   def test_missing_upload(self):
     text='''
@@ -92,10 +92,10 @@ storage
     a = ac.find('artifacts', 'foo')
     self.assertEqual( {
       'root_dir': '/tmp/foo',
-    }, a.download_values )
+    }, a.credentials.download )
     self.assertEqual( {
       'root_dir': '/tmp/foo',
-    }, a.upload_values )
+    }, a.credentials.upload )
       
 if __name__ == '__main__':
   unit_test.main()
