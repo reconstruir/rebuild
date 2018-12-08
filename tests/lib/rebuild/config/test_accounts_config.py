@@ -86,6 +86,16 @@ account
 '''
     with self.assertRaises(accounts_config.error) as context:
       accounts_config(text, '<test>')
-    
+
+  def test_make_local_config(self):
+    ac = accounts_config.make_local_config('foo', 'foo is nice', '/tmp/foo')
+    a = ac.find('artifacts', 'foo')
+    self.assertEqual( {
+      'root_dir': '/tmp/foo',
+    }, a.download_values )
+    self.assertEqual( {
+      'root_dir': '/tmp/foo',
+    }, a.upload_values )
+      
 if __name__ == '__main__':
   unit_test.main()

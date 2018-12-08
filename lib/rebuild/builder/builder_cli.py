@@ -62,14 +62,11 @@ class builder_cli(build_target_cli):
                              help = 'Timestamp to use for build working build directory droppings.  For predictable unit tests. [ None]')
     self.parser.add_argument('--performance', default = None, action = 'store_true',
                              help = 'Print performance information. [ None ]')
-    self.parser.add_argument('--artifacts', default = None,
-                             action = 'store', type = str,
-                             help = 'Prefix for third party source binaries. [ None ]')
+    self.parser.add_argument('--download-only', default = None, action = 'store_true',
+                             help = 'Only download stuff needed for the build without building anything. [ True ]')
     self.parser.add_argument('--accounts-config', default = None,
                              action = 'store', type = str,
                              help = 'Configuration file for accounts used for artifacts and sources upload/download. [ None ]')
-    self.parser.add_argument('--download-only', default = None, action = 'store_true',
-                             help = 'Only download stuff needed for the build without building anything. [ True ]')
 
     for g in self.parser._action_groups:
       g._group_actions.sort(key = lambda x: x.dest)
@@ -133,13 +130,7 @@ class builder_cli(build_target_cli):
       config.timestamp = args.timestamp
     config.performance = args.performance
     config.download_only = args.download_only
-    config.artifacts_dir = args.artifacts
-
-    if args.accounts_config:
-      config.accounts_config = self._load_accounts_config(args.accounts_config)
-    else:
-      # FIXME: use a "local" account
-      config.accounts_config = None
+    config.accounts_config = args.accounts_config
       
     env = builder_env(config, available_packages)
     
@@ -197,10 +188,3 @@ class builder_cli(build_target_cli):
     if not callable(func):
       raise RuntimeError('not callable: %s' % (func))
     return func()
-
-  @classmethod
-  def _load_accounts_config(clazz, filename):
-    from rebuild.source_finder import accounts_config
-    if not path.exists(filename):
-      raise RuntimeError('artifacts config file not found: %s' % (filename))
-    return accounts_config.from_file(filename)

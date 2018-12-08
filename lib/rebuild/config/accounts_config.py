@@ -49,19 +49,33 @@ class accounts_config(object):
     return self._accounts[purpose][name]
         
   @classmethod
-  def _make_account(clazz, section, cm):
-    provider = section.find_by_key('provider')
-    values = section.to_dict(resolve_env_vars = True)
-    del values['provider']
-    cred = cm.find('upload', provider)
-    upload_config = clazz._config(provider, dict_util.combine(values, cred.values), section.origin)
-    cred = cm.find('download', provider)
-    download_config = clazz._config(provider, dict_util.combine(values, cred.values), section.origin)
-    return upload_config, download_config
-  
-  @classmethod
   def from_file(clazz, filename):
     return clazz(file_util.read(filename), source = filename)
+
+  @classmethod
+  def from_text(clazz, text, source = None):
+    return clazz(text, source = source)
+
+  @classmethod
+  def make_local_config(clazz, name, description, root_dir):
+    description = description or 'auto generated default local build account config.'
+    check.check_string(name)
+    check.check_string(description)
+    check.check_string(root_dir)
+    template = '''
+credential
+  provider: local
+  purpose: download upload
+
+account
+  name: {name}
+  description: {description}
+  purpose: artifacts sources
+  provider: local
+  root_dir: {root_dir}
+'''
+    content = template.format(name = name, description = description, root_dir = root_dir)
+    return clazz.from_text(content, source = '<default>')
   
 check.register_class(accounts_config, include_seq = False)
   
