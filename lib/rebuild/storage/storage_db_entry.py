@@ -4,7 +4,7 @@ from collections import namedtuple
 from bes.common import check
 from bes.fs import file_checksum, file_util
 
-class source_finder_db_entry(namedtuple('source_finder_db_entry', 'filename, mtime, checksum')):
+class storage_db_entry(namedtuple('storage_db_entry', 'filename, mtime, checksum')):
   
   def __new__(clazz, filename, mtime, checksum):
     return clazz.__bases__[0].__new__(clazz, filename, mtime, checksum)
@@ -30,4 +30,4 @@ class source_finder_db_entry(namedtuple('source_finder_db_entry', 'filename, mti
   def to_list(self):
     return list(self)
 
-check.register_class(source_finder_db_entry)
+check.register_class(storage_db_entry)

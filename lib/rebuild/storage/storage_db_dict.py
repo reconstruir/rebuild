@@ -5,10 +5,10 @@ import copy, json, os.path as path
 from bes.fs import file_util
 from bes.common import check, json_util
 
-from .source_finder_db_base import source_finder_db_base
-from .source_finder_db_entry import source_finder_db_entry
+from .storage_db_base import storage_db_base
+from .storage_db_entry import storage_db_entry
 
-class source_finder_db_dict(source_finder_db_base):
+class storage_db_dict(storage_db_base):
 
   def __init__(self, db = None):
     db = db or {}
@@ -28,11 +28,11 @@ class source_finder_db_dict(source_finder_db_base):
     check.check_dict(o)
     for filename, list_item in o.items():
       check.check_list(list_item)
-      db[filename] = source_finder_db_entry.from_list(list_item)
+      db[filename] = storage_db_entry.from_list(list_item)
     return clazz(db)
   
   @classmethod
   def from_file(clazz, filename):
     return clazz.from_json(file_util.read(filename))
     
-#check.register_class(source_finder_db_dict)
+#check.register_class(storage_db_dict)

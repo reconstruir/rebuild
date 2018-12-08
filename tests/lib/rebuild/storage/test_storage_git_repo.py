@@ -5,12 +5,12 @@ from bes.testing.unit_test import unit_test
 from bes.fs.testing import temp_content
 from bes.fs import temp_file
 from bes.git import repo
-from rebuild.source_finder import source_finder_git_repo
+from rebuild.storage import storage_git_repo
 import os.path as path
 
-from test_source_finder_local import source_dir_maker
+from test_storage_local import source_dir_maker
 
-class test_source_finder_git_repo(unit_test):
+class test_storage_git_repo(unit_test):
 
   DEBUG = False
   #DEBUG = True
@@ -24,7 +24,7 @@ class test_source_finder_git_repo(unit_test):
     if self.DEBUG:
       print('tmp_source_repo: %s' % (tmp_source_repo.root))
       print('       tmp_repo_dir: %s' % (tmp_repo_dir))
-    f1 = source_finder_git_repo(tmp_repo_dir, tmp_source_repo.root)
+    f1 = storage_git_repo(tmp_repo_dir, tmp_source_repo.root)
     self.assertEqual( path.join(tmp_repo_dir, 'a/alpha-1.2.3.tar.gz'), f1.find_tarball('alpha-1.2.3.tar.gz') )
     
   @classmethod

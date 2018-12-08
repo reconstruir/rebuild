@@ -7,7 +7,7 @@ from bes.text import text_table
 from bes.common import check
 from collections import namedtuple
 
-class source_finder_db_base(object):
+class storage_db_base(object):
 
   DB_FILENAME = 'sources_db.json'
 
@@ -76,7 +76,7 @@ class source_finder_db_base(object):
 
   delta_result = namedtuple('delta_result', 'common, conflicts, in_a_only, in_b_only')
   def delta(self, other):
-    check.check_source_finder_db_base(other)
+    check.check_storage_db_base(other)
     db_a = self
     db_b = other
     set_a = set(db_a.checksum_dict())
@@ -106,5 +106,5 @@ class source_finder_db_base(object):
         return entry
     return None
       
-check.register_class(source_finder_db_base)
+check.register_class(storage_db_base)
       

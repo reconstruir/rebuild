@@ -6,7 +6,7 @@ from bes.common import string_util
 from bes.fs.testing import temp_content
 from bes.fs import temp_file
 from bes.archive.temp_archive import archive_extension, temp_archive
-from rebuild.source_finder import source_finder_local
+from rebuild.storage import storage_local
 import os.path as path
 
 class source_dir_maker(object):
@@ -46,14 +46,14 @@ class source_dir_maker(object):
   def make_tarball(clazz, ext):
     return temp_archive.make_temp_archive([ temp_archive.item('foo.txt', content = 'foo.txt\n') ], ext).filename
 
-class test_source_finder_local(unit_test):
+class test_storage_local(unit_test):
     
   def test_local_find_tarball(self):
     tmp_dir = source_dir_maker.make([
       'file a/alpha-1.2.3.tar.gz "${tarball}" 644',
       'file a/alpha-1.2.4.tar.gz "${tarball}" 644',
     ])
-    finder = source_finder_local(tmp_dir)
+    finder = storage_local(tmp_dir)
     self.assertEqual( path.join(tmp_dir, 'a/alpha-1.2.3.tar.gz'),
                       finder.find_tarball('alpha-1.2.3.tar.gz') )
     

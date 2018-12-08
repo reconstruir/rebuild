@@ -5,10 +5,10 @@ import os.path as path
 from bes.common import check
 from bes.fs import file_util, temp_file
 
-from .source_finder_db_base import source_finder_db_base
-from .source_finder_db_dict import source_finder_db_dict
+from .storage_db_base import storage_db_base
+from .storage_db_dict import storage_db_dict
 
-class source_finder_db_pcloud(source_finder_db_base):
+class storage_db_pcloud(storage_db_base):
 
   def __init__(self, pcloud):
 #    check.check_pcloud(pcloud)
@@ -20,7 +20,7 @@ class source_finder_db_pcloud(source_finder_db_base):
   def load(self):
     'Load the db from its source.'
     db_json = self._pcloud.download_to_bytes(file_path = self._remote_db_path)
-    self._dict_db = source_finder_db_dict.from_json(db_json)
+    self._dict_db = storage_db_dict.from_json(db_json)
     self._db = self._dict_db._db
 
   #@abstractmethod

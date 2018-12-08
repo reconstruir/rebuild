@@ -6,18 +6,18 @@ from bes.fs import file_util, temp_file
 
 from bes.common import check, json_util
 
-from .source_finder_db_dict import source_finder_db_dict
-from .source_finder_db_entry import source_finder_db_entry
+from .storage_db_dict import storage_db_dict
+from .storage_db_entry import storage_db_entry
 from .source_tool import source_tool
 
-class source_finder_db(object):
+class storage_db(object):
 
   DB_FILENAME = 'sources_db.json'
   
   def __init__(self, root):
     self._root = root
     self.db_filename = path.join(self._root, self.DB_FILENAME)
-    self._db = source_finder_db_dict()
+    self._db = storage_db_dict()
     self._update_db()
 
   def __getitem__(self, key):
@@ -39,18 +39,18 @@ class source_finder_db(object):
     return self._db.items()
   
   def _update_db(self):
-    self._db = source_finder_db_dict.from_file(self.db_filename)
+    self._db = storage_db_dict.from_file(self.db_filename)
     current_sources = source_tool.find_sources(self._root)
     self._db = self._make_db(current_sources)
     self._db.save_to_file(self.db_filename)
 
   def _make_db(self, sources):
-    db = source_finder_db_dict()
+    db = storage_db_dict()
     for f in sources:
       p = path.join(self._root, f)
       mtime = file_util.mtime(p)
       checksum = self._read_checksum(f)
-      db[f] = source_finder_db_entry(f, mtime, checksum)
+      db[f] = storage_db_entry(f, mtime, checksum)
     return db
       
   def _read_checksum(self, filename):
@@ -70,7 +70,7 @@ class source_finder_db(object):
     return self._db.checksum_dict()
   
   def delta(self, other):
-    check.check_source_finder_dbe(other)
+    check.check_storage_dbe(other)
     return self._db.delta(other._db)
 
   @classmethod
@@ -80,5 +80,5 @@ class source_finder_db(object):
     file_util.save(db_filename, content = db_content)
     return clazz(root)
 
-check.register_class(source_finder_db)
+check.register_class(storage_db)
 

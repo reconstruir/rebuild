@@ -4,9 +4,9 @@ import os.path as path
 from bes.git import repo
 from rebuild.base import build_blurb
 
-from .source_finder_base import source_finder_base
+from .storage_base import storage_base
 
-class source_finder_git_repo(source_finder_base):
+class storage_git_repo(storage_base):
 
   def __init__(self, root, address, no_network = False, update_only_once = False):
     self.repo = repo(root, address)

@@ -15,11 +15,11 @@ from bes.text import text_table
 #from .pcloud_metadata import pcloud_metadata
 
 from .tarball_finder import tarball_finder
-from .source_finder_db_entry import source_finder_db_entry
-from .source_finder_db_dict import source_finder_db_dict
-from .source_finder_db_pcloud import source_finder_db_pcloud
-from .source_finder_db_entry import source_finder_db_entry
-from .source_finder_db import source_finder_db
+from .storage_db_entry import storage_db_entry
+from .storage_db_dict import storage_db_dict
+from .storage_db_pcloud import storage_db_pcloud
+from .storage_db_entry import storage_db_entry
+from .storage_db import storage_db
 from .source_tool import source_tool
 
 from rebuild.pcloud import pcloud, pcloud_error, pcloud_credentials
@@ -173,13 +173,13 @@ class sources_cli(object):
     if verification_checksum != local_checksum:
       print('Failed to verify checksum.  Something went wrong.')
       return 1
-    db = source_finder_db_pcloud(self._pcloud)
+    db = storage_db_pcloud(self._pcloud)
     key = file_util.remove_head(remote_path, self._pcloud_root_dir)
     db.load()
     if key in db:
       print('File alaready in db something is wrong: %s.' % (key))
       return 1
-    db[key] = source_finder_db_entry(key, local_mtime, local_checksum)
+    db[key] = storage_db_entry(key, local_mtime, local_checksum)
     db.save()
     print('success')
     return 0
@@ -218,10 +218,10 @@ class sources_cli(object):
     return checksum
 
   def _sources_db_filename(self):
-    return path.join(self._pcloud_root_dir, source_finder_db_dict.DB_FILENAME)
+    return path.join(self._pcloud_root_dir, storage_db_dict.DB_FILENAME)
   
   def _command_db(self, raw):
-    db = source_finder_db_pcloud(self._pcloud)
+    db = storage_db_pcloud(self._pcloud)
     db.load()
     if raw:
       print(db.to_json())
@@ -232,7 +232,7 @@ class sources_cli(object):
   _found_item = namedtuple('_found_item', 'db, blurb, entry, exact')
 
   def _do_find(self, what, exact):
-    db = source_finder_db_pcloud(self._pcloud)
+    db = storage_db_pcloud(self._pcloud)
     db.load()
     entry = None
     blurb = ''
@@ -275,7 +275,7 @@ class sources_cli(object):
     item = items[0]
     file_path = self._pcloud.make_path(item.entry.filename)
     self._pcloud.delete_file(file_path = file_path)
-    db = source_finder_db_pcloud(self._pcloud)
+    db = storage_db_pcloud(self._pcloud)
     db.load()
     del db[item.entry.filename]
     print('Uploading db.')
@@ -285,7 +285,7 @@ class sources_cli(object):
   def _command_retire_db(self, what):
     wr = what_resolver(what)
 
-    db = source_finder_db_pcloud(self._pcloud)
+    db = storage_db_pcloud(self._pcloud)
     db.load()
 
     if wr.checksum:

@@ -8,9 +8,9 @@ from bes.compat import StringIO
 from bes.fs import file_util, file_checksum_list
 from bes.text import text_table
 
-from rebuild.source_finder import source_tool
-from rebuild.source_finder.source_finder_db import source_finder_db
-from rebuild.source_finder.source_finder_db_dict import source_finder_db_dict
+from rebuild.storage import source_tool
+from rebuild.storage.storage_db import storage_db
+from rebuild.storage.storage_db_dict import storage_db_dict
 
 from .pcloud import pcloud
 from .pcloud_error import pcloud_error
@@ -328,17 +328,17 @@ class pcloud_cli(object):
   def _command_sync(self, local_folder, remote_folder, dry_run):
     print('sync %s to %s' % (local_folder, remote_folder))
     print('reading local db: %s' % (local_folder))
-    db = source_finder_db(local_folder)
+    db = storage_db(local_folder)
     #source_tool.update_sources_index(local_folder)
     #local_checksums = file_checksum_list.load_checksums_file(path.join(local_folder, 'sources_index.json'))
     local_dict = db.checksum_dict()
 #    for k, v in local_dict.items():
 #      print(' LOCAL: %s %s' % (k, v))
-    remote_db_path = path.join(remote_folder, source_finder_db.DB_FILENAME)
+    remote_db_path = path.join(remote_folder, storage_db.DB_FILENAME)
 
     print('fetching remote db: %s' % (remote_folder))
     remote_db_content = self._pcloud.download_to_bytes(file_path = remote_db_path)
-    remote_db = source_finder_db.make_temp_db(remote_db_content)
+    remote_db = storage_db.make_temp_db(remote_db_content)
     print('done fetching remote db: %s' % (remote_folder))
     file_util.save('/tmp/caca.json', content = remote_db_content)
     print('temp: %s' % (remote_db.db_filename))

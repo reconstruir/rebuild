@@ -4,13 +4,13 @@ import os.path as path
 from bes.fs import file_util
 from bes.common import check
 
-from .source_finder_base import source_finder_base
-from .source_finder_db_dict import source_finder_db_dict
+from .storage_base import storage_base
+from .storage_db_dict import storage_db_dict
 
 from rebuild.base import build_blurb
 from rebuild.pcloud import pcloud, pcloud_error
 
-class source_finder_pcloud(source_finder_base):
+class storage_pcloud(storage_base):
 
   def __init__(self, local_root_dir, credentials, no_network = False):
     check.check_pcloud_credentials(credentials)
@@ -23,8 +23,8 @@ class source_finder_pcloud(source_finder_base):
     self.local_root_dir = local_root_dir
     self.pcloud = pcloud(credentials)
     del credentials
-    self._local_db_file_path = path.join(self.local_root_dir, source_finder_db_dict.DB_FILENAME)
-    self._remote_db_file_path = path.join(self.remote_root_dir, source_finder_db_dict.DB_FILENAME)
+    self._local_db_file_path = path.join(self.local_root_dir, storage_db_dict.DB_FILENAME)
+    self._remote_db_file_path = path.join(self.remote_root_dir, storage_db_dict.DB_FILENAME)
     if no_network:
       self.db = self._load_db_local()
     else:
@@ -39,23 +39,23 @@ class source_finder_pcloud(source_finder_base):
     try:
       self.blurb('pcloud: using remote db: %s' % (self._remote_db_file_path))
       content = self.pcloud.download_to_bytes(file_path = self._remote_db_file_path)
-      sf = source_finder_db_dict.from_json(content)
-      file_util.save(path.join(self.local_root_dir, source_finder_db_dict.DB_FILENAME), content = content)
+      sf = storage_db_dict.from_json(content)
+      file_util.save(path.join(self.local_root_dir, storage_db_dict.DB_FILENAME), content = content)
       return sf
     except pcloud_error as ex:
-      return source_finder_db_dict()
+      return storage_db_dict()
 
   def _load_db_local(self):
     if not path.isfile(self._local_db_file_path):
       self.blurb('pcloud: not local db found at: %s' % (self._local_db_file_path))
-      return source_finder_db_dict()
+      return storage_db_dict()
     try:
       self.blurb('pcloud: using local db: %s' % (path.relpath(self._local_db_file_path)))
       content = file_util.read(self._local_db_file_path)
-      return source_finder_db_dict.from_json(content)
+      return storage_db_dict.from_json(content)
     except Exception as ex:
       self.blurb('pcloud: local db is corrupt: %s' % (self._local_db_file_path))
-      return source_finder_db_dict()
+      return storage_db_dict()
 
   def _update_filename_map(self):
     self._filename_map = {}

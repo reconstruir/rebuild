@@ -4,9 +4,9 @@ import os.path as path
 
 from bes.common import check
 
-from .source_finder_base import source_finder_base 
+from .storage_base import storage_base 
 
-class source_finder_chain(object):
+class storage_chain(object):
 
   def __init__(self):
     self._finders = []
@@ -18,7 +18,7 @@ class source_finder_chain(object):
     return len(self._finders)
   
   def add_finder(self, finder):
-    check.check(finder, source_finder_base)
+    check.check(finder, storage_base)
     assert finder not in self._finders
     self._finders.append(finder)
     
@@ -42,5 +42,5 @@ class source_finder_chain(object):
       result.extend(finder.search(name))
     return result
   
-check.register_class(source_finder_chain, include_seq = False)
+check.register_class(storage_chain, include_seq = False)
   

@@ -3,9 +3,9 @@
 import os.path as path
 from bes.fs import file_find
 
-from .source_finder_base import source_finder_base 
+from .storage_base import storage_base 
 
-class source_finder_local(source_finder_base):
+class storage_local(storage_base):
 
   def __init__(self, where):
     self.where = path.abspath(where)

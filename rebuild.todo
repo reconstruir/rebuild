@@ -826,7 +826,7 @@ rebuild.package.package_manager.PackageFilesConflictError: conflicts found betwe
 - add manager test when a package gets removed
 
 2018-10-04
-- add a find_tarball cache for source_finder
+- add a find_tarball cache for storage
 
 2018-10-12
 - source finder chain unit tests for find_tarball
@@ -1019,4 +1019,5 @@ version specification and locking for ~/.rebuild/config
  - maybe rename the artifact_manager staged_artifact_manager or something
  - classes that use class registry need a way to prevent abstract class or otherwise special classes
    from registering
-- source_finder_chain if survives refactor should be a sublass of source_finder_base
+- storage_chain if survives refactor should be a sublass of storage_base
+- s/--skip-tests/--no-tests/

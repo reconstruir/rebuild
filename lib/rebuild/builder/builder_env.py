@@ -10,7 +10,7 @@ from rebuild.tools_manager import tools_manager
 from rebuild.checksum import checksum_manager
 from rebuild.package import artifact_manager_chain, artifact_manager_local
 from rebuild.base import build_blurb, package_descriptor, requirement_manager
-from rebuild.source_finder import source_finder_git_repo, source_finder_local, source_finder_pcloud, source_finder_chain
+from rebuild.storage import storage_git_repo, storage_local, storage_pcloud, storage_chain
 from rebuild.recipe import recipe_load_env
 from rebuild.pcloud import pcloud_credentials
 from rebuild.config import storage_config
@@ -22,12 +22,12 @@ class builder_env(object):
   def __init__(self, config, filenames):
     build_blurb.add_blurb(self, 'rebuild')
     self.config = config
-    self.source_finder = self._make_source_finder(config.build_root,
+    self.storage = self._make_storage(config.build_root,
                                                   config.source_dir,
                                                   config.source_git,
                                                   config.source_pcloud,
                                                   config.no_network)
-    self.blurb('source_finder: %s' % (self.source_finder))
+    self.blurb('storage: %s' % (self.storage))
     self.checksum_manager = self._make_checksum_manager(config.build_root)
     self.downloads_manager = self._make_downloads_manager(config.build_root)
     self.reload_artifact_manager()
@@ -48,21 +48,21 @@ class builder_env(object):
     return self.requirement_manager.resolve_deps([descriptor.name], self.config.build_target.system, hardness, include_names)
   
   @classmethod
-  def _make_source_finder(clazz, build_dir, source_dir, source_git, source_pcloud, no_network):
-    chain = source_finder_chain()
+  def _make_storage(clazz, build_dir, source_dir, source_git, source_pcloud, no_network):
+    chain = storage_chain()
     if source_dir:
-      finder = source_finder_local(source_dir)
+      finder = storage_local(source_dir)
       chain.add_finder(finder)
     if source_git:
       root = path.join(build_dir, 'third_party_tarballs', git_util.sanitize_address(source_git))
-      finder = source_finder_git_repo(root, source_git, no_network = no_network, update_only_once = True)
+      finder = storage_git_repo(root, source_git, no_network = no_network, update_only_once = True)
       chain.add_finder(finder)
     if source_pcloud:
       credentials = pcloud_credentials.from_file(source_pcloud)
       if not credentials.is_valid():
         raise RuntimeError('Invalid pcloud credentials: %s' % (source_pcloud))
       root = path.join(build_dir, 'downloads', 'pcloud')
-      finder = source_finder_pcloud(root, credentials, no_network = no_network)
+      finder = storage_pcloud(root, credentials, no_network = no_network)
       chain.add_finder(finder)
     if len(chain) == 0:
         raise RuntimeError('No valid source finders given.')

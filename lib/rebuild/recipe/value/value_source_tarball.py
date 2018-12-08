@@ -26,7 +26,7 @@ class value_source_tarball(value_base):
   #@abstractmethod
   def sources(self, recipe_env):
     'Return a list of sources this caca provides or None if no sources.'
-    return [ recipe_env.source_finder.find_tarball(self.value) ]
+    return [ recipe_env.storage.find_tarball(self.value) ]
 
   #@abstractmethod
   def substitutions_changed(self):

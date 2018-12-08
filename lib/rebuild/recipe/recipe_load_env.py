@@ -17,7 +17,7 @@ class recipe_load_env_base(with_metaclass(ABCMeta, object)):
     raise NotImplementedError
 
   @abstractmethod
-  def get_source_finder(self):
+  def get_storage(self):
     raise NotImplementedError
 
   @property
@@ -29,8 +29,8 @@ class recipe_load_env_base(with_metaclass(ABCMeta, object)):
     return self.get_downloads_manager()
 
   @property
-  def source_finder(self):
-    return self.get_source_finder()
+  def storage(self):
+    return self.get_storage()
   
 class recipe_load_env(recipe_load_env_base):
 
@@ -47,21 +47,21 @@ class recipe_load_env(recipe_load_env_base):
     return self._builder_env.downloads_manager
 
   #@abstractmethod
-  def get_source_finder(self):
-    return self._builder_env.source_finder
+  def get_storage(self):
+    return self._builder_env.storage
 
 class testing_recipe_load_env(recipe_load_env_base):
 
-  def __init__(self, build_target = None, downloads_manager = None, source_finder = None):
+  def __init__(self, build_target = None, downloads_manager = None, storage = None):
     build_target = build_target or BT.make_host_build_target()
     check.check_build_target(build_target)
     self._build_target = build_target
     if downloads_manager:
       check.check_git_download_cache(downloads_manager)
     self._downloads_manager = downloads_manager
-    if source_finder:
-      check.check_source_finder_chain(source_finder)
-    self._source_finder = source_finder
+    if storage:
+      check.check_storage_chain(storage)
+    self._storage = storage
 
   #@abstractmethod
   def get_build_target(self):
@@ -72,7 +72,7 @@ class testing_recipe_load_env(recipe_load_env_base):
     return self._downloads_manager
 
   #@abstractmethod
-  def get_source_finder(self):
-    return self._source_finder
+  def get_storage(self):
+    return self._storage
     
 check.register_class(recipe_load_env_base, include_seq = False)
