@@ -13,7 +13,7 @@ class storage_config(object):
 
   error = simple_config.error
   
-  _account = namedtuple('_account', 'name, description, purpose, provider, upload_values, download_values, origin')
+  _storage = namedtuple('_storage', 'name, description, purpose, provider, upload_values, download_values, origin')
   
   def __init__(self, config, source):
     check.check_string(config)
@@ -21,7 +21,7 @@ class storage_config(object):
 
     self._config = {}
     c = simple_config.from_text(config, source = source)
-    sections = c.find_sections('account')
+    sections = c.find_sections('storage')
     for section in sections:
       values = section.to_dict(resolve_env_vars = True)
       name = section.find_by_key('name')
@@ -37,15 +37,15 @@ class storage_config(object):
         if not purpose in self._config:
           self._config[purpose] = {}
         if name in self._config[purpose]:
-          raise self.error('Account with purpose \"%s\" and name \"%s\" already exists.' % (purpose, name), section.origin)
+          raise self.error('Storage with purpose \"%s\" and name \"%s\" already exists.' % (purpose, name), section.origin)
         upload_values = dict_util.combine(values, credentials.find('upload', provider).values)
         download_values = dict_util.combine(values, credentials.find('download', provider).values)
-        account = self._account(name, description, purpose, provider, upload_values, download_values, section.origin)
-        self._config[purpose][name] = account
+        storage = self._storage(name, description, purpose, provider, upload_values, download_values, section.origin)
+        self._config[purpose][name] = storage
 
   def find(self, purpose, name):
     if not purpose in self._config or not name in self._config[purpose]:
-      raise self.error('No account with purpose \"%s\" and name \"%s\" found.' % (purpose, name), None)
+      raise self.error('No storage with purpose \"%s\" and name \"%s\" found.' % (purpose, name), None)
     return self._config[purpose][name]
         
   @classmethod
@@ -58,7 +58,7 @@ class storage_config(object):
 
   @classmethod
   def make_local_config(clazz, name, description, root_dir):
-    description = description or 'auto generated default local build account config.'
+    description = description or 'auto generated default local build storage config.'
     check.check_string(name)
     check.check_string(description)
     check.check_string(root_dir)
@@ -67,7 +67,7 @@ credential
   provider: local
   purpose: download upload
 
-account
+storage
   name: {name}
   description: {description}
   purpose: artifacts sources

@@ -21,7 +21,7 @@ credential
   email: upload@bar.com
   password: sekret2
 
-account
+storage
   name: mine_pcloud
   description: mine personal pcloud account
   purpose: artifacts sources
@@ -49,7 +49,7 @@ credential
   email: foo@bar.com
   password: sekret
 
-account
+storage
   name: mine_pcloud
   description: mine personal pcloud account
   purpose: artifacts sources
@@ -77,7 +77,7 @@ credential
   email: download@bar.com
   password: sekret1
 
-account
+storage
   name: mine_pcloud
   description: mine personal pcloud account
   purpose: artifacts sources

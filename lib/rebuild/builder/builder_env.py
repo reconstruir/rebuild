@@ -41,8 +41,8 @@ class builder_env(object):
     for script in self.script_manager.scripts.values():
       self.requirement_manager.add_package(script.descriptor)
 
-    storage_dir = path.join(config.build_root, 'local_storage')
-    self.accounts = self._make_storage_config(config.storage_config, storage_dir)
+    local_storage_dir = path.join(config.build_root, 'local_storage')
+    self.storage_config = self._make_storage_config(config.storage_config, local_storage_dir)
       
   def resolve_deps(self, descriptor, hardness, include_names):
     return self.requirement_manager.resolve_deps([descriptor.name], self.config.build_target.system, hardness, include_names)
