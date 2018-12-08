@@ -2,9 +2,9 @@
 
 from bes.archive import archiver
 
-from .source_finder import source_finder
+from .source_finder_base import source_finder_base 
 
-class source_finder_hard_coded(source_finder):
+class source_finder_hard_coded(source_finder_base):
 
   def __init__(self, tarball):
     if not archiver.is_valid(tarball):

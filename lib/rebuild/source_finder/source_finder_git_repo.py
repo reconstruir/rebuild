@@ -1,11 +1,12 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from .source_finder import source_finder
+import os.path as path
 from bes.git import repo
 from rebuild.base import build_blurb
-import os.path as path
 
-class source_finder_git_repo(source_finder):
+from .source_finder_base import source_finder_base
+
+class source_finder_git_repo(source_finder_base):
 
   def __init__(self, root, address, no_network = False, update_only_once = False):
     self.repo = repo(root, address)

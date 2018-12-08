@@ -4,7 +4,7 @@ import os.path as path
 
 from bes.common import check
 
-from .source_finder import source_finder 
+from .source_finder_base import source_finder_base 
 
 class source_finder_chain(object):
 
@@ -18,7 +18,7 @@ class source_finder_chain(object):
     return len(self._finders)
   
   def add_finder(self, finder):
-    check.check(finder, source_finder)
+    check.check(finder, source_finder_base)
     assert finder not in self._finders
     self._finders.append(finder)
     

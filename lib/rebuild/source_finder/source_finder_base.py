@@ -6,7 +6,7 @@ from bes.common import check
 from rebuild.base import build_system
 from .tarball_finder import tarball_finder
 
-class source_finder(with_metaclass(ABCMeta, object)):
+class source_finder_base(with_metaclass(ABCMeta, object)):
 
   @abstractmethod
   def find_tarball(self, filename):

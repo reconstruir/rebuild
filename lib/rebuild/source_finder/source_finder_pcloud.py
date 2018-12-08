@@ -4,13 +4,13 @@ import os.path as path
 from bes.fs import file_util
 from bes.common import check
 
-from .source_finder import source_finder
+from .source_finder_base import source_finder_base
 from .source_finder_db_dict import source_finder_db_dict
 
 from rebuild.base import build_blurb
 from rebuild.pcloud import pcloud, pcloud_error
 
-class source_finder_pcloud(source_finder):
+class source_finder_pcloud(source_finder_base):
 
   def __init__(self, local_root_dir, credentials, no_network = False):
     check.check_pcloud_credentials(credentials)
