@@ -64,9 +64,9 @@ class builder_cli(build_target_cli):
                              help = 'Print performance information. [ None ]')
     self.parser.add_argument('--download-only', default = None, action = 'store_true',
                              help = 'Only download stuff needed for the build without building anything. [ True ]')
-    self.parser.add_argument('--accounts-config', default = None,
+    self.parser.add_argument('--storage-config', default = None,
                              action = 'store', type = str,
-                             help = 'Configuration file for accounts used for artifacts and sources upload/download. [ None ]')
+                             help = 'Configuration file for storage used for artifacts and sources upload/download. [ None ]')
 
     for g in self.parser._action_groups:
       g._group_actions.sort(key = lambda x: x.dest)
@@ -130,7 +130,7 @@ class builder_cli(build_target_cli):
       config.timestamp = args.timestamp
     config.performance = args.performance
     config.download_only = args.download_only
-    config.accounts_config = args.accounts_config
+    config.storage_config = args.storage_config
       
     env = builder_env(config, available_packages)
     

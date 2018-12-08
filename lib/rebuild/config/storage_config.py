@@ -9,7 +9,7 @@ from bes.fs import file_util
 
 from .credentials_config import credentials_config
 
-class accounts_config(object):
+class storage_config(object):
 
   error = simple_config.error
   
@@ -19,7 +19,7 @@ class accounts_config(object):
     check.check_string(config)
     credentials = credentials_config(config, source)
 
-    self._accounts = {}
+    self._config = {}
     c = simple_config.from_text(config, source = source)
     sections = c.find_sections('account')
     for section in sections:
@@ -34,19 +34,19 @@ class accounts_config(object):
       if description is not None:
         del values['description']
       for purpose in purposes:
-        if not purpose in self._accounts:
-          self._accounts[purpose] = {}
-        if name in self._accounts[purpose]:
+        if not purpose in self._config:
+          self._config[purpose] = {}
+        if name in self._config[purpose]:
           raise self.error('Account with purpose \"%s\" and name \"%s\" already exists.' % (purpose, name), section.origin)
         upload_values = dict_util.combine(values, credentials.find('upload', provider).values)
         download_values = dict_util.combine(values, credentials.find('download', provider).values)
         account = self._account(name, description, purpose, provider, upload_values, download_values, section.origin)
-        self._accounts[purpose][name] = account
+        self._config[purpose][name] = account
 
   def find(self, purpose, name):
-    if not purpose in self._accounts or not name in self._accounts[purpose]:
+    if not purpose in self._config or not name in self._config[purpose]:
       raise self.error('No account with purpose \"%s\" and name \"%s\" found.' % (purpose, name), None)
-    return self._accounts[purpose][name]
+    return self._config[purpose][name]
         
   @classmethod
   def from_file(clazz, filename):
@@ -77,5 +77,5 @@ account
     content = template.format(name = name, description = description, root_dir = root_dir)
     return clazz.from_text(content, source = '<default>')
   
-check.register_class(accounts_config, include_seq = False)
+check.register_class(storage_config, include_seq = False)
   

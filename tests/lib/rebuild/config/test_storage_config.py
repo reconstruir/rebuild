@@ -3,9 +3,9 @@
 
 import os
 from bes.testing.unit_test import unit_test
-from rebuild.config import accounts_config
+from rebuild.config import storage_config
 
-class test_accounts_config(unit_test):
+class test_storage_config(unit_test):
     
   def test_basic(self):
     text='''
@@ -28,7 +28,7 @@ account
   provider: pcloud
   root_dir: /mydir
 '''
-    ac = accounts_config(text, '<test>')
+    ac = storage_config(text, '<test>')
     a = ac.find('artifacts', 'mine_pcloud')
     self.assertEqual( {
       'email': 'download@bar.com',
@@ -56,7 +56,7 @@ account
   provider: pcloud
   root_dir: /mydir
 '''
-    ac = accounts_config(text, '<test>')
+    ac = storage_config(text, '<test>')
     a = ac.find('artifacts', 'mine_pcloud')
     self.assertEqual( {
       'email': 'foo@bar.com',
@@ -84,11 +84,11 @@ account
   provider: pcloud
   root_dir: /mydir
 '''
-    with self.assertRaises(accounts_config.error) as context:
-      accounts_config(text, '<test>')
+    with self.assertRaises(storage_config.error) as context:
+      storage_config(text, '<test>')
 
   def test_make_local_config(self):
-    ac = accounts_config.make_local_config('foo', 'foo is nice', '/tmp/foo')
+    ac = storage_config.make_local_config('foo', 'foo is nice', '/tmp/foo')
     a = ac.find('artifacts', 'foo')
     self.assertEqual( {
       'root_dir': '/tmp/foo',

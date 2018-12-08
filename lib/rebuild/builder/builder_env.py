@@ -13,7 +13,7 @@ from rebuild.base import build_blurb, package_descriptor, requirement_manager
 from rebuild.source_finder import source_finder_git_repo, source_finder_local, source_finder_pcloud, source_finder_chain
 from rebuild.recipe import recipe_load_env
 from rebuild.pcloud import pcloud_credentials
-from rebuild.config import accounts_config
+from rebuild.config import storage_config
 
 from .builder_script_manager import builder_script_manager
 
@@ -42,7 +42,7 @@ class builder_env(object):
       self.requirement_manager.add_package(script.descriptor)
 
     storage_dir = path.join(config.build_root, 'local_storage')
-    self.accounts = self._make_accounts_config(config.accounts_config, storage_dir)
+    self.accounts = self._make_storage_config(config.storage_config, storage_dir)
       
   def resolve_deps(self, descriptor, hardness, include_names):
     return self.requirement_manager.resolve_deps([descriptor.name], self.config.build_target.system, hardness, include_names)
@@ -88,11 +88,11 @@ class builder_env(object):
     self.external_artifact_manager = None
 
   @classmethod
-  def _make_accounts_config(clazz, filename, root_dir):
+  def _make_storage_config(clazz, filename, root_dir):
     if not filename:
-      return accounts_config.make_local_config('rebuild', None, root_dir)
+      return storage_config.make_local_config('rebuild', None, root_dir)
     if not path.exists(filename):
       raise RuntimeError('artifacts config file not found: %s' % (filename))
-    return accounts_config.from_file(filename)
+    return storage_config.from_file(filename)
       
 check.register_class(builder_env, include_seq = False)

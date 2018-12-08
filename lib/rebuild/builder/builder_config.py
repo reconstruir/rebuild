@@ -42,7 +42,7 @@ class builder_config(object):
     self._trash_dir = None
     self.artifacts_dir = None
     self.download_only = False
-    self.accounts_config = None
+    self.storage_config = None
     
   def builds_dir(self, build_target):
     return path.join(self.build_root, 'builds', build_target.build_path)
