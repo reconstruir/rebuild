@@ -10,6 +10,7 @@ from bes.compat import StringIO
 from bes.fs import file_checksum_list, file_find, file_util, temp_file
 from bes.common import node
 from bes.text import text_table
+from bes.url import url_util
 
 from bes.archive import archiver, archive_extension
 from rebuild.binary_format import binary_detector
@@ -78,12 +79,12 @@ class sources_cli(object):
                                 help = 'Do not do any work.  Just print what would happen. [ False ]')
 
     # ingest
-    ingest_parser = subparsers.add_parser('ingest', help = 'Ingest a source tarball to cloud.')
-    ingest_parser.add_argument('local_filename',
+    ingest_parser = subparsers.add_parser('ingest', help = 'Ingest a local or remote tarball or executable to pcloud.')
+    ingest_parser.add_argument('what',
                                 action = 'store',
                                 default = None,
                                 type = str,
-                                help = 'The tarball to ingest to cloud. [ None ]')
+                                help = 'What to ingest.  Can be a tarball or executable.  Can be local file path or remote url. [ None ]')
     ingest_parser.add_argument('remote_filename',
                                 action = 'store',
                                 default = None,
@@ -153,7 +154,7 @@ class sources_cli(object):
     if args.command == 'publish':
       return self._command_publish(args.local_filename, args.filename, args.folder, args.dry_run)
     elif args.command == 'ingest':
-      return self._command_ingest(args.local_filename, args.remote_filename, args.dry_run, args.arcname)
+      return self._command_ingest(args.what, args.remote_filename, args.dry_run, args.arcname)
     elif args.command == 'sync':
       return self._command_sync(args.local_directory, args.remote_directory)
     elif args.command == 'db':
@@ -216,10 +217,19 @@ class sources_cli(object):
     print('success')
     return 0
 
-  def _command_ingest(self, local_filename, remote_filename, dry_run, arcname):
-    check.check_string(local_filename)
+  def _command_ingest(self, what, remote_filename, dry_run, arcname):
+    check.check_string(what)
     check.check_string(remote_filename)
-    self.log_d('_command_ingest: local_filename=%s; remote_filename=%s; arcname=%s' % (local_filename, remote_filename, arcname))
+    self.log_d('_command_ingest: what=%s; remote_filename=%s; arcname=%s' % (what, remote_filename, arcname))
+    remote_basename = path.basename(remote_filename)
+    # If it is a url, download it to a temporary file and use that
+    if what.startswith('http'):
+#      local_filename = url_util.download_to_temp_file(what, basename = remote_basename)
+      local_filename = url_util.download_to_temp_file(what, basename = 'tmp_download_for_ingest')
+      self.log_d('_command_ingest: using remote url %s => %s' % (what, local_filename))
+    else:
+      self.log_d('_command_ingest: using local file %s' % (what))
+      local_filename = what
     if not path.isfile(local_filename):
       raise IOError('local_filename not found: %s' % (local_filename))
     is_valid_archive = archiver.is_valid(local_filename)
@@ -236,8 +246,8 @@ class sources_cli(object):
       if fixed_mode_local_filename:
         tmp_files_to_cleanup.append(fixed_mode_local_filename)
         local_filename = fixed_mode_local_filename
-      self.log_d('_command_ingest: calling archive_binary(%s, %s, %s)' % (local_filename, path.basename(remote_filename), arcname))
-      local_filename = ingest_util.archive_binary(local_filename, path.basename(remote_filename), arcname)
+      self.log_d('_command_ingest: calling archive_binary(%s, %s, %s)' % (local_filename, remote_basename, arcname))
+      local_filename = ingest_util.archive_binary(local_filename, remote_basename, arcname)
       self.log_d('_command_ingest: calling archive_binary() returns %s' % (local_filename))
       tmp_files_to_cleanup.append(local_filename)
 
