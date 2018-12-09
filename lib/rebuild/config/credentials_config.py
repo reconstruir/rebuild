@@ -7,6 +7,7 @@ from bes.common import check, dict_util, string_util
 from bes.config import simple_config
 
 from ._provider_purpose_map import _provider_purpose_map
+from bes.config.simple_config import origin
 
 class credentials_config(object):
 
@@ -16,7 +17,7 @@ class credentials_config(object):
   
   def __init__(self, config, source):
     check.check_string(config)
-    self._credentials = _provider_purpose_map('credential')
+    self._credentials = _provider_purpose_map('credential', origin(source, 1))
     c = simple_config.from_text(config, source = source)
     sections = c.find_sections('credential')
     for section in sections:

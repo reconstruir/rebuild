@@ -24,26 +24,19 @@ credential
 storage
   description: where i upload to pcloud
   provider: pcloud
-  purpose: upload
-  root_dir: /mydir/uploads
-
-storage
-  description: where i download from pcloud
-  provider: pcloud
-  purpose: download
-  root_dir: /mydir/downloads
+  root_dir: /mydir
 '''
     ac = storage_config(text, '<test>')
 
     a = ac.get('download', 'pcloud')
     self.assertEqual( 'download@bar.com', a.credentials.username )
     self.assertEqual( 'downloadpss', a.credentials.password )
-    self.assertEqual( '/mydir/downloads', a.root_dir )
+    self.assertEqual( '/mydir', a.root_dir )
 
     b = ac.get('upload', 'pcloud')
     self.assertEqual( 'upload@bar.com', b.credentials.username )
     self.assertEqual( 'uploadpass', b.credentials.password )
-    self.assertEqual( '/mydir/uploads', b.root_dir )
+    self.assertEqual( '/mydir', b.root_dir )
     
   def test_combined_upload_download(self):
     text='''
@@ -55,7 +48,6 @@ credential
 
 storage
   description: mine personal pcloud account
-  purpose: upload download
   provider: pcloud
   root_dir: /mydir
 '''
@@ -81,7 +73,6 @@ credential
 
 storage
   description: mine personal pcloud account
-  purpose: upload download
   provider: pcloud
   root_dir: /mydir
 '''
@@ -101,5 +92,88 @@ storage
     self.assertEqual( None, b.credentials.password )
     self.assertEqual( '/tmp/foo', b.root_dir )
       
+  def test_many_providers(self):
+    text = '''
+credential
+  provider: artifactory
+  purpose: download
+  username: downuser
+  password: downpass
+
+credential
+  provider: artifactory
+  purpose: upload
+  username: upuser
+  password: uppass
+
+credential
+  provider: pcloud
+  purpose: download upload
+  username: foo@bar.com
+  password: ppass
+
+storage
+  provider: artifactory
+  hostname: https://example.com:8081
+  root_dir: /artdir
+
+storage
+  provider: pcloud
+  root_dir: /pmydir
+
+storage
+  provider: git
+  address: git@example.com:myproj/myrepo.git
+  root_dir: /gmydir
+  no_credentials: true
+
+storage
+  provider: local
+  root_dir: /tmp/tmpdir
+  no_credentials: true
+'''
+
+    ac = storage_config(text, '<test>')
+
+    a = ac.get('download', 'artifactory')
+    self.assertEqual( 'downuser', a.credentials.username )
+    self.assertEqual( 'downpass', a.credentials.password )
+    self.assertEqual( '/artdir', a.root_dir )
+
+    a = ac.get('upload', 'artifactory')
+    self.assertEqual( 'upuser', a.credentials.username )
+    self.assertEqual( 'uppass', a.credentials.password )
+    self.assertEqual( '/artdir', a.root_dir )
+    
+    a = ac.get('download', 'pcloud')
+    self.assertEqual( 'foo@bar.com', a.credentials.username )
+    self.assertEqual( 'ppass', a.credentials.password )
+    self.assertEqual( '/pmydir', a.root_dir )
+
+    a = ac.get('upload', 'pcloud')
+    self.assertEqual( 'foo@bar.com', a.credentials.username )
+    self.assertEqual( 'ppass', a.credentials.password )
+    self.assertEqual( '/pmydir', a.root_dir )
+    
+    a = ac.get('download', 'git')
+    self.assertEqual( None, a.credentials.username )
+    self.assertEqual( None, a.credentials.password )
+    self.assertEqual( '/gmydir', a.root_dir )
+    self.assertEqual( { 'address': 'git@example.com:myproj/myrepo.git' }, a.values )
+    a = ac.get('upload', 'git')
+    self.assertEqual( None, a.credentials.username )
+    self.assertEqual( None, a.credentials.password )
+    self.assertEqual( '/gmydir', a.root_dir )
+    self.assertEqual( { 'address': 'git@example.com:myproj/myrepo.git' }, a.values )
+
+    a = ac.get('download', 'local')
+    self.assertEqual( None, a.credentials.username )
+    self.assertEqual( None, a.credentials.password )
+    self.assertEqual( '/tmp/tmpdir', a.root_dir )
+    a = ac.get('upload', 'local')
+    self.assertEqual( None, a.credentials.username )
+    self.assertEqual( None, a.credentials.password )
+    self.assertEqual( '/tmp/tmpdir', a.root_dir )
+    
 if __name__ == '__main__':
   unit_test.main()
