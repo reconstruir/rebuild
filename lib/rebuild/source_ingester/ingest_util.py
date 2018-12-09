@@ -37,3 +37,34 @@ class ingest_util(object):
       raise RuntimeError('not a valid archive: %s' % (url))
     os.chmod(tmp, 0o644)
     file_util.rename(tmp, filename)
+
+  @classmethod
+  def archive_binary(clazz, executable_filename, archive_filename, arcname):
+    'Archive the given the executable_filename into archive_filename and return a tmp file with the result.'
+    if not binary_detector.is_executable(executable_filename):
+      raise RuntimeError('not an executable: %s' % (executable_filename))
+    if not archive_extension.is_valid_filename(archive_filename):
+      raise RuntimeError('not a valid archive filename: %s' % (archive_filename))
+    if not file_util.is_basename(archive_filename):
+      raise RuntimeError('archive_filename should be a filename not a path: %s' % (archive_filename))
+    mode = file_util.mode(executable_filename)
+    if mode != 0o755:
+      raise RuntimeError('mode should be 0755 instead of %s: %s' % (oct(mode), executable_filename))
+    empty_dir = temp_file.make_temp_dir()
+    tmp_dir = temp_file.make_temp_dir()
+    tmp_archive_filename = path.join(tmp_dir, archive_filename)
+    arcname = arcname or path.join('bin', path.basename(executable_filename))
+    archiver.create(tmp_archive_filename, empty_dir, extra_items = [ archiver.item(executable_filename, arcname) ] )
+    file_util.remove(empty_dir)
+    return tmp_archive_filename
+
+  @classmethod
+  def fix_executable_mode(clazz, executable_filename):
+    # if the executable does not have the right mode, make a tmp copy and fix it
+    if file_util.mode(executable_filename) == 0o755:
+      return None
+    tmp_dir = temp_file.make_temp_dir()
+    tmp_executable_filename = path.join(tmp_dir, path.basename(executable_filename))
+    file_util.copy(executable_filename, tmp_executable_filename)
+    os.chmod(tmp_executable_filename, 0o755)
+    return tmp_executable_filename

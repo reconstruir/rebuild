@@ -1023,3 +1023,8 @@ version specification and locking for ~/.rebuild/config
 - s/--skip-tests/--no-tests/
 - hanged download needs to abort somehow not stall forever
 - cmake, gnu_bison try to run java
+
+2018-12-09
+- rebuild_sources.py should remote the remote file if checksum verification fails on ingest
+
+

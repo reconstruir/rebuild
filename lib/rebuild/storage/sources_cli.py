@@ -7,9 +7,14 @@ from bes.system import log
 from bes.archive import archiver
 from bes.common import check, node
 from bes.compat import StringIO
-from bes.fs import file_checksum_list, file_find, file_util
+from bes.fs import file_checksum_list, file_find, file_util, temp_file
 from bes.common import node
 from bes.text import text_table
+
+from bes.archive import archiver, archive_extension
+from rebuild.binary_format import binary_detector
+from rebuild.source_ingester import ingest_util
+
 
 #from .pcloud import pcloud
 #from .pcloud_metadata import pcloud_metadata
@@ -72,6 +77,28 @@ class sources_cli(object):
                                 default = False,
                                 help = 'Do not do any work.  Just print what would happen. [ False ]')
 
+    # ingest
+    ingest_parser = subparsers.add_parser('ingest', help = 'Ingest a source tarball to cloud.')
+    ingest_parser.add_argument('local_filename',
+                                action = 'store',
+                                default = None,
+                                type = str,
+                                help = 'The tarball to ingest to cloud. [ None ]')
+    ingest_parser.add_argument('remote_filename',
+                                action = 'store',
+                                default = None,
+                                type = str,
+                                help = 'Optional remote filename to use. [ None ]')
+    ingest_parser.add_argument('--dry-run',
+                                action = 'store_true',
+                                default = False,
+                                help = 'Do not do any work.  Just print what would happen. [ False ]')
+    ingest_parser.add_argument('--arcname',
+                               action = 'store',
+                               default = None,
+                               type = str,
+                               help = 'The file path for an executable inside an archive if needed. [ None ]')
+    
     # retire
     retire_parser = subparsers.add_parser('retire', help = 'Retire a tarball in the database.')
     retire_parser.add_argument('what',
@@ -125,6 +152,8 @@ class sources_cli(object):
 
     if args.command == 'publish':
       return self._command_publish(args.local_filename, args.filename, args.folder, args.dry_run)
+    elif args.command == 'ingest':
+      return self._command_ingest(args.local_filename, args.remote_filename, args.dry_run, args.arcname)
     elif args.command == 'sync':
       return self._command_sync(args.local_directory, args.remote_directory)
     elif args.command == 'db':
@@ -144,6 +173,9 @@ class sources_cli(object):
       return path.join(self._pcloud_root_dir, remote_folder, filename)
     else:
       return path.join(self._pcloud_root_dir, filename[0].lower(), filename)
+  
+  def _remote_filename(self, remote_filename):
+    return path.join(self._pcloud_root_dir, remote_filename)
   
   def _command_publish(self, local_filename, remote_filename, remote_folder, dry_run):
     if not path.isfile(local_filename):
@@ -182,6 +214,71 @@ class sources_cli(object):
     db[key] = storage_db_entry(key, local_mtime, local_checksum)
     db.save()
     print('success')
+    return 0
+
+  def _command_ingest(self, local_filename, remote_filename, dry_run, arcname):
+    check.check_string(local_filename)
+    check.check_string(remote_filename)
+    self.log_d('_command_ingest: local_filename=%s; remote_filename=%s; arcname=%s' % (local_filename, remote_filename, arcname))
+    if not path.isfile(local_filename):
+      raise IOError('local_filename not found: %s' % (local_filename))
+    is_valid_archive = archiver.is_valid(local_filename)
+    is_exe = binary_detector.is_executable(local_filename)
+    self.log_d('_command_ingest: is_valid_archive=%s; is_exe=%s' % (is_valid_archive, is_exe))
+    if not (is_valid_archive or is_exe):
+      raise RuntimeError('local_filename should be an archive or executable: %s' % (local_filename))
+    tmp_files_to_cleanup = []
+    # if local_filename is an executable, archive into a tarball first
+    if is_exe:
+      # if the executable does not have the right mode, make a tmp copy and fix it
+      fixed_mode_local_filename = ingest_util.fix_executable_mode(local_filename)
+      self.log_d('_command_ingest: fixed_mode_local_filename=%s' % (fixed_mode_local_filename))
+      if fixed_mode_local_filename:
+        tmp_files_to_cleanup.append(fixed_mode_local_filename)
+        local_filename = fixed_mode_local_filename
+      self.log_d('_command_ingest: calling archive_binary(%s, %s, %s)' % (local_filename, path.basename(remote_filename), arcname))
+      local_filename = ingest_util.archive_binary(local_filename, path.basename(remote_filename), arcname)
+      self.log_d('_command_ingest: calling archive_binary() returns %s' % (local_filename))
+      tmp_files_to_cleanup.append(local_filename)
+
+    remote_path = self._remote_filename(remote_filename)
+    remote_checksum = self._checksum_file(file_path = remote_path)
+    local_checksum = file_util.checksum('sha1', local_filename)
+    self.log_d('_command_ingest: remote_path=%s; remote_checksum=%s; local_checksum=%s' % (remote_path, remote_checksum, local_checksum))
+    if remote_checksum == local_checksum:
+      file_util.remove(tmp_files_to_cleanup)
+      print('Already exists: %s' % (remote_path))
+      return 0
+    if remote_checksum is not None and remote_checksum != local_checksum:
+      file_util.remove(tmp_files_to_cleanup)
+      raise RuntimeError('trying to re-ingest a file with a different checksum: %s => %s' % (local_filename, remote_path))
+    if dry_run:
+      print('Would upload %s => %s' % (local_filename, remote_path))
+      return 0
+    
+    local_mtime = file_util.mtime(local_filename)
+    print('Uploading %s => %s' % (local_filename, remote_path))
+    try:
+      upload_rv = self._pcloud.upload_file(local_filename, path.basename(remote_path),
+                                           folder_path = path.dirname(remote_path))
+      self.log_d('_command_ingest() upload_rv=%s - %s' % (upload_rv, type(upload_rv)))
+      file_id = upload_rv[0]['fileid']
+      verification_checksum = self._checksum_file_with_retry(file_id = file_id)
+      if verification_checksum != local_checksum:
+        print('Failed to verify checksum.  Something went wrong.  FIXME: should delete the remote file.')
+        return 1
+      db = storage_db_pcloud(self._pcloud)
+      key = file_util.remove_head(remote_path, self._pcloud_root_dir)
+      db.load()
+      if key in db:
+        print('File alaready in db something is wrong: %s.' % (key))
+        return 1
+      db[key] = storage_db_entry(key, local_mtime, local_checksum)
+      db.save()
+      print('success')
+    finally:
+      file_util.remove(tmp_files_to_cleanup)
+      
     return 0
 
   def _checksum_file(self, file_path = None, file_id = None):
