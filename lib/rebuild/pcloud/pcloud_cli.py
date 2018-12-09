@@ -58,6 +58,7 @@ class pcloud_cli(object):
                            action = 'store',
                            default = '/',
                            type = str,
+                           nargs = '?',
                            help = 'The folder to list. [ / ]')
 
     # rm
@@ -162,9 +163,9 @@ class pcloud_cli(object):
     # sync
     sync_parser = subparsers.add_parser('sync', help = 'Sync sources directory to pcloud.')
     sync_parser.add_argument('--dry-run',
-                               action = 'store_true',
-                               default = False,
-                               help = 'Do not do any work.  Just print what would happen. [ False ]')
+                             action = 'store_true',
+                             default = False,
+                             help = 'Do not do any work.  Just print what would happen. [ False ]')
     sync_parser.add_argument('local_folder',
                              action = 'store',
                              default = None,
@@ -175,6 +176,15 @@ class pcloud_cli(object):
                              default = None,
                              type = str,
                              help = 'The remote folder to sync to. [ None ]')
+
+    # files
+    files_parser = subparsers.add_parser('files', help = 'Files sources directory to pcloud.')
+    files_parser.add_argument('folder',
+                              action = 'store',
+                              default = '/',
+                              type = str,
+                              nargs = '?',
+                              help = 'The folder to list. [ / ]')
     
   def main(self):
     args = self._parser.parse_args()
@@ -204,6 +214,8 @@ class pcloud_cli(object):
         return self._command_upload(args.filename, args.folder, args.use_id)
       elif args.command == 'sync':
         return self._command_sync(args.local_folder, args.remote_folder, args.dry_run)
+      elif args.command == 'files':
+        return self._command_files(args.folder)
     except pcloud_error as ex:
       print(str(ex))
       raise SystemExit(1)
@@ -255,6 +267,15 @@ class pcloud_cli(object):
       self._print_items(items, long_form, human_readable)
     return 0
 
+  def _command_files(self, folder):
+    files = []
+    items = self._pcloud.list_folder(folder_path = folder, recursive = True)
+    for item in items:
+      files.extend(item.list_files())
+    files = [ path.join(folder, f) for f in files ]
+    for f in sorted(files):
+      print(f)
+  
   def _print_items_tree(self, folder, items, human_readable):
     if not items:
       return

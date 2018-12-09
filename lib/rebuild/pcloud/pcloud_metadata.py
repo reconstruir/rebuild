@@ -54,7 +54,7 @@ class pcloud_metadata(namedtuple('pcloud_metadata', 'name, path, pcloud_id, is_f
 
   @classmethod
   def parse_dict(clazz, d):
-    return clazz._parse_dict_with_folder(d, d['name'])
+    return clazz._parse_dict_with_folder(d, None)
 
   @classmethod
   def _parse_dict_with_folder(clazz, d, folder):
@@ -96,5 +96,17 @@ class pcloud_metadata(namedtuple('pcloud_metadata', 'name, path, pcloud_id, is_f
     return self.__class__(self.name, self.path, self.pcloud_id, self.is_folder, self.size, self.category,
                           self.content_type, self.content_hash, contents,
                           self.checksum)
-  
+  def list_files(self, recursive = False):
+    result = []
+    self._collect_files(self, result)
+    return sorted(result)
+
+  @classmethod
+  def _collect_files(clazz, md, result):
+    if md.is_folder:
+      for child in md.contents:
+        clazz._collect_files(child, result)
+    else:
+      result.append(md.path)
+    
 check.register_class(pcloud_metadata)
