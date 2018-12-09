@@ -224,7 +224,6 @@ class sources_cli(object):
     remote_basename = path.basename(remote_filename)
     # If it is a url, download it to a temporary file and use that
     if what.startswith('http'):
-#      local_filename = url_util.download_to_temp_file(what, basename = remote_basename)
       local_filename = url_util.download_to_temp_file(what, basename = 'tmp_download_for_ingest')
       self.log_d('_command_ingest: using remote url %s => %s' % (what, local_filename))
     else:
