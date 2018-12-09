@@ -6,6 +6,7 @@ from collections import namedtuple
 
 from bes.common import cached_property, check, node
 from bes.fs import file_path, file_util, temp_file
+from bes.text import string_list
 
 from .pcloud_error import pcloud_error
 from .pcloud_metadata import pcloud_metadata
@@ -70,6 +71,16 @@ class pcloud(object):
       result = self._get_checksums(result)
     return result
 
+  def quick_list_folder(self, folder_path, relative = True, recursive = False):
+    items = self.list_folder(folder_path = folder_path, recursive = recursive)
+    result = string_list()
+    for item in items:
+      result.extend(item.list_files())
+    if not relative:
+      result = string_list([ path.join(folder_path, f) for f in result ])
+    result.sort()
+    return result
+  
   def delete_file(self, file_path = None, file_id = None):
     if not file_path and not file_id:
       raise ValueError('Etiher file_path or file_id should be given.')

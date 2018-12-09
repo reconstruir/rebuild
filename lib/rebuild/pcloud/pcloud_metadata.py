@@ -3,6 +3,7 @@
 from os import path
 from collections import namedtuple
 from bes.common import check
+from bes.text import string_list
 
 class pcloud_metadata(namedtuple('pcloud_metadata', 'name, path, pcloud_id, is_folder, size, category, content_type, content_hash, contents, checksum')):
   '''
@@ -97,9 +98,10 @@ class pcloud_metadata(namedtuple('pcloud_metadata', 'name, path, pcloud_id, is_f
                           self.content_type, self.content_hash, contents,
                           self.checksum)
   def list_files(self, recursive = False):
-    result = []
+    result = string_list()
     self._collect_files(self, result)
-    return sorted(result)
+    result.sort()
+    return result
 
   @classmethod
   def _collect_files(clazz, md, result):

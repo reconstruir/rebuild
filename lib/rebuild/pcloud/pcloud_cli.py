@@ -267,13 +267,9 @@ class pcloud_cli(object):
       self._print_items(items, long_form, human_readable)
     return 0
 
-  def _command_files(self, folder):
-    files = []
-    items = self._pcloud.list_folder(folder_path = folder, recursive = True)
-    for item in items:
-      files.extend(item.list_files())
-    files = [ path.join(folder, f) for f in files ]
-    for f in sorted(files):
+  def _command_files(self, folder_path):
+    files = self._pcloud.quick_list_folder(folder_path, recursive = True, relative = False)
+    for f in files:
       print(f)
   
   def _print_items_tree(self, folder, items, human_readable):
