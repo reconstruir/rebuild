@@ -1022,3 +1022,4 @@ version specification and locking for ~/.rebuild/config
 - storage_chain if survives refactor should be a sublass of storage_base
 - s/--skip-tests/--no-tests/
 - hanged download needs to abort somehow not stall forever
+- cmake, gnu_bison try to run java
