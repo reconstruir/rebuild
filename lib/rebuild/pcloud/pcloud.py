@@ -352,7 +352,7 @@ class pcloud(object):
 
   @classmethod
   def items_to_tree(clazz, folder, items):
-    return clazz._make_item_node(pcloud_metadata(folder, 0, True, 0, None, 'dir', '0', items or [], 0))
+    return clazz._make_item_node(pcloud_metadata(folder, '/', 0, True, 0, None, 'dir', '0', items or [], 0))
 
   # File flags from https://docs.pcloud.com/methods/fileops/file_open.html
   O_WRITE = 0x0002

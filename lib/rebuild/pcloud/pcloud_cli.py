@@ -259,8 +259,12 @@ class pcloud_cli(object):
     if not items:
       return
     root = pcloud.items_to_tree(folder, items)
-    print(root.to_string(indent = 2))
 
+    def _data_func(metadata):
+      return metadata.name
+    s = root.to_string(indent = 2, data_func = _data_func)
+    print(s)
+    
   def _print_items(self, items, long_form, human_readable):
     if not items:
       return
@@ -274,7 +278,7 @@ class pcloud_cli(object):
       print(' '.join([ str(item) for item in data ]))
     for item in items:
       if item.contents:
-        print('\n%s:' % (item.name))
+        print('\n%s:' % (item.path))
         self._print_items(item.contents, long_form, human_readable)
   
   def _command_rm(self, filename, use_id):

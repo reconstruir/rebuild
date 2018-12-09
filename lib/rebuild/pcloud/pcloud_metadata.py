@@ -1,9 +1,10 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+from os import path
 from collections import namedtuple
 from bes.common import check
 
-class pcloud_metadata(namedtuple('pcloud_metadata', 'name, pcloud_id, is_folder, size, category, content_type, content_hash, contents, checksum')):
+class pcloud_metadata(namedtuple('pcloud_metadata', 'name, path, pcloud_id, is_folder, size, category, content_type, content_hash, contents, checksum')):
   '''
   Class representation for pcloud metadata
   https://docs.pcloud.com/structures/metadata.html
@@ -21,7 +22,7 @@ class pcloud_metadata(namedtuple('pcloud_metadata', 'name, pcloud_id, is_folder,
   CATEGORY_IDS = sorted(CATEGORIES.keys())
   CATEGORY_NAMES = sorted(CATEGORIES.values())
   
-  def __new__(clazz, name, pcloud_id, is_folder, size, category, content_type,
+  def __new__(clazz, name, d_path, pcloud_id, is_folder, size, category, content_type,
               content_hash, contents, checksum):
     if is_folder:
       if category is not None:
@@ -32,6 +33,7 @@ class pcloud_metadata(namedtuple('pcloud_metadata', 'name, pcloud_id, is_folder,
       category = clazz.parse_category(category)
     return clazz.__bases__[0].__new__(clazz,
                                       name,
+                                      d_path,
                                       pcloud_id,
                                       is_folder,
                                       size,
@@ -52,8 +54,16 @@ class pcloud_metadata(namedtuple('pcloud_metadata', 'name, pcloud_id, is_folder,
 
   @classmethod
   def parse_dict(clazz, d):
+    return clazz._parse_dict_with_folder(d, d['name'])
+
+  @classmethod
+  def _parse_dict_with_folder(clazz, d, folder):
     check.check_dict(d)
     name = d['name']
+    if folder:
+      d_path = path.join(folder, name)
+    else:
+      d_path = name
     is_folder = bool(d['isfolder'])
     if is_folder:
       size = None
@@ -61,7 +71,7 @@ class pcloud_metadata(namedtuple('pcloud_metadata', 'name, pcloud_id, is_folder,
       content_type = None
       content_hash = None
       if 'contents' in d:
-        contents = [ clazz.parse_dict(item) for item in d['contents'] ]
+        contents = [ clazz._parse_dict_with_folder(item, d_path) for item in d['contents'] ]
       else:
         contents = None
       assert 'folderid' in d
@@ -74,16 +84,16 @@ class pcloud_metadata(namedtuple('pcloud_metadata', 'name, pcloud_id, is_folder,
       contents = None
       assert 'fileid' in d
       pcloud_id = d['fileid']
-    return clazz(name, pcloud_id, is_folder, size, category, content_type,
-                 content_hash, contents, None)
+    return pcloud_metadata(name, d_path,  pcloud_id, is_folder, size, category, content_type,
+                           content_hash, contents, None)
   
   def mutate_checksum(self, checksum):
-    return self.__class__(self.name, self.pcloud_id, self.is_folder, self.size, self.category,
+    return self.__class__(self.name, self.path, self.pcloud_id, self.is_folder, self.size, self.category,
                           self.content_type, self.content_hash, self.contents,
                           checksum)
   
   def mutate_contents(self, contents):
-    return self.__class__(self.name, self.pcloud_id, self.is_folder, self.size, self.category,
+    return self.__class__(self.name, self.path, self.pcloud_id, self.is_folder, self.size, self.category,
                           self.content_type, self.content_hash, contents,
                           self.checksum)
   
