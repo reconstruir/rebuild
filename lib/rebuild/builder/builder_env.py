@@ -90,7 +90,7 @@ class builder_env(object):
   @classmethod
   def _make_storage_config(clazz, filename, root_dir):
     if not filename:
-      return storage_config.make_local_config('rebuild', None, root_dir)
+      return storage_config.make_local_config(None, root_dir)
     if not path.exists(filename):
       raise RuntimeError('artifacts config file not found: %s' % (filename))
     return storage_config.from_file(filename)

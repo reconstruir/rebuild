@@ -8,80 +8,79 @@ from bes.config.simple_config import error, simple_config
 from bes.fs import file_util
 
 from .credentials_config import credentials_config
+from ._provider_purpose_map import _provider_purpose_map
 
 class storage_config(object):
 
   error = simple_config.error
   
-  _credentials = namedtuple('_credentials', 'upload, download')
-  _storage = namedtuple('_storage', 'name, description, purpose, provider, credentials, origin')
+  _storage = namedtuple('_storage', 'description, purpose, provider, credentials, root_dir, values, origin')
   
-  def __init__(self, config, source):
+  def __init__(self, config, source, need_credentials = True):
     check.check_string(config)
-    credentials = credentials_config(config, source)
 
-    self._config = {}
+    if need_credentials:
+      credentials = credentials_config(config, source)
+    else:
+      credentials = None
+
+    self._config = _provider_purpose_map('storage')
+
     c = simple_config.from_text(config, source = source)
     sections = c.find_sections('storage')
     for section in sections:
       values = section.to_dict(resolve_env_vars = True)
-      name = section.find_by_key('name')
       description = section.find_by_key('description', raise_error = False)
       provider = section.find_by_key('provider')
-      purposes = string_util.split_by_white_space(section.find_by_key('purpose'), strip = True)
-      del values['name']
-      del values['purpose']
-      del values['provider']
-      if description is not None:
-        del values['description']
+      purpose = section.find_by_key('purpose', resolve_env_vars = True)
+      purposes = credentials_config.parse_purposes(purpose)
+      root_dir = section.find_by_key('root_dir', resolve_env_vars = True)
+      dict_util.del_keys(values, [ 'description', 'provider', 'purpose', 'root_dir' ])
       for purpose in purposes:
-        if not purpose in self._config:
-          self._config[purpose] = {}
-        if name in self._config[purpose]:
-          raise self.error('Storage with purpose \"%s\" and name \"%s\" already exists.' % (purpose, name), section.origin)
-        upload_values = dict_util.combine(values, credentials.find('upload', provider).values)
-        download_values = dict_util.combine(values, credentials.find('download', provider).values)
-        storage = self._storage(name,
-                                description,
+        if need_credentials:
+          cred = credentials.get(purpose, provider)
+        else:
+          cred = credentials_config._credential(None, provider, purpose, None, None, None)
+        storage = self._storage(description,
                                 purpose,
                                 provider,
-                                self._credentials(upload_values, download_values),
+                                cred,
+                                root_dir,
+                                values,
                                 section.origin)
-        self._config[purpose][name] = storage
+        self._config.put(purpose, provider, storage, section.origin)
 
-  def find(self, purpose, name):
-    if not purpose in self._config or not name in self._config[purpose]:
-      raise self.error('No storage with purpose \"%s\" and name \"%s\" found.' % (purpose, name), None)
-    return self._config[purpose][name]
+  def get(self, purpose, provider):
+    return self._config.get(purpose, provider)
         
   @classmethod
-  def from_file(clazz, filename):
-    return clazz(file_util.read(filename), source = filename)
+  def from_file(clazz, filename, need_credentials = False):
+    return clazz(file_util.read(filename), source = filename, need_credentials = need_credentials)
 
   @classmethod
-  def from_text(clazz, text, source = None):
-    return clazz(text, source = source)
+  def from_text(clazz, text, source = None, need_credentials = False):
+    return clazz(text, source = source, need_credentials = need_credentials)
 
   @classmethod
-  def make_local_config(clazz, name, description, root_dir):
+  def make_local_config(clazz, description, root_dir):
     description = description or 'auto generated default local build storage config.'
-    check.check_string(name)
     check.check_string(description)
     check.check_string(root_dir)
     template = '''
 credential
   provider: local
   purpose: download upload
+#  username: 
+#  password: 
 
 storage
-  name: {name}
   description: {description}
-  purpose: artifacts sources
+  purpose: upload download
   provider: local
   root_dir: {root_dir}
 '''
-    content = template.format(name = name, description = description, root_dir = root_dir)
-    return clazz.from_text(content, source = '<default>')
+    content = template.format(description = description, root_dir = root_dir)
+    return clazz.from_text(content, source = '<default>', need_credentials = False)
   
 check.register_class(storage_config, include_seq = False)
   

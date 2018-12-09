@@ -11,46 +11,40 @@ class test_credentials_config(unit_test):
 credential
   provider: pcloud
   purpose: download
-  email: foo1@bar.com
+  username: foo1@bar.com
   password: sekret1
 
 credential
   provider: pcloud
   purpose: upload
-  email: foo2@bar.com
+  username: foo2@bar.com
   password: sekret2
 '''
     cm = CM(text, '<test>')
-    c = cm.find('download', 'pcloud')
-    self.assertEqual( {
-      'email': 'foo1@bar.com',
-      'password': 'sekret1',
-    }, c.values )
-    c = cm.find('upload', 'pcloud')
-    self.assertEqual( {
-      'email': 'foo2@bar.com',
-      'password': 'sekret2',
-    }, c.values )
+    c = cm.get('download', 'pcloud')
+    self.assertEqual( 'foo1@bar.com', c.username )
+    self.assertEqual( 'sekret1', c.password )
+
+    c = cm.get('upload', 'pcloud')
+    self.assertEqual( 'foo2@bar.com', c.username )
+    self.assertEqual( 'sekret2', c.password )
     
   def test_combined(self):
     text = '''\
 credential
   provider: pcloud
   purpose: upload download
-  email: foo@bar.com
+  username: foo@bar.com
   password: sekret
 '''
     cm = CM(text, '<test>')
-    c = cm.find('download', 'pcloud')
-    self.assertEqual( {
-      'email': 'foo@bar.com',
-      'password': 'sekret',
-    }, c.values )
-    c = cm.find('upload', 'pcloud')
-    self.assertEqual( {
-      'email': 'foo@bar.com',
-      'password': 'sekret',
-    }, c.values )
+    c = cm.get('download', 'pcloud')
+    self.assertEqual( 'foo@bar.com', c.username )
+    self.assertEqual( 'sekret', c.password )
+
+    c = cm.get('upload', 'pcloud')
+    self.assertEqual( 'foo@bar.com', c.username )
+    self.assertEqual( 'sekret', c.password )
     
 if __name__ == '__main__':
   unit_test.main()

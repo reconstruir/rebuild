@@ -12,75 +12,76 @@ class test_storage_config(unit_test):
 credential
   provider: pcloud
   purpose: download
-  email: download@bar.com
-  password: sekret1
+  username: download@bar.com
+  password: downloadpss
 
 credential
   provider: pcloud
   purpose: upload
-  email: upload@bar.com
-  password: sekret2
+  username: upload@bar.com
+  password: uploadpass
 
 storage
-  name: mine_pcloud
-  description: mine personal pcloud account
-  purpose: artifacts sources
+  description: where i upload to pcloud
   provider: pcloud
-  root_dir: /mydir
+  purpose: upload
+  root_dir: /mydir/uploads
+
+storage
+  description: where i download from pcloud
+  provider: pcloud
+  purpose: download
+  root_dir: /mydir/downloads
 '''
     ac = storage_config(text, '<test>')
-    a = ac.find('artifacts', 'mine_pcloud')
-    self.assertEqual( {
-      'email': 'download@bar.com',
-      'password': 'sekret1',
-      'root_dir': '/mydir',
-    }, a.credentials.download )
-    self.assertEqual( {
-      'email': 'upload@bar.com',
-      'password': 'sekret2',
-      'root_dir': '/mydir',
-    }, a.credentials.upload )
+
+    a = ac.get('download', 'pcloud')
+    self.assertEqual( 'download@bar.com', a.credentials.username )
+    self.assertEqual( 'downloadpss', a.credentials.password )
+    self.assertEqual( '/mydir/downloads', a.root_dir )
+
+    b = ac.get('upload', 'pcloud')
+    self.assertEqual( 'upload@bar.com', b.credentials.username )
+    self.assertEqual( 'uploadpass', b.credentials.password )
+    self.assertEqual( '/mydir/uploads', b.root_dir )
     
   def test_combined_upload_download(self):
     text='''
 credential
   provider: pcloud
   purpose: download upload
-  email: foo@bar.com
+  username: foo@bar.com
   password: sekret
 
 storage
-  name: mine_pcloud
   description: mine personal pcloud account
-  purpose: artifacts sources
+  purpose: upload download
   provider: pcloud
   root_dir: /mydir
 '''
     ac = storage_config(text, '<test>')
-    a = ac.find('artifacts', 'mine_pcloud')
-    self.assertEqual( {
-      'email': 'foo@bar.com',
-      'password': 'sekret',
-      'root_dir': '/mydir',
-    }, a.credentials.download )
-    self.assertEqual( {
-      'email': 'foo@bar.com',
-      'password': 'sekret',
-      'root_dir': '/mydir',
-    }, a.credentials.upload )
+
+    a = ac.get('download', 'pcloud')
+    self.assertEqual( 'foo@bar.com', a.credentials.username )
+    self.assertEqual( 'sekret', a.credentials.password )
+    self.assertEqual( '/mydir', a.root_dir )
+
+    b = ac.get('upload', 'pcloud')
+    self.assertEqual( 'foo@bar.com', b.credentials.username )
+    self.assertEqual( 'sekret', b.credentials.password )
+    self.assertEqual( '/mydir', b.root_dir )
 
   def test_missing_upload(self):
     text='''
 credential
   provider: pcloud
   purpose: download
-  email: download@bar.com
+  username: download@bar.com
   password: sekret1
 
 storage
-  name: mine_pcloud
   description: mine personal pcloud account
-  purpose: artifacts sources
+  purpose: upload download
   provider: pcloud
   root_dir: /mydir
 '''
@@ -88,14 +89,17 @@ storage
       storage_config(text, '<test>')
 
   def test_make_local_config(self):
-    ac = storage_config.make_local_config('foo', 'foo is nice', '/tmp/foo')
-    a = ac.find('artifacts', 'foo')
-    self.assertEqual( {
-      'root_dir': '/tmp/foo',
-    }, a.credentials.download )
-    self.assertEqual( {
-      'root_dir': '/tmp/foo',
-    }, a.credentials.upload )
+    ac = storage_config.make_local_config('on the fly config', '/tmp/foo')
+
+    a = ac.get('download', 'local')
+    self.assertEqual( None, a.credentials.username )
+    self.assertEqual( None, a.credentials.password )
+    self.assertEqual( '/tmp/foo', a.root_dir )
+
+    b = ac.get('upload', 'local')
+    self.assertEqual( None, b.credentials.username )
+    self.assertEqual( None, b.credentials.password )
+    self.assertEqual( '/tmp/foo', b.root_dir )
       
 if __name__ == '__main__':
   unit_test.main()
