@@ -106,7 +106,7 @@ class pcloud_metadata(namedtuple('pcloud_metadata', 'name, path, pcloud_id, is_f
   @classmethod
   def _collect_files(clazz, md, result):
     if md.is_folder:
-      for child in md.contents:
+      for child in md.contents or []:
         clazz._collect_files(child, result)
     else:
       result.append(md.path)

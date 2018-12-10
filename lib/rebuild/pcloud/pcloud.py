@@ -4,6 +4,7 @@ import hashlib, os.path as path
 from io import BytesIO
 from collections import namedtuple
 
+from bes.system import log
 from bes.common import cached_property, check, node
 from bes.fs import file_path, file_util, temp_file
 from bes.text import string_list
@@ -16,10 +17,12 @@ class pcloud(object):
 
   API = 'https://api.pcloud.com'
   
-  def __init__(self, credentials):
+  def __init__(self, credentials, root_dir):
+    log.add_logging(self, 'pcloud')
     check.check_pcloud_credentials(credentials)
+    check.check_string(root_dir)
     self.credentials = credentials
-    self.root_dir = credentials.root_dir
+    self.root_dir = root_dir
 
   @cached_property
   def digest(clazz):
@@ -40,6 +43,7 @@ class pcloud(object):
     return auth_token
   
   def list_folder(self, folder_path = None, folder_id = None, recursive = False, checksums = False):
+    self.log_d('list_folder: folder_path=%s; folder_id=%s; recursive=%s; checksums=%s' % (folder_path, folder_id, recursive, checksums))
     if not folder_path and not folder_id:
       raise ValueError('Etiher folder_path or folder_id should be given.')
     elif folder_path and folder_id:
@@ -55,7 +59,9 @@ class pcloud(object):
     if folder_id:
       what = folder_id
       params.update({ 'folderid': folder_id })
+    self.log_d('list_folder: params=%s' % (params))
     response = pcloud_requests.get('listfolder', params)
+    self.log_d('list_folder: response=%s' % (str(response)))
     if response.status_code != 200:
       raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
     payload = response.payload

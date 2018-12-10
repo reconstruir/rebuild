@@ -3,99 +3,96 @@
 import os.path as path
 from bes.fs import file_util
 from bes.common import check
+from bes.text import string_list
 
 from .storage_base import storage_base
-from .storage_db_dict import storage_db_dict
 
 from rebuild.base import build_blurb
-from rebuild.pcloud import pcloud, pcloud_error
+from rebuild.pcloud import pcloud, pcloud_error, pcloud_credentials
 
 class storage_pcloud(storage_base):
 
-  def __init__(self, local_root_dir, credentials, no_network = False):
-    check.check_pcloud_credentials(credentials)
-    credentials.validate_or_raise(lambda: RuntimeError('Invalid pcloud credentials.'))
+  _CACHED_AVAILABLE_FILENAME = 'available.json'
+  
+  def __init__(self, config):
+    check.check_storage_factory_config(config)
     build_blurb.add_blurb(self, 'rebuild')
-    check.check_pcloud_credentials(credentials)
-    if not credentials.is_valid():
-      raise RuntimeError('Invalid pcloud credentials.')
-    self.remote_root_dir = credentials.root_dir
-    self.local_root_dir = local_root_dir
-    self.pcloud = pcloud(credentials)
-    del credentials
-    self._local_db_file_path = path.join(self.local_root_dir, storage_db_dict.DB_FILENAME)
-    self._remote_db_file_path = path.join(self.remote_root_dir, storage_db_dict.DB_FILENAME)
-    if no_network:
-      self.db = self._load_db_local()
+    self._remote_root_dir = config.download_credentials.root_dir
+    self._local_root_dir = config.local_cache_dir
+    file_util.mkdir(self._local_root_dir)
+    pcloud_cred = pcloud_credentials(config.download_credentials.credentials.username,
+                                     config.download_credentials.credentials.password)
+    self.pcloud = pcloud(pcloud_cred, self._remote_root_dir)
+    self._cached_available_filename = path.join(self._local_root_dir, self._CACHED_AVAILABLE_FILENAME)
+    if config.no_network:
+      self._available_files = self._load_available_local()
     else:
-      self.db = self._load_db_remote()
+      self._available_files = self._load_available_remote()
     self._update_filename_map()
-    file_util.mkdir(self.local_root_dir)
     
   def __str__(self):
-    return 'pcloud:%s' % (self.remote_root_dir)
+    return 'pcloud:%s' % (self._remote_root_dir)
 
-  def _load_db_remote(self):
+  def _load_available_remote(self):
     try:
-      self.blurb('pcloud: using remote db: %s' % (self._remote_db_file_path))
-      content = self.pcloud.download_to_bytes(file_path = self._remote_db_file_path)
-      sf = storage_db_dict.from_json(content)
-      file_util.save(path.join(self.local_root_dir, storage_db_dict.DB_FILENAME), content = content)
-      return sf
+      files = self.pcloud.quick_list_folder(self._remote_root_dir, recursive = True, relative = True)
+      file_util.save(self._cached_available_filename, content = files.to_json())
+      return files
     except pcloud_error as ex:
-      return storage_db_dict()
+      self.blurb('pcloud: failed to fetch available files from: %s' % (self._remote_root_dir))
+      return string_list()
 
-  def _load_db_local(self):
-    if not path.isfile(self._local_db_file_path):
-      self.blurb('pcloud: not local db found at: %s' % (self._local_db_file_path))
-      return storage_db_dict()
+  def _load_available_local(self):
+    if not path.isfile(self._cached_available_filename):
+      self.blurb('pcloud: no cached available files dbindex found at: %s' % (self._cached_available_filename))
+      return string_list()
     try:
-      self.blurb('pcloud: using local db: %s' % (path.relpath(self._local_db_file_path)))
-      content = file_util.read(self._local_db_file_path)
-      return storage_db_dict.from_json(content)
+      self.blurb('pcloud: using cached available files db: %s' % (path.relpath(self._cached_available_filename)))
+      return string_list.from_json(self._cached_available_filename)
     except Exception as ex:
-      self.blurb('pcloud: local db is corrupt: %s' % (self._local_db_file_path))
-      return storage_db_dict()
+      self.blurb('pcloud: ignoring corrupt cached available files db: %s' % (self._cached_available_filename))
+      return string_list()
 
   def _update_filename_map(self):
     self._filename_map = {}
-    for file_path, entry in self.db.dict_items():
+    for file_path in self._available_files:
       filename = path.basename(file_path)
       assert not filename in self._filename_map
-      self._filename_map[filename] = entry
+      self._filename_map[filename] = file_path
     
   def _download_file(self, filename):
     downloaded_filename = self._downloaded_filename(filename)
     file_util.ensure_file_dir(downloaded_filename)
-    remote_path = path.join(self.remote_root_dir, filename)
+    remote_path = path.join(self._remote_root_dir, filename)
     self.pcloud.download_to_file(downloaded_filename, file_path = remote_path)
 
   def _downloaded_filename(self, filename):
-    return path.join(self.local_root_dir, filename)
+    return path.join(self._local_root_dir, filename)
 
   #@abstractmethod
   def find_tarball(self, filename):
-    entry = self._filename_map.get(filename, None)
-    if not entry:
+    file_path = self._filename_map.get(filename, None)
+    if not file_path:
       return None
-    return self._downloaded_filename(entry.filename)
+    return self._downloaded_filename(file_path)
 
   #@abstractmethod
   def ensure_source(self, filename):
-    if filename.startswith(self.local_root_dir):
-      filename = file_util.remove_head(filename, self.local_root_dir)
+    if filename.startswith(self._local_root_dir):
+      filename = file_util.remove_head(filename, self._local_root_dir)
     downloaded_filename = self._downloaded_filename(filename)
     if path.exists(downloaded_filename):
       return True
-    self.blurb('downloading tarball from pcloud:%s to %s' % (path.join(self.remote_root_dir, filename),
+    self.blurb('downloading tarball from pcloud:%s to %s' % (path.join(self._remote_root_dir, filename),
                                                              path.relpath(downloaded_filename)))
     self._download_file(filename)
     return path.exists(downloaded_filename)
 
   #@abstractmethod
   def search(self, name):
+    name = name.lower()
     result = []
-    for file_path, entry in self.db.dict_items():
-      if name.lower() in entry.filename.lower():
-        result.append(path.basename(entry.filename))
+    for file_path in self._filename_map.values():
+      if name in file_path:
+        result.append(file_path)
     return result

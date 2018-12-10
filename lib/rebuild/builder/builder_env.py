@@ -10,9 +10,8 @@ from rebuild.tools_manager import tools_manager
 from rebuild.checksum import checksum_manager
 from rebuild.package import artifact_manager_chain, artifact_manager_local
 from rebuild.base import build_blurb, package_descriptor, requirement_manager
-from rebuild.storage import storage_git_repo, storage_local, storage_pcloud, storage_chain, storage_factory
+from rebuild.storage import storage_factory
 from rebuild.recipe import recipe_load_env
-from rebuild.pcloud import pcloud_credentials
 from rebuild.config import storage_config
 
 from .builder_script_manager import builder_script_manager
@@ -22,17 +21,11 @@ class builder_env(object):
   def __init__(self, config, filenames):
     build_blurb.add_blurb(self, 'rebuild')
     self.config = config
-
     local_storage_dir = path.join(config.storage_cache_dir, 'local')
-    self.storage_config = self._make_storage_config(config.storage_config, local_storage_dir)
-
+    self.storage_config = self._make_storage_config(config.storage_config, local_storage_dir, config.source_dir)
     self.storage = self._make_storage(self.storage_config,
                                       config.storage_provider,
-                                      config.build_root,
                                       config.storage_cache_dir,
-                                      config.source_dir,
-                                      config.source_git,
-                                      config.source_pcloud,
                                       config.no_network)
     self.blurb('storage: %s' % (self.storage))
     self.checksum_manager = self._make_checksum_manager(config.build_root)
@@ -48,37 +41,16 @@ class builder_env(object):
     for script in self.script_manager.scripts.values():
       self.requirement_manager.add_package(script.descriptor)
 
-      
   def resolve_deps(self, descriptor, hardness, include_names):
     return self.requirement_manager.resolve_deps([descriptor.name], self.config.build_target.system, hardness, include_names)
   
   @classmethod
-  def _make_storage(clazz, config, provider, build_dir, storage_cache_dir, source_dir, source_git, source_pcloud, no_network):
+  def _make_storage(clazz, config, provider, storage_cache_dir, no_network):
     download_credentials = config.get('download', provider)
     upload_credentials = config.get('upload', provider)
     local_storage_dir = path.join(storage_cache_dir, provider)
     factory_config = storage_factory.config(local_storage_dir, no_network, download_credentials, upload_credentials)
-
-    chain = storage_chain()
-    if source_dir:
-      finder = storage_local(source_dir)
-      chain.add_finder(finder)
-    if source_git:
-      root = path.join(build_dir, 'third_party_tarballs', git_util.sanitize_address(source_git))
-      finder = storage_git_repo(root, source_git, no_network = no_network, update_only_once = True)
-      chain.add_finder(finder)
-    if source_pcloud:
-      credentials = pcloud_credentials.from_file(source_pcloud)
-      if not credentials.is_valid():
-        raise RuntimeError('Invalid pcloud credentials: %s' % (source_pcloud))
-      root = path.join(build_dir, 'downloads', 'pcloud')
-
-
-      finder = storage_pcloud(root, credentials, no_network = no_network)
-      chain.add_finder(finder)
-    if len(chain) == 0:
-        raise RuntimeError('No valid source finders given.')
-    return chain
+    return storage_factory.create(provider, factory_config)
 
   @classmethod
   def _make_checksum_manager(clazz, build_dir):
@@ -100,7 +72,9 @@ class builder_env(object):
     self.external_artifact_manager = None
 
   @classmethod
-  def _make_storage_config(clazz, filename, root_dir):
+  def _make_storage_config(clazz, filename, root_dir, source_dir):
+    if source_dir:
+      return storage_config.make_local_config(None, source_dir)
     if not filename:
       return storage_config.make_local_config(None, root_dir)
     if not path.exists(filename):

@@ -27,7 +27,6 @@ class builder_config(object):
     self.skip_tests = False
     self.skip_to_step = None
     self.source_dir = None
-    self.source_git = None
     self.source_pcloud = None
     self.third_party_prefix = self.DEFAULT_THIRD_PARTY_PREFIX
     self.timestamp = time_util.timestamp()

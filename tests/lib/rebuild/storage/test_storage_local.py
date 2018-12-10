@@ -47,13 +47,22 @@ class source_dir_maker(object):
     return temp_archive.make_temp_archive([ temp_archive.item('foo.txt', content = 'foo.txt\n') ], ext).filename
 
 class test_storage_local(unit_test):
-    
+
+  
+  class _fake_config(object):
+    def __init__(self, root_dir):
+      class _fake_cred(object):
+        def __init__(self, root_dir):
+          self.root_dir = root_dir
+      self.download_credentials = _fake_cred(root_dir)
+  
   def test_local_find_tarball(self):
     tmp_dir = source_dir_maker.make([
       'file a/alpha-1.2.3.tar.gz "${tarball}" 644',
       'file a/alpha-1.2.4.tar.gz "${tarball}" 644',
     ])
-    finder = storage_local(tmp_dir)
+    
+    finder = storage_local(self._fake_config(tmp_dir))
     self.assertEqual( path.join(tmp_dir, 'a/alpha-1.2.3.tar.gz'),
                       finder.find_tarball('alpha-1.2.3.tar.gz') )
     

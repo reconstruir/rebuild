@@ -1026,5 +1026,5 @@ version specification and locking for ~/.rebuild/config
 
 2018-12-09
 - rebuild_sources.py should remote the remote file if checksum verification fails on ingest
-
-
+- ressurect storage_git_repo sometime
+- get rid of --source-dir and all the places it touches

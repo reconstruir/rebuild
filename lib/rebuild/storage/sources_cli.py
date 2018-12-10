@@ -151,9 +151,7 @@ class sources_cli(object):
     self._pcloud_root_dir = credentials.root_dir
     del credentials
 
-    if args.command == 'publish':
-      return self._command_publish(args.local_filename, args.filename, args.folder, args.dry_run)
-    elif args.command == 'ingest':
+    if args.command == 'ingest':
       return self._command_ingest(args.what, args.remote_filename, args.dry_run, args.arcname)
     elif args.command == 'sync':
       return self._command_sync(args.local_directory, args.remote_directory)
@@ -178,45 +176,6 @@ class sources_cli(object):
   def _remote_filename(self, remote_filename):
     return path.join(self._pcloud_root_dir, remote_filename)
   
-  def _command_publish(self, local_filename, remote_filename, remote_folder, dry_run):
-    if not path.isfile(local_filename):
-      raise IOError('File not found: %s' % (local_filename))
-    if path.isabs(remote_folder):
-      print('remote path should not be absolute.')
-      return 1
-    remote_filename = remote_filename or local_filename
-    remote_path = self._remote_path(remote_filename, remote_folder)
-    self.log_d('_command_publish() remote_filename=%s; remote_path=%s' % (remote_filename, remote_path))
-    remote_checksum = self._checksum_file(file_path = remote_path)
-    local_checksum = file_util.checksum('sha1', local_filename)
-    if remote_checksum == local_checksum:
-      print('Already exists: %s' % (remote_path))
-      return 0
-    if dry_run:
-      print('Would upload %s => %s' % (local_filename, remote_path))
-      return 0
-    
-    local_mtime = file_util.mtime(local_filename)
-    print('Uploading %s => %s' % (local_filename, remote_path))
-    upload_rv = self._pcloud.upload_file(local_filename, path.basename(remote_path),
-                                         folder_path = path.dirname(remote_path))
-    self.log_d('_command_publish() upload_rv=%s - %s' % (upload_rv, type(upload_rv)))
-    file_id = upload_rv[0]['fileid']
-    verification_checksum = self._checksum_file_with_retry(file_id = file_id)
-    if verification_checksum != local_checksum:
-      print('Failed to verify checksum.  Something went wrong.')
-      return 1
-    db = storage_db_pcloud(self._pcloud)
-    key = file_util.remove_head(remote_path, self._pcloud_root_dir)
-    db.load()
-    if key in db:
-      print('File alaready in db something is wrong: %s.' % (key))
-      return 1
-    db[key] = storage_db_entry(key, local_mtime, local_checksum)
-    db.save()
-    print('success')
-    return 0
-
   def _command_ingest(self, what, remote_filename, dry_run, arcname):
     check.check_string(what)
     check.check_string(remote_filename)
@@ -276,15 +235,6 @@ class sources_cli(object):
       if verification_checksum != local_checksum:
         print('Failed to verify checksum.  Something went wrong.  FIXME: should delete the remote file.')
         return 1
-      db = storage_db_pcloud(self._pcloud)
-      key = file_util.remove_head(remote_path, self._pcloud_root_dir)
-      db.load()
-      if key in db:
-        print('File alaready in db something is wrong: %s.' % (key))
-        return 1
-      db[key] = storage_db_entry(key, local_mtime, local_checksum)
-      db.save()
-      print('success')
     finally:
       file_util.remove(tmp_files_to_cleanup)
       
