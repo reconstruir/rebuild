@@ -6,7 +6,8 @@ from bes.common import string_util
 from bes.fs.testing import temp_content
 from bes.fs import temp_file
 from bes.archive.temp_archive import archive_extension, temp_archive
-from rebuild.storage import storage_local
+from rebuild.storage import storage_local, storage_factory
+from rebuild.config import storage_config
 import os.path as path
 
 class source_dir_maker(object):
@@ -47,24 +48,22 @@ class source_dir_maker(object):
     return temp_archive.make_temp_archive([ temp_archive.item('foo.txt', content = 'foo.txt\n') ], ext).filename
 
 class test_storage_local(unit_test):
-
-  
-  class _fake_config(object):
-    def __init__(self, root_dir):
-      class _fake_cred(object):
-        def __init__(self, root_dir):
-          self.root_dir = root_dir
-      self.download_credentials = _fake_cred(root_dir)
   
   def test_local_find_tarball(self):
     tmp_dir = source_dir_maker.make([
-      'file a/alpha-1.2.3.tar.gz "${tarball}" 644',
-      'file a/alpha-1.2.4.tar.gz "${tarball}" 644',
+      'file sources/a/alpha-1.2.3.tar.gz "${tarball}" 644',
+      'file sources/a/alpha-1.2.4.tar.gz "${tarball}" 644',
     ])
+
+    tmp_cache_dir = temp_file.make_temp_dir()
     
-    finder = storage_local(self._fake_config(tmp_dir))
-    self.assertEqual( path.join(tmp_dir, 'a/alpha-1.2.3.tar.gz'),
-                      finder.find_tarball('alpha-1.2.3.tar.gz') )
+    config = storage_config.make_local_config('unit test', tmp_dir)
+    download_credentials = config.get('download', 'local')
+    upload_credentials = config.get('upload', 'local')
+    factory_config = storage_factory.config(tmp_cache_dir, 'sources', False, download_credentials, upload_credentials)
+    storage = storage_local(factory_config)
+    self.assertEqual( path.join(tmp_dir, 'sources/a/alpha-1.2.3.tar.gz'),
+                      storage.find_tarball('alpha-1.2.3.tar.gz') )
     
 if __name__ == '__main__':
   unit_test.main()
