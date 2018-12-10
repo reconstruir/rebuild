@@ -23,4 +23,7 @@ class storage_hard_coded(storage_base):
   def search(self, name):
     assert False
 
-  
+  #@abstractmethod
+  def upload(self, local_filename, remote_filename):
+    assert False
+    

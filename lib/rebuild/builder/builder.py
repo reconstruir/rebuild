@@ -224,7 +224,7 @@ class builder(object):
     req_manager = self._env.requirement_manager
 
     test_hardness = []
-    if not self._env.config.skip_tests:
+    if not self._env.config.no_tests:
       test_hardness += [ 'TEST' ]
     
     to_build = self._resolve_and_order(package_names,

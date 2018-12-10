@@ -30,6 +30,10 @@ class storage_kiwi(storage_base):
   #@abstractmethod
   def search(self, name):
     pass
+
+  #@abstractmethod
+  def upload(self, local_filename, remote_filename):
+    pass
   
 class storage_watermelon(storage_base):
 
@@ -50,6 +54,10 @@ class storage_watermelon(storage_base):
   
   #@abstractmethod
   def search(self, name):
+    pass
+
+  #@abstractmethod
+  def upload(self, local_filename, remote_filename):
     pass
   
 class test_storage_factory(unit_test):
@@ -96,6 +104,6 @@ storage
     local_storage_dir = temp_file.make_temp_dir()
     factory_config = storage_factory.config(local_storage_dir, 'myrepo', False, download_credentials, upload_credentials)
     kiwi_storage = storage_factory.create(provider, factory_config)
-  
+
 if __name__ == '__main__':
   unit_test.main()

@@ -24,7 +24,7 @@ class builder_config(object):
     self.no_network = False
     self.recipes_only = False
     self.scratch = False
-    self.skip_tests = False
+    self.no_tests = False
     self.skip_to_step = None
     self.source_dir = None
     self.source_pcloud = None

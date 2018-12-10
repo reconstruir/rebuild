@@ -29,7 +29,7 @@ class step_make(step):
   #@abstractmethod
   def execute(self, script, env, values, inputs):
     make_env = values.get('make_env')
-    make_flags = values.get('make_flags')
+    make_flags = values.get('make_flags') or []
     make_num_jobs = values.get('make_num_jobs')
     make_target = values.get('make_target')
     makefile = values.get('makefile')

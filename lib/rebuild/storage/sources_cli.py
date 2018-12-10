@@ -16,6 +16,8 @@ from bes.archive import archiver, archive_extension
 from rebuild.binary_format import binary_detector
 from rebuild.source_ingester import ingest_util
 
+from rebuild.config import storage_config
+
 #from .pcloud import pcloud
 
 from .tarball_finder import tarball_finder
@@ -24,7 +26,7 @@ from .storage_db_dict import storage_db_dict
 from .storage_db_pcloud import storage_db_pcloud
 from .storage_db_entry import storage_db_entry
 from .storage_db import storage_db
-from .source_tool import source_tool
+from .storage_factory import storage_factory
 
 from rebuild.pcloud import pcloud, pcloud_error, pcloud_credentials
 
@@ -78,6 +80,16 @@ class sources_cli(object):
 
     # ingest
     ingest_parser = subparsers.add_parser('ingest', help = 'Ingest a local or remote tarball or executable to pcloud.')
+    ingest_parser.add_argument('config',
+                                action = 'store',
+                                default = None,
+                                type = str,
+                                help = 'Config file for storage credentials and providers. [ None ]')
+    ingest_parser.add_argument('provider',
+                                action = 'store',
+                                default = None,
+                                type = str,
+                                help = 'Which provider to use for the upload. [ None ]')
     ingest_parser.add_argument('what',
                                 action = 'store',
                                 default = None,
@@ -150,7 +162,7 @@ class sources_cli(object):
     del credentials
 
     if args.command == 'ingest':
-      return self._command_ingest(args.what, args.remote_filename, args.dry_run, args.arcname)
+      return self._command_ingest(args.config, args.provider, args.what, args.remote_filename, args.dry_run, args.arcname)
     elif args.command == 'sync':
       return self._command_sync(args.local_directory, args.remote_directory)
     elif args.command == 'db':
@@ -173,11 +185,35 @@ class sources_cli(object):
   
   def _remote_filename(self, remote_filename):
     return path.join(self._pcloud_root_dir, remote_filename)
+
+  @classmethod
+  def _make_storage(clazz, config, repo, provider, storage_cache_dir):
+    download_credentials = config.get('download', provider)
+    upload_credentials = config.get('upload', provider)
+    local_storage_dir = path.join(storage_cache_dir, provider)
+    factory_config = storage_factory.config(local_storage_dir, repo, False, download_credentials, upload_credentials)
+    return storage_factory.create(provider, factory_config)
   
-  def _command_ingest(self, what, remote_filename, dry_run, arcname):
+  def _command_ingest(self, config_filename, provider, what, remote_filename, dry_run, arcname):
+    check.check_string(config)
+    check.check_string(provider)
     check.check_string(what)
     check.check_string(remote_filename)
-    self.log_d('_command_ingest: what=%s; remote_filename=%s; arcname=%s' % (what, remote_filename, arcname))
+    self.log_d('_command_ingest: config_filename=%s; provider=%s; what=%s; remote_filename=%s; arcname=%s' % (config_filename,
+                                                                                                              provider,
+                                                                                                              what,
+                                                                                                              remote_filename,
+                                                                                                              arcname))
+
+    if not path.isfile(config_filename):
+      raise IOError('config_filename not found: %s' % (config_filename))
+    config = storage_config.from_file(config_filename)
+
+    storage_cache_dir = path.join(os.getcwd(), 'cache', provider)
+    sources_storage = self._make_storage(config, 'sources', provider, storage_cache_dir)
+
+    self.log_d('_command_ingest: sources_storage: %s' % (sources_storage))
+
     remote_basename = path.basename(remote_filename)
     # If it is a url, download it to a temporary file and use that
     if what.startswith('http'):
@@ -222,12 +258,11 @@ class sources_cli(object):
       print('Would upload %s => %s' % (local_filename, remote_path))
       return 0
     
-    local_mtime = file_util.mtime(local_filename)
     print('Uploading %s => %s' % (local_filename, remote_path))
     try:
-      upload_rv = self._pcloud.upload_file(local_filename, path.basename(remote_path),
-                                           folder_path = path.dirname(remote_path))
-      self.log_d('_command_ingest() upload_rv=%s - %s' % (upload_rv, type(upload_rv)))
+      self.log_d('_command_ingest() calling upload(%s, %s)' % (local_filename, remote_path))
+      rv = sources_storage.upload(local_filename, remote_path)
+      self.log_d('_command_ingest() rv=%s - %s' % (rv, type(rv)))
       file_id = upload_rv[0]['fileid']
       verification_checksum = self._checksum_file_with_retry(file_id = file_id)
       if verification_checksum != local_checksum:

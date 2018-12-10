@@ -28,6 +28,13 @@ class storage_base(with_metaclass(storage_register_meta, object)):
   def search(self, name):
     pass
 
+  @abstractmethod
+  def upload(self, local_filename, remote_filename):
+    pass
+
+  
   @classmethod
   def _find_by_filename(self, where, filename):
     return tarball_finder.find_by_filename(where, filename)
+
+  

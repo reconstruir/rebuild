@@ -42,7 +42,7 @@ class builder_cli(build_target_cli):
     self.parser.add_argument('--deps-only', action = 'store_true', help = 'Only build dependencies')
     self.parser.add_argument('--recipes-only', action = 'store_true', help = 'Only read the recipes dont build them.')
     self.parser.add_argument('--no-network', action = 'store_true', help = 'Down go to the network.')
-    self.parser.add_argument('--skip-tests', action = 'store_true', help = 'Skip the tests part of the build.')
+    self.parser.add_argument('--no-tests', action = 'store_true', help = 'Skip the tests part of the build.')
     self.parser.add_argument('--targets', action = 'store_true', help = 'Print the possible targets.')
     self.parser.add_argument('--scratch', action = 'store_true', help = 'Start from scratch by deleting existing data.')
     self.parser.add_argument('--filter', nargs = '+', default = None, help = 'filter the list of build files to the given list.')
@@ -98,7 +98,7 @@ class builder_cli(build_target_cli):
 
     # Tests only run on desktop
     if not bt.is_desktop():
-      args.skip_tests = True
+      args.no_tests = True
 
     if args.download_only and args.no_network:
       build_blurb.blurb('rebuild', 'Only one of --download-only and --no-net can be given.')
@@ -113,7 +113,7 @@ class builder_cli(build_target_cli):
     config.keep_going = args.keep_going
     config.no_checksums = args.no_checksums
     config.no_network = args.no_network
-    config.skip_tests = args.skip_tests
+    config.no_tests = args.no_tests
     config.skip_to_step = args.skip_to_step
     config.source_dir = args.source_dir
     config.tools_only = args.tools_only

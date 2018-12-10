@@ -50,3 +50,6 @@ class storage_git_repo(storage_base):
     else:
       self._update()
   
+  #@abstractmethod
+  def upload(self, local_filename, remote_filename):
+    assert False

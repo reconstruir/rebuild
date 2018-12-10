@@ -2,15 +2,15 @@
 
 import os.path as path
 from bes.common import check
-from bes.fs import file_find
+from bes.fs import file_find, file_util
 
 from .storage_base import storage_base 
 
 class storage_local(storage_base):
 
   def __init__(self, config):
-#    check.check_storage_factory_config(config)
-    self.where = config.download_credentials.root_dir
+    check.check_storage_factory_config(config)
+    self.where = path.join(config.download_credentials.root_dir, config.repo)
     
   def __str__(self):
     return 'local:%s' % (self.where)
@@ -28,4 +28,7 @@ class storage_local(storage_base):
   def search(self, name):
     pass
 
-  
+  #@abstractmethod
+  def upload(self, local_filename, remote_filename):
+    print('copy %s to %s' % (local_filename, remote_filename))
+    file_util.copy(local_filename, path.join(self.where, file_util.lstrip_sep(remote_filename)))

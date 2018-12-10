@@ -59,8 +59,8 @@ class step_artifact_create_test_package(step):
       self.log_d(message)
       return step_result(True, message)
 
-    if env.config.skip_tests:
-      message = '%s: Skipping tests because of --skip-tests' % (script.descriptor.full_name)
+    if env.config.no_tests:
+      message = '%s: Skipping tests because of --no-tests' % (script.descriptor.full_name)
       self.blurb(message)
       return step_result(True, message)
       

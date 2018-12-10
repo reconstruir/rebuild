@@ -1,6 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
+from bes.system import log
 from bes.fs import file_util
 from bes.common import check
 from bes.text import string_list
@@ -15,14 +16,15 @@ class storage_pcloud(storage_base):
   _CACHED_AVAILABLE_FILENAME = 'available.json'
   
   def __init__(self, config):
-    check.check_storage_factory_config(config)
     build_blurb.add_blurb(self, 'rebuild')
+    log.add_logging(self, 'storage_pcloud')
+    check.check_storage_factory_config(config)
     self._remote_root_dir = path.join(config.download_credentials.root_dir, config.repo)
     self._local_root_dir = config.local_cache_dir
     file_util.mkdir(self._local_root_dir)
     pcloud_cred = pcloud_credentials(config.download_credentials.credentials.username,
                                      config.download_credentials.credentials.password)
-    self.pcloud = pcloud(pcloud_cred, self._remote_root_dir)
+    self._pcloud = pcloud(pcloud_cred, self._remote_root_dir)
     self._cached_available_filename = path.join(self._local_root_dir, self._CACHED_AVAILABLE_FILENAME)
     if config.no_network:
       self._available_files = self._load_available_local()
@@ -35,7 +37,7 @@ class storage_pcloud(storage_base):
 
   def _load_available_remote(self):
     try:
-      files = self.pcloud.quick_list_folder(self._remote_root_dir, recursive = True, relative = True)
+      files = self._pcloud.quick_list_folder(self._remote_root_dir, recursive = True, relative = True)
       file_util.save(self._cached_available_filename, content = files.to_json())
       return files
     except pcloud_error as ex:
@@ -64,7 +66,7 @@ class storage_pcloud(storage_base):
     downloaded_filename = self._downloaded_filename(filename)
     file_util.ensure_file_dir(downloaded_filename)
     remote_path = path.join(self._remote_root_dir, filename)
-    self.pcloud.download_to_file(downloaded_filename, file_path = remote_path)
+    self._pcloud.download_to_file(downloaded_filename, file_path = remote_path)
 
   def _downloaded_filename(self, filename):
     return path.join(self._local_root_dir, filename)
@@ -96,3 +98,43 @@ class storage_pcloud(storage_base):
       if name in file_path:
         result.append(file_path)
     return result
+
+  #@abstractmethod
+  def upload(self, local_filename, remote_filename):
+    print('Uploading %s => %s' % (local_filename, remote_filename))
+    try:
+      upload_rv = self._pcloud.upload_file(local_filename, path.basename(remote_filename),
+                                           folder_path = path.dirname(remote_filename))
+      self.log_d('_command_ingest() upload_rv=%s - %s' % (upload_rv, type(upload_rv)))
+      file_id = upload_rv[0]['fileid']
+      verification_checksum = self._checksum_file_with_retry(file_id = file_id)
+      if verification_checksum != local_checksum:
+        print('Failed to verify checksum.  Something went wrong.  FIXME: should delete the remote file.')
+        return 1
+    finally:
+      file_util.remove(tmp_files_to_cleanup)
+      
+    return 0
+
+  def _checksum_file(self, file_path = None, file_id = None):
+    assert file_path or file_id
+    try:
+      self.log_d('_checksum_file() trying to checksum filename=%s; file_id=%s' % (file_path, file_id))
+      checksum = self._pcloud.checksum_file(file_path = file_path, file_id = file_id)
+    except pcloud_error as ex:
+      self.log_d('caught exception: %s' % (str(ex)))
+      if ex.code in [ pcloud_error.FILE_NOT_FOUND, pcloud_error.PARENT_DIR_MISSING ]:
+        checksum = None
+      else:
+        raise ex
+    return checksum
+
+  def _checksum_file_with_retry(self, file_path = None, file_id = None):
+    for i in range(0, 4):
+      checksum = self._checksum_file(file_path = file_path, file_id = file_id)
+      if checksum:
+        self.log_d('checksum attempt %d worked for file_path=%s; file_id=%s' % (i, file_path, file_id))
+        return checksum
+        self.log_d('checksum attempt %d failed for file_path=%s; file_id=%s' % (i, file_path, file_id))
+      time.sleep(0.250)
+    return False
