@@ -5,6 +5,7 @@ from bes.common import check
 from bes.fs import file_find, file_util
 
 from .storage_base import storage_base 
+from .tarball_finder import tarball_finder
 
 class storage_local(storage_base):
 
@@ -17,7 +18,7 @@ class storage_local(storage_base):
     
   #@abstractmethod
   def find_tarball(self, filename):
-    return self._find_by_filename(self.where, filename)
+    return tarball_finder.find_by_filename(self.where, filename)
 
   #@abstractmethod
   def ensure_source(self, filename):
@@ -29,6 +30,19 @@ class storage_local(storage_base):
     pass
 
   #@abstractmethod
-  def upload(self, local_filename, remote_filename):
+  def upload(self, local_filename, remote_filename, local_checksum):
     print('copy %s to %s' % (local_filename, remote_filename))
     file_util.copy(local_filename, path.join(self.where, file_util.lstrip_sep(remote_filename)))
+
+  #@abstractmethod
+  def remote_filename_abs(self, remote_filename):
+    return path.join(self._where, remote_filename)
+    
+  #@abstractmethod
+  def remote_checksum(self, remote_filename):
+    return file_util.checksum('sha1', self.remote_filename_abs(remote_filename))
+  
+  #@abstractmethod
+  def list_all_files(self):
+    # FIXME: need to catch only sources
+    return file_find.file_find(self.where, relative = True)

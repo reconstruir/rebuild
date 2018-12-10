@@ -24,6 +24,13 @@ class storage_hard_coded(storage_base):
     assert False
 
   #@abstractmethod
-  def upload(self, local_filename, remote_filename):
+  def upload(self, local_filename, remote_filename, local_checksum):
+    assert False
+
+  #@abstractmethod
+  def remote_filename_abs(self, remote_filename):
     assert False
     
+  #@abstractmethod
+  def remote_checksum(self, remote_filename):
+    assert False

@@ -6,6 +6,7 @@ from bes.git import repo
 from rebuild.base import build_blurb
 
 from .storage_base import storage_base
+from .tarball_finder import tarball_finder
 
 class storage_git_repo(storage_base):
 
@@ -21,7 +22,7 @@ class storage_git_repo(storage_base):
   #@abstractmethod
   def find_tarball(self, filename):
     self._update_if_needed()
-    return self._find_by_filename(self.repo.root, filename)
+    return tarball_finder.find_by_filename(self.repo.root, filename)
 
   #@abstractmethod
   def ensure_source(self, filename):
@@ -51,5 +52,14 @@ class storage_git_repo(storage_base):
       self._update()
   
   #@abstractmethod
-  def upload(self, local_filename, remote_filename):
+  def upload(self, local_filename, remote_filename, local_checksum):
     assert False
+
+  #@abstractmethod
+  def remote_filename_abs(self, remote_filename):
+    assert not path.isabs(remote_filename)
+    return path.join(self._where, remote_filename)
+    
+  #@abstractmethod
+  def remote_checksum(self, remote_filename):
+    assert False #return file_util.checksum('sha1', self.remote_filename_abs(remote_filename))

@@ -2,8 +2,7 @@
 
 from abc import abstractmethod, ABCMeta
 from bes.system.compat import with_metaclass
-
-from .tarball_finder import tarball_finder
+from collections import namedtuple
 
 from .storage_registry import storage_registry
 
@@ -29,12 +28,19 @@ class storage_base(with_metaclass(storage_register_meta, object)):
     pass
 
   @abstractmethod
-  def upload(self, local_filename, remote_filename):
+  def upload(self, local_filename, remote_filename, local_checksum):
     pass
 
-  
-  @classmethod
-  def _find_by_filename(self, where, filename):
-    return tarball_finder.find_by_filename(where, filename)
+  @abstractmethod
+  def remote_checksum(self, remote_filename):
+    pass
 
-  
+  @abstractmethod
+  def remote_filename_abs(self, remote_filename):
+    pass
+
+  _entry = namedtuple('_entry', 'filename, sha1_checksum')
+  @abstractmethod
+  def list_all_files(self):
+    'Return a list of filename, sha1_checksum entries.'
+    pass

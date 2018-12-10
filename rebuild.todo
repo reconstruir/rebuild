@@ -1028,3 +1028,8 @@ version specification and locking for ~/.rebuild/config
 - rebuild_sources.py should remote the remote file if checksum verification fails on ingest
 - ressurect storage_git_repo sometime
 - get rid of --source-dir and all the places it touches
+- retire storage_hard_coded
+- retarballing the same bits causes checksum to change need to fix
+- when downloading a tarball fails there is no obvious error why that happened
+- add a force download option
+- theres no sanity check of downloaded checksum for either artifactory or pcloud

@@ -34,6 +34,14 @@ class storage_kiwi(storage_base):
   #@abstractmethod
   def upload(self, local_filename, remote_filename):
     pass
+
+  #@abstractmethod
+  def remote_checksum(self, remote_filename):
+    pass
+
+  #@abstractmethod
+  def remote_filename_abs(self, remote_filename):
+    assert False
   
 class storage_watermelon(storage_base):
 
@@ -59,6 +67,14 @@ class storage_watermelon(storage_base):
   #@abstractmethod
   def upload(self, local_filename, remote_filename):
     pass
+
+  #@abstractmethod
+  def remote_checksum(self, remote_filename):
+    pass
+
+  #@abstractmethod
+  def remote_filename_abs(self, remote_filename):
+    assert False
   
 class test_storage_factory(unit_test):
 

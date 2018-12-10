@@ -7,6 +7,7 @@ from bes.common import check
 from bes.text import string_list
 
 from .storage_base import storage_base
+from .file_mapping import file_mapping
 
 from rebuild.base import build_blurb
 from rebuild.pcloud import pcloud, pcloud_error, pcloud_credentials
@@ -19,6 +20,9 @@ class storage_pcloud(storage_base):
     build_blurb.add_blurb(self, 'rebuild')
     log.add_logging(self, 'storage_pcloud')
     check.check_storage_factory_config(config)
+
+    self._file_mapping = file_mapping(config.local_cache_dir, path.join(config.download_credentials.root_dir, config.repo), None)
+    
     self._remote_root_dir = path.join(config.download_credentials.root_dir, config.repo)
     self._local_root_dir = config.local_cache_dir
     file_util.mkdir(self._local_root_dir)
@@ -100,41 +104,31 @@ class storage_pcloud(storage_base):
     return result
 
   #@abstractmethod
-  def upload(self, local_filename, remote_filename):
+  def upload(self, local_filename, remote_filename, local_checksum):
     print('Uploading %s => %s' % (local_filename, remote_filename))
-    try:
-      upload_rv = self._pcloud.upload_file(local_filename, path.basename(remote_filename),
-                                           folder_path = path.dirname(remote_filename))
-      self.log_d('_command_ingest() upload_rv=%s - %s' % (upload_rv, type(upload_rv)))
-      file_id = upload_rv[0]['fileid']
-      verification_checksum = self._checksum_file_with_retry(file_id = file_id)
-      if verification_checksum != local_checksum:
-        print('Failed to verify checksum.  Something went wrong.  FIXME: should delete the remote file.')
-        return 1
-    finally:
-      file_util.remove(tmp_files_to_cleanup)
-      
-    return 0
+    upload_rv = self._pcloud.upload_file(local_filename, path.basename(remote_filename),
+                                         folder_path = path.dirname(remote_filename))
+    self.log_d('_command_ingest() upload_rv=%s - %s' % (upload_rv, type(upload_rv)))
+    file_id = upload_rv[0]['fileid']
+    verification_checksum = self._checksum_file(file_id = file_id)
+    if verification_checksum != local_checksum:
+      print('Failed to verify checksum.  Something went wrong.  FIXME: should delete the remote file.')
+      return False
+    return True
 
   def _checksum_file(self, file_path = None, file_id = None):
-    assert file_path or file_id
-    try:
-      self.log_d('_checksum_file() trying to checksum filename=%s; file_id=%s' % (file_path, file_id))
-      checksum = self._pcloud.checksum_file(file_path = file_path, file_id = file_id)
-    except pcloud_error as ex:
-      self.log_d('caught exception: %s' % (str(ex)))
-      if ex.code in [ pcloud_error.FILE_NOT_FOUND, pcloud_error.PARENT_DIR_MISSING ]:
-        checksum = None
-      else:
-        raise ex
-    return checksum
+    return self._pcloud.checksum_file_safe(file_path = file_path, file_id = file_id)
 
-  def _checksum_file_with_retry(self, file_path = None, file_id = None):
-    for i in range(0, 4):
-      checksum = self._checksum_file(file_path = file_path, file_id = file_id)
-      if checksum:
-        self.log_d('checksum attempt %d worked for file_path=%s; file_id=%s' % (i, file_path, file_id))
-        return checksum
-        self.log_d('checksum attempt %d failed for file_path=%s; file_id=%s' % (i, file_path, file_id))
-      time.sleep(0.250)
-    return False
+  #@abstractmethod
+  def remote_checksum(self, remote_filename):
+    return self._checksum_file(file_path = self.remote_filename_abs(remote_filename))
+
+  #@abstractmethod
+  def remote_filename_abs(self, remote_filename):
+    assert not path.isabs(remote_filename)
+    return path.join(self._remote_root_dir, remote_filename)
+
+  #@abstractmethod
+  def list_all_files(self):
+    files = self._pcloud.quick_list_folder(self._remote_root_dir, recursive = True, relative = True)
+    return [ self._entry(filename, '') for filename in files ]

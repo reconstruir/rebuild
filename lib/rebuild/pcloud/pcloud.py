@@ -228,6 +228,19 @@ class pcloud(object):
     assert 'sha1' in payload
     return payload['sha1']
 
+  def checksum_file_safe(self, file_path = None, file_id = None):
+    'Checksum a file but return None if it does not exist.'
+    assert file_path or file_id
+    try:
+      checksum = self.checksum_file(file_path = file_path, file_id = file_id)
+    except pcloud_error as ex:
+      self.log_d('caught exception trying to checksum: %s' % (str(ex)))
+      if ex.code in [ pcloud_error.FILE_NOT_FOUND, pcloud_error.PARENT_DIR_MISSING ]:
+        checksum = None
+      else:
+        raise ex
+    return checksum
+  
   getfilelink_result = namedtuple('getfilelink_result', 'path, expires, hosts')
   def getfilelink(self, file_path = None, file_id = None):
     if not file_path and not file_id:

@@ -191,7 +191,7 @@ class pcloud_cli(object):
 
     credentials = pcloud_credentials.resolve_command_line(args)
     credentials.validate_or_bail()
-    self._pcloud = pcloud(credentials)
+    self._pcloud = pcloud(credentials, '/')
     del credentials
       
     try:

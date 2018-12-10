@@ -9,5 +9,7 @@ from .storage_factory import storage_factory
 from .storage_git_repo import storage_git_repo
 from .storage_hard_coded import storage_hard_coded
 from .storage_local import storage_local
-from .storage_pcloud import storage_pcloud
 from .tarball_finder import tarball_finder
+
+from .storage_pcloud import storage_pcloud
+from .storage_artifactory import storage_artifactory

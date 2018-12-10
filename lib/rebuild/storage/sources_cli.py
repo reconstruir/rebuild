@@ -28,7 +28,7 @@ from .storage_db_entry import storage_db_entry
 from .storage_db import storage_db
 from .storage_factory import storage_factory
 
-from rebuild.pcloud import pcloud, pcloud_error, pcloud_credentials
+#from rebuild.pcloud import pcloud, pcloud_error, pcloud_credentials
 
 class what_resolver(object):
   def __init__(self, what):
@@ -52,31 +52,7 @@ class sources_cli(object):
   def __init__(self):
     log.add_logging(self, tag = 'sources_cli')
     self._parser = argparse.ArgumentParser(description = 'Tool to deal with rebuild sources.')
-    pcloud_credentials.add_command_line_args(self._parser)
     subparsers = self._parser.add_subparsers(help = 'commands', dest = 'command')
-
-    # publish
-    publish_parser = subparsers.add_parser('publish', help = 'Publish a source tarball to cloud.')
-    publish_parser.add_argument('local_filename',
-                                action = 'store',
-                                default = None,
-                                type = str,
-                                help = 'The tarball to publish to cloud. [ None ]')
-    publish_parser.add_argument('--filename',
-                                action = 'store',
-                                default = None,
-                                type = str,
-                                help = 'Optional remote filename to use. [ None ]')
-    publish_parser.add_argument('--folder',
-                                action = 'store',
-                                default = None,
-                                type = str,
-                                nargs = '?',
-                                help = 'Optional remote folder to publish to. [ None ]')
-    publish_parser.add_argument('--dry-run',
-                                action = 'store_true',
-                                default = False,
-                                help = 'Do not do any work.  Just print what would happen. [ False ]')
 
     # ingest
     ingest_parser = subparsers.add_parser('ingest', help = 'Ingest a local or remote tarball or executable to pcloud.')
@@ -109,6 +85,10 @@ class sources_cli(object):
                                default = None,
                                type = str,
                                help = 'The file path for an executable inside an archive if needed. [ None ]')
+    ingest_parser.add_argument('--debug',
+                               action = 'store_true',
+                               default = False,
+                               help = 'Debug mode.  Do not remove temporary files and dirs. [ False ]')
     
     # retire
     retire_parser = subparsers.add_parser('retire', help = 'Retire a tarball in the database.')
@@ -118,20 +98,18 @@ class sources_cli(object):
                                type = str,
                                help = 'What to retire.  Can be a filename, checksum or local file name. [ None ]')
     
-    # retire_db
-    retire_db_parser = subparsers.add_parser('retire_db', help = 'Retire an entry directly in the database.')
-    retire_db_parser.add_argument('what',
-                                  action = 'store',
-                                  default = None,
-                                  type = str,
-                                  help = 'What to retire.  Can be a filename, checksum or local file name. [ None ]')
-    
-    # db
-    db_parser = subparsers.add_parser('db', help = 'Print the remote db.')
-    db_parser.add_argument('-r', '--raw',
-                           action = 'store_true',
-                           default = False,
-                           help = 'Print the raw json data. [ False ]')
+    # files
+    files_parser = subparsers.add_parser('files', help = 'Print all available sources.')
+    files_parser.add_argument('config',
+                              action = 'store',
+                              default = None,
+                              type = str,
+                              help = 'Config file for storage credentials and providers. [ None ]')
+    files_parser.add_argument('provider',
+                              action = 'store',
+                              default = None,
+                              type = str,
+                              help = 'Which provider to use for the upload. [ None ]')
     
     # find
     find_parser = subparsers.add_parser('find', help = 'Find a tarball in the database.')
@@ -155,24 +133,22 @@ class sources_cli(object):
     
   def main(self):
     args = self._parser.parse_args()
-    credentials = pcloud_credentials.resolve_command_line(args)
-    credentials.validate_or_bail()
-    self._pcloud = pcloud(credentials)
-    self._pcloud_root_dir = credentials.root_dir
-    del credentials
+#    credentials = pcloud_credentials.resolve_command_line(args)
+#    credentials.validate_or_bail()
+#    self._pcloud = pcloud(credentials)
+#    self._pcloud_root_dir = credentials.root_dir
+#    del credentials
 
     if args.command == 'ingest':
-      return self._command_ingest(args.config, args.provider, args.what, args.remote_filename, args.dry_run, args.arcname)
+      return self._command_ingest(args.config, args.provider, args.what, args.remote_filename, args.dry_run, args.debug, args.arcname)
     elif args.command == 'sync':
       return self._command_sync(args.local_directory, args.remote_directory)
-    elif args.command == 'db':
-      return self._command_db(args.raw)
+    elif args.command == 'files':
+      return self._command_files(args.config, args.provider)
     elif args.command == 'find':
       return self._command_find(args.what)
     elif args.command == 'retire':
       return self._command_retire(args.what)
-    elif args.command == 'retire_db':
-      return self._command_retire_db(args.what)
       
     raise RuntimeError('Invalid command: %s' % (args.command))
 
@@ -187,32 +163,28 @@ class sources_cli(object):
     return path.join(self._pcloud_root_dir, remote_filename)
 
   @classmethod
-  def _make_storage(clazz, config, repo, provider, storage_cache_dir):
+  def _make_storage(clazz, command, config_filename, provider):
+    if not path.isfile(config_filename):
+      raise IOError('%s: config_filename not found: %s' % (command, config_filename))
+    config = storage_config.from_file(config_filename)
+    storage_cache_dir = path.join(os.getcwd(), 'cache', provider)
     download_credentials = config.get('download', provider)
     upload_credentials = config.get('upload', provider)
     local_storage_dir = path.join(storage_cache_dir, provider)
-    factory_config = storage_factory.config(local_storage_dir, repo, False, download_credentials, upload_credentials)
+    factory_config = storage_factory.config(local_storage_dir,  'sources', False, download_credentials, upload_credentials)
     return storage_factory.create(provider, factory_config)
   
-  def _command_ingest(self, config_filename, provider, what, remote_filename, dry_run, arcname):
-    check.check_string(config)
+  def _command_ingest(self, config_filename, provider, what, remote_filename, dry_run, debug, arcname):
+    check.check_string(config_filename)
     check.check_string(provider)
     check.check_string(what)
     check.check_string(remote_filename)
-    self.log_d('_command_ingest: config_filename=%s; provider=%s; what=%s; remote_filename=%s; arcname=%s' % (config_filename,
-                                                                                                              provider,
-                                                                                                              what,
-                                                                                                              remote_filename,
-                                                                                                              arcname))
-
-    if not path.isfile(config_filename):
-      raise IOError('config_filename not found: %s' % (config_filename))
-    config = storage_config.from_file(config_filename)
-
-    storage_cache_dir = path.join(os.getcwd(), 'cache', provider)
-    sources_storage = self._make_storage(config, 'sources', provider, storage_cache_dir)
-
-    self.log_d('_command_ingest: sources_storage: %s' % (sources_storage))
+    self.log_d('ingest: config_filename=%s; provider=%s; what=%s; remote_filename=%s; arcname=%s' % (config_filename,
+                                                                                                     provider,
+                                                                                                     what,
+                                                                                                     remote_filename,
+                                                                                                     arcname))
+    storage = self._make_storage('ingest', config_filename, provider)
 
     remote_basename = path.basename(remote_filename)
     # If it is a url, download it to a temporary file and use that
@@ -229,31 +201,37 @@ class sources_cli(object):
     self.log_d('_command_ingest: is_valid_archive=%s; is_exe=%s' % (is_valid_archive, is_exe))
     if not (is_valid_archive or is_exe):
       raise RuntimeError('local_filename should be an archive or executable: %s' % (local_filename))
+
     tmp_files_to_cleanup = []
+    def _cleanup_tmp_files():
+      if not debug:
+        file_util.remove(tmp_files_to_cleanup)
+
     # if local_filename is an executable, archive into a tarball first
     if is_exe:
-      # if the executable does not have the right mode, make a tmp copy and fix it
-      fixed_mode_local_filename = ingest_util.fix_executable_mode(local_filename)
-      self.log_d('_command_ingest: fixed_mode_local_filename=%s' % (fixed_mode_local_filename))
-      if fixed_mode_local_filename:
-        tmp_files_to_cleanup.append(fixed_mode_local_filename)
-        local_filename = fixed_mode_local_filename
+      local_filename = ingest_util.fix_executable(local_filename, debug = debug)
+      self.log_d('_command_ingest: fixed executable: %s' % (local_filename))
+      tmp_files_to_cleanup.append(local_filename)
       self.log_d('_command_ingest: calling archive_binary(%s, %s, %s)' % (local_filename, remote_basename, arcname))
-      local_filename = ingest_util.archive_binary(local_filename, remote_basename, arcname)
+      local_filename = ingest_util.archive_binary(local_filename, remote_basename, arcname, debug = debug)
       self.log_d('_command_ingest: calling archive_binary() returns %s' % (local_filename))
       tmp_files_to_cleanup.append(local_filename)
 
-    remote_path = self._remote_filename(remote_filename)
-    remote_checksum = self._checksum_file(file_path = remote_path)
+    remote_path = storage.remote_filename_abs(remote_filename)
+    remote_checksum = storage.remote_checksum(remote_filename)
     local_checksum = file_util.checksum('sha1', local_filename)
     self.log_d('_command_ingest: remote_path=%s; remote_checksum=%s; local_checksum=%s' % (remote_path, remote_checksum, local_checksum))
     if remote_checksum == local_checksum:
-      file_util.remove(tmp_files_to_cleanup)
-      print('Already exists: %s' % (remote_path))
+      _cleanup_tmp_files()
+      print('a file with checksum %s already exists: %s' % (local_checksum, remote_path))
       return 0
     if remote_checksum is not None and remote_checksum != local_checksum:
-      file_util.remove(tmp_files_to_cleanup)
-      raise RuntimeError('trying to re-ingest a file with a different checksum: %s => %s' % (local_filename, remote_path))
+      _cleanup_tmp_files()
+      print('trying to re-ingest a with a different checksum.')
+      print(' local_filename: %s' % (local_filename))
+      print(' local_checksum: %s' % (local_checksum))
+      print('remote_checksum: %s' % (remote_checksum))
+      return 1
     if dry_run:
       print('Would upload %s => %s' % (local_filename, remote_path))
       return 0
@@ -261,15 +239,13 @@ class sources_cli(object):
     print('Uploading %s => %s' % (local_filename, remote_path))
     try:
       self.log_d('_command_ingest() calling upload(%s, %s)' % (local_filename, remote_path))
-      rv = sources_storage.upload(local_filename, remote_path)
+      rv = storage.upload(local_filename, remote_path, local_checksum)
       self.log_d('_command_ingest() rv=%s - %s' % (rv, type(rv)))
-      file_id = upload_rv[0]['fileid']
-      verification_checksum = self._checksum_file_with_retry(file_id = file_id)
-      if verification_checksum != local_checksum:
-        print('Failed to verify checksum.  Something went wrong.  FIXME: should delete the remote file.')
+      if not rv:
+        print('Failed to upload.  Something went wrong.  FIXME: should delete the remote file.')
         return 1
     finally:
-      file_util.remove(tmp_files_to_cleanup)
+      _cleanup_tmp_files()
       
     return 0
 
@@ -309,13 +285,14 @@ class sources_cli(object):
   def _sources_db_filename(self):
     return path.join(self._pcloud_root_dir, storage_db_dict.DB_FILENAME)
   
-  def _command_db(self, raw):
-    db = storage_db_pcloud(self._pcloud)
-    db.load()
-    if raw:
-      print(db.to_json())
-    else:
-      db.dump()
+  def _command_files(self, config_filename, provider):
+    check.check_string(config_filename)
+    check.check_string(provider)
+    self.log_d('files: config_filename=%s; provider=%s' % (config_filename, provider))
+    storage = self._make_storage('files', config_filename, provider)
+    files = storage.list_all_files()
+    tt = text_table(data = files)
+    print(str(tt))
     return 0
 
   _found_item = namedtuple('_found_item', 'db, blurb, entry, exact')
@@ -368,28 +345,6 @@ class sources_cli(object):
     db.load()
     del db[item.entry.filename]
     print('Uploading db.')
-    db.save()
-    return 0
-  
-  def _command_retire_db(self, what):
-    wr = what_resolver(what)
-
-    db = storage_db_pcloud(self._pcloud)
-    db.load()
-
-    if wr.checksum:
-      entry = db.find_by_checksum(wr.checksum)
-      if not entry:
-        print('checksum not found: %s' % (wr.checksum))
-        return 1
-
-    if wr.filename:
-      entry = db.get(wr.filename, None)
-      if not entry:
-        print('file not found: %s' % (wr.checksum))
-        return 1
-
-    del db[entry.filename]
     db.save()
     return 0
   
