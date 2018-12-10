@@ -4,6 +4,8 @@
 import os.path as path
 
 from bes.testing.unit_test import unit_test
+from bes.fs import temp_file
+
 from rebuild.config import storage_config
 from rebuild.storage import storage_factory
 from rebuild.storage.storage_base import storage_base
@@ -53,47 +55,47 @@ class storage_watermelon(storage_base):
 class test_storage_factory(unit_test):
 
   def test_has_provider(self):
-    self.assertTrue( SF.has_provider('kiwi') )
-    self.assertTrue( SF.has_provider('watermelon') )
-    self.assertFalse( SF.has_provider('orange') )
+    self.assertTrue( storage_factory.has_provider('kiwi') )
+    self.assertTrue( storage_factory.has_provider('watermelon') )
+    self.assertFalse( storage_factory.has_provider('orange') )
   
   def test_create(self):
     config_text = '''
 credential
   provider: kiwi
   purpose: download
-  email: kiwi_download@bar.com
-  password: kiwipassdown
+  username: download@bar.com
+  password: downloadpss
 
 credential
   provider: kiwi
   purpose: upload
-  email: kiwi_upload@bar.com
-  password: kiwipassup
+  username: upload@bar.com
+  password: uploadpass
 
 storage
-  name: mine_kiwi
-  description: mine personal kiwi account
-#  purpose: artifacts sources
+  description: where i upload to kiwi
   provider: kiwi
-  root_dir: /kiwi_root
+  root_dir: /mydir
 '''
     ac = storage_config(config_text, '<test>')
-    a = ac.find('artifacts', 'mine_kiwi')
-    self.assertEqual( {
-      'email': 'download@bar.com',
-      'password': 'sekret1',
-      'root_dir': '/mydir',
-    }, a.credentials.download )
-    self.assertEqual( {
-      'email': 'upload@bar.com',
-      'password': 'sekret2',
-      'root_dir': '/mydir',
-    }, a.credentials.upload )
 
-    kiwi = SF.create('kiwi', config)
-    self.assertTrue( SF.has_provider('kiwi') )
-    self.assertFalse( SF.has_provider('orange') )
+    provider = 'kiwi'
+    a = ac.get('download', provider)
+    self.assertEqual( 'download@bar.com', a.credentials.username )
+    self.assertEqual( 'downloadpss', a.credentials.password )
+    self.assertEqual( '/mydir', a.root_dir )
+
+    b = ac.get('upload', provider)
+    self.assertEqual( 'upload@bar.com', b.credentials.username )
+    self.assertEqual( 'uploadpass', b.credentials.password )
+    self.assertEqual( '/mydir', b.root_dir )
+
+    download_credentials = ac.get('download', provider)
+    upload_credentials = ac.get('upload', provider)
+    local_storage_dir = temp_file.make_temp_dir()
+    factory_config = storage_factory.config(local_storage_dir, 'myrepo', False, download_credentials, upload_credentials)
+    kiwi_storage = storage_factory.create(provider, factory_config)
   
 if __name__ == '__main__':
   unit_test.main()
