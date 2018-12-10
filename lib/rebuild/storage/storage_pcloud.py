@@ -17,7 +17,7 @@ class storage_pcloud(storage_base):
   def __init__(self, config):
     check.check_storage_factory_config(config)
     build_blurb.add_blurb(self, 'rebuild')
-    self._remote_root_dir = config.download_credentials.root_dir
+    self._remote_root_dir = path.join(config.download_credentials.root_dir, config.repo)
     self._local_root_dir = config.local_cache_dir
     file_util.mkdir(self._local_root_dir)
     pcloud_cred = pcloud_credentials(config.download_credentials.credentials.username,

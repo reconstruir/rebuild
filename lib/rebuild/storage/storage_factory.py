@@ -8,7 +8,7 @@ from collections import namedtuple
 
 class storage_factory(object):
 
-  config = namedtuple('config', 'local_cache_dir, no_network, download_credentials, upload_credentials')
+  config = namedtuple('config', 'local_cache_dir, repo, no_network, download_credentials, upload_credentials')
   check.register_class(config, name = 'storage_factory_config')
   
   @classmethod

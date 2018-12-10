@@ -21,13 +21,16 @@ class builder_env(object):
   def __init__(self, config, filenames):
     build_blurb.add_blurb(self, 'rebuild')
     self.config = config
-    local_storage_dir = path.join(config.storage_cache_dir, 'local')
-    self.storage_config = self._make_storage_config(config.storage_config, local_storage_dir, config.source_dir)
-    self.storage = self._make_storage(self.storage_config,
-                                      config.storage_provider,
-                                      config.storage_cache_dir,
-                                      config.no_network)
-    self.blurb('storage: %s' % (self.storage))
+    local_storage_cache_dir = path.join(config.storage_cache_dir, 'local')
+    self.storage_config = self._make_storage_config(config.storage_config,
+                                                    local_storage_cache_dir,
+                                                    config.source_dir)
+    self.sources_storage = self._make_storage(self.storage_config,
+                                              'sources',
+                                              config.sources_provider,
+                                              config.storage_cache_dir,
+                                              config.no_network)
+    self.blurb('sources_storage: %s' % (self.sources_storage))
     self.checksum_manager = self._make_checksum_manager(config.build_root)
     self.downloads_manager = self._make_downloads_manager(config.build_root)
     self.reload_artifact_manager()
@@ -45,11 +48,11 @@ class builder_env(object):
     return self.requirement_manager.resolve_deps([descriptor.name], self.config.build_target.system, hardness, include_names)
   
   @classmethod
-  def _make_storage(clazz, config, provider, storage_cache_dir, no_network):
+  def _make_storage(clazz, config, repo, provider, storage_cache_dir, no_network):
     download_credentials = config.get('download', provider)
     upload_credentials = config.get('upload', provider)
     local_storage_dir = path.join(storage_cache_dir, provider)
-    factory_config = storage_factory.config(local_storage_dir, no_network, download_credentials, upload_credentials)
+    factory_config = storage_factory.config(local_storage_dir, repo, no_network, download_credentials, upload_credentials)
     return storage_factory.create(provider, factory_config)
 
   @classmethod

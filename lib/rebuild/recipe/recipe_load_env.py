@@ -17,7 +17,7 @@ class recipe_load_env_base(with_metaclass(ABCMeta, object)):
     raise NotImplementedError
 
   @abstractmethod
-  def get_storage(self):
+  def get_sources_storage(self):
     raise NotImplementedError
 
   @property
@@ -30,7 +30,7 @@ class recipe_load_env_base(with_metaclass(ABCMeta, object)):
 
   @property
   def storage(self):
-    return self.get_storage()
+    return self.get_sources_storage()
   
 class recipe_load_env(recipe_load_env_base):
 
@@ -47,8 +47,8 @@ class recipe_load_env(recipe_load_env_base):
     return self._builder_env.downloads_manager
 
   #@abstractmethod
-  def get_storage(self):
-    return self._builder_env.storage
+  def get_sources_storage(self):
+    return self._builder_env.sources_storage
 
 class testing_recipe_load_env(recipe_load_env_base):
 
@@ -72,7 +72,7 @@ class testing_recipe_load_env(recipe_load_env_base):
     return self._downloads_manager
 
   #@abstractmethod
-  def get_storage(self):
+  def get_sources_storage(self):
     return self._storage
     
 check.register_class(recipe_load_env_base, include_seq = False)

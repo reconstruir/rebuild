@@ -61,16 +61,16 @@ class step_setup_sources_download(step):
       if not tarball_path:
         blurb = 'No source (%s) found for %s using %s.  Possible sources:' % (str(tarball.value),
                                                                               script.descriptor.full_name,
-                                                                              str(env.storage))
+                                                                              str(env.sources_storage))
         self.blurb(blurb)
-        possibilities = env.storage.search(script.descriptor.name)
+        possibilities = env.sources_storage.search(script.descriptor.name)
         for p in possibilities:
           self.blurb('  %s' % (p))
         return step_result(False, blurb)
       dest = tarball.get_property('dest', '${REBUILD_SOURCE_UNPACKED_DIR}')
       base_dir = tarball.get_property('base', None)
       strip_common_ancestor = bool_util.parse_bool(tarball.get_property('strip_common_ancestor', 'True'))
-      env.storage.ensure_source(tarball_path)
+      env.sources_storage.ensure_source(tarball_path)
       downloaded_tarballs.append(self._downloaded_tarball(tarball_path, dest, base_dir, strip_common_ancestor))
      
     if tarball_dir:

@@ -91,9 +91,8 @@ storage
       'root_dir': '/mydir',
     }, a.credentials.upload )
 
-
-    
-    kiwi = SF.create('kiwi', config):    self.assertTrue( SF.has_provider('kiwi') )
+    kiwi = SF.create('kiwi', config)
+    self.assertTrue( SF.has_provider('kiwi') )
     self.assertFalse( SF.has_provider('orange') )
   
 if __name__ == '__main__':

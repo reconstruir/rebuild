@@ -62,9 +62,9 @@ class builder_cli(build_target_cli):
     self.parser.add_argument('--storage-config', default = None,
                              action = 'store', type = str,
                              help = 'Configuration file for storage used for artifacts and sources upload/download. [ None ]')
-    self.parser.add_argument('--storage-provider', default = 'local',
+    self.parser.add_argument('--sources-provider', default = 'local',
                              action = 'store', type = str,
-                             help = 'The storage provider to use. [ local ]')
+                             help = 'The storage provider to use for sources. [ local ]')
 
     for g in self.parser._action_groups:
       g._group_actions.sort(key = lambda x: x.dest)
@@ -127,7 +127,7 @@ class builder_cli(build_target_cli):
     config.performance = args.performance
     config.download_only = args.download_only
     config.storage_config = args.storage_config
-    config.storage_provider = args.storage_provider
+    config.sources_provider = args.sources_provider
       
     env = builder_env(config, available_packages)
     
