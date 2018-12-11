@@ -74,8 +74,11 @@ class artifactory_requests(object):
     import requests
     response = requests.get(url, auth = auth)
     clazz.log_d('list_all_files: response status_code=%d' % (response.status_code))
+    # 404 means nothing has been ingested to the repo yet
+    if response.status_code == 404:
+      return []
     if response.status_code != 200:
-      raise RuntimeError('failed to list_all_files from: %s' % (url))
+      raise RuntimeError('failed to list_all_files for: %s (status_code %d)' % (url, response.status_code))
     data = response.json()
     files = data.get('files', None)
     if not files:
