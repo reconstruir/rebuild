@@ -89,6 +89,10 @@ class sources_cli(object):
                                action = 'store_true',
                                default = False,
                                help = 'Debug mode.  Do not remove temporary files and dirs. [ False ]')
+    ingest_parser.add_argument('--repo',
+                               action = 'store',
+                               default = 'sources',
+                               help = 'Repo to ingest to. [ sources ]')
     
     # retire
     retire_parser = subparsers.add_parser('retire', help = 'Retire a tarball in the database.')
@@ -110,6 +114,10 @@ class sources_cli(object):
                               default = None,
                               type = str,
                               help = 'Which provider to use for the upload. [ None ]')
+    files_parser.add_argument('--repo',
+                              action = 'store',
+                              default = 'sources',
+                              help = 'Repo to list files for. [ sources ]')
     
     # find
     find_parser = subparsers.add_parser('find', help = 'Find a tarball in the database.')
@@ -140,11 +148,12 @@ class sources_cli(object):
 #    del credentials
 
     if args.command == 'ingest':
-      return self._command_ingest(args.config, args.provider, args.what, args.remote_filename, args.dry_run, args.debug, args.arcname)
+      return self._command_ingest(args.config, args.provider, args.what, args.remote_filename, args.dry_run,
+                                  args.debug, args.arcname, args.repo)
     elif args.command == 'sync':
       return self._command_sync(args.local_directory, args.remote_directory)
     elif args.command == 'files':
-      return self._command_files(args.config, args.provider)
+      return self._command_files(args.config, args.provider, args.repo)
     elif args.command == 'find':
       return self._command_find(args.what)
     elif args.command == 'retire':
@@ -163,7 +172,7 @@ class sources_cli(object):
     return path.join(self._pcloud_root_dir, remote_filename)
 
   @classmethod
-  def _make_storage(clazz, command, config_filename, provider):
+  def _make_storage(clazz, command, config_filename, provider, repo):
     if not path.isfile(config_filename):
       raise IOError('%s: config_filename not found: %s' % (command, config_filename))
     config = storage_config.from_file(config_filename)
@@ -171,20 +180,23 @@ class sources_cli(object):
     download_credentials = config.get('download', provider)
     upload_credentials = config.get('upload', provider)
     local_storage_dir = path.join(storage_cache_dir, provider)
-    factory_config = storage_factory.config(local_storage_dir,  'sources', False, download_credentials, upload_credentials)
+    factory_config = storage_factory.config(local_storage_dir,  repo, False, download_credentials, upload_credentials)
     return storage_factory.create(provider, factory_config)
   
-  def _command_ingest(self, config_filename, provider, what, remote_filename, dry_run, debug, arcname):
+  def _command_ingest(self, config_filename, provider, what, remote_filename,
+                      dry_run, debug, arcname, repo):
     check.check_string(config_filename)
     check.check_string(provider)
     check.check_string(what)
     check.check_string(remote_filename)
-    self.log_d('ingest: config_filename=%s; provider=%s; what=%s; remote_filename=%s; arcname=%s' % (config_filename,
-                                                                                                     provider,
-                                                                                                     what,
-                                                                                                     remote_filename,
-                                                                                                     arcname))
-    storage = self._make_storage('ingest', config_filename, provider)
+    check.check_string(repo)
+    self.log_d('ingest: config_filename=%s; provider=%s; what=%s; remote_filename=%s; arcname=%s; repo=%s' % (config_filename,
+                                                                                                              provider,
+                                                                                                              what,
+                                                                                                              remote_filename,
+                                                                                                              arcname,
+                                                                                                              repo))
+    storage = self._make_storage('ingest', config_filename, provider, repo)
 
     remote_basename = path.basename(remote_filename)
     # If it is a url, download it to a temporary file and use that
@@ -285,11 +297,11 @@ class sources_cli(object):
   def _sources_db_filename(self):
     return path.join(self._pcloud_root_dir, storage_db_dict.DB_FILENAME)
   
-  def _command_files(self, config_filename, provider):
+  def _command_files(self, config_filename, provider, repo):
     check.check_string(config_filename)
     check.check_string(provider)
     self.log_d('files: config_filename=%s; provider=%s' % (config_filename, provider))
-    storage = self._make_storage('files', config_filename, provider)
+    storage = self._make_storage('files', config_filename, provider, repo)
     files = storage.list_all_files()
     tt = text_table(data = files)
     print(str(tt))
