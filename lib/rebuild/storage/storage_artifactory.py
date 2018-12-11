@@ -55,7 +55,8 @@ class storage_artifactory(storage_base):
     self._filename_map = {}
     for file_path in self._available_files:
       filename = path.basename(file_path)
-      assert not filename in self._filename_map
+      #assert not filename in self._filename_map
+      #print('warning: already in map: %s - %s' % (filename, file_path))
       self._filename_map[filename] = file_path
     
   def _download_file(self, filename):

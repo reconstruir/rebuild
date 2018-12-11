@@ -1033,3 +1033,4 @@ version specification and locking for ~/.rebuild/config
 - when downloading a tarball fails there is no obvious error why that happened
 - add a force download option
 - theres no sanity check of downloaded checksum for either artifactory or pcloud
+- change the sources naming scheme to be explicit instead of using "find"
