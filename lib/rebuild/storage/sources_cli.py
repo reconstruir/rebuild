@@ -25,6 +25,9 @@ from .storage_db_entry import storage_db_entry
 from .storage_db import storage_db
 from .storage_factory import storage_factory
 
+from rebuild.base import build_target
+from rebuild.package import artifact_manager_local
+
 class what_resolver(object):
   def __init__(self, what):
     self.checksum = None
@@ -89,24 +92,24 @@ class sources_cli(object):
                                default = 'sources',
                                help = 'Repo to ingest to. [ sources ]')
 
-    # publish_artifacts
-    publish_artifacts_parser = subparsers.add_parser('publish_artifacts', help = 'Publish artifacts to remote storage.')
-    publish_artifacts_parser.add_argument('config',
+    # update_properties
+    update_properties_parser = subparsers.add_parser('update_properties', help = 'Publish artifacts to remote storage.')
+    update_properties_parser.add_argument('config',
                                           action = 'store',
                                           default = None,
                                           type = str,
                                           help = 'Config file for storage credentials and providers. [ None ]')
-    publish_artifacts_parser.add_argument('provider',
+    update_properties_parser.add_argument('provider',
                                           action = 'store',
                                           default = None,
                                           type = str,
                                           help = 'Which provider to use for the upload. [ None ]')
-    publish_artifacts_parser.add_argument('local_dir',
+    update_properties_parser.add_argument('local_dir',
                                           action = 'store',
                                           default = None,
                                           type = str,
                                           help = 'Local directory where to look for artifacts to publish. [ None ]')
-    publish_artifacts_parser.add_argument('--dry-run',
+    update_properties_parser.add_argument('--dry-run',
                                           action = 'store_true',
                                           default = False,
                                           help = 'Do not do any work.  Just print what would happen. [ False ]')
@@ -167,8 +170,8 @@ class sources_cli(object):
     if args.command == 'ingest':
       return self._command_ingest(args.config, args.provider, args.what, args.remote_filename, args.dry_run,
                                   args.debug, args.arcname, args.repo)
-    elif args.command == 'publish_artifacts':
-      return self._command_publish_artifacts(args.config, args.provider, args.local_dir, args.dry_run)
+    elif args.command == 'update_properties':
+      return self._command_update_properties(args.config, args.provider, args.local_dir, args.dry_run)
     elif args.command == 'sync':
       return self._command_sync(args.local_directory, args.remote_directory)
     elif args.command == 'files':
@@ -379,11 +382,11 @@ class sources_cli(object):
     db.save()
     return 0
 
-  def _command_publish_artifacts(self, config_filename, provider, local_dir, dry_run):
+  def _command_update_properties(self, config_filename, provider, local_dir, dry_run):
     check.check_string(config_filename)
     check.check_string(provider)
     check.check_string(local_dir)
-    self.log_d('publish_artifacts: config_filename=%s; provider=%s; local_dir=%s; dry_run=%s' % (config_filename,
+    self.log_d('update_properties: config_filename=%s; provider=%s; local_dir=%s; dry_run=%s' % (config_filename,
                                                                                                  provider,
                                                                                                  local_dir,
                                                                                                  dry_run))
@@ -392,8 +395,36 @@ class sources_cli(object):
     if not path.isdir(local_dir):
       raise RuntimeError('not a directory: %s' % (local_dir))
 
-    db_files = file_find.find_fnmatch(local_dir, [ '*.db' ], relative = True, min_depth = 1, max_depth = 1, file_type = file_find.FILE)
-    print('db_diles: %s' % (db_files))
+    print('local_dir: %s' % (local_dir))
+
+    from rebuild.storage.artifactory_requests import artifactory_requests
+    
+    hostname = storage._hostname
+    repo = storage._config.repo
+    root_dir = storage._config.download_credentials.root_dir
+    username = storage._config.upload_credentials.credentials.username
+    password = storage._config.upload_credentials.credentials.password
+    
+    am = artifact_manager_local(local_dir)
+    bt = build_target.make_host_build_target()
+    artifacts = am.list_all_by_descriptor(bt)
+    for adesc in artifacts[0:1]:
+      md = am.find_by_artifact_descriptor(adesc, True)
+      properties = {
+        'rebuild.format_version': str(md.format_version),
+        'rebuild.name': md.name,
+        'rebuild.version': md.version,
+        'rebuild.revision': str(md.revision),
+        'rebuild.epoch': str(md.epoch),
+        'rebuild.system': md.system,
+        'rebuild.level': md.level,
+        'rebuild.arch': md.arch,
+        'rebuild.distro': md.distro,
+        'rebuild.distro_version': md.distro_version,
+        'rebuild.requirements': md.requirements.to_string_list(),
+        }
+      rv = artifactory_requests.set_properties(hostname, root_dir, repo, md.filename, username, password, properties)
+      print('STATUS: %s: %s' % (md.filename, rv))
     return 0
 
   

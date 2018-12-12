@@ -113,5 +113,30 @@ class artifactory_requests(object):
       data = response.json()
       assert 'downloadUri' in data
       return data['downloadUri']
-      
+
+  @classmethod
+  def set_properties(clazz, hostname, root_dir, repo, filename, username, password, properties):
+    check.check_string(hostname)
+    check.check_string(root_dir)
+    check.check_string(repo)
+    check.check_string(username)
+    check.check_string(password)
+    check.check_dict(properties)
+
+    import requests
+
+    template = '{hostname}/api/metadata/{root_dir}/{repo}/{filename}'
+    url = template.format(hostname = hostname, root_dir = root_dir, repo = repo, filename = filename)
+
+    json_data = { 'props': properties }
+    
+    auth = ( username, password )
+    clazz.log_d('set_properties: url=%s; username=%s; password=%s' % (url, username, password))
+    response = requests.patch(url, json = json_data, auth = auth)
+    clazz.log_d('set_properties: response: %s' % (str(response)))
+    if response.status_code != 204:
+      clazz.log_e('set_properties: failed to set properties: %s' % (url))
+      return False
+    return True
+  
 log.add_logging(artifactory_requests, 'artifactory_requests')
