@@ -9,15 +9,13 @@ from .artifact_db import artifact_db
 
 class artifact_cli(build_target_cli):
 
-  DEFAULT_DB = 'BUILD/artifacts/artifacts.db'
-  
   def __init__(self):
     self.parser = argparse.ArgumentParser()
     subparsers = self.parser.add_subparsers(help = 'commands', dest = 'command')
 
     # query
     db_parser = subparsers.add_parser('query', help = 'Query the artifacts db')
-    db_parser.add_argument('--db', action = 'store', default = self.DEFAULT_DB, help = 'The artifacts db')
+    db_parser.add_argument('--db', action = 'store', default = None, help = 'The artifacts db')
     db_parser.add_argument('--metadata', '-m', action = 'store_true', help = 'Load metadata')
     db_parser.add_argument('--descriptor', action = 'store_true', help = 'Load descriptors')
     db_parser.add_argument('--name', '-n', action = 'store', default = None, help = 'Name to query')
