@@ -6,7 +6,7 @@ from collections import namedtuple
 
 from bes.archive import archive, archiver
 from bes.common import check, dict_util, json_util, string_util
-from bes.fs import dir_util, file_check, file_checksum_list, file_find, file_mime, file_search, file_util, temp_file
+from bes.fs import dir_util, file_check, file_checksum_list, file_find, file_mime, file_search, file_util, tar_util, temp_file
 from bes.text import text_line_parser
 from bes.match import matcher_filename, matcher_multiple_filename
 from bes.python import setup_tools
@@ -241,10 +241,12 @@ unset REBUILD_STUFF_DIR
       timer.stop()
     file_util.mkdir(path.dirname(tarball_filename))
     manifest = temp_file.make_temp_file(content = '\n'.join(files_to_package))
-    tar_cmd = [ 'tar', 'zcf', tarball_filename, '-C', stage_dir, '-T', manifest ]
     if timer:
-      timer.start('create_package - execute %s' % (' '.join(tar_cmd)))
-    execute.execute(tar_cmd)
+      timer.start('create_package - creating tarball %s' % (tarball_filename))
+    tar_util.create_deterministic_tarball_with_manifest(tarball_filename,
+                                                        stage_dir,
+                                                        manifest,
+                                                        '2018-12-08')
     if timer:
       timer.stop()
   

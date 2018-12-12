@@ -42,11 +42,6 @@ class ingest_util(object):
   @classmethod
   def archive_binary(clazz, executable_filename, archive_filename, arcname, debug = False):
     'Archive the given the executable_filename into archive_filename and return a tmp file with the result.'
-    gnu_tar = tar_util.find_tar_in_env_path('gnu')
-    if not gnu_tar:
-      msg = '''you need gnu tar in your path to archive the binary.
-bsd tar does not have support for archiving with deterministic checksums for the same binary.'''
-      raise RuntimeError(msg)
     if not binary_detector.is_executable(executable_filename):
       raise RuntimeError('not an executable: %s' % (executable_filename))
     if not archive_extension.is_valid_filename(archive_filename):
@@ -60,13 +55,7 @@ bsd tar does not have support for archiving with deterministic checksums for the
     os.chmod(dst_file, 0o755)
     tmp_dir = temp_file.make_temp_dir(delete = not debug)
     tmp_archive_filename = path.join(tmp_dir, archive_filename)
-    template = '{tar_exe} --mtime=2018-12-08 -cf - {arcname} | gzip -n > {filename}'
-    cmd = template.format(tar_exe = gnu_tar, arcname = arcname, filename = tmp_archive_filename)
-#    cmd = '%s --mtime=2018-12-08 -cf - %s | gzip -n > %s' % (arcname, tmp_archive_filename)
-#    cmd = '/Users/ramiro/cacatar --mtime=2018-12-10 -cf - %s | gzip -n > %s' % (arcname, tmp_archive_filename)
-#    cmd = 'tar --options "mtree:!all" -cf - %s | gzip -n > %s' % (arcname, tmp_archive_filename)
-    #cmd = '/Users/ramiro/cacatar --mtime=2018-12-10 -cf - %s | gzip -n > %s' % (arcname, tmp_archive_filename)
-    execute.execute(cmd, cwd = tar_dir, shell = True)
+    tar_util.create_deterministic_tarball(tmp_archive_filename, tar_dir, arcname, '2018-12-08')
     file_util.remove(tar_dir)
     return tmp_archive_filename
 
