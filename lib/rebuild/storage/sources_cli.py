@@ -88,6 +88,28 @@ class sources_cli(object):
                                action = 'store',
                                default = 'sources',
                                help = 'Repo to ingest to. [ sources ]')
+
+    # publish_artifacts
+    publish_artifacts_parser = subparsers.add_parser('publish_artifacts', help = 'Publish artifacts to remote storage.')
+    publish_artifacts_parser.add_argument('config',
+                                          action = 'store',
+                                          default = None,
+                                          type = str,
+                                          help = 'Config file for storage credentials and providers. [ None ]')
+    publish_artifacts_parser.add_argument('provider',
+                                          action = 'store',
+                                          default = None,
+                                          type = str,
+                                          help = 'Which provider to use for the upload. [ None ]')
+    publish_artifacts_parser.add_argument('local_dir',
+                                          action = 'store',
+                                          default = None,
+                                          type = str,
+                                          help = 'Local directory where to look for artifacts to publish. [ None ]')
+    publish_artifacts_parser.add_argument('--dry-run',
+                                          action = 'store_true',
+                                          default = False,
+                                          help = 'Do not do any work.  Just print what would happen. [ False ]')
     
     # retire
     retire_parser = subparsers.add_parser('retire', help = 'Retire a tarball in the database.')
@@ -145,6 +167,8 @@ class sources_cli(object):
     if args.command == 'ingest':
       return self._command_ingest(args.config, args.provider, args.what, args.remote_filename, args.dry_run,
                                   args.debug, args.arcname, args.repo)
+    elif args.command == 'publish_artifacts':
+      return self._command_publish_artifacts(args.config, args.provider, args.local_dir, args.dry_run)
     elif args.command == 'sync':
       return self._command_sync(args.local_directory, args.remote_directory)
     elif args.command == 'files':
@@ -354,6 +378,24 @@ class sources_cli(object):
     print('Uploading db.')
     db.save()
     return 0
+
+  def _command_publish_artifacts(self, config_filename, provider, local_dir, dry_run):
+    check.check_string(config_filename)
+    check.check_string(provider)
+    check.check_string(local_dir)
+    self.log_d('publish_artifacts: config_filename=%s; provider=%s; local_dir=%s; dry_run=%s' % (config_filename,
+                                                                                                 provider,
+                                                                                                 local_dir,
+                                                                                                 dry_run))
+    storage = self._make_storage('ingest', config_filename, provider, 'artifacts')
+
+    if not path.isdir(local_dir):
+      raise RuntimeError('not a directory: %s' % (local_dir))
+
+    db_files = file_find.find_fnmatch(local_dir, [ '*.db' ], relative = True, min_depth = 1, max_depth = 1, file_type = file_find.FILE)
+    print('db_diles: %s' % (db_files))
+    return 0
+
   
   @classmethod
   def run(clazz):
