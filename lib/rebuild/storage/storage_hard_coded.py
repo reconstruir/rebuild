@@ -34,3 +34,7 @@ class storage_hard_coded(storage_base):
   #@abstractmethod
   def remote_checksum(self, remote_filename):
     assert False
+
+  #@abstractmethod
+  def list_all_files(self):
+    assert False

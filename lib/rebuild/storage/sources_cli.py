@@ -18,17 +18,12 @@ from rebuild.source_ingester import ingest_util
 
 from rebuild.config import storage_config
 
-#from .pcloud import pcloud
-
 from .tarball_finder import tarball_finder
 from .storage_db_entry import storage_db_entry
 from .storage_db_dict import storage_db_dict
-from .storage_db_pcloud import storage_db_pcloud
 from .storage_db_entry import storage_db_entry
 from .storage_db import storage_db
 from .storage_factory import storage_factory
-
-#from rebuild.pcloud import pcloud, pcloud_error, pcloud_credentials
 
 class what_resolver(object):
   def __init__(self, what):
