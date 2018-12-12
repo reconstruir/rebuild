@@ -72,8 +72,18 @@ create table artifacts(
     adesc = md.artifact_descriptor
     if not self.has_artifact(adesc):
       raise NotInstalledError('Not installed: %s' % (str(adesc)), adesc)
-    self._remove_artifact(md.artifact_descriptor)
+    self._remove_artifact_i(md.artifact_descriptor)
     self._add_artifact_i(md)
+    self._db.commit()
+
+  def add_or_replace_artifact(self, md):
+    check.check_package_metadata(md)
+    adesc = md.artifact_descriptor
+    if not self.has_artifact(adesc):
+      self._add_artifact_i(md)
+    else:
+      self._remove_artifact_i(md.artifact_descriptor)
+      self._add_artifact_i(md)
     self._db.commit()
     
   @classmethod
@@ -106,10 +116,10 @@ create table artifacts(
     check.check_artifact_descriptor(adesc)
     if not self.has_artifact(adesc):
       raise NotInstalledError('Not installed: %s' % (str(adesc)), adesc)
-    self._remove_artifact(adesc)
+    self._remove_artifact_i(adesc)
     self._db.commit()
 
-  def _remove_artifact(self, adesc):
+  def _remove_artifact_i(self, adesc):
     sql = 'delete from artifacts where {}'.format(adesc.WHERE_EXPRESSION)
     self._db.execute(sql, adesc.to_sql_tuple())
     files_table_name = adesc.sql_table_name

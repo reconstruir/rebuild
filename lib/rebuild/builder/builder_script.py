@@ -126,7 +126,7 @@ class builder_script(object):
   def _script_sources(self):
     sources = self._step_manager.sources(self.env.recipe_load_env)
     sources.append(self.filename)
-    sources = [ self._path_normalize(s) for s in sources ]
+    sources = [ self._path_normalize(s) for s in sources if s ]
     return sorted(sources)
 
   @classmethod

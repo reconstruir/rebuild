@@ -1034,3 +1034,12 @@ version specification and locking for ~/.rebuild/config
 - add a force download option
 - theres no sanity check of downloaded checksum for either artifactory or pcloud
 - change the sources naming scheme to be explicit instead of using "find"
+- only fetch credentials from env when actually needed
+- artifact_manager_base abs interface is very screwy with all the extra properties and stuff
+  incuding timer, requirement managers and probably more
+- in artifact_db operations add, remove, add_or_remove there arent transactions
+- remove the rebbe prefix dumbness or make it optional
+- search interface in storage is useless let the caller use list_all and search on their own
+- credentials split
+- fix root_dir vs other root_dir issue in storage.config
+- use artifactory_address for more requests in artifatory_requests

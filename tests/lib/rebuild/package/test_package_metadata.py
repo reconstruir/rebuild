@@ -161,10 +161,10 @@ class test_package_metadata(unit_test):
     }
     self.assertEqual( expected, self.TEST_ENTRY.to_sql_dict() )
 
-  def test_clone_with_filename(self):
+  def test_mutate_filename(self):
     self.assertEqual( 'kiwi-6.7.8-2.tar.gz', self.TEST_ENTRY.filename )
     self.assertEqual( 'kiwi', self.TEST_ENTRY.name )
-    new_pm = self.TEST_ENTRY.clone_with_filename('foo.tar')
+    new_pm = self.TEST_ENTRY.mutate_filename('foo.tar')
     self.assertEqual( 'foo.tar', new_pm.filename )
     self.assertEqual( 'kiwi', new_pm.name )
     

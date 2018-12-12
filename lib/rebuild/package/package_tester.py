@@ -140,7 +140,7 @@ class package_tester(object):
     pm.install_packages(deps_packages, config.script.build_target, ['RUN', 'TEST'])
     timer.stop()
     timer.start('install tarball')
-    pm.install_tarball(config.package_tarball, ['RUN', 'TEST'])
+    pm.install_tarball(config.package_tarball, package.metadata, ['RUN', 'TEST'])
     timer.stop()
 
     tool_reqs = pd.requirements.filter_by(['TOOL'], config.script.env.config.host_build_target.system)

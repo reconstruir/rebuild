@@ -7,6 +7,9 @@ from bes.system import execute, log, os_env
 from bes.common import check
 from bes.fs import file_path, file_util, temp_file
 
+from rebuild.base import requirement_list
+from rebuild.package import package_metadata, package_metadata_list, package_files
+
 class artifactory_requests(object):
 
   @classmethod
@@ -128,6 +131,7 @@ class artifactory_requests(object):
     template = '{hostname}/api/metadata/{root_dir}/{repo}/{filename}'
     url = template.format(hostname = hostname, root_dir = root_dir, repo = repo, filename = filename)
 
+    # In irder to patch properties artifactory expects dict with 'props'
     json_data = { 'props': properties }
     
     auth = ( username, password )
@@ -138,5 +142,92 @@ class artifactory_requests(object):
       clazz.log_e('set_properties: failed to set properties: %s' % (url))
       return False
     return True
+
+  @classmethod
+  def list_all_artifacts(clazz, address, username, password):
+    check.check_artifactory_address(address)
+    clazz.log_d('list_all_files: address=%s' % (str(address)))
+
+    # an artifactory AQL query to find all the artifacts in a repo
+    template = '''
+items.find({
+  "repo":"%s",
+  "path" : {"$match":"%s/*"}
+}).include("*", "property.*")
+'''
+    match_prefix = '{root_dir}/{sub_repo}'.format(root_dir = address.root_dir, sub_repo = address.sub_repo)
+    aql = template % (address.repo, match_prefix)
+
+    clazz.log_d('list_all_artifacts: aql=%s' % (aql), multi_line = True)
+
+    url = address.search_aql_url
+    clazz.log_d('list_all_artifacts: url=%s' % (url))
+    auth = ( username, password )
+    import requests
+    response = requests.post(url, data = aql, auth = auth)
+    clazz.log_d('list_all_artifacts: response=%s; status_code=%d' % (str(response), response.status_code))
+    if response.status_code != 200:
+      raise RuntimeError('failed to list_all_artifacts for: %s (status_code %d)' % (url, response.status_code))
+    data = response.json()
+    assert 'results' in data
+    results = data['results']
+    result = package_metadata_list()
+    for item in results:
+      assert 'path' in item
+      item_name = item.get('name', None)
+      item_path = item.get('path', None)
+      filename = path.join(file_util.remove_head(item_path, match_prefix), item_name)
+      #print('CACA: item_name=%s; item_path=%s; filename=%s' % (item_name, item_path, filename))
+      item_properties = item.get('properties', None)
+      if item_properties:
+        md = clazz._parse_artifact_properties(filename, item_properties)
+        result.append(md)
+      else:
+        clazz.log_e('artifact missing properties: %s - %s - %s' % (address, item_path, item_name))
+    return result
+  
+  @classmethod
+  def _parse_artifact_properties(clazz, filename, artifactory_properties):
+    # FIXME: properties missing from artifactory rebuild.* properties
+    name = None
+    version = None
+    revision = None
+    epoch = None
+    system = None
+    level = None
+    arch = None
+    distro = None
+    distro_version = None
+    requirements = []
+    properties = {}
+    files = package_files(None, None)
+    
+    for artifactory_prop in artifactory_properties:
+      if artifactory_prop['key'] == 'rebuild.distro_version':
+        distro_version = artifactory_prop['value']
+      elif artifactory_prop['key'] == 'rebuild.name':
+        name = artifactory_prop['value']
+      elif artifactory_prop['key'] == 'rebuild.version':
+        version = artifactory_prop['value']
+      elif artifactory_prop['key'] == 'rebuild.revision':
+        revision = artifactory_prop['value']
+      elif artifactory_prop['key'] == 'rebuild.epoch':
+        epoch = artifactory_prop['value']
+      elif artifactory_prop['key'] == 'rebuild.system':
+        system = artifactory_prop['value']
+      elif artifactory_prop['key'] == 'rebuild.level':
+        level = artifactory_prop['value']
+      elif artifactory_prop['key'] == 'rebuild.arch':
+        arch = artifactory_prop['value']
+      elif artifactory_prop['key'] == 'rebuild.distro':
+        distro = artifactory_prop['value']
+      elif artifactory_prop['key'] == 'rebuild.requirements':
+        requirements.append(artifactory_prop['value'])
+
+    requirements = requirement_list.from_string_list(requirements)
+         
+    return package_metadata(filename, name, version, revision, epoch, system,
+                            level, arch, distro, distro_version, requirements,
+                            properties, files)
   
 log.add_logging(artifactory_requests, 'artifactory_requests')

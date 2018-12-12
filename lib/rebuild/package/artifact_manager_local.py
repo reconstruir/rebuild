@@ -5,8 +5,6 @@ from bes.common import check, string_util
 from bes.system import log
 from rebuild.base import build_blurb
 from bes.fs import file_util
-from rebuild.base import artifact_descriptor, requirement_manager
-
 from .artifact_manager_base import artifact_manager_base
 from .artifact_db import artifact_db
 from .db_error import *
@@ -54,7 +52,7 @@ class artifact_manager_local(artifact_manager_base):
     artifact_path_rel, artifact_path_abs = self._artifact_paths(pkg_desc, build_target)
     file_util.copy(tarball, artifact_path_abs, use_hard_link = True)
     self._reset_requirement_managers()
-    pkg_metadata = metadata.clone_with_filename(artifact_path_rel)
+    pkg_metadata = metadata.mutate_filename(artifact_path_rel)
     should_replace = allow_replace and self._db.has_artifact(pkg_metadata.artifact_descriptor)
     if should_replace:
       self._db.replace_artifact(pkg_metadata)
@@ -91,4 +89,12 @@ class artifact_manager_local(artifact_manager_base):
     md = self._db.get_artifact(adesc)
     if relative_filename:
       return md
-    return md.clone_with_filename(path.join(self._root_dir, md.filename))
+    return md.mutate_filename(path.join(self._root_dir, md.filename))
+
+  #@abstractmethod
+  def download(self, adesc):
+    pass
+  
+  #@abstractmethod
+  def needs_download(self, adesc):
+    return False

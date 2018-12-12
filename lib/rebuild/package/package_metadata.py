@@ -105,7 +105,7 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
       'files': self.files.to_simple_dict(),
     }
 
-  def clone_with_filename(self, filename):
+  def mutate_filename(self, filename):
     l = list(self)
     l[1] = filename
     # remove format version which __init__() does not take

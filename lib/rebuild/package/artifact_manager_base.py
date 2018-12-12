@@ -57,6 +57,14 @@ class artifact_manager_base(with_metaclass(ABCMeta, object)):
   def find_by_artifact_descriptor(self, artifact_descriptor, relative_filename):
     pass
 
+  @abstractmethod
+  def download(self, adesc):
+    pass
+  
+  @abstractmethod
+  def needs_download(self, adesc):
+    pass
+  
   def find_by_package_descriptor(self, pdesc, build_target, relative_filename):
     check.check_package_descriptor(pdesc)
     check.check_build_target(build_target)

@@ -80,3 +80,14 @@ class artifact_manager_chain(artifact_manager_base):
       except NotInstalledError as ex:
         pass
     raise NotInstalledError('package \"%s\" not found' % (str(artifact_descriptor)), artifact_descriptor)
+
+  #@abstractmethod
+  def download(self, adesc):
+    assert len(self._managers) == 1
+    return self._managers[0].download(adesc)
+  
+  #@abstractmethod
+  def needs_download(self, adesc):
+    assert len(self._managers) == 1
+    return self._managers[0].needs_download(adesc)
+  

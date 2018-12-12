@@ -34,7 +34,6 @@ class storage_pcloud(storage_base):
       self._available_files = self._load_available_local()
     else:
       self._available_files = self._load_available_remote()
-    self._update_filename_map()
     
   def __str__(self):
     return 'pcloud:%s' % (self._remote_root_dir)
@@ -58,13 +57,6 @@ class storage_pcloud(storage_base):
     except Exception as ex:
       self.blurb('pcloud: ignoring corrupt cached available files db: %s' % (self._cached_available_filename))
       return string_list()
-
-  def _update_filename_map(self):
-    self._filename_map = {}
-    for file_path in self._available_files:
-      filename = path.basename(file_path)
-      assert not filename in self._filename_map
-      self._filename_map[filename] = file_path
     
   def _download_file(self, filename):
     downloaded_filename = self._downloaded_filename(filename)
@@ -77,10 +69,9 @@ class storage_pcloud(storage_base):
 
   #@abstractmethod
   def find_tarball(self, filename):
-    file_path = self._filename_map.get(filename, None)
-    if not file_path:
+    if not filename in self._available_files:
       return None
-    return self._downloaded_filename(file_path)
+    return self._downloaded_filename(filename)
 
   #@abstractmethod
   def ensure_source(self, filename):
@@ -98,9 +89,9 @@ class storage_pcloud(storage_base):
   def search(self, name):
     name = name.lower()
     result = []
-    for file_path in self._filename_map.values():
-      if name in file_path:
-        result.append(file_path)
+    for filename in self._available_files:
+      if name in filename:
+        result.append(filename)
     return result
 
   #@abstractmethod

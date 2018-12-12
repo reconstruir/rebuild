@@ -421,7 +421,7 @@ class sources_cli(object):
 
     print('local_dir: %s' % (local_dir))
 
-    from rebuild.storage.artifactory_requests import artifactory_requests
+    from rebuild.artifactory import artifactory_requests
     
     hostname = storage._hostname
     repo = storage._config.repo
@@ -466,7 +466,7 @@ class sources_cli(object):
 
     print('local_dir: %s' % (local_dir))
 
-    from rebuild.storage.artifactory_requests import artifactory_requests
+    from rebuild.artifactory import artifactory_requests
     
     hostname = storage._hostname
     repo = storage._config.repo

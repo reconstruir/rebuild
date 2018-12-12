@@ -144,7 +144,17 @@ class package_manager(object):
       self._db = package_db(self._database_path)
     return self._db
   
-  def install_tarball(self, pkg_tarball, hardness):
+  def install_tarball(self, pkg_tarball, metadata, hardness):
+    check.check_string(pkg_tarball)
+    check.check_package_metadata(metadata)
+    self.log_i('installing tarball: %s for %s' % (pkg_tarball, ' '.join(hardness)))
+
+    needs_download = self._artifact_manager.needs_download(metadata.artifact_descriptor)
+    self.log_d('needs_download=%s package=%s' % (needs_download, str(metadata.artifact_descriptor)))
+    if needs_download:
+      self.log_i('downloading package: %s' % (str(metadata.artifact_descriptor)))
+      self._artifact_manager.download(metadata.artifact_descriptor)
+      
     self.log_i('installing tarball: %s for %s' % (pkg_tarball, ' '.join(hardness)))
     pkg = package(pkg_tarball)
 
@@ -225,12 +235,14 @@ class package_manager(object):
   def install_package(self, pkg_desc, build_target, hardness,
                       allow_downgrade = False, force_install = False):
     check.check_package_descriptor(pkg_desc)
+    self.log_i('install_package: pkg_desc=%s' % (str(pkg_desc)))
     result = self._install_package(pkg_desc, build_target, hardness, allow_downgrade, force_install)
     return result
     
   def _install_package(self, pkg_desc, build_target, hardness, allow_downgrade, force_install):
     pkg = self._artifact_manager.find_by_package_descriptor(pkg_desc, build_target, relative_filename = False)
-
+    if not pkg:
+      raise RuntimeError('Failed to find package in artifact manager: %s - %s' % (str(pkg_desc), str(build_target)))
     if self.is_installed(pkg.name):
       self.log_i('install_package: %s for %s' % (pkg_desc.full_name, ' '.join(hardness)))
       old_pkg_entry = self.db.find_package(pkg.name)
@@ -246,14 +258,14 @@ class package_manager(object):
         self.log_i('install_package: upgrading from %s to %s' % (old_pkg_entry_desc.full_name,
                                                                  pkg.full_name))
         self.uninstall_package(pkg.name)
-        self.install_tarball(pkg.filename, hardness)
+        self.install_tarball(pkg.filename, pkg, hardness)
         return True
       else:
         if allow_downgrade:
           self.log_i('install_package: downgrading from %s to %s' % (old_pkg_entry_desc.full_name,
                                                                      pkg.full_name))
           self.uninstall_package(pkg.name)
-          self.install_tarball(pkg.filename, hardness)
+          self.install_tarball(pkg.filename, pkg, hardness)
           return True
         else:
           print('warning: installed package %s newer than available package %s' % (old_pkg_entry_desc.full_name,
@@ -261,7 +273,7 @@ class package_manager(object):
         return False
     else:
       self.log_i('install_package: first install: %s' % (pkg.filename))
-      self.install_tarball(pkg.filename, hardness)
+      self.install_tarball(pkg.filename, pkg, hardness)
       return True
 
   @classmethod
