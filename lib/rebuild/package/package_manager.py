@@ -16,6 +16,7 @@ from rebuild.base import build_system, requirement
 from rebuild.base import package_descriptor, package_descriptor_list
 from rebuild.instruction import instruction_list
 from rebuild.pkg_config import pkg_config
+from rebuild.base import build_blurb
 
 from .package import package
 from .package_db import package_db
@@ -42,6 +43,7 @@ class package_manager(object):
 
   def __init__(self, root_dir, artifact_manager, log_tag = 'package_manager'):
     log.add_logging(self, log_tag)
+    build_blurb.add_blurb(self, label = 'retool')
     if artifact_manager:
       check.check_artifact_manager(artifact_manager)
     self._root_dir = root_dir
@@ -153,9 +155,11 @@ class package_manager(object):
     self.log_d('needs_download=%s package=%s' % (needs_download, str(metadata.artifact_descriptor)))
     if needs_download:
       self.log_i('downloading package: %s' % (str(metadata.artifact_descriptor)))
+      self.blurb_verbose('downloading %s' % (str(metadata.artifact_descriptor)))
       self._artifact_manager.download(metadata.artifact_descriptor)
       
     self.log_i('installing tarball: %s for %s' % (pkg_tarball, ' '.join(hardness)))
+    self.blurb_verbose('installing %s' % (str(metadata.artifact_descriptor)))
     pkg = package(pkg_tarball)
 
     if self.is_installed(pkg.package_descriptor.name):

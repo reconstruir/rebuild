@@ -1043,3 +1043,7 @@ version specification and locking for ~/.rebuild/config
 - credentials split
 - fix root_dir vs other root_dir issue in storage.config
 - use artifactory_address for more requests in artifatory_requests
+- add a check_valid_provider type of method to credentials
+- file_search installing package might be a perfomance bottleneck
+  better might be to have a list of affected files at package time and then process those only
+  

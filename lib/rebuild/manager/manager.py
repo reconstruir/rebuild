@@ -45,7 +45,7 @@ class manager(object):
     if subpath not in self.package_managers:
       self.package_managers[project_name] = package_manager(path.join(self.root_dir, subpath),
                                                             self.artifact_manager,
-                                                            log_tag = 'remanage.%s' % (project_name))
+                                                            log_tag = 'package_manager.%s' % (project_name))
     return self.package_managers[project_name]
 
   def update_packages(self, project_name, packages, build_target, allow_downgrade = False, force_install = False):
