@@ -18,7 +18,11 @@ class storage_git_repo(storage_base):
 
   def __str__(self):
     return 'git_repo:%s' % (self.repo)
-    
+
+  #@abstractmethod
+  def reload_available(self):
+    assert False, 'FIXME: need to write code that does git pull.'
+  
   #@abstractmethod
   def find_tarball(self, filename):
     self._update_if_needed()

@@ -15,7 +15,12 @@ class storage_local(storage_base):
     
   def __str__(self):
     return 'local:%s' % (self.where)
-    
+
+  #@abstractmethod
+  def reload_available(self):
+    # Nothing to do
+    pass
+  
   #@abstractmethod
   def find_tarball(self, filename):
     return tarball_finder.find_by_filename(self.where, filename)

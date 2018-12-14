@@ -14,8 +14,8 @@ class step_setup_install_tool_requirements(step):
 
   #@abstractmethod
   def execute(self, script, env, values, inputs):
-    if env.config.download_only:
-      return step_result(True, 'skipping step_setup_install_tool_requirements because download_only is True')
+    if env.config.is_partial_build:
+      return step_result(True, 'skipping step_setup_install_tool_requirements because build is partial')
       
     package_desc = script.descriptor
     tools = script.resolve_deps(['TOOL'], False)

@@ -25,19 +25,24 @@ class storage_pcloud(storage_base):
     
     self._remote_root_dir = path.join(config.download_credentials.root_dir, config.repo)
     self._local_root_dir = config.local_cache_dir
+    self._no_network = config.no_network
     file_util.mkdir(self._local_root_dir)
     pcloud_cred = pcloud_credentials(config.download_credentials.credentials.username,
                                      config.download_credentials.credentials.password)
     self._pcloud = pcloud(pcloud_cred, self._remote_root_dir)
     self._cached_available_filename = path.join(self._local_root_dir, self._CACHED_AVAILABLE_FILENAME)
-    if config.no_network:
-      self._available_files = self._load_available_local()
-    else:
-      self._available_files = self._load_available_remote()
+    self.reload_available()
     
   def __str__(self):
     return 'pcloud:%s' % (self._remote_root_dir)
 
+  #@abstractmethod
+  def reload_available(self):
+    if self._no_network:
+      self._available_files = self._load_available_local()
+    else:
+      self._available_files = self._load_available_remote()
+  
   def _load_available_remote(self):
     try:
       files = self._pcloud.quick_list_folder(self._remote_root_dir, recursive = True, relative = True)

@@ -122,6 +122,8 @@ class builder(object):
     if result.status == self.SCRIPT_SUCCESS:
       if self._env.config.download_only:
         label = 'DOWNLOADED'
+      elif self._env.config.ingest_only:
+        label = 'INGESTED'
       else:
         label = 'SUCCESS'
       self.blurb('%s - %s' % (script.descriptor.name, label))
@@ -147,7 +149,9 @@ class builder(object):
   
   def _build_one_script(self, script, env):
     if env.config.download_only:
-      return self._build_one_script_download_only(script, env)
+      return self. _build_one_script_partial('downloading', script, env)
+    elif env.config.ingest_only:
+      return self. _build_one_script_partial('ingesting', script, env)
     else:
       try:
         return self._build_one_script_build(script, env)
@@ -156,8 +160,8 @@ class builder(object):
 
     assert False, 'Not Reached'
 
-  def _build_one_script_download_only(self, script, env):
-      build_blurb.blurb('rebuild', '%s - downloading' % (script.descriptor.name))
+  def _build_one_script_partial(self, label, script, env):
+      build_blurb.blurb('rebuild', '%s - %s' % (script.descriptor.name, label))
       script_result = script.execute()
       if script_result.success:
         return self._run_result(self.SCRIPT_SUCCESS, script_result)

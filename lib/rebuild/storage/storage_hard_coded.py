@@ -10,6 +10,10 @@ class storage_hard_coded(storage_base):
     if not archiver.is_valid(tarball):
       raise RuntimeError('Invalid archive: %s' % (tarball))
     self._tarball = tarball
+
+  #@abstractmethod
+  def reload_available(self):
+    pass
     
   #@abstractmethod
   def find_tarball(self, filename):

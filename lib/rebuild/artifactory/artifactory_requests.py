@@ -65,14 +65,12 @@ class artifactory_requests(object):
       return True
 
   @classmethod
-  def list_all_files(clazz, hostname, root_dir, repo, username, password):
-    clazz.log_d('list_all_files: hostname=%s; root_dir=%s; repo=%s' % (hostname, root_dir, repo))
-    if hostname.endswith('/'):
-      hostname = hostname[0:-1]
-    root_dir = file_util.strip_sep(root_dir)
-    template = '{hostname}/api/storage/{root_dir}/{repo}?list&deep=1&listFolders=0'
-    url = template.format(hostname = hostname, root_dir = root_dir, repo = repo)
-    clazz.log_d('list_all_files: url=%s' % (url))
+  def list_all_files(clazz, address, username, password):
+    check.check_artifactory_address(address)
+    check.check_string(username)
+    check.check_string(password)
+    url = address.make_api_url(endpoint = 'storage', file_path = address.file_folder, params = 'list&deep=1&listFolders=0')
+    clazz.log_d('list_all_files: address=%s; url=%s' % (address, url))
     auth = ( username, password )
     import requests
     response = requests.get(url, auth = auth)
@@ -118,20 +116,18 @@ class artifactory_requests(object):
       return data['downloadUri']
 
   @classmethod
-  def set_properties(clazz, hostname, root_dir, repo, filename, username, password, properties):
-    check.check_string(hostname)
-    check.check_string(root_dir)
-    check.check_string(repo)
+  def set_properties(clazz, address, properties, username, password):
+    check.check_artifactory_address(address)
     check.check_string(username)
     check.check_string(password)
     check.check_dict(properties)
 
     import requests
 
-    template = '{hostname}/api/metadata/{root_dir}/{repo}/{filename}'
-    url = template.format(hostname = hostname, root_dir = root_dir, repo = repo, filename = filename)
-
-    # In irder to patch properties artifactory expects dict with 'props'
+    url = address.make_api_url(endpoint = 'metadata', file_path = address.file_path)
+    clazz.log_d('set_properties: address=%s; url=%s' % (address, url))
+    
+    # In order to patch properties artifactory expects dict with 'props'
     json_data = { 'props': properties }
     
     auth = ( username, password )
@@ -146,7 +142,7 @@ class artifactory_requests(object):
   @classmethod
   def list_all_artifacts(clazz, address, username, password):
     check.check_artifactory_address(address)
-    clazz.log_d('list_all_files: address=%s' % (str(address)))
+    clazz.log_d('list_all_artifacts: address=%s' % (str(address)))
 
     # an artifactory AQL query to find all the artifacts in a repo
     template = '''

@@ -65,6 +65,9 @@ class builder_cli(build_target_cli):
     self.parser.add_argument('--sources-provider', default = 'local',
                              action = 'store', type = str,
                              help = 'The storage provider to use for sources. [ local ]')
+    self.parser.add_argument('--ingest', action = 'store_true', help = 'Execute all the ingest build steps. [ False ]')
+    self.parser.add_argument('--ingest-only', default = None, action = 'store_true',
+                             help = 'Only ingest stuff needed for the build without building anything. [ True ]')
 
     for g in self.parser._action_groups:
       g._group_actions.sort(key = lambda x: x.dest)
@@ -100,9 +103,17 @@ class builder_cli(build_target_cli):
     if not bt.is_desktop():
       args.no_tests = True
 
-    if args.download_only and args.no_network:
-      build_blurb.blurb('rebuild', 'Only one of --download-only and --no-net can be given.')
-      return 1;
+    if args.no_network:
+      if args.download_only:
+        build_blurb.blurb('rebuild', 'Only one of --download-only and --no-net can be given.')
+        return 1
+      if args.ingest_only:
+        build_blurb.blurb('rebuild', 'Only one of --ingest-only and --no-net can be given.')
+        return 1
+
+    if args.download_only and args.ingest_only:
+      build_blurb.blurb('rebuild', 'Only one of --download-only and --ingest-only can be given.')
+      return 1
       
     config = builder_config()
     config.build_root = path.abspath(path.abspath(args.root))
@@ -128,6 +139,8 @@ class builder_cli(build_target_cli):
     config.download_only = args.download_only
     config.storage_config = args.storage_config
     config.sources_provider = args.sources_provider
+    config.ingest = args.ingest or args.ingest_only
+    config.ingest_only = args.ingest_only
       
     env = builder_env(config, available_packages)
     

@@ -16,6 +16,10 @@ class storage_register_meta(ABCMeta):
 class storage_base(with_metaclass(storage_register_meta, object)):
 
   @abstractmethod
+  def reload_available(self):
+    pass
+  
+  @abstractmethod
   def find_tarball(self, filename):
     pass
 

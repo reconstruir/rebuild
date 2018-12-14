@@ -867,7 +867,7 @@ and only then forks rebuilder.py.  might be tough
 - fake_package_recipe.py rename metadata to adesc
 
 2018-11-3
-- consider implementing download_only by removing steps instead of by hacking steps to not do stuff
+- consider implementing download_only/ingest_only by removing steps instead of by hacking steps to not do stuff
 - remove the logic to save checksums out of builder_script
 - rebuilder without local soources with --no-net stil ltries to download when wifi is truly down
 
@@ -1046,4 +1046,18 @@ version specification and locking for ~/.rebuild/config
 - add a check_valid_provider type of method to credentials
 - file_search installing package might be a perfomance bottleneck
   better might be to have a list of affected files at package time and then process those only
-  
+  REBUILD_PACKAGE_UPSTREAM_VERSION is a bit too screwy
+- ingester should have checksuming for the upstream url
+- dry run rebuild_sources.cli ingest should print the actual final url
+- change step_ingest to step_ingest_sources
+- step value properties should be part of the definition or schema or whatever
+- source_tarball is more general than that should be named *value*_with_properties or better
+- write a unit test for storage.reload_available
+- write unit tests for artifactory_address.make_api_url() and maybe use urljoin
+- property escaping
+- version of python_future in third_party
+- ingestion should work without upload should be 2 steps one just downloads the upstream url the other uploads
+- ingestion s/remote_filename/ingested_filename/
+- move jdk from j/ to java/
+
+other_dir bs

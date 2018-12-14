@@ -64,8 +64,10 @@ class step_cmake(compound_step):
   from .step_make import step_make
   from .step_setup import step_setup
   from .step_post_install import step_post_install
+  from .step_ingest_upstream_sources import step_ingest_upstream_sources
   
   __steps__ = [
+    step_ingest_upstream_sources,
     step_setup,
     step_cmake_configure,
     step_cmake_make,

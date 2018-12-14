@@ -28,6 +28,9 @@ from .storage_factory import storage_factory
 from rebuild.base import build_target
 from rebuild.package import artifact_manager_local
 
+from rebuild.artifactory.artifactory_requests import artifactory_requests
+from rebuild.artifactory.artifactory_address import artifactory_address
+
 class what_resolver(object):
   def __init__(self, what):
     self.checksum = None
@@ -83,6 +86,11 @@ class sources_cli(object):
                                default = None,
                                type = str,
                                help = 'The file path for an executable inside an archive if needed. [ None ]')
+    ingest_parser.add_argument('--checksum',
+                               action = 'store',
+                               default = None,
+                               type = str,
+                               help = 'The checksum for the remote content (url). [ None ]')
     ingest_parser.add_argument('--debug',
                                action = 'store_true',
                                default = False,
@@ -191,7 +199,7 @@ class sources_cli(object):
 
     if args.command == 'ingest':
       return self._command_ingest(args.config, args.provider, args.what, args.remote_filename, args.dry_run,
-                                  args.debug, args.arcname, args.repo)
+                                  args.debug, args.arcname, args.checksum, args.repo)
     elif args.command == 'update_properties':
       return self._command_update_properties(args.config, args.provider, args.local_dir, args.dry_run)
     elif args.command == 'publish_artifacts':
@@ -230,82 +238,30 @@ class sources_cli(object):
     return storage_factory.create(provider, factory_config)
   
   def _command_ingest(self, config_filename, provider, what, remote_filename,
-                      dry_run, debug, arcname, repo):
+                      dry_run, debug, arcname, checksum, repo):
     check.check_string(config_filename)
     check.check_string(provider)
     check.check_string(what)
     check.check_string(remote_filename)
     check.check_string(repo)
-    self.log_d('ingest: config_filename=%s; provider=%s; what=%s; remote_filename=%s; arcname=%s; repo=%s' % (config_filename,
-                                                                                                              provider,
-                                                                                                              what,
-                                                                                                              remote_filename,
-                                                                                                              arcname,
-                                                                                                              repo))
+    if arcname:
+      check.check_string(arcname)
+    if checksum:
+      check.check_string(checksum)
+    self.log_d('ingest: config_filename=%s; provider=%s; what=%s; remote_filename=%s; arcname=%s; checksum=%s; repo=%s' % (config_filename,
+                                                                                                                           provider,
+                                                                                                                           what,
+                                                                                                                           remote_filename,
+                                                                                                                           arcname,
+                                                                                                                           checksum,
+                                                                                                                           repo))
     storage = self._make_storage('ingest', config_filename, provider, repo)
-
-    remote_basename = path.basename(remote_filename)
-    # If it is a url, download it to a temporary file and use that
     if what.startswith('http'):
-      local_filename = url_util.download_to_temp_file(what, basename = 'tmp_download_for_ingest')
-      self.log_d('_command_ingest: using remote url %s => %s' % (what, local_filename))
+      rv = ingest_util.ingest_url(what, remote_filename, arcname, checksum, storage, dry_run = dry_run, debug = debug)
     else:
-      self.log_d('_command_ingest: using local file %s' % (what))
-      local_filename = what
-    if not path.isfile(local_filename):
-      raise IOError('local_filename not found: %s' % (local_filename))
-    is_valid_archive = archiver.is_valid(local_filename)
-    is_exe = binary_detector.is_executable(local_filename)
-    self.log_d('_command_ingest: is_valid_archive=%s; is_exe=%s' % (is_valid_archive, is_exe))
-    if not (is_valid_archive or is_exe):
-      raise RuntimeError('local_filename should be an archive or executable: %s' % (local_filename))
-
-    tmp_files_to_cleanup = []
-    def _cleanup_tmp_files():
-      if not debug:
-        file_util.remove(tmp_files_to_cleanup)
-
-    # if local_filename is an executable, archive into a tarball first
-    if is_exe:
-      local_filename = ingest_util.fix_executable(local_filename, debug = debug)
-      self.log_d('_command_ingest: fixed executable: %s' % (local_filename))
-      tmp_files_to_cleanup.append(local_filename)
-      self.log_d('_command_ingest: calling archive_binary(%s, %s, %s)' % (local_filename, remote_basename, arcname))
-      local_filename = ingest_util.archive_binary(local_filename, remote_basename, arcname, debug = debug)
-      self.log_d('_command_ingest: calling archive_binary() returns %s' % (local_filename))
-      tmp_files_to_cleanup.append(local_filename)
-
-    remote_path = storage.remote_filename_abs(remote_filename)
-    remote_checksum = storage.remote_checksum(remote_filename)
-    local_checksum = file_util.checksum('sha1', local_filename)
-    self.log_d('_command_ingest: remote_path=%s; remote_checksum=%s; local_checksum=%s' % (remote_path, remote_checksum, local_checksum))
-    if remote_checksum == local_checksum:
-      _cleanup_tmp_files()
-      print('a file with checksum %s already exists: %s' % (local_checksum, remote_path))
-      return 0
-    if remote_checksum is not None and remote_checksum != local_checksum:
-      _cleanup_tmp_files()
-      print('trying to re-ingest a with a different checksum.')
-      print(' local_filename: %s' % (local_filename))
-      print(' local_checksum: %s' % (local_checksum))
-      print('remote_checksum: %s' % (remote_checksum))
-      return 1
-    if dry_run:
-      print('Would upload %s => %s' % (local_filename, remote_path))
-      return 0
-    
-    print('Uploading %s => %s' % (local_filename, remote_path))
-    try:
-      self.log_d('_command_ingest() calling upload(%s, %s)' % (local_filename, remote_path))
-      rv = storage.upload(local_filename, remote_path, local_checksum)
-      self.log_d('_command_ingest() rv=%s - %s' % (rv, type(rv)))
-      if not rv:
-        print('Failed to upload.  Something went wrong.  FIXME: should delete the remote file.')
-        return 1
-    finally:
-      _cleanup_tmp_files()
-      
-    return 0
+      rv = ingest_util.ingest_file(what, remote_filename, arcname, storage, dry_run = dry_run, debug = debug)
+    print(rv.reason)
+    return 0 if rv.success else 1
 
   def _checksum_file(self, file_path = None, file_id = None):
     assert file_path or file_id
@@ -414,18 +370,12 @@ class sources_cli(object):
                                                                                                  provider,
                                                                                                  local_dir,
                                                                                                  dry_run))
-    storage = self._make_storage('ingest', config_filename, provider, 'artifacts')
+    storage = self._make_storage('update_properties', config_filename, provider, 'artifacts')
 
     if not path.isdir(local_dir):
       raise RuntimeError('not a directory: %s' % (local_dir))
 
-    print('local_dir: %s' % (local_dir))
-
-    from rebuild.artifactory import artifactory_requests
-    
-    hostname = storage._hostname
-    repo = storage._config.repo
-    root_dir = storage._config.download_credentials.root_dir
+    address = storage.make_address()
     username = storage._config.upload_credentials.credentials.username
     password = storage._config.upload_credentials.credentials.password
     
@@ -434,21 +384,16 @@ class sources_cli(object):
     artifacts = am.list_all_by_descriptor(bt)
     for adesc in artifacts:
       md = am.find_by_artifact_descriptor(adesc, True)
-      properties = {
-        'rebuild.format_version': str(md.format_version),
-        'rebuild.name': md.name,
-        'rebuild.version': md.version,
-        'rebuild.revision': str(md.revision),
-        'rebuild.epoch': str(md.epoch),
-        'rebuild.system': md.system,
-        'rebuild.level': md.level,
-        'rebuild.arch': md.arch,
-        'rebuild.distro': md.distro,
-        'rebuild.distro_version': md.distro_version,
-        'rebuild.requirements': md.requirements.to_string_list(),
-        }
-      rv = artifactory_requests.set_properties(hostname, root_dir, repo, md.filename, username, password, properties)
-      print('STATUS: %s: %s' % (md.filename, rv))
+      properties = self._metadata_to_artifactory_properties(md)
+      artifact_address = address.mutate_filename(md.filename)
+      if dry_run:
+        print('would update propertieson %s: %s' % (artifact_address, properties))
+      else:
+        rv = artifactory_requests.set_properties(artifact_address, properties, username, password)
+        if rv:
+          print('success: %s' % (md.filename))
+        else:
+          print(' failed: %s' % (md.filename))
     return 0
 
   def _command_publish_artifacts(self, config_filename, provider, local_dir, dry_run):
@@ -459,18 +404,12 @@ class sources_cli(object):
                                                                                                  provider,
                                                                                                  local_dir,
                                                                                                  dry_run))
-    storage = self._make_storage('ingest', config_filename, provider, 'artifacts')
-
     if not path.isdir(local_dir):
       raise RuntimeError('not a directory: %s' % (local_dir))
 
-    print('local_dir: %s' % (local_dir))
+    storage = self._make_storage('publish_artifacts', config_filename, provider, 'artifacts')
+    address = storage.make_address()
 
-    from rebuild.artifactory import artifactory_requests
-    
-    hostname = storage._hostname
-    repo = storage._config.repo
-    root_dir = storage._config.download_credentials.root_dir
     username = storage._config.upload_credentials.credentials.username
     password = storage._config.upload_credentials.credentials.password
     
@@ -493,22 +432,49 @@ class sources_cli(object):
       self.log_d('publish_artifacts: local_checksum=%s; remote_checksum=%s' % (local_checksum, remote_checksum))
       
       if remote_checksum == local_checksum:
-        print('a file with checksum %s already exists: %s' % (local_checksum, remote_path))
+        print('%25s: %s' % ('exists same checksum', md.filename))
         continue
       if remote_checksum is not None and remote_checksum != local_checksum:
-        print('trying to re-ingest a with a different checksum.')
-        print(' local_filename: %s' % (local_filename))
-        print(' local_checksum: %s' % (local_checksum))
-        print('remote_checksum: %s' % (remote_checksum))
+        print('%25s: %s' % ('exists diff checksum', md.filename))
         continue
       if dry_run:
-        print('would upload(%s, %s)' % (md_abs.filename, remote_filename))
+        print('%25s: %s' % ('dry run: would upload', md.filename))
       else:
         self.log_d('publish_artifacts: calling upload(%s, %s)' % (md_abs.filename, remote_filename))
         rv = storage.upload(local_filename, remote_path, local_checksum)
-        print('STATUS: %s: %s' % (remote_filename, rv))
+        if not rv:
+          print('%25s: %s' % ('failed', md.filename))
+          return 1
+        else:
+          print('%25s: %s' % ('uploaded', md.filename))
+          artifact_address = address.mutate_filename(md.filename)
+          properties = self._metadata_to_artifactory_properties(md)
+          properties_rv = artifactory_requests.set_properties(artifact_address, properties, username, password)
+          if properties_rv:
+            print('%25s: %s' % ('set properties', md.filename))
+          else:
+            print('%25s: %s' % ('failed to set properties', md.filename))
+            
     return 0
-  
+
+  @classmethod
+  def _metadata_to_artifactory_properties(clazz, md):
+    check.check_package_metadata(md)
+    properties = {
+      'rebuild.format_version': str(md.format_version),
+      'rebuild.name': md.name,
+      'rebuild.version': md.version,
+      'rebuild.revision': str(md.revision),
+      'rebuild.epoch': str(md.epoch),
+      'rebuild.system': md.system,
+      'rebuild.level': md.level,
+      'rebuild.arch': md.arch,
+      'rebuild.distro': md.distro,
+      'rebuild.distro_version': md.distro_version,
+      'rebuild.requirements': md.requirements.to_string_list(),
+      }
+    return properties
+
   @classmethod
   def run(clazz):
     raise SystemExit(sources_cli().main())

@@ -12,7 +12,8 @@ from .storage_base import storage_base
 
 from rebuild.base import build_blurb
 
-from rebuild.artifactory import artifactory_requests
+from rebuild.artifactory.artifactory_requests import artifactory_requests
+from rebuild.artifactory.artifactory_address import artifactory_address
 
 class storage_artifactory(storage_base):
 
@@ -25,17 +26,29 @@ class storage_artifactory(storage_base):
     self._config = config
     self._hostname = config.download_credentials.values['hostname']
     self._remote_root_dir = path.join(config.download_credentials.root_dir, config.repo)
+
+    self._address = artifactory_address(config.download_credentials.values['hostname'],
+                                        config.download_credentials.values['repo'],
+                                        config.download_credentials.values['other_root_dir'],
+                                        config.repo,
+                                        None)
+
     self._local_root_dir = config.local_cache_dir
+    self._no_network = config.no_network
     file_util.mkdir(self._local_root_dir)
     self._cached_available_filename = path.join(self._local_root_dir, self._CACHED_AVAILABLE_FILENAME)
-    if config.no_network:
-      self._available_files = self._load_available_local()
-    else:
-      self._available_files = self._load_available_remote()
+    self.reload_available()
     
   def __str__(self):
     return 'artifactory:%s%s' % (self._hostname, self._remote_root_dir)
 
+  #@abstractmethod
+  def reload_available(self):
+    if self._no_network:
+      self._available_files = self._load_available_local()
+    else:
+      self._available_files = self._load_available_remote()
+  
   def _load_available_remote(self):
     return string_list([ entry.filename for entry in self.list_all_files() ])
 
@@ -102,7 +115,6 @@ class storage_artifactory(storage_base):
                                                                   self._config.download_credentials.credentials.username,
                                                                   self._config.download_credentials.credentials.password)
     if verification_checksums.sha1 != local_checksum:
-      print('Failed to verify checksum.  Something went wrong.  FIXME: should delete the remote file.')
       return False
     return True
 
@@ -111,7 +123,6 @@ class storage_artifactory(storage_base):
     remote_filename = file_util.lstrip_sep(remote_filename)
     remote_path = self.remote_filename_abs(remote_filename)
     auth = (self._config.download_credentials.credentials.username, self._config.download_credentials.credentials.password)
-    #url = urljoin(self._hostname, remote_path)
     url = self._hostname + remote_path
     checksums = artifactory_requests.fetch_checksums(url,
                                                      self._config.download_credentials.credentials.username,
@@ -125,9 +136,14 @@ class storage_artifactory(storage_base):
 
   #@abstractmethod
   def list_all_files(self):
-    entries = artifactory_requests.list_all_files(self._hostname,
-                                                  self._config.download_credentials.root_dir,
-                                                  self._config.repo,
+    entries = artifactory_requests.list_all_files(self._address,
                                                   self._config.download_credentials.credentials.username,
                                                   self._config.download_credentials.credentials.password)
     return [ self._entry(*entry) for entry in entries ]
+
+  def make_address(self):
+    return artifactory_address(self._config.download_credentials.values['hostname'],
+                               self._config.upload_credentials.values['repo'],
+                               self._config.upload_credentials.values['other_root_dir'],
+                               self._config.repo,
+                               None)

@@ -51,7 +51,19 @@ class artifactory_address(namedtuple('artifactory_address', 'hostname, repo, roo
 
   @cached_property
   def api_url(self):
-    return '{hostname}api'.format(hostname = self.hostname)
+    return self.make_api_url()
+
+  @cached_property
+  def file_folder(self):
+    'Return the folder for self.filename'
+    return '{repo}/{root_dir}/{sub_repo}'.format(repo = self.repo, root_dir = self.root_dir, sub_repo = self.sub_repo)
+
+  @cached_property
+  def file_path(self):
+    'Return the full path for self.filename or raise an error if filename is None'
+    if not self.filename:
+      raise ValueError('no filename available')
+    return '{file_folder}/{filename}'.format(file_folder = self.file_folder, filename = self.filename)
 
   @cached_property
   def search_aql_url(self):
@@ -62,5 +74,20 @@ class artifactory_address(namedtuple('artifactory_address', 'hostname, repo, roo
     l = list(self)
     l[index] = filename
     return self.__class__(*l)
-  
+
+  def make_api_url(self, endpoint = None, file_path = None, params = None):
+    if endpoint:
+      api_url = '{hostname}api/{endpoint}'.format(hostname = self.hostname, endpoint = endpoint)
+    else:
+      api_url = '{hostname}api'.format(hostname = self.hostname)
+
+    if file_path:
+      url = '{api_url}/{file_path}'.format(api_url = api_url, file_path = file_path)
+    else:
+      url = api_url
+      
+    if params:
+      url = '{url}?{params}'.format(url = url, params = params)
+    return url
+    
 check.register_class(artifactory_address)

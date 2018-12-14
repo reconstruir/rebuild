@@ -43,6 +43,8 @@ class builder_config(object):
     self.download_only = False
     self.storage_config = None
     self.storage_provider = 'local'
+    self.ingest_only = False
+    self.ingest = False
     
   def builds_dir(self, build_target):
     return path.join(self.build_root, 'builds', build_target.build_path)
@@ -89,3 +91,8 @@ class builder_config(object):
   @trash_dir.setter
   def trash_dir(self, value):
     raise AttributeError('trash_dir is read only.')
+
+  @property
+  def is_partial_build(self):
+    'Return True if the build is partial - only download or ingest.'
+    return self.download_only or self.ingest_only

@@ -115,7 +115,7 @@ class builder_script(object):
   def execute(self):
     result = self._step_manager.execute(self, self.env)
     if result.success:
-      if not self.env.config.download_only:
+      if not self.env.config.is_partial_build:
         self.env.checksum_manager.save_checksums(self._current_checksums(self.env.script_manager.scripts),
                                                  self.descriptor,
                                                  self.build_target)

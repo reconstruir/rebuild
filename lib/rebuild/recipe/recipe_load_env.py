@@ -52,16 +52,10 @@ class recipe_load_env(recipe_load_env_base):
 
 class testing_recipe_load_env(recipe_load_env_base):
 
-  def __init__(self, build_target = None, downloads_manager = None, storage = None):
+  def __init__(self, build_target = None):
     build_target = build_target or BT.make_host_build_target()
     check.check_build_target(build_target)
     self._build_target = build_target
-    if downloads_manager:
-      check.check_git_download_cache(downloads_manager)
-    self._downloads_manager = downloads_manager
-    if storage:
-      check.check_storage_chain(storage)
-    self._storage = storage
 
   #@abstractmethod
   def get_build_target(self):
@@ -69,10 +63,10 @@ class testing_recipe_load_env(recipe_load_env_base):
 
   #@abstractmethod
   def get_downloads_manager(self):
-    return self._downloads_manager
+    assert False
 
   #@abstractmethod
   def get_sources_storage(self):
-    return self._storage
+    assert False
     
 check.register_class(recipe_load_env_base, include_seq = False)

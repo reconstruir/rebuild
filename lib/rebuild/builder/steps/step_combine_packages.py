@@ -21,7 +21,7 @@ class _step_combine_packages_unpack(step):
 
   #@abstractmethod
   def execute(self, script, env, values, inputs):
-    if env.config.download_only:
+    if env.config.is_partial_build:
       return step_result(True, None, outputs = { '_skip_rest': True })
 
     packages = values.get('packages')

@@ -17,7 +17,11 @@ class storage_kiwi(storage_base):
     
   def __str__(self):
     return 'kiwi:%s' % (self.where)
-    
+
+  #@abstractmethod
+  def reload_available(self):
+    pass
+  
   #@abstractmethod
   def find_tarball(self, filename):
     return self._find_by_filename(self.where, filename)
@@ -54,7 +58,11 @@ class storage_watermelon(storage_base):
     
   def __str__(self):
     return 'watermelon:%s' % (self.where)
-    
+
+  #@abstractmethod
+  def reload_available(self):
+    pass
+  
   #@abstractmethod
   def find_tarball(self, filename):
     return self._find_by_filename(self.where, filename)
