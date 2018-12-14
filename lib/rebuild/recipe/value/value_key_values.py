@@ -9,19 +9,19 @@ class value_key_values(value_base):
 
   def __init__(self, origin = None, value = None):
     super(value_key_values, self).__init__(origin)
-    values = value or key_value_list()
-    check.check_key_value_list(values)
-    self.values = values
+    value = value or key_value_list()
+    check.check_key_value_list(value)
+    self.value = value
 
   def __eq__(self, other):
-    return self.values == other.values
+    return self.value == other.value
     
   def __iter__(self):
-    return iter(self.values)
+    return iter(self.value)
     
   #@abstractmethod
   def value_to_string(self, quote, include_properties = True):
-    return self.values.to_string(delimiter = '=', value_delimiter = ' ', quote = quote)
+    return self.value.to_string(delimiter = '=', value_delimiter = ' ', quote = quote)
 
   #@abstractmethod
   def sources(self, recipe_env):
@@ -30,7 +30,7 @@ class value_key_values(value_base):
 
   #@abstractmethod
   def substitutions_changed(self):
-    self.values.substitute_variables(self.substitutions)
+    self.value.substitute_variables(self.substitutions)
   
   @classmethod
   #@abstractmethod
@@ -67,8 +67,8 @@ class value_key_values(value_base):
     seen = {}
     for value in values:
       check.check_value_key_values(value)
-      check.check_key_value_list(value.values)
-      for next_kv in value.values:
+      check.check_key_value_list(value.value)
+      for next_kv in value.value:
         check.check_key_value(next_kv)
         i = len(result)
         seen_i = seen.get(next_kv.key, None)
