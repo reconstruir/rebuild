@@ -70,6 +70,11 @@ class builder_script(object):
       'REBUILD_TEMP_DIR': self.temp_dir,
       'REBUILD_TEST_DIR': self.test_dir,
     }
+    for kv in self.recipe.resolve_variables(self.build_target.system):
+      if kv.key in self.substitutions:
+        raise ValueError('Cannot override system variables in recipe: %s' % (kv.key))
+      self.substitutions[kv.key] = kv.value
+
     self._add_steps()
 
   def step_values_as_dict(self):

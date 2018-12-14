@@ -1062,4 +1062,16 @@ version specification and locking for ~/.rebuild/config
 - requests timeouts/ progress ?
 - java jdk download header dance
 
+
+2018-12-14
+- audit .bescfg files and make sure the paths that are getting added are relative to the right places
+- script substitutions my be better named variables
+
+
+urgent before release 1.0:
 other_dir bs
+
+
+
+other:
+ - resolve the export_compilation_flags_requirements dumbness

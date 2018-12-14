@@ -89,10 +89,8 @@ class step_python_standalone_program(compound_step):
   'A complete step to make python libs using the "build" target of setuptools.'
   from .step_setup import step_setup
   from .step_post_install import step_post_install
-  from .step_ingest_upstream_sources import step_ingest_upstream_sources
 
   __steps__ = [
-    step_ingest_upstream_sources,
     step_setup,
     step_python_make_standalone_program,
     step_post_install,

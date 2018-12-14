@@ -733,11 +733,29 @@ package foo 1.2.3 4
     step1 = r[0].steps[0]
     values = step1.resolve_values({}, self.TEST_ENV)
     self.assertEqual( None, values['file_list_value'] )
-    
+
+
+  def test_variables(self):
+    text = '''!rebuild.recipe!
+package foo 1.2.3 4
+  variables
+    all: FOO=hi BAR=666
+    linux: AUTHOR=linus
+    macos: AUTHOR=apple
+  steps
+    step_takes_string
+      string_value: myt string with ${FOO}
+'''
+
+    r = P(self._filename_for_parser(), text).parse()
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( [ KV('FOO', 'hi'), KV('BAR', '666'), KV('AUTHOR', 'linus') ], r[0].resolve_variables('linux') )
+    self.assertEqual( [ KV('FOO', 'hi'), KV('BAR', '666'), KV('AUTHOR', 'apple') ], r[0].resolve_variables('macos') )
+
   def _filename_for_parser(self):
     'Return a fake filename for parser.  Some values need it to find files relatively to filename.'
     return self.data_path('whatever')
-
+  
 class test_recipe_step_values(unit_test):
   
   def xtest_step_value_string_list(self):

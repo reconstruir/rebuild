@@ -4,15 +4,16 @@ import re
 from collections import namedtuple
 from bes.common import check, node
 from bes.text import text_line_parser, white_space
+from bes.key_value import key_value_list
 
 from .recipe_error import recipe_error
 
-class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties, requirements, descriptor, instructions, steps, python_code')):
+class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties, requirements, descriptor, instructions, steps, python_code, variables')):
 
   CHECK_UNKNOWN_PROPERTIES = True
   
   def __new__(clazz, format_version, filename, enabled, properties, requirements,
-              descriptor, instructions, steps, python_code):
+              descriptor, instructions, steps, python_code, variables):
     check.check_int(format_version)
     check.check_recipe_enabled(enabled)
     if format_version != 2:
@@ -20,8 +21,10 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
     check.check_string(filename)
     if python_code:
       check.check_string(python_code)
+    if variables:
+      check.check_masked_value_list(variables)
     return clazz.__bases__[0].__new__(clazz, format_version, filename, enabled, properties,
-                                      requirements, descriptor, instructions, steps, python_code)
+                                      requirements, descriptor, instructions, steps, python_code, variables)
 
   def __str__(self):
     return self.to_string()
@@ -38,6 +41,9 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
       root.add_child('')
     if self.enabled != '':
       root.add_child('enabled=%s' % (self.enabled.expression))
+      root.add_child('')
+    if self.variables:
+      root.children.append(self._variables_to_node(self.variables))
       root.add_child('')
     if self.properties:
       root.children.append(self._properties_to_node(self.properties))
@@ -61,6 +67,13 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
     for key in sorted([ key for key in properties.keys()]):
       clazz._property_to_node(properties_node, key, properties)
     return properties_node
+  
+  @classmethod
+  def _variables_to_node(clazz, variables):
+    variables_node = node('variables')
+    for v in variables:
+      variables_node.add_child(str(v))
+    return variables_node
 
   @classmethod
   def _property_to_node(clazz, properties_node, key, properties):
@@ -119,5 +132,10 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
     parser.replace_line_text(1, first_line_text)
     result.add_child(str(parser))
     return result
+
+  def resolve_variables(self, system):
+    if not self.variables:
+      return key_value_list()
+    return self.variables.resolve(system, 'key_values')
   
 check.register_class(recipe, include_seq = False)

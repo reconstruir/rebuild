@@ -29,6 +29,7 @@ from .value import masked_value_list
 from .value import value_factory
 from .value import value_file
 from .value import value_origin
+from .value import value_key_values
 
 class recipe_parser(object):
 
@@ -75,7 +76,8 @@ class recipe_parser(object):
     instructions = []
     enabled = recipe_enabled(value_origin(self.filename, 1, ''), 'True')
     python_code = None
-
+    variables = masked_value_list()
+    
     # Need to deal with any inline python code first so its available for the rest of the recipe
     python_code_node = node.find_child(lambda child: child.data.text == 'python_code')
     if python_code_node:
@@ -87,6 +89,8 @@ class recipe_parser(object):
         properties = self._parse_properties(child)
       elif text.startswith('requirements'):
         requirements.extend(self._parse_requirements(child))
+      elif text.startswith('variables'):
+        variables.extend(self._parse_variables(child))
       elif text.startswith('steps'):
         steps = self._parse_steps(child)
       elif text.startswith('enabled'):
@@ -103,7 +107,7 @@ class recipe_parser(object):
         self._error('unknown recipe section: \"%s\"' % (text), child)
     desc = package_descriptor(name, version, requirements = requirements, properties = properties)
     return recipe(2, self.filename, enabled, properties, requirements,
-                  desc, instructions, steps, python_code)
+                  desc, instructions, steps, python_code, variables)
 
   def _parse_package_header(self, node):
     parts = string_util.split_by_white_space(node.data.text, strip = True)
@@ -150,6 +154,11 @@ class recipe_parser(object):
       next_reqs = requirement_list.parse(req_text)
       reqs.extend(next_reqs)
     return requirement_list(reqs)
+
+  def _parse_variables(self, node):
+    origin = value_origin(self.filename, node.data.line_number, node.data.text)
+    values = value_key_values.xnew_parse(origin, node)
+    return masked_value_list(values)
 
   # FIXME_DEC1
   def _parse_export_compilation_flags_requirements(self, node):
