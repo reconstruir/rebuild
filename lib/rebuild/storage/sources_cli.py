@@ -426,6 +426,10 @@ class sources_cli(object):
 
       self.log_d('publish_artifacts: remote_path=%s; local_filename=%s; remote_filename=%s' % (remote_path, local_filename, remote_filename))
 
+      if not path.isfile(local_filename):
+        print('%25s: %s' % ('missing', md.filename))
+        continue
+      
       remote_checksum = storage.remote_checksum(remote_filename)
       local_checksum = file_util.checksum('sha1', local_filename)
 

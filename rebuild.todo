@@ -1059,5 +1059,7 @@ version specification and locking for ~/.rebuild/config
 - ingestion should work without upload should be 2 steps one just downloads the upstream url the other uploads
 - ingestion s/remote_filename/ingested_filename/
 - move jdk from j/ to java/
+- requests timeouts/ progress ?
+- java jdk download header dance
 
 other_dir bs
