@@ -1069,5 +1069,9 @@ s/find_tarball/something_better
 - file_search installing package might be a perfomance bottleneck
   better might be to have a list of affected files at package time and then process those only
 
+- no unit test for script programs in packages that get their prefix hacked
+- no unit test for package_files
+
 other:
  - resolve the export_compilation_flags_requirements dumbness
+ 
