@@ -196,7 +196,7 @@ class tool_cli(build_target_cli):
   
   UPDATE_SCRIPT_TEMPLATE = '''#!/bin/bash
 _root_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-retool.py packages update --force ${_root_dir} @STORAGE_CONFIG_FILENAME@ @ARTIFACTS_PROVIDER@  ${1+"$@"}
+retool.py packages update ${_root_dir} @STORAGE_CONFIG_FILENAME@ @ARTIFACTS_PROVIDER@  ${1+"$@"}
 '''
 
   def _command_packages_update(self, root_dir, wipe, project_name, allow_downgrade,
