@@ -49,10 +49,10 @@ class artifactory_requests(object):
     return clazz._checksums(md5, sha1, sha256)
 
   @classmethod
-  def download_to_file(clazz, target, url, username, password):
+  def download_to_file(clazz, target, url, username, password, debug = False):
     'Download file to target.'
     import requests
-    tmp = temp_file.make_temp_file(suffix = '-' + path.basename(target), delete = False)
+    tmp = temp_file.make_temp_file(suffix = '-' + path.basename(target), delete = not debug)
     auth = ( username, password )
     response = requests.get(url, auth = auth, stream = True)
     clazz.log_d('download_to_file: target=%s; url=%s; tmp=%s' % (target, url, tmp))

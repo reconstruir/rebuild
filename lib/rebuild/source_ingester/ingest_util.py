@@ -1,6 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import os
+import os, shutil
 from os import path
 from collections import namedtuple
 
@@ -53,7 +53,7 @@ class ingest_util(object):
       raise RuntimeError('not a valid archive filename: %s' % (archive_filename))
     if not file_util.is_basename(archive_filename):
       raise RuntimeError('archive_filename should be a filename not a path: %s' % (archive_filename))
-    tar_dir = temp_file.make_temp_dir(delete = False)
+    tar_dir = temp_file.make_temp_dir(delete = not debug)
     arcname = arcname or path.join('bin', path.basename(executable_filename))
     dst_file = path.join(tar_dir, arcname)
     file_util.copy(executable_filename, dst_file)
@@ -80,16 +80,18 @@ class ingest_util(object):
   _ingest_result = namedtuple('_ingest_result', 'success, reason')
   
   @classmethod
-  def ingest_url(clazz, url, remote_filename, arcname, checksum, storage, dry_run = False, debug = False):
+  def ingest_url(clazz, url, remote_filename, arcname, checksum, storage, cookies = None, dry_run = False, debug = False):
     check.check_string(url)
     check.check_string(remote_filename)
     if arcname:
       check.check_string(arcname)
     if checksum:
       check.check_string(checksum)
-    clazz.log_d('ingest_url: url=%s; arcname=%s' % (url, arcname))
-    local_filename = url_util.download_to_temp_file(url, basename = 'tmp_download_for_ingest')
+    clazz.log_d('ingest_url: url=%s; arcname=%s; cookies=%s' % (url, arcname, cookies))
+    local_filename = clazz._download_to_tmp_file(url, cookies, debug = debug)
     clazz.log_d('ingest_url: downloaded remote url %s => %s' % (url, local_filename))
+    if not local_filename:
+      return clazz._ingest_result(False, 'failed: could not download: %s' % (url))
     if checksum:
       local_checksum = file_util.checksum('sha256', local_filename)
       if local_checksum != checksum:
@@ -138,7 +140,7 @@ class ingest_util(object):
 
     remote_path = storage.remote_filename_abs(remote_filename)
     remote_checksum = storage.remote_checksum(remote_filename)
-    local_checksum = file_util.checksum('sha1', local_filename)
+    local_checksum = file_util.checksum('sha256', local_filename)
     clazz.log_d('ingest_file: remote_path=%s; remote_checksum=%s; local_checksum=%s' % (remote_path, remote_checksum, local_checksum))
     if remote_checksum == local_checksum:
       _cleanup_tmp_files()
@@ -170,5 +172,20 @@ remote_checksum: %s''' % (local_filename, local_checksum, remote_checksum)
       _cleanup_tmp_files()
       
     return clazz._ingest_result(True, 'successfully ingested %s' % (local_filename))
+
+  @classmethod
+  def _download_to_tmp_file(clazz, url, cookies, debug = False):
+    'Download url to tmp file.'
+    import requests
+    tmp = temp_file.make_temp_file(delete = not debug)
+    clazz.log_d('_download_to_tmp_file: url=%s; tmp=%s' % (url, tmp))
+    response = requests.get(url, stream = True, cookies = cookies or None)
+    clazz.log_d('_download_to_tmp_file: status_code=%d' % (response.status_code))
+    if response.status_code != 200:
+      return None
+    with open(tmp, 'wb') as fout:
+      shutil.copyfileobj(response.raw, fout)
+      fout.close()
+      return tmp
   
 log.add_logging(ingest_util, 'ingest_util')

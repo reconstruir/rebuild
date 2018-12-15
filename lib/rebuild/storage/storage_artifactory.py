@@ -114,7 +114,7 @@ class storage_artifactory(storage_base):
     verification_checksums = artifactory_requests.fetch_checksums(download_url,
                                                                   self._config.download_credentials.credentials.username,
                                                                   self._config.download_credentials.credentials.password)
-    if verification_checksums.sha1 != local_checksum:
+    if verification_checksums.sha256 != local_checksum:
       return False
     return True
 
@@ -127,7 +127,7 @@ class storage_artifactory(storage_base):
     checksums = artifactory_requests.fetch_checksums(url,
                                                      self._config.download_credentials.credentials.username,
                                                      self._config.download_credentials.credentials.password)
-    return checksums.sha1 if checksums else None
+    return checksums.sha256 if checksums else None
 
   #@abstractmethod
   def remote_filename_abs(self, remote_filename):
