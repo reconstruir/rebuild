@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
@@ -20,8 +19,10 @@ class step_check_hard_coded_paths(step):
       script.staged_files_dir: '${REBUILD_PACKAGE_PREFIX}',
       script.requirements_manager.installation_dir: '${REBUILD_PACKAGE_PREFIX}',
     }
-    file_search.search_replace(script.staged_files_dir,
-                               replacements,
-                               backup = False,
-                               test_func = file_mime.is_text)
-    return step_result(True, None)
+    from bes.debug import debug_timer
+    result = file_search.search_replace(script.staged_files_dir,
+                                        replacements,
+                                        backup = False,
+                                        test_func = file_mime.is_text)
+    files_with_hardcoded_paths = [ file_util.remove_head(f, script.staged_files_dir) for f in result.replaced_filenames ]
+    return step_result(True, None, outputs = { 'files_with_hardcoded_paths': files_with_hardcoded_paths })

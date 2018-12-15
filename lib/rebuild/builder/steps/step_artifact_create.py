@@ -28,7 +28,8 @@ class step_artifact_create_make_package(step):
     staged_tarball, metadata = package.create_package(output_tarball_path,
                                                       script.descriptor,
                                                       script.build_target,
-                                                      script.stage_dir)
+                                                      script.stage_dir,
+                                                      inputs.get('files_with_hardcoded_paths', None))
     self.blurb('staged tarball: %s' % (path.relpath(staged_tarball)))
     outputs = {
       'staged_tarball': staged_tarball,

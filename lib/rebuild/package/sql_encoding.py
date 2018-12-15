@@ -28,6 +28,9 @@ class sql_encoding(object):
   def decode_requirements(clazz, text):
     return requirement_list.from_string_list(json.loads(text))
   
+  def decode_string_list(clazz, text):
+    return string_list.parse(text)
+  
   @classmethod
   def encode_dict(clazz, d):
     return clazz.encode_string(json_util.to_json(d, sort_keys = True))

@@ -12,7 +12,7 @@ from rebuild.package import package_files
 class test_package_metadata(unit_test):
 
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/lib/rebuild/package'
-
+  
   TEST_REQUIREMENTS = RL.parse('foo >= 1.2.3-1 bar >= 6.6.6-1')
   TEST_FILES = package_files(FCL(
     [
@@ -25,7 +25,6 @@ class test_package_metadata(unit_test):
     ]),
     'files_chk',
     'env_files_chk')
-    
   TEST_PROPERTIES = { 'p1': 'v1', 'p2': 6 }
 
   TEST_ENTRY = PM('kiwi-6.7.8-2.tar.gz', 'kiwi', '6.7.8', 2, 0, 'macos', 'release', [ 'x86_64' ], '', '',

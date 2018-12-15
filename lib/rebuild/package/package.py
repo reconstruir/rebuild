@@ -128,10 +128,11 @@ unset REBUILD_STUFF_DIR
       '#@REBUILD_HEAD@': self._ENV_FILE_HEAD_TEMPLATE,
       '#@REBUILD_TAIL@': self._ENV_FILE_TAIL_TEMPLATE,
     }
-    file_search.search_replace(where,
-                               replacements,
-                               backup = False,
-                               test_func = file_mime.is_text)
+    if True:
+      file_search.search_replace(where,
+                                 replacements,
+                                 backup = False,
+                                 test_func = file_mime.is_text)
 
   def _post_install_hooks(self, installation_dir):
     self._update_python_config_files(installation_dir)
@@ -164,7 +165,8 @@ unset REBUILD_STUFF_DIR
 
   _create_package_result = namedtuple('_create_package_result', 'filename, metadata')
   @classmethod
-  def create_package(clazz, tarball_path, pkg_desc, build_target, stage_dir, timer = None):
+  def create_package(clazz, tarball_path, pkg_desc, build_target, stage_dir,
+                     files_with_hardcoded_paths, timer = None):
     timer = timer or debug_timer('package', disabled = True)
 
     properties = dict_util.filter_without_keys(pkg_desc.properties, [ 'export_compilation_flags_requirements' ])
@@ -201,8 +203,10 @@ unset REBUILD_STUFF_DIR
     env_files_checksum_list = file_checksum_list.from_files(env_files, root_dir = env_files_dir)
     timer.stop()
 
+    print('WARNINGFIXME: unused: %s' % (files_with_hardcoded_paths))
     pkg_files = package_files(files_checksum_list, env_files_checksum_list)
-    
+
+    # filename is empty cause it only gets filled once metadata ends up in a db
     metadata = package_metadata('',
                                 pkg_desc.name,
                                 pkg_desc.version.upstream_version,
