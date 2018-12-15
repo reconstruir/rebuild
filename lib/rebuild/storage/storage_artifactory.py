@@ -26,13 +26,7 @@ class storage_artifactory(storage_base):
     self._config = config
     self._hostname = config.download_credentials.values['hostname']
     self._remote_root_dir = path.join(config.download_credentials.root_dir, config.repo)
-
-    self._address = artifactory_address(config.download_credentials.values['hostname'],
-                                        config.download_credentials.values['repo'],
-                                        config.download_credentials.values['other_root_dir'],
-                                        config.repo,
-                                        None)
-
+    self._address = self.make_address()
     self._local_root_dir = config.local_cache_dir
     self._no_network = config.no_network
     file_util.mkdir(self._local_root_dir)
@@ -40,7 +34,7 @@ class storage_artifactory(storage_base):
     self.reload_available()
     
   def __str__(self):
-    return 'artifactory:%s%s' % (self._hostname, self._remote_root_dir)
+    return 'artifactory:%s' % (str(self._address))
 
   #@abstractmethod
   def reload_available(self):
@@ -63,15 +57,15 @@ class storage_artifactory(storage_base):
       self.blurb('artifactory: ignoring corrupt cached available files db: %s' % (self._cached_available_filename))
       return string_list()
     
-  def _download_file(self, filename):
-    downloaded_filename = self._downloaded_filename(filename)
-    remote_path = self.remote_filename_abs(filename)
-    url = self._hostname + remote_path
-    self.log_d('_download_file: filename=%s; downloaded_filename=%s; remote_path=%s; url=%s' % (filename, downloaded_filename, remote_path, url))
-    artifactory_requests.download_to_file(downloaded_filename, url,
+  def _download_file(self, remote_filename):
+    downloaded_filename = self._downloaded_filename(remote_filename)
+    address = self.make_address(remote_filename)
+    self.log_d('_download_file: remote_filename=%s; downloaded_filename=%s; address=%s' % (remote_filename, downloaded_filename, address))
+    artifactory_requests.download_to_file(downloaded_filename,
+                                          address,
                                           self._config.download_credentials.credentials.username,
                                           self._config.download_credentials.credentials.password)
-
+    
   def _downloaded_filename(self, filename):
     return path.join(self._local_root_dir, filename)
 
@@ -83,6 +77,7 @@ class storage_artifactory(storage_base):
 
   #@abstractmethod
   def ensure_source(self, filename):
+    assert filename.startswith(self._local_root_dir)
     if filename.startswith(self._local_root_dir):
       filename = file_util.remove_head(filename, self._local_root_dir)
     downloaded_filename = self._downloaded_filename(filename)
@@ -111,22 +106,20 @@ class storage_artifactory(storage_base):
                                                self._config.upload_credentials.credentials.username,
                                                self._config.upload_credentials.credentials.password)
     self.log_d('upload: download_url=%s' % (download_url))
-    verification_checksums = artifactory_requests.fetch_checksums(download_url,
-                                                                  self._config.download_credentials.credentials.username,
-                                                                  self._config.download_credentials.credentials.password)
+    verification_checksums = artifactory_requests.get_checksums_for_url(download_url,
+                                                                        self._config.download_credentials.credentials.username,
+                                                                        self._config.download_credentials.credentials.password)
     if verification_checksums.sha256 != local_checksum:
       return False
     return True
 
   #@abstractmethod
   def remote_checksum(self, remote_filename):
-    remote_filename = file_util.lstrip_sep(remote_filename)
-    remote_path = self.remote_filename_abs(remote_filename)
+    address = self.make_address(remote_filename)
     auth = (self._config.download_credentials.credentials.username, self._config.download_credentials.credentials.password)
-    url = self._hostname + remote_path
-    checksums = artifactory_requests.fetch_checksums(url,
-                                                     self._config.download_credentials.credentials.username,
-                                                     self._config.download_credentials.credentials.password)
+    checksums = artifactory_requests.get_checksums(address,
+                                                   self._config.download_credentials.credentials.username,
+                                                   self._config.download_credentials.credentials.password)
     return checksums.sha256 if checksums else None
 
   #@abstractmethod
@@ -141,9 +134,9 @@ class storage_artifactory(storage_base):
                                                   self._config.download_credentials.credentials.password)
     return [ self._entry(*entry) for entry in entries ]
 
-  def make_address(self):
+  def make_address(self, filename = None):
     return artifactory_address(self._config.download_credentials.values['hostname'],
-                               self._config.upload_credentials.values['repo'],
-                               self._config.upload_credentials.values['other_root_dir'],
+                               self._config.download_credentials.values['repo'],
+                               self._config.download_credentials.root_dir,
                                self._config.repo,
-                               None)
+                               filename)

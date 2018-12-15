@@ -30,7 +30,7 @@ class artifact_manager_artifactory(artifact_manager_base):
     self._config = config.get('download', 'artifactory')
     self._address = artifactory_address(self._config.values['hostname'],
                                         self._config.values['repo'],
-                                        self._config.values['other_root_dir'],
+                                        self._config.root_dir,
                                         'artifacts',
                                         None)
     self._load_remote_db()
@@ -84,10 +84,10 @@ class artifact_manager_artifactory(artifact_manager_base):
     if path.isfile(md.filename):
       self.log_d('already downloaded: %s' % (filename_abs))
       return
-    new_address = self._address.mutate_filename(md.filename)
-    self.log_i('downloading: %s => %s' % (str(new_address), filename_abs))
+    address = self._address.mutate_filename(md.filename)
+    self.log_i('downloading: %s => %s' % (str(address), filename_abs))
     artifactory_requests.download_to_file(filename_abs,
-                                          new_address.url,
+                                          address,
                                           self._config.credentials.username,
                                           self._config.credentials.password)
   

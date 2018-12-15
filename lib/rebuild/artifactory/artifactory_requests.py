@@ -13,49 +13,61 @@ from rebuild.package import package_metadata, package_metadata_list, package_fil
 class artifactory_requests(object):
 
   @classmethod
-  def fetch_headers(clazz, url, username, password):
-    check.check_string(url)
+  def get_headers(clazz, address, username, password):
+    check.check_artifactory_address(address)
+    check.check_string(address.filename)
     check.check_string(username)
     check.check_string(password)
     import requests
     auth = ( username, password )
-    clazz.log_d('fetch_headers: url=%s; username=%s; password=%s' % (url, username, password))
-    response = requests.head(url, auth = auth)
+    clazz.log_d('fetch_headers: address=%s; username=%s; password=%s' % (address, username, password))
+    response = requests.head(address.url, auth = auth)
     clazz.log_d('fetch_headers: status_code=%s; headers=%s' % (response.status_code, response.headers))
     if response.status_code != 200:
       return None
     return response.headers
-
+  
   _checksums = namedtuple('namedtuple', 'md5, sha1, sha256')
 
   _HEADER_CHECKSUM_MD5 = 'X-Checksum-Md5'
   _HEADER_CHECKSUM_SHA1 = 'X-Checksum-Sha1'
   _HEADER_CHECKSUM_SHA256 = 'X-Checksum-Sha256'
-  
+
   @classmethod
-  def fetch_checksums(clazz, url, username, password):
+  def get_checksums_for_url(clazz, url, username, password):
     check.check_string(url)
     check.check_string(username)
     check.check_string(password)
-
-    headers = clazz.fetch_headers(url, username, password)
-    clazz.log_d('fetch_checksums: headers=%s' % (headers))
+    headers = clazz.get_headers(url, username, password)
+    clazz.log_d('_get_checksums_for_url: headers=%s' % (headers))
     if not headers:
       return None
-
     md5 = headers.get(clazz._HEADER_CHECKSUM_MD5, None)
     sha1 = headers.get(clazz._HEADER_CHECKSUM_SHA1, None)
     sha256 = headers.get(clazz._HEADER_CHECKSUM_SHA256, None)
     return clazz._checksums(md5, sha1, sha256)
+  
+  @classmethod
+  def get_checksums(clazz, address, username, password):
+    check.check_artifactory_address(address)
+    check.check_string(address.filename)
+    check.check_string(username)
+    check.check_string(password)
+    return self.get_checksums_for_url(address.url, username, password)
 
   @classmethod
-  def download_to_file(clazz, target, url, username, password, debug = False):
+  def download_to_file(clazz, target, address, username, password, debug = False):
     'Download file to target.'
+    check.check_string(target)
+    check.check_artifactory_address(address)
+    check.check_string(address.filename)
+    check.check_string(username)
+    check.check_string(password)
     import requests
     tmp = temp_file.make_temp_file(suffix = '-' + path.basename(target), delete = not debug)
     auth = ( username, password )
-    response = requests.get(url, auth = auth, stream = True)
-    clazz.log_d('download_to_file: target=%s; url=%s; tmp=%s' % (target, url, tmp))
+    response = requests.get(address.url, auth = auth, stream = True)
+    clazz.log_d('download_to_file: target=%s; address=%s; tmp=%s' % (target, address, tmp))
     if response.status_code != 200:
       return False
     with open(tmp, 'wb') as fout:

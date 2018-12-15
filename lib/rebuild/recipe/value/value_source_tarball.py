@@ -25,7 +25,7 @@ class value_source_tarball(value_base):
 
   #@abstractmethod
   def sources(self, recipe_env):
-    'Return a list of sources this caca provides or None if no sources.'
+    'Return a list of sources this value provides or None.'
     return [ recipe_env.storage.find_tarball(self.value) ]
 
   #@abstractmethod

@@ -32,6 +32,8 @@ class step_setup_ingest_upstream_sources(step):
       url = upstream_source.value
       arcname = upstream_source.get_property('arcname', None)
       checksum = upstream_source.get_property('checksum', None)
+      if not checksum:
+        self.blurb('warning: no checksum given for %s' % (url))
       remote_filename = upstream_source.get_property('remote_filename', None)
       cookies = upstream_source.get_property('cookies', None)
       if cookies:
