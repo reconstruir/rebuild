@@ -38,17 +38,22 @@ class package_file_list(type_checked_list):
     check.check_list(l)
     result = clazz()
     for item in l:
-      check.check_list(item, check.STRING_TYPES)
-      assert len(item) == 2
-      result.append(package_file(item[0], item[1]))
+      check.check_list(item)
+      assert len(item) == 3
+      check.check_string(item[0])
+      check.check_string(item[1])
+      check.check_bool(item[2])
+      result.append(package_file(item[0], item[1], item[2]))
     return result
     
   @classmethod
-  def from_files(clazz, filenames, root_dir = None, function_name = None):
+  def from_files(clazz, filenames, files_with_hardcoded_paths, root_dir = None, function_name = None):
     filenames = object_util.listify(filenames)
+    files_with_hardcoded_paths = files_with_hardcoded_paths or set()
     result = clazz()
     for filename in filenames:
-      result.append(package_file.from_file(filename, root_dir = root_dir, function_name = function_name))
+      has_hardcoded_path = filename in files_with_hardcoded_paths
+      result.append(package_file.from_file(filename, has_hardcoded_path, root_dir = root_dir, function_name = function_name))
     return result
 
   def save_checksums_file(self, filename):
@@ -68,7 +73,7 @@ class package_file_list(type_checked_list):
   def reload(self, root_dir = None, function_name = None):
     new_values = []
     for value in self:
-      new_values.append(package_file.from_file(value.filename, root_dir = root_dir, function_name = function_name))
+      new_values.append(package_file.from_file(value.filename, False, root_dir = root_dir, function_name = function_name))
     self._values = new_values
   
   def verify(self, root_dir = None):

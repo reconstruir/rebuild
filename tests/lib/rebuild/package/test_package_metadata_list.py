@@ -15,12 +15,12 @@ class test_package_metadata_list(unit_test):
   TEST_REQUIREMENTS = RL.parse('foo >= 1.2.3-1 bar >= 6.6.6-1')
   TEST_FILES = PF(FCL(
     [
-      ( 'f1', 'fchk1' ),
-      ( 'f2', 'fchk2' ),
+      ( 'f1', 'fchk1', 0 ),
+      ( 'f2', 'fchk2', 0 ),
     ]),
     FCL([
-      ( 'e1', 'echk1' ),
-      ( 'e2', 'echk2' ),
+      ( 'e1', 'echk1', 0 ),
+      ( 'e2', 'echk2', 0 ),
     ]),
     'files_chk',
     'env_files_chk')

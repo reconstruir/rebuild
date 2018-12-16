@@ -16,24 +16,24 @@ class test_artifact_db(unit_test):
 
   TEST_FILES = package_files(FCL(
     [
-      ( 'f1', 'fchk1' ),
-      ( 'f2', 'fchk2' ),
+      ( 'f1', 'fchk1', 0 ),
+      ( 'f2', 'fchk2', 0 ),
     ]),
     FCL([
-      ( 'e1', 'echk1' ),
-      ( 'e2', 'echk2' ),
+      ( 'e1', 'echk1', 0 ),
+      ( 'e2', 'echk2', 0 ),
     ]),
     'files_chk',
     'env_files_chk')
 
   TEST_FILES2 = package_files(FCL(
     [
-      ( 'g1', 'gchk1' ),
-      ( 'g2', 'gchk2' ),
+      ( 'g1', 'gchk1', 0 ),
+      ( 'g2', 'gchk2', 0 ),
     ]),
     FCL([
-      ( 'h1', 'hchk1' ),
-      ( 'h2', 'hchk2' ),
+      ( 'h1', 'hchk1', 0 ),
+      ( 'h2', 'hchk2', 0 ),
     ]),
     'files2_chk',
     'env_files2_chk')

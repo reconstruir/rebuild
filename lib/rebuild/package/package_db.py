@@ -129,8 +129,8 @@ create table {files_table_name}(
       raise NotInstalledError('not installed: %s' % (name), name)
     assert(len(rows) == 1)
     row = rows[0]
-    files = package_files(self._files_db.file_checksums(name),
-                          self._files_db.file_checksums(self._make_env_files_table_name(name)),
+    files = package_files(self._files_db.package_files(name),
+                          self._files_db.package_files(self._make_env_files_table_name(name)),
                           row.files_checksum,
                           row.env_files_checksum)
     return package_db_entry(row.name,

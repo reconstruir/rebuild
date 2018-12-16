@@ -11,8 +11,8 @@ from rebuild.package.package_file_list import package_file_list
 class test_files_db(unit_test):
 
   TEST_FILES = [
-    ( 'f1', 'chk1' ),
-    ( 'f2', 'chk2' ),
+    ( 'f1', 'chk1', False ),
+    ( 'f2', 'chk2', False ),
   ]
 
   TEST_FILES_CHECKSUMS = package_file_list(TEST_FILES)
@@ -24,9 +24,9 @@ class test_files_db(unit_test):
     self.assertFalse( db.has_table('foo') )
     db.add_table('foo', self.TEST_FILES_CHECKSUMS)
     self.assertTrue( db.has_table('foo') )
-    self.assertEqual( self.TEST_FILES, db.file_checksums_rows('foo') )
+    self.assertEqual( self.TEST_FILES, db.package_file_rows('foo') )
     self.assertEqual( [ ( 'f1', ), ( 'f2', ) ], db.filenames_rows('foo') )
-    self.assertEqual( self.TEST_FILES_CHECKSUMS, db.file_checksums('foo') )
+    self.assertEqual( self.TEST_FILES_CHECKSUMS, db.package_files('foo') )
     self.assertEqual( [ 'f1', 'f2' ], db.filenames('foo') )
                       
   def test_remove(self):

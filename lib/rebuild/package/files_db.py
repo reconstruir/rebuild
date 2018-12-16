@@ -11,8 +11,9 @@ class files_db(object):
 
   SCHEMA_FILES = '''
 CREATE TABLE {table_name} (
-  filename  TEXT PRIMARY KEY NOT NULL, 
-  checksum  TEXT
+  filename           TEXT PRIMARY KEY NOT NULL, 
+  checksum           TEXT,
+  has_hardcoded_path BOOLEAN NOT NULL CHECK (has_hardcoded_path IN (0,1))
 );
 '''
   
@@ -36,15 +37,15 @@ CREATE TABLE {table_name} (
   def filenames(self, name):
     return [ row[0] for row in self.filenames_rows(name) ]
   
-  def file_checksums_rows(self, name):
+  def package_file_rows(self, name):
     table_name = self.table_name(name)
     if not self._db.has_table(table_name):
       raise NotInstalledError('not installed: %s' % (name), name)
-    sql = 'select filename, checksum from {table_name} order by filename asc'.format(table_name = table_name)
+    sql = 'select filename, checksum, has_hardcoded_path from {table_name} order by filename asc'.format(table_name = table_name)
     return self._db.select_all(sql)
                         
-  def file_checksums(self, name):
-    rows = self.file_checksums_rows(name)
+  def package_files(self, name):
+    rows = self.package_file_rows(name)
     result = package_file_list()
     for row in rows:
       result.append(package_file(*row))
@@ -71,5 +72,5 @@ CREATE TABLE {table_name} (
   def _insert_file(self, table_name, f):
     check.check_string(table_name)
     check.check_package_file(f)
-    sql = 'insert into {table_name} (filename, checksum) values (?, ?)'.format(table_name = table_name)
-    self._db.execute(sql, ( f.filename, f.checksum ))
+    sql = 'insert into {table_name} (filename, checksum, has_hardcoded_path) values (?, ?, ?)'.format(table_name = table_name)
+    self._db.execute(sql, ( f.filename, f.checksum, f.has_hardcoded_path ))

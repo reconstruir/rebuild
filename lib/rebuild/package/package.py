@@ -172,6 +172,7 @@ unset REBUILD_STUFF_DIR
   @classmethod
   def create_package(clazz, tarball_path, pkg_desc, build_target, stage_dir,
                      files_with_hardcoded_paths, timer = None):
+    check.check_set(files_with_hardcoded_paths)
     timer = timer or debug_timer('package', disabled = True)
 
     properties = dict_util.filter_without_keys(pkg_desc.properties, [ 'export_compilation_flags_requirements' ])
@@ -182,34 +183,33 @@ unset REBUILD_STUFF_DIR
     if key in pkg_desc.properties:
       properties[key] = [ str(x) for x in pkg_desc.properties[key] ]
       
-    files_dir = path.join(stage_dir, 'files')
+    stage_files_dir = path.join(stage_dir, 'files')
     timer.start('create_package - find files')
-    if path.isdir(files_dir):
-      files = file_find.find(files_dir, relative = True, file_type = file_find.FILE | file_find.LINK)
+    if path.isdir(stage_files_dir):
+      files = file_find.find(stage_files_dir, relative = True, file_type = file_find.FILE | file_find.LINK)
     else:
       files = []
 
     if not files:
-      build_blurb.blurb('rebuild', 'warning: No files to package found: %s' % (path.relpath(files_dir)))
+      build_blurb.blurb('rebuild', 'warning: No files to package found: %s' % (path.relpath(stage_files_dir)))
       
     timer.stop()
     timer.start('create_package - files checksums')
-    files_checksum_list = package_file_list.from_files(files, root_dir = files_dir)
+    stage_package_file_list = package_file_list.from_files(files, files_with_hardcoded_paths, root_dir = stage_files_dir)
     timer.stop()
 
-    env_files_dir = path.join(stage_dir, 'env')
+    stage_env_files_dir = path.join(stage_dir, 'env')
     timer.start('create_package - find env_files')
-    if path.isdir(env_files_dir):
-      env_files = file_find.find(env_files_dir, relative = True, file_type = file_find.FILE | file_find.LINK)
+    if path.isdir(stage_env_files_dir):
+      stage_env_files = file_find.find(stage_env_files_dir, relative = True, file_type = file_find.FILE | file_find.LINK)
     else:
-      env_files = []
+      stage_env_files = []
     timer.stop()
     timer.start('create_package - env_files checksums')
-    env_files_checksum_list = package_file_list.from_files(env_files, root_dir = env_files_dir)
+    stage_env_package_file_list = package_file_list.from_files(stage_env_files, set(), root_dir = stage_env_files_dir)
     timer.stop()
 
-    print('WARNINGFIXME: unused: %s' % (files_with_hardcoded_paths))
-    pkg_files = package_files(files_checksum_list, env_files_checksum_list)
+    pkg_files = package_files(stage_package_file_list, stage_env_package_file_list)
 
     # filename is empty cause it only gets filled once metadata ends up in a db
     metadata = package_metadata('',

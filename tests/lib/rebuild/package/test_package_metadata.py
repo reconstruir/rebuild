@@ -16,12 +16,12 @@ class test_package_metadata(unit_test):
   TEST_REQUIREMENTS = RL.parse('foo >= 1.2.3-1 bar >= 6.6.6-1')
   TEST_FILES = package_files(FCL(
     [
-      ( 'f1', 'fchk1' ),
-      ( 'f2', 'fchk2' ),
+      ( 'f1', 'fchk1', 0 ),
+      ( 'f2', 'fchk2', 0 ),
     ]),
     FCL([
-      ( 'e1', 'echk1' ),
-      ( 'e2', 'echk2' ),
+      ( 'e1', 'echk1', 0 ),
+      ( 'e2', 'echk2', 0 ),
     ]),
     'files_chk',
     'env_files_chk')
@@ -53,22 +53,26 @@ class test_package_metadata(unit_test):
     "env_files": [
       [
         "e1", 
-        "echk1"
+        "echk1", 
+        false
       ], 
       [
         "e2", 
-        "echk2"
+        "echk2", 
+        false
       ]
     ], 
     "env_files_checksum": "env_files_chk", 
     "files": [
       [
         "f1", 
-        "fchk1"
+        "fchk1", 
+        false
       ], 
       [
         "f2", 
-        "fchk2"
+        "fchk2", 
+        false
       ]
     ], 
     "files_checksum": "files_chk"
@@ -104,22 +108,26 @@ class test_package_metadata(unit_test):
     "env_files": [
       [
         "e1", 
-        "echk1"
+        "echk1", 
+        false
       ], 
       [
         "e2", 
-        "echk2"
+        "echk2", 
+        false
       ]
     ], 
     "env_files_checksum": "env_files_chk", 
     "files": [
       [
         "f1", 
-        "fchk1"
+        "fchk1", 
+        false
       ], 
       [
         "f2", 
-        "fchk2"
+        "fchk2", 
+        false
       ]
     ], 
     "files_checksum": "files_chk"

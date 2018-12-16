@@ -25,4 +25,4 @@ class step_check_hard_coded_paths(step):
                                         backup = False,
                                         test_func = file_mime.is_text)
     files_with_hardcoded_paths = [ file_util.remove_head(f, script.staged_files_dir) for f in result.replaced_filenames ]
-    return step_result(True, None, outputs = { 'files_with_hardcoded_paths': files_with_hardcoded_paths })
+    return step_result(True, None, outputs = { 'files_with_hardcoded_paths': set(files_with_hardcoded_paths) })

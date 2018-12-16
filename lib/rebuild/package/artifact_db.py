@@ -193,8 +193,8 @@ create table artifacts(
     assert row
     adesc = adesc or self._load_row_to_artifact_descriptor(row)
     files_table_name = adesc.sql_table_name
-    files = package_files(self._files_db.file_checksums(files_table_name),
-                          self._files_db.file_checksums(self._make_env_files_table_name(files_table_name)),
+    files = package_files(self._files_db.package_files(files_table_name),
+                          self._files_db.package_files(self._make_env_files_table_name(files_table_name)),
                           row.files_checksum,
                           row.env_files_checksum)
     md =  package_metadata(row.filename,
