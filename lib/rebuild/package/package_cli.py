@@ -65,8 +65,7 @@ class package_cli(object):
           return f[0]
       d['files'] = self.fit_stuff('files', ' '.join([ _i(f) for f in files['files'] ]))
       d['env_files'] = self.fit_stuff('env_files', ' '.join([ _i(f) for f in files['env_files'] ]))
-      d['files_checksum'] = files['files_checksum']
-      d['env_files_checksum'] = files['env_files_checksum']
+      d['contents_checksum'] = files['contents_checksum']
       for key, value in sorted(d.items()):
         if key in [ 'files', 'env_files' ]:
           print(value)
@@ -76,7 +75,7 @@ class package_cli(object):
 
   @classmethod
   def justified_label(clazz, label):
-    return label.rjust(20) #self.__get_label_length())
+    return label.rjust(20)
   
   @classmethod
   def fit_stuff(clazz, label, message):

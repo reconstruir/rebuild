@@ -21,8 +21,7 @@ create table packages(
   epoch               integer not null, 
   requirements        text,
   properties          text,
-  files_checksum      text not null,
-  env_files_checksum  text not null
+  contents_checksum   text not null
 );
 '''
   
@@ -76,8 +75,7 @@ create table packages(
       'epoch': str(entry.epoch),
       'requirements': sql_encoding.encode_requirements(entry.requirements),
       'properties': sql_encoding.encode_dict(entry.properties),
-      'files_checksum': sql_encoding.encode_string(entry.manifest.files_checksum),
-      'env_files_checksum': sql_encoding.encode_string(entry.manifest.env_files_checksum),
+      'contents_checksum': sql_encoding.encode_string(entry.manifest.contents_checksum),
     }
     keys = ', '.join(d.keys())
     values = ', '.join(d.values())
@@ -124,8 +122,7 @@ create table packages(
     row = rows[0]
     manifest = package_manifest(self._files_db.package_manifest(name),
                                 self._files_db.package_manifest(self._make_env_files_table_name(name)),
-                                row.files_checksum,
-                                row.env_files_checksum)
+                                row.contents_checksum)
     return package_db_entry(row.name,
                             row.version,
                             row.revision,

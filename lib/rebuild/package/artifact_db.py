@@ -20,8 +20,7 @@ create table artifacts(
   id                  integer primary key not null,
   name                text not null, 
   filename            text not null, 
-  files_checksum      text not null, 
-  env_files_checksum  text not null, 
+  contents_checksum   text not null, 
   version             text not null, 
   revision            integer not null, 
   epoch               integer not null, 
@@ -101,8 +100,7 @@ create table artifacts(
       'distro_version': sql_encoding.encode_string(md.distro_version),
       'requirements': sql_encoding.encode_requirements(md.requirements),
       'properties': sql_encoding.encode_dict(md.properties),
-      'files_checksum': sql_encoding.encode_string(md.manifest.files_checksum),
-      'env_files_checksum': sql_encoding.encode_string(md.manifest.env_files_checksum),
+      'contents_checksum': sql_encoding.encode_string(md.manifest.contents_checksum),
     }
     keys = ', '.join(d.keys())
     values = ', '.join(d.values())
@@ -195,8 +193,7 @@ create table artifacts(
     files_table_name = adesc.sql_table_name
     files = package_manifest(self._files_db.package_manifest(files_table_name),
                              self._files_db.package_manifest(self._make_env_files_table_name(files_table_name)),
-                             row.files_checksum,
-                             row.env_files_checksum)
+                             row.contents_checksum)
     md =  package_metadata(row.filename,
                            row.name,
                            row.version,

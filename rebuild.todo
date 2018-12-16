@@ -1080,9 +1080,4 @@ other:
 
 files_db.py s/package_manifest/package_files
 package.py s/package_manifest/files
-
-unit test of update due to checksum change in files and env_files
-s/files_checksum/contents_checksum/
-combine files_checksum and env_files_checksum
-s/file_checksums/contents in package_manager
 package_manager.py s/package_manifest/tarball_manifest  s/pkg_desc/tarball_descriptor also dbl check needed

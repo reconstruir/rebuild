@@ -22,8 +22,7 @@ class test_package_metadata_list(unit_test):
       ( 'e1', 'echk1', 0 ),
       ( 'e2', 'echk2', 0 ),
     ]),
-    'files_chk',
-    'env_files_chk')
+    'files_chk')
     
   TEST_PROPERTIES = { 'p1': 'v1', 'p2': 6 }
 

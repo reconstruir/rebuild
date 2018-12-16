@@ -253,7 +253,7 @@ class package_manager(object):
       old_pkg_entry_desc = old_pkg_entry.descriptor
       comparison = package_descriptor.full_name_cmp(old_pkg_entry_desc, pkg_desc)
       if force_install:
-        if self._file_checksums_changed(old_pkg_entry, pkg):
+        if self._contents_checksum_changed(old_pkg_entry, pkg):
           comparison = -1
       if comparison == 0:
         self.log_i('install_package: no change needed: %s' % (pkg_desc.name))
@@ -281,28 +281,18 @@ class package_manager(object):
       return True
 
   @classmethod
-  def _file_checksums_changed(clazz, old_pkg_entry, new_pkg):
+  def _contents_checksum_changed(clazz, old_pkg_entry, new_pkg):
     check.check_package_db_entry(old_pkg_entry)
     check.check_package_metadata(new_pkg)
-
     old_desc = old_pkg_entry.descriptor
-
-    old_files_checksums = old_pkg_entry.manifest.files_checksum
-    new_files_checksums = new_pkg.manifest.files_checksum
-    files_checksums_changed = old_files_checksums != new_files_checksums
-    if files_checksums_changed:
+    old_contents_checksum = old_pkg_entry.manifest.contents_checksum
+    new_contents_checksum = new_pkg.manifest.contents_checksum
+    contents_checksum_changed = old_contents_checksum != new_contents_checksum
+    if contents_checksum_changed:
       clazz.log_i('install_package: files changed: %s old=%s new=%s' % (old_desc.name,
-                                                                        old_files_checksums,
-                                                                        new_files_checksums))
-
-    old_env_files_checksums = old_pkg_entry.manifest.env_files_checksum
-    new_env_files_checksums = new_pkg.manifest.env_files_checksum
-    env_files_checksums_changed = old_env_files_checksums != new_env_files_checksums
-    if env_files_checksums_changed:
-      clazz.log_i('install_package: env files changed: %s old=%s new=%s' % (old_desc.name,
-                                                                            old_env_files_checksums,
-                                                                            new_env_files_checksums))
-    return files_checksums_changed or env_files_checksums_changed
+                                                                        old_contents_checksum,
+                                                                        new_contents_checksum))
+    return contents_checksum_changed
       
   def install_packages(self, packages, build_target, hardness, allow_downgrade = False, force_install = False):
     check.check_package_descriptor_seq(packages)

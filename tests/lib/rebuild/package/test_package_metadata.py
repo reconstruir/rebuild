@@ -23,8 +23,7 @@ class test_package_metadata(unit_test):
       ( 'e1', 'echk1', 0 ),
       ( 'e2', 'echk2', 0 ),
     ]),
-    'files_chk',
-    'env_files_chk')
+    'contents_chk')
   TEST_PROPERTIES = { 'p1': 'v1', 'p2': 6 }
 
   TEST_ENTRY = PM('kiwi-6.7.8-2.tar.gz', 'kiwi', '6.7.8', 2, 0, 'macos', 'release', [ 'x86_64' ], '', '',
@@ -51,6 +50,7 @@ class test_package_metadata(unit_test):
   "filename": "kiwi-6.7.8-2.tar.gz", 
   "level": "release", 
   "manifest": {
+    "contents_checksum": "contents_chk", 
     "env_files": [
       [
         "e1", 
@@ -63,7 +63,6 @@ class test_package_metadata(unit_test):
         false
       ]
     ], 
-    "env_files_checksum": "env_files_chk", 
     "files": [
       [
         "f1", 
@@ -75,8 +74,7 @@ class test_package_metadata(unit_test):
         "fchk2", 
         false
       ]
-    ], 
-    "files_checksum": "files_chk"
+    ]
   }, 
   "name": "kiwi", 
   "properties": {
@@ -106,6 +104,7 @@ class test_package_metadata(unit_test):
   "filename": "kiwi-6.7.8-2.tar.gz", 
   "level": "release", 
   "manifest": {
+    "contents_checksum": "contents_chk", 
     "env_files": [
       [
         "e1", 
@@ -118,7 +117,6 @@ class test_package_metadata(unit_test):
         false
       ]
     ], 
-    "env_files_checksum": "env_files_chk", 
     "files": [
       [
         "f1", 
@@ -130,8 +128,7 @@ class test_package_metadata(unit_test):
         "fchk2", 
         false
       ]
-    ], 
-    "files_checksum": "files_chk"
+    ]
   }, 
   "name": "kiwi", 
   "properties": {

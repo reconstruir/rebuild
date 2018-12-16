@@ -21,8 +21,7 @@ class test_package_db_entry(unit_test):
       ( 'e1', 'echk1', 0 ),
       ( 'e2', 'echk2', 0 ),
     ]),
-    'files_chk',
-    'env_files_chk')
+    'contents_chk')
   TEST_PROPERTIES = { 'p1': 'v1', 'p2': 6 }
 
   TEST_ENTRY = PE('kiwi', '6.7.8', 2, 0, TEST_REQUIREMENTS, TEST_PROPERTIES, TEST_FILES)
@@ -38,6 +37,7 @@ class test_package_db_entry(unit_test):
   "_format_version": 2, 
   "epoch": 0, 
   "manifest": {
+    "contents_checksum": "contents_chk", 
     "env_files": [
       [
         "e1", 
@@ -50,7 +50,6 @@ class test_package_db_entry(unit_test):
         false
       ]
     ], 
-    "env_files_checksum": "env_files_chk", 
     "files": [
       [
         "f1", 
@@ -62,8 +61,7 @@ class test_package_db_entry(unit_test):
         "fchk2", 
         false
       ]
-    ], 
-    "files_checksum": "files_chk"
+    ]
   }, 
   "name": "kiwi", 
   "properties": {
@@ -85,6 +83,7 @@ class test_package_db_entry(unit_test):
   "_format_version": 2, 
   "epoch": 0, 
   "manifest": {
+    "contents_checksum": "contents_chk", 
     "env_files": [
       [
         "e1", 
@@ -97,7 +96,6 @@ class test_package_db_entry(unit_test):
         false
       ]
     ], 
-    "env_files_checksum": "env_files_chk", 
     "files": [
       [
         "f1", 
@@ -109,8 +107,7 @@ class test_package_db_entry(unit_test):
         "fchk2", 
         false
       ]
-    ], 
-    "files_checksum": "files_chk"
+    ]
   }, 
   "name": "kiwi", 
   "properties": {
@@ -134,9 +131,8 @@ class test_package_db_entry(unit_test):
       'epoch': 0,
       'manifest': {
         'env_files': [['e1', 'echk1', False], ['e2', 'echk2', False]],
-        'env_files_checksum': 'env_files_chk',
         'files': [['f1', 'fchk1', False], ['f2', 'fchk2', False]],
-        'files_checksum': 'files_chk'
+        'contents_checksum': 'contents_chk'
       },
       'name': 'kiwi', 
       'properties': { 'p1': 'v1',  'p2': 6 }, 

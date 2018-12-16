@@ -23,8 +23,7 @@ class test_artifact_db(unit_test):
       ( 'e1', 'echk1', 0 ),
       ( 'e2', 'echk2', 0 ),
     ]),
-    'files_chk',
-    'env_files_chk')
+    'files_chk')
 
   TEST_FILES2 = package_manifest(FCL(
     [
@@ -35,8 +34,7 @@ class test_artifact_db(unit_test):
       ( 'h1', 'hchk1', 0 ),
       ( 'h2', 'hchk2', 0 ),
     ]),
-    'files2_chk',
-    'env_files2_chk')
+    'files2_chk')
   
   DEBUG = unit_test.DEBUG
   #DEBUG = True

@@ -6,9 +6,9 @@ from bes.common import check
 from .package_file_list import package_file_list
 from .sql_encoding import sql_encoding
 
-class package_manifest(namedtuple('package_manifest', 'files, env_files, files_checksum, env_files_checksum')):
+class package_manifest(namedtuple('package_manifest', 'files, env_files, contents_checksum')):
 
-  def __new__(clazz, files, env_files, files_checksum = None, env_files_checksum = None):
+  def __new__(clazz, files, env_files, contents_checksum = None):
 
     files = files or package_file_list()
     check.check_package_file_list(files)
@@ -16,37 +16,31 @@ class package_manifest(namedtuple('package_manifest', 'files, env_files, files_c
     env_files = env_files or package_file_list()
     check.check_package_file_list(env_files)
 
-    if files_checksum:
-      check.check_string(files_checksum)
-    files_checksum = files_checksum or files.checksum()
+    if contents_checksum:
+      check.check_string(contents_checksum)
+    else:
+      contents_checksum = (files + env_files).checksum()
 
-    if env_files_checksum:
-      check.check_string(env_files_checksum)
-    env_files_checksum = env_files_checksum or env_files.checksum()
-    
-    return clazz.__bases__[0].__new__(clazz, files, env_files, files_checksum, env_files_checksum)
+    return clazz.__bases__[0].__new__(clazz, files, env_files, contents_checksum)
 
   @classmethod
   def parse_dict(clazz, o):
     return clazz(package_file_list.from_simple_list(o['files']),
                  package_file_list.from_simple_list(o['env_files']),
-                 o['files_checksum'],
-                 o['env_files_checksum'])
+                 o['contents_checksum'])
   
   def to_simple_dict(self):
     'Return a simplified dict suitable for json encoding.'
     return {
       'files': self.files.to_simple_list(),
       'env_files': self.env_files.to_simple_list(),
-      'files_checksum': self.files_checksum,
-      'env_files_checksum': self.env_files_checksum,
+      'contents_checksum': self.contents_checksum,
     }
   
   def to_sql_dict(self):
     'Return a dict suitable to use directly with sqlite insert commands'
     d =  {
-      'files_checksum': sql_encoding.encode_string(self.files_checksum),
-      'env_files_checksum': sql_encoding.encode_string(self.env_files_checksum),
+      'contents_checksum': sql_encoding.encode_string(self.contents_checksum),
     }
     return d
 
