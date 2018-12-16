@@ -1,19 +1,20 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from collections import namedtuple
-from bes.fs import file_checksum_list
 from bes.common import check
+
+from .package_file_list import package_file_list
 from .sql_encoding import sql_encoding
 
 class package_files(namedtuple('package_files', 'files, env_files, files_checksum, env_files_checksum')):
 
   def __new__(clazz, files, env_files, files_checksum = None, env_files_checksum = None):
 
-    files = files or file_checksum_list()
-    check.check_file_checksum_list(files)
+    files = files or package_file_list()
+    check.check_package_file_list(files)
 
-    env_files = env_files or file_checksum_list()
-    check.check_file_checksum_list(env_files)
+    env_files = env_files or package_file_list()
+    check.check_package_file_list(env_files)
 
     if files_checksum:
       check.check_string(files_checksum)
@@ -27,8 +28,8 @@ class package_files(namedtuple('package_files', 'files, env_files, files_checksu
 
   @classmethod
   def parse_dict(clazz, o):
-    return clazz(file_checksum_list.from_simple_list(o['files']),
-                 file_checksum_list.from_simple_list(o['env_files']),
+    return clazz(package_file_list.from_simple_list(o['files']),
+                 package_file_list.from_simple_list(o['env_files']),
                  o['files_checksum'],
                  o['env_files_checksum'])
   

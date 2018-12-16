@@ -3,11 +3,11 @@
 import os.path as path
 from bes.sqlite import sqlite
 from bes.testing.unit_test import unit_test
-from bes.fs import file_checksum_list as FCL
 from rebuild.base import build_system, build_target, package_descriptor, requirement_list as RL
 from rebuild.package.package_metadata import package_metadata as PM
 from rebuild.package.artifact_db import artifact_db as DB
 from rebuild.package import package_files
+from rebuild.package.package_file_list import package_file_list as FCL
 
 class test_package_metadata(unit_test):
 

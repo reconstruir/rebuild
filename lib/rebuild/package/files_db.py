@@ -2,7 +2,10 @@
 
 from bes.common import check
 from bes.fs import file_checksum, file_checksum_list
+
 from .db_error import *
+from .package_file import package_file
+from .package_file_list import package_file_list
 
 class files_db(object):
 
@@ -42,15 +45,15 @@ CREATE TABLE {table_name} (
                         
   def file_checksums(self, name):
     rows = self.file_checksums_rows(name)
-    result = file_checksum_list()
+    result = package_file_list()
     for row in rows:
-      result.append(file_checksum(*row))
+      result.append(package_file(*row))
     return result
 
   def add_table(self, name, files):
     'Does not commit'
     check.check_string(name)
-    check.check_file_checksum_list(files)
+    check.check_package_file_list(files)
     table_name = self.table_name(name)
     assert not self._db.has_table(table_name)
     schema = self.SCHEMA_FILES.format(table_name = table_name)
@@ -67,6 +70,6 @@ CREATE TABLE {table_name} (
       
   def _insert_file(self, table_name, f):
     check.check_string(table_name)
-    check.check_file_checksum(f)
+    check.check_package_file(f)
     sql = 'insert into {table_name} (filename, checksum) values (?, ?)'.format(table_name = table_name)
     self._db.execute(sql, ( f.filename, f.checksum ))

@@ -3,12 +3,13 @@
 
 import os.path as path
 from bes.testing.unit_test import unit_test
-from bes.fs import file_checksum_list as FCL, temp_file
+from bes.fs import temp_file
 from rebuild.base import build_system, package_descriptor as PD, requirement_list as RL
 from rebuild.package.package_db import package_db as DB
 from rebuild.package.package_db_entry import package_db_entry as PE
 from rebuild.package import package_files
 from bes.debug import debug_timer
+from rebuild.package.package_file_list import package_file_list as FCL
 
 class test_package_db(unit_test):
 

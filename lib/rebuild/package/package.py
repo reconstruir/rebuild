@@ -6,7 +6,7 @@ from collections import namedtuple
 
 from bes.archive import archive, archiver
 from bes.common import check, dict_util, json_util, string_util
-from bes.fs import dir_util, file_check, file_checksum_list, file_find, file_mime, file_search, file_util, tar_util, temp_file
+from bes.fs import dir_util, file_check, file_find, file_mime, file_search, file_util, tar_util, temp_file
 from bes.text import text_line_parser
 from bes.match import matcher_filename, matcher_multiple_filename
 from bes.python import setup_tools
@@ -16,6 +16,7 @@ from bes.debug import debug_timer
 
 from .package_metadata import package_metadata
 from .package_files import package_files
+from .package_file_list import package_file_list
 
 class package(object):
 
@@ -189,7 +190,7 @@ unset REBUILD_STUFF_DIR
       
     timer.stop()
     timer.start('create_package - files checksums')
-    files_checksum_list = file_checksum_list.from_files(files, root_dir = files_dir)
+    files_checksum_list = package_file_list.from_files(files, root_dir = files_dir)
     timer.stop()
 
     env_files_dir = path.join(stage_dir, 'env')
@@ -200,7 +201,7 @@ unset REBUILD_STUFF_DIR
       env_files = []
     timer.stop()
     timer.start('create_package - env_files checksums')
-    env_files_checksum_list = file_checksum_list.from_files(env_files, root_dir = env_files_dir)
+    env_files_checksum_list = package_file_list.from_files(env_files, root_dir = env_files_dir)
     timer.stop()
 
     print('WARNINGFIXME: unused: %s' % (files_with_hardcoded_paths))
