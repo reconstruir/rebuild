@@ -18,11 +18,18 @@ class artifactory_requests(object):
     check.check_string(address.filename)
     check.check_string(username)
     check.check_string(password)
+    return clazz.get_headers_for_url(address.url, username, password)
+
+  @classmethod
+  def get_headers_for_url(clazz, url, username, password):
+    check.check_string(url)
+    check.check_string(username)
+    check.check_string(password)
     import requests
     auth = ( username, password )
-    clazz.log_d('fetch_headers: address=%s; username=%s; password=%s' % (address, username, password))
-    response = requests.head(address.url, auth = auth)
-    clazz.log_d('fetch_headers: status_code=%s; headers=%s' % (response.status_code, response.headers))
+    clazz.log_d('get_headers_for_url: url=%s' % (url))
+    response = requests.head(url, auth = auth)
+    clazz.log_d('get_headers_for_url: status_code=%s; headers=%s' % (response.status_code, response.headers))
     if response.status_code != 200:
       return None
     return response.headers
@@ -38,8 +45,9 @@ class artifactory_requests(object):
     check.check_string(url)
     check.check_string(username)
     check.check_string(password)
-    headers = clazz.get_headers(url, username, password)
-    clazz.log_d('_get_checksums_for_url: headers=%s' % (headers))
+    clazz.log_d('get_checksums_for_url: url=%s' % (url))
+    headers = clazz.get_headers_for_url(url, username, password)
+    clazz.log_d('get_checksums_for_url: headers=%s' % (headers))
     if not headers:
       return None
     md5 = headers.get(clazz._HEADER_CHECKSUM_MD5, None)
@@ -53,7 +61,7 @@ class artifactory_requests(object):
     check.check_string(address.filename)
     check.check_string(username)
     check.check_string(password)
-    return self.get_checksums_for_url(address.url, username, password)
+    return clazz.get_checksums_for_url(address.url, username, password)
 
   @classmethod
   def download_to_file(clazz, target, address, username, password, debug = False):
