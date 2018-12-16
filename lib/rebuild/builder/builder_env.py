@@ -8,7 +8,7 @@ from bes.git import git_download_cache, git_util
 
 from rebuild.tools_manager import tools_manager
 from rebuild.checksum import checksum_manager
-from rebuild.package import artifact_manager_chain, artifact_manager_local
+from rebuild.package import artifact_manager_local
 from rebuild.base import build_blurb, package_descriptor, requirement_manager
 from rebuild.storage import storage_factory
 from rebuild.recipe import recipe_load_env
@@ -64,14 +64,7 @@ class builder_env(object):
     return git_download_cache(path.join(build_dir, 'downloads'))
 
   def reload_artifact_manager(self):
-    self.artifact_manager = artifact_manager_chain()
-    build_artifact_manager = artifact_manager_local(path.join(self.config.build_root, 'artifacts'))
-    self.artifact_manager.add_artifact_manager(build_artifact_manager)
-#    if self.config.artifacts_dir:
-#      self.external_artifact_manager = artifact_manager_local(self.config.artifacts_dir)
-#      self.external_artifact_manager.read_only = True
-#      self.artifact_manager.add_artifact_manager(self.external_artifact_manager)
-#    else:
+    self.artifact_manager = artifact_manager_local(path.join(self.config.build_root, 'artifacts'))
     self.external_artifact_manager = None
 
   @classmethod
