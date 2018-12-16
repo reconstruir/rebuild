@@ -172,6 +172,7 @@ unset REBUILD_STUFF_DIR
   @classmethod
   def create_package(clazz, tarball_path, pkg_desc, build_target, stage_dir,
                      files_with_hardcoded_paths, timer = None):
+    files_with_hardcoded_paths = files_with_hardcoded_paths or set()
     check.check_set(files_with_hardcoded_paths)
     timer = timer or debug_timer('package', disabled = True)
 
