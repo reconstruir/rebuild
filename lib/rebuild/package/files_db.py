@@ -44,7 +44,7 @@ CREATE TABLE {table_name} (
     sql = 'select filename, checksum, has_hardcoded_path from {table_name} order by filename asc'.format(table_name = table_name)
     return self._db.select_all(sql)
                         
-  def package_files(self, name):
+  def package_manifest(self, name):
     rows = self.package_file_rows(name)
     result = package_file_list()
     for row in rows:

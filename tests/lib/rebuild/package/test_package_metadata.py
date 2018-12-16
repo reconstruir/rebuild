@@ -6,7 +6,7 @@ from bes.testing.unit_test import unit_test
 from rebuild.base import build_system, build_target, package_descriptor, requirement_list as RL
 from rebuild.package.package_metadata import package_metadata as PM
 from rebuild.package.artifact_db import artifact_db as DB
-from rebuild.package import package_files
+from rebuild.package import package_manifest
 from rebuild.package.package_file_list import package_file_list as FCL
 
 class test_package_metadata(unit_test):
@@ -14,7 +14,7 @@ class test_package_metadata(unit_test):
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/lib/rebuild/package'
   
   TEST_REQUIREMENTS = RL.parse('foo >= 1.2.3-1 bar >= 6.6.6-1')
-  TEST_FILES = package_files(FCL(
+  TEST_FILES = package_manifest(FCL(
     [
       ( 'f1', 'fchk1', 0 ),
       ( 'f2', 'fchk2', 0 ),

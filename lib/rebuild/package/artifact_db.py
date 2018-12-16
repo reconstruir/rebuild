@@ -8,7 +8,7 @@ from rebuild.base import artifact_descriptor, artifact_descriptor_list, package_
 
 from .db_error import *
 from .files_db import files_db
-from .package_files import package_files
+from .package_manifest import package_manifest
 from .package_metadata import package_metadata
 from .package_metadata_list import package_metadata_list
 from .sql_encoding import sql_encoding
@@ -193,8 +193,8 @@ create table artifacts(
     assert row
     adesc = adesc or self._load_row_to_artifact_descriptor(row)
     files_table_name = adesc.sql_table_name
-    files = package_files(self._files_db.package_files(files_table_name),
-                          self._files_db.package_files(self._make_env_files_table_name(files_table_name)),
+    files = package_manifest(self._files_db.package_manifest(files_table_name),
+                          self._files_db.package_manifest(self._make_env_files_table_name(files_table_name)),
                           row.files_checksum,
                           row.env_files_checksum)
     md =  package_metadata(row.filename,

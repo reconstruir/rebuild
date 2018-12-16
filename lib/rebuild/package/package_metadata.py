@@ -5,7 +5,7 @@ from collections import namedtuple
 from bes.common import cached_property, check, json_util, string_util
 from rebuild.base import artifact_descriptor,  build_arch, build_target, build_version, package_descriptor, requirement_list
 
-from .package_files import package_files
+from .package_manifest import package_manifest
 
 class package_metadata(namedtuple('package_metadata', 'format_version, filename, name, version, revision, epoch, system, level, arch, distro, distro_version, requirements, properties, files')):
 
@@ -31,7 +31,7 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
     check.check_requirement_list(requirements)
     properties = properties or {}
     check.check_dict(properties)
-    check.check_package_files(files)
+    check.check_package_manifest(files)
     return clazz.__bases__[0].__new__(clazz, 2, filename, name, version,
                                       revision, epoch, system, level, arch,
                                       distro, distro_version, requirements,
@@ -84,7 +84,7 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
                  o['distro_version'],
                  requirement_list.from_string_list(o['requirements']),
                  o['properties'],
-                 package_files.parse_dict(o['files']))
+                 package_manifest.parse_dict(o['files']))
   
   def to_simple_dict(self):
     'Return a simplified dict suitable for json encoding.'

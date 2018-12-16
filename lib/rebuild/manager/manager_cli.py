@@ -129,8 +129,8 @@ class manager_cli(build_target_cli):
     self.package_subparsers = self.package_parser.add_subparsers(help = 'package_commands', dest = 'subcommand')
 
     # package.files
-    package_files_parser = self.package_subparsers.add_parser('files', help = 'List files in package')
-    package_files_parser.add_argument('package', action = 'store', help = 'package to list files for')
+    package_manifest_parser = self.package_subparsers.add_parser('files', help = 'List files in package')
+    package_manifest_parser.add_argument('package', action = 'store', help = 'package to list files for')
 
     # package.info
     package_info_parser = self.package_subparsers.add_parser('info', help = 'List info in package')
@@ -251,7 +251,7 @@ class manager_cli(build_target_cli):
     elif command in [ 'config:projects' ]:
       return self._command_config_projects(args.root_dir, args.build_target)
     elif command == 'package:files':
-      return self._command_package_files(args.package)
+      return self._command_package_manifest(args.package)
     elif command == 'package:info':
       return self._command_package_info(args.package)
     elif command == 'package:metadata':
@@ -352,7 +352,7 @@ remanager.py packages update --artifacts @ARTIFACTS_DIR@ --root-dir ${_root_dir}
    else:
      return 1
 
-  def _command_package_files(self, tarball):
+  def _command_package_manifest(self, tarball):
     package = package(tarball)
     for f in package.files:
       print(f)

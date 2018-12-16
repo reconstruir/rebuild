@@ -9,12 +9,12 @@ from rebuild.package.artifact_db import artifact_db as DB
 from rebuild.package.db_error import *
 from rebuild.package.package_metadata import package_metadata as PM
 from bes.debug import debug_timer
-from rebuild.package import package_files
+from rebuild.package import package_manifest
 from rebuild.package.package_file_list import package_file_list as FCL
 
 class test_artifact_db(unit_test):
 
-  TEST_FILES = package_files(FCL(
+  TEST_FILES = package_manifest(FCL(
     [
       ( 'f1', 'fchk1', 0 ),
       ( 'f2', 'fchk2', 0 ),
@@ -26,7 +26,7 @@ class test_artifact_db(unit_test):
     'files_chk',
     'env_files_chk')
 
-  TEST_FILES2 = package_files(FCL(
+  TEST_FILES2 = package_manifest(FCL(
     [
       ( 'g1', 'gchk1', 0 ),
       ( 'g2', 'gchk2', 0 ),

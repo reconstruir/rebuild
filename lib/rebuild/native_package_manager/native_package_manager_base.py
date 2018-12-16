@@ -16,7 +16,7 @@ class native_package_manager_base(with_metaclass(ABCMeta, object)):
     pass
 
   @abstractmethod
-  def package_files(self, package_name):
+  def package_manifest(self, package_name):
     'Return a list of installed files for the given package.'
     pass
 

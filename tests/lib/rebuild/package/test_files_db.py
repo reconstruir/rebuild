@@ -26,7 +26,7 @@ class test_files_db(unit_test):
     self.assertTrue( db.has_table('foo') )
     self.assertEqual( self.TEST_FILES, db.package_file_rows('foo') )
     self.assertEqual( [ ( 'f1', ), ( 'f2', ) ], db.filenames_rows('foo') )
-    self.assertEqual( self.TEST_FILES_CHECKSUMS, db.package_files('foo') )
+    self.assertEqual( self.TEST_FILES_CHECKSUMS, db.package_manifest('foo') )
     self.assertEqual( [ 'f1', 'f2' ], db.filenames('foo') )
                       
   def test_remove(self):

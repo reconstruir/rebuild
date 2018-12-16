@@ -233,7 +233,7 @@ class package_manager(object):
     return package(tarball).descriptor
 
   @classmethod
-  def package_files(clazz, tarball):
+  def package_manifest(clazz, tarball):
     return package(tarball).files.filenames()
 
   def install_package(self, pkg_desc, build_target, hardness,

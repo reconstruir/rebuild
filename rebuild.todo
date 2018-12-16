@@ -1076,6 +1076,5 @@ other:
  - checksum check in package manager is screwy because somettimes files with hardcoded paths get hacked
    which breaks the true checksum test for checking upgradability.  i think i need to get rid of the
    checksum update
- - s/package_files/package_manifest/
  - cleanup stuff not needed from package_file and package_file_list they can be simplified a lot
  

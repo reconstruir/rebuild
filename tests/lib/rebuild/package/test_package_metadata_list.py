@@ -4,8 +4,8 @@ import os.path as path
 from bes.sqlite import sqlite
 from bes.testing.unit_test import unit_test
 from rebuild.base import requirement_list as RL
-from rebuild.package import package_metadata as PM,  package_metadata_list as PML, package_files as PF
-from rebuild.package import package_files
+from rebuild.package import package_metadata as PM,  package_metadata_list as PML, package_manifest as PF
+from rebuild.package import package_manifest
 from rebuild.package.package_file_list import package_file_list as FCL
 
 class test_package_metadata_list(unit_test):

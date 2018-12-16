@@ -4,7 +4,7 @@ import json
 from collections import namedtuple
 from bes.common import cached_property, check, json_util, string_util
 from rebuild.base import build_version, package_descriptor, requirement, requirement_list
-from .package_files import package_files
+from .package_manifest import package_manifest
 
 class package_db_entry(namedtuple('package_db_entry', 'format_version,name,version,revision,epoch,requirements,properties,files')):
 
@@ -15,7 +15,7 @@ class package_db_entry(namedtuple('package_db_entry', 'format_version,name,versi
     check.check_int(epoch)
     check.check_requirement_list(requirements)
     check.check_dict(properties)
-    check.check_package_files(files)
+    check.check_package_manifest(files)
     return clazz.__bases__[0].__new__(clazz, 2, name, version, revision, epoch, requirements, properties, files)
 
   def __hash__(self):
@@ -49,7 +49,7 @@ class package_db_entry(namedtuple('package_db_entry', 'format_version,name,versi
                  o['epoch'],
                  requirement_list.from_string_list(o['requirements']),
                  o['properties'],
-                 package_files.parse_dict(o['files']))
+                 package_manifest.parse_dict(o['files']))
   
   @classmethod
   def _parse_requirements(clazz, l):

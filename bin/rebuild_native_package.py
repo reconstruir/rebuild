@@ -82,7 +82,7 @@ def __command_contents(name, levels, files_only, dirs_only):
   if files_only and dirs_only:
     raise RuntimeError('Only one of --files or --dirs can be given.')
   if files_only:
-    files = npm.package_files(name)
+    files = npm.package_manifest(name)
   elif dirs_only:
     files = npm.package_dirs(name)
   else:

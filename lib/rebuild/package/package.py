@@ -6,7 +6,7 @@ from collections import namedtuple
 
 from bes.archive import archive, archiver
 from bes.common import check, dict_util, json_util, string_util
-from bes.fs import dir_util, file_check, file_find, file_mime, file_search, file_util, tar_util, temp_file
+from bes.fs import dir_util, file_check, file_find, file_mime, file_search, file_replace, file_util, tar_util, temp_file
 from bes.text import text_line_parser
 from bes.match import matcher_filename, matcher_multiple_filename
 from bes.python import setup_tools
@@ -15,7 +15,7 @@ from rebuild.base import build_blurb, build_target, package_descriptor
 from bes.debug import debug_timer
 
 from .package_metadata import package_metadata
-from .package_files import package_files
+from .package_manifest import package_manifest
 from .package_file_list import package_file_list
 
 class package(object):
@@ -165,7 +165,7 @@ unset REBUILD_STUFF_DIR
     return package_descriptor.full_name_cmp(p1.package_descriptor, p2.package_descriptor)
 
   @classmethod
-  def package_files(clazz, tarball):
+  def package_manifest(clazz, tarball):
     return package(tarball).files
 
   _create_package_result = namedtuple('_create_package_result', 'filename, metadata')
@@ -209,7 +209,7 @@ unset REBUILD_STUFF_DIR
     stage_env_package_file_list = package_file_list.from_files(stage_env_files, set(), root_dir = stage_env_files_dir)
     timer.stop()
 
-    pkg_files = package_files(stage_package_file_list, stage_env_package_file_list)
+    pkg_files = package_manifest(stage_package_file_list, stage_env_package_file_list)
 
     # filename is empty cause it only gets filled once metadata ends up in a db
     metadata = package_metadata('',

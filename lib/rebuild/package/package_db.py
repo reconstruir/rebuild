@@ -8,7 +8,7 @@ from rebuild.base import build_version, package_descriptor, package_descriptor_l
 from .db_error import *
 from .files_db import files_db
 from .package_db_entry import package_db_entry
-from .package_files import package_files
+from .package_manifest import package_manifest
 from .sql_encoding import sql_encoding
 
 class package_db(object):
@@ -129,8 +129,8 @@ create table {files_table_name}(
       raise NotInstalledError('not installed: %s' % (name), name)
     assert(len(rows) == 1)
     row = rows[0]
-    files = package_files(self._files_db.package_files(name),
-                          self._files_db.package_files(self._make_env_files_table_name(name)),
+    files = package_manifest(self._files_db.package_manifest(name),
+                          self._files_db.package_manifest(self._make_env_files_table_name(name)),
                           row.files_checksum,
                           row.env_files_checksum)
     return package_db_entry(row.name,

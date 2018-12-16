@@ -6,7 +6,7 @@ from .artifact_manager_local import artifact_manager_local
 #from .artifact_manager_artifactory import artifact_manager_artifactory
 from .package import package
 from .package_cli import package_cli
-from .package_files import package_files
+from .package_manifest import package_manifest
 from .package_list import package_list
 from .package_manager import PackageFilesConflictError, PackageMissingRequirementsError
 from .package_manager import package_manager

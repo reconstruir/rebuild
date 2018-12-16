@@ -8,7 +8,7 @@ from bes.common import check
 from bes.fs import file_path, file_util, temp_file
 
 from rebuild.base import requirement_list
-from rebuild.package import package_metadata, package_metadata_list, package_files
+from rebuild.package import package_metadata, package_metadata_list, package_manifest
 
 class artifactory_requests(object):
 
@@ -208,7 +208,7 @@ items.find({
     distro_version = None
     requirements = []
     properties = {}
-    files = package_files(None, None)
+    files = package_manifest(None, None)
     
     for artifactory_prop in artifactory_properties:
       if artifactory_prop['key'] == 'rebuild.distro_version':

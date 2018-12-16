@@ -20,26 +20,26 @@ class native_package_manager_macos(native_package_manager_base):
     return sorted(algorithm.unique(rv.stdout.strip().split('\n')))
 
   @classmethod
-  def package_files(clazz, package_name):
+  def package_manifest(clazz, package_name):
     'Return a list of installed files for the given package.'
-    return clazz.__package_files(package_name, '--only-files')
+    return clazz.__package_manifest(package_name, '--only-files')
 
   @classmethod
   def package_dirs(clazz, package_name):
     'Return a list of installed files for the given package.'
-    return clazz.__package_files(package_name, '--only-dirs')
+    return clazz.__package_manifest(package_name, '--only-dirs')
 
   @classmethod
   def package_contents(clazz, package_name):
     'Return a list of contents for the given package.'
-    return clazz.__package_files(package_name, '')
+    return clazz.__package_manifest(package_name, '')
 
   __CONTENTS_BLACKLIST = [
     '.vol',
   ]
 
   @classmethod
-  def __package_files(clazz, package_name, flags):
+  def __package_manifest(clazz, package_name, flags):
     cmd = 'pkgutil --files %s %s' % (package_name, flags)
     rv = clazz._call_pkgutil(cmd)
     if rv.exit_code != 0:

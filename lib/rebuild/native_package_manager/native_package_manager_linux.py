@@ -36,7 +36,7 @@ class native_package_manager_linux(native_package_manager_base):
     return sorted(contents)
 
   @classmethod
-  def package_files(clazz, package_name):
+  def package_manifest(clazz, package_name):
     'Return a list of installed pacakge.'
     contents = clazz.package_contents(package_name)
     files = [ f for f in contents if path.isfile(f) ]

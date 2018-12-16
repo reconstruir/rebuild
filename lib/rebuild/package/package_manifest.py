@@ -6,7 +6,7 @@ from bes.common import check
 from .package_file_list import package_file_list
 from .sql_encoding import sql_encoding
 
-class package_files(namedtuple('package_files', 'files, env_files, files_checksum, env_files_checksum')):
+class package_manifest(namedtuple('package_manifest', 'files, env_files, files_checksum, env_files_checksum')):
 
   def __new__(clazz, files, env_files, files_checksum = None, env_files_checksum = None):
 
@@ -50,4 +50,4 @@ class package_files(namedtuple('package_files', 'files, env_files, files_checksu
     }
     return d
 
-check.register_class(package_files, include_seq = False)
+check.register_class(package_manifest, include_seq = False)
