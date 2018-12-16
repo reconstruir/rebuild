@@ -87,7 +87,7 @@ class test_package_db(unit_test):
     db.add_package(PE('p3', '1', 0, 0, RL(), {}, package_manifest(FCL([ ( 'p3/f1', 'c3a', 0 ), ( 'p3/f2', 'c3b', 0 ) ]), FCL([ ( 'p3/e3a', 'ec3a', 0 ), ( 'p3/e2b', 'ec3b', 0 ) ]), 'f_chk')))
     db.add_package(PE('p4', '1', 0, 0, RL(), {}, package_manifest(FCL([ ( 'p4/f1', 'c4a', 0 ), ( 'p4/f2', 'c4b', 0 ) ]), FCL([ ( 'p4/e4a', 'ec4a', 0 ), ( 'p4/e2b', 'ec4b', 0 ) ]), 'f_chk')))
     db.add_package(PE('p5', '1', 0, 0, RL(), {}, package_manifest(FCL([ ( 'p5/f1', 'c5a', 0 ), ( 'p5/f2', 'c5b', 0 ) ]), FCL([ ( 'p5/e5a', 'ec5a', 0 ), ( 'p5/e2b', 'ec5b', 0 ) ]), 'f_chk')))
-     db.add_package(PE('p6', '1', 0, 0, RL(), {}, package_manifest(FCL([ ( 'p6/f1', 'c6a', 0 ), ( 'p6/f2', 'c6b', 0 ) ]), FCL([ ( 'p6/e6a', 'ec6a', 0 ), ( 'p6/e2b', 'ec6b', 0 ) ]), 'f_chk')))
+    db.add_package(PE('p6', '1', 0, 0, RL(), {}, package_manifest(FCL([ ( 'p6/f1', 'c6a', 0 ), ( 'p6/f2', 'c6b', 0 ) ]), FCL([ ( 'p6/e6a', 'ec6a', 0 ), ( 'p6/e2b', 'ec6b', 0 ) ]), 'f_chk')))
     self.assertEqual( set([ 'p1/f1', 'p1/f2' ]), db.files('p1') )
     self.assertEqual( set([ 'p1/e1a', 'p1/e2b' ]), db.env_files('p1') )
 

@@ -29,7 +29,7 @@ class step_setup_ingest_upstream_sources(step):
     upstream_source = values['upstream_source']
 
     if upstream_source:
-      url = upstream_source.value
+      url = string_util.unquote(upstream_source.value)
       arcname = upstream_source.get_property('arcname', None)
       checksum = upstream_source.get_property('checksum', None)
       if not checksum:
@@ -57,7 +57,9 @@ class step_setup_ingest_upstream_sources(step):
             return step_result(False, 'already exists with different checksum: %s' % (remote_filename))
         if need_ingesting:
           self.blurb('ingesting %s => %s [checksum %s]' % (url, remote_filename, checksum))
-          rv = ingest_util.ingest_url(url, remote_filename, arcname, checksum, env.sources_storage, cookies = cookies)
+          rv = ingest_util.ingest_url(url, remote_filename, arcname, checksum,
+                                      env.sources_storage, env.http_downloads_manager,
+                                      cookies = cookies)
           if not rv.success:
             return step_result(False, rv.reason)
           if rv.reason:

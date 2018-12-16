@@ -100,9 +100,9 @@ class storage_artifactory(storage_base):
   #@abstractmethod
   def upload(self, local_filename, remote_filename, local_checksum):
     self.log_d('upload: local_filename=%s; remote_filename=%s; local_checksum=%s' % (local_filename, remote_filename, local_checksum))
-    url = self._hostname + remote_filename
-    self.log_d('upload: url=%s' % (url))
-    download_url = artifactory_requests.upload(url, local_filename,
+    address = self.make_address(remote_filename)
+    self.log_d('upload: address=%s' % (str(address)))
+    download_url = artifactory_requests.upload(address, local_filename,
                                                self._config.upload_credentials.credentials.username,
                                                self._config.upload_credentials.credentials.password)
     self.log_d('upload: download_url=%s' % (download_url))
@@ -110,8 +110,8 @@ class storage_artifactory(storage_base):
                                                                         self._config.download_credentials.credentials.username,
                                                                         self._config.download_credentials.credentials.password)
     if verification_checksums.sha256 != local_checksum:
-      return False
-    return True
+      return None
+    return address
 
   #@abstractmethod
   def remote_checksum(self, remote_filename):

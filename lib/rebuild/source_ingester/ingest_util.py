@@ -80,7 +80,8 @@ class ingest_util(object):
   _ingest_result = namedtuple('_ingest_result', 'success, reason')
   
   @classmethod
-  def ingest_url(clazz, url, remote_filename, arcname, checksum, storage, cookies = None, dry_run = False, debug = False):
+  def ingest_url(clazz, url, remote_filename, arcname, checksum, storage, http_cache,
+                 cookies = None, dry_run = False, debug = False):
     check.check_string(url)
     check.check_string(remote_filename)
     if arcname:
@@ -88,7 +89,8 @@ class ingest_util(object):
     if checksum:
       check.check_string(checksum)
     clazz.log_d('ingest_url: url=%s; arcname=%s; cookies=%s' % (url, arcname, cookies))
-    local_filename = clazz._download_to_tmp_file(url, cookies, debug = debug)
+    local_filename = http_cache.get_url(url, checksum, cookies = cookies, debug = debug)
+    #local_filename = clazz._download_to_tmp_file(url, cookies, debug = debug)
     clazz.log_d('ingest_url: downloaded remote url %s => %s' % (url, local_filename))
     if not local_filename:
       return clazz._ingest_result(False, 'failed: could not download: %s' % (url))
@@ -138,13 +140,12 @@ class ingest_util(object):
       clazz.log_d('ingest_file: calling archive_binary() returns %s' % (local_filename))
       tmp_files_to_cleanup.append(local_filename)
 
-    remote_path = storage.remote_filename_abs(remote_filename)
     remote_checksum = storage.remote_checksum(remote_filename)
     local_checksum = file_util.checksum('sha256', local_filename)
-    clazz.log_d('ingest_file: remote_path=%s; remote_checksum=%s; local_checksum=%s' % (remote_path, remote_checksum, local_checksum))
+    clazz.log_d('ingest_file: remote_filename=%s; remote_checksum=%s; local_checksum=%s' % (remote_filename, remote_checksum, local_checksum))
     if remote_checksum == local_checksum:
       _cleanup_tmp_files()
-      return clazz._ingest_result(True, 'a file with checksum %s already exists: %s' % (local_checksum, remote_path))
+      return clazz._ingest_result(True, 'a file with checksum %s already exists: %s' % (local_checksum, remote_filename))
     if remote_checksum is not None and remote_checksum != local_checksum:
       _cleanup_tmp_files()
       msg = '''trying to re-ingest a with a different checksum.
@@ -153,14 +154,13 @@ class ingest_util(object):
 remote_checksum: %s''' % (local_filename, local_checksum, remote_checksum)
       return clazz._ingest_result(True, msg)
     if dry_run:
-      return clazz._ingest_result(True, 'dry-run: would upload %s => %s' % (local_filename, remote_path))
+      return clazz._ingest_result(True, 'dry-run: would upload %s => %s' % (local_filename, remote_filename))
     
     try:
-      clazz.log_d('ingest_file() calling upload(%s, %s)' % (local_filename, remote_path))
-      rv = storage.upload(local_filename, remote_path, local_checksum)
-      clazz.log_d('ingest_file() rv=%s - %s' % (rv, type(rv)))
-      if rv:
-        ingested_address = storage.make_address().mutate_filename(remote_filename)
+      clazz.log_d('ingest_file: calling upload: local_filename=%s; remote_filename=%s; ' % (local_filename, remote_filename))
+      ingested_address = storage.upload(local_filename, remote_filename, local_checksum)
+      clazz.log_d('ingest_file: ingested_address=%s' % (str(ingested_address)))
+      if ingested_address:
         username = storage._config.upload_credentials.credentials.username
         password = storage._config.upload_credentials.credentials.password
         properties_rv = artifactory_requests.set_properties(ingested_address, properties, username, password)

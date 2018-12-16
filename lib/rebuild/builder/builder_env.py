@@ -13,6 +13,7 @@ from rebuild.base import build_blurb, package_descriptor, requirement_manager
 from rebuild.storage import storage_factory
 from rebuild.recipe import recipe_load_env
 from rebuild.config import storage_config
+from rebuild.source_ingester.http_download_cache import http_download_cache
 
 from .builder_script_manager import builder_script_manager
 
@@ -32,7 +33,8 @@ class builder_env(object):
                                               config.no_network)
     self.blurb('sources_storage: %s' % (self.sources_storage))
     self.checksum_manager = self._make_checksum_manager(config.build_root)
-    self.git_downloads_manager = self._make_git_downloads_manager(config.build_root)
+    self.git_downloads_manager = git_download_cache(path.join(config.build_root, 'downloads', 'git'))
+    self.http_downloads_manager = http_download_cache(path.join(config.build_root, 'downloads', 'http'))
     self.reload_artifact_manager()
     self.tools_manager = tools_manager(path.join(config.build_root, 'tools'),
                                        self.config.host_build_target,
@@ -58,10 +60,6 @@ class builder_env(object):
   @classmethod
   def _make_checksum_manager(clazz, build_dir):
     return checksum_manager(path.join(build_dir, 'checksums'))
-
-  @classmethod
-  def _make_git_downloads_manager(clazz, build_dir):
-    return git_download_cache(path.join(build_dir, 'downloads', 'git'))
 
   def reload_artifact_manager(self):
     self.artifact_manager = artifact_manager_local(path.join(self.config.build_root, 'artifacts'))

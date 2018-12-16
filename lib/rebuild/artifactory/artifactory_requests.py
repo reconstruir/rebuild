@@ -115,8 +115,12 @@ class artifactory_requests(object):
     return result
 
   @classmethod
-  def upload(clazz, url, filename, username, password):
-    #content_type = 'application/java-archive' # your content-type header
+  def upload(clazz, address, filename, username, password):
+    check.check_artifactory_address(address)
+    check.check_string(address.filename)
+    check.check_string(username)
+    check.check_string(password)
+    clazz.log_d('upload: address=%s; filename=%s' % (address, filename))
     import requests
     headers = {
       # 'content-type': content_type,
@@ -124,11 +128,12 @@ class artifactory_requests(object):
       clazz._HEADER_CHECKSUM_SHA1: file_util.checksum('sha1', filename),
       clazz._HEADER_CHECKSUM_SHA256: file_util.checksum('sha256', filename),
     }
-    with open(filename, 'rb') as f:
-      response = requests.put(url,
+    with open(filename, 'rb') as fin:
+      response = requests.put(address.url,
                               auth = (username, password),
-                              data = f,
+                              data = fin,
                               headers = headers)
+      clazz.log_d('upload: response status_code=%d' % (response.status_code))
       if response.status_code != 201:
         raise RuntimeError('Failed to upload: %s (status_code %d)' % (url, response.status_code))
       data = response.json()
