@@ -77,19 +77,19 @@ class package(object):
     # tar cmd is 10x faster than archiver.  need to fix archiver
     tar_cmd = [ 'tar', 'xf', self.tarball, '-C', tmp_dir ]
     execute.execute(tar_cmd)
-    #archiver.extract_all(self.tarball, tmp_dir)
     src_stuff_dir = path.join(tmp_dir, self.FILES_DIR)
     src_env_dir = path.join(tmp_dir, self.ENV_DIR)
     if path.isdir(src_stuff_dir):
       dir_util.move_files(src_stuff_dir, dst_stuff_dir)
-    self._post_install_hooks(dst_stuff_dir)
+    self._update_python_config_files(dst_stuff_dir)
+    self._replace_variables_files(dst_stuff_dir, dst_stuff_dir)
     if path.isdir(src_env_dir):
       dir_util.move_files(src_env_dir, dst_env_dir)
-    self._variable_substitution_hook(dst_env_dir, dst_stuff_dir)
+    self._replace_variables_env_files(dst_env_dir, dst_stuff_dir)
     file_util.remove(tmp_dir)
       
-  def _update_python_config_files(self, installation_dir):
-    python_lib_dir = path.join(installation_dir, 'lib/python')
+  def _update_python_config_files(self, stuff_dir):
+    python_lib_dir = path.join(stuff_dir, 'lib/python')
     setup_tools.update_egg_directory(python_lib_dir)
 
   _ENV_FILE_HEAD_TEMPLATE = '''\
@@ -118,10 +118,19 @@ unset REBUILD_STUFF_DIR
 # END @REBUILD_TAIL@
 
 '''
-  
-  def _variable_substitution_hook(self, where, installation_dir):
+
+  def _replace_variables_files(self, where, stuff_dir):
     replacements = {
-      '${REBUILD_PACKAGE_PREFIX}': installation_dir,
+      '${REBUILD_PACKAGE_PREFIX}': stuff_dir,
+    }
+    file_search.search_replace(where,
+                               replacements,
+                               backup = False,
+                               test_func = file_mime.is_text)
+  
+  def _replace_variables_env_files(self, where, stuff_dir):
+    replacements = {
+      '${REBUILD_PACKAGE_PREFIX}': stuff_dir,
       '${REBUILD_PACKAGE_NAME}': self.metadata.name,
       '${REBUILD_PACKAGE_DESCRIPTION}': self.metadata.name,
       '${REBUILD_PACKAGE_FULL_VERSION}': str(self.metadata.build_version),
@@ -129,15 +138,10 @@ unset REBUILD_STUFF_DIR
       '#@REBUILD_HEAD@': self._ENV_FILE_HEAD_TEMPLATE,
       '#@REBUILD_TAIL@': self._ENV_FILE_TAIL_TEMPLATE,
     }
-    if True:
-      file_search.search_replace(where,
-                                 replacements,
-                                 backup = False,
-                                 test_func = file_mime.is_text)
-
-  def _post_install_hooks(self, installation_dir):
-    self._update_python_config_files(installation_dir)
-    self._variable_substitution_hook(installation_dir, installation_dir)
+    file_search.search_replace(where,
+                               replacements,
+                               backup = False,
+                               test_func = file_mime.is_text)
     
   @property
   def pkg_config_files(self):
