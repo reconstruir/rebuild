@@ -53,8 +53,8 @@ class step_setup_ingest_upstream_sources(step):
             self.blurb('already exists with same checksum: %s' % (remote_filename))
             need_ingesting = False
           else:
-            self.blurb('already exists with different checksum: %s' % (remote_filename))
-            return step_result(False, 'already exists with different checksum: %s' % (remote_filename))
+            self.blurb('WARNING: already exists with different checksum: %s' % (remote_filename))
+            return step_result(True, 'already exists with different checksum: %s' % (remote_filename))
         if need_ingesting:
           self.blurb('ingesting %s => %s [checksum %s]' % (url, remote_filename, checksum))
           rv = ingest_util.ingest_url(url, remote_filename, arcname, checksum,

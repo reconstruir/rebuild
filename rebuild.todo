@@ -1083,3 +1083,5 @@ files_db.py s/package_manifest/package_files
 package.py s/package_manifest/files
 package_manager.py s/package_manifest/tarball_manifest  s/pkg_desc/tarball_descriptor also dbl check needed
 ingest_util.py set_properties is hard coded for artifactory
+
+make adddress interface more abstract and use it for pcloud as well as artifactory
