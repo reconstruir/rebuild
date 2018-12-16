@@ -126,7 +126,7 @@ class builder_script(object):
                                                  self.build_target)
     return result
 
-  file_checksums = namedtuple('file_checksums', 'sources,targets')
+  file_checksums = namedtuple('file_checksums', 'sources, targets')
 
   def _script_sources(self):
     sources = self._step_manager.sources(self.env.recipe_load_env)
