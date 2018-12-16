@@ -2,7 +2,6 @@
 
 from .artifact_cli import artifact_cli
 from .artifact_db import artifact_db
-from .artifact_manager_chain import artifact_manager_chain
 from .artifact_manager_local import artifact_manager_local
 #from .artifact_manager_artifactory import artifact_manager_artifactory
 from .package import package

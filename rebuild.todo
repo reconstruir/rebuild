@@ -878,7 +878,6 @@ and only then forks rebuilder.py.  might be tough
 - add package_manager and new_tools_mananger transform env unit tests that use dependencies and assert that only what is needed is in the env
 
 - in step.py env.update(script.substitutions) might happen too early
-- add artifact manager chain tests for dups and other edge cases
 - env_dir/package_manager env_files test case where there are no files
 - addd MANPATH to bes_PATH_ kind of bash funcs also PERL5LIB
 - retire shell_env craps all over
