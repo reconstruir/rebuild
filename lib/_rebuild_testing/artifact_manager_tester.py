@@ -19,7 +19,7 @@ class artifact_manager_tester(object):
     self._recipes = {}
     if recipes:
       self.add_recipes(recipes, filename = filename)
-    
+      
   def add_recipes(self, recipes, filename = None):
     filename = filename or '<unknown>'
     check.check_string(filename)
@@ -29,6 +29,9 @@ class artifact_manager_tester(object):
       if key in self._recipes:
         raise RuntimeError('Already in recipes: %s' % (key))
       self._recipes[key] = recipe
+
+  def clear_recipes(self):
+    self._recipes = {}
 
   def create_package(self, adesc, mutations = {}):
     if check.is_string(adesc):
@@ -48,6 +51,11 @@ class artifact_manager_tester(object):
     for adesc in adescs:
       self._publish_one(adesc, mutations)
 
+  def retire(self, adescs):
+    adescs = object_util.listify(adescs)
+    for adesc in adescs:
+      self._retire_one(adesc)
+
   def _publish_one(self, adesc, mutations):
     if check.is_string(adesc):
       adesc = artifact_descriptor.parse(adesc)
@@ -55,6 +63,12 @@ class artifact_manager_tester(object):
     pkg = self.create_package(adesc, mutations = mutations)
     self.am.publish(pkg.filename, adesc.build_target, False, pkg.metadata)
 
+  def _retire_one(self, adesc):
+    if check.is_string(adesc):
+      adesc = artifact_descriptor.parse(adesc)
+    check.check_artifact_descriptor(adesc)
+    self.am.remove_artifact(adesc)
+    
   def dump(self):
     for r in sorted(self._recipes.values()):
       print(r.metadata)

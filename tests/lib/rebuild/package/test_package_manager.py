@@ -4,7 +4,7 @@
 import copy, os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import file_find, file_util, temp_file
-from bes.system import os_env
+from bes.system import execute, os_env
 from bes.common import check, dict_util, object_util
 from rebuild.base import build_target as BT, package_descriptor as PD
 from rebuild.pkg_config import pkg_config
@@ -596,6 +596,49 @@ fake_package unset 1.0.0 0 0 linux release x86_64 ubuntu 18
     env = clazz._replace_input_env(env)
     result = pm.transform_env(env, package_names)
     return clazz._replace_output_env(pm, result)
+
+  def test_install_package_force_installf(self):
+    '''
+    A test that proves package manager will reinstall a package if the version is the
+    contents changed and force_install is given
+    '''
+
+    recipe1 = '''\
+fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
+  files
+    bin/cabbage.sh
+      \#!/bin/bash
+      echo cabbage1 ; exit 0
+'''
+
+    recipe2 = '''\
+fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
+  files
+    bin/cabbage.sh
+      \#!/bin/bash
+      echo cabbage2 ; exit 0
+'''
+
+    cabbage = PD.parse('cabbage-1.0.0')
+    bt = BT.parse_path('linux-ubuntu-18/x86_64/release')
+    
+    t = AMT()
+    pm = self._make_caca_test_pm(t.am)
+    t.add_recipes(recipe1)
+    t.publish('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    pm.install_package(cabbage, bt, [ 'RUN' ])
+    exe = pm.tool_exe('cabbage.sh')
+    print(exe)
+    self.assertEqual( 'cabbage1', execute.execute(exe).stdout.strip() )
+    
+    t.retire('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    t.clear_recipes()
+    t.add_recipes(recipe2)
+    t.publish('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    pm.install_package(cabbage, bt, [ 'RUN' ], force_install = False)
+    self.assertEqual( 'cabbage1', execute.execute(exe).stdout.strip() )
+    pm.install_package(cabbage, bt, [ 'RUN' ], force_install = True)
+    self.assertEqual( 'cabbage2', execute.execute(exe).stdout.strip() )
   
 if __name__ == '__main__':
   unit_test.main()
