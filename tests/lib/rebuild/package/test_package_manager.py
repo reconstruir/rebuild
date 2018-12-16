@@ -95,7 +95,6 @@ fake_package libfoo 1.0.0 0 0 linux release x86_64 ubuntu 18
     self.assertEqual( [ 'libfoo-1.0.0' ], pm.list_all(include_version = True) )
     
     PKG_CONFIG_PATH = pm.pkg_config_path
-    print('PKG_CONFIG_PATH: %s' % (PKG_CONFIG_PATH))
     
     # list_all
     packages = pkg_config.list_all(PKG_CONFIG_PATH = PKG_CONFIG_PATH)
@@ -597,7 +596,7 @@ fake_package unset 1.0.0 0 0 linux release x86_64 ubuntu 18
     result = pm.transform_env(env, package_names)
     return clazz._replace_output_env(pm, result)
 
-  def test_install_package_force_installf(self):
+  def test_install_package_force_install_files(self):
     '''
     A test that proves package manager will reinstall a package if the version is the
     contents changed and force_install is given
@@ -628,7 +627,6 @@ fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
     t.publish('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
     pm.install_package(cabbage, bt, [ 'RUN' ])
     exe = pm.tool_exe('cabbage.sh')
-    print(exe)
     self.assertEqual( 'cabbage1', execute.execute(exe).stdout.strip() )
     
     t.retire('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
@@ -639,6 +637,60 @@ fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
     self.assertEqual( 'cabbage1', execute.execute(exe).stdout.strip() )
     pm.install_package(cabbage, bt, [ 'RUN' ], force_install = True)
     self.assertEqual( 'cabbage2', execute.execute(exe).stdout.strip() )
+  
+  def test_install_package_force_install_env_files(self):
+    '''
+    A test that proves package manager will reinstall a package if the version is the
+    contents changed and force_install is given
+    '''
+
+    recipe1 = '''\
+fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
+  files
+    bin/unsetcut.sh
+      \#!/bin/bash
+      echo cabbage ; exit 0
+  env_files
+    cabbage_env.sh
+      \#@REBUILD_HEAD@
+      export FOO=cabbage1
+      \#@REBUILD_TAIL@
+'''
+
+    recipe2 = '''\
+fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
+  files
+    bin/unsetcut.sh
+      \#!/bin/bash
+      echo cabbage ; exit 0
+  env_files
+    cabbage_env.sh
+      \#@REBUILD_HEAD@
+      export FOO=cabbage2
+      \#@REBUILD_TAIL@
+'''
+
+    cabbage = PD.parse('cabbage-1.0.0')
+    bt = BT.parse_path('linux-ubuntu-18/x86_64/release')
+    
+    t = AMT()
+    pm = self._make_caca_test_pm(t.am)
+    t.add_recipes(recipe1)
+    t.publish('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    pm.install_package(cabbage, bt, [ 'RUN' ])
+    result = pm.transform_env({}, [ 'cabbage' ])
+    self.assertEqual( 'cabbage1', result['FOO'] )
+
+    t.retire('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    t.clear_recipes()
+    t.add_recipes(recipe2)
+    t.publish('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    pm.install_package(cabbage, bt, [ 'RUN' ], force_install = False)
+    result = pm.transform_env({}, [ 'cabbage' ])
+    self.assertEqual( 'cabbage1', result['FOO'] )
+    pm.install_package(cabbage, bt, [ 'RUN' ], force_install = True)
+    result = pm.transform_env({}, [ 'cabbage' ])
+    self.assertEqual( 'cabbage2', result['FOO'] )
   
 if __name__ == '__main__':
   unit_test.main()

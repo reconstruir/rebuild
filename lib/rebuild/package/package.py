@@ -190,9 +190,6 @@ unset REBUILD_STUFF_DIR
     else:
       files = []
 
-    if not files:
-      build_blurb.blurb('rebuild', 'warning: No files to package found: %s' % (path.relpath(stage_files_dir)))
-      
     timer.stop()
     timer.start('create_package - files checksums')
     stage_package_file_list = package_file_list.from_files(files, files_with_hardcoded_paths, root_dir = stage_files_dir)
