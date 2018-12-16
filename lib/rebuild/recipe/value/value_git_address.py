@@ -70,12 +70,12 @@ class value_git_address(value_base):
     return values[-1]
   
   def downloaded_tarball_path(self, recipe_env):
-    return recipe_env.downloads_manager.tarball_path(self.address, self.revision)
+    return recipe_env.git_downloads_manager.tarball_path(self.address, self.revision)
   
   def download(self, recipe_env):
-    if not recipe_env.downloads_manager.has_tarball(self.address, self.revision):
+    if not recipe_env.git_downloads_manager.has_tarball(self.address, self.revision):
       assert self.needs_download(recipe_env)
-      recipe_env.downloads_manager.get_tarball(self.address, self.revision)
+      recipe_env.git_downloads_manager.get_tarball(self.address, self.revision)
     assert not self.needs_download(recipe_env)
 
   def needs_download(self, recipe_env):

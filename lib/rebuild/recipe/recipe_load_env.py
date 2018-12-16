@@ -13,7 +13,7 @@ class recipe_load_env_base(with_metaclass(ABCMeta, object)):
     raise NotImplementedError
 
   @abstractmethod
-  def get_downloads_manager(self):
+  def get_git_downloads_manager(self):
     raise NotImplementedError
 
   @abstractmethod
@@ -25,8 +25,8 @@ class recipe_load_env_base(with_metaclass(ABCMeta, object)):
     return self.get_build_target()
 
   @property
-  def downloads_manager(self):
-    return self.get_downloads_manager()
+  def git_downloads_manager(self):
+    return self.get_git_downloads_manager()
 
   @property
   def storage(self):
@@ -43,8 +43,8 @@ class recipe_load_env(recipe_load_env_base):
     return self._builder_env.config.build_target
 
   #@abstractmethod
-  def get_downloads_manager(self):
-    return self._builder_env.downloads_manager
+  def get_git_downloads_manager(self):
+    return self._builder_env.git_downloads_manager
 
   #@abstractmethod
   def get_sources_storage(self):
@@ -62,7 +62,7 @@ class testing_recipe_load_env(recipe_load_env_base):
     return self._build_target
 
   #@abstractmethod
-  def get_downloads_manager(self):
+  def get_git_downloads_manager(self):
     assert False
 
   #@abstractmethod

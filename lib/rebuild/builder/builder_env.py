@@ -32,7 +32,7 @@ class builder_env(object):
                                               config.no_network)
     self.blurb('sources_storage: %s' % (self.sources_storage))
     self.checksum_manager = self._make_checksum_manager(config.build_root)
-    self.downloads_manager = self._make_downloads_manager(config.build_root)
+    self.git_downloads_manager = self._make_git_downloads_manager(config.build_root)
     self.reload_artifact_manager()
     self.tools_manager = tools_manager(path.join(config.build_root, 'tools'),
                                        self.config.host_build_target,
@@ -60,8 +60,8 @@ class builder_env(object):
     return checksum_manager(path.join(build_dir, 'checksums'))
 
   @classmethod
-  def _make_downloads_manager(clazz, build_dir):
-    return git_download_cache(path.join(build_dir, 'downloads'))
+  def _make_git_downloads_manager(clazz, build_dir):
+    return git_download_cache(path.join(build_dir, 'downloads', 'git'))
 
   def reload_artifact_manager(self):
     self.artifact_manager = artifact_manager_local(path.join(self.config.build_root, 'artifacts'))
