@@ -231,26 +231,26 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
   def test_install_package_upgrade(self):
     pm = self._make_test_pm_with_am()
 
-    old_pi = PD('water', '1.0.0')
-    install_rv = pm.install_package(old_pi, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
+    old_pkg_desc = PD('water', '1.0.0')
+    install_rv = pm.install_package(old_pkg_desc, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
     self.assertTrue( install_rv )
     self.assertEqual( [ 'water-1.0.0' ], pm.list_all(include_version = True) )
 
-    new_pi = PD('water', '1.0.0-1')
-    install_rv = pm.install_package(new_pi, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
+    new_pkg_desc = PD('water', '1.0.0-1')
+    install_rv = pm.install_package(new_pkg_desc, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
     self.assertTrue( install_rv )
     self.assertEqual( [ 'water-1.0.0-1' ], pm.list_all(include_version = True) )
 
   def test_install_package_same_version(self):
     pm = self._make_test_pm_with_am()
 
-    old_pi = PD('water', '1.0.0')
-    install_rv = pm.install_package(old_pi, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
+    old_pkg_desc = PD('water', '1.0.0')
+    install_rv = pm.install_package(old_pkg_desc, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
     self.assertTrue( install_rv )
     self.assertEqual( [ 'water-1.0.0' ], pm.list_all(include_version = True) )
 
-    new_pi = PD('water', '1.0.0')
-    install_rv = pm.install_package(new_pi, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
+    new_pkg_desc = PD('water', '1.0.0')
+    install_rv = pm.install_package(new_pkg_desc, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
     self.assertFalse( install_rv )
     self.assertEqual( [ 'water-1.0.0' ], pm.list_all(include_version = True) )
 

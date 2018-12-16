@@ -185,7 +185,7 @@ class package_manager(object):
                              pkg.metadata.epoch,
                              pkg.metadata.requirements,
                              pkg.metadata.properties,
-                             pkg.metadata.files)
+                             pkg.metadata.manifest)
                              
     self.db.add_package(entry)
 
@@ -198,8 +198,8 @@ class package_manager(object):
     pkg = self.db.find_package(pkg_name)
     if not pkg:
       raise NotInstalledError('package %s not found' % (pkg_name))
-    paths = [ path.join(self._installation_dir, f) for f in pkg.files.files.filenames() ]
-    paths.extend([ path.join(self._env_dir, f) for f in pkg.files.env_files.filenames() ])
+    paths = [ path.join(self._installation_dir, f) for f in pkg.manifest.files.filenames() ]
+    paths.extend([ path.join(self._env_dir, f) for f in pkg.manifest.env_files.filenames() ])
     file_util.remove(paths)
     self.db.remove_package(pkg_name)
 
@@ -287,16 +287,16 @@ class package_manager(object):
 
     old_desc = old_pkg_entry.descriptor
 
-    old_files_checksums = old_pkg_entry.files.files_checksum
-    new_files_checksums = new_pkg.files.files_checksum
+    old_files_checksums = old_pkg_entry.manifest.files_checksum
+    new_files_checksums = new_pkg.manifest.files_checksum
     files_checksums_changed = old_files_checksums != new_files_checksums
     if files_checksums_changed:
       clazz.log_i('install_package: files changed: %s old=%s new=%s' % (old_desc.name,
                                                                         old_files_checksums,
                                                                         new_files_checksums))
 
-    old_env_files_checksums = old_pkg_entry.files.env_files_checksum
-    new_env_files_checksums = new_pkg.files.env_files_checksum
+    old_env_files_checksums = old_pkg_entry.manifest.env_files_checksum
+    new_env_files_checksums = new_pkg.manifest.env_files_checksum
     env_files_checksums_changed = old_env_files_checksums != new_env_files_checksums
     if env_files_checksums_changed:
       clazz.log_i('install_package: env files changed: %s old=%s new=%s' % (old_desc.name,
@@ -325,7 +325,7 @@ class package_manager(object):
     for package_name in package_names:
       entry = self.db.find_package(package_name)
       assert entry
-      result.extend([ f.filename for f in entry.files.env_files ])
+      result.extend([ f.filename for f in entry.manifest.env_files ])
     return result
   
   def transform_env(self, env, package_names):

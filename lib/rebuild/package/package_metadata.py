@@ -7,11 +7,11 @@ from rebuild.base import artifact_descriptor,  build_arch, build_target, build_v
 
 from .package_manifest import package_manifest
 
-class package_metadata(namedtuple('package_metadata', 'format_version, filename, name, version, revision, epoch, system, level, arch, distro, distro_version, requirements, properties, files')):
+class package_metadata(namedtuple('package_metadata', 'format_version, filename, name, version, revision, epoch, system, level, arch, distro, distro_version, requirements, properties, manifest')):
 
   def __new__(clazz, filename, name, version, revision, epoch, system,
               level, arch, distro, distro_version, requirements,
-              properties, files):
+              properties, manifest):
     check.check_string(filename)
     check.check_string(name)
     check.check_string(version)
@@ -31,11 +31,11 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
     check.check_requirement_list(requirements)
     properties = properties or {}
     check.check_dict(properties)
-    check.check_package_manifest(files)
+    check.check_package_manifest(manifest)
     return clazz.__bases__[0].__new__(clazz, 2, filename, name, version,
                                       revision, epoch, system, level, arch,
                                       distro, distro_version, requirements,
-                                      properties, files)
+                                      properties, manifest)
 
   def __hash__(self):
     return hash(str(self))
@@ -84,7 +84,7 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
                  o['distro_version'],
                  requirement_list.from_string_list(o['requirements']),
                  o['properties'],
-                 package_manifest.parse_dict(o['files']))
+                 package_manifest.parse_dict(o['manifest']))
   
   def to_simple_dict(self):
     'Return a simplified dict suitable for json encoding.'
@@ -102,7 +102,7 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
       'distro_version': self.distro_version,
       'requirements': self.requirements.to_string_list(),
       'properties': self.properties,
-      'files': self.files.to_simple_dict(),
+      'manifest': self.manifest.to_simple_dict(),
     }
 
   def mutate_filename(self, filename):

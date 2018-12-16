@@ -32,4 +32,7 @@ class package_file(namedtuple('package_file', 'filename, checksum, has_hardcoded
   def to_list(self):
     return [ self.filename, self.checksum, self.has_hardcoded_path ]
 
+  def __str__(self):
+    return '%s-%s-%s' % (self.filename, self.checksum, str(self.has_hardcoded_path))
+  
 check.register_class(package_file, include_seq = False)

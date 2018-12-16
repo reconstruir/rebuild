@@ -37,7 +37,7 @@ class test_package_db_entry(unit_test):
 {
   "_format_version": 2, 
   "epoch": 0, 
-  "files": {
+  "manifest": {
     "env_files": [
       [
         "e1", 
@@ -84,7 +84,7 @@ class test_package_db_entry(unit_test):
 {
   "_format_version": 2, 
   "epoch": 0, 
-  "files": {
+  "manifest": {
     "env_files": [
       [
         "e1", 
@@ -132,7 +132,7 @@ class test_package_db_entry(unit_test):
     expected = {
       '_format_version': 2, 
       'epoch': 0,
-      'files': {
+      'manifest': {
         'env_files': [['e1', 'echk1', False], ['e2', 'echk2', False]],
         'env_files_checksum': 'env_files_chk',
         'files': [['f1', 'fchk1', False], ['f2', 'fchk2', False]],

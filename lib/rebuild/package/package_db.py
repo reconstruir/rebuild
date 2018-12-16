@@ -26,13 +26,6 @@ create table packages(
 );
 '''
   
-  SCHEMA_FILES = '''
-create table {files_table_name}(
-  filename  text primary key not null, 
-  checksum  text
-);
-'''
-  
   def __init__(self, filename):
     self._filename = path.abspath(filename)
     self._db = sqlite(self._filename)
@@ -83,14 +76,14 @@ create table {files_table_name}(
       'epoch': str(entry.epoch),
       'requirements': sql_encoding.encode_requirements(entry.requirements),
       'properties': sql_encoding.encode_dict(entry.properties),
-      'files_checksum': sql_encoding.encode_string(entry.files.files_checksum),
-      'env_files_checksum': sql_encoding.encode_string(entry.files.env_files_checksum),
+      'files_checksum': sql_encoding.encode_string(entry.manifest.files_checksum),
+      'env_files_checksum': sql_encoding.encode_string(entry.manifest.env_files_checksum),
     }
     keys = ', '.join(d.keys())
     values = ', '.join(d.values())
     self._db.execute('insert into packages(%s) values(%s)' % (keys, values))
-    self._files_db.add_table(entry.name, entry.files.files)
-    self._files_db.add_table(self._make_env_files_table_name(entry.name), entry.files.env_files)
+    self._files_db.add_table(entry.name, entry.manifest.files)
+    self._files_db.add_table(self._make_env_files_table_name(entry.name), entry.manifest.env_files)
     self._db.commit()
 
   def remove_package(self, name):
@@ -129,17 +122,17 @@ create table {files_table_name}(
       raise NotInstalledError('not installed: %s' % (name), name)
     assert(len(rows) == 1)
     row = rows[0]
-    files = package_manifest(self._files_db.package_manifest(name),
-                          self._files_db.package_manifest(self._make_env_files_table_name(name)),
-                          row.files_checksum,
-                          row.env_files_checksum)
+    manifest = package_manifest(self._files_db.package_manifest(name),
+                                self._files_db.package_manifest(self._make_env_files_table_name(name)),
+                                row.files_checksum,
+                                row.env_files_checksum)
     return package_db_entry(row.name,
                             row.version,
                             row.revision,
                             row.epoch,
                             sql_encoding.decode_requirements(row.requirements),
                             json.loads(row.properties),
-                            files)
+                            manifest)
 
   def dep_map(self):
     rows = self._db.select_namedtuples('''select name, requirements from packages''')

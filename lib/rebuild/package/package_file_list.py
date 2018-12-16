@@ -95,8 +95,7 @@ class package_file_list(type_checked_list):
     'Return a checksum of the files and file checksums themselves.'
     buf = StringIO()
     for value in self:
-      buf.write(value.filename)
-      buf.write(value.checksum)
+      buf.write(str(value))
     return hashlib.sha256(buf.getvalue().encode('utf-8')).hexdigest()
 
   def to_dict(self):

@@ -22,7 +22,7 @@ CREATE TABLE {table_name} (
 
   @classmethod
   def table_name(clazz, name):
-    return 'files_%s' % (name)
+    return 'manifest_%s' % (name)
 
   def has_table(self, name):
     return self._db.has_table(self.table_name(name))

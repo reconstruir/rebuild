@@ -66,7 +66,7 @@ class package(object):
 
   @property
   def files(self):
-    return self.metadata.files.files.filenames()
+    return self.metadata.manifest.files.filenames()
 
   def extract(self, root_dir, stuff_dir_basename, env_dir_basename):
     tmp_dir = temp_file.make_temp_dir(prefix = 'package.extract.', suffix = '.dir', dir = root_dir)

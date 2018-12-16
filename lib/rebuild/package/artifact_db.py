@@ -64,8 +64,8 @@ create table artifacts(
     keys, values = self._metadata_to_sql_keys_and_values(md)
     self._db.execute('insert into artifacts(%s) values(%s)' % (keys, values))
     files_table_name = md.artifact_descriptor.sql_table_name
-    self._files_db.add_table(files_table_name, md.files.files)
-    self._files_db.add_table(self._make_env_files_table_name(files_table_name), md.files.env_files)
+    self._files_db.add_table(files_table_name, md.manifest.files)
+    self._files_db.add_table(self._make_env_files_table_name(files_table_name), md.manifest.env_files)
 
   def replace_artifact(self, md):
     check.check_package_metadata(md)
@@ -101,8 +101,8 @@ create table artifacts(
       'distro_version': sql_encoding.encode_string(md.distro_version),
       'requirements': sql_encoding.encode_requirements(md.requirements),
       'properties': sql_encoding.encode_dict(md.properties),
-      'files_checksum': sql_encoding.encode_string(md.files.files_checksum),
-      'env_files_checksum': sql_encoding.encode_string(md.files.env_files_checksum),
+      'files_checksum': sql_encoding.encode_string(md.manifest.files_checksum),
+      'env_files_checksum': sql_encoding.encode_string(md.manifest.env_files_checksum),
     }
     keys = ', '.join(d.keys())
     values = ', '.join(d.values())
@@ -194,9 +194,9 @@ create table artifacts(
     adesc = adesc or self._load_row_to_artifact_descriptor(row)
     files_table_name = adesc.sql_table_name
     files = package_manifest(self._files_db.package_manifest(files_table_name),
-                          self._files_db.package_manifest(self._make_env_files_table_name(files_table_name)),
-                          row.files_checksum,
-                          row.env_files_checksum)
+                             self._files_db.package_manifest(self._make_env_files_table_name(files_table_name)),
+                             row.files_checksum,
+                             row.env_files_checksum)
     md =  package_metadata(row.filename,
                            row.name,
                            row.version,

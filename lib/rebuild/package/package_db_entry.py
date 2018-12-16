@@ -6,17 +6,17 @@ from bes.common import cached_property, check, json_util, string_util
 from rebuild.base import build_version, package_descriptor, requirement, requirement_list
 from .package_manifest import package_manifest
 
-class package_db_entry(namedtuple('package_db_entry', 'format_version,name,version,revision,epoch,requirements,properties,files')):
+class package_db_entry(namedtuple('package_db_entry', 'format_version,name,version,revision,epoch,requirements,properties,manifest')):
 
-  def __new__(clazz, name, version, revision, epoch, requirements, properties, files):
+  def __new__(clazz, name, version, revision, epoch, requirements, properties, manifest):
     check.check_string(name)
     check.check_string(version)
     check.check_int(revision)
     check.check_int(epoch)
     check.check_requirement_list(requirements)
     check.check_dict(properties)
-    check.check_package_manifest(files)
-    return clazz.__bases__[0].__new__(clazz, 2, name, version, revision, epoch, requirements, properties, files)
+    check.check_package_manifest(manifest)
+    return clazz.__bases__[0].__new__(clazz, 2, name, version, revision, epoch, requirements, properties, manifest)
 
   def __hash__(self):
     return hash(self.to_json())
@@ -49,7 +49,7 @@ class package_db_entry(namedtuple('package_db_entry', 'format_version,name,versi
                  o['epoch'],
                  requirement_list.from_string_list(o['requirements']),
                  o['properties'],
-                 package_manifest.parse_dict(o['files']))
+                 package_manifest.parse_dict(o['manifest']))
   
   @classmethod
   def _parse_requirements(clazz, l):
@@ -69,7 +69,7 @@ class package_db_entry(namedtuple('package_db_entry', 'format_version,name,versi
       'epoch': self.epoch,
       'requirements': self.requirements.to_string_list(),
       'properties': self.properties,
-      'files': self.files.to_simple_dict(),
+      'manifest': self.manifest.to_simple_dict(),
     }
   
 check.register_class(package_db_entry, include_seq = False)

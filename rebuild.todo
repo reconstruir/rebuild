@@ -1077,4 +1077,11 @@ other:
    which breaks the true checksum test for checking upgradability.  i think i need to get rid of the
    checksum update
  - cleanup stuff not needed from package_file and package_file_list they can be simplified a lot
- 
+
+files_db.py s/package_manifest/package_files
+package.py s/package_manifest/files
+
+unit test of update due to checksum change in files and env_files
+s/files_checksum/contents_checksum/
+combine files_checksum and env_files_checksum
+s/file_checksums/contents in package_manager

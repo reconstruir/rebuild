@@ -49,7 +49,8 @@ class test_package_metadata(unit_test):
   "distro_version": "", 
   "epoch": 0, 
   "filename": "kiwi-6.7.8-2.tar.gz", 
-  "files": {
+  "level": "release", 
+  "manifest": {
     "env_files": [
       [
         "e1", 
@@ -77,7 +78,6 @@ class test_package_metadata(unit_test):
     ], 
     "files_checksum": "files_chk"
   }, 
-  "level": "release", 
   "name": "kiwi", 
   "properties": {
     "p1": "v1", 
@@ -104,7 +104,8 @@ class test_package_metadata(unit_test):
   "distro_version": "", 
   "epoch": 0, 
   "filename": "kiwi-6.7.8-2.tar.gz", 
-  "files": {
+  "level": "release", 
+  "manifest": {
     "env_files": [
       [
         "e1", 
@@ -132,7 +133,6 @@ class test_package_metadata(unit_test):
     ], 
     "files_checksum": "files_chk"
   }, 
-  "level": "release", 
   "name": "kiwi", 
   "properties": {
     "p1": "v1", 
