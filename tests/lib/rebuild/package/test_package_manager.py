@@ -692,5 +692,29 @@ fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
     result = pm.transform_env({}, [ 'cabbage' ])
     self.assertEqual( 'cabbage2', result['FOO'] )
   
+  def test_install_package_hardcoded_paths(self):
+    '''
+    A test that proves package manager will properly install test files that
+    have the variables ${REBUILD_PACKAGE_PREFIX} in them.
+    '''
+
+    recipe = '''\
+fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
+  files
+    bin/cabbage.sh
+      \#!/bin/bash
+      echo prefix=${REBUILD_PACKAGE_PREFIX}
+      exit 0
+'''
+    cabbage = PD.parse('cabbage-1.0.0')
+    bt = BT.parse_path('linux-ubuntu-18/x86_64/release')
+    t = AMT(recipes = recipe)
+    pm = self._make_caca_test_pm(t.am)
+    t.publish('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    pm.install_package(cabbage, bt, [ 'RUN' ])
+    exe = pm.tool_exe('cabbage.sh')
+    expected='prefix=%s' % (pm.installation_dir)
+    self.assertEqual( expected, execute.execute(exe).stdout.strip() )
+  
 if __name__ == '__main__':
   unit_test.main()
