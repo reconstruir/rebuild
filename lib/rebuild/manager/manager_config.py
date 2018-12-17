@@ -1,5 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+from os import path
 from bes.common import string_util
 from rebuild.base import build_system
 from bes.compat import ConfigParser
@@ -17,6 +18,8 @@ class manager_config(OrderedDict):
 
   def load_file(self, filename, build_target):
     parser = ConfigParser()
+    if not path.isfile(filename):
+      raise RuntimeError('config file not found: %s' % (filename))
     with open(filename, 'r') as fp:
       parser.readfp(fp)
       self.update(self.__load(parser, build_target))

@@ -1086,3 +1086,8 @@ use extended fs attributes - locally - to speed up checksuming on mac and linux
 first time java 8 or 11 ingestion on linux is broken.  run it again and it works.  make sure to add better logging when debugging it
 
 figure out the test situation with stuff like docker picking the system version instead of the packaged one
+
+version both the storage.config file and the projects.config
+manager.py __init__() root_dir and config file should not be option.  retire defaults for these
+in artifact manager add abstract interface for loading the db.  dont auto load db in artifactory one make it explicit
+no unit test for setup_dir in step_python_egg

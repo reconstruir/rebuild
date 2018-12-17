@@ -18,7 +18,7 @@ class manager(object):
 
   CONFIG_FILENAME = 'config'
   
-  def __init__(self, artifact_manager, build_target, root_dir = None):
+  def __init__(self, artifact_manager, build_target, root_dir = None, config_filename = None):
     log.add_logging(self, 'remanage')
     build_blurb.add_blurb(self, label = 'remanage')
     check.check_artifact_manager(artifact_manager)
@@ -27,7 +27,7 @@ class manager(object):
     self.build_target = build_target
     self.artifact_manager = artifact_manager
     self.package_managers = {}
-    self.config_filename = path.join(self.root_dir, self.CONFIG_FILENAME)
+    self.config_filename = config_filename or path.join(self.root_dir, self.CONFIG_FILENAME)
 
   @classmethod
   def _project_subpath(clazz, project_name, build_target):
