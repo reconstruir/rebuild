@@ -143,6 +143,11 @@ class sources_cli(object):
                                           action = 'store_true',
                                           default = False,
                                           help = 'Do not do any work.  Just print what would happen. [ False ]')
+    publish_artifacts_parser.add_argument('--limit',
+                                          action = 'store',
+                                          default = None,
+                                          type = int,
+                                          help = 'Limit the number of artifacts uploaded. [ None ]')
     
     # retire
     retire_parser = subparsers.add_parser('retire', help = 'Retire a tarball in the database.')
@@ -203,7 +208,7 @@ class sources_cli(object):
     elif args.command == 'update_properties':
       return self._command_update_properties(args.config, args.provider, args.local_dir, args.dry_run)
     elif args.command == 'publish_artifacts':
-      return self._command_publish_artifacts(args.config, args.provider, args.local_dir, args.dry_run)
+      return self._command_publish_artifacts(args.config, args.provider, args.local_dir, args.dry_run, args.limit)
     elif args.command == 'sync':
       return self._command_sync(args.local_directory, args.remote_directory)
     elif args.command == 'files':
@@ -396,19 +401,19 @@ class sources_cli(object):
           print(' failed: %s' % (md.filename))
     return 0
 
-  def _command_publish_artifacts(self, config_filename, provider, local_dir, dry_run):
+  def _command_publish_artifacts(self, config_filename, provider, local_dir, dry_run, limit):
     check.check_string(config_filename)
     check.check_string(provider)
     check.check_string(local_dir)
-    self.log_d('publish_artifacts: config_filename=%s; provider=%s; local_dir=%s; dry_run=%s' % (config_filename,
-                                                                                                 provider,
-                                                                                                 local_dir,
-                                                                                                 dry_run))
+    self.log_d('publish_artifacts: config_filename=%s; provider=%s; local_dir=%s; dry_run=%s; limit=%s' % (config_filename,
+                                                                                                           provider,
+                                                                                                           local_dir,
+                                                                                                           dry_run,
+                                                                                                           limit))
     if not path.isdir(local_dir):
       raise RuntimeError('not a directory: %s' % (local_dir))
 
     storage = self._make_storage('publish_artifacts', config_filename, provider, 'artifacts')
-    address = storage.make_address()
 
     username = storage._config.upload_credentials.credentials.username
     password = storage._config.upload_credentials.credentials.password
@@ -416,22 +421,23 @@ class sources_cli(object):
     am = artifact_manager_local(local_dir)
     bt = build_target.make_host_build_target()
     artifacts = am.list_all_by_descriptor(bt)
+    if limit:
+      artifacts = artifacts[0:limit]
     for adesc in artifacts:
       md = am.find_by_artifact_descriptor(adesc, True)
       md_abs = am.find_by_artifact_descriptor(adesc, False)
 
       local_filename = md_abs.filename
       remote_filename = md.filename
-      remote_path = storage.remote_filename_abs(remote_filename)
 
-      self.log_d('publish_artifacts: remote_path=%s; local_filename=%s; remote_filename=%s' % (remote_path, local_filename, remote_filename))
+      self.log_d('publish_artifacts: local_filename=%s; remote_filename=%s' % (local_filename, remote_filename))
 
       if not path.isfile(local_filename):
         print('%25s: %s' % ('missing', md.filename))
         continue
       
       remote_checksum = storage.remote_checksum(remote_filename)
-      local_checksum = file_util.checksum('sha1', local_filename)
+      local_checksum = file_util.checksum('sha256', local_filename)
 
       self.log_d('publish_artifacts: local_checksum=%s; remote_checksum=%s' % (local_checksum, remote_checksum))
       
@@ -442,23 +448,22 @@ class sources_cli(object):
         print('%25s: %s' % ('exists diff checksum', md.filename))
         continue
       if dry_run:
-        print('%25s: %s' % ('dry run: would upload', md.filename))
+        print('%25s: %s to %s' % ('dry run: would upload', md.filename, storage.make_address(remote_filename)))
       else:
         self.log_d('publish_artifacts: calling upload(%s, %s)' % (md_abs.filename, remote_filename))
-        rv = storage.upload(local_filename, remote_path, local_checksum)
-        if not rv:
+        print('%25s: %s' % ('uploading', md.filename))
+        ingested_address = storage.upload(local_filename, remote_filename, local_checksum)
+        if not ingested_address:
           print('%25s: %s' % ('failed', md.filename))
           return 1
         else:
-          print('%25s: %s' % ('uploaded', md.filename))
-          artifact_address = address.mutate_filename(md.filename)
+          print('%25s: %s to %s' % ('uploaded', md.filename, ingested_address))
           properties = self._metadata_to_artifactory_properties(md)
-          properties_rv = artifactory_requests.set_properties(artifact_address, properties, username, password)
+          properties_rv = artifactory_requests.set_properties(ingested_address, properties, username, password)
           if properties_rv:
             print('%25s: %s' % ('set properties', md.filename))
           else:
             print('%25s: %s' % ('failed to set properties', md.filename))
-            
     return 0
 
   @classmethod
