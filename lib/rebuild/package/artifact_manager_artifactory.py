@@ -34,6 +34,9 @@ class artifact_manager_artifactory(artifact_manager_base):
                                         'artifacts',
                                         None)
     self._load_remote_db()
+
+  def __str__(self):
+    return str(self._address)
     
   def _load_remote_db(self):
     packages = artifactory_requests.list_all_artifacts(self._address,
