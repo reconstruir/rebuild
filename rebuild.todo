@@ -1085,3 +1085,5 @@ package_manager.py s/package_manifest/tarball_manifest  s/pkg_desc/tarball_descr
 ingest_util.py set_properties is hard coded for artifactory
 
 make adddress interface more abstract and use it for pcloud as well as artifactory
+double check that the cached http url for ingestion does not save if the checksum is bad
+use extended fs attributes - locally - to speed up checksuming on mac and linux
