@@ -1087,3 +1087,4 @@ ingest_util.py set_properties is hard coded for artifactory
 make adddress interface more abstract and use it for pcloud as well as artifactory
 double check that the cached http url for ingestion does not save if the checksum is bad
 use extended fs attributes - locally - to speed up checksuming on mac and linux
+first time java 8 or 11 ingestion on linux is broken.  run it again and it works.  make sure to add better logging when debugging it
