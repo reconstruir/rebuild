@@ -27,6 +27,9 @@ class tool_cli(build_target_cli):
 
     commands_subparser = self.parser.add_subparsers(help = 'commands', dest = 'command')
 
+    # version
+    self.packages_parser = commands_subparser.add_parser('version', help = 'Packages')
+    
     # packages
     self.packages_parser = commands_subparser.add_parser('packages', help = 'Packages')
     self.packages_subparsers = self.packages_parser.add_subparsers(help = 'packages_commands', dest = 'subcommand')
@@ -127,7 +130,8 @@ class tool_cli(build_target_cli):
     
   def main(self):
     args = self.parser.parse_args()
-    self.build_target = self.build_target_resolve(args)
+    if getattr(args, 'system', None) is not None:
+      self.build_target = self.build_target_resolve(args)
     subcommand = getattr(args, 'subcommand', None)
     if subcommand:
       command = '%s:%s' % (args.command, subcommand)
@@ -142,7 +146,9 @@ class tool_cli(build_target_cli):
     if command.startswith('packages:'):
       self._packages_check_common_args(command, args)
       
-    if command == 'packages:update':
+    if command == 'version':
+      return self._command_version()
+    elif command == 'packages:update':
       return self._command_packages_update(args.root_dir,
                                            args.wipe,
                                            args.project_name,
@@ -228,6 +234,13 @@ retool.py packages update ${_root_dir} @STORAGE_CONFIG_FILENAME@ @ARTIFACTS_PROV
    else:
      return 1
 
+  def _command_version(self):
+    from bes.version import version_cli
+    import rebuild
+    vcli = version_cli(rebuild)
+    vcli.version_print_version()
+    return 0
+   
   @classmethod
   def run(clazz):
     raise SystemExit(tool_cli().main())
