@@ -4,7 +4,14 @@
 from bes.system import impl_import
 from rebuild.binary_format import binary_detector
 
-class strip(impl_import.load(__name__, '_strip', globals())):
+from bes.system import host
+if host.SYSTEM == 'macos':
+  from ._strip_macos import _strip_macos as _strip_super_class
+elif host.SYSTEM == 'linux':
+  from ._strip_linux import _strip_linux as _strip_super_class
+
+#class strip(impl_import.load(__name__, '_strip', globals())):
+class strip(_strip_super_class):
   'Strip binaries.'
 
   @classmethod

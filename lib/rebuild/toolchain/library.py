@@ -5,7 +5,13 @@ import os, os.path as path, re
 from bes.system import impl_import
 from bes.fs import dir_util, file_util, file_path
 
-_library_super_class = impl_import.load(__name__, 'library', globals())
+from bes.system import host
+if host.SYSTEM == 'macos':
+  from .library_macos import library_macos as _library_super_class
+elif host.SYSTEM == 'linux':
+  from .library_linux import library_linux as _library_super_class
+
+#_library_super_class = impl_import.load(__name__, 'library', globals())
 
 class library(_library_super_class):
   'Top level class for dealing with system libraries.'
