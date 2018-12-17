@@ -4,7 +4,6 @@ import json, os.path as path, hashlib
 from collections import namedtuple
 from bes.common import check, json_util, object_util, type_checked_list
 from bes.compat import StringIO
-from bes.fs import file_util
 
 from .package_file import package_file
   
@@ -33,6 +32,7 @@ class package_file_list(type_checked_list):
     check.check_list(o)
     return clazz.from_simple_list(o)
     
+  # needed
   @classmethod
   def from_simple_list(clazz, l):
     check.check_list(l)
@@ -45,7 +45,8 @@ class package_file_list(type_checked_list):
       check.check_bool(item[2])
       result.append(package_file(item[0], item[1], item[2]))
     return result
-    
+
+  # needed
   @classmethod
   def from_files(clazz, filenames, files_with_hardcoded_paths, root_dir = None, function_name = None):
     filenames = object_util.listify(filenames)
@@ -56,17 +57,6 @@ class package_file_list(type_checked_list):
       result.append(package_file.from_file(filename, has_hardcoded_path, root_dir = root_dir, function_name = function_name))
     return result
 
-  def save_checksums_file(self, filename):
-    file_util.save(filename, content = self.to_json(), codec = 'utf8')
-
-  @classmethod
-  def load_checksums_file(clazz, filename):
-    try:
-      content = file_util.read(filename)
-    except IOError as ex:
-      return None
-    return clazz.from_json(content)
-  
   def filenames(self):
     return [ c.filename for c in self ]
 

@@ -73,43 +73,6 @@ class test_file_checksum(unit_test):
     self.assertEqual( self.A_CHK, FC.file_checksum(self.data_path('a.txt'), False, 'sha256') )
     self.assertEqual( self.B_CHK, FC.file_checksum(self.data_path('b.txt'), False, 'sha256') )
 
-  def test_save_checksums_file(self):
-    tmp_file = temp_file.make_temp_file()
-    a = FCL.from_files([ 'a.txt', 'b.txt' ], None, root_dir = self.data_dir())
-    a.save_checksums_file(tmp_file)
-    expected = '''\
-[
-  [
-    "a.txt", 
-    "7bf1c5c4153ecb5364b0c7fcb2e767fadc6880e0c2620b69df56b6bb5429448d",
-    false
-  ], 
-  [
-    "b.txt", 
-    "429340c7abf63fe50eb3076d3f1d5d996f3b4ee3067734ae8832129af244653c",
-    false
-  ]
-]'''
-    self.assertEqualIgnoreWhiteSpace( expected, file_util.read(tmp_file, codec = 'utf8') )
-
-  def test_load_checksums_file(self):
-    content = '''\
-[
-  [
-    "a.txt", 
-    "7bf1c5c4153ecb5364b0c7fcb2e767fadc6880e0c2620b69df56b6bb5429448d", 
-    false
-  ], 
-  [
-    "b.txt", 
-    "429340c7abf63fe50eb3076d3f1d5d996f3b4ee3067734ae8832129af244653c", 
-    false
-  ]
-]'''
-    tmp_file = temp_file.make_temp_file(content = content)
-    expected = FCL.from_files([ 'a.txt', 'b.txt' ], None, root_dir = self.data_dir())
-    self.assertEqual( expected, FCL.load_checksums_file(tmp_file) )
-
   def test_verify_true(self):
     a = FCL([ FC('a.txt', self.A_CHK, False), FC('b.txt', self.B_CHK, False) ])
     b = FCL([ FC('a.txt', self.A_CHK, False), FC('b.txt', self.B_CHK, False) ])
