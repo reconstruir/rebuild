@@ -22,13 +22,14 @@ class http_download_cache(object):
     'Return the local filesystem path to the tarball with address and revision.'
     self.log_d('get_url: url=%s; checksum=%s; cookies=%s' % (url, checksum, cookies))
     local_cached_path = self._path_for_url(url)
-    self.log_d('get_url: local_cached_path=%s' % (local_cached_path))
+    local_cached_path_rel = path.relpath(local_cached_path)
+    self.log_d('get_url: local_cached_path=%s' % (local_cached_path_rel))
     if path.exists(local_cached_path):
       if file_util.checksum('sha256', local_cached_path) == checksum:
-        self.log_d('get_url: found in cache with good checksum. using: %s' % (local_cached_path))
+        self.log_d('get_url: found in cache with good checksum. using: %s' % (local_cached_path_rel))
         return local_cached_path
       else:
-        self.log_d('get_url: found in cache with BAD checksum. removing: %s' % (local_cached_path))
+        self.log_d('get_url: found in cache with BAD checksum. removing: %s' % (local_cached_path_rel))
         file_util.remove(local_cached_path)
     tmp = self._download_to_tmp_file(url, cookies = cookies, debug = debug)
     self.log_d('get_url: downloaded url to %s' % (tmp))
@@ -36,7 +37,7 @@ class http_download_cache(object):
       self.log_d('get_url: failed to download: %s' % (url))
       return None
     if file_util.checksum('sha256', tmp) == checksum:
-      self.log_d('get_url: download succesful and checksum is good.  using: %s' % (local_cached_path))
+      self.log_d('get_url: download succesful and checksum is good.  using: %s' % (local_cached_path_rel))
       file_util.rename(tmp, local_cached_path)
     self.log_d('get_url: download worked but checksum was BAD: %s' % (local_cached_path))
     return None

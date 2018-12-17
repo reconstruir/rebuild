@@ -60,6 +60,9 @@ class package_file_list(type_checked_list):
   def filenames(self):
     return [ c.filename for c in self ]
 
+  def files_with_hardcoded_paths(self):
+    return [ c.filename for c in self if c.has_hardcoded_path ]
+
   def reload(self, root_dir = None, function_name = None):
     new_values = []
     for value in self:

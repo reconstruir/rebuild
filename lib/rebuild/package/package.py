@@ -10,7 +10,7 @@ from bes.fs import dir_util, file_check, file_find, file_mime, file_search, file
 from bes.text import text_line_parser
 from bes.match import matcher_filename, matcher_multiple_filename
 from bes.python import setup_tools
-from bes.system import execute
+from bes.system import execute, log
 from rebuild.base import build_blurb, build_target, package_descriptor
 from bes.debug import debug_timer
 
@@ -26,6 +26,7 @@ class package(object):
   ENV_DIR = 'env'
 
   def __init__(self, tarball):
+    log.add_logging(self, 'package')
     file_check.check_file(tarball)
     assert archiver.is_valid(tarball)
     self.tarball = tarball
@@ -118,15 +119,17 @@ unset REBUILD_STUFF_DIR
 # END @REBUILD_TAIL@
 
 '''
-
+  
   def _replace_variables_files(self, where, stuff_dir):
+    files = self.metadata.manifest.files.files_with_hardcoded_paths()
     replacements = {
       '${REBUILD_PACKAGE_PREFIX}': stuff_dir,
     }
-    file_search.search_replace(where,
-                               replacements,
-                               backup = False,
-                               test_func = file_mime.is_text)
+    self.log_d('replacements=%s' % (replacements))
+    for f in files:
+      filename = path.join(stuff_dir, f)
+      self.log_d('doing replacements for: %s' % (filename))
+      file_replace.replace(filename, replacements, backup = False, word_boundary = True)
   
   def _replace_variables_env_files(self, where, stuff_dir):
     replacements = {

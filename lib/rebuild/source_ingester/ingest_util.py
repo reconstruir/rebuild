@@ -90,7 +90,6 @@ class ingest_util(object):
       check.check_string(checksum)
     clazz.log_d('ingest_url: url=%s; arcname=%s; cookies=%s' % (url, arcname, cookies))
     local_filename = http_cache.get_url(url, checksum, cookies = cookies, debug = debug)
-    #local_filename = clazz._download_to_tmp_file(url, cookies, debug = debug)
     clazz.log_d('ingest_url: downloaded remote url %s => %s' % (url, local_filename))
     if not local_filename:
       return clazz._ingest_result(False, 'failed: could not download: %s' % (url))
