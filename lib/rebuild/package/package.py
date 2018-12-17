@@ -128,7 +128,7 @@ unset REBUILD_STUFF_DIR
     self.log_d('replacements=%s' % (replacements))
     for f in files:
       filename = path.join(stuff_dir, f)
-      self.log_d('doing replacements for: %s' % (filename))
+      self.log_d('doing replacements for: %s' % (path.relpath(filename)))
       file_replace.replace(filename, replacements, backup = False, word_boundary = True)
   
   def _replace_variables_env_files(self, where, stuff_dir):
@@ -173,10 +173,7 @@ unset REBUILD_STUFF_DIR
 
   _create_package_result = namedtuple('_create_package_result', 'filename, metadata')
   @classmethod
-  def create_package(clazz, tarball_path, pkg_desc, build_target, stage_dir,
-                     files_with_hardcoded_paths, timer = None):
-    files_with_hardcoded_paths = files_with_hardcoded_paths or set()
-    check.check_set(files_with_hardcoded_paths)
+  def create_package(clazz, tarball_path, pkg_desc, build_target, stage_dir, timer = None):
     timer = timer or debug_timer('package', disabled = True)
 
     properties = dict_util.filter_without_keys(pkg_desc.properties, [ 'export_compilation_flags_requirements' ])
@@ -189,6 +186,12 @@ unset REBUILD_STUFF_DIR
       
     stage_files_dir = path.join(stage_dir, 'files')
     timer.start('create_package - find files')
+
+    # Now find all files that have such a replacement variable
+    # Note this could be both files we did in the previous file_search
+    # as well as other done independently. *.pc files for example
+    files_with_hardcoded_paths = clazz._find_files_with_hardcoded_paths(stage_files_dir)
+
     if path.isdir(stage_files_dir):
       files = file_find.find(stage_files_dir, relative = True, file_type = file_find.FILE | file_find.LINK)
     else:
@@ -240,6 +243,13 @@ unset REBUILD_STUFF_DIR
     rv = execute.execute([ 'find' ] + stuff + ['-type', 'l' ], cwd = stage_dir)
     links = text_line_parser.parse_lines(rv.stdout, strip_text = True, remove_empties = True)
     return sorted(files + links)
+
+  @classmethod
+  def _find_files_with_hardcoded_paths(clazz, where):
+    if not path.isdir(where):
+      return set()
+    found = file_search.search(where, '${REBUILD_PACKAGE_PREFIX}', relative = True)
+    return set([ item.filename for item in found ])
   
   @classmethod
   def _create_package(clazz, tarball_filename, stage_dir, timer):
