@@ -459,8 +459,6 @@ oct 25
 - improve builder_env - add defaults notion at __getitem__ to check for invalid entries etc.  add check that values are valid etc
 - python errors in build.py files are impossible to debug
 
-- version compare is fucked when finding latest version of an artifact 1.1.1.1 might match improperly with 1.1.2
-  fix this shit to break the version into compoentns and compare that way
 - figure out if builder.exclude() is really needed
 - add a timing stats cache per project and use it for a progress bar
 
@@ -503,9 +501,6 @@ nov 6
 
 nov 8
 - add support for build variables in command line
-
-nov 9
-- for python recipes name and version should be toplevel not in properties
 
 nov 14
 - test_builder_script.py and test_builder_script_execute.py are broken
@@ -790,7 +785,6 @@ egg check is either commented out or broken
 when python changed from using libedit to libreadline this error happened add a unit test
 rebuild.package.package_manager.PackageFilesConflictError: conflicts found between "libreadline" and "libedit": share/man/man3/history.3
  - make sure sourcing ~/.rebuild/foo/stuff/env/*.sh does so only for dependencies
- - version comparison is shit
  - need a unit test that does manager update with something that results in package resolution
 
 2018-06-09
@@ -1096,3 +1090,5 @@ the checksum situation still sucks.
 audit all the recipes and consider making setuptools be a BUILD dep not TOOL
 _make_storage() kind of funcs are cut-n-paste propagating
 allow variables substitution in requirements lists
+
+artifact_manager has 2 very simular and confusing methods list_latest_versions, latest_packages.
