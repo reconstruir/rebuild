@@ -1093,3 +1093,6 @@ allow variables substitution in requirements lists
 
 artifact_manager has 2 very simular and confusing methods list_latest_versions, latest_packages.
 add sql sorting magic for uptream versions using hooks to build_version.compare_upstream_version()
+
+when not ingesting still download the url and check the checksum so next time its ready to go
+and maybe even make the build work by using the downloaded tarball in the http cache as a source provider
