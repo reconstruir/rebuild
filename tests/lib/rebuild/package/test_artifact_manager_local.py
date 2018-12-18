@@ -212,7 +212,7 @@ class test_artifact_manager_local(unit_test):
       'macos-10.14/x86_64/release/water-1.0.0.tar.gz',
       ], file_find.find(am.root_dir) )
 
-  def test_latest_packages(self):
+  def test_list_all_by_descriptor_many_versions(self):
     recipes = '''
 fake_package water 1.0.0 0 0 linux release x86_64 ubuntu 18
 fake_package water 1.0.1 0 0 linux release x86_64 ubuntu 18
@@ -246,8 +246,34 @@ fake_package water 1.0.13 0 0 linux release x86_64 ubuntu 18
       AD.parse('water;1.0.13;0;0;linux;release;x86_64;ubuntu;18'),
     ]
     self.assertEqual( expected, t.am.list_all_by_descriptor(None) )
-    #latest = t.am.latest_packages([ 'water' ], self.LINUX_BT)
-    #print('latest: %s' % (str(latest)))
-    
+
+  def test_latest_packages(self):
+    recipes = '''
+fake_package water 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package water 1.0.1 0 0 linux release x86_64 ubuntu 18
+fake_package water 1.0.2 0 0 linux release x86_64 ubuntu 18
+fake_package water 1.0.3 0 0 linux release x86_64 ubuntu 18
+fake_package water 1.0.8 0 0 linux release x86_64 ubuntu 18
+fake_package water 1.0.9 0 0 linux release x86_64 ubuntu 18
+fake_package water 1.0.10 0 0 linux release x86_64 ubuntu 18
+fake_package water 1.0.11 0 0 linux release x86_64 ubuntu 18
+fake_package water 1.0.13 0 0 linux release x86_64 ubuntu 18
+'''
+    t = AMT(recipes = recipes)
+    t.publish('water;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    t.publish('water;1.0.1;0;0;linux;release;x86_64;ubuntu;18')
+    t.publish('water;1.0.2;0;0;linux;release;x86_64;ubuntu;18')
+    t.publish('water;1.0.3;0;0;linux;release;x86_64;ubuntu;18')
+    t.publish('water;1.0.10;0;0;linux;release;x86_64;ubuntu;18')
+    t.publish('water;1.0.8;0;0;linux;release;x86_64;ubuntu;18')
+    t.publish('water;1.0.9;0;0;linux;release;x86_64;ubuntu;18')
+    t.publish('water;1.0.11;0;0;linux;release;x86_64;ubuntu;18')
+    t.publish('water;1.0.13;0;0;linux;release;x86_64;ubuntu;18')
+    latest = t.am.latest_packages([ 'water' ], self.LINUX_BT)
+    expected = [
+      AD.parse('water;1.0.13;0;0;linux;release;x86_64;ubuntu;18'),
+    ]
+    self.assertEqual( expected, [ md.artifact_descriptor for md in latest ] )
+
 if __name__ == '__main__':
   unit_test.main()
