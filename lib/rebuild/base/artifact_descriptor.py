@@ -2,6 +2,7 @@
 
 from collections import namedtuple
 from bes.common import cached_property, check, json_util, string_util
+from bes.compat import cmp
 
 from .build_arch import build_arch
 from .build_target import build_target
@@ -94,5 +95,20 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
     if len(parts) != 9:
       raise ValueError('Invalid artifact descriptor: %s' % (s))
     return clazz(*parts)
+
+  @classmethod
+  def compare(clazz, a1, a2):
+    check.check_artifact_descriptor(a1)
+    check.check_artifact_descriptor(a2)
+    t1 = ( a1.name, a1.system, a1.level, a1.arch, a1.distro, a1.distro_version )
+    t2 = ( a2.name, a2.system, a2.level, a2.arch, a2.distro, a2.distro_version )
+    result = cmp(t1, t2)
+    if result != 0:
+      return result
+    return build_version.compare(a1.build_version, a2.build_version)
+
+  def __lt__(self, other):
+    check.check_artifact_descriptor(other)
+    return self.compare(self, other) < 0
   
 check.register_class(artifact_descriptor, include_seq = False)

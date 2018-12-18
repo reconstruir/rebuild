@@ -119,5 +119,21 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
   @classmethod
   def make_full_name_str(clazz, name, version):
     return '%s%s%s' % (name, '-', str(version))
+
+
+  @classmethod
+  def compare(clazz, p1, p2):
+    check.check_package_metadata(p1)
+    check.check_package_metadata(p2)
+    t1 = ( p1.format_version, p1.filename, p1.name, p1.system, p1.level, p1.arch, p1.distro, p1.distro_version, p1.requirements, p1.properties, p1.manifest )
+    t2 = ( p2.format_version, p2.filename, p2.name, p2.system, p2.level, p2.arch, p2.distro, p2.distro_version, p2.requirements, p2.properties, p2.manifest )
+    result = cmp(t1, t2)
+    if result != 0:
+      return result
+    return build_version.compare(p1.build_version, p2.build_version)
+
+  def __lt__(self, other):
+    check.check_package_metadata(other)
+    return self.compare(self, other) < 0
   
 check.register_class(package_metadata, include_seq = False)

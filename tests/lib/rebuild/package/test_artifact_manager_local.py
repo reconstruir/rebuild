@@ -18,6 +18,10 @@ class test_artifact_manager_local(unit_test):
   LINUX_BT = build_target('linux', 'ubuntu', '18', 'x86_64', 'release')
   MACOS_BT = build_target('macos', '', '10.14', 'x86_64', 'release')
 
+  def __init__(self, *args, **kargs):
+    super(test_artifact_manager_local, self).__init__(*args, **kargs)
+    self.maxDiff = None
+  
   def test_publish(self):
     t = AMT(recipes = RECIPES.APPLE)
     adesc = 'apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'
@@ -85,7 +89,6 @@ class test_artifact_manager_local(unit_test):
     self.assertEqual( 'pear_juice-6.6.6', am.find_by_package_descriptor(PD('pear_juice', '6.6.6'), self.MACOS_BT, False).package_descriptor.full_name )
 
   def test_list_latest_versions_linux(self):
-    self.maxDiff = None
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
     am = FPUT.make_artifact_manager(self.DEBUG, RECIPES.FOODS, self.LINUX_BT, mutations)
     expected = [
@@ -107,7 +110,6 @@ class test_artifact_manager_local(unit_test):
     self.assertEqual( expected, am.list_latest_versions(self.LINUX_BT) )
 
   def test_list_latest_versions_macos(self):
-    self.maxDiff = None
     mutations = { 'system': 'macos', 'distro': '', 'distro_version': '10.14' }
     am = FPUT.make_artifact_manager(self.DEBUG, RECIPES.FOODS, self.MACOS_BT, mutations)
     expected = [
@@ -129,7 +131,6 @@ class test_artifact_manager_local(unit_test):
     self.assertEqual( expected, am.list_latest_versions(self.MACOS_BT) )
 
   def test_remove_artifact(self):
-    self.maxDiff = None
     mutations = { 'system': 'macos', 'distro': '', 'distro_version': '10.14' }
     am = FPUT.make_artifact_manager(self.DEBUG, RECIPES.FOODS, self.MACOS_BT, mutations)
     expected = [
@@ -211,5 +212,42 @@ class test_artifact_manager_local(unit_test):
       'macos-10.14/x86_64/release/water-1.0.0.tar.gz',
       ], file_find.find(am.root_dir) )
 
+  def test_latest_packages(self):
+    recipes = '''
+fake_package water 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package water 1.0.1 0 0 linux release x86_64 ubuntu 18
+fake_package water 1.0.2 0 0 linux release x86_64 ubuntu 18
+fake_package water 1.0.3 0 0 linux release x86_64 ubuntu 18
+fake_package water 1.0.8 0 0 linux release x86_64 ubuntu 18
+fake_package water 1.0.9 0 0 linux release x86_64 ubuntu 18
+fake_package water 1.0.10 0 0 linux release x86_64 ubuntu 18
+fake_package water 1.0.11 0 0 linux release x86_64 ubuntu 18
+fake_package water 1.0.13 0 0 linux release x86_64 ubuntu 18
+'''
+    t = AMT(recipes = recipes)
+    t.publish('water;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    t.publish('water;1.0.1;0;0;linux;release;x86_64;ubuntu;18')
+    t.publish('water;1.0.2;0;0;linux;release;x86_64;ubuntu;18')
+    t.publish('water;1.0.3;0;0;linux;release;x86_64;ubuntu;18')
+    t.publish('water;1.0.10;0;0;linux;release;x86_64;ubuntu;18')
+    t.publish('water;1.0.8;0;0;linux;release;x86_64;ubuntu;18')
+    t.publish('water;1.0.9;0;0;linux;release;x86_64;ubuntu;18')
+    t.publish('water;1.0.11;0;0;linux;release;x86_64;ubuntu;18')
+    t.publish('water;1.0.13;0;0;linux;release;x86_64;ubuntu;18')
+    expected = [
+      AD.parse('water;1.0.0;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('water;1.0.1;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('water;1.0.2;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('water;1.0.3;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('water;1.0.8;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('water;1.0.9;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('water;1.0.10;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('water;1.0.11;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('water;1.0.13;0;0;linux;release;x86_64;ubuntu;18'),
+    ]
+    self.assertEqual( expected, t.am.list_all_by_descriptor(None) )
+    #latest = t.am.latest_packages([ 'water' ], self.LINUX_BT)
+    #print('latest: %s' % (str(latest)))
+    
 if __name__ == '__main__':
   unit_test.main()

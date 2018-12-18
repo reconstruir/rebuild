@@ -137,6 +137,7 @@ create table artifacts(
       data = ()
     rows = self._db.select_namedtuples(sql, data)
     values = [ self._load_row_to_artifact_descriptor(row) for row in rows ]
+    values = sorted(values)
     return artifact_descriptor_list(values = values)
   
   def list_all_by_metadata(self, build_target = None):
@@ -150,6 +151,7 @@ create table artifacts(
     if not rows:
       return package_metadata_list()
     values = [ self._load_row_to_package_metadata(row) for row in rows ]
+    values = sorted(values)
     return package_metadata_list(values = values)
 
   def list_all_by_package_descriptor(self, build_target = None):
@@ -163,6 +165,7 @@ create table artifacts(
     if not rows:
       return package_descriptor_list()
     values = [ self._load_row_to_package_descriptor(row) for row in rows ]
+    values = sorted(values)
     return package_descriptor_list(values = values)
 
   @classmethod

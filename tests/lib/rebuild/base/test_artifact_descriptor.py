@@ -27,6 +27,39 @@ class test_artifact_descriptor(unit_test):
   def test_parse(self):
     self.assertEqual( AD('water', '1.0.0', 2, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
                       AD.parse('water;1.0.0;2;0;linux;release;x86_64;ubuntu;18') )
+
+  def test_compare(self):
+    self.assertEqual(  0, AD.compare(AD.parse('water;1.0.0;2;0;linux;release;x86_64;ubuntu;18'),
+                                     AD.parse('water;1.0.0;2;0;linux;release;x86_64;ubuntu;18')) )
+    self.assertEqual( -1, AD.compare(AD.parse('water;1.0.0;2;0;linux;release;x86_64;ubuntu;18'),
+                                     AD.parse('water;1.0.1;2;0;linux;release;x86_64;ubuntu;18')) )
+    self.assertEqual(  1, AD.compare(AD.parse('water;1.0.1;2;0;linux;release;x86_64;ubuntu;18'),
+                                     AD.parse('water;1.0.0;2;0;linux;release;x86_64;ubuntu;18')) )
+    self.assertEqual( -1, AD.compare(AD.parse('water;1.0.1;2;0;linux;release;x86_64;ubuntu;18'),
+                                     AD.parse('water;1.0.1;3;0;linux;release;x86_64;ubuntu;18')) )
+    self.assertEqual( -1, AD.compare(AD.parse('water;1.0.9;2;0;linux;release;x86_64;ubuntu;18'),
+                                     AD.parse('water;1.0.10;2;0;linux;release;x86_64;ubuntu;18')) )
+    
+  def test_sort(self):
+    l = [
+      AD.parse('water;1.0.13;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('water;1.0.0;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('water;1.0.1;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('water;1.0.8;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('water;1.0.10;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('water;1.0.9;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('water;1.0.2;0;0;linux;release;x86_64;ubuntu;18'),
+    ]
+    expected = [
+      AD.parse('water;1.0.0;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('water;1.0.1;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('water;1.0.2;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('water;1.0.8;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('water;1.0.9;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('water;1.0.10;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('water;1.0.13;0;0;linux;release;x86_64;ubuntu;18'),
+    ]
+    self.assertEqual( expected, sorted(l) )
     
 if __name__ == '__main__':
   unit_test.main()
