@@ -29,17 +29,22 @@ class http_download_cache(object):
         self.log_d('get_url: found in cache with good checksum. using: %s' % (local_cached_path_rel))
         return local_cached_path
       else:
-        self.log_d('get_url: found in cache with BAD checksum. removing: %s' % (local_cached_path_rel))
+        self.log_w('get_url: found in cache with BAD checksum. removing: %s' % (local_cached_path_rel))
         file_util.remove(local_cached_path)
     tmp = self._download_to_tmp_file(url, cookies = cookies, debug = debug)
     self.log_d('get_url: downloaded url to %s' % (tmp))
     if not tmp:
       self.log_d('get_url: failed to download: %s' % (url))
       return None
-    if file_util.checksum('sha256', tmp) == checksum:
+    tmp_checksum = file_util.checksum('sha256', tmp)
+    if tmp_checksum == checksum:
       self.log_d('get_url: download succesful and checksum is good.  using: %s' % (local_cached_path_rel))
       file_util.rename(tmp, local_cached_path)
-    self.log_d('get_url: download worked but checksum was BAD: %s' % (local_cached_path))
+      return local_cached_path
+    self.log_e('get_url: download worked but checksum was BAD: %s' % (local_cached_path))
+    self.log_e('get_url:      url: %s' % (url))
+    self.log_e('get_url: expected: %s' % (checksum))
+    self.log_e('get_url:   actual: %s' % (tmp_checksum))
     return None
     
   def _path_for_url(self, url):
