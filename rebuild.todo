@@ -32,8 +32,6 @@ jan 2
 - add __load_package() persistent cache for ArtifactManager
 - Rebbe.update_packages() needs options for machine and arch and
   build_level
-- write routines for comparison of versions and revisions by splitting
-by punctuation and then comparing the separate parts individually
 
 
 Command to test rebbe package installation:
@@ -1091,3 +1089,10 @@ version both the storage.config file and the projects.config
 manager.py __init__() root_dir and config file should not be option.  retire defaults for these
 in artifact manager add abstract interface for loading the db.  dont auto load db in artifactory one make it explicit
 no unit test for setup_dir in step_python_egg
+figure out why tests dont work both in third_party and the other one
+figure out a way to share monster sized binaries that have no distro specific bits like java between macos mojave and high sierra.  this might involved adding wildcards to the distro_version
+bootstrap scriptage should allow changing the root_dir and fix accordingly
+the checksum situation still sucks.
+audit all the recipes and consider making setuptools be a BUILD dep not TOOL
+_make_storage() kind of funcs are cut-n-paste propagating
+allow variables substitution in requirements lists

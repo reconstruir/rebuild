@@ -442,7 +442,7 @@ class sources_cli(object):
       self.log_d('publish_artifacts: local_checksum=%s; remote_checksum=%s' % (local_checksum, remote_checksum))
       
       if remote_checksum == local_checksum:
-        print('%25s: %s' % ('exists same checksum', md.filename))
+        #print('%25s: %s' % ('exists same checksum', md.filename))
         continue
       if remote_checksum is not None and remote_checksum != local_checksum:
         print('%25s: %s' % ('exists diff checksum', md.filename))

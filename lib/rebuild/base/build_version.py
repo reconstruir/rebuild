@@ -5,6 +5,7 @@ from bes.common import algorithm, check, object_util, string_util, number_util
 from collections import namedtuple
 from bes.compat import StringIO
 from bes.compat import cmp
+from .upstream_version_lexer import upstream_version_lexer
 
 class build_version(namedtuple('build_version', 'upstream_version, revision, epoch')):
   '''
@@ -117,9 +118,24 @@ class build_version(namedtuple('build_version', 'upstream_version, revision, epo
     epoch_cmp = cmp(v1.epoch, v2.epoch)
     if epoch_cmp != 0:
       return epoch_cmp
-    upstream_version_cmp = cmp(v1.upstream_version, v2.upstream_version)
+    upstream_version_cmp = clazz.compare_upstream_version(v1.upstream_version, v2.upstream_version)
     if upstream_version_cmp != 0:
       return upstream_version_cmp
     return cmp(v1.revision, v2.revision)
+
+  def __lt__(self, other):
+    check.check_build_version(other)
+    c = self.compare(self, other)
+    return c < 0
+    
+  # This function should implement exactly the algorithm described here (its close):
+  # https://manpages.debian.org/wheezy/dpkg-dev/deb-version.5.en.html#Sorting_Algorithm
+  @classmethod
+  def compare_upstream_version(clazz, v1, v2):
+    check.check_string(v1)
+    check.check_string(v2)
+    tokens1 = [ token for token in upstream_version_lexer.tokenize(v1, 'build_version') ]
+    tokens2 = [ token for token in upstream_version_lexer.tokenize(v2, 'build_version') ]
+    return cmp(tokens1, tokens2)
 
 check.register_class(build_version)

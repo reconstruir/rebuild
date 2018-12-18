@@ -90,6 +90,8 @@ class artifact_manager_base(with_metaclass(ABCMeta, object)):
                                                                        build_target.build_path))
     result = []
     available_packages = self.list_all_by_metadata(build_target)
+    for available_package in available_packages:
+      self.log_d('latest_packages: AVAILABLE: %s' % (str(available_package.artifact_descriptor)))
     for package_name in package_names:
       available_package = self._find_latest_package(package_name, available_packages)
       if not available_package:
@@ -105,7 +107,9 @@ class artifact_manager_base(with_metaclass(ABCMeta, object)):
     if not candidates:
       return None
     if len(candidates) > 1:
-      candidates = sorted(candidates, reverse = True)
+      candidates = sorted(candidates, key = lambda candidate: candidate.build_version)
+    for candidate in candidates:
+      self.log_d('_find_latest_package: CANDIDATE for %s: %s' % (package_name, candidate.artifact_descriptor))
     return candidates[-1]
   
   def _reset_requirement_managers(self):

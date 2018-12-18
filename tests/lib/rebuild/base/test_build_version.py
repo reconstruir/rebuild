@@ -139,6 +139,9 @@ class test_version(unit_test):
     self.assertEqual( -1, self.__cmp('1.2.3', '1.2.4') )
     self.assertEqual( 0, self.__cmp('1.2.3', '1.2.3') )
     self.assertEqual( 1, self.__cmp('1.2.4', '1.2.3') )
+    self.assertEqual( -1, self.__cmp('1.2.8', '1.2.9') )
+    self.assertEqual( -1, self.__cmp('1.2.10', '1.2.11') )
+    self.assertEqual( -1, self.__cmp('1.2.9', '1.2.10') )
     
     self.assertEqual( 1, self.__cmp('1:1.2.3', '1.2.4') )
     self.assertEqual( -1, self.__cmp('0:1.2.3', '1.2.4') )

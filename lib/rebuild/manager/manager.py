@@ -68,6 +68,8 @@ class manager(object):
       return self.resolve_result(available_packages, missing_packages, [])
     resolved = self.artifact_manager.latest_packages(resolved_names, build_target)
     resolved_descriptors = [ r.package_descriptor for r in resolved ]
+    for desc in resolved_descriptors:
+      self.log_d('_resolve_packages: RESOLVED: %s' % (str(desc)))
     self.log_i('done resolving')
     return self.resolve_result(available_packages, [], resolved_descriptors)
 
