@@ -1092,3 +1092,4 @@ _make_storage() kind of funcs are cut-n-paste propagating
 allow variables substitution in requirements lists
 
 artifact_manager has 2 very simular and confusing methods list_latest_versions, latest_packages.
+add sql sorting magic for uptream versions using hooks to build_version.compare_upstream_version()

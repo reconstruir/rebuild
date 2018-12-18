@@ -126,11 +126,14 @@ create table artifacts(
 
   @classmethod
   def _build_target_to_sql_tuple(clazz, bt):
-    return ( bt.system, bt.level, sql_encoding.encode_string_list(bt.arch, quoted = False) )
+    return ( bt.system, bt.distro, bt.distro_version, sql_encoding.encode_string_list(bt.arch, quoted = False), bt.level )
   
   def list_all_by_descriptor(self, build_target = None):
     if build_target:
-      sql = '''select name, version, revision, epoch, system, level, arch, distro, distro_version from artifacts where system=? and level=? and arch=? order by name asc, version asc, revision asc, epoch asc, system asc, level asc, arch asc, distro, distro_version asc'''
+      sql = '''\
+select name, version, revision, epoch, system, level, arch, distro, distro_version from artifacts \
+where system=? and distro=? and distro_version=? and arch=? and level=? \
+order by name asc, version asc, revision asc, epoch asc, system asc, level asc, arch asc, distro, distro_version asc'''
       data = self._build_target_to_sql_tuple(build_target)
     else:
       sql = '''select name, version, revision, epoch, system, level, arch, distro, distro_version from artifacts order by name asc, version asc, revision asc, epoch asc, system asc, level asc, arch asc, distro, distro_version asc'''
@@ -142,7 +145,9 @@ create table artifacts(
   
   def list_all_by_metadata(self, build_target = None):
     if build_target:
-      sql = '''select * from artifacts where system=? and level=? and arch=? order by name asc, version asc, revision asc, epoch asc, system asc, level asc, arch asc, distro, distro_version asc'''
+      sql = '''\
+select * from artifacts where system=? and distro=? and distro_version=? and arch=? and level=? \
+order by name asc, version asc, revision asc, epoch asc, system asc, level asc, arch asc, distro, distro_version asc'''
       data = self._build_target_to_sql_tuple(build_target)
     else:
       sql = '''select * from artifacts order by name asc, version asc, revision asc, epoch asc, system asc, level asc, arch asc, distro, distro_version asc'''
@@ -156,7 +161,9 @@ create table artifacts(
 
   def list_all_by_package_descriptor(self, build_target = None):
     if build_target:
-      sql = '''select name, version, revision, epoch, properties, requirements from artifacts where system=? and level=? and arch=? order by name asc, version asc, revision asc, epoch asc'''
+      sql = '''select name, version, revision, epoch, properties, requirements from artifacts \
+where system=? and distro=? and distro_version=? and arch=? and level=? \
+order by name asc, version asc, revision asc, epoch asc'''
       data = self._build_target_to_sql_tuple(build_target)
     else:
       sql = '''select name, version, revision, epoch, properties, requirements from artifacts order by name asc, version asc, revision asc, epoch asc'''

@@ -258,6 +258,14 @@ fake_package water 1.0.9 0 0 linux release x86_64 ubuntu 18
 fake_package water 1.0.10 0 0 linux release x86_64 ubuntu 18
 fake_package water 1.0.11 0 0 linux release x86_64 ubuntu 18
 fake_package water 1.0.13 0 0 linux release x86_64 ubuntu 18
+fake_package water 1.0.0 0 0 linux release x86_64 centos 7
+fake_package water 1.0.1 0 0 linux release x86_64 centos 7
+fake_package water 1.0.2 0 0 linux release x86_64 centos 7
+fake_package water 1.0.3 0 0 linux release x86_64 centos 7
+fake_package water 1.0.8 0 0 linux release x86_64 centos 7
+fake_package water 1.0.9 0 0 linux release x86_64 centos 7
+fake_package water 1.0.10 0 0 linux release x86_64 centos 7
+fake_package water 1.0.11 0 0 linux release x86_64 centos 7
 '''
     t = AMT(recipes = recipes)
     t.publish('water;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
@@ -269,11 +277,27 @@ fake_package water 1.0.13 0 0 linux release x86_64 ubuntu 18
     t.publish('water;1.0.9;0;0;linux;release;x86_64;ubuntu;18')
     t.publish('water;1.0.11;0;0;linux;release;x86_64;ubuntu;18')
     t.publish('water;1.0.13;0;0;linux;release;x86_64;ubuntu;18')
-    latest = t.am.latest_packages([ 'water' ], self.LINUX_BT)
+    t.publish('water;1.0.0;0;0;linux;release;x86_64;centos;7')
+    t.publish('water;1.0.1;0;0;linux;release;x86_64;centos;7')
+    t.publish('water;1.0.2;0;0;linux;release;x86_64;centos;7')
+    t.publish('water;1.0.3;0;0;linux;release;x86_64;centos;7')
+    t.publish('water;1.0.10;0;0;linux;release;x86_64;centos;7')
+    t.publish('water;1.0.8;0;0;linux;release;x86_64;centos;7')
+    t.publish('water;1.0.9;0;0;linux;release;x86_64;centos;7')
+    t.publish('water;1.0.11;0;0;linux;release;x86_64;centos;7')
+    latest = t.am.latest_packages([ 'water' ], build_target('linux', 'ubuntu', '18', 'x86_64', 'release'))
+    print('latest ubuntu: %s' % (str(latest)))
     expected = [
       AD.parse('water;1.0.13;0;0;linux;release;x86_64;ubuntu;18'),
     ]
     self.assertEqual( expected, [ md.artifact_descriptor for md in latest ] )
 
+    latest = t.am.latest_packages([ 'water' ], build_target('linux', 'centos', '7', 'x86_64', 'release'))
+    print('latest centos: %s' % (str(latest)))
+    expected = [
+      AD.parse('water;1.0.11;0;0;linux;release;x86_64;centos;7'),
+    ]
+    self.assertEqual( expected, [ md.artifact_descriptor for md in latest ] )
+    
 if __name__ == '__main__':
   unit_test.main()
