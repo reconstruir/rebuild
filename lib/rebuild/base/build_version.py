@@ -125,8 +125,7 @@ class build_version(namedtuple('build_version', 'upstream_version, revision, epo
 
   def __lt__(self, other):
     check.check_build_version(other)
-    c = self.compare(self, other)
-    return c < 0
+    return self.compare(self, other) < 0
     
   # This function should implement exactly the algorithm described here (its close):
   # https://manpages.debian.org/wheezy/dpkg-dev/deb-version.5.en.html#Sorting_Algorithm
