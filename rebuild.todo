@@ -1096,3 +1096,4 @@ add sql sorting magic for uptream versions using hooks to build_version.compare_
 
 when not ingesting still download the url and check the checksum so next time its ready to go
 and maybe even make the build work by using the downloaded tarball in the http cache as a source provider
+fix build_target.py to use a cached property for build_path instead of putting it a construction time
