@@ -53,7 +53,7 @@ class package_cli(object):
       print(p.raw_metadata)
     else:
       d = p.metadata.to_simple_dict()
-      files = d['files']
+      manifest = d['manifest']
       del d['_format_version']
       d['arch'] = ' '.join(d['arch'])
       d['properties'] = str(key_value_list.from_dict(d['properties']))
@@ -63,9 +63,9 @@ class package_cli(object):
           return ' '.join(f)
         else:
           return f[0]
-      d['files'] = self.fit_stuff('files', ' '.join([ _i(f) for f in files['files'] ]))
-      d['env_files'] = self.fit_stuff('env_files', ' '.join([ _i(f) for f in files['env_files'] ]))
-      d['contents_checksum'] = files['contents_checksum']
+      d['manifest'] = self.fit_stuff('manifest', ' '.join([ _i(f) for f in manifest['files'] ]))
+      d['env_files'] = self.fit_stuff('env_files', ' '.join([ _i(f) for f in manifest['env_files'] ]))
+      d['contents_checksum'] = manifest['contents_checksum']
       for key, value in sorted(d.items()):
         if key in [ 'files', 'env_files' ]:
           print(value)
