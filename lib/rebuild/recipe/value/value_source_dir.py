@@ -11,7 +11,7 @@ class value_source_dir(value_base):
   def __init__(self, origin = None, where = '', properties = None):
     super(value_source_dir, self).__init__(origin, properties = properties)
     check.check_string(where)
-    self.where = where
+    self.where = path.expanduser(where)
     self._tarball = None
     
   def __eq__(self, other):

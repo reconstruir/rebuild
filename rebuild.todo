@@ -713,9 +713,6 @@ april 9
 april 10
 - extra deps like stuff in shell scripts
 
-april 11
-- test of package upgrade because checksums changed missing
-
 april 16
 - control-c when in the middle of package_tester doesnt interrupt
 - hook interface is fucked the abstract method warning doesnt happen if the signature of execute changes.
@@ -863,8 +860,6 @@ and only then forks rebuilder.py.  might be tough
 2018-11-7
 - when doing transform env theres no decent assertion of the requested package descriptor is not installed
 - add checksuming to downloads
-- package_manager transform env does not do dependencies
-- add package_manager and new_tools_mananger transform env unit tests that use dependencies and assert that only what is needed is in the env
 
 - in step.py env.update(script.substitutions) might happen too early
 - env_dir/package_manager env_files test case where there are no files
@@ -1073,9 +1068,7 @@ package_manager.py s/package_manifest/tarball_manifest  s/pkg_desc/tarball_descr
 ingest_util.py set_properties is hard coded for artifactory
 
 make adddress interface more abstract and use it for pcloud as well as artifactory
-double check that the cached http url for ingestion does not save if the checksum is bad
 use extended fs attributes - locally - to speed up checksuming on mac and linux
-first time java 8 or 11 ingestion on linux is broken.  run it again and it works.  make sure to add better logging when debugging it
 
 figure out the test situation with stuff like docker picking the system version instead of the packaged one
 
@@ -1097,3 +1090,5 @@ add sql sorting magic for uptream versions using hooks to build_version.compare_
 when not ingesting still download the url and check the checksum so next time its ready to go
 and maybe even make the build work by using the downloaded tarball in the http cache as a source provider
 fix build_target.py to use a cached property for build_path instead of putting it a construction time
+
+step results should have the notion of error, warning, success and skip
