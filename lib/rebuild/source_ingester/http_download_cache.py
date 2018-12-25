@@ -36,11 +36,16 @@ class http_download_cache(object):
     if not tmp:
       self.log_d('get_url: failed to download: %s' % (url))
       return None
-    if file_util.checksum('sha256', tmp) == checksum:
+    actual_checksum = file_util.checksum('sha256', tmp)
+    if actual_checksum == checksum:
       self.log_d('get_url: download succesful and checksum is good.  using: %s' % (local_cached_path_rel))
       file_util.rename(tmp, local_cached_path)
-    self.log_d('get_url: download worked but checksum was BAD: %s' % (local_cached_path))
-    return None
+      return local_cached_path
+    else:
+      self.log_e('get_url: download worked but checksum was WRONG: %s' % (url))
+      self.log_e('get_url: expected: %s' % (checksum))
+      self.log_e('get_url:   actual: %s' % (actual_checksum))
+      return None
     
   def _path_for_url(self, url):
     'Return path for local tarball.'
