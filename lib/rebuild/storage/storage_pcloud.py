@@ -20,7 +20,7 @@ class storage_pcloud(storage_base):
     build_blurb.add_blurb(self, 'rebuild')
     log.add_logging(self, 'storage_pcloud')
     check.check_storage_factory_config(config)
-
+    self._config = config
     self._file_mapping = file_mapping(config.local_cache_dir, path.join(config.download_credentials.root_dir, config.repo), None)
     
     self._remote_root_dir = path.join(config.download_credentials.root_dir, config.repo)
@@ -101,14 +101,23 @@ class storage_pcloud(storage_base):
 
   #@abstractmethod
   def upload(self, local_filename, remote_filename, local_checksum):
-    print('Uploading %s => %s' % (local_filename, remote_filename))
-    upload_rv = self._pcloud.upload_file(local_filename, path.basename(remote_filename),
-                                         folder_path = path.dirname(remote_filename))
-    self.log_d('_command_ingest() upload_rv=%s - %s' % (upload_rv, type(upload_rv)))
+    cloud_filename = path.basename(remote_filename)
+    folder_path = file_util.ensure_lsep(path.dirname(remote_filename))
+    root_dir = self._config.download_credentials.root_dir
+    repo = self._config.repo
+    self.log_d('upload: root_dir=%s; repo=%s' % (root_dir, repo))
+    self.log_d('upload: local_filename=%s; remote_filename=%s; local_checksum=%s; cloud_filename=%s; folder_path=%s' % (local_filename,
+                                                                                                                        remote_filename,
+                                                                                                                        local_checksum,
+                                                                                                                        cloud_filename,
+                                                                                                                        folder_path))
+    upload_rv = self._pcloud.upload_file(local_filename, cloud_filename, folder_path = folder_path)
+    self.log_d('upload: upload_rv=%s' % (upload_rv))
     file_id = upload_rv[0]['fileid']
+    self.log_d('upload: file_id=%s' % (file_id))
     verification_checksum = self._checksum_file(file_id = file_id)
     if verification_checksum != local_checksum:
-      print('Failed to verify checksum.  Something went wrong.  FIXME: should delete the remote file.')
+      self.log_e('Failed to verify checksum.  Something went wrong.  FIXME: should delete the remote file.')
       return False
     return True
 
