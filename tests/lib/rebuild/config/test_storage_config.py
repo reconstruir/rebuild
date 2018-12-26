@@ -80,17 +80,17 @@ storage
       storage_config(text, '<test>')
 
   def test_make_local_config(self):
-    ac = storage_config.make_local_config('on the fly config', '/tmp/foo')
+    ac = storage_config.make_local_config('on the fly config', '/tmp/foo', 'rebuild_stuff')
 
     a = ac.get('download', 'local')
     self.assertEqual( None, a.credentials.username )
     self.assertEqual( None, a.credentials.password )
-    self.assertEqual( '/tmp/foo', a.root_dir )
+    self.assertEqual( 'rebuild_stuff', a.root_dir )
 
     b = ac.get('upload', 'local')
     self.assertEqual( None, b.credentials.username )
     self.assertEqual( None, b.credentials.password )
-    self.assertEqual( '/tmp/foo', b.root_dir )
+    self.assertEqual( 'rebuild_stuff', b.root_dir )
       
   def test_many_providers(self):
     text = '''

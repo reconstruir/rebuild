@@ -193,6 +193,14 @@ class sources_cli(object):
                            default = None,
                            type = str,
                            help = 'The file to delete. [ None ]')
+
+    # checksum
+    checksum_parser = subparsers.add_parser('checksum', help = 'Checksum a local file or url.')
+    checksum_parser.add_argument('what',
+                                 action = 'store',
+                                 default = None,
+                                 type = str,
+                                 help = 'What to checksum.  Can be local or url. [ None ]')
     
   def main(self):
     args = self._parser.parse_args()
@@ -217,6 +225,8 @@ class sources_cli(object):
       return self._command_find(args.what)
     elif args.command == 'retire':
       return self._command_retire(args.what)
+    elif args.command == 'checksum':
+      return self._command_checksum(args.what)
       
     raise RuntimeError('Invalid command: %s' % (args.command))
 
@@ -484,6 +494,51 @@ class sources_cli(object):
       }
     return properties
 
+  def _command_checksum(self, what):
+    check.check_string(what)
+    self.log_d('checksum: what=%s' % (what))
+    if what.startswith('http'):
+      local_filename = url_util.download_to_temp_file(what)
+    else:
+      local_filename = what
+    checksum = file_util.checksum('sha256', local_filename)
+    print(checksum)
+    return 0
+
+  def _checksum_file(self, file_path = None, file_id = None):
+    assert file_path or file_id
+    try:
+      self.log_d('_checksum_file() trying to checksum filename=%s; file_id=%s' % (file_path, file_id))
+      checksum = self._pcloud.checksum_file(file_path = file_path, file_id = file_id)
+    except pcloud_error as ex:
+      self.log_d('caught exception: %s' % (str(ex)))
+      if ex.code in [ pcloud_error.FILE_NOT_FOUND, pcloud_error.PARENT_DIR_MISSING ]:
+        checksum = None
+      else:
+        raise ex
+    return checksum
+
+  def _checksum_file_with_retry(self, file_path = None, file_id = None):
+    for i in range(0, 4):
+      checksum = self._checksum_file(file_path = file_path, file_id = file_id)
+      if checksum:
+        self.log_d('checksum attempt %d worked for file_path=%s; file_id=%s' % (i, file_path, file_id))
+        return checksum
+        self.log_d('checksum attempt %d failed for file_path=%s; file_id=%s' % (i, file_path, file_id))
+      time.sleep(0.250)
+    return False
+  
+    remote_path = self._remote_path(filename, remote_folder)
+    try:
+      checksum = self._pcloud.checksum_file(file_path = remote_path)
+    except pcloud_error as ex:
+      if ex.code in [ pcloud_error.FILE_NOT_FOUND, pcloud_error.PARENT_DIR_MISSING ]:
+        checksum = None
+      else:
+        raise ex
+    return checksum
+
+  
   @classmethod
   def run(clazz):
     raise SystemExit(sources_cli().main())

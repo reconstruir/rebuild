@@ -73,7 +73,7 @@ class storage_artifactory(storage_base):
   def find_tarball(self, filename):
     if not filename in self._available_files:
       return None
-    return self._downloaded_filename(filename)
+    return self._local_path(filename)
 
   #@abstractmethod
   def ensure_source(self, filename):
@@ -110,9 +110,16 @@ class storage_artifactory(storage_base):
                                                                         self._config.download_credentials.credentials.username,
                                                                         self._config.download_credentials.credentials.password)
     if verification_checksums.sha256 != local_checksum:
-      return None
-    return address
+      return False
+    return True
 
+  #@abstractmethod
+  def set_properties(self, filename, properties):
+    address = self.make_address(filename)
+    return artifactory_requests.set_properties(address, properties,
+                                               self._config.upload_credentials.credentials.username,
+                                               self._config.upload_credentials.credentials.password)
+  
   #@abstractmethod
   def remote_checksum(self, remote_filename):
     address = self.make_address(remote_filename)

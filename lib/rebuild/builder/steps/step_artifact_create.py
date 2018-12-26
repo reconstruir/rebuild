@@ -20,9 +20,6 @@ class step_artifact_create_make_package(step):
   def execute(self, script, env, values, inputs):
     if not script.has_stage_dir():
       return step_result(False, script.format_message('No files to package found in {stage_dir}'))
-
-    tarball_name = '%s.tar.gz' % (script.descriptor.full_name)
-    assert tarball_name == script.descriptor.tarball_filename
     output_tarball_path = path.join(script.artifact_dir, script.descriptor.tarball_filename)
     self.blurb('creating tarball %s from %s' % (path.relpath(output_tarball_path), path.relpath(script.stage_dir)), fit = True)
     staged_tarball, metadata = package.create_package(output_tarball_path,

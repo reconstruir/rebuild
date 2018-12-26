@@ -157,16 +157,12 @@ remote_checksum: %s''' % (local_filename, local_checksum, remote_checksum)
     
     try:
       clazz.log_d('ingest_file: calling upload: local_filename=%s; remote_filename=%s; ' % (local_filename, remote_filename))
-      ingested_address = storage.upload(local_filename, remote_filename, local_checksum)
-      clazz.log_d('ingest_file: ingested_address=%s' % (str(ingested_address)))
-      if ingested_address:
-        username = storage._config.upload_credentials.credentials.username
-        password = storage._config.upload_credentials.credentials.password
-        properties_rv = artifactory_requests.set_properties(ingested_address, properties, username, password)
-        if not properties_rv:
-          return clazz._ingest_result(False, 'Failed to set properties.  Something went wrong.  FIXME: should delete the remote file.')
-      else:
+      if not storage.upload(local_filename, remote_filename, local_checksum):
         return clazz._ingest_result(False, 'Failed to upload.  Something went wrong.  FIXME: should delete the remote file.')
+      clazz.log_d('ingest_file: successfully uploaded: %s' % (remote_filename))
+      properties_rv = storage.set_properties(remote_filename, properties)
+      if not properties_rv:
+        return clazz._ingest_result(False, 'Failed to set properties.  Something went wrong.  FIXME: should delete the remote file.')
     finally:
       _cleanup_tmp_files()
       

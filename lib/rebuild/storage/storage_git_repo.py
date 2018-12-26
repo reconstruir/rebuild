@@ -60,6 +60,10 @@ class storage_git_repo(storage_base):
     assert False
 
   #@abstractmethod
+  def set_properties(self, filename, properties):
+    assert False
+    
+  #@abstractmethod
   def remote_filename_abs(self, remote_filename):
     assert not path.isabs(remote_filename)
     return path.join(self._where, remote_filename)

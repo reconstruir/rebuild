@@ -40,6 +40,10 @@ class storage_kiwi(storage_base):
     pass
 
   #@abstractmethod
+  def set_properties(self, filename, properties):
+    assert False
+  
+  #@abstractmethod
   def remote_checksum(self, remote_filename):
     pass
 
@@ -80,6 +84,10 @@ class storage_watermelon(storage_base):
   def upload(self, local_filename, remote_filename):
     pass
 
+  #@abstractmethod
+  def set_properties(self, filename, properties):
+    assert False
+  
   #@abstractmethod
   def remote_checksum(self, remote_filename):
     pass

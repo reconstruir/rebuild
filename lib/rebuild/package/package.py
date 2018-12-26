@@ -173,7 +173,9 @@ unset REBUILD_STUFF_DIR
 
   _create_package_result = namedtuple('_create_package_result', 'filename, metadata')
   @classmethod
-  def create_package(clazz, tarball_path, pkg_desc, build_target, stage_dir, timer = None):
+  def create_package(clazz, tarball_path, pkg_desc, build_target, stage_dir,
+                     #metadata_overrides, timer = None):
+                     timer = None):
     timer = timer or debug_timer('package', disabled = True)
 
     properties = dict_util.filter_without_keys(pkg_desc.properties, [ 'export_compilation_flags_requirements' ])

@@ -66,11 +66,12 @@ class builder_env(object):
     self.external_artifact_manager = None
 
   @classmethod
-  def _make_storage_config(clazz, filename, root_dir, source_dir):
+  def _make_storage_config(clazz, filename, local_storage_cache_dir, source_dir):
     if source_dir:
-      return storage_config.make_local_config(None, source_dir)
+      return storage_config.make_local_config(None, source_dir, 'rebuild_stuff')
     if not filename:
-      return storage_config.make_local_config(None, root_dir)
+      assert False
+      return storage_config.make_local_config(None, local_storage_cache_dir)
     if not path.exists(filename):
       raise RuntimeError('artifacts config file not found: %s' % (filename))
     return storage_config.from_file(filename)

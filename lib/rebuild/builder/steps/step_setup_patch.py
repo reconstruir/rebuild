@@ -30,7 +30,7 @@ class step_setup_patch(step):
       return step_result(True, message)
     patch_program = values.get('patch_program')
     patch_dir = values.get('patch_dir')
-
+    
     for p in patches:
       strip = int(p.get_property('strip', self.DEFAULT_PATCH_STRIP_DEPTH))
       self.blurb('Applying patch %s (strip=%d) in dir %s' % (path.relpath(p.filename),

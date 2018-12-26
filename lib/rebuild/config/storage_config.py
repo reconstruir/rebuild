@@ -68,9 +68,10 @@ class storage_config(object):
     return clazz(text, source = source)
 
   @classmethod
-  def make_local_config(clazz, description, root_dir):
+  def make_local_config(clazz, description, location, root_dir):
     description = description or 'auto generated default local build storage config.'
     check.check_string(description)
+    check.check_string(location)
     check.check_string(root_dir)
     template = '''
 credential
@@ -80,10 +81,11 @@ credential
 storage
   description: {description}
   provider: local
+  location: {location}
   root_dir: {root_dir}
   no_credentials: true
 '''
-    content = template.format(description = description, root_dir = root_dir)
+    content = template.format(description = description, location = location, root_dir = root_dir)
     return clazz.from_text(content, source = '<default>')
   
 check.register_class(storage_config, include_seq = False)

@@ -36,6 +36,10 @@ class storage_base(with_metaclass(storage_register_meta, object)):
     pass
 
   @abstractmethod
+  def set_properties(self, filename, properties):
+    pass
+
+  @abstractmethod
   def remote_checksum(self, remote_filename):
     pass
 

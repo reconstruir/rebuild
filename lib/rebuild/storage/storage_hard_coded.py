@@ -32,6 +32,10 @@ class storage_hard_coded(storage_base):
     assert False
 
   #@abstractmethod
+  def set_properties(self, filename, properties):
+    assert False
+    
+  #@abstractmethod
   def remote_filename_abs(self, remote_filename):
     assert False
     

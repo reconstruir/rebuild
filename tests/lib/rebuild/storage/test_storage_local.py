@@ -48,22 +48,27 @@ class source_dir_maker(object):
     return temp_archive.make_temp_archive([ temp_archive.item('foo.txt', content = 'foo.txt\n') ], ext).filename
 
 class test_storage_local(unit_test):
-  
+
   def test_local_find_tarball(self):
     tmp_dir = source_dir_maker.make([
-      'file sources/a/alpha-1.2.3.tar.gz "${tarball}" 644',
-      'file sources/a/alpha-1.2.4.tar.gz "${tarball}" 644',
-    ])
+      'file rebuild_stuff/sources/a/alpha-1.2.3.tar.gz "${tarball}" 644',
+      'file rebuild_stuff/sources/a/alpha-1.2.4.tar.gz "${tarball}" 644',
+    ], delete = not self.DEBUG)
 
-    tmp_cache_dir = temp_file.make_temp_dir()
+    tmp_cache_dir = temp_file.make_temp_dir(suffix = '.local_cache_dir', delete = not self.DEBUG)
+
+    if self.DEBUG:
+      print('tmp_dir: %s' % (tmp_dir))
+      print('tmp_cache_dir: %s' % (tmp_cache_dir))
     
-    config = storage_config.make_local_config('unit test', tmp_dir)
+    config = storage_config.make_local_config('unit test', tmp_dir, 'rebuild_stuff')
     download_credentials = config.get('download', 'local')
     upload_credentials = config.get('upload', 'local')
-    factory_config = storage_factory.config(tmp_cache_dir, 'sources', False, download_credentials, upload_credentials)
+    factory_config = storage_factory.config(tmp_cache_dir, 'sources', True, download_credentials, upload_credentials)
     storage = storage_local(factory_config)
-    self.assertEqual( path.join(tmp_dir, 'sources/a/alpha-1.2.3.tar.gz'),
-                      storage.find_tarball('alpha-1.2.3.tar.gz') )
+    expected = path.join(tmp_cache_dir, 'a/alpha-1.2.3.tar.gz')
+    actual = storage.find_tarball('a/alpha-1.2.3.tar.gz')
+    self.assertEqual( expected, actual )
     
 if __name__ == '__main__':
   unit_test.main()
