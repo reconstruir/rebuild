@@ -59,13 +59,15 @@ class step_setup_sources_download(step):
     if tarball:
       tarball_path = tarball.sources(env.recipe_load_env)[0]
       if not tarball_path:
-        blurb = 'No source (%s) found for %s using %s.  Possible sources:' % (str(tarball.value),
-                                                                              script.descriptor.full_name,
-                                                                              str(env.sources_storage))
+        blurb = 'No source (%s) found for %s using %s.' % (str(tarball.value),
+                                                           script.descriptor.full_name,
+                                                           str(env.sources_storage))
         self.blurb(blurb)
         possibilities = env.sources_storage.search(script.descriptor.name)
-        for p in possibilities:
-          self.blurb('  %s' % (p))
+        if possibilities:
+          self.blurb('Possible sources:')
+          for p in possibilities:
+            self.blurb('  %s' % (p))
         return step_result(False, blurb)
       dest = tarball.get_property('dest', '${REBUILD_SOURCE_UNPACKED_DIR}')
       base_dir = tarball.get_property('base', None)
