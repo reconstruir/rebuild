@@ -34,30 +34,30 @@ class step_setup_ingest_upstream_sources(step):
       checksum = upstream_source.get_property('checksum', None)
       if not checksum:
         self.blurb('warning: no checksum given for %s' % (url))
-      remote_filename = upstream_source.get_property('remote_filename', None)
+      ingested_filename = upstream_source.get_property('ingested_filename', None)
       cookies = upstream_source.get_property('cookies', None)
       if cookies:
         cookies = string_util.unquote(cookies)
         cookies = key_value_list.parse(cookies, delimiter = '=')
         cookies = cookies.to_dict()
-      if not remote_filename:
-        return step_result(False, 'remote_filename needs to be given when ingesting a url.')
+      if not ingested_filename:
+        return step_result(False, 'ingested_filename needs to be given when ingesting a url.')
     
       if env.config.ingest:
         need_ingesting = True
-        existing_checksum = env.sources_storage.remote_checksum(remote_filename)
+        existing_checksum = env.sources_storage.remote_checksum(ingested_filename)
         self.blurb('existing_checksum: %s' % (existing_checksum))
         
         if existing_checksum and checksum:
           if existing_checksum == checksum:
-            self.blurb('already exists with same checksum: %s' % (remote_filename))
+            self.blurb('already exists with same checksum: %s' % (ingested_filename))
             need_ingesting = False
           else:
-            self.blurb('WARNING: already exists with different checksum: %s' % (remote_filename))
-            return step_result(True, 'already exists with different checksum: %s' % (remote_filename))
+            self.blurb('WARNING: already exists with different checksum: %s' % (ingested_filename))
+            return step_result(True, 'already exists with different checksum: %s' % (ingested_filename))
         if need_ingesting:
-          self.blurb('ingesting %s => %s [checksum %s]' % (url, remote_filename, checksum))
-          rv = ingest_util.ingest_url(url, remote_filename, arcname, checksum,
+          self.blurb('ingesting %s => %s [checksum %s]' % (url, ingested_filename, checksum))
+          rv = ingest_util.ingest_url(url, ingested_filename, arcname, checksum,
                                       env.sources_storage, env.http_downloads_manager,
                                       cookies = cookies)
           if not rv.success:
