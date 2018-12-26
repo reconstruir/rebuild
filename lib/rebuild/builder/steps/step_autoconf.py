@@ -5,6 +5,30 @@ from bes.common import check
 from rebuild.step import compound_step, step, step_result
 from rebuild.toolchain import toolchain
 
+class step_autoconf_autoreconf(step):
+
+  def __init__(self):
+    super(step_autoconf_autoreconf, self).__init__()
+
+  @classmethod
+  def define_args(clazz):
+    return '''
+    need_autoreconf   bool        False
+    '''
+    
+  #@abstractmethod
+  def execute(self, script, env, values, inputs):
+    need_autoreconf = values.get('need_autoreconf')
+
+    if not need_autoreconf:
+      return step_result(True, 'autoreconf not needed.')
+    
+    configure_ac_script_path = path.join(script.build_dir, 'configure.ac')
+    if not path.isfile(configure_ac_script_path):
+      return step_result(False, 'not found: %s' % (configure_ac_script_path))
+
+    return self.call_shell(['autoreconf', '-i'], script, env)
+
 class step_autoconf_configure(step):
 
   def __init__(self):
@@ -16,7 +40,6 @@ class step_autoconf_configure(step):
     configure_flags   string_list
     configure_env     key_values
     configure_script  string      configure
-    need_autoreconf   bool        False
     '''
     
   #@abstractmethod
@@ -24,17 +47,11 @@ class step_autoconf_configure(step):
     configure_env = values.get('configure_env')
     configure_flags = values.get('configure_flags') or []
     configure_script = values.get('configure_script')
-    need_autoreconf = values.get('need_autoreconf')
-    
+
     if check.is_string_list(configure_flags):
       configure_flags = configure_flags.to_list()
     else:
       assert isinstance(configure_flags, list)
-
-    if need_autoreconf:
-      autoreconf_cmd = [ 'autoreconf', '-i' ]
-    else:
-      autoreconf_cmd = None
 
     tc = toolchain.get_toolchain(script.build_target)
       
@@ -50,12 +67,7 @@ class step_autoconf_configure(step):
       '--prefix=%s' % (script.staged_files_dir),
     ] + configure_flags + tc.autoconf_flags()
 
-    if autoreconf_cmd:
-      cmd = autoreconf_cmd + [ '&&' ] + configure_cmd
-    else:
-      cmd = configure_cmd
-
-    return self.call_shell(cmd, script, env,
+    return self.call_shell(configure_cmd, script, env,
                            shell_env = configure_env,
                            save_logs = [ 'config.log', 'config.status' ])
 
@@ -96,6 +108,7 @@ class step_autoconf(compound_step):
   __steps__ = [
     step_setup,
     step_autoconf_pre_configure_hooks,
+    step_autoconf_autoreconf,
     step_autoconf_configure,
     step_autoconf_post_configure_hooks,
     step_make,
