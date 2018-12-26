@@ -80,10 +80,10 @@ class ingest_util(object):
   _ingest_result = namedtuple('_ingest_result', 'success, reason')
   
   @classmethod
-  def ingest_url(clazz, url, remote_filename, arcname, checksum, storage, http_cache,
+  def ingest_url(clazz, url, ingested_filename, arcname, checksum, storage, http_cache,
                  cookies = None, dry_run = False, debug = False):
     check.check_string(url)
-    check.check_string(remote_filename)
+    check.check_string(ingested_filename)
     if arcname:
       check.check_string(arcname)
     if checksum:
@@ -98,25 +98,25 @@ class ingest_util(object):
       if local_checksum != checksum:
         return clazz._ingest_result(False, 'failed: url checksum does not match: %s' % (url))
     properties = { 'rebuild.ingestion_url': url }
-    return clazz.ingest_file(local_filename, remote_filename, arcname, storage,
+    return clazz.ingest_file(local_filename, ingested_filename, arcname, storage,
                              properties = properties, dry_run = dry_run, debug = debug)
                      
   @classmethod
-  def ingest_file(clazz, local_filename, remote_filename, arcname, storage, properties = {}, dry_run = False, debug = False):
+  def ingest_file(clazz, local_filename, ingested_filename, arcname, storage, properties = {}, dry_run = False, debug = False):
     check.check_string(local_filename)
-    check.check_string(remote_filename)
+    check.check_string(ingested_filename)
     if arcname:
       check.check_string(arcname)
     if properties:
       check.check_dict(properties)
-    clazz.log_d('ingest_file: local_filename=%s; remote_filename=%s; arcname=%s; storage=%s' % (local_filename,
-                                                                                                remote_filename,
+    clazz.log_d('ingest_file: local_filename=%s; ingested_filename=%s; arcname=%s; storage=%s' % (local_filename,
+                                                                                                ingested_filename,
                                                                                                 arcname,
                                                                                                 str(storage)))
     if not path.isfile(local_filename):
       return clazz._ingest_result(False, 'file not found: %s' % (local_filename))
 
-    remote_basename = path.basename(remote_filename)
+    remote_basename = path.basename(ingested_filename)
     
     is_valid_archive = archiver.is_valid(local_filename)
     is_exe = binary_detector.is_executable(local_filename)
@@ -139,12 +139,12 @@ class ingest_util(object):
       clazz.log_d('ingest_file: calling archive_binary() returns %s' % (local_filename))
       tmp_files_to_cleanup.append(local_filename)
 
-    remote_checksum = storage.remote_checksum(remote_filename)
+    remote_checksum = storage.remote_checksum(ingested_filename)
     local_checksum = file_util.checksum('sha256', local_filename)
-    clazz.log_d('ingest_file: remote_filename=%s; remote_checksum=%s; local_checksum=%s' % (remote_filename, remote_checksum, local_checksum))
+    clazz.log_d('ingest_file: ingested_filename=%s; remote_checksum=%s; local_checksum=%s' % (ingested_filename, remote_checksum, local_checksum))
     if remote_checksum == local_checksum:
       _cleanup_tmp_files()
-      return clazz._ingest_result(True, 'a file with checksum %s already exists: %s' % (local_checksum, remote_filename))
+      return clazz._ingest_result(True, 'a file with checksum %s already exists: %s' % (local_checksum, ingested_filename))
     if remote_checksum is not None and remote_checksum != local_checksum:
       _cleanup_tmp_files()
       msg = '''trying to re-ingest a with a different checksum.
@@ -153,14 +153,14 @@ class ingest_util(object):
 remote_checksum: %s''' % (local_filename, local_checksum, remote_checksum)
       return clazz._ingest_result(True, msg)
     if dry_run:
-      return clazz._ingest_result(True, 'dry-run: would upload %s => %s' % (local_filename, remote_filename))
+      return clazz._ingest_result(True, 'dry-run: would upload %s => %s' % (local_filename, ingested_filename))
     
     try:
-      clazz.log_d('ingest_file: calling upload: local_filename=%s; remote_filename=%s; ' % (local_filename, remote_filename))
-      if not storage.upload(local_filename, remote_filename, local_checksum):
+      clazz.log_d('ingest_file: calling upload: local_filename=%s; ingested_filename=%s; ' % (local_filename, ingested_filename))
+      if not storage.upload(local_filename, ingested_filename, local_checksum):
         return clazz._ingest_result(False, 'Failed to upload.  Something went wrong.  FIXME: should delete the remote file.')
-      clazz.log_d('ingest_file: successfully uploaded: %s' % (remote_filename))
-      properties_rv = storage.set_properties(remote_filename, properties)
+      clazz.log_d('ingest_file: successfully uploaded: %s' % (ingested_filename))
+      properties_rv = storage.set_properties(ingested_filename, properties)
       if not properties_rv:
         return clazz._ingest_result(False, 'Failed to set properties.  Something went wrong.  FIXME: should delete the remote file.')
     finally:
