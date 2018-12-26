@@ -1110,3 +1110,9 @@ find_tarball is storage_local (and maybe other storage impls) gets called a mill
 2018-12-26
 - full suite of tests for storage_local
 
+
+
+s/zlib 1.2.8/zlib 1.2.11/ everywhere
+s/pkg_config 0.29.1/s/pkg_config 0.29.2/ (or maybe even older versions)
+s/xz/libxz/ s/5.2.2/5.2.4
+s/gnu_m4 >= 1.4.17/gnu_m4 >= 1.4.18/
