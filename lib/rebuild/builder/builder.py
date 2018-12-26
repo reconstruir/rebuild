@@ -130,7 +130,6 @@ class builder(object):
       return self.EXIT_CODE_SUCCESS
     elif result.status == self.SCRIPT_FAILED:
       self.blurb('FAILED: %s - %s\n%s' % (script.descriptor.name, result.script_result.failed_step.__class__.__name__, result.script_result.message))
-      self.blurb('FAILED: %s - %s' % (script.descriptor.name, result.script_result.failed_step.__class__.__name__))
       return self.EXIT_CODE_FAILED
     elif result.status == self.SCRIPT_CURRENT:
       self.blurb('%s - up-to-date.' % (script.descriptor.name))
