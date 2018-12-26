@@ -122,7 +122,8 @@ class tool_cli(build_target_cli):
     self._local_storage_cache_dir = path.join(path.expanduser('~/.ego/storage_cache'), self._artifacts_provider)
 
     if self._artifacts_provider == 'local':
-      self.artifact_manager = artifact_manager_local(download_credentials.root_dir)
+      artifacts_dir = path.join(download_credentials.values['location'], download_credentials.root_dir)
+      self.artifact_manager = artifact_manager_local(artifacts_dir)
     elif self._artifacts_provider == 'artifactory':
       self.artifact_manager = artifact_manager_artifactory(self._local_storage_cache_dir, self._storage_config)
     else:
