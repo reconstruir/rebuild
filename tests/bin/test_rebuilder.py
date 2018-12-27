@@ -303,7 +303,7 @@ print("hook1 hook2")
     server = web_server_controller(file_web_server)
     server.start(root_dir = tmp_web_root)
     port = server.address[1]
-    url = 'http://localhost:{port}/{filename}'.format(port = port, filename = fructose_tarball_filename)
+    url = 'http://localhost:{port}/rebuild_stuff/sources'.format(port = port)
     self.debug_spew_filename('\n' + 'url', url)
     project_dir_tmp = self._make_temp_dir('project_dir_tmp')
     project_dir_src = path.join(self.data_dir(), 'tarball_ingestion')

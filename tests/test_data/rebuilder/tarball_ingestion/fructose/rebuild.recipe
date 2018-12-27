@@ -12,7 +12,7 @@ package fructose 3.4.5
   steps  
     step_autoconf
       upstream_source
-        all: ${_url} ingested_filename=${_ingested_filename} checksum=${_checksum}
+        all: ${_url}/${_filename} ingested_filename=${_ingested_filename} checksum=${_checksum}
         
       tarball
         all: ${_ingested_filename}
