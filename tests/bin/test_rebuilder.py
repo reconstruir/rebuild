@@ -3,7 +3,7 @@
 
 import os.path as path
 from bes.testing.unit_test import script_unit_test
-from bes.fs import file_replace, tar_util, temp_file
+from bes.fs import file_replace, file_util, tar_util, temp_file
 from bes.git import repo
 from rebuild.base import build_target
 from rebuild.toolchain import toolchain_testing
@@ -180,7 +180,7 @@ class test_rebuilder_script(script_unit_test):
     self.assertEqual( [ 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
 
   def test_tarball_git_address(self):
-    tmp_dir = self._make_temp_dir()
+    tmp_dir = self._make_temp_dir('tmp_dir')
     project_dir = path.join(self.data_dir(), 'tarball_git_address')
     source_dir = path.join(project_dir, 'src')
     tar_util.copy_tree_with_tar(project_dir, path.join(tmp_dir, 'tarball_git_address'))
@@ -276,10 +276,9 @@ print("hook1 hook2")
       'metadata/metadata.json',
     ], test.artifacts_members['foo-1.0.0.tar.gz'])
 
-  def _make_temp_dir(self):
+  def _make_temp_dir(self, label):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
-    if self.DEBUG:
-      print("tmp_dir: ", tmp_dir)
+    self.debug_spew_filename('\n' + label, tmp_dir)
     return tmp_dir
 
   def test_shared_lib_libstarch(self):
@@ -291,6 +290,39 @@ print("hook1 hook2")
     test = self._run_test(self.DEFAULT_CONFIG, self.data_dir(), 'shared_libs', 'libpotato')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libpotato-1.0.0.tar.gz', 'libstarch-1.0.0.tar.gz' ], test.artifacts )
+
+  def test_tarball_ingestion(self):
+    from bes.web import file_web_server, web_server_controller
+
+    tmp_web_root = self._make_temp_dir('tmp_web_root')
+    fructose_tarball_filename = 'rebuild_stuff/sources/fructose-3.4.5.tar.gz'
+    fructose_tarball_src_path = path.normpath(path.join(self.data_dir(), '../sources', fructose_tarball_filename))
+    fructose_tarball_web_path = path.join(tmp_web_root, fructose_tarball_filename)
+    file_util.copy(fructose_tarball_src_path, fructose_tarball_web_path)
+
+    server = web_server_controller(file_web_server)
+    server.start(root_dir = tmp_web_root)
+    port = server.address[1]
+    url = 'http://localhost:{port}/{filename}'.format(port = port, filename = fructose_tarball_filename)
+    self.debug_spew_filename('\n' + 'url', url)
+    project_dir_tmp = self._make_temp_dir('project_dir_tmp')
+    project_dir_src = path.join(self.data_dir(), 'tarball_ingestion')
+    tar_util.copy_tree_with_tar(project_dir_src, project_dir_tmp)
+    replacements = {
+      '@URL@': url,
+    }
+    recipe_filename = path.join(project_dir_tmp, 'fructose/rebuild.recipe')
+    file_replace.replace(recipe_filename, replacements, backup = False)
+
+    tmp_sources_dir = self._make_temp_dir('tmp_sources_dir')
+    rt = rebuilder_tester(self._resolve_script(), project_dir_tmp, tmp_sources_dir, 'release', debug = self.DEBUG)
+    test = rt.run(self.DEFAULT_CONFIG, '--ingest', 'fructose')
+
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'fructose-3.4.5.tar.gz' ], test.artifacts )
+    self.assertEqual( [ 'rebuild_stuff/sources/fructose/fructose-3.4.5.tar.gz' ], test.source_dir_droppings )
+    
+    server.stop()
     
   def _run_test(self, config, data_dir, cwd_subdir, *args):
     rt = rebuilder_tester(self._resolve_script(),

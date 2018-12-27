@@ -1,0 +1,28 @@
+!rebuild.recipe!
+
+package fructose 3.4.5
+
+  variables:
+    all: _url=@URL@
+    all: _upstream_name=fructose
+    all: _filename=${_upstream_name}-${REBUILD_PACKAGE_UPSTREAM_VERSION}.tar.gz
+    all: _ingested_filename=fructose/${_filename}
+    all: _checksum=6105aa5fd841e9bdf4c5a5d118a17353337c7e74d479a4bc0754cf15c271b676
+
+  steps  
+    step_autoconf
+      upstream_source
+        all: ${_url} ingested_filename=${_ingested_filename} checksum=${_checksum}
+        
+      tarball
+        all: ${_ingested_filename}
+        
+      configure_env
+        linux: CFLAGS="-I${REBUILD_REQUIREMENTS_INCLUDE_DIR} -std=gnu99"
+               LDFLAGS="-L${REBUILD_REQUIREMENTS_LIB_DIR}"
+        macos: CFLAGS="${REBUILD_COMPILE_CFLAGS} ${REBUILD_COMPILE_ARCH_FLAGS} ${REBUILD_COMPILE_OPT_FLAGS}"
+        macos: CC=gcc CXX=g++
+      tests
+        all: fructose1-test.c
+        all: fructose2-test.c
+        all: fructose-1and2-test.c
