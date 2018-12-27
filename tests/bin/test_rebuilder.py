@@ -316,11 +316,19 @@ print("hook1 hook2")
 
     tmp_sources_dir = self._make_temp_dir('tmp_sources_dir')
     rt = rebuilder_tester(self._resolve_script(), project_dir_tmp, tmp_sources_dir, 'release', debug = self.DEBUG)
-    test = rt.run(self.DEFAULT_CONFIG, '--ingest', 'fructose')
+    ingest_only_config = rebuilder_tester.config(no_network = False)
+    ingest_only_test = rt.run(ingest_only_config, '--ingest', '--ingest-only', 'fructose')
+    self.assertEqual( 0, ingest_only_test.result.exit_code )
+    self.assertEqual( [], ingest_only_test.artifacts )
+    self.assertEqual( [ 'rebuild_stuff/sources/fructose/fructose-3.4.5.tar.gz' ], ingest_only_test.source_dir_droppings )
 
-    self.assertEqual( 0, test.result.exit_code )
-    self.assertEqual( [ 'fructose-3.4.5.tar.gz' ], test.artifacts )
-    self.assertEqual( [ 'rebuild_stuff/sources/fructose/fructose-3.4.5.tar.gz' ], test.source_dir_droppings )
+    tmp_sources_dir = self._make_temp_dir('tmp_sources_dir')
+    rt = rebuilder_tester(self._resolve_script(), project_dir_tmp, tmp_sources_dir, 'release', debug = self.DEBUG)
+    ingest_config = rebuilder_tester.config(no_network = False)
+    ingest_test = rt.run(ingest_config, '--ingest', 'fructose')
+    self.assertEqual( 0, ingest_test.result.exit_code )
+    self.assertEqual( [ 'fructose-3.4.5.tar.gz' ], ingest_test.artifacts )
+    self.assertEqual( [ 'rebuild_stuff/sources/fructose/fructose-3.4.5.tar.gz' ], ingest_test.source_dir_droppings )
     
     server.stop()
     

@@ -9,11 +9,11 @@ from rebuild.base import build_arch, build_level, build_system, build_target
 
 class rebuilder_tester(object):
 
-  class config(namedtuple('config', 'read_contents, read_checksums, build_target')):
+  class config(namedtuple('config', 'read_contents, read_checksums, build_target, no_network')):
 
-    def __new__(clazz, read_contents = False, read_checksums = False, bt = None):
+    def __new__(clazz, read_contents = False, read_checksums = False, bt = None, no_network = True):
       bt = bt or build_target.make_host_build_target(level = build_level.RELEASE)
-      return clazz.__bases__[0].__new__(clazz, read_contents, read_checksums, bt)
+      return clazz.__bases__[0].__new__(clazz, read_contents, read_checksums, bt, no_network)
   
   result = namedtuple('result', 'tmp_dir, command, result, artifacts_dir, artifacts, artifacts_members, artifacts_contents, droppings, checksums, checksums_contents, source_dir_droppings')
   
@@ -30,11 +30,14 @@ class rebuilder_tester(object):
       print("tmp_dir: ", tmp_dir)
     return tmp_dir
 
-  def _make_command(self, tmp_dir, *args):
+  def _make_command(self, config, tmp_dir, *args):
     cmd = [
       '--source-dir',
       self._source_dir,
-      '--no-network',
+    ]
+    if config.no_network:
+      cmd += [ '--no-network' ]
+    cmd += [
       '-v',
       '--root', tmp_dir,
       '--level', self._level,
@@ -44,7 +47,7 @@ class rebuilder_tester(object):
 
   def run(self, config, *args):
     tmp_dir = self._make_temp_dir()
-    command = self._make_command(tmp_dir, *args)
+    command = self._make_command(config, tmp_dir, *args)
     artifacts_dir = path.join(tmp_dir, 'artifacts', config.build_target.build_path)
     checksums_dir = path.join(tmp_dir, 'checksums', config.build_target.build_path)
     result = self.run_script(command, cwd = self._working_dir)
