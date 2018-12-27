@@ -60,6 +60,9 @@ class http_download_cache(object):
   @classmethod
   def _download_to_tmp_file(clazz, url, cookies, debug = False):
     'Download url to tmp file.'
+    if not cookies:
+      from bes.url import url_util
+      return url_util.download_to_temp_file(url, delete = not debug)
     import requests
     tmp = temp_file.make_temp_file(delete = not debug)
     clazz.log_d('_download_to_tmp_file: url=%s; tmp=%s' % (url, tmp))
