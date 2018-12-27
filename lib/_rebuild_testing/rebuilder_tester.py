@@ -15,7 +15,7 @@ class rebuilder_tester(object):
       bt = bt or build_target.make_host_build_target(level = build_level.RELEASE)
       return clazz.__bases__[0].__new__(clazz, read_contents, read_checksums, bt)
   
-  result = namedtuple('result', 'tmp_dir, command, result, artifacts_dir, artifacts, artifacts_members, artifacts_contents, droppings, checksums, checksums_contents')
+  result = namedtuple('result', 'tmp_dir, command, result, artifacts_dir, artifacts, artifacts_members, artifacts_contents, droppings, checksums, checksums_contents, source_dir_droppings')
   
   def __init__(self, script, working_dir, source_dir, level, debug = False):
     self._script = script
@@ -51,7 +51,8 @@ class rebuilder_tester(object):
     artifacts = self._find_in_dir(artifacts_dir)
     checksums = self._find_in_dir(checksums_dir)
     droppings = self._find_in_dir(tmp_dir)
-      
+    source_dir_droppings = self._find_in_dir(self._source_dir)
+    
     artifacts_members = {}
     artifacts_contents = {}
     checksums_contents = {}
@@ -71,7 +72,8 @@ class rebuilder_tester(object):
       sys.stdout.flush()
       
     return self.result(tmp_dir, command, result, artifacts_dir, artifacts, artifacts_members,
-                       artifacts_contents, droppings, checksums, checksums_contents)
+                       artifacts_contents, droppings, checksums, checksums_contents,
+                       source_dir_droppings)
 
   @classmethod
   def _find_in_dir(clazz, where):
@@ -81,7 +83,6 @@ class rebuilder_tester(object):
 
   @classmethod
   def _load_checksums(clazz, config, checksums_dir, tmp_dir, checksums):
-    print('CACA: checksums_dir=%s' % (checksums_dir))
     checksums_contents = {}
     for checksum in checksums:
       checksum_path = path.join(checksums_dir, checksum)
