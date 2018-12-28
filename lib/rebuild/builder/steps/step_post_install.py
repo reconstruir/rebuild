@@ -10,16 +10,16 @@ class step_post_install(compound_step):
   from .step_check_hard_coded_paths import step_check_hard_coded_paths
   from .step_cleanup import step_cleanup
   from .step_install_delete_files import step_install_delete_files
+  from .step_install_env_files import step_install_env_files
   from .step_install_install_files import step_install_install_files
   from .step_install_post_install_hooks import step_install_post_install_hooks
   from .step_make_instructions import step_make_instructions
   from .step_pkg_config_make_pc import step_pkg_config_make_pc
-  from .step_install_env_files import step_install_env_files
 
   __steps__ = [
     step_install_delete_files,
-    step_install_install_files,
     step_install_post_install_hooks,
+    step_install_install_files,
     step_pkg_config_make_pc,
     step_install_env_files,
     step_make_instructions,
