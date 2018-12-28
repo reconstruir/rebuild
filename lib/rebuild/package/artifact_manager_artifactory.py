@@ -29,10 +29,10 @@ class artifact_manager_artifactory(artifact_manager_base):
     self._db = artifact_db(path.join(self._local_cache_dir, 'artifacts.db'))
     self._config = config.get('download', 'artifactory')
     self._address = storage_address(self._config.values['hostname'],
-                                        self._config.values['repo'],
-                                        self._config.root_dir,
-                                        'artifacts',
-                                        None)
+                                    self._config.values['repo'],
+                                    self._config.root_dir,
+                                    'artifacts',
+                                    None)
     self._load_remote_db()
 
   def __str__(self):
