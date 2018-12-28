@@ -143,7 +143,7 @@ class storage_artifactory(storage_base):
 
   def make_address(self, filename = None):
     return storage_address(self._config.download_credentials.values['hostname'],
-                               self._config.download_credentials.values['repo'],
-                               self._config.download_credentials.root_dir,
-                               self._config.repo,
-                               filename)
+                           self._config.download_credentials.values['repo'],
+                           self._config.download_credentials.root_dir,
+                           self._config.repo,
+                           filename)
