@@ -13,7 +13,7 @@ from .storage_base import storage_base
 from rebuild.base import build_blurb
 
 from rebuild.artifactory.artifactory_requests import artifactory_requests
-from rebuild.artifactory.artifactory_address import artifactory_address
+from rebuild.artifactory.storage_address import storage_address
 
 class storage_artifactory(storage_base):
 
@@ -73,7 +73,7 @@ class storage_artifactory(storage_base):
   def find_tarball(self, filename):
     if not filename in self._available_files:
       return None
-    return self._local_path(filename)
+    return self._downloaded_filename(filename)
 
   #@abstractmethod
   def ensure_source(self, filename):
@@ -142,7 +142,7 @@ class storage_artifactory(storage_base):
     return [ self._entry(*entry) for entry in entries ]
 
   def make_address(self, filename = None):
-    return artifactory_address(self._config.download_credentials.values['hostname'],
+    return storage_address(self._config.download_credentials.values['hostname'],
                                self._config.download_credentials.values['repo'],
                                self._config.download_credentials.root_dir,
                                self._config.repo,

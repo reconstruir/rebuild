@@ -2,9 +2,9 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from rebuild.artifactory.artifactory_address import artifactory_address as AA
+from rebuild.artifactory.storage_address import storage_address as AA
 
-class test_artifactory_address(unit_test):
+class test_storage_address(unit_test):
 
   def test_hostname(self):
     self.assertEqual( 'http://mycom.not/mycom/', AA('http://mycom.not/mycom', 'r', 'd', None, 'f').hostname )

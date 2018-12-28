@@ -71,7 +71,8 @@ storage
     self.assertEqual( 'flintpass', t.download.password )
     self.assertEqual( 'admin', t.upload.username )
     self.assertEqual( 'sekret', t.upload.password )
-    
+
+    """
   def test_combined_upload_download(self):
     text='''
 credential
@@ -208,6 +209,7 @@ storage
     self.assertEqual( None, a.credentials.username )
     self.assertEqual( None, a.credentials.password )
     self.assertEqual( '/tmp/tmpdir', a.root_dir )
+"""
     
 if __name__ == '__main__':
   unit_test.main()

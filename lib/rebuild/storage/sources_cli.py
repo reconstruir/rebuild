@@ -29,7 +29,7 @@ from rebuild.base import build_target
 from rebuild.package import artifact_manager_local
 
 from rebuild.artifactory.artifactory_requests import artifactory_requests
-from rebuild.artifactory.artifactory_address import artifactory_address
+from rebuild.artifactory.storage_address import storage_address
 
 class what_resolver(object):
   def __init__(self, what):
@@ -462,14 +462,14 @@ class sources_cli(object):
       else:
         self.log_d('publish_artifacts: calling upload(%s, %s)' % (md_abs.filename, remote_filename))
         print('%25s: %s' % ('uploading', md.filename))
-        ingested_address = storage.upload(local_filename, remote_filename, local_checksum)
-        if not ingested_address:
+        upload_rv = storage.upload(local_filename, remote_filename, local_checksum)
+        if not upload_rv:
           print('%25s: %s' % ('failed', md.filename))
           return 1
         else:
-          print('%25s: %s to %s' % ('uploaded', md.filename, ingested_address))
+          print('%25s: %s' % ('uploaded', md.filename))
           properties = self._metadata_to_artifactory_properties(md)
-          properties_rv = artifactory_requests.set_properties(ingested_address, properties, username, password)
+          properties_rv = storage.set_properties(remote_filename, properties)
           if properties_rv:
             print('%25s: %s' % ('set properties', md.filename))
           else:

@@ -11,7 +11,7 @@ from bes.fs import file_util
 
 from rebuild.base import artifact_descriptor, build_blurb, requirement_manager
 from rebuild.artifactory.artifactory_requests import artifactory_requests
-from rebuild.artifactory.artifactory_address import artifactory_address
+from rebuild.artifactory.storage_address import storage_address
 
 from .artifact_manager_base import artifact_manager_base
 from .artifact_db import artifact_db
@@ -28,7 +28,7 @@ class artifact_manager_artifactory(artifact_manager_base):
     self._read_only = True
     self._db = artifact_db(path.join(self._local_cache_dir, 'artifacts.db'))
     self._config = config.get('download', 'artifactory')
-    self._address = artifactory_address(self._config.values['hostname'],
+    self._address = storage_address(self._config.values['hostname'],
                                         self._config.values['repo'],
                                         self._config.root_dir,
                                         'artifacts',

@@ -5,7 +5,7 @@ from bes.compat import StringIO
 from bes.common import check, cached_property
 from bes.fs import file_util
 
-class artifactory_address(namedtuple('artifactory_address', 'hostname, repo, root_dir, sub_repo, filename')):
+class storage_address(namedtuple('storage_address', 'hostname, repo, root_dir, sub_repo, filename')):
 
   def __new__(clazz, hostname, repo, root_dir, sub_repo, filename):
     check.check_string(hostname)
@@ -90,4 +90,4 @@ class artifactory_address(namedtuple('artifactory_address', 'hostname, repo, roo
       url = '{url}?{params}'.format(url = url, params = params)
     return url
     
-check.register_class(artifactory_address)
+check.register_class(storage_address)

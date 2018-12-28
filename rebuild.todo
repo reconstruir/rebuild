@@ -1032,14 +1032,12 @@ version specification and locking for ~/.rebuild/config
 - step value properties should be part of the definition or schema or whatever
 - source_tarball is more general than that should be named *value*_with_properties or better
 - write a unit test for storage.reload_available
-- write unit tests for artifactory_address.make_api_url() and maybe use urljoin
+- write unit tests for storage_address.make_api_url() and maybe use urljoin
 - property escaping
 - version of python_future in third_party
 - ingestion should work without upload should be 2 steps one just downloads the upstream url the other uploads
 - ingestion s/remote_filename/ingested_filename/
 - requests timeouts/ progress ?
-
-- use artifactory_address for more artifatory_requests.upload()
 
 2018-12-14
 - audit .bescfg files and make sure the paths that are getting added are relative to the right places

@@ -14,7 +14,7 @@ class artifactory_requests(object):
 
   @classmethod
   def get_headers(clazz, address, username, password):
-    check.check_artifactory_address(address)
+    check.check_storage_address(address)
     check.check_string(address.filename)
     check.check_string(username)
     check.check_string(password)
@@ -57,7 +57,7 @@ class artifactory_requests(object):
   
   @classmethod
   def get_checksums(clazz, address, username, password):
-    check.check_artifactory_address(address)
+    check.check_storage_address(address)
     check.check_string(address.filename)
     check.check_string(username)
     check.check_string(password)
@@ -67,7 +67,7 @@ class artifactory_requests(object):
   def download_to_file(clazz, target, address, username, password, debug = False):
     'Download file to target.'
     check.check_string(target)
-    check.check_artifactory_address(address)
+    check.check_storage_address(address)
     check.check_string(address.filename)
     check.check_string(username)
     check.check_string(password)
@@ -86,7 +86,7 @@ class artifactory_requests(object):
 
   @classmethod
   def list_all_files(clazz, address, username, password):
-    check.check_artifactory_address(address)
+    check.check_storage_address(address)
     check.check_string(username)
     check.check_string(password)
     url = address.make_api_url(endpoint = 'storage', file_path = address.file_folder, params = 'list&deep=1&listFolders=0')
@@ -116,7 +116,7 @@ class artifactory_requests(object):
 
   @classmethod
   def upload(clazz, address, filename, username, password):
-    check.check_artifactory_address(address)
+    check.check_storage_address(address)
     check.check_string(address.filename)
     check.check_string(username)
     check.check_string(password)
@@ -142,7 +142,7 @@ class artifactory_requests(object):
 
   @classmethod
   def set_properties(clazz, address, properties, username, password):
-    check.check_artifactory_address(address)
+    check.check_storage_address(address)
     check.check_string(username)
     check.check_string(password)
     check.check_dict(properties)
@@ -166,7 +166,7 @@ class artifactory_requests(object):
 
   @classmethod
   def list_all_artifacts(clazz, address, username, password):
-    check.check_artifactory_address(address)
+    check.check_storage_address(address)
     clazz.log_d('list_all_artifacts: address=%s' % (str(address)))
 
     # an artifactory AQL query to find all the artifacts in a repo
