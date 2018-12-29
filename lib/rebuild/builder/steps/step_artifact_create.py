@@ -16,15 +16,31 @@ class step_artifact_create_make_package(step):
   def __init__(self):
     super(step_artifact_create_make_package, self).__init__()
 
+  @classmethod
+  def define_args(clazz):
+    return '''
+    build_target_distro string
+    build_target_distro_version string
+    '''
+    
   #@abstractmethod
   def execute(self, script, env, values, inputs):
     if not script.has_stage_dir():
       return step_result(False, script.format_message('No files to package found in {stage_dir}'))
     output_tarball_path = path.join(script.artifact_dir, script.descriptor.tarball_filename)
+    build_target_mutations = {}
+    build_target_distro = values.get('build_target_distro')
+    build_target_distro_version = values.get('build_target_distro_version')
+    if build_target_distro:
+      build_target_mutations['distro'] = build_target_distro
+    if build_target_distro_version:
+      build_target_mutations['distro_version'] = build_target_distro_version
+    #bt = script.build_target.clone(mutations = build_target_mutations)
+    bt = script.build_target.clone()
     self.blurb('creating tarball %s from %s' % (path.relpath(output_tarball_path), path.relpath(script.stage_dir)), fit = True)
     staged_tarball, metadata = package.create_package(output_tarball_path,
                                                       script.descriptor,
-                                                      script.build_target,
+                                                      bt,
                                                       script.stage_dir)
     self.blurb('staged tarball: %s' % (path.relpath(staged_tarball)))
     outputs = {

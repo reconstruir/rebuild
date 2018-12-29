@@ -174,7 +174,6 @@ unset REBUILD_STUFF_DIR
   _create_package_result = namedtuple('_create_package_result', 'filename, metadata')
   @classmethod
   def create_package(clazz, tarball_path, pkg_desc, build_target, stage_dir,
-                     #metadata_overrides, timer = None):
                      timer = None):
     timer = timer or debug_timer('package', disabled = True)
 
@@ -216,7 +215,7 @@ unset REBUILD_STUFF_DIR
     timer.stop()
 
     pkg_files = package_manifest(stage_package_file_list, stage_env_package_file_list)
-
+    
     # filename is empty cause it only gets filled once metadata ends up in a db
     metadata = package_metadata('',
                                 pkg_desc.name,
