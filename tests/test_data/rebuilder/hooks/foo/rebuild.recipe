@@ -3,13 +3,16 @@
 package foo 1.0.0
   steps
     step_setup
-      
+
+    step_shell
+      cmd: mkdir -p ${REBUILD_STAGE_BIN_DIR}
+
+    step_shell
+      cmd: install -m 755 ${REBUILD_RECIPE_DIR}/foo.py ${REBUILD_STAGE_BIN_DIR}/foo.py
+
     step_post_install
-      install_files
-        all: ${REBUILD_RECIPE_DIR}/files/bin/foo.py bin/foo.py
-        
-#      tests
-#        all: test-foo.sh test-foo-env-var.sh
+      tests
+        all: test-foo.sh
         
       skip_binary_third_party_prefix: True
 
