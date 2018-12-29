@@ -26,7 +26,7 @@ class test_package_metadata(unit_test):
     'contents_chk')
   TEST_PROPERTIES = { 'p1': 'v1', 'p2': 6 }
 
-  TEST_ENTRY = PM('kiwi-6.7.8-2.tar.gz', 'kiwi', '6.7.8', 2, 0, 'macos', 'release', [ 'x86_64' ], '', '',
+  TEST_ENTRY = PM(2, 'kiwi-6.7.8-2.tar.gz', 'kiwi', '6.7.8', 2, 0, 'macos', 'release', [ 'x86_64' ], '', '',
                   TEST_REQUIREMENTS, TEST_PROPERTIES, TEST_FILES)
 
   def test_descriptor(self):
