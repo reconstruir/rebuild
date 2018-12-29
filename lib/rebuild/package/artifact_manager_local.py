@@ -42,14 +42,13 @@ class artifact_manager_local(artifact_manager_base):
     return artifact_path_rel, artifact_path_abs
   
   #@abstractmethod
-  def publish(self, tarball, build_target, allow_replace, metadata):
-    check.check_build_target(build_target)
+  def publish(self, tarball, allow_replace, metadata):
     check.check_package_metadata(metadata)
     if self._read_only:
       raise RuntimeError('artifact_manager is read only.')
     check.check_package_metadata(metadata)
     pkg_desc = metadata.package_descriptor
-    artifact_path_rel, artifact_path_abs = self._artifact_paths(pkg_desc, build_target)
+    artifact_path_rel, artifact_path_abs = self._artifact_paths(pkg_desc, metadata.build_target)
     file_util.copy(tarball, artifact_path_abs, use_hard_link = True)
     self._reset_requirement_managers()
     pkg_metadata = metadata.mutate_filename(artifact_path_rel)

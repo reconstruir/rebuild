@@ -181,14 +181,13 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
     
     pm = self._make_test_pm_with_am()
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
-    bt = BT.parse_path('linux-ubuntu-18/x86_64/release')
     foo_tarball = FPUT.create_one_package(foo_recipe, mutations)
     bar_tarball = FPUT.create_one_package(bar_recipe, mutations)
     baz_tarball = FPUT.create_one_package(baz_recipe, mutations)
 
-    pm._artifact_manager.publish(foo_tarball.filename, bt, False, foo_tarball.metadata)
-    pm._artifact_manager.publish(bar_tarball.filename, bt, False, bar_tarball.metadata)
-    pm._artifact_manager.publish(baz_tarball.filename, bt, False, baz_tarball.metadata)
+    pm._artifact_manager.publish(foo_tarball.filename, False, foo_tarball.metadata)
+    pm._artifact_manager.publish(bar_tarball.filename, False, bar_tarball.metadata)
+    pm._artifact_manager.publish(baz_tarball.filename, False, baz_tarball.metadata)
     
     pm.install_tarball(foo_tarball.filename, foo_tarball.metadata, ['BUILD', 'RUN'])
     pm.install_tarball(bar_tarball.filename, bar_tarball.metadata, ['BUILD', 'RUN'])
@@ -217,7 +216,6 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
     return FPUT.make_artifact_manager(debug = clazz.DEBUG,
                                       recipes = RECIPES.FOODS,
-                                      build_target = clazz.TEST_BUILD_TARGET,
                                       mutations = mutations)
 
   def test_install_package(self):

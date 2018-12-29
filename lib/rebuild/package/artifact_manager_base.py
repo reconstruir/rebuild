@@ -34,7 +34,7 @@ class artifact_manager_base(with_metaclass(ABCMeta, object)):
     pass
     
   @abstractmethod
-  def publish(self, tarball, build_target, allow_replace, metadata):
+  def publish(self, tarball, allow_replace, metadata):
     pass
     
   @abstractmethod

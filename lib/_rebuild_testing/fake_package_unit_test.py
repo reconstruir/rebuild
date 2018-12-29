@@ -49,15 +49,14 @@ class fake_package_unit_test(object):
     return result
 
   @classmethod
-  def make_artifact_manager(clazz, debug = False, recipes = None, build_target = None, mutations = None):
+  def make_artifact_manager(clazz, debug = False, recipes = None, mutations = None):
     root_dir = temp_file.make_temp_dir(delete = not debug)
     if debug:
       print("root_dir:\n%s\n" % (root_dir))
     am = artifact_manager_local(root_dir)
     if recipes:
       mutations = mutations or {}
-      check.check_build_target(build_target)
       tmp_packages = fake_package_unit_test.create_many_packages(recipes, mutations)
       for tmp_package in tmp_packages:
-        am.publish(tmp_package.filename, build_target, False, tmp_package.metadata)
+        am.publish(tmp_package.filename, False, tmp_package.metadata)
     return am

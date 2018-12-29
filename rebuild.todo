@@ -1115,3 +1115,5 @@ s/xz/libxz/ s/5.2.2/5.2.4
 s/gnu_m4 >= 1.4.17/gnu_m4 >= 1.4.18/
 
 storage_artifactory does not save the cached available.json file
+
+s/rebuild_sources/rebuild_storage/

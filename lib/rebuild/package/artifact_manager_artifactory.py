@@ -50,7 +50,7 @@ class artifact_manager_artifactory(artifact_manager_base):
     assert False
     
   #@abstractmethod
-  def publish(self, tarball, build_target, allow_replace, metadata):
+  def publish(self, tarball, allow_replace, metadata):
     assert False
     
   #@abstractmethod

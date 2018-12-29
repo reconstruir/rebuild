@@ -61,7 +61,7 @@ class artifact_manager_tester(object):
       adesc = artifact_descriptor.parse(adesc)
     check.check_artifact_descriptor(adesc)
     pkg = self.create_package(adesc, mutations = mutations)
-    self.am.publish(pkg.filename, adesc.build_target, False, pkg.metadata)
+    self.am.publish(pkg.filename, False, pkg.metadata)
 
   def _retire_one(self, adesc):
     if check.is_string(adesc):

@@ -26,7 +26,7 @@ class test_artifact_manager_local(unit_test):
     t = AMT(recipes = RECIPES.APPLE)
     adesc = 'apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'
     tmp_tarball = t.create_package(adesc)
-    filename = t.am.publish(tmp_tarball.filename, self.LINUX_BT, False, tmp_tarball.metadata)
+    filename = t.am.publish(tmp_tarball.filename, False, tmp_tarball.metadata)
     self.assertTrue( path.exists(filename) )
     expected = [
       AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'),
@@ -43,30 +43,30 @@ class test_artifact_manager_local(unit_test):
   def test_publish_again_with_replace(self):
     am = FPUT.make_artifact_manager(debug = self.DEBUG)
     tmp_tarball = FPUT.create_one_package(RECIPES.APPLE)
-    filename = am.publish(tmp_tarball.filename, self.LINUX_BT, False, tmp_tarball.metadata)
+    filename = am.publish(tmp_tarball.filename, False, tmp_tarball.metadata)
     self.assertTrue( path.exists(filename) )
     expected = [
       AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'),
     ]
     self.assertEqual( expected, am.list_all_by_descriptor(None) )
-    filename = am.publish(tmp_tarball.filename, self.LINUX_BT, True, tmp_tarball.metadata)
+    filename = am.publish(tmp_tarball.filename, True, tmp_tarball.metadata)
     self.assertEqual( expected, am.list_all_by_descriptor(None) )
 
   def test_publish_again_without_replace(self):
     am = FPUT.make_artifact_manager(debug = self.DEBUG)
     tmp_tarball = FPUT.create_one_package(RECIPES.APPLE)
-    filename = am.publish(tmp_tarball.filename, self.LINUX_BT, False, tmp_tarball.metadata)
+    filename = am.publish(tmp_tarball.filename, False, tmp_tarball.metadata)
     self.assertTrue( path.exists(filename) )
     expected = [
       AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'),
     ]
     self.assertEqual( expected, am.list_all_by_descriptor(None) )
     with self.assertRaises(AlreadyInstalledError) as context:
-      am.publish(tmp_tarball.filename, self.LINUX_BT, False, tmp_tarball.metadata)
+      am.publish(tmp_tarball.filename, False, tmp_tarball.metadata)
     
   def test_find_by_package_descriptor_linux(self):
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
-    am = FPUT.make_artifact_manager(self.DEBUG, RECIPES.FOODS, self.LINUX_BT, mutations)
+    am = FPUT.make_artifact_manager(self.DEBUG, RECIPES.FOODS, mutations)
     self.assertEqual( 'water-1.0.0', am.find_by_package_descriptor(PD('water', '1.0.0'), self.LINUX_BT, False).package_descriptor.full_name )
     self.assertEqual( 'water-1.0.0-1', am.find_by_package_descriptor(PD('water', '1.0.0-1'), self.LINUX_BT, False).package_descriptor.full_name )
     self.assertEqual( 'water-1.0.0-2', am.find_by_package_descriptor(PD('water', '1.0.0-2'), self.LINUX_BT, False).package_descriptor.full_name )
@@ -78,7 +78,7 @@ class test_artifact_manager_local(unit_test):
 
   def test_find_by_package_descriptor_macos(self):
     mutations = { 'system': 'macos', 'distro': '', 'distro_version': '10.14' }
-    am = FPUT.make_artifact_manager(self.DEBUG, RECIPES.FOODS, self.MACOS_BT, mutations)
+    am = FPUT.make_artifact_manager(self.DEBUG, RECIPES.FOODS, mutations)
     self.assertEqual( 'water-1.0.0', am.find_by_package_descriptor(PD('water', '1.0.0'), self.MACOS_BT, False).package_descriptor.full_name )
     self.assertEqual( 'water-1.0.0-1', am.find_by_package_descriptor(PD('water', '1.0.0-1'), self.MACOS_BT, False).package_descriptor.full_name )
     self.assertEqual( 'water-1.0.0-2', am.find_by_package_descriptor(PD('water', '1.0.0-2'), self.MACOS_BT, False).package_descriptor.full_name )
@@ -90,7 +90,7 @@ class test_artifact_manager_local(unit_test):
 
   def test_list_latest_versions_linux(self):
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
-    am = FPUT.make_artifact_manager(self.DEBUG, RECIPES.FOODS, self.LINUX_BT, mutations)
+    am = FPUT.make_artifact_manager(self.DEBUG, RECIPES.FOODS, mutations)
     expected = [
       AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'),
       AD.parse('arsenic;1.2.9;1;0;linux;release;x86_64;ubuntu;18'),
@@ -111,7 +111,7 @@ class test_artifact_manager_local(unit_test):
 
   def test_list_latest_versions_macos(self):
     mutations = { 'system': 'macos', 'distro': '', 'distro_version': '10.14' }
-    am = FPUT.make_artifact_manager(self.DEBUG, RECIPES.FOODS, self.MACOS_BT, mutations)
+    am = FPUT.make_artifact_manager(self.DEBUG, RECIPES.FOODS, mutations)
     expected = [
       AD.parse('apple;1.2.3;1;0;macos;release;x86_64;;10.14'),
       AD.parse('arsenic;1.2.9;1;0;macos;release;x86_64;;10.14'),
@@ -132,7 +132,7 @@ class test_artifact_manager_local(unit_test):
 
   def test_remove_artifact(self):
     mutations = { 'system': 'macos', 'distro': '', 'distro_version': '10.14' }
-    am = FPUT.make_artifact_manager(self.DEBUG, RECIPES.FOODS, self.MACOS_BT, mutations)
+    am = FPUT.make_artifact_manager(self.DEBUG, RECIPES.FOODS, mutations)
     expected = [
       AD.parse('apple;1.2.3;1;0;macos;release;x86_64;;10.14'),
       AD.parse('arsenic;1.2.9;1;0;macos;release;x86_64;;10.14'),

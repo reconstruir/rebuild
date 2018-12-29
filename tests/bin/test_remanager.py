@@ -14,8 +14,6 @@ from rebuild.base import build_target as BT
 
 class test_remanager(script_unit_test):
 
-  TEST_BUILD_TARGET = BT.parse_path('linux-ubuntu-18/x86_64/release')
-
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/remanager'
   __script__ = __file__, '../../bin/remanager.py'
 
@@ -250,7 +248,6 @@ packages: orange_juice pear_juice
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
     return FPUT.make_artifact_manager(debug = clazz.DEBUG,
                                       recipes = RECIPES.FOODS,
-                                      build_target = clazz.TEST_BUILD_TARGET,
                                       mutations = mutations)
 
   _setup = namedtuple('_setup', 'tmp_dir, artifact_manager')
