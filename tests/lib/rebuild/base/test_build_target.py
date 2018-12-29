@@ -31,7 +31,21 @@ class test_build_target(unit_test):
     self.assertTrue( F('macos-10.10/x86_64/debug', '$system is MACOS or ($system is LINUX and $distro is not RASPBIAN)') )
     self.assertTrue( F('linux-ubuntu-18/x86_64/release', '$system is MACOS or ($system is LINUX and $distro is not RASPBIAN)') )
     self.assertTrue( F('linux-ubuntu-18/x86_64/debug', '$system is MACOS or ($system is LINUX and $distro is not RASPBIAN)') )
-    
+
+#  def test_wildcard(self):
+#    self.assertEqual( 'macos-10.any/x86_64/any', BT('macos', '', '10.any', 'x86_64', 'any').build_path )
+
+  def test_clone(self):
+    p = BT.parse_path
+    self.assertEqual( 'macos-10.10/x86_64/release',
+                      p('macos-10.10/x86_64/release').clone().build_path )
+    self.assertEqual( 'macos-10.10/x86_64/debug',
+                      p('macos-10.10/x86_64/release').clone({ 'level': 'debug' }).build_path )
+    self.assertEqual( 'macos-10.10/i386/release',
+                      p('macos-10.10/x86_64/release').clone({ 'arch': 'i386' }).build_path )
+    self.assertEqual( 'macos-10.10/i386/debug',
+                      p('macos-10.10/x86_64/release').clone({ 'level': 'debug', 'arch': 'i386' }).build_path )
+
   def _parse_exp(self, bt_path, exp):
     return BT.parse_path(bt_path).parse_expression(exp)
 
