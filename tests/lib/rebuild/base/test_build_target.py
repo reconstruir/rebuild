@@ -32,8 +32,8 @@ class test_build_target(unit_test):
     self.assertTrue( F('linux-ubuntu-18/x86_64/release', '$system is MACOS or ($system is LINUX and $distro is not RASPBIAN)') )
     self.assertTrue( F('linux-ubuntu-18/x86_64/debug', '$system is MACOS or ($system is LINUX and $distro is not RASPBIAN)') )
 
-#  def test_wildcard(self):
-#    self.assertEqual( 'macos-10.any/x86_64/any', BT('macos', '', '10.any', 'x86_64', 'any').build_path )
+  def test_wildcard(self):
+    self.assertEqual( 'macos-10.any/x86_64/any', BT('macos', '', '10.any', 'x86_64', 'any').build_path )
 
   def test_clone(self):
     p = BT.parse_path
