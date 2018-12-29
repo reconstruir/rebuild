@@ -69,6 +69,7 @@ class builder_script(object):
       'REBUILD_STAGE_PREFIX_DIR':  self.staged_files_dir,
       'REBUILD_STAGE_PYTHON_LIB_DIR':  self.python_lib_dir,
       'REBUILD_STAGE_LIB_DIR':  self.staged_files_lib_dir,
+      'REBUILD_STAGE_BIN_DIR':  self.staged_files_bin_dir,
       'REBUILD_TEMP_DIR': self.temp_dir,
       'REBUILD_TEST_DIR': self.test_dir,
     }
