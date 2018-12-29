@@ -58,7 +58,7 @@ class storage_pcloud(storage_base):
       return string_list()
     try:
       self.blurb('pcloud: using cached available files db: %s' % (path.relpath(self._cached_available_filename)))
-      return string_list.from_json(self._cached_available_filename)
+      return string_list.from_json(file_util.read(self._cached_available_filename))
     except Exception as ex:
       self.blurb('pcloud: ignoring corrupt cached available files db: %s' % (self._cached_available_filename))
       return string_list()

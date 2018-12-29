@@ -44,7 +44,9 @@ class storage_artifactory(storage_base):
       self._available_files = self._load_available_remote()
   
   def _load_available_remote(self):
-    return string_list([ entry.filename for entry in self.list_all_files() ])
+    files = string_list([ entry.filename for entry in self.list_all_files() ])
+    file_util.save(self._cached_available_filename, content = files.to_json())
+    return files
 
   def _load_available_local(self):
     if not path.isfile(self._cached_available_filename):
@@ -52,7 +54,7 @@ class storage_artifactory(storage_base):
       return string_list()
     try:
       self.blurb('artifactory: using cached available files db: %s' % (path.relpath(self._cached_available_filename)))
-      return string_list.from_json(self._cached_available_filename)
+      return string_list.from_json(file_util.read(self._cached_available_filename))
     except Exception as ex:
       self.blurb('artifactory: ignoring corrupt cached available files db: %s' % (self._cached_available_filename))
       return string_list()
