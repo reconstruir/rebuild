@@ -2,7 +2,7 @@
 
 from bes.system.compat import with_metaclass
 from bes.system import host
-from bes.common import check, dict_util, variable, string_util
+from bes.common import cached_property, check, dict_util, variable, string_util, tuple_util
 
 from .build_arch import build_arch
 from .build_level import build_level
@@ -10,7 +10,7 @@ from .build_system import build_system
 
 from collections import namedtuple
 
-class build_target(namedtuple('build_target', 'system, distro, distro_version, arch, level, build_path')):
+class build_target(namedtuple('build_target', 'system, distro, distro_version, arch, level')):
 
   def __new__(clazz, system, distro, distro_version, arch, level):
     check.check_string(system)
@@ -22,9 +22,12 @@ class build_target(namedtuple('build_target', 'system, distro, distro_version, a
     system = build_system.parse_system(system)
     arch = build_arch.determine_arch(arch, system, distro)
     level = build_level.parse_level(level)
-    build_path = clazz._make_build_path(system, distro, distro_version, arch, level)
-    return clazz.__bases__[0].__new__(clazz, system, distro, distro_version, arch, level, build_path)
+    return clazz.__bases__[0].__new__(clazz, system, distro, distro_version, arch, level)
 
+  @cached_property
+  def build_path(self):
+    return self._make_build_path(self.system, self.distro, self.distro_version, self.arch, self.level)    
+  
   @classmethod
   def _arch_to_string(clazz, arch):
     return build_arch.join(arch, delimiter = '-')
@@ -119,5 +122,8 @@ class build_target(namedtuple('build_target', 'system, distro, distro_version, a
   @classmethod
   def make_host_build_target(clazz, level = build_level.RELEASE):
     return clazz(host.SYSTEM, host.DISTRO, host.VERSION, ( host.ARCH, ), level)
+  
+  def clone(self, mutations = None):
+    return tuple_util.clone(self, mutations = mutations)
   
 check.register_class(build_target)

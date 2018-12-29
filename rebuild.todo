@@ -1087,7 +1087,6 @@ add sql sorting magic for uptream versions using hooks to build_version.compare_
 
 when not ingesting still download the url and check the checksum so next time its ready to go
 and maybe even make the build work by using the downloaded tarball in the http cache as a source provider
-fix build_target.py to use a cached property for build_path instead of putting it a construction time
 
 step results should have the notion of error, warning, success and skip
 retire tarball_finder
@@ -1114,3 +1113,5 @@ s/zlib 1.2.8/zlib 1.2.11/ everywhere
 s/pkg_config 0.29.1/s/pkg_config 0.29.2/ (or maybe even older versions)
 s/xz/libxz/ s/5.2.2/5.2.4
 s/gnu_m4 >= 1.4.17/gnu_m4 >= 1.4.18/
+
+storage_artifactory does not save the cached available.json file
