@@ -2,7 +2,7 @@
 
 from os import path
 from collections import namedtuple
-from bes.common import check, node
+from bes.common import check, node, tuple_util
 from bes.text import white_space
 from bes.fs import file_util, temp_file
 
@@ -156,6 +156,8 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
                                   requirements = self.requirements)
     return package.create_package(filename, pkg_desc, self.metadata.build_target, stage_dir)
 
-  def clone_with_mutations(self, metadata_mutations):
-    metadata = self.metadata.clone_with_mutations(metadata_mutations)
-    return self.__class__(metadata, self.files, self.env_files, self.requirements, self.properties, self.objects)
+#class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, env_files, requirements, properties, objects')):
+
+  
+  def clone(self, metadata_mutations):
+    return tuple_util.clone(self, { 'metadata': self.metadata.clone(metadata_mutations) })

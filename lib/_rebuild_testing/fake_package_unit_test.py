@@ -43,7 +43,7 @@ class fake_package_unit_test(object):
     result = []
     if metadata_mutations:
       for r in recipes:
-        result.append(r.clone_with_mutations(metadata_mutations))
+        result.append(r.clone(metadata_mutations))
     else:
       result = recipes
     return result

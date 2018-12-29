@@ -204,7 +204,8 @@ order by name asc, version asc, revision asc, epoch asc'''
     files = package_manifest(self._files_db.package_manifest(files_table_name),
                              self._files_db.package_manifest(self._make_env_files_table_name(files_table_name)),
                              row.contents_checksum)
-    md =  package_metadata(row.filename,
+    md =  package_metadata(package_metadata.FORMAT_VERSION,
+                           row.filename,
                            row.name,
                            row.version,
                            row.revision,

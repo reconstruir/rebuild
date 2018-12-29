@@ -42,7 +42,7 @@ class artifact_manager_tester(object):
       raise KeyError('recipe not found: %s' % (key))
     recipe = self._recipes[key]
     if mutations:
-      recipe = recipe.clone_with_mutations(mutations)
+      recipe = recipe.clone(mutations)
     tmp_file = temp_file.make_temp_file()
     return recipe.create_package(tmp_file, debug = self._debug)
 

@@ -51,7 +51,7 @@ class test_package_metadata_list(unit_test):
       
   def _make_md(self, name, version, system, level):
     artifact = '%s-%s.tar.gz' % (name, version)
-    return PM(artifact, name, version, 0, 0, system, level, 'x86_64', '', '', self.TEST_REQUIREMENTS, self.TEST_PROPERTIES, self.TEST_FILES)
+    return PM(2, artifact, name, version, 0, 0, system, level, 'x86_64', '', '', self.TEST_REQUIREMENTS, self.TEST_PROPERTIES, self.TEST_FILES)
     
 if __name__ == '__main__':
   unit_test.main()

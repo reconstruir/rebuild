@@ -2,16 +2,19 @@
 
 import json
 from collections import namedtuple
-from bes.common import cached_property, check, json_util, string_util
+from bes.common import cached_property, check, json_util, string_util, tuple_util
 from rebuild.base import artifact_descriptor,  build_arch, build_target, build_version, package_descriptor, requirement_list
 
 from .package_manifest import package_manifest
 
 class package_metadata(namedtuple('package_metadata', 'format_version, filename, name, version, revision, epoch, system, level, arch, distro, distro_version, requirements, properties, manifest')):
 
-  def __new__(clazz, filename, name, version, revision, epoch, system,
+  FORMAT_VERSION = 2
+  
+  def __new__(clazz, format_version, filename, name, version, revision, epoch, system,
               level, arch, distro, distro_version, requirements,
               properties, manifest):
+    assert format_version == clazz.FORMAT_VERSION
     check.check_string(filename)
     check.check_string(name)
     check.check_string(version)
@@ -32,7 +35,7 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
     properties = properties or {}
     check.check_dict(properties)
     check.check_package_manifest(manifest)
-    return clazz.__bases__[0].__new__(clazz, 2, filename, name, version,
+    return clazz.__bases__[0].__new__(clazz, format_version, filename, name, version,
                                       revision, epoch, system, level, arch,
                                       distro, distro_version, requirements,
                                       properties, manifest)
@@ -72,7 +75,8 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
 
   @classmethod
   def _parse_dict_v2(clazz, o):
-    return clazz(o['filename'],
+    return clazz(clazz.FORMAT_VERSION,
+                 o['filename'],
                  o['name'],
                  o['version'],
                  o['revision'],
@@ -105,12 +109,11 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
       'manifest': self.manifest.to_simple_dict(),
     }
 
+  def clone(self, mutations = None):
+    return tuple_util.clone(self, mutations = mutations)
+  
   def mutate_filename(self, filename):
-    l = list(self)
-    l[1] = filename
-    # remove format version which __init__() does not take
-    l.pop(0)
-    return self.__class__(*l)
+    return self.clone({ 'filename': filename })
 
   @cached_property
   def full_name(self):

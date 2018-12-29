@@ -217,7 +217,8 @@ unset REBUILD_STUFF_DIR
     pkg_files = package_manifest(stage_package_file_list, stage_env_package_file_list)
     
     # filename is empty cause it only gets filled once metadata ends up in a db
-    metadata = package_metadata('',
+    metadata = package_metadata(package_metadata.FORMAT_VERSION,
+                                '',
                                 pkg_desc.name,
                                 pkg_desc.version.upstream_version,
                                 pkg_desc.version.revision,

@@ -12,9 +12,9 @@ class test_artifact_descriptor(unit_test):
     self.assertEqual( 'foo-1.2.3-1', AD('foo', '1.2.3', 1, 0, 'linux', 'debug', ( 'x86_64', ), '', '').full_name )
     self.assertEqual( 'foo-1:1.2.3-1', AD('foo', '1.2.3', 1, 1, 'linux', 'debug', ( 'x86_64', ), '', '').full_name )
 
-  def test_clone_with_mutation(self):
+  def test_clone(self):
     a = AD('foo', '1.2.3', 0, 0, 'linux', 'debug', 'x86_64', '', '')
-    b = a.clone_with_mutation('name', 'bar')
+    b = a.clone({ 'name': 'bar' })
 
     self.assertEqual( 'foo', a.name )
     self.assertEqual( 'bar', b.name )

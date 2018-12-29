@@ -1,7 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from collections import namedtuple
-from bes.common import cached_property, check, json_util, string_util
+from bes.common import cached_property, check, json_util, string_util, tuple_util
 from bes.compat import cmp
 
 from .build_arch import build_arch
@@ -76,19 +76,9 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
   def make_full_name_str(clazz, name, version):
     return '%s%s%s' % (name, '-', str(version))
 
-  def clone_with_mutation(self, field, value):
-    i = self._fields.index(field)
-    l = list(self)
-    l[i] = value
-    return self.__class__(*l)
-
-  def clone_with_mutations(self, mutations):
-    l = list(self)
-    for field, value in mutations.items():
-      i = self._fields.index(field)
-      l[i] = value
-    return self.__class__(*l)
-
+  def clone(self, mutations = None):
+    return tuple_util.clone(self, mutations = mutations)
+  
   @classmethod
   def parse(clazz, s):
     parts = s.split(';')
