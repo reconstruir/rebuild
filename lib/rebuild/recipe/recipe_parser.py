@@ -106,7 +106,7 @@ class recipe_parser(object):
       else:
         self._error('unknown recipe section: \"%s\"' % (text), child)
     desc = package_descriptor(name, version, requirements = requirements, properties = properties)
-    return recipe(2, self.filename, enabled, properties, requirements,
+    return recipe(recipe.FORMAT_VERSION, self.filename, enabled, properties, requirements,
                   desc, instructions, steps, python_code, variables)
 
   def _parse_package_header(self, node):

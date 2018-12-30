@@ -11,18 +11,17 @@ from .recipe_error import recipe_error
 class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties, requirements, descriptor, instructions, steps, python_code, variables')):
 
   CHECK_UNKNOWN_PROPERTIES = True
+  FORMAT_VERSION = 2
   
   def __new__(clazz, format_version, filename, enabled, properties, requirements,
               descriptor, instructions, steps, python_code, variables):
     check.check_int(format_version)
     check.check_recipe_enabled(enabled)
-    if format_version != 2:
+    if format_version != clazz.FORMAT_VERSION:
       raise recipe_error('Invalid recipe format_version %d' % (format_version))
     check.check_string(filename)
-    if python_code:
-      check.check_string(python_code)
-    if variables:
-      check.check_masked_value_list(variables)
+    check.check_string(python_code, allow_none = True)
+    check.check_masked_value_list(variables, allow_none = True)
     return clazz.__bases__[0].__new__(clazz, format_version, filename, enabled, properties,
                                       requirements, descriptor, instructions, steps, python_code, variables)
 
