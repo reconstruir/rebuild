@@ -3,10 +3,11 @@
 import re
 from collections import namedtuple
 from bes.common import check, node
-from bes.text import text_line_parser, white_space
+from bes.text import white_space
 from bes.key_value import key_value_list
 
 from .recipe_error import recipe_error
+from .recipe_util import recipe_util
 
 class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties, requirements, descriptor, instructions, steps, python_code, variables')):
 
@@ -36,7 +37,7 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
     'A convenient way to make a recipe string is to build a graph first.'
     root = node('package %s %s %s' % (self.descriptor.name, self.descriptor.version.upstream_version, self.descriptor.version.revision))
     if self.python_code:
-      root.children.append(self._python_code_to_node(self.python_code))
+      root.children.append(recipe_util.python_code_to_node(self.python_code))
       root.add_child('')
     if self.enabled != '':
       root.add_child('enabled=%s' % (self.enabled.expression))
@@ -120,16 +121,6 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
     result = node(key)
     for mv in mvl:
       result.add_child(mv.to_string())
-    return result
-
-  @classmethod
-  def _python_code_to_node(clazz, python_code):
-    result = node('python_code')
-    parser = text_line_parser(python_code)
-    first_line_text = '> ' + parser[0].text
-    parser.prepend('  ' * 3)
-    parser.replace_line_text(1, first_line_text)
-    result.add_child(str(parser))
     return result
 
   def resolve_variables(self, system):
