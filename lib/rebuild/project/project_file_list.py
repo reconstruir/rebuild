@@ -3,23 +3,23 @@
 from bes.compat import StringIO
 from bes.common import check, type_checked_list
 
-from .recipe import recipe
+from .project_file import project_file
 
-class recipe_list(type_checked_list):
+class project_file_list(type_checked_list):
 
-  __value_type__ = recipe
+  __value_type__ = project_file
   
   def __init__(self, values = None):
-    super(recipe_list, self).__init__(values = values)
+    super(project_file_list, self).__init__(values = values)
 
   def to_string(self, delimiter = '\n'):
     buf = StringIO()
     first = True
-    for recipe in iter(self):
+    for project_file in iter(self):
       if not first:
         buf.write(delimiter)
       first = False
-      buf.write(str(recipe))
+      buf.write(str(project_file))
     return buf.getvalue()
 
   def __hash__(self):
@@ -28,4 +28,4 @@ class recipe_list(type_checked_list):
   def __str__(self):
     return self.to_string()
 
-check.register_class(recipe_list, include_seq = False)
+check.register_class(project_file_list, include_seq = False)

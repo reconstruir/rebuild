@@ -4,7 +4,6 @@ from collections import namedtuple
 
 import os.path as path
 from bes.common import check, string_util
-from bes.compat import StringIO
 from bes.key_value import key_value, key_value_parser
 from bes.system import log
 from bes.text import string_list, tree_text_parser, text_fit
@@ -81,7 +80,7 @@ class recipe_parser(object):
     # Need to deal with any inline python code first so its available for the rest of the recipe
     python_code_node = node.find_child(lambda child: child.data.text == 'python_code')
     if python_code_node:
-      python_code = self._parse_python_code(python_code_node)
+      python_code = recipe_parser_util.parse_python_code(python_code_node, self.filename, self._error)
 
     for child in node.children:
       text = child.data.text
@@ -90,7 +89,7 @@ class recipe_parser(object):
       elif text.startswith('requirements'):
         requirements.extend(self._parse_requirements(child))
       elif text.startswith('variables'):
-        variables.extend(self._parse_variables(child))
+        variables.extend(recipe_parser_util.parse_variables(child, self.filename))
       elif text.startswith('steps'):
         steps = self._parse_steps(child)
       elif text.startswith('enabled'):
@@ -154,11 +153,6 @@ class recipe_parser(object):
       next_reqs = requirement_list.parse(req_text)
       reqs.extend(next_reqs)
     return requirement_list(reqs)
-
-  def _parse_variables(self, node):
-    origin = value_origin(self.filename, node.data.line_number, node.data.text)
-    values = value_key_values.xnew_parse(origin, node)
-    return masked_value_list(values)
 
   # FIXME_DEC1
   def _parse_export_compilation_flags_requirements(self, node):
@@ -236,22 +230,6 @@ class recipe_parser(object):
         values.append(value)
     return recipe_value(key, values)
 
-  def _parse_python_code(self, node):
-    if node.data.text.strip() != 'python_code':
-      self._error('python_code should be a string literal starting at line %d' % (node.data.line_number + 1), node)
-    if len(node.children) != 1:
-      self._error('python_code not found', node)
-    code_node = node.children[0]
-    # fill the top of the code with empty lines so that the python error line numbers
-    # will match the line numbers in the recipe when compilation errors happen
-    original_python_code = code_node.data.text
-    filler_lines = '\n' * node.data.line_number
-    filled_source_code = filler_lines + original_python_code
-    c = compile(filled_source_code, self.filename, 'exec')
-    exec_locals = {}
-    exec(c, globals(), exec_locals)
-    return original_python_code
-  
   @classmethod
   def _caca_parse_mask_and_value(clazz, origin, text, node, class_name):
     check.check_value_origin(origin)

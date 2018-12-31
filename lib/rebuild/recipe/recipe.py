@@ -3,7 +3,6 @@
 import re
 from collections import namedtuple
 from bes.common import check, node
-from bes.text import white_space
 from bes.key_value import key_value_list
 
 from .recipe_error import recipe_error
@@ -30,8 +29,7 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
     return self.to_string()
 
   def to_string(self, depth = 0, indent = 2):
-    s = self._to_node().to_string(depth = depth, indent = indent).strip()
-    return white_space.shorten_multi_line_spaces(s)
+    return recipe_util.root_node_to_string(self._to_node(), depth = depth, indent = indent)
   
   def _to_node(self):
     'A convenient way to make a recipe string is to build a graph first.'
@@ -43,7 +41,7 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
       root.add_child('enabled=%s' % (self.enabled.expression))
       root.add_child('')
     if self.variables:
-      root.children.append(self._variables_to_node(self.variables))
+      root.children.append(recipe_util.variables_to_node(self.variables))
       root.add_child('')
     if self.properties:
       root.children.append(self._properties_to_node(self.properties))
@@ -68,13 +66,6 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
       clazz._property_to_node(properties_node, key, properties)
     return properties_node
   
-  @classmethod
-  def _variables_to_node(clazz, variables):
-    variables_node = node('variables')
-    for v in variables:
-      variables_node.add_child(str(v))
-    return variables_node
-
   @classmethod
   def _property_to_node(clazz, properties_node, key, properties):
     assert isinstance(properties_node, node)
