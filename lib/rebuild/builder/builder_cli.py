@@ -7,6 +7,7 @@ import argparse, os, os.path as path
 
 from rebuild.base import build_arch, build_blurb, build_system, build_target, build_level
 from rebuild.base import build_target_cli
+from rebuild.project.project_file_parser import project_file_parser
 from bes.fs import file_util
 
 from bes.python import code
@@ -82,8 +83,8 @@ class builder_cli(build_target_cli):
 
     target_packages = args.target_packages[0]
 
-    available_packages = self.load_project_file(args.project_file)
-
+    available_packages = self._load_project_file(args.project_file, bt)
+    
     if args.filter:
       if path.isfile(args.filter[0]):
         target_packages_filter = file_util.read(args.filter[0]).split('\n')
@@ -186,7 +187,14 @@ class builder_cli(build_target_cli):
     raise SystemExit(builder_cli().main())
 
   @classmethod
-  def load_project_file(clazz, filename):
+  def _load_project_file(clazz, filename, build_target):
+    if project_file_parser.is_project_file(filename):
+      return clazz._load_project_file_v2(filename, build_target)
+    else:
+      return clazz._load_project_file_v1(filename)
+  
+  @classmethod
+  def _load_project_file_v1(clazz, filename):
     if not path.exists(filename):
       raise RuntimeError('rebuild project file not found: %s' % (filename))
     tmp_globals = {}
@@ -198,3 +206,13 @@ class builder_cli(build_target_cli):
     if not callable(func):
       raise RuntimeError('not callable: %s' % (func))
     return func()
+
+  @classmethod
+  def _load_project_file_v2(clazz, filename, build_target):
+    text = file_util.read(filename)
+    parser = project_file_parser(filename, text)
+    projects = parser.parse()
+    assert len(projects) == 1
+    project = projects[0]
+    recipes = project.resolve_recipes(build_target.system)
+    return recipes
