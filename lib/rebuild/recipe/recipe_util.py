@@ -17,19 +17,23 @@ class recipe_util(object):
 
   @classmethod
   def variables_to_node(clazz, variables):
-    variables_node = node('variables')
-    for v in variables:
-      variables_node.add_child(str(v))
-    return variables_node
+    return clazz.masked_value_list_to_node('variables', variables)
+
+  @classmethod
+  def masked_value_list_to_node(clazz, name, mvl):
+    check.check_masked_value_list(mvl)
+    result = node(name)
+    for v in mvl:
+      result.add_child(str(v))
+    return result
   
   @classmethod
   def description_to_node(clazz, description):
+    check.check_string(description)
     result = node('description')
-    parser = text_line_parser(description)
-#    first_line_text = '> ' + parser[0].text
-    parser.prepend('  ' * 3)
-#    parser.replace_line_text(1, first_line_text)
-    result.add_child(str(parser))
+    lines = text_line_parser.parse_lines(description, strip_comments = False, strip_text = False, remove_empties = False)
+    for line in lines:
+      result.add_child(line)
     return result
 
   @classmethod

@@ -9,16 +9,9 @@ from rebuild.recipe import recipe_error as ERR
 from rebuild.base import build_target
 from bes.key_value import key_value as KV, key_value_list as KVL
 from bes.fs import file_util, temp_file
-#from test_steps import *
-
-#from _rebuild_testing.recipe_parser_testing import recipe_parser_testing
 
 class test_project_file_parser(unit_test):
 
-  __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/recipe_parser'
-
-#  TEST_ENV = testing_recipe_load_env()
-  
   @classmethod
   def _parse(self, text, starting_line_number = 0):
     return P(path.basename(__file__), text, starting_line_number = starting_line_number).parse()
@@ -143,6 +136,42 @@ project foo
       'macfoo',
       'python/packages',
     ], p[0].resolve_imports('macos') )
+    
+  def test_python_code(self):
+    text = '''!rebuild.project!
+project foo
+  python_code
+    > print('hello from python_code inside a project_file')
+      print('hello again')
+'''
+    p = self._parse(text)
+    self.assertEqual( 1, len(p) )
+    expected = '''\
+print('hello from python_code inside a project_file')
+print('hello again')'''
+    self.assertMultiLineEqual( expected, p[0].python_code)
+    
+  def test_is_project_file(self):
+    text = '''!rebuild.project!
+project foo
+  recipes
+    foo/foo.recipe
+'''
+    tmp = temp_file.make_temp_file(content = text)
+    self.assertTrue( P.is_project_file(tmp) )
+    
+  def test_is_project_file_invalid(self):
+    text = '''def rebuild_packages():
+  return [
+    'foo/foo.recipe',
+  ]
+
+project foo
+  recipes
+    foo/foo.recipe
+'''
+    tmp = temp_file.make_temp_file(content = text)
+    self.assertFalse( P.is_project_file(tmp) )
     
   def _filename_for_parser(self):
     'Return a fake filename for parser.  Some values need it to find files relatively to filename.'

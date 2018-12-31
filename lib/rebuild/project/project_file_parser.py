@@ -10,14 +10,12 @@ from bes.text import string_list, tree_text_parser, text_fit
 
 from rebuild.base import build_system
 from rebuild.recipe import recipe_error, recipe_parser_util
-from rebuild.recipe.value import masked_value, masked_value_list, value_origin, value_string, value_string_list
+from rebuild.recipe.value import masked_value, masked_value_list, value_origin, value_string_list
 
 from .project_file import project_file
 from .project_file_list import project_file_list
 
 class project_file_parser(object):
-
-  MAGIC = '!rebuild.project!'
 
   def __init__(self, filename, text, starting_line_number = 0):
     log.add_logging(self, 'project_file_parser')
@@ -33,9 +31,9 @@ class project_file_parser(object):
     raise recipe_error(msg, self.filename, line_number)
     
   def parse(self):
-    if not self.text.startswith(self.MAGIC):
+    if not self.text.startswith(project_file.MAGIC):
       first_line = self.text.split('\n')[0]
-      self._error('text should start with recipe magic \"%s\" instead of \"%s\"' % (self.MAGIC, first_line))
+      self._error('text should start with recipe magic \"%s\" instead of \"%s\"' % (project_file.MAGIC, first_line))
     try:
       tree = tree_text_parser.parse(self.text, strip_comments = True)
     except Exception as ex:
@@ -46,7 +44,7 @@ class project_file_parser(object):
     recipes = []
     if not root.children:
       self._error('invalid recipe', root)
-    if root.children[0].data.text != self.MAGIC:
+    if root.children[0].data.text != project_file.MAGIC:
       self._error('invalid magic', root)
     for pkg_node in root.children[1:]:
       recipe = self._parse_project(pkg_node)
@@ -130,3 +128,14 @@ class project_file_parser(object):
   def _node_get_string_list(clazz, node):
     text = node.get_text(node.CHILDREN_FLAT)
     return string_util.split_by_white_space(text, strip = True)
+
+  @classmethod
+  def is_project_file(clazz, filename):
+    'Return True if filename is a valid rebuild project file.'
+    with open(filename, 'rb') as fin:
+      try:
+        return fin.read(len(project_file.MAGIC)) == project_file.MAGIC
+      except IOError:
+        return False
+      except UnicodeDecodeError as ex:
+        return False

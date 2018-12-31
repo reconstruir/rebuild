@@ -10,7 +10,8 @@ from rebuild.recipe.recipe_util import recipe_util
 
 class project_file(namedtuple('project_file', 'format_version, filename, name, description, variables, imports, recipes, python_code')):
 
-  FORMAT_VERSION = 1
+  FORMAT_VERSION = 2
+  MAGIC = '!rebuild.project!'
   
   def __new__(clazz, format_version, filename, name, description, variables, imports, recipes, python_code):
     check.check_int(format_version)
@@ -30,7 +31,8 @@ class project_file(namedtuple('project_file', 'format_version, filename, name, d
     return self.to_string()
 
   def to_string(self, depth = 0, indent = 2):
-    return recipe_util.root_node_to_string(self._to_node(), depth = depth, indent = indent)
+    sproject = recipe_util.root_node_to_string(self._to_node(), depth = depth, indent = indent)
+    return '{magic}\n{sproject}\n'.format(magic = self.MAGIC, sproject = sproject)
   
   def _to_node(self):
     'A convenient way to make a project_file string is to build a graph first.'
@@ -41,16 +43,15 @@ class project_file(namedtuple('project_file', 'format_version, filename, name, d
     if self.variables:
       root.children.append(recipe_util.variables_to_node(self.variables))
       root.add_child('')
+    if self.imports:
+      root.children.append(recipe_util.masked_value_list_to_node('imports', self.imports))
+      root.add_child('')
+    if self.recipes:
+      root.children.append(recipe_util.masked_value_list_to_node('recipes', self.recipes))
+      root.add_child('')
     if self.python_code:
       root.children.append(recipe_util.python_code_to_node(self.python_code))
       root.add_child('')
-#    if self.properties:
-#      root.children.append(self._properties_to_node(self.properties))
-#      root.add_child('')
-#    if self.requirements:
-#      root.children.append(self._requirements_to_node('requirements', self.requirements))
-#      root.add_child('')
-#    root.children.append(self._steps_to_node(self.steps))
     return root
 
   def resolve_variables(self, system):
