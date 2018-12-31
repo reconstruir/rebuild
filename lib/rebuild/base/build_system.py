@@ -79,7 +79,8 @@ class build_system(object):
   def mask_is_valid(clazz, mask):
     if not string_util.is_string(mask):
       return False
-    parts = clazz.mask_split(mask)
+    #parts = clazz.mask_split(mask)
+    parts = clazz._resolve_mask_to_list(mask)
     for part in parts:
       if not clazz.system_is_valid(part):
         return False
