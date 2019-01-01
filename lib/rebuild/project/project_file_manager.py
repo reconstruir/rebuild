@@ -8,6 +8,8 @@ from bes.system import log, os_env_var
 from bes.fs import file_find, file_path, file_util
 from bes.dependency import dependency_resolver
 
+from rebuild.base import build_blurb
+
 from .project_file import project_file
 from .project_file_parser import project_file_parser
 
@@ -23,6 +25,7 @@ class project_file_manager(object):
 
   def __init__(self):
     log.add_logging(self, 'project_file_manager')
+    build_blurb.add_blurb(self, 'rebuild')
     self._filename_map = {}
     self._projects = {}
 
@@ -41,7 +44,8 @@ class project_file_manager(object):
         raise RuntimeError('Duplicate project \"%s\" found in: %s' % (name, filename))
       self._projects[name] = _project_entry(name, filename, pf)
     self._filename_map[filename] = project_files
-
+    self.blurb('loaded project file %s' % (path.relpath(filename)))
+    
   def load_project_files_from_env(self):
     from_env = self.find_env_project_files()
     for f in from_env:
