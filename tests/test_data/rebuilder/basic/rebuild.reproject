@@ -1,0 +1,8 @@
+!rebuild.project!
+project rebuild
+  recipes
+    c_libs/libpotato/rebuild.recipe
+    c_libs/libstarch/rebuild.recipe
+    tools/tbar/build_100.recipe
+    tools/tfoo/rebuild.recipe
+    tools/tbaz/rebuild.recipe

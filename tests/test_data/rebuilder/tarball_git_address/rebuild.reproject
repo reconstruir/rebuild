@@ -1,0 +1,4 @@
+!rebuild.project!
+project rebuild
+  recipes
+    libsomething/rebuild.recipe

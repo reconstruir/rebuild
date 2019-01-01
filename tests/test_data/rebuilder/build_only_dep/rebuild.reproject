@@ -1,0 +1,5 @@
+!rebuild.project!
+project rebuild
+  recipes
+    libpapaya/rebuild.recipe
+    codegen/rebuild.recipe

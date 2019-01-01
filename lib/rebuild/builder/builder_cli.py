@@ -33,7 +33,7 @@ class builder_cli(build_target_cli):
     self.parser = argparse.ArgumentParser(description = 'Build packages.')
     self.build_target_add_arguments(self.parser)
     self.parser.add_argument('-C', '--change-dir', action = 'store', type = str, default = None)
-    self.parser.add_argument('-f', '--project-file', action = 'store', type = str, default = 'rebuild.project')
+    self.parser.add_argument('-f', '--project-file', action = 'store', type = str, default = 'rebuild.reproject')
     self.parser.add_argument('-n', '--no-checksums', action = 'store_true')
     self.parser.add_argument('--print-step-values', action = 'store_true')
     self.parser.add_argument('--print-sources', action = 'store_true')
@@ -88,18 +88,11 @@ class builder_cli(build_target_cli):
 
     target_packages = args.target_packages[0]
 
-    use_pfm = False
-
-    if use_pfm:
-      pfm = project_file_manager()
-      pfm.load_project_files_from_env()
-      pfm.load_project_file(args.project_file)
-      available_recipes = pfm.available_recipes(args.project_file, bt)
-      #for a in available_recipes:
-      #  print('AVAILABLE_RECIPE: %s' % (a))
-      available_packages = available_recipes
-    else:
-      available_packages = self._load_project_file(args.project_file, bt)
+    pfm = project_file_manager()
+    pfm.load_project_files_from_env()
+    pfm.load_project_file(args.project_file)
+    available_recipes = pfm.available_recipes(args.project_file, bt)
+    available_packages = available_recipes
     
     if args.filter:
       if path.isfile(args.filter[0]):
@@ -205,34 +198,3 @@ class builder_cli(build_target_cli):
   @classmethod
   def run(clazz):
     raise SystemExit(builder_cli().main())
-
-  @classmethod
-  def _load_project_file(clazz, filename, build_target):
-    if project_file.is_project_file(filename):
-      return clazz._load_project_file_v2(filename, build_target)
-    else:
-      return clazz._load_project_file_v1(filename)
-  
-  @classmethod
-  def _load_project_file_v1(clazz, filename):
-    if not path.exists(filename):
-      raise RuntimeError('rebuild project file not found: %s' % (filename))
-    tmp_globals = {}
-    tmp_locals = {}
-    code.execfile(filename, tmp_globals, tmp_locals)
-    if not 'rebuild_packages' in tmp_locals:
-      raise RuntimeError('rebuild_packages not defined: %s' % (filename))
-    func = tmp_locals['rebuild_packages']
-    if not callable(func):
-      raise RuntimeError('not callable: %s' % (func))
-    return func()
-
-  @classmethod
-  def _load_project_file_v2(clazz, filename, build_target):
-    text = file_util.read(filename)
-    parser = project_file_parser(filename, text)
-    projects = parser.parse()
-    assert len(projects) == 1
-    project = projects[0]
-    recipes = project.resolve_recipes(build_target.system)
-    return recipes

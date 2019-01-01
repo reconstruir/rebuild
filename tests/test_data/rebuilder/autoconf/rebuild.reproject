@@ -1,0 +1,7 @@
+!rebuild.project!
+project rebuild
+  recipes
+    arsenic/rebuild.recipe
+    fiber/rebuild.recipe
+    fructose/rebuild.recipe
+    orange/rebuild.recipe
