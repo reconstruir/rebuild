@@ -4,7 +4,7 @@ from os import path
 from collections import namedtuple
 from bes.common import check
 
-from bes.system import os_env_var
+from bes.system import log, os_env_var
 from bes.fs import file_find, file_path, file_util
 from bes.dependency import dependency_resolver
 
@@ -22,10 +22,12 @@ class _project_entry(namedtuple('_project_entry', 'name, filename, project_file'
 class project_file_manager(object):
 
   def __init__(self):
+    log.add_logging(self, 'project_file_manager')
     self._filename_map = {}
     self._projects = {}
 
   def load_project_file(self, filename):
+    self.log_d('loading: %s' % (filename))
     if filename in self._filename_map:
       raise RuntimeError('Already loaded: %s' % (filename))
     if not project_file.is_project_file(filename):
@@ -40,6 +42,12 @@ class project_file_manager(object):
       self._projects[name] = _project_entry(name, filename, pf)
     self._filename_map[filename] = project_files
 
+  def load_project_files_from_env(self):
+    from_env = self.find_env_project_files()
+    for f in from_env:
+      self.log_d('loading from env: %s' % (f))
+      self.load_project_file(f)
+        
   def print_projects(self):
     for name in sorted(self._projects.keys()):
       entry = self._projects[name]
