@@ -45,10 +45,6 @@ class compound_step(step):
     for step in self.steps:
       step.update_args(args)
 
-  def on_tag_changed(self):
-    for step in self.steps:
-      step.tag = self.tag
-
   @classmethod
   def _get_compound_classes(clazz):
     return getattr(clazz, '__steps__', [])

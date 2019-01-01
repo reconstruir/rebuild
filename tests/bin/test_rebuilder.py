@@ -331,6 +331,26 @@ print("hook1 hook2")
     self.assertEqual( [ 'rebuild_stuff/sources/fructose/fructose-3.4.5.tar.gz' ], ingest_test.source_dir_droppings )
     
     server.stop()
+
+  def test_install_files(self):
+    test = self._run_test(self.DEFAULT_CONFIG, self.data_dir(), 'install_files', 'foo')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'foo-1.0.0.tar.gz' ], test.artifacts )
+    self.assertEqual( [
+      'files/bin/foo1.py',
+      'files/bin/foo2.py',
+      'metadata/metadata.json',
+    ], test.artifacts_members['foo-1.0.0.tar.gz'])
+    
+  def test_install_files_dir(self):
+    test = self._run_test(self.DEFAULT_CONFIG, self.data_dir(), 'install_files_dir', 'foo')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'foo-1.0.0.tar.gz' ], test.artifacts )
+    self.assertEqual( [
+      'files/bin/foo1.py',
+      'files/bin/foo2.py',
+      'metadata/metadata.json',
+    ], test.artifacts_members['foo-1.0.0.tar.gz'])
     
   def _run_test(self, config, data_dir, cwd_subdir, *args):
     rt = rebuilder_tester(self._resolve_script(),

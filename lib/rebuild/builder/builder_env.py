@@ -70,8 +70,7 @@ class builder_env(object):
     if source_dir:
       return storage_config.make_local_config(None, source_dir, 'rebuild_stuff')
     if not filename:
-      assert False
-      return storage_config.make_local_config(None, local_storage_cache_dir)
+      return storage_config.make_local_config(None, local_storage_cache_dir, 'rebuild_stuff')
     if not path.exists(filename):
       raise RuntimeError('artifacts config file not found: %s' % (filename))
     return storage_config.from_file(filename)

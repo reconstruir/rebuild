@@ -1,0 +1,15 @@
+!rebuild.recipe!
+
+package foo 1.0.0
+
+  steps
+    step_setup
+      
+    step_post_install
+      install_files
+        all: ${REBUILD_RECIPE_DIR}/files/bin bin
+        
+      tests
+        all: test-foo.sh
+        
+      skip_binary_third_party_prefix: True

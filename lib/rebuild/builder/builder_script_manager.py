@@ -97,3 +97,12 @@ class builder_script_manager(object):
         for key, value in step_values.items():
           if value:
             print('%s: %s: %s: %s' % (package_name, step_name, key, pprint.pformat(value)))
+            
+  def print_sources(self):
+    sources = []
+    for name, script in self.scripts.items():
+      sources.extend(script._script_sources())
+    sources = sorted(sources)
+    for s in sources:
+      if path.isfile(s):
+        print(s)

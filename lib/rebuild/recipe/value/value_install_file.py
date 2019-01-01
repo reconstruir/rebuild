@@ -6,6 +6,7 @@ from collections import namedtuple
 from bes.common import algorithm, check, string_util
 from bes.compat import StringIO
 from bes.dependency import dependency_provider
+from bes.fs import file_find
 
 from .value_base import value_base
 from .value_list_base import value_list_base
@@ -50,8 +51,11 @@ class value_install_file(value_base):
 
   #@abstractmethod
   def sources(self, recipe_env):
-    'Return a list of sources this caca provides or None if no sources.'
-    return [ self.filename ]
+    'Return a list of sources this value provides or None if no sources.'
+    if path.isdir(self.filename):
+      return file_find.find(self.filename, relative = False)
+    else:
+      return [ self.filename ]
 
   #@abstractmethod
   def substitutions_changed(self):

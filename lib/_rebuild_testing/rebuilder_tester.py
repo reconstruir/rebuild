@@ -38,7 +38,7 @@ class rebuilder_tester(object):
     if config.no_network:
       cmd += [ '--no-network' ]
     cmd += [
-      '-v',
+      '--verbose',
       '--root', tmp_dir,
       '--level', self._level,
       '--timestamp', 'timestamp',

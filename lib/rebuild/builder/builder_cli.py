@@ -32,6 +32,7 @@ class builder_cli(build_target_cli):
     self.parser.add_argument('-f', '--project-file', action = 'store', type = str, default = 'rebuild.project')
     self.parser.add_argument('-n', '--no-checksums', action = 'store_true')
     self.parser.add_argument('--print-step-values', action = 'store_true')
+    self.parser.add_argument('--print-sources', action = 'store_true')
     self.parser.add_argument('-v', '--verbose', action = 'store_true', default = False)
     self.parser.add_argument('-w', '--wipe', action = 'store_true')
     self.parser.add_argument('-k', '--keep-going', action = 'store_true')
@@ -147,6 +148,10 @@ class builder_cli(build_target_cli):
     
     if args.print_step_values:
       env.script_manager.print_step_values()
+      return 0
+    
+    if args.print_sources:
+      env.script_manager.print_sources()
       return 0
     
     bldr = builder(env)

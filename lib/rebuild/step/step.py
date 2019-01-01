@@ -32,6 +32,8 @@ class step(with_metaclass(step_register_meta, object)):
   result = step_result
   
   def __init__(self):
+    log.add_logging(self, tag = 'step')
+    build_blurb.add_blurb(self, 'rebuild')
     self._recipe = None
     self._args = {}
     self._values = None
@@ -73,10 +75,6 @@ class step(with_metaclass(step_register_meta, object)):
     'Execute the step.'
     pass
  
-  def on_tag_changed(self):
-    'Called when the tag changes.'
-    pass
-
   @classmethod
   @abstractmethod
   def define_args(clazz):
@@ -96,16 +94,6 @@ class step(with_metaclass(step_register_meta, object)):
     assert recipe != None
     assert self._recipe == None
     self._recipe = recipe
-    
-  @property
-  def tag(self):
-    return self.bes_log_tag__
-
-  @tag.setter
-  def tag(self, tag):
-    log.add_logging(self, tag)
-    build_blurb.add_blurb(self, tag)
-    self.on_tag_changed()
 
   @property
   def args(self):

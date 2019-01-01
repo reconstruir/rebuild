@@ -13,10 +13,6 @@ class test_step(unit_test):
       'Execute the step.'
       return self.result(True)
 
-    def on_tag_changed(self):
-      'Called when the tag changes.'
-      pass
-
     @classmethod
     #@abstractmethod
     def define_args(clazz):

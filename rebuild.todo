@@ -421,9 +421,6 @@ aug 11
 aug 19
 - do a clean ubuntu 16 install to do a kivy build to have the build tell what rpms it needs and have a way to specify these in the build recipes
 
-sep 30
-- get rid of tag changed bullshit in Step
-
 oct 3
 - when a package changes names like python_beautiful_soup to python_beautifulsoup it creates conflicts need to remove the old one
 - add post_install and post_setup hoook unit tests
@@ -1114,3 +1111,11 @@ s/rebuild_sources/rebuild_storage/
 2018-12-30
 recipe: s/descriptor/package_descriptor/ or cleanup the notion that theres a descriptor but separate properties and requirements.  descriptor could be computed out of the others
 recipe: add description
+
+2019-01-01
+empty variable in recipe under variables: causes an exception
+
+
+urgent stuff:
+- sharing recipes
+- versions for projects

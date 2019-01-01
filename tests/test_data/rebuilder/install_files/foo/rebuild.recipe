@@ -1,0 +1,16 @@
+!rebuild.recipe!
+
+package foo 1.0.0
+
+  steps
+    step_setup
+      
+    step_post_install
+      install_files
+        all: ${REBUILD_RECIPE_DIR}/files/bin/foo1.py bin/foo1.py
+        all: ${REBUILD_RECIPE_DIR}/files/bin/foo2.py bin/foo2.py
+        
+      tests
+        all: test-foo.sh
+        
+      skip_binary_third_party_prefix: True

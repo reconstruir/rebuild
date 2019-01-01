@@ -5,7 +5,7 @@ from rebuild.step import step, step_result
 from rebuild.recipe import recipe_parser_util
 
 from bes.common import check, object_util, variable
-from bes.fs import file_util
+from bes.fs import file_find, file_util
 import os, os.path as path, shutil
 
 class step_install_install_files(step):
@@ -29,21 +29,31 @@ class step_install_install_files(step):
       return step_result(True, message)
     
     check.check_value_install_file_seq(install_files)
-    
+
     for install_file in install_files:
       src = variable.substitute(install_file.filename, script.substitutions)
-      if not path.isfile(src):
-        return step_result(False, 'File not found at %s: %s' % (str(install_file.origin), path.relpath(src)))
       dst = path.join(script.staged_files_dir, install_file.dst_filename)
-      dst_dir = path.dirname(dst)
-      property_mode = install_file.get_property('mode', None)
-      if property_mode:
-        mode = int(property_mode, 8)
+      if path.isfile(src):
+        property_mode = install_file.get_property('mode', None)
+        if property_mode:
+          mode = int(property_mode, 8)
+        else:
+          mode = None
+        self._install_one('FILE', src, dst, mode)
+      elif path.isdir(src):
+        files = file_find.find(src, relative = True)
+        for f in files:
+          self._install_one('DIR', path.join(src, f), path.join(dst, f), None)
       else:
-        mode = file_util.mode(src)
-      self.blurb('Installing file %s in %s (mode=%s)' % (src, dst_dir, mode))
-      file_util.mkdir(path.dirname(dst))
-      shutil.copy(src, dst)
-      os.chmod(dst, mode)
-      
+        return step_result(False, 'File or dir not found at %s: %s' % (str(install_file.origin), path.relpath(src)))
     return step_result(True, None)
+
+  def _install_one(self, label, src, dst, mode):
+    mode = mode or file_util.mode(src)
+    self.log_d('%s: src=%s' % (label, src))
+    self.log_d('%s: dst=%s' % (label, dst))
+    dst_dir = path.dirname(dst)
+    self.blurb('Installing %s => %s (mode=%s)' % (path.relpath(src), path.relpath(dst_dir), mode))
+    file_util.mkdir(dst_dir)
+    shutil.copy(src, dst)
+    os.chmod(dst, mode)
