@@ -8,6 +8,7 @@ import argparse, os, os.path as path
 from rebuild.base import build_arch, build_blurb, build_system, build_target, build_level
 from rebuild.base import build_target_cli
 from rebuild.project.project_file_parser import project_file_parser
+from rebuild.project.project_file import project_file
 from bes.fs import file_util
 
 from bes.python import code
@@ -193,7 +194,7 @@ class builder_cli(build_target_cli):
 
   @classmethod
   def _load_project_file(clazz, filename, build_target):
-    if project_file_parser.is_project_file(filename):
+    if project_file.is_project_file(filename):
       return clazz._load_project_file_v2(filename, build_target)
     else:
       return clazz._load_project_file_v1(filename)
