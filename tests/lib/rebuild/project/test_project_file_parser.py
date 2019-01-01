@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import inspect, os.path as path
+import os.path as path
 from bes.testing.unit_test import unit_test
 from rebuild.project.project_file import project_file
 from rebuild.project.project_file_parser import project_file_parser as P

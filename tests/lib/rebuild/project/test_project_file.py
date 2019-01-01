@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import inspect, os.path as path
+import os.path as path
 from bes.testing.unit_test import unit_test
 from rebuild.project.project_file import project_file as PF
 from rebuild.recipe.value import masked_value, masked_value_list, value_origin, value_key_values, value_string_list
