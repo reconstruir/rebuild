@@ -149,7 +149,10 @@ class builder_cli(build_target_cli):
     config.sources_provider = args.sources_provider
     config.ingest = args.ingest or args.ingest_only
     config.ingest_only = args.ingest_only
-      
+
+    if config.ingest_only:
+      config.no_tests = True
+    
     env = builder_env(config, available_packages)
     
     if args.print_step_values:

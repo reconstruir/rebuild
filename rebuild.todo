@@ -1087,7 +1087,7 @@ and maybe even make the build work by using the downloaded tarball in the http c
 
 step results should have the notion of error, warning, success and skip
 retire tarball_finder
-storage: ensure_source is taking in the abs local path which is wrng
+storage: ensure_source is taking in the abs local path which is wrong
 
 find_tarball is storage_local (and maybe other storage impls) gets called a million times when building aspell
 018_12_21-17:53:33-PST [42160.MainThread] (storage_local.DEBUG)  find_tarball: filename=a/aspell-0.60.6.1.tar.gz
@@ -1113,9 +1113,9 @@ recipe: s/descriptor/package_descriptor/ or cleanup the notion that theres a des
 recipe: add description
 
 2019-01-01
-empty variable in recipe under variables: causes an exception
-
+ - empty variable in recipe under variables: causes an exception
 
 urgent stuff:
+- simplified storage config
 - sharing recipes
 - versions for projects
