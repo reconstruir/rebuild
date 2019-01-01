@@ -6,7 +6,7 @@ _rebuild_dev_root()
 
 rebuild_dev()
 {
-  bes_dev ${1+"$@"}
+  bes_dev no
   source ~/.rebuild/rebuild_deps/setup.sh
   rebuild_deps_setup
   bes_setup $(_rebuild_dev_root) ${1+"$@"}
