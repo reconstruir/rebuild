@@ -151,28 +151,6 @@ print('hello from python_code inside a project_file')
 print('hello again')'''
     self.assertMultiLineEqual( expected, p[0].python_code)
     
-  def test_is_project_file(self):
-    text = '''!rebuild.project!
-project foo
-  recipes
-    foo/foo.recipe
-'''
-    tmp = temp_file.make_temp_file(content = text)
-    self.assertTrue( P.is_project_file(tmp) )
-    
-  def test_is_project_file_invalid(self):
-    text = '''def rebuild_packages():
-  return [
-    'foo/foo.recipe',
-  ]
-
-project foo
-  recipes
-    foo/foo.recipe
-'''
-    tmp = temp_file.make_temp_file(content = text)
-    self.assertFalse( P.is_project_file(tmp) )
-    
   def _filename_for_parser(self):
     'Return a fake filename for parser.  Some values need it to find files relatively to filename.'
     return self.data_path('whatever')

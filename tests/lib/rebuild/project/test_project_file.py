@@ -7,6 +7,7 @@ from rebuild.project.project_file import project_file as PF
 from rebuild.recipe.value import masked_value, masked_value_list, value_origin, value_key_values, value_string_list
 from bes.key_value import key_value_list
 from bes.text import string_list
+from bes.fs import temp_file
 
 class test_project_file(unit_test):
 
@@ -87,6 +88,10 @@ project foo
     self.assertMultiLineEqual( expected, str(p) )
   
   def test_str_python_code(self):
+    expected = '''\
+print('hello from python_code inside a project_file')
+print('hello again')'''
+
     recipes = masked_value_list([
       masked_value(None, value_string_list(value = string_list.parse('for_all/foo/foo_all.recipe'))),
       masked_value(None, value_string_list(value = string_list.parse('for_all/bar/bar_all.recipe'))),
@@ -107,6 +112,28 @@ project foo
     macos: for_macos/bar/bar_macos.recipe
 '''
     self.assertMultiLineEqual( expected, str(p) )
-  
+
+  def test_is_project_file(self):
+    text = '''!rebuild.project!
+project foo
+  recipes
+    foo/foo.recipe
+'''
+    tmp = temp_file.make_temp_file(content = text)
+    self.assertTrue( PF.is_project_file(tmp) )
+    
+  def test_is_project_file_invalid(self):
+    text = '''def rebuild_packages():
+  return [
+    'foo/foo.recipe',
+  ]
+
+project foo
+  recipes
+    foo/foo.recipe
+'''
+    tmp = temp_file.make_temp_file(content = text)
+    self.assertFalse( PF.is_project_file(tmp) )
+    
 if __name__ == '__main__':
   unit_test.main()

@@ -128,14 +128,3 @@ class project_file_parser(object):
   def _node_get_string_list(clazz, node):
     text = node.get_text(node.CHILDREN_FLAT)
     return string_util.split_by_white_space(text, strip = True)
-
-  @classmethod
-  def is_project_file(clazz, filename):
-    'Return True if filename is a valid rebuild project file.'
-    with open(filename, 'rb') as fin:
-      try:
-        return fin.read(len(project_file.MAGIC)) == project_file.MAGIC
-      except IOError:
-        return False
-      except UnicodeDecodeError as ex:
-        return False

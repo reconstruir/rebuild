@@ -68,5 +68,16 @@ class project_file(namedtuple('project_file', 'format_version, filename, name, d
     if not self.imports:
       return string_list()
     return sorted(self.imports.resolve(system, 'string_list'))
+
+  @classmethod
+  def is_project_file(clazz, filename):
+    'Return True if filename is a valid rebuild project file.'
+    with open(filename, 'rb') as fin:
+      try:
+        return fin.read(len(clazz.MAGIC)) == clazz.MAGIC
+      except IOError:
+        return False
+      except UnicodeDecodeError as ex:
+        return False
   
 check.register_class(project_file, include_seq = False)
