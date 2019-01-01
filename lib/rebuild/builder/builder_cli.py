@@ -14,8 +14,6 @@ from rebuild.project.project_file_manager import project_file_manager
 
 from bes.fs import file_util
 
-from bes.python import code
-
 from .builder import builder
 from .builder_config import builder_config
 from .builder_env import builder_env
