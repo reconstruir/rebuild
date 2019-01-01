@@ -8,8 +8,6 @@ from bes.config.simple_config import error, simple_config
 from bes.fs import file_util
 from bes.config.simple_config import origin
 
-#from .credentials_config import credentials_config
-#from ._provider_purpose_map import _provider_purpose_map
 from .new_storage_config import new_storage_config
 
 class storage_config_manager(object):

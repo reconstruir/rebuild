@@ -52,8 +52,6 @@ class builder_cli(build_target_cli):
     self.parser.add_argument('--filter', nargs = '+', default = None, help = 'filter the list of build files to the given list.')
     self.parser.add_argument('-r', '--root', action = 'store', type = str, default = 'BUILD', help = 'Root dir where to store the build.')
     self.parser.add_argument('target_packages', action = 'append', nargs = '*', type = str)
-    self.parser.add_argument('--source-dir', default = None, action = 'store', type = str,
-                             help = 'Local source directory to use for sources. [ None]')
     self.parser.add_argument('--third-party-prefix', default = builder_config.DEFAULT_THIRD_PARTY_PREFIX,
                              action = 'store', type = str,
                              help = 'Prefix for third party source binaries. [ %s _]' % (builder_config.DEFAULT_THIRD_PARTY_PREFIX))
@@ -134,7 +132,6 @@ class builder_cli(build_target_cli):
     config.no_network = args.no_network
     config.no_tests = args.no_tests
     config.skip_to_step = args.skip_to_step
-    config.source_dir = args.source_dir
     config.tools_only = args.tools_only
     config.users = args.users
     config.verbose = args.verbose

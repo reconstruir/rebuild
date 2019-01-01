@@ -24,8 +24,7 @@ class builder_env(object):
     self.config = config
     local_storage_cache_dir = path.join(config.storage_cache_dir, 'local')
     self.storage_config = self._make_storage_config(config.storage_config,
-                                                    local_storage_cache_dir,
-                                                    config.source_dir)
+                                                    local_storage_cache_dir)
     self.sources_storage = self._make_storage(self.storage_config,
                                               'sources',
                                               config.sources_provider,
@@ -66,9 +65,7 @@ class builder_env(object):
     self.external_artifact_manager = None
 
   @classmethod
-  def _make_storage_config(clazz, filename, local_storage_cache_dir, source_dir):
-    if source_dir:
-      return storage_config.make_local_config(None, source_dir, 'rebuild_stuff')
+  def _make_storage_config(clazz, filename, local_storage_cache_dir):
     if not filename:
       return storage_config.make_local_config(None, local_storage_cache_dir, 'rebuild_stuff')
     if not path.exists(filename):

@@ -31,10 +31,16 @@ class rebuilder_tester(object):
     return tmp_dir
 
   def _make_command(self, config, tmp_dir, *args):
-    cmd = [
-      '--source-dir',
-      self._source_dir,
-    ]
+    if not  '--storage-config' in args:
+      from rebuild.config import storage_config
+      content = storage_config.make_local_config_content('unit_test', self._source_dir, 'rebuild_stuff')
+      tmp_config = temp_file.make_temp_file(content = content)
+      cmd = [
+        '--storage-config', tmp_config,
+        '--sources-provider', 'local',
+      ]
+    else:
+      cmd = []
     if config.no_network:
       cmd += [ '--no-network' ]
     cmd += [

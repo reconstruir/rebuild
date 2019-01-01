@@ -999,8 +999,6 @@ version specification and locking for ~/.rebuild/config
  - maybe rename the artifact_manager staged_artifact_manager or something
  - classes that use class registry need a way to prevent abstract class or otherwise special classes
    from registering
-- storage_chain if survives refactor should be a sublass of storage_base
-- s/--skip-tests/--no-tests/
 - hanged download needs to abort somehow not stall forever
 - cmake, gnu_bison try to run java
 - python2 pops up a dialog to allow some security thing
@@ -1008,8 +1006,6 @@ version specification and locking for ~/.rebuild/config
 2018-12-09
 - rebuild_sources.py should remote the remote file if checksum verification fails on ingest
 - ressurect storage_git_repo sometime
-- get rid of --source-dir and all the places it touches
-- retire storage_hard_coded
 - retarballing the same bits causes checksum to change need to fix
 - when downloading a tarball fails there is no obvious error why that happened
 - add a force download option
