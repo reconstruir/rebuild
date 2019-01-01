@@ -201,7 +201,8 @@ class builder_script(object):
           
       if not loaded_checksums:
         return True
-      if not loaded_checksums.sources.verify():
+      verification = loaded_checksums.sources.verify()
+      if not verification:
         return True
       return False
     except IOError as ex:
