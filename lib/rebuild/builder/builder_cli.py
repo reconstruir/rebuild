@@ -9,6 +9,9 @@ from rebuild.base import build_arch, build_blurb, build_system, build_target, bu
 from rebuild.base import build_target_cli
 from rebuild.project.project_file_parser import project_file_parser
 from rebuild.project.project_file import project_file
+
+from rebuild.project.project_file_manager import project_file_manager
+
 from bes.fs import file_util
 
 from bes.python import code
@@ -85,7 +88,18 @@ class builder_cli(build_target_cli):
 
     target_packages = args.target_packages[0]
 
-    available_packages = self._load_project_file(args.project_file, bt)
+    use_pfm = False
+
+    if use_pfm:
+      pfm = project_file_manager()
+      pfm.load_project_files_from_env()
+      pfm.load_project_file(args.project_file)
+      available_recipes = pfm.available_recipes(args.project_file, bt)
+      #for a in available_recipes:
+      #  print('AVAILABLE_RECIPE: %s' % (a))
+      available_packages = available_recipes
+    else:
+      available_packages = self._load_project_file(args.project_file, bt)
     
     if args.filter:
       if path.isfile(args.filter[0]):
