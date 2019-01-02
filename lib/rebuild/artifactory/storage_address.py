@@ -2,7 +2,7 @@
 
 from collections import namedtuple
 from bes.compat import StringIO
-from bes.common import check, cached_property
+from bes.common import check, cached_property, tuple_util
 from bes.fs import file_util
 
 class storage_address(namedtuple('storage_address', 'hostname, repo, root_dir, sub_repo, filename')):
@@ -69,12 +69,12 @@ class storage_address(namedtuple('storage_address', 'hostname, repo, root_dir, s
   def search_aql_url(self):
     return '{api_url}/search/aql'.format(api_url = self.api_url)
 
+  def clone(self, mutations = None):
+    return tuple_util.clone(self, mutations = mutations)
+  
   def mutate_filename(self, filename):
-    index = self._fields.index('filename')
-    l = list(self)
-    l[index] = filename
-    return self.__class__(*l)
-
+    return self.clone({ 'filename': filename })
+  
   def make_api_url(self, endpoint = None, file_path = None, params = None):
     if endpoint:
       api_url = '{hostname}api/{endpoint}'.format(hostname = self.hostname, endpoint = endpoint)

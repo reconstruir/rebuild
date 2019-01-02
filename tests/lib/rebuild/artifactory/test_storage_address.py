@@ -43,6 +43,12 @@ class test_storage_address(unit_test):
   def test_search_aql_url(self):
     self.assertEqual( 'http://mycom.not/mycom/api/search/aql',
                       AA('http://mycom.not/mycom', 'repo', 'root', None, None).search_aql_url )
+
+  def test_mutate_filename(self):
+    self.assertEqual( 'newf', AA('http://mycom.not/mycom', 'r', 'd', 's', None).mutate_filename('newf').filename )
+    self.assertEqual( 'newf', AA('http://mycom.not/mycom', 'r', 'd', 's', 'f').mutate_filename('newf').filename )
+    self.assertEqual( 'newf', AA('http://mycom.not/mycom', 'r', 'd', 's', '/f').mutate_filename('newf').filename )
+    
     
 if __name__ == '__main__':
   unit_test.main()
