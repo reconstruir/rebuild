@@ -11,7 +11,6 @@ from bes.system import execute, log
 from bes.url import url_util
 
 from rebuild.binary_format import binary_detector
-from rebuild.artifactory.artifactory_requests import artifactory_requests
 
 class ingest_util(object):
 

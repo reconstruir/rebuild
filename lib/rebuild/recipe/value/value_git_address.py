@@ -1,9 +1,12 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common import check, string_util
+from bes.common import check, string_util, time_util
 from bes.compat import StringIO
 from bes.git import git_address
+from bes.git import git
+from bes.key_value import key_value
+
 from .value_base import value_base
 
 class value_git_address(value_base):
@@ -56,6 +59,15 @@ class value_git_address(value_base):
     revision = parts[1]
     rest = string_util.replace(text, { address: '', revision: '' })
     properties = clazz.parse_properties(rest)
+    address = path.expanduser(address)
+    if path.isdir(address) and revision == 'HEAD':
+      revision = git.last_commit_hash(address, short_hash = True)
+      revision_timestamp = git.commit_timestamp(address, revision)
+      revision_version = time_util.timestamp(when = revision_timestamp,
+                                             milliseconds = False,
+                                             delimiter = '.',
+                                             timezone = True)
+      properties.append(key_value('_GIT_COMMIT_TIMESTAMP', revision_version))
     return clazz(origin = origin, value = git_address(address, revision), properties = properties)
   
   @classmethod

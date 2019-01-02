@@ -224,8 +224,8 @@ order by name asc, version asc, revision asc, epoch asc'''
     assert row
     return package_descriptor(row.name,
                               build_version(row.version, row.revision, row.epoch),
-                              json.loads(row.properties),
-                              sql_encoding.decode_requirements(row.requirements))
+                              properties = json.loads(row.properties),
+                              requirements = sql_encoding.decode_requirements(row.requirements))
   
   def find_artifact(self, adesc):
     check.check_artifact_descriptor(adesc)

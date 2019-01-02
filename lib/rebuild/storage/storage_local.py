@@ -7,7 +7,6 @@ from bes.fs import file_attributes, file_find, file_util
 from bes.archive import archiver
 
 from .storage_base import storage_base 
-from .tarball_finder import tarball_finder
 
 class storage_local(storage_base):
 
@@ -16,19 +15,15 @@ class storage_local(storage_base):
     check.check_storage_factory_config(config)
     check.check_storage_config(config.storage_config)
     self._config = config
-    location = path.expanduser(self._config.storage_config.location)
-    repo = self._config.storage_config.repo
-    root_dir = self._config.storage_config.root_dir
     sub_repo = self._config.sub_repo
-    if root_dir:
-      self._where = path.join(location, repo, root_dir, sub_repo)
-    else:
-      self._where = path.join(location, repo, sub_repo)
-    self.log_e('__init__: location=%s; repo=%s; root_dir=%s; sub_repo=%s' % (location, repo, root_dir, sub_repo))
+    full_path = self._config.storage_config.full_path
+    self.log_d('__init__: config=%s' % (str(config)))
+    self.log_d('__init__: full_path=%s; sub_repo=%s' % (full_path, sub_repo))
+    self._where = path.join(self._config.storage_config.full_path, sub_repo)
     self._local_root_dir = config.local_cache_dir
     file_util.mkdir(self._where)
     file_util.mkdir(self._local_root_dir)
-    self.log_e('__init__: _where=%s; _local_root_dir%s' % (self._where, self._local_root_dir))
+    self.log_d('__init__: _where=%s; _local_root_dir%s' % (self._where, self._local_root_dir))
     
   def __str__(self):
     return 'local:%s' % (self._where)
@@ -101,11 +96,9 @@ class storage_local(storage_base):
   def list_all_files(self):
     return archiver.find_archives(self._where, relative = True)
 
-  #@abstractmethod
   def _local_path(self, filename):
     return path.join(self._local_root_dir, filename)
 
-  #@abstractmethod
   def _remote_path(self, filename):
     return path.join(self._where, filename)
   

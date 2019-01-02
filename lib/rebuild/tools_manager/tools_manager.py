@@ -4,7 +4,7 @@ import copy, os.path as path, os
 from bes.common import check, object_util
 from bes.system import execute, os_env
 from rebuild.base import build_target, build_level, package_descriptor_list
-from rebuild.manager import manager
+from rebuild.venv.venv_manager import venv_manager
 from bes.debug import debug_timer
 
 class tools_manager(object):
@@ -17,7 +17,7 @@ class tools_manager(object):
     self._root_dir = root_dir
     self._artifact_manager = artifact_manager
     self._timer = debug_timer('am', 'error', disabled = True)
-    self._manager = manager(self._artifact_manager, self._build_target, root_dir = self._root_dir)
+    self._manager = venv_manager(None, self._artifact_manager, self._build_target, self._root_dir)
     
   @property
   def root_dir(self):
@@ -39,11 +39,7 @@ class tools_manager(object):
     for tool in resolved_tools:
       project_name = tool.full_name
       self._timer.start('%s: resolve_and_update_packages' % (project_name))
-      self._manager.resolve_and_update_packages(project_name,
-                                                [ tool.name ],
-                                                self._build_target,
-                                                allow_downgrade = False,
-                                                force_install = False)
+      self._manager.resolve_and_update_packages(project_name, [ tool.name ], self._build_target)
       self._timer.stop()
       self._manager.save_system_setup_scripts(project_name, self._build_target)
 

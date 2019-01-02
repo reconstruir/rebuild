@@ -1,7 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import re
-from bes.common import algorithm, check, object_util, string_util, number_util
+from bes.common import algorithm, check, object_util, string_util, number_util, tuple_util
 from collections import namedtuple
 from bes.compat import StringIO
 from bes.compat import cmp
@@ -137,4 +137,7 @@ class build_version(namedtuple('build_version', 'upstream_version, revision, epo
     tokens2 = [ token for token in upstream_version_lexer.tokenize(v2, 'build_version') ]
     return cmp(tokens1, tokens2)
 
+  def clone(self, mutations = None):
+    return tuple_util.clone(self, mutations = mutations)
+  
 check.register_class(build_version)

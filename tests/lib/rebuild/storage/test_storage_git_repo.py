@@ -25,7 +25,7 @@ class test_storage_git_repo(unit_test):
       print('tmp_source_repo: %s' % (tmp_source_repo.root))
       print('       tmp_repo_dir: %s' % (tmp_repo_dir))
     f1 = storage_git_repo(tmp_repo_dir, tmp_source_repo.root)
-    self.assertEqual( path.join(tmp_repo_dir, 'a/alpha-1.2.3.tar.gz'), f1.find_tarball('alpha-1.2.3.tar.gz') )
+    self.assertEqual( path.join(tmp_repo_dir, 'a/alpha-1.2.3.tar.gz'), f1.find_tarball('a/alpha-1.2.3.tar.gz') )
     
   @classmethod
   def _make_git_repo(clazz, items, delete = True):

@@ -87,7 +87,7 @@ class recipe_parser(object):
       if text.startswith('properties'):
         properties = self._parse_properties(child)
       elif text.startswith('requirements'):
-        requirements.extend(self._parse_requirements(child))
+        requirements.extend(recipe_parser_util.parse_requirements(child))
       elif text.startswith('variables'):
         variables.extend(recipe_parser_util.parse_variables(child, self.filename))
       elif text.startswith('steps'):
@@ -145,14 +145,6 @@ class recipe_parser(object):
       except RuntimeError as ex:
         self._error('error parsing properties: %s' % (property_text), node)
     return properties
-
-  def _parse_requirements(self, node):
-    reqs = []
-    for child in node.children:
-      req_text = child.get_text(child.NODE_FLAT)
-      next_reqs = requirement_list.parse(req_text)
-      reqs.extend(next_reqs)
-    return requirement_list(reqs)
 
   # FIXME_DEC1
   def _parse_export_compilation_flags_requirements(self, node):

@@ -6,7 +6,9 @@ from bes.common import check
 
 from .fake_package_recipe_parser import fake_package_recipe_parser
 from .fake_package_recipe import fake_package_recipe
-from rebuild.package import artifact_manager_local, package
+from rebuild.package import package
+
+from .artifact_manager_helper import artifact_manager_helper
 
 class fake_package_unit_test(object):
 
@@ -53,10 +55,15 @@ class fake_package_unit_test(object):
     root_dir = temp_file.make_temp_dir(delete = not debug)
     if debug:
       print("root_dir:\n%s\n" % (root_dir))
-    am = artifact_manager_local(root_dir)
+    am = artifact_manager_helper.make_local_artifact_manager(root_dir)
     if recipes:
-      mutations = mutations or {}
-      tmp_packages = fake_package_unit_test.create_many_packages(recipes, mutations)
-      for tmp_package in tmp_packages:
-        am.publish(tmp_package.filename, False, tmp_package.metadata)
+      clazz.artifact_manager_publish(am, recipes, mutations = mutations)
     return am
+
+  @classmethod
+  def artifact_manager_publish(clazz, artifact_manager, recipes, mutations = None):
+    mutations = mutations or {}
+    tmp_packages = fake_package_unit_test.create_many_packages(recipes, mutations)
+    for tmp_package in tmp_packages:
+      artifact_manager.publish(tmp_package.filename, False, tmp_package.metadata)
+  

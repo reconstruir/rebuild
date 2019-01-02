@@ -27,7 +27,7 @@ class test_package_db_entry(unit_test):
   TEST_ENTRY = PE('kiwi', '6.7.8', 2, 0, TEST_REQUIREMENTS, TEST_PROPERTIES, TEST_FILES)
 
   def test_descriptor(self):
-    self.assertEqual( package_descriptor('kiwi', '6.7.8-2', self.TEST_PROPERTIES, self.TEST_REQUIREMENTS),
+    self.assertEqual( package_descriptor('kiwi', '6.7.8-2', requirements = self.TEST_REQUIREMENTS, properties = self.TEST_PROPERTIES),
                       self.TEST_ENTRY.descriptor )
 
   def test_to_json(self):

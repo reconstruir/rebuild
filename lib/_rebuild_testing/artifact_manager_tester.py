@@ -9,13 +9,14 @@ from rebuild.package import artifact_manager_local
 from rebuild.base import artifact_descriptor
 
 from .fake_package_recipe_parser import fake_package_recipe_parser
+from .artifact_manager_helper import artifact_manager_helper
 
 class artifact_manager_tester(object):
 
   def __init__(self, root_dir = None, debug = False, recipes = None, filename = None):
     root_dir = root_dir or temp_file.make_temp_dir(suffix = '.artifacts')
     self._debug = debug
-    self.am = artifact_manager_local(root_dir)
+    self.am = artifact_manager_helper.make_local_artifact_manager(root_dir)
     self._recipes = {}
     if recipes:
       self.add_recipes(recipes, filename = filename)
@@ -55,6 +56,10 @@ class artifact_manager_tester(object):
     adescs = object_util.listify(adescs)
     for adesc in adescs:
       self._retire_one(adesc)
+
+  def retire_all(self):
+    adescs = self.am.list_all_by_descriptor(None)
+    self.retire(adescs)
 
   def _publish_one(self, adesc, mutations):
     if check.is_string(adesc):

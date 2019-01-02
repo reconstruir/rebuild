@@ -7,25 +7,24 @@ from bes.text import string_list
 
 from rebuild.recipe import recipe_error
 from rebuild.recipe.recipe_util import recipe_util
+from rebuild.base import requirement_list
 
-class project_file(namedtuple('project_file', 'format_version, filename, name, description, variables, imports, recipes, python_code')):
+class venv_project_config(namedtuple('venv_project_config', 'format_version, filename, name, description, variables, packages, python_code')):
 
   FORMAT_VERSION = 2
-  MAGIC = '!rebuild.project!'
+  MAGIC = '!rebuild.revenv!'
   
-  def __new__(clazz, format_version, filename, name, description, variables, imports, recipes, python_code):
+  def __new__(clazz, format_version, filename, name, description, variables, packages, python_code):
     check.check_int(format_version)
     if format_version != clazz.FORMAT_VERSION:
-      raise recipe_error('Invalid project_file format_version %d' % (format_version), filename, 1)
-    check.check_string(filename)
+      raise recipe_error('Invalid venv_config format_version %d' % (format_version), filename, 1)
     check.check_string(name)
     check.check_string(description, allow_none = True)
     check.check_masked_value_list(variables, allow_none = True)
-    check.check_masked_value_list(imports, allow_none = True)
-    check.check_masked_value_list(recipes, allow_none = True)
+    check.check_requirement_list(packages, allow_none = True)
     check.check_string(python_code, allow_none = True)
     return clazz.__bases__[0].__new__(clazz, format_version, filename, name, description,
-                                      variables, imports, recipes, python_code)
+                                      variables, packages, python_code)
 
   def __str__(self):
     return self.to_string()
@@ -35,19 +34,16 @@ class project_file(namedtuple('project_file', 'format_version, filename, name, d
     return '{magic}\n{sproject}\n'.format(magic = self.MAGIC, sproject = sproject)
   
   def _to_node(self):
-    'A convenient way to make a project_file string is to build a graph first.'
-    root = node('project %s' % (self.name))
+    'A convenient way to make a venv_config string is to build a graph first.'
+    root = node(self.name)
     if self.description:
       root.children.append(recipe_util.description_to_node(self.description))
       root.add_child('')
     if self.variables:
       root.children.append(recipe_util.variables_to_node(self.variables))
       root.add_child('')
-    if self.imports:
-      root.children.append(recipe_util.masked_value_list_to_node('imports', self.imports))
-      root.add_child('')
-    if self.recipes:
-      root.children.append(recipe_util.masked_value_list_to_node('recipes', self.recipes))
+    if self.packages:
+      root.children.append(recipe_util.requirements_to_node('packages', self.packages))
       root.add_child('')
     if self.python_code:
       root.children.append(recipe_util.python_code_to_node(self.python_code))
@@ -59,19 +55,14 @@ class project_file(namedtuple('project_file', 'format_version, filename, name, d
       return key_value_list()
     return self.variables.resolve(system, 'key_values')
   
-  def resolve_recipes(self, system):
-    if not self.recipes:
-      return string_list()
-    return sorted(self.recipes.resolve(system, 'string_list'))
+  def resolve_packages(self, system):
+    if not self.packages:
+      return requirement_list()
+    return self.packages.resolve(system)
   
-  def resolve_imports(self, system):
-    if not self.imports:
-      return string_list()
-    return sorted(self.imports.resolve(system, 'string_list'))
-
   @classmethod
-  def is_project_file(clazz, filename):
-    'Return True if filename is a valid rebuild project file.'
+  def is_venv_config(clazz, filename):
+    'Return True if filename is a valid venv_config file.'
     return recipe_util.file_starts_with_magic(filename, clazz.MAGIC)
   
-check.register_class(project_file, include_seq = False)
+check.register_class(venv_project_config, include_seq = False)

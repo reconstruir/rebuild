@@ -3,6 +3,7 @@
 from bes.common import check
 from bes.key_value import key_value
 from bes.text import comments
+from rebuild.base import requirement_list
 
 from .value import masked_value_list
 from .value import value_factory
@@ -100,3 +101,13 @@ class recipe_parser_util(object):
     if len(node.children) == 0:
       error_func('description missing', node)
     return node.get_text(node.CHILDREN_INLINE, delimiter = '\n').strip()
+
+  @classmethod
+  def parse_requirements(clazz, node):
+    reqs = []
+    for child in node.children:
+      req_text = child.get_text(child.NODE_FLAT)
+      next_reqs = requirement_list.parse(req_text)
+      reqs.extend(next_reqs)
+    return requirement_list(reqs)
+  

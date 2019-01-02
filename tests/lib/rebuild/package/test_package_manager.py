@@ -8,13 +8,14 @@ from bes.system import execute, os_env
 from bes.common import check, dict_util, object_util
 from rebuild.base import build_target as BT, package_descriptor as PD
 from rebuild.pkg_config import pkg_config
-from rebuild.package import artifact_manager_local, package, package_manager
+from rebuild.package import artifact_manager_local, package, package_manager, package_install_options
 from rebuild.package import PackageFilesConflictError, PackageMissingRequirementsError
 from rebuild.package.db_error import *
 from bes.archive import archiver, temp_archive
 from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT
 from _rebuild_testing.fake_package_recipes import fake_package_recipes as RECIPES
 from _rebuild_testing.artifact_manager_tester import artifact_manager_tester as AMT
+from _rebuild_testing.artifact_manager_helper import artifact_manager_helper
 
 from rebuild.base import build_system
 from bes.testing.unit_test.unit_test_skip import skip_if
@@ -52,7 +53,7 @@ class test_package_manager(unit_test):
     am_dir = path.join(root_dir, 'artifact_manager')
     if clazz.DEBUG:
       print("root_dir:\n%s\n" % (root_dir))
-    am = artifact_manager_local(am_dir)
+    am = artifact_manager_helper.make_local_artifact_manager(am_dir)
     return package_manager(pm_dir, am)
 
   @classmethod
@@ -594,10 +595,10 @@ fake_package unset 1.0.0 0 0 linux release x86_64 ubuntu 18
     result = pm.transform_env(env, package_names)
     return clazz._replace_output_env(pm, result)
 
-  def test_install_package_force_install_files(self):
+  def test_install_package_same_version_files(self):
     '''
     A test that proves package manager will reinstall a package if the version is the
-    contents changed and force_install is given
+    same and contents changed and same_version is given
     '''
 
     recipe1 = '''\
@@ -631,15 +632,15 @@ fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
     t.clear_recipes()
     t.add_recipes(recipe2)
     t.publish('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
-    pm.install_package(cabbage, bt, [ 'RUN' ], force_install = False)
+    pm.install_package(cabbage, bt, [ 'RUN' ], package_install_options(allow_same_version = False))
     self.assertEqual( 'cabbage1', execute.execute(exe).stdout.strip() )
-    pm.install_package(cabbage, bt, [ 'RUN' ], force_install = True)
+    pm.install_package(cabbage, bt, [ 'RUN' ], package_install_options(allow_same_version = True))
     self.assertEqual( 'cabbage2', execute.execute(exe).stdout.strip() )
   
-  def test_install_package_force_install_env_files(self):
+  def test_install_package_same_version_env_files(self):
     '''
     A test that proves package manager will reinstall a package if the version is the
-    contents changed and force_install is given
+    same and env_files contents changed and same_version is given
     '''
 
     recipe1 = '''\
@@ -683,10 +684,10 @@ fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
     t.clear_recipes()
     t.add_recipes(recipe2)
     t.publish('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
-    pm.install_package(cabbage, bt, [ 'RUN' ], force_install = False)
+    pm.install_package(cabbage, bt, [ 'RUN' ], package_install_options(allow_same_version = False))
     result = pm.transform_env({}, [ 'cabbage' ])
     self.assertEqual( 'cabbage1', result['FOO'] )
-    pm.install_package(cabbage, bt, [ 'RUN' ], force_install = True)
+    pm.install_package(cabbage, bt, [ 'RUN' ], package_install_options(allow_same_version = True))
     result = pm.transform_env({}, [ 'cabbage' ])
     self.assertEqual( 'cabbage2', result['FOO'] )
   

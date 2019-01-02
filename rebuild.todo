@@ -673,7 +673,6 @@ broken:
 works:  macos: CC=clang CFLAGS="${REBUILD_COMPILE_ARCH_FLAGS}"
 
 april 4
-- remanager.py test unit test
 - need to check for env_dir files conflicts
 
 env_var fucking
@@ -699,9 +698,6 @@ copy third_party/privworld to great/...
 - add db multi process lock
 - add a in db lock when a package is being modified to deal with crashes
 - twisted might depend on hyperlink
-
-april 7
-- get rid of artifact_manager.DEFAULT_PUBLISH_DIR
 
 april 9
 - ability to do a step only for a specific system
@@ -779,7 +775,6 @@ egg check is either commented out or broken
 when python changed from using libedit to libreadline this error happened add a unit test
 rebuild.package.package_manager.PackageFilesConflictError: conflicts found between "libreadline" and "libedit": share/man/man3/history.3
  - make sure sourcing ~/.rebuild/foo/stuff/env/*.sh does so only for dependencies
- - need a unit test that does manager update with something that results in package resolution
 
 2018-06-09
 - full unit test for package_descriptor_list
@@ -788,7 +783,6 @@ rebuild.package.package_manager.PackageFilesConflictError: conflicts found betwe
 
 2018-06-25
 - some expensive operations on binaries like strip need to consider hard links
-- maybe rename manager to environment
 - transform_env name is confusing
 
 2018-07-01
@@ -808,32 +802,19 @@ rebuild.package.package_manager.PackageFilesConflictError: conflicts found betwe
 - fix the stupid distro issues
 - tee the rebuilder.py log somewhere that can be tailed
 
-2018-10-02
-- add manager test when a package gets removed
-
 2018-10-04
 - add a find_tarball cache for storage
 
 2018-10-14
 - change build_target to build_profile
 - validate build profile args with a platform db
-- rename 'manager' to 'reenv' renv reb 
 - cleanup build_target/profile command line in all those tools
 - FIXME666 arch is fucked for mobile platforms
-- manager_cli. get rid of opts
 - build_target compute arch from system if none
 - build target validation for nonsensical args line no distro and yes version
 
-2018-11-14
-- manager_cli system, distro, etc is a mess need to cleanup
-- unit_test packages hard codes distro, distro_version
-
 2018-11-21
-- determine if recipe "variables" are really needed
 - fix package_descriptor to accept version components instead of a string for version
-
-2018-11-23
-- test_manager.py has no unit tests
 
 2018-11-24
 - change the rebuilder tests in tests/rebuilder from such to something that can be more
@@ -963,7 +944,6 @@ rem_test: FAILED:  rebuild/tests/lib/rebuild/tools_manager/test_tools_manager.py
 2018-12-02
  - foo_dev and foo_undev are weird and confusing need better names
  - add remanager tool to visualize env
- - rename remanager already
  - the names for tools dirs are messed up ~/proj/third_party/BUILD/tools/gnu_m4_1_4_18 should be gnu_m4_1.4.18
  - no error when 2 recipes define the same package name
  - ability to import existing rebuild.projects kinda urgent
@@ -1062,8 +1042,7 @@ use extended fs attributes - locally - to speed up checksuming on mac and linux
 
 figure out the test situation with stuff like docker picking the system version instead of the packaged one
 
-version both the storage.config file and the projects.config
-manager.py __init__() root_dir and config file should not be option.  retire defaults for these
+version both the storage.config
 in artifact manager add abstract interface for loading the db.  dont auto load db in artifactory one make it explicit
 no unit test for setup_dir in step_python_egg
 figure out why tests dont work both in third_party and the other one
@@ -1081,7 +1060,6 @@ when not ingesting still download the url and check the checksum so next time it
 and maybe even make the build work by using the downloaded tarball in the http cache as a source provider
 
 step results should have the notion of error, warning, success and skip
-retire tarball_finder
 storage: ensure_source is taking in the abs local path which is wrong
 
 find_tarball is storage_local (and maybe other storage impls) gets called a million times when building aspell
@@ -1099,8 +1077,6 @@ find_tarball is storage_local (and maybe other storage impls) gets called a mill
 2018-12-26
 - full suite of tests for storage_local
 
-storage_artifactory does not save the cached available.json file
-
 s/rebuild_sources/rebuild_storage/
 
 2018-12-30
@@ -1115,3 +1091,7 @@ urgent stuff:
 - versions for projects
 
 ressurect sources_cli.py
+move storage_artifactory from storage to artifactory and then figure out the "pluginness" of artifactory in general.
+builder_env currently imports it like this:
++from rebuild.storage.storage_artifactory import storage_artifactory
+otherwise the storage class does not get registered

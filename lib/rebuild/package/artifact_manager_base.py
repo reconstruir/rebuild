@@ -11,8 +11,16 @@ from bes.debug import debug_timer
 from rebuild.base import artifact_descriptor, build_blurb, requirement_manager
 
 from .db_error import *
+from .artifact_manager_registry import artifact_manager_registry
 
-class artifact_manager_base(with_metaclass(ABCMeta, object)):
+class artifact_manager_register_meta(ABCMeta):
+  
+  def __new__(meta, name, bases, class_dict):
+    clazz = ABCMeta.__new__(meta, name, bases, class_dict)
+    artifact_manager_registry.register(clazz)
+    return clazz
+
+class artifact_manager_base(with_metaclass(artifact_manager_register_meta, object)):
 
   def __init__(self):
     log.add_logging(self, 'artifact_manager')
@@ -131,6 +139,10 @@ class artifact_manager_base(with_metaclass(ABCMeta, object)):
     return self._requirement_managers[build_target.build_path]
 
   def resolve_deps(self, names, build_target, hardness, include_names):
+    check.check_string_seq(names)
+    check.check_build_target(build_target)
+    check.check_string_seq(hardness)
+    check.check_bool(include_names)
     self.log_i('resolve_deps(names=%s, build_target=%s, hardness=%s, include_names=%s)' % (' '.join(names),
                                                                                            build_target.build_path,
                                                                                            ' '.join(hardness),

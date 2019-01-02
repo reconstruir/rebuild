@@ -25,9 +25,19 @@ class step_artifact_create_make_package(step):
     
   #@abstractmethod
   def execute(self, script, env, values, inputs):
+    
     if not script.has_stage_dir():
       return step_result(False, script.format_message('No files to package found in {stage_dir}'))
-    output_tarball_path = path.join(script.artifact_dir, script.descriptor.tarball_filename)
+
+    if False:
+    #if '_REBUILD_UPSTREAM_VERSION_OVERRIDE' in inputs:
+      version = script.descriptor.version.clone(mutations = { 'upstream_version': inputs['_REBUILD_UPSTREAM_VERSION_OVERRIDE'],
+                                                              'revision': 0 })
+      descriptor = script.descriptor.clone(mutations = { 'version': version })
+    else:
+      descriptor = script.descriptor
+
+    output_tarball_path = path.join(script.artifact_dir, descriptor.tarball_filename)
     build_target_mutations = {}
     build_target_distro = values.get('build_target_distro')
     build_target_distro_version = values.get('build_target_distro_version')
@@ -39,7 +49,7 @@ class step_artifact_create_make_package(step):
     bt = script.build_target.clone()
     self.blurb('creating tarball %s from %s' % (path.relpath(output_tarball_path), path.relpath(script.stage_dir)), fit = True)
     staged_tarball, metadata = package.create_package(output_tarball_path,
-                                                      script.descriptor,
+                                                      descriptor,
                                                       bt,
                                                       script.stage_dir)
     self.blurb('staged tarball: %s' % (path.relpath(staged_tarball)))

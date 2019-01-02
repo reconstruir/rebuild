@@ -20,28 +20,29 @@ from .db_error import *
 
 class artifact_manager_artifactory(artifact_manager_base):
 
-  def __init__(self, local_cache_dir, config):
-    check.check_storage_config(config)
+  def __init__(self, config):
     super(artifact_manager_artifactory, self).__init__()
-    self._local_cache_dir = local_cache_dir
+    check.check_artifact_manager_factory_config(config)
+    self._config = config
+    self._local_cache_dir = config.local_cache_dir
     file_util.mkdir(self._local_cache_dir)
     self._read_only = True
     self._db = artifact_db(path.join(self._local_cache_dir, 'artifacts.db'))
-    self._config = config.get('download', 'artifactory')
-    self._address = storage_address(self._config.values['hostname'],
-                                    self._config.values['repo'],
-                                    self._config.root_dir,
+    self._address = storage_address(self._config.storage_config.location,
+                                    self._config.storage_config.repo,
+                                    self._config.storage_config.root_dir,
                                     'artifacts',
                                     None)
     self._load_remote_db()
 
   def __str__(self):
-    return str(self._address)
+    return 'artifactory:%s' % (str(self._address))
     
   def _load_remote_db(self):
+    assert False
     packages = artifactory_requests.list_all_artifacts(self._address,
-                                                        self._config.credentials.username,
-                                                        self._config.credentials.password)
+                                                       self._config.storage_config.download.username,
+                                                       self._config.storage_config.download.password)
     for package in packages:
       self._db.add_or_replace_artifact(package)
 
@@ -91,8 +92,8 @@ class artifact_manager_artifactory(artifact_manager_base):
     self.log_i('downloading: %s => %s' % (str(address), filename_abs))
     artifactory_requests.download_to_file(filename_abs,
                                           address,
-                                          self._config.credentials.username,
-                                          self._config.credentials.password)
+                                          self._config.storage_config.download.username,
+                                          self._config.storage_config.download.password)
   
   #@abstractmethod
   def needs_download(self, adesc):

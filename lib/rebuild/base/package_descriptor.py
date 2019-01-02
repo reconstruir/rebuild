@@ -2,7 +2,7 @@
 
 import json, os.path as path
 from collections import namedtuple
-from bes.common import cached_property, check, object_util, string_util
+from bes.common import cached_property, check, object_util, string_util, tuple_util
 from bes.compat import cmp
 
 from .build_version import build_version
@@ -17,7 +17,7 @@ class package_descriptor(namedtuple('package_descriptor', 'name, version, requir
 
   PROPERTY_PKG_CONFIG_NAME = 'pkg_config_name'
 
-  def __new__(clazz, name, version, properties = None, requirements = None):
+  def __new__(clazz, name, version, requirements = None, properties = None):
     check.check_string(name)
     if not clazz.name_is_valid(name):
       raise RuntimeError('Invalid name: \"%s\"' % (name))
@@ -169,4 +169,7 @@ class package_descriptor(namedtuple('package_descriptor', 'name, version, requir
   def requirements_names(self):
     return set([ req.name for req in self.requirements ])
 
+  def clone(self, mutations = None):
+    return tuple_util.clone(self, mutations = mutations)
+  
 check.register_class(package_descriptor)

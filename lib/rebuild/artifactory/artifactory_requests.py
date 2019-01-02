@@ -10,6 +10,8 @@ from bes.fs import file_path, file_util, temp_file
 from rebuild.base import requirement_list
 from rebuild.package import package_metadata, package_metadata_list, package_manifest
 
+from .artifactory_address import artifactory_address
+
 class artifactory_requests(object):
 
   @classmethod
@@ -89,7 +91,7 @@ class artifactory_requests(object):
     check.check_storage_address(address)
     check.check_string(username)
     check.check_string(password)
-    url = address.make_api_url(endpoint = 'storage', file_path = address.file_folder, params = 'list&deep=1&listFolders=0')
+    url = artifactory_address.make_api_url(address, endpoint = 'storage', file_path = address.file_folder, params = 'list&deep=1&listFolders=0')
     clazz.log_d('list_all_files: address=%s; url=%s' % (address, url))
     auth = ( username, password )
     import requests
@@ -181,7 +183,8 @@ items.find({
 
     clazz.log_d('list_all_artifacts: aql=%s' % (aql), multi_line = True)
 
-    url = address.search_aql_url
+    url = artifactory_address.make_search_aql_url(address)
+    print('CACA: url=%s' % (url))
     clazz.log_d('list_all_artifacts: url=%s' % (url))
     auth = ( username, password )
     import requests

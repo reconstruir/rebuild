@@ -18,7 +18,7 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
     check.check_int(format_version)
     check.check_recipe_enabled(enabled)
     if format_version != clazz.FORMAT_VERSION:
-      raise recipe_error('Invalid recipe format_version %d' % (format_version))
+      raise recipe_error('Invalid recipe format_version %d' % (format_version), filename, 1)
     check.check_string(filename)
     check.check_string(python_code, allow_none = True)
     check.check_masked_value_list(variables, allow_none = True)
@@ -47,18 +47,11 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
       root.children.append(self._properties_to_node(self.properties))
       root.add_child('')
     if self.requirements:
-      root.children.append(self._requirements_to_node('requirements', self.requirements))
+      root.children.append(recipe_util.requirements_to_node('requirements', self.requirements))
       root.add_child('')
     root.children.append(self._steps_to_node(self.steps))
     return root
 
-  @classmethod
-  def _requirements_to_node(clazz, label, requirements):
-    result = node(label)
-    for req in requirements:
-      result.add_child(req.to_string_colon_format())
-    return result
-  
   @classmethod
   def _properties_to_node(clazz, properties):
     properties_node = node('properties')

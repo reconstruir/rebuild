@@ -1,12 +1,10 @@
-#!/usr/bin/env python
-#-*- coding:utf-8 -*-
-#
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy, os.path as path
 from bes.common import string_util
 from bes.fs import file_util
 
-class manager_script(object):
+class venv_shell_script(object):
 
   def __init__(self, template, basename):
     self.template = template

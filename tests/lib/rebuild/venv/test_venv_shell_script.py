@@ -1,18 +1,18 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
-#
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
+
 import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import file_util, temp_file
 
-from rebuild.manager import manager_script
+from rebuild.venv.venv_shell_script import venv_shell_script
 
-class test_manager_script(unit_test):
+class test_venv_shell_script(unit_test):
 
   def test_save_executable(self):
     template = '#!/bin/bash\necho @FOO@ @BAR@'
     basename = 'foo.sh'
-    script = manager_script(template, basename)
+    script = venv_shell_script(template, basename)
     tmp_root_dir = temp_file.make_temp_dir()
     variables = {
       '@FOO@': 'foo',
@@ -29,7 +29,7 @@ class test_manager_script(unit_test):
   def test_save_not_executable(self):
     template = 'something @FOO@ and @BAR@'
     basename = 'foo.sh'
-    script = manager_script(template, basename)
+    script = venv_shell_script(template, basename)
     tmp_root_dir = temp_file.make_temp_dir()
     variables = {
       '@FOO@': 'foo',

@@ -30,7 +30,7 @@ class test_package_metadata(unit_test):
                   TEST_REQUIREMENTS, TEST_PROPERTIES, TEST_FILES)
 
   def test_descriptor(self):
-    self.assertEqual( package_descriptor('kiwi', '6.7.8-2', self.TEST_PROPERTIES, self.TEST_REQUIREMENTS),
+    self.assertEqual( package_descriptor('kiwi', '6.7.8-2', requirements = self.TEST_REQUIREMENTS, properties = self.TEST_PROPERTIES),
                       self.TEST_ENTRY.package_descriptor )
 
   def test_build_target(self):

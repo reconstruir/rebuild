@@ -236,5 +236,30 @@ storage
     t = c.get('test_local')
     self.assertEqual( '', t.root_dir )
     
+  def test_missing_repo(self):
+    text='''
+storage
+  name: test_local
+  provider: local
+  location: /tmp/loc
+  root_dir: /myroot
+'''
+    c = SCM(text, '<test>')
+    t = c.get('test_local')
+    self.assertEqual( None, t.repo )
+
+  def test_empty_repo(self):
+    text='''
+storage
+  name: test_local
+  provider: local
+  location: /tmp/loc
+  repo:
+  root_dir: /myroot
+'''
+    c = SCM(text, '<test>')
+    t = c.get('test_local')
+    self.assertEqual( '', t.repo )
+    
 if __name__ == '__main__':
   unit_test.main()

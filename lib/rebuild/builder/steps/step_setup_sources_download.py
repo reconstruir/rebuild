@@ -45,6 +45,7 @@ class step_setup_sources_download(step):
       return step_result(False, 'Only one of: tarball, tarball_address or tarball_dir can be given.')
 
     downloaded_tarballs = []
+    outputs = {}
     
     if tarball_address:
       downloaded_path = tarball_address.downloaded_tarball_path(env.recipe_load_env)
@@ -54,6 +55,9 @@ class step_setup_sources_download(step):
       dest = tarball_address.get_property('dest', '${REBUILD_SOURCE_UNPACKED_DIR}')
       base_dir = tarball_address.get_property('base', None)
       strip_common_ancestor = tarball_address.get_property('strip_common_ancestor', True)
+      commit_timestamp = tarball_address.get_property('_GIT_COMMIT_TIMESTAMP', None)
+      if commit_timestamp:
+        outputs['_REBUILD_UPSTREAM_VERSION_OVERRIDE'] = commit_timestamp
       downloaded_tarballs.append(self._downloaded_tarball(downloaded_path, dest, base_dir, strip_common_ancestor))
 
     if tarball:
@@ -86,6 +90,8 @@ class step_setup_sources_download(step):
       downloaded_tarballs.append(self._downloaded_tarball(tarball_path, dest, base_dir, strip_common_ancestor))
 
     if env.config.download_only:
-      return step_result(True, None, outputs = { '_skip_rest': True })
+      outputs['_skip_rest'] = True
+      return step_result(True, None, outputs = outputs)
 
-    return step_result(True, None, outputs = { 'downloaded_tarballs': downloaded_tarballs })
+    outputs['downloaded_tarballs'] = downloaded_tarballs
+    return step_result(True, None, outputs = outputs)

@@ -40,3 +40,22 @@ class recipe_util(object):
   def root_node_to_string(clazz, node, depth = 0, indent = 2):
     s = node.to_string(depth = depth, indent = indent).strip()
     return white_space.shorten_multi_line_spaces(s)
+
+  @classmethod
+  def file_starts_with_magic(clazz, filename, magic):
+    'Return True if filename starts with the given magic sequence.'
+    with open(filename, 'rb') as fin:
+      try:
+        return fin.read(len(magic)) == magic
+      except IOError:
+        return False
+      except UnicodeDecodeError as ex:
+        return False
+  
+  @classmethod
+  def requirements_to_node(clazz, label, requirements):
+    result = node(label)
+    for req in requirements:
+      result.add_child(req.to_string_colon_format())
+    return result
+      

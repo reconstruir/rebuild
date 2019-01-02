@@ -12,14 +12,19 @@ from .db_error import *
 #log.configure('artifact_manager=debug')
 
 class artifact_manager_local(artifact_manager_base):
-
-  def __init__(self, root_dir):
+  
+  def __init__(self, config):
     super(artifact_manager_local, self).__init__()
-    check.check_string(root_dir)
-    self._root_dir = path.abspath(root_dir)
+    check.check_artifact_manager_factory_config(config)
+    self._root_dir = config.storage_config.full_path
     file_util.mkdir(self._root_dir)
-    self._db = artifact_db(path.join(self._root_dir, 'artifacts.db'))
-
+    db_filename = path.join(self._root_dir, 'artifacts.db')
+    self.log_d('db_filename=%s' % (db_filename))
+    self._db = artifact_db(db_filename)
+    
+  def __str__(self):
+    return 'local:%s' % (self._root_dir)
+    
   @property
   def root_dir(self):
     return self._root_dir

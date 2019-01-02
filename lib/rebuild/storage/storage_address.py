@@ -50,10 +50,6 @@ class storage_address(namedtuple('storage_address', 'hostname, repo, root_dir, s
     return buf.getvalue()
 
   @cached_property
-  def api_url(self):
-    return self.make_api_url()
-
-  @cached_property
   def file_folder(self):
     'Return the folder for self.filename'
     return '{repo}/{root_dir}/{sub_repo}'.format(repo = self.repo, root_dir = self.root_dir, sub_repo = self.sub_repo)
@@ -65,29 +61,11 @@ class storage_address(namedtuple('storage_address', 'hostname, repo, root_dir, s
       raise ValueError('no filename available')
     return '{file_folder}/{filename}'.format(file_folder = self.file_folder, filename = self.filename)
 
-  @cached_property
-  def search_aql_url(self):
-    return '{api_url}/search/aql'.format(api_url = self.api_url)
-
   def clone(self, mutations = None):
     return tuple_util.clone(self, mutations = mutations)
   
   def mutate_filename(self, filename):
     return self.clone({ 'filename': filename })
   
-  def make_api_url(self, endpoint = None, file_path = None, params = None):
-    if endpoint:
-      api_url = '{hostname}api/{endpoint}'.format(hostname = self.hostname, endpoint = endpoint)
-    else:
-      api_url = '{hostname}api'.format(hostname = self.hostname)
-
-    if file_path:
-      url = '{api_url}/{file_path}'.format(api_url = api_url, file_path = file_path)
-    else:
-      url = api_url
-      
-    if params:
-      url = '{url}?{params}'.format(url = url, params = params)
-    return url
     
 check.register_class(storage_address)

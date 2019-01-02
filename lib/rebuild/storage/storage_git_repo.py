@@ -6,7 +6,6 @@ from bes.git import repo
 from rebuild.base import build_blurb
 
 from .storage_base import storage_base
-from .tarball_finder import tarball_finder
 
 class storage_git_repo(storage_base):
 
@@ -26,7 +25,7 @@ class storage_git_repo(storage_base):
   #@abstractmethod
   def find_tarball(self, filename):
     self._update_if_needed()
-    return tarball_finder.find_by_filename(self.repo.root, filename)
+    return path.join(self.repo.root, filename)
 
   #@abstractmethod
   def ensure_source(self, filename):

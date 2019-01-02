@@ -15,11 +15,16 @@ class storage_config_manager(object):
   error = simple_config.error
   
   def __init__(self, config, source):
-    check.check_string(config)
     check.check_string(source)
     self.source = source
     self._configs = {}
-    c = simple_config.from_text(config, source = source)
+
+    if check.is_string(config):
+      c = simple_config.from_text(config, source = source)
+    elif check.is_node(config):
+      c = simple_config.from_node(config, source = source)
+    else:
+      raise TypeError('Unknown config type.  Should be string or node: %s - %s' % (str(config), type(config)))
     sections = c.find_sections('storage')
     for section in sections:
       sc = storage_config.create_from_config(section)
@@ -30,6 +35,9 @@ class storage_config_manager(object):
   def get(self, name):
     return self._configs.get(name, None)
 
+  def available_configs(self):
+    return sorted(self._configs.keys())
+  
   @classmethod
   def from_file(clazz, filename):
     return storage_config_manager(file_util.read(filename), source = filename)
@@ -47,7 +55,7 @@ class storage_config_manager(object):
   def make_local_config_content(clazz, name, location, repo, root_dir):
     check.check_string(name)
     check.check_string(location)
-    check.check_string(repo)
+    check.check_string(repo, allow_none = True)
     check.check_string(root_dir, allow_none = True)
     template = '''
 storage
@@ -57,6 +65,7 @@ storage
   repo: {repo}
   root_dir: {root_dir}
 '''
+    repo = repo or ''
     root_dir = root_dir or ''
     content = template.format(name = name, location = location, repo = repo, root_dir = root_dir)
     return content

@@ -17,6 +17,8 @@ from rebuild.source_ingester.http_download_cache import http_download_cache
 
 from .builder_script_manager import builder_script_manager
 
+from rebuild.storage.storage_artifactory import storage_artifactory
+
 class builder_env(object):
 
   def __init__(self, config, filenames):
@@ -67,7 +69,13 @@ class builder_env(object):
     return checksum_manager(path.join(build_dir, 'checksums'))
 
   def reload_artifact_manager(self):
-    self.artifact_manager = artifact_manager_local(path.join(self.config.build_root, 'artifacts'))
+    from rebuild.config import storage_config_manager
+    from rebuild.package.artifact_manager_factory import artifact_manager_factory
+    root_dir = path.join(self.config.build_root, 'artifacts')
+    scm = storage_config_manager.make_local_config('builder_local', root_dir, None, None)
+    config = scm.get('builder_local')
+    factory_config = artifact_manager_factory.config(None, None, True, config)
+    self.artifact_manager = artifact_manager_local(factory_config)
     self.external_artifact_manager = None
 
   @classmethod

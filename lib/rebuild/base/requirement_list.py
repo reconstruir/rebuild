@@ -69,7 +69,7 @@ class requirement_list(type_checked_list):
 
   @staticmethod
   def _check_cast_func(clazz, obj):
-    return clazz([ x for x in obj ])
+    return clazz([ x for x in (obj or []) ])
 
   def to_string_list(self):
     return [ str(r) for r in self ]

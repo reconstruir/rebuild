@@ -36,14 +36,6 @@ class test_storage_address(unit_test):
     self.assertEqual( 'http://mycom.not/mycom/repo/root/subrepo',
                       SA('http://mycom.not/mycom', 'repo', 'root', 'subrepo', None).url )
     
-  def test_api_url(self):
-    self.assertEqual( 'http://mycom.not/mycom/api',
-                      SA('http://mycom.not/mycom', 'repo', 'root', None, None).api_url )
-    
-  def test_search_aql_url(self):
-    self.assertEqual( 'http://mycom.not/mycom/api/search/aql',
-                      SA('http://mycom.not/mycom', 'repo', 'root', None, None).search_aql_url )
-
   def test_mutate_filename(self):
     self.assertEqual( 'newf', SA('http://mycom.not/mycom', 'r', 'd', 's', None).mutate_filename('newf').filename )
     self.assertEqual( 'newf', SA('http://mycom.not/mycom', 'r', 'd', 's', 'f').mutate_filename('newf').filename )

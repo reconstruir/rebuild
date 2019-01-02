@@ -88,28 +88,15 @@ project foo
     self.assertMultiLineEqual( expected, str(p) )
   
   def test_str_python_code(self):
-    expected = '''\
+    python_code = '''\
 print('hello from python_code inside a project_file')
 print('hello again')'''
-
-    recipes = masked_value_list([
-      masked_value(None, value_string_list(value = string_list.parse('for_all/foo/foo_all.recipe'))),
-      masked_value(None, value_string_list(value = string_list.parse('for_all/bar/bar_all.recipe'))),
-      masked_value('linux', value_string_list(value = string_list.parse('for_linux/foo/foo_linux.recipe'))),
-      masked_value('linux', value_string_list(value = string_list.parse('for_linux/bar/bar_linux.recipe'))),
-      masked_value('macos', value_string_list(value = string_list.parse('for_macos/foo/foo_macos.recipe'))),
-      masked_value('macos', value_string_list(value = string_list.parse('for_macos/bar/bar_macos.recipe'))),
-    ])
-    p = PF(2, 'foo.reproject', 'foo', None, None, None, recipes, None)
+    p = PF(2, 'foo.reproject', 'foo', None, None, None, None, python_code)
     expected = '''!rebuild.project!
 project foo
-  recipes
-    for_all/foo/foo_all.recipe
-    for_all/bar/bar_all.recipe
-    linux: for_linux/foo/foo_linux.recipe
-    linux: for_linux/bar/bar_linux.recipe
-    macos: for_macos/foo/foo_macos.recipe
-    macos: for_macos/bar/bar_macos.recipe
+  python_code
+    > print('hello from python_code inside a project_file')
+      print('hello again')
 '''
     self.assertMultiLineEqual( expected, str(p) )
 

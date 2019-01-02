@@ -13,7 +13,7 @@ from .storage_base import storage_base
 from rebuild.base import build_blurb
 
 from rebuild.artifactory.artifactory_requests import artifactory_requests
-from .storage_address import storage_address
+from rebuild.storage.storage_address import storage_address
 
 class storage_artifactory(storage_base):
 

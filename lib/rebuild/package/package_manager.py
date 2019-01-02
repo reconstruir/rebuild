@@ -21,6 +21,7 @@ from rebuild.base import build_blurb
 from .package import package
 from .package_db import package_db
 from .package_db_entry import package_db_entry
+from .package_install_options import package_install_options
 from .db_error import *
 
 class PackageFilesConflictError(Exception):
@@ -236,14 +237,15 @@ class package_manager(object):
   def package_manifest(clazz, tarball):
     return package(tarball).files.filenames()
 
-  def install_package(self, pkg_desc, build_target, hardness,
-                      allow_downgrade = False, force_install = False):
+  def install_package(self, pkg_desc, build_target, hardness, options = None):
     check.check_package_descriptor(pkg_desc)
-    self.log_i('install_package: pkg_desc=%s' % (str(pkg_desc)))
-    result = self._install_package(pkg_desc, build_target, hardness, allow_downgrade, force_install)
+    check.check_package_install_options(options, allow_none = True)
+    self.log_i('install_package: pkg_desc=%s; options=%s' % (pkg_desc, options))
+    result = self._install_package(pkg_desc, build_target, hardness, options)
     return result
     
-  def _install_package(self, pkg_desc, build_target, hardness, allow_downgrade, force_install):
+  def _install_package(self, pkg_desc, build_target, hardness, options):
+    options = options or package_install_options()
     pkg = self._artifact_manager.find_by_package_descriptor(pkg_desc, build_target, relative_filename = False)
     if not pkg:
       raise RuntimeError('Failed to find package in artifact manager: %s - %s' % (str(pkg_desc), str(build_target)))
@@ -252,7 +254,7 @@ class package_manager(object):
       old_pkg_entry = self.db.find_package(pkg.name)
       old_pkg_entry_desc = old_pkg_entry.descriptor
       comparison = package_descriptor.full_name_cmp(old_pkg_entry_desc, pkg_desc)
-      if force_install:
+      if options.allow_same_version:
         if self._contents_checksum_changed(old_pkg_entry, pkg):
           comparison = -1
       if comparison == 0:
@@ -265,7 +267,7 @@ class package_manager(object):
         self.install_tarball(pkg.filename, pkg, hardness)
         return True
       else:
-        if allow_downgrade:
+        if options.allow_downgrade:
           self.log_i('install_package: downgrading from %s to %s' % (old_pkg_entry_desc.full_name,
                                                                      pkg.full_name))
           self.uninstall_package(pkg.name)
@@ -294,13 +296,12 @@ class package_manager(object):
                                                                         new_contents_checksum))
     return contents_checksum_changed
       
-  def install_packages(self, packages, build_target, hardness, allow_downgrade = False, force_install = False):
+  def install_packages(self, packages, build_target, hardness, options = None):
     check.check_package_descriptor_seq(packages)
+    check.check_package_install_options(options, allow_none = True)
     
     for pkg_desc in packages:
-      self.install_package(pkg_desc, build_target, hardness,
-                           allow_downgrade = allow_downgrade,
-                           force_install = force_install)
+      self.install_package(pkg_desc, build_target, hardness, options)
 
   def uninstall_packages(self, packages): #, build_target):
     # FIXME: nothing happens with build_target

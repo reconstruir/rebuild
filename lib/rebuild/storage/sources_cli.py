@@ -18,7 +18,6 @@ from rebuild.source_ingester import ingest_util
 
 #from rebuild.config import storage_config
 
-from .tarball_finder import tarball_finder
 from .storage_db_entry import storage_db_entry
 from .storage_db_dict import storage_db_dict
 from .storage_db_entry import storage_db_entry
@@ -28,8 +27,8 @@ from .storage_factory import storage_factory
 from rebuild.base import build_target
 from rebuild.package import artifact_manager_local
 
-from rebuild.artifactory.artifactory_requests import artifactory_requests
-from rebuild.storage.storage_address import storage_address as SA
+#from rebuild.artifactory.artifactory_requests import artifactory_requests
+from rebuild.storage.storage_address import storage_address
 
 class what_resolver(object):
   def __init__(self, what):

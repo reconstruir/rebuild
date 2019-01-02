@@ -12,4 +12,5 @@ from .package_manager import PackageFilesConflictError, PackageMissingRequiremen
 from .package_manager import package_manager
 from .package_metadata import package_metadata
 from .package_metadata_list import package_metadata_list
+from .package_install_options import package_install_options
 from .package_tester import package_tester
