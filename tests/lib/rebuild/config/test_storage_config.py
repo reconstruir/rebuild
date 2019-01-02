@@ -3,9 +3,9 @@
 
 import os
 from bes.testing.unit_test import unit_test
-from rebuild.config import new_storage_config as SC
+from rebuild.config import storage_config as SC
 
-class test_new_storage_config(unit_test):
+class test_storage_config(unit_test):
     
   def xtest_artifactory(self):
     text='''

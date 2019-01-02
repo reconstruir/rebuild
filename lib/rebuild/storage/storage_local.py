@@ -14,7 +14,7 @@ class storage_local(storage_base):
   def __init__(self, config):
     log.add_logging(self, 'storage_local')
     check.check_storage_factory_config(config)
-    check.check_new_storage_config(config.storage_config)
+    check.check_storage_config(config.storage_config)
     self._config = config
     location = path.expanduser(self._config.storage_config.location)
     repo = self._config.storage_config.repo

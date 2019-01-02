@@ -23,7 +23,7 @@ class storage_artifactory(storage_base):
     build_blurb.add_blurb(self, 'rebuild')
     log.add_logging(self, 'storage_artifactory')
     check.check_storage_factory_config(config)
-    check.check_new_storage_config(config.storage_config)
+    check.check_storage_config(config.storage_config)
     self._config = config
     #self._hostname = config.download_credentials.values['hostname']
 #    self._remote_root_dir = path.join(config.download_credentials.root_dir, config.repo)

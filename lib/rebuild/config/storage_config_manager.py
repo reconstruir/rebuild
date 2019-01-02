@@ -8,7 +8,7 @@ from bes.config.simple_config import error, simple_config
 from bes.fs import file_util
 from bes.config.simple_config import origin
 
-from .new_storage_config import new_storage_config
+from .storage_config import storage_config
 
 class storage_config_manager(object):
 
@@ -22,7 +22,7 @@ class storage_config_manager(object):
     c = simple_config.from_text(config, source = source)
     sections = c.find_sections('storage')
     for section in sections:
-      sc = new_storage_config.create_from_config(section)
+      sc = storage_config.create_from_config(section)
       if sc.name in self._configs:
         raise self.error('storage with name \"%s\" already exists.', section.origin)
       self._configs[sc.name] = sc

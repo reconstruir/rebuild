@@ -6,7 +6,7 @@ from bes.common import check
 
 from .credentials import credentials
 
-class new_storage_config(namedtuple('new_storage_config', 'name, provider, location, repo, root_dir, download, upload')):
+class storage_config(namedtuple('storage_config', 'name, provider, location, repo, root_dir, download, upload')):
 
   def __new__(clazz, name, provider, location, repo, root_dir, download, upload):
     check.check_string(name)
@@ -32,6 +32,6 @@ class new_storage_config(namedtuple('new_storage_config', 'name, provider, locat
     upload_password = section.find_by_key('upload.password', raise_error = False) or ''
     download = credentials(download_username, download_password)
     upload = credentials(upload_username, upload_password)
-    return new_storage_config(name, provider, location, repo, root_dir, download, upload)
+    return storage_config(name, provider, location, repo, root_dir, download, upload)
 
-check.register_class(new_storage_config, include_seq = False)
+check.register_class(storage_config, include_seq = False)
