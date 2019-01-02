@@ -61,10 +61,10 @@ class builder_cli(build_target_cli):
                              help = 'Print performance information. [ None ]')
     self.parser.add_argument('--download-only', default = None, action = 'store_true',
                              help = 'Only download stuff needed for the build without building anything. [ True ]')
-    self.parser.add_argument('--storage-config', default = None,
+    self.parser.add_argument('--storage-config', default = None, #'config/new_storage.config',
                              action = 'store', type = str,
                              help = 'Configuration file for storage used for artifacts and sources upload/download. [ None ]')
-    self.parser.add_argument('--sources-provider', default = 'local',
+    self.parser.add_argument('--sources-config-name', default = 'local',
                              action = 'store', type = str,
                              help = 'The storage provider to use for sources. [ local ]')
     self.parser.add_argument('--ingest', action = 'store_true', help = 'Execute all the ingest build steps. [ False ]')
@@ -143,10 +143,9 @@ class builder_cli(build_target_cli):
     config.performance = args.performance
     config.download_only = args.download_only
     config.storage_config = args.storage_config
-    config.sources_provider = args.sources_provider
+    config.sources_config_name = args.sources_config_name
     config.ingest = args.ingest or args.ingest_only
     config.ingest_only = args.ingest_only
-
     if config.ingest_only:
       config.no_tests = True
     

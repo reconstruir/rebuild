@@ -16,7 +16,7 @@ from bes.archive import archiver, archive_extension
 from rebuild.binary_format import binary_detector
 from rebuild.source_ingester import ingest_util
 
-from rebuild.config import storage_config
+#from rebuild.config import storage_config
 
 from .tarball_finder import tarball_finder
 from .storage_db_entry import storage_db_entry

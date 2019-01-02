@@ -6,7 +6,7 @@ import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import temp_file
 
-from rebuild.config import storage_config
+from rebuild.config import storage_config_manager
 from rebuild.storage import storage_factory
 from rebuild.storage.storage_base import storage_base
 
@@ -109,41 +109,33 @@ class test_storage_factory(unit_test):
   
   def test_create(self):
     config_text = '''
-credential
-  provider: kiwi
-  purpose: download
-  username: download@bar.com
-  password: downloadpss
-
-credential
-  provider: kiwi
-  purpose: upload
-  username: upload@bar.com
-  password: uploadpass
-
 storage
-  description: where i upload to kiwi
+  name: test
   provider: kiwi
-  root_dir: /mydir
+  location: kiwi://mykiwi.com/mystuff
+  repo: myrepo
+  root_dir: myrootdir
+  download.username: fred
+  download.password: flintpass
+  upload.username: admin
+  upload.password: sekret
 '''
-    ac = storage_config(config_text, '<test>')
+    scm = storage_config_manager(config_text, '<test>')
+    config = scm.get('test')
+    self.assertEqual( 'test', config.name )
+    self.assertEqual( 'kiwi', config.provider )
+    self.assertEqual( 'kiwi://mykiwi.com/mystuff', config.location )
+    self.assertEqual( 'myrepo', config.repo )
+    self.assertEqual( 'myrootdir', config.root_dir )
+    self.assertEqual( 'fred', config.download.username )
+    self.assertEqual( 'flintpass', config.download.password )
+    self.assertEqual( 'admin', config.upload.username )
+    self.assertEqual( 'sekret', config.upload.password )
 
-    provider = 'kiwi'
-    a = ac.get('download', provider)
-    self.assertEqual( 'download@bar.com', a.credentials.username )
-    self.assertEqual( 'downloadpss', a.credentials.password )
-    self.assertEqual( '/mydir', a.root_dir )
-
-    b = ac.get('upload', provider)
-    self.assertEqual( 'upload@bar.com', b.credentials.username )
-    self.assertEqual( 'uploadpass', b.credentials.password )
-    self.assertEqual( '/mydir', b.root_dir )
-
-    download_credentials = ac.get('download', provider)
-    upload_credentials = ac.get('upload', provider)
     local_storage_dir = temp_file.make_temp_dir()
-    factory_config = storage_factory.config(local_storage_dir, 'myrepo', False, download_credentials, upload_credentials)
-    kiwi_storage = storage_factory.create(provider, factory_config)
+    factory_config = storage_factory.config(local_storage_dir, 'mysubrepo', False, config)
+    storage = storage_factory.create(factory_config)
+    self.assertTrue( isinstance(storage, storage_kiwi) )
 
 if __name__ == '__main__':
   unit_test.main()

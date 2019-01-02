@@ -1110,8 +1110,10 @@ recipe: add description
 
 2019-01-01
  - empty variable in recipe under variables: causes an exception
+ - magic for new storage config
 
 urgent stuff:
-- simplified storage config
-- sharing recipes
 - versions for projects
+
+figure out if can retire remote_filename_abs from storage
+ressurect sources_cli.py

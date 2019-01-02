@@ -210,6 +210,31 @@ storage
     self.assertEqual( None, a.credentials.password )
     self.assertEqual( '/tmp/tmpdir', a.root_dir )
 """
+
+  def test_missing_root_dir(self):
+    text='''
+storage
+  name: test_local
+  provider: local
+  location: /tmp/loc
+  repo: foo
+'''
+    c = SCM(text, '<test>')
+    t = c.get('test_local')
+    self.assertEqual( None, t.root_dir )
+
+  def test_empty_root_dir(self):
+    text='''
+storage
+  name: test_local
+  provider: local
+  location: /tmp/loc
+  repo: foo
+  root_dir:
+'''
+    c = SCM(text, '<test>')
+    t = c.get('test_local')
+    self.assertEqual( '', t.root_dir )
     
 if __name__ == '__main__':
   unit_test.main()

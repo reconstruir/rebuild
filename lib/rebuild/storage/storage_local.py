@@ -14,16 +14,21 @@ class storage_local(storage_base):
   def __init__(self, config):
     log.add_logging(self, 'storage_local')
     check.check_storage_factory_config(config)
+    check.check_new_storage_config(config.storage_config)
     self._config = config
-    location = self._config.download_credentials.values['location']
-    root_dir = config.download_credentials.root_dir
-    repo = config.repo
-    self._where = path.join(location, root_dir, repo)
-    self.log_d('__init__: location=%s; root_dir=%s; repo=%s' % (location, root_dir, repo))
+    location = path.expanduser(self._config.storage_config.location)
+    repo = self._config.storage_config.repo
+    root_dir = self._config.storage_config.root_dir
+    sub_repo = self._config.sub_repo
+    if root_dir:
+      self._where = path.join(location, repo, root_dir, sub_repo)
+    else:
+      self._where = path.join(location, repo, sub_repo)
+    self.log_e('__init__: location=%s; repo=%s; root_dir=%s; sub_repo=%s' % (location, repo, root_dir, sub_repo))
     self._local_root_dir = config.local_cache_dir
     file_util.mkdir(self._where)
     file_util.mkdir(self._local_root_dir)
-    self.log_d('__init__: _where=%s; _local_root_dir%s' % (self._where, self._local_root_dir))
+    self.log_e('__init__: _where=%s; _local_root_dir%s' % (self._where, self._local_root_dir))
     
   def __str__(self):
     return 'local:%s' % (self._where)

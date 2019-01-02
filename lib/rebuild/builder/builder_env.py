@@ -12,7 +12,7 @@ from rebuild.package import artifact_manager_local
 from rebuild.base import build_blurb, package_descriptor, requirement_manager
 from rebuild.storage import storage_factory
 from rebuild.recipe import recipe_load_env
-from rebuild.config import storage_config
+from rebuild.config import storage_config_manager
 from rebuild.source_ingester.http_download_cache import http_download_cache
 
 from .builder_script_manager import builder_script_manager
@@ -23,11 +23,10 @@ class builder_env(object):
     build_blurb.add_blurb(self, 'rebuild')
     self.config = config
     local_storage_cache_dir = path.join(config.storage_cache_dir, 'local')
-    self.storage_config = self._make_storage_config(config.storage_config,
-                                                    local_storage_cache_dir)
-    self.sources_storage = self._make_storage(self.storage_config,
+    self.storage_config_manager = self._load_storage_config_file(config.storage_config)
+    self.sources_storage = self._make_storage(self.storage_config_manager,
+                                              config.sources_config_name,
                                               'sources',
-                                              config.sources_provider,
                                               config.storage_cache_dir,
                                               config.no_network)
     self.blurb('sources_storage: %s' % (self.sources_storage))
@@ -49,12 +48,19 @@ class builder_env(object):
     return self.requirement_manager.resolve_deps([descriptor.name], self.config.build_target.system, hardness, include_names)
   
   @classmethod
-  def _make_storage(clazz, config, repo, provider, storage_cache_dir, no_network):
-    download_credentials = config.get('download', provider)
-    upload_credentials = config.get('upload', provider)
-    local_storage_dir = path.join(storage_cache_dir, provider)
-    factory_config = storage_factory.config(local_storage_dir, repo, no_network, download_credentials, upload_credentials)
-    return storage_factory.create(provider, factory_config)
+  def _make_storage(clazz, config_manager, config_name, sub_repo, storage_cache_dir, no_network):
+    check.check_storage_config_manager(config_manager)
+    config = config_manager.get(config_name)
+    if not config:
+      raise RuntimeError('No storage config named \"%s\" found in: %s' % (config_name, config_manager.source))
+
+    #return clazz.__bases__[0].__new__(clazz, name, provider, location, repo, root_dir, download, upload)    
+    
+    #download_credentials = config.get('download', provider)
+    #upload_credentials = config.get('upload', provider)
+    local_storage_dir = path.join(storage_cache_dir, config.provider)
+    factory_config = storage_factory.config(local_storage_dir, sub_repo, no_network, config)
+    return storage_factory.create(factory_config)
 
   @classmethod
   def _make_checksum_manager(clazz, build_dir):
@@ -65,11 +71,9 @@ class builder_env(object):
     self.external_artifact_manager = None
 
   @classmethod
-  def _make_storage_config(clazz, filename, local_storage_cache_dir):
-    if not filename:
-      return storage_config.make_local_config(None, local_storage_cache_dir, 'rebuild_stuff')
+  def _load_storage_config_file(clazz, filename):
     if not path.exists(filename):
-      raise RuntimeError('artifacts config file not found: %s' % (filename))
-    return storage_config.from_file(filename)
+      raise RuntimeError('storage config file not found: %s' % (filename))
+    return storage_config_manager.from_file(filename)
       
 check.register_class(builder_env, include_seq = False)

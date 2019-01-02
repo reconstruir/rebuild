@@ -7,7 +7,7 @@ from bes.fs.testing import temp_content
 from bes.fs import temp_file
 from bes.archive.temp_archive import archive_extension, temp_archive
 from rebuild.storage import storage_local, storage_factory
-from rebuild.config import storage_config
+from rebuild.config import storage_config_manager
 import os.path as path
 
 class source_dir_maker(object):
@@ -61,10 +61,9 @@ class test_storage_local(unit_test):
       print('tmp_dir: %s' % (tmp_dir))
       print('tmp_cache_dir: %s' % (tmp_cache_dir))
     
-    config = storage_config.make_local_config('unit test', tmp_dir, 'rebuild_stuff')
-    download_credentials = config.get('download', 'local')
-    upload_credentials = config.get('upload', 'local')
-    factory_config = storage_factory.config(tmp_cache_dir, 'sources', True, download_credentials, upload_credentials)
+    scm = storage_config_manager.make_local_config('unit_test', tmp_dir, 'rebuild_stuff', None)
+    config = scm.get('unit_test')
+    factory_config = storage_factory.config(tmp_cache_dir, 'sources', True, config)
     storage = storage_local(factory_config)
     expected = path.join(tmp_cache_dir, 'a/alpha-1.2.3.tar.gz')
     actual = storage.find_tarball('a/alpha-1.2.3.tar.gz')

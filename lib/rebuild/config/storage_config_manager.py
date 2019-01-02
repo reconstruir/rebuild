@@ -17,6 +17,7 @@ class storage_config_manager(object):
   def __init__(self, config, source):
     check.check_string(config)
     check.check_string(source)
+    self.source = source
     self._configs = {}
     c = simple_config.from_text(config, source = source)
     sections = c.find_sections('storage')
@@ -27,7 +28,7 @@ class storage_config_manager(object):
       self._configs[sc.name] = sc
       
   def get(self, name):
-    return self._configs[name]
+    return self._configs.get(name, None)
 
   @classmethod
   def from_file(clazz, filename):
@@ -39,10 +40,15 @@ class storage_config_manager(object):
 
   @classmethod
   def make_local_config(clazz, name, location, repo, root_dir):
+    content = clazz.make_local_config_content(name, location, repo, root_dir)
+    return clazz.from_text(content, source = '<default>')
+  
+  @classmethod
+  def make_local_config_content(clazz, name, location, repo, root_dir):
     check.check_string(name)
     check.check_string(location)
     check.check_string(repo)
-    check.check_string(root_dir)
+    check.check_string(root_dir, allow_none = True)
     template = '''
 storage
   name: {name}
@@ -51,8 +57,9 @@ storage
   repo: {repo}
   root_dir: {root_dir}
 '''
-    content = template.format(description = description, location = location, root_dir = root_dir)
-    return clazz.from_text(content, source = '<default>')
+    root_dir = root_dir or ''
+    content = template.format(name = name, location = location, repo = repo, root_dir = root_dir)
+    return content
   
 check.register_class(storage_config_manager, include_seq = False)
   

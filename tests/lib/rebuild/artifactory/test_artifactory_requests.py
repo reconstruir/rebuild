@@ -7,7 +7,6 @@ from bes.testing.unit_test import unit_test
 from bes.testing.unit_test.unit_test_skip import skip_if
 from bes.fs import file_util, temp_file
 from rebuild.artifactory.artifactory_requests import artifactory_requests as AR
-from rebuild.config import credentials_config
 
 class test_artifactory_requests(unit_test):
 
