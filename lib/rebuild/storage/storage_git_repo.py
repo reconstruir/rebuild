@@ -64,11 +64,6 @@ class storage_git_repo(storage_base):
     assert False
     
   #@abstractmethod
-  def remote_filename_abs(self, remote_filename):
-    assert not path.isabs(remote_filename)
-    return path.join(self._where, remote_filename)
-    
-  #@abstractmethod
   def remote_checksum(self, remote_filename):
     assert False #return file_util.checksum('sha1', self.remote_filename_abs(remote_filename))
 

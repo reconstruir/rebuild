@@ -1029,7 +1029,6 @@ version specification and locking for ~/.rebuild/config
 - property escaping
 - version of python_future in third_party
 - ingestion should work without upload should be 2 steps one just downloads the upstream url the other uploads
-- ingestion s/remote_filename/ingested_filename/
 - requests timeouts/ progress ?
 
 2018-12-14
@@ -1115,5 +1114,4 @@ recipe: add description
 urgent stuff:
 - versions for projects
 
-figure out if can retire remote_filename_abs from storage
 ressurect sources_cli.py

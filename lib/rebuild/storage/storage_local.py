@@ -91,10 +91,6 @@ class storage_local(storage_base):
     return True
     
   #@abstractmethod
-  def remote_filename_abs(self, remote_filename):
-    assert False
-    
-  #@abstractmethod
   def remote_checksum(self, remote_filename):
     remote_path = self._remote_path(remote_filename)
     if path.isfile(remote_path):

@@ -43,10 +43,6 @@ class storage_base(with_metaclass(storage_register_meta, object)):
   def remote_checksum(self, remote_filename):
     pass
 
-  @abstractmethod
-  def remote_filename_abs(self, remote_filename):
-    pass
-
   _entry = namedtuple('_entry', 'filename, sha1_checksum')
   @abstractmethod
   def list_all_files(self):

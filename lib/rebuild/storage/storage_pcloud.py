@@ -126,12 +126,7 @@ class storage_pcloud(storage_base):
 
   #@abstractmethod
   def remote_checksum(self, remote_filename):
-    return self._checksum_file(file_path = self.remote_filename_abs(remote_filename))
-
-  #@abstractmethod
-  def remote_filename_abs(self, remote_filename):
-    assert not path.isabs(remote_filename)
-    return path.join(self._remote_root_dir, remote_filename)
+    assert False #return self._checksum_file(file_path = self.remote_filename_abs(remote_filename))
 
   #@abstractmethod
   def list_all_files(self):

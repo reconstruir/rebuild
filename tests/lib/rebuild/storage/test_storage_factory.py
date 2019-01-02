@@ -48,10 +48,6 @@ class storage_kiwi(storage_base):
     pass
 
   #@abstractmethod
-  def remote_filename_abs(self, remote_filename):
-    assert False
-
-  #@abstractmethod
   def list_all_files(self):
     assert False
     
@@ -91,10 +87,6 @@ class storage_watermelon(storage_base):
   #@abstractmethod
   def remote_checksum(self, remote_filename):
     pass
-
-  #@abstractmethod
-  def remote_filename_abs(self, remote_filename):
-    assert False
 
   #@abstractmethod
   def list_all_files(self):

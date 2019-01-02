@@ -133,12 +133,6 @@ class storage_artifactory(storage_base):
     return checksums.sha256 if checksums else None
 
   #@abstractmethod
-  def remote_filename_abs(self, remote_filename):
-    assert False
-    #assert not path.isabs(remote_filename)
-    #return path.join(self._remote_root_dir, remote_filename)
-
-  #@abstractmethod
   def list_all_files(self):
     entries = artifactory_requests.list_all_files(self._address,
                                                   self._config.storage_config.download.username,
