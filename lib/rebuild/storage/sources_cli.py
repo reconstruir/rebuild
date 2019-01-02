@@ -29,7 +29,7 @@ from rebuild.base import build_target
 from rebuild.package import artifact_manager_local
 
 from rebuild.artifactory.artifactory_requests import artifactory_requests
-from rebuild.artifactory.storage_address import storage_address
+from rebuild.storage.storage_address import storage_address as SA
 
 class what_resolver(object):
   def __init__(self, what):

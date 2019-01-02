@@ -11,7 +11,7 @@ from bes.fs import file_util
 
 from rebuild.base import artifact_descriptor, build_blurb, requirement_manager
 from rebuild.artifactory.artifactory_requests import artifactory_requests
-from rebuild.artifactory.storage_address import storage_address
+from rebuild.storage.storage_address import storage_address
 
 from .artifact_manager_base import artifact_manager_base
 from .artifact_db import artifact_db
