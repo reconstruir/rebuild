@@ -14,27 +14,7 @@ from rebuild.base import build_target as BT
 
 from rebuild.venv.venv_config import venv_config
 from rebuild.venv.venv_manager import venv_manager
-
-class _test_context(namedtuple('_test_context', 'tmp_dir, config_filename, artifact_manager, manager, build_target')):
-
-  def __new__(clazz, tmp_dir, config_filename, artifact_manager, manager, build_target):
-    return clazz.__bases__[0].__new__(clazz, tmp_dir, config_filename, artifact_manager, manager, build_target)
-
-  def installed_packages(self, project_name, include_version = False):
-    return self.manager.installed_packages(project_name, self.build_target, include_version = include_version)
-
-  def update_from_config(self, project_name):
-    return self.manager.update_from_config(project_name, self.build_target)
-
-  def clear_project_from_config(self, project_name):
-    return self.manager.clear_project_from_config(project_name, self.build_target)
-  
-  def rewrite_config(self, config):
-    config_head = test_manager._HEAD_TEMPLATE.format(artifacts_dir = self.artifact_manager._root_dir)
-    content = config.format(head = config_head)
-    file_util.save(self.config_filename, content = content)
-    config_obj = venv_config.load(self.config_filename, self.build_target)
-    self.manager._config = config_obj
+from rebuild.venv.venv_install_options import venv_install_options
   
 class test_manager(unit_test):
 
@@ -186,10 +166,10 @@ projects
     
   def test_packages_update_upgrade(self):
     recipes1 = '''
-fake_package aflatoxin 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package aflatoxin 1.0.9 0 0 linux release x86_64 ubuntu 18
 '''
     recipes2 = '''
-fake_package aflatoxin 1.0.1 0 0 linux release x86_64 ubuntu 18
+fake_package aflatoxin 1.0.10 0 0 linux release x86_64 ubuntu 18
 '''
     config = '''{head}
 projects
@@ -199,13 +179,40 @@ projects
 '''
     test = self._setup_test(config, recipes = recipes1)
     test.update_from_config('test')
-    self.assertEqual( [ 'aflatoxin-1.0.0' ], test.installed_packages('test', include_version = True) )
+    self.assertEqual( [ 'aflatoxin-1.0.9' ], test.installed_packages('test', include_version = True) )
 
-    FPUT.artifact_manager_publish(test.artifact_manager, recipes = recipes2)
+    test.publish_artifacts(recipes2)
 
     test.update_from_config('test')
-    self.assertEqual( [ 'aflatoxin-1.0.1' ], test.installed_packages('test', include_version = True) )
+    self.assertEqual( [ 'aflatoxin-1.0.10' ], test.installed_packages('test', include_version = True) )
 
+  def test_packages_update_downgrade(self):
+    recipes1 = '''
+fake_package aflatoxin 1.0.10 0 0 linux release x86_64 ubuntu 18
+'''
+    recipes2 = '''
+fake_package aflatoxin 1.0.9 0 0 linux release x86_64 ubuntu 18
+'''
+    config = '''{head}
+projects
+  test
+    packages
+      aflatoxin
+'''
+    test = self._setup_test(config, recipes = recipes1)
+    test.update_from_config('test')
+    self.assertEqual( [ 'aflatoxin-1.0.10' ], test.installed_packages('test', include_version = True) )
+
+    test.clear_artifacts()
+    test.publish_artifacts(recipes2)
+
+    test.update_from_config('test', options = venv_install_options(allow_downgrade = False))
+    self.assertEqual( [ 'aflatoxin-1.0.10' ], test.installed_packages('test', include_version = True) )
+
+    test.update_from_config('test', options = venv_install_options(allow_downgrade = True))
+    self.assertEqual( [ 'aflatoxin-1.0.9' ], test.installed_packages('test', include_version = True) )
+
+    
   def xtest_packages_update_specific_version(self):
     recipes1 = '''
 fake_package aflatoxin 1.0.0 0 0 linux release x86_64 ubuntu 18
@@ -280,6 +287,34 @@ projects
   @classmethod
   def _parse_stdout_list(clazz, s):
     return [ x.strip() for x in s.split('\n') if x.strip() ]
+
+
+class _test_context(namedtuple('_test_context', 'tmp_dir, config_filename, artifact_manager, manager, build_target')):
+
+  def __new__(clazz, tmp_dir, config_filename, artifact_manager, manager, build_target):
+    return clazz.__bases__[0].__new__(clazz, tmp_dir, config_filename, artifact_manager, manager, build_target)
+
+  def installed_packages(self, project_name, include_version = False):
+    return self.manager.installed_packages(project_name, self.build_target, include_version = include_version)
+
+  def update_from_config(self, project_name, options = None):
+    return self.manager.update_from_config(project_name, self.build_target, options = options)
+
+  def clear_project_from_config(self, project_name):
+    return self.manager.clear_project_from_config(project_name, self.build_target)
   
+  def rewrite_config(self, config):
+    config_head = test_manager._HEAD_TEMPLATE.format(artifacts_dir = self.artifact_manager._root_dir)
+    content = config.format(head = config_head)
+    file_util.save(self.config_filename, content = content)
+    config_obj = venv_config.load(self.config_filename, self.build_target)
+    self.manager._config = config_obj
+
+  def publish_artifacts(self, recipes):
+    FPUT.artifact_manager_publish(self.artifact_manager, recipes = recipes)
+    
+  def clear_artifacts(self):
+    FPUT.artifact_manager_clear(self.artifact_manager)
+    
 if __name__ == '__main__':
   unit_test.main()

@@ -67,3 +67,8 @@ class fake_package_unit_test(object):
     for tmp_package in tmp_packages:
       artifact_manager.publish(tmp_package.filename, False, tmp_package.metadata)
   
+  @classmethod
+  def artifact_manager_clear(clazz, artifact_manager):
+    adescs = artifact_manager.list_all_by_descriptor(None)
+    for adesc in adescs:
+      artifact_manager.remove_artifact(adesc)
