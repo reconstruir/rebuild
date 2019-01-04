@@ -4,7 +4,7 @@ import os.path as path
 from bes.common import check
 from bes.fs import file_path, file_util
 from bes.system import log, os_env
-from rebuild.base import build_blurb
+from rebuild.base import build_blurb, package_descriptor_list
 from bes.dependency import dependency_resolver
 from rebuild.package import package_manager
 from collections import namedtuple
@@ -47,8 +47,9 @@ class venv_manager(object):
                                                             log_tag = 'package_manager.%s' % (project_name))
     return self._package_managers[project_name]
 
-  def update_packages(self, project_name, packages, build_target, options = None):
+  def _update_packages(self, project_name, packages, build_target, options = None):
     check.check_string(project_name)
+    check.check_package_descriptor_list(packages)
     check.check_build_target(build_target)
     options = options or venv_install_options()
     check.check_venv_install_options(options)
@@ -56,9 +57,13 @@ class venv_manager(object):
     pm.install_packages(packages, build_target, [ 'RUN' ], options.package_install_options)
     pm.ensure_shell_framework()
     
-  def installed_packages(self, project_name, build_target, include_version = False):
+  def installed_packages(self, project_name, build_target):
     pm = self._package_manager(project_name, build_target)
-    return pm.list_all(include_version = include_version)
+    return pm.list_all_descriptors()
+
+  def installed_packages_names(self, project_name, build_target, include_version = False):
+    pm = self._package_manager(project_name, build_target)
+    return pm.list_all_names(include_version = include_version)
 
   resolve_result = namedtuple('resolve_result', 'available,missing,resolved')
   def _resolve_packages(self, package_names, build_target):
@@ -71,7 +76,7 @@ class venv_manager(object):
     if missing_packages:
       return self.resolve_result(available_packages, missing_packages, [])
     resolved = self._artifact_manager.latest_packages(resolved_names, build_target)
-    resolved_descriptors = [ r.package_descriptor for r in resolved ]
+    resolved_descriptors = package_descriptor_list([ r.package_descriptor for r in resolved ])
     for desc in resolved_descriptors:
       self.log_d('_resolve_packages: RESOLVED: %s' % (str(desc)))
     self.log_i('done resolving')
@@ -83,11 +88,16 @@ class venv_manager(object):
     if resolve_rv.missing:
       self.blurb('missing artifacts at %s: %s' % (self._artifact_manager.root_dir, ' '.join(resolve_rv.missing)))
       return []
-    self.update_packages(project_name, resolve_rv.resolved, build_target, options)
-    return [ pi.name for pi in resolve_rv.resolved ]
+    self._update_packages(project_name, resolve_rv.resolved, build_target, options)
+    return resolve_rv.resolved
 
   def uninstall_packages(self, project_name, packages, build_target):
-    self.log_i('%s - uninstalling: %s' % (project_name, ' '.join(packages)))
+    check.check_string(project_name)
+    check.check_package_descriptor_list(packages)
+    check.check_build_target(build_target)
+    self.log_i('uninstall_packages: project_name=%s; build_target=%s; packages=%s' % (project_name, build_target.build_path,
+                                                                                      ','.join(packages.names())))
+
     # FIXME: no dependents handling
     pm = self._package_manager(project_name, build_target)
     pm.uninstall_packages(packages) #, build_target)
@@ -98,7 +108,7 @@ class venv_manager(object):
     check.check_string(project_name)
     check.check_build_target(build_target)
     pm = self._package_manager(project_name, build_target)
-    return pm.transform_env(env, pm.list_all())
+    return pm.transform_env(env, pm.list_all_names())
   
   def bin_dir(self, project_name, build_target):
     check.check_string(project_name)
@@ -134,19 +144,23 @@ class venv_manager(object):
       self.blurb('failed to update %s from %s' % (project_name, self._config.filename))
       return False
     installed_packages = self.installed_packages(project_name, build_target)
-    removed_packages = list(set(installed_packages).difference(set(resolved_packages)))
-    self.log_i('%s - installed packages: %s' % (project_name, ' '.join(installed_packages)))
-    self.log_i('%s - removed packages: %s' % (project_name, ' '.join(removed_packages)))
-    if removed_packages:
-      self.uninstall_packages(project_name, removed_packages, build_target)
-    self.save_system_setup_scripts(project_name, build_target)
+    removed_packages_names = list(set(installed_packages.names()).difference(set(resolved_packages.names())))
+    self.log_i('%s - installed packages: %s' % (project_name, ' '.join(installed_packages.names())))
+    self.log_i('%s - removed packages: %s' % (project_name, ' '.join(removed_packages_names)))
+    if removed_packages_names:
+      pm = self._package_manager(project_name, build_target)
+      self.uninstall_packages(project_name, pm.descriptors_for_names(removed_packages_names), build_target)
+    if not options.dont_touch_scripts:
+      self.save_system_setup_scripts(project_name, build_target)
     return True
   
-  def clear_project_from_config(self, project_name, build_target):
+  def clear_project_from_config(self, project_name, build_target, options = None):
+    options = options or venv_install_options()
     self.log_i('clear_project_from_config: project_name=%s; build_target=%s' % (project_name, build_target))
     installed_packages = self.installed_packages(project_name, build_target)
     self.uninstall_packages(project_name, installed_packages, build_target)
-    self.save_system_setup_scripts(project_name, build_target)
+    if not options.dont_touch_scripts:
+      self.save_system_setup_scripts(project_name, build_target)
     return True
   
   SETUP_SYSTEM_SCRIPT_TEMPLATE = '''

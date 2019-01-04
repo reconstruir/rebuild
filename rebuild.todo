@@ -28,12 +28,6 @@ dec 24
 jan 1
 - finish moving checksuming to BuildScript
 
-jan 2
-- add __load_package() persistent cache for ArtifactManager
-- Rebbe.update_packages() needs options for machine and arch and
-  build_level
-
-
 Command to test rebbe package installation:
 rebbe.py packages install -a tmp/artifacts /tmp/p poto python_libarchive libpng
 
@@ -149,7 +143,6 @@ rebbe.py packages update -a ~/software/tmp/artifacts ~/.retools/
 feb 18
 - checks for python eggs and libs should be added automatically only some python projects doing it
 - add unit test for common_base when the archive has a member that is a single dot
-- Rebbe.py:update_packages needs options for system and arch: see FIXME
 
 feb 21
 - PYTHONPATH ends up with too many packages.  some dont have python libs

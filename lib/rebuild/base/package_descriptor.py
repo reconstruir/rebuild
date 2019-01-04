@@ -67,7 +67,7 @@ class package_descriptor(namedtuple('package_descriptor', 'name, version, requir
 
   def __eq__(self, other):
     check.check_package_descriptor(other)
-    return self.__dict__ == other.__dict__
+    return hash(self) == hash(other)
 
   def __lt__(self, other):
     check.check_package_descriptor(other)
@@ -172,4 +172,4 @@ class package_descriptor(namedtuple('package_descriptor', 'name, version, requir
   def clone(self, mutations = None):
     return tuple_util.clone(self, mutations = mutations)
   
-check.register_class(package_descriptor)
+check.register_class(package_descriptor, include_seq = False)

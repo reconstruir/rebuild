@@ -6,7 +6,7 @@ from bes.testing.unit_test import unit_test
 from bes.fs import file_find, file_util, temp_file
 from bes.system import execute, os_env
 from bes.common import check, dict_util, object_util
-from rebuild.base import build_target as BT, package_descriptor as PD
+from rebuild.base import build_target as BT, package_descriptor as PD, package_descriptor_list as PDL
 from rebuild.pkg_config import pkg_config
 from rebuild.package import artifact_manager_local, package, package_manager, package_install_options
 from rebuild.package import PackageFilesConflictError, PackageMissingRequirementsError
@@ -93,11 +93,11 @@ fake_package libfoo 1.0.0 0 0 linux release x86_64 ubuntu 18
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
     pkg = FPUT.create_one_package(recipe, metadata_mutations = mutations, debug = self.DEBUG)
     pm.install_tarball(pkg.filename, pkg.metadata, ['BUILD', 'RUN'])
-    self.assertEqual( [ 'libfoo-1.0.0' ], pm.list_all(include_version = True) )
+    self.assertEqual( [ 'libfoo-1.0.0' ], pm.list_all_names(include_version = True) )
     
     PKG_CONFIG_PATH = pm.pkg_config_path
     
-    # list_all
+    # list_all_names
     packages = pkg_config.list_all(PKG_CONFIG_PATH = PKG_CONFIG_PATH)
     # 2 because of the rebbe_ links
     self.assertEqual( 1, len(packages) )
@@ -199,9 +199,9 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
     pi = PD('water', '1.0.0')
     install_rv = pm.install_package(pi, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
     self.assertTrue( install_rv )
-    self.assertEqual( [ 'water-1.0.0' ], pm.list_all(include_version = True) )
-    pm.uninstall_package('water')
-    self.assertEqual( [], pm.list_all(include_version = True) )
+    self.assertEqual( [ 'water-1.0.0' ], pm.list_all_names(include_version = True) )
+    pm.uninstall_package(pi)
+    self.assertEqual( [], pm.list_all_names(include_version = True) )
     
   def test_is_installed(self):
     pm = self._make_empty_pm()
@@ -224,7 +224,7 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
     pi = PD('water', '1.0.0')
     install_rv = pm.install_package(pi, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
     self.assertTrue( install_rv )
-    self.assertEqual( [ 'water-1.0.0' ], pm.list_all(include_version = True) )
+    self.assertEqual( [ 'water-1.0.0' ], pm.list_all_names(include_version = True) )
 
   def test_install_package_upgrade(self):
     pm = self._make_test_pm_with_am()
@@ -232,12 +232,12 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
     old_pkg_desc = PD('water', '1.0.0')
     install_rv = pm.install_package(old_pkg_desc, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
     self.assertTrue( install_rv )
-    self.assertEqual( [ 'water-1.0.0' ], pm.list_all(include_version = True) )
+    self.assertEqual( [ 'water-1.0.0' ], pm.list_all_names(include_version = True) )
 
     new_pkg_desc = PD('water', '1.0.0-1')
     install_rv = pm.install_package(new_pkg_desc, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
     self.assertTrue( install_rv )
-    self.assertEqual( [ 'water-1.0.0-1' ], pm.list_all(include_version = True) )
+    self.assertEqual( [ 'water-1.0.0-1' ], pm.list_all_names(include_version = True) )
 
   def test_install_package_same_version(self):
     pm = self._make_test_pm_with_am()
@@ -245,12 +245,12 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
     old_pkg_desc = PD('water', '1.0.0')
     install_rv = pm.install_package(old_pkg_desc, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
     self.assertTrue( install_rv )
-    self.assertEqual( [ 'water-1.0.0' ], pm.list_all(include_version = True) )
+    self.assertEqual( [ 'water-1.0.0' ], pm.list_all_names(include_version = True) )
 
     new_pkg_desc = PD('water', '1.0.0')
     install_rv = pm.install_package(new_pkg_desc, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
     self.assertFalse( install_rv )
-    self.assertEqual( [ 'water-1.0.0' ], pm.list_all(include_version = True) )
+    self.assertEqual( [ 'water-1.0.0' ], pm.list_all_names(include_version = True) )
 
   def test_install_package_unknown(self):
     pm = self._make_test_pm_with_am()
@@ -260,29 +260,37 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
 
   def test_install_packages(self):
     pm = self._make_test_pm_with_am()
-
-    packages = [
-      PD.parse('water-1.0.0'),
-      PD.parse('mercury-1.2.8'),
+    packages = PDL([
       PD.parse('arsenic-1.2.9'),
-    ]
-
+      PD.parse('mercury-1.2.8'),
+      PD.parse('water-1.0.0'),
+    ])
     pm.install_packages(packages, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
+    self.assertEqual( [ 'arsenic-1.2.9', 'mercury-1.2.8', 'water-1.0.0' ], pm.list_all_names(include_version = True) )
 
-    self.assertEqual( [ 'arsenic-1.2.9', 'mercury-1.2.8', 'water-1.0.0' ], pm.list_all(include_version = True) )
+  def test_list_all_descriptors(self):
+    pm = self._make_test_pm_with_am()
+    packages = PDL([
+      PD.parse('arsenic-1.2.9'),
+      PD.parse('mercury-1.2.8'),
+      PD.parse('water-1.0.0'),
+    ])
+    pm.install_packages(packages, self.TEST_BUILD_TARGET, ['BUILD', 'RUN'])
+    actual = pm.list_all_descriptors()
+    self.assertEqual( packages, pm.list_all_descriptors() )
 
   def test_dep_map(self):
     pm = self._make_test_pm_with_am()
-    packages = [
+    packages = PDL([
       PD.parse('water-1.0.0'),
       PD.parse('fiber-1.0.0'),
       PD.parse('fructose-3.4.5-6'),
       PD.parse('fruit-1.0.0'),
       PD.parse('apple-1.2.3-1'),
-    ]
+    ])
     pm.install_packages(packages, self.TEST_BUILD_TARGET, [ 'RUN' ])
     self.assertEqual( [ 'apple-1.2.3-1', 'fiber-1.0.0', 'fructose-3.4.5-6', 'fruit-1.0.0', 'water-1.0.0' ],
-                      pm.list_all(include_version = True) )
+                      pm.list_all_names(include_version = True) )
     self.assertEqual( {
       'apple': set(['fruit']),
       'fiber': set([]),
@@ -290,6 +298,19 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
       'fruit': set(['fiber', 'fructose', 'water']),
       'water': set([]),
     }, pm.dep_map() )
+
+  def test_descriptors_for_names(self):
+    pm = self._make_test_pm_with_am()
+    packages = PDL([
+      PD.parse('water-1.0.0'),
+      PD.parse('fiber-1.0.0'),
+      PD.parse('fructose-3.4.5-6'),
+      PD.parse('fruit-1.0.0'),
+      PD.parse('apple-1.2.3-1'),
+    ])
+    pm.install_packages(packages, self.TEST_BUILD_TARGET, [ 'RUN' ])
+    self.assertEqual( PDL([ PD.parse('water-1.0.0') ]), pm.descriptors_for_names([ 'water' ]) )
+    self.assertEqual( PDL([ PD.parse('fiber-1.0.0'), PD.parse('water-1.0.0') ]), pm.descriptors_for_names([ 'water', 'fiber' ]) )
 
   def _make_cabbage_pm(self):
     t = AMT(recipes = self.VEGGIES)
@@ -428,7 +449,7 @@ fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18
     amt = self._make_test_amt(recipe, 'files;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
     pm = self._make_caca_test_pm(amt.am)
     self._install_package(pm, 'files-1.0.0', 'linux-ubuntu-18/x86_64/release')
-    self.assertEqual( [ 'files-1.0.0' ], pm.list_all(include_version = True) )
+    self.assertEqual( [ 'files-1.0.0' ], pm.list_all_names(include_version = True) )
     expected = [
       'db/packages.db',
       'env/bar.sh',
@@ -453,7 +474,7 @@ fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18
     amt = self._make_test_amt(recipe, 'files;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
     pm = self._make_caca_test_pm(amt.am)
     self._install_package(pm, 'files-1.0.0', 'linux-ubuntu-18/x86_64/release')
-    self.assertEqual( [ 'files-1.0.0' ], pm.list_all(include_version = True) )
+    self.assertEqual( [ 'files-1.0.0' ], pm.list_all_names(include_version = True) )
     expected = [
       'db/packages.db',
       'env/framework/rebuild_framework.sh',
@@ -478,7 +499,7 @@ fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18
     amt = self._make_test_amt(recipe, 'files;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
     pm = self._make_caca_test_pm(amt.am)
     self._install_package(pm, 'files-1.0.0', 'linux-ubuntu-18/x86_64/release')
-    self.assertEqual( [ 'files-1.0.0' ], pm.list_all(include_version = True) )
+    self.assertEqual( [ 'files-1.0.0' ], pm.list_all_names(include_version = True) )
     expected = [
       'db/packages.db',
       'env/bar.sh',

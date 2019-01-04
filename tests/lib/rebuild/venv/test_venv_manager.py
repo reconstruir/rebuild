@@ -295,7 +295,7 @@ class _test_context(namedtuple('_test_context', 'tmp_dir, config_filename, artif
     return clazz.__bases__[0].__new__(clazz, tmp_dir, config_filename, artifact_manager, manager, build_target)
 
   def installed_packages(self, project_name, include_version = False):
-    return self.manager.installed_packages(project_name, self.build_target, include_version = include_version)
+    return self.manager.installed_packages_names(project_name, self.build_target, include_version = include_version)
 
   def update_from_config(self, project_name, options = None):
     return self.manager.update_from_config(project_name, self.build_target, options = options)

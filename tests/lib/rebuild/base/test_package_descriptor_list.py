@@ -22,5 +22,18 @@ class test_package_descriptor_list(unit_test):
     ])
     self.assertEqual( [ 'foo', 'bar', 'baz' ], l.names() )
             
+  def test___eq__(self):
+    l1 = PDL([
+      PD('foo', '1.2.3-1'),
+      PD('bar', '4.5.6'),
+      PD('baz', '7.8.9'),
+    ])
+    l2 = PDL([
+      PD('foo', '1.2.3-1'),
+      PD('bar', '4.5.6'),
+      PD('baz', '7.8.9'),
+    ])
+    self.assertEqual( l1, l2 )
+            
 if __name__ == "__main__":
   unit_test.main()

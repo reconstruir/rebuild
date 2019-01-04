@@ -194,18 +194,22 @@ class package_manager(object):
     ef = shell_framework()
     ef.extract(self._shell_framework_dir, 'rebuild')
     
-  def uninstall_package(self, pkg_name):
-    self.log_i('uninstalling package: %s' % (pkg_name))
-    pkg = self.db.find_package(pkg_name)
+  def uninstall_package(self, pkg_desc):
+    check.check_package_descriptor(pkg_desc)
+    self.log_i('uninstalling_package: pkg_desc=%s' % (pkg_desc.full_name))
+    pkg = self.db.find_package(pkg_desc.name)
     if not pkg:
-      raise NotInstalledError('package %s not found' % (pkg_name))
+      raise NotInstalledError('package %s not found' % (pkg_desc.name))
     paths = [ path.join(self._installation_dir, f) for f in pkg.manifest.files.filenames() ]
     paths.extend([ path.join(self._env_dir, f) for f in pkg.manifest.env_files.filenames() ])
     file_util.remove(paths)
-    self.db.remove_package(pkg_name)
+    self.db.remove_package(pkg_desc.name)
 
-  def list_all(self, include_version = False):
-    return self.db.list_all(include_version = include_version)
+  def list_all_names(self, include_version = False):
+    return self.db.list_all_names(include_version = include_version)
+
+  def list_all_descriptors(self):
+    return self.db.list_all_descriptors()
 
   def is_installed(self, pkg_name):
     return self.db.find_package(pkg_name) != None
@@ -263,14 +267,14 @@ class package_manager(object):
       elif comparison < 0:
         self.log_i('install_package: upgrading from %s to %s' % (old_pkg_entry_desc.full_name,
                                                                  pkg.full_name))
-        self.uninstall_package(pkg.name)
+        self.uninstall_package(pkg.package_descriptor)
         self.install_tarball(pkg.filename, pkg, hardness)
         return True
       else:
         if options.allow_downgrade:
           self.log_i('install_package: downgrading from %s to %s' % (old_pkg_entry_desc.full_name,
                                                                      pkg.full_name))
-          self.uninstall_package(pkg.name)
+          self.uninstall_package(pkg.package_descriptor)
           self.install_tarball(pkg.filename, pkg, hardness)
           return True
         else:
@@ -297,7 +301,7 @@ class package_manager(object):
     return contents_checksum_changed
       
   def install_packages(self, packages, build_target, hardness, options = None):
-    check.check_package_descriptor_seq(packages)
+    check.check_package_descriptor_list(packages)
     check.check_package_install_options(options, allow_none = True)
     
     for pkg_desc in packages:
@@ -305,9 +309,9 @@ class package_manager(object):
 
   def uninstall_packages(self, packages): #, build_target):
     # FIXME: nothing happens with build_target
-    #check.check_package_descriptor_seq(packages)
-    for pkg_name in packages:
-      self.uninstall_package(pkg_name) #, build_target)
+    check.check_package_descriptor_list(packages)
+    for pkg_desc in packages:
+      self.uninstall_package(pkg_desc) #, build_target)
 
   def package_env_files(self, package_names):
     'Return a list of env files for the given packages in the same order as packages.'
@@ -354,3 +358,7 @@ class package_manager(object):
   def dep_map(self):
     'Return a dependency map of the packages currently installed.'
     return self.db.dep_map()
+
+  def descriptors_for_names(self, names):
+    check.check_string_seq(names)
+    return self.db.descriptors_for_names(sorted(names))

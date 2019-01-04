@@ -25,15 +25,15 @@ class test_package_db(unit_test):
   def test_db_create_empty(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
-    self.assertEqual( [], db.list_all() )
+    self.assertEqual( [], db.list_all_names() )
 
   def test_db_recreate_empty(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
-    self.assertEqual( [], db.list_all() )
+    self.assertEqual( [], db.list_all_names() )
     del db
     recreated_db = DB(tmp_db)
-    self.assertEqual( [], recreated_db.list_all() )
+    self.assertEqual( [], recreated_db.list_all_names() )
 
   def test_db_add(self):
     tmp_db = self._make_tmp_db_path()
@@ -44,15 +44,15 @@ class test_package_db(unit_test):
     new_entry = PE('foo', '1.2.3', 1, 0, RL(), {}, files)
     db.add_package(new_entry)
     self.assertTrue( db.has_package('foo') )
-    self.assertEqual( [ 'foo' ], db.list_all() )
-    self.assertEqual( [ 'foo-1.2.3-1' ], db.list_all(include_version = True) )
-    self.assertEqual( [ PD.parse('foo-1.2.3-1') ], db.descriptors() )
+    self.assertEqual( [ 'foo' ], db.list_all_names() )
+    self.assertEqual( [ 'foo-1.2.3-1' ], db.list_all_names(include_version = True) )
+    self.assertEqual( [ PD.parse('foo-1.2.3-1') ], db.list_all_descriptors() )
     self.assertEqual( PE('foo', '1.2.3', 1, 0, RL(), {}, files), db.find_package('foo') )
   
     del db
     recreated_db = DB(tmp_db)
     self.assertTrue( recreated_db.has_package('foo') )
-    self.assertEqual( [ 'foo' ], recreated_db.list_all() )
+    self.assertEqual( [ 'foo' ], recreated_db.list_all_names() )
     actual_package = recreated_db.find_package('foo')
     expected_package = PE('foo', '1.2.3', 1, 0, [], {}, files)
     self.assertEqual( expected_package, actual_package )
@@ -66,18 +66,18 @@ class test_package_db(unit_test):
     new_entry = PE('foo', '1.2.3', 1, 0, RL(), {}, files)
     db.add_package(new_entry)
     self.assertTrue( db.has_package('foo') )
-    self.assertEqual( [ 'foo' ], db.list_all() )
+    self.assertEqual( [ 'foo' ], db.list_all_names() )
     self.assertEqual( PE('foo', '1.2.3', 1, 0, RL(), {}, files), db.find_package('foo') )
 
     db.remove_package('foo')
     self.assertFalse( db.has_package('foo') )
-    self.assertEqual( [], db.list_all() )
+    self.assertEqual( [], db.list_all_names() )
     self.assertEqual( None, db.find_package('foo') )
 
     del db
     recreated_db = DB(tmp_db)
     self.assertFalse( recreated_db.has_package('foo') )
-    self.assertEqual( [], recreated_db.list_all() )
+    self.assertEqual( [], recreated_db.list_all_names() )
     self.assertEqual( None, recreated_db.find_package('foo') )
 
   def test_package_manifest(self):
@@ -137,8 +137,8 @@ class test_package_db(unit_test):
       db.add_package(p)
     t.stop()
 
-    t.start('%s: list_all()')
-    db.list_all()
+    t.start('%s: list_all_names()')
+    db.list_all_names()
     t.stop()
 
     t.start('%s: names()')

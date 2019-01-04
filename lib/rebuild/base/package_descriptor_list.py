@@ -50,7 +50,7 @@ class package_descriptor_list(type_checked_list):
       return clazz([ package_descriptor.parse(p) for p in what ])
     elif check.is_package_descriptor(what):
       return clazz([ what ])
-    elif check.is_package_descriptor_seq(what):
+    elif check.is_package_descriptor_list(what):
       return what
     else:
       raise TypeError('Cannot resolve to package descriptor list: %s - %s' % (str(what), type(what)))

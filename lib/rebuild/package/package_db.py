@@ -41,11 +41,13 @@ create table packages(
     rows = self._db.select_all('''select name from packages order by name asc''')
     return [ row[0] for row in rows ]
 
-  def descriptors(self):
-    rows = self._db.select_namedtuples('''select name, version, revision, epoch from packages order by name asc''')
+  def list_all_descriptors(self):
+    rows = self._db.select_namedtuples('''select name, version, revision, epoch, requirements from packages order by name asc''')
     result = package_descriptor_list()
     for row in rows:
-      result.append(package_descriptor(row.name, build_version(row.version, row.revision, row.epoch)))
+      version = build_version(row.version, row.revision, row.epoch)
+      requirements = sql_encoding.decode_requirements(row.requirements)
+      result.append(package_descriptor(row.name, version, requirements = requirements))
     return result
   
   def files(self, name):
@@ -56,10 +58,10 @@ create table packages(
   def env_files(self, name):
     return self.files(self._make_env_files_table_name(name))
                         
-  def list_all(self, include_version = False):
+  def list_all_names(self, include_version = False):
     if not include_version:
       return self.names()
-    return [ d.full_name for d in self.descriptors() ]
+    return [ d.full_name for d in self.list_all_descriptors() ]
 
   def has_package(self, name):
     t = ( name, )
@@ -140,3 +142,8 @@ create table packages(
       reqs = sql_encoding.decode_requirements(row.requirements)
       dep_map[row.name] = set(reqs.names())
     return dep_map
+
+  def descriptors_for_names(self, names):
+    names = set(names)
+    descriptors = self.list_all_descriptors()
+    return package_descriptor_list([ pdesc for pdesc in descriptors if pdesc.name in names ])

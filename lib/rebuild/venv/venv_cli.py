@@ -244,7 +244,7 @@ class venv_cli(build_target_cli):
   def _command_packages_print(self, project_name, include_version):
     if not self._verify_project_names([ project_name ]):
       return 1
-    packages = self._manager.installed_packages(project_name, self._build_target, include_version = include_version)
+    packages = self._manager.installed_packages_names(project_name, self._build_target, include_version = include_version)
     for p in packages:
       print(p)
     return 0

@@ -224,7 +224,7 @@ class test_artifact_db(unit_test):
     db.add_artifact(e1)
     self.assertEqual( [ pd1 ], db.list_all_by_package_descriptor() )
     db.add_artifact(e2)
-    self.assertEqual( [ pd2, pd1 ], db.list_all_by_package_descriptor() )
+    self.assertEqual( [ pd1, pd2 ], db.list_all_by_package_descriptor() )
 
   def test_list_all_by_package_descriptor_with_build_target(self):
     tmp_db = self._make_tmp_db_path()

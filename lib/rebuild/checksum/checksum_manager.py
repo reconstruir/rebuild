@@ -54,7 +54,7 @@ class checksum_manager(object):
 
   def remove_checksums(self, packages, level):
     packages = object_util.listify(packages)
-    check.check_package_descriptor_seq(packages)
+    check.check_package_descriptor_list(packages)
     checksum_dirs = [ self._checksum_dir(pd, level) for pd in packages ]
     for d in checksum_dirs:
       self.blurb('removing checksums: %s' % (path.relpath(d)))
