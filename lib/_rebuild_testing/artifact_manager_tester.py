@@ -2,8 +2,9 @@
 
 from os import path
 
-from bes.common import check, object_util
+from bes.common import check, object_util, string_util
 from bes.fs import temp_file
+from bes.text import text_line_parser
 
 from rebuild.package import artifact_manager_local
 from rebuild.base import artifact_descriptor
@@ -35,9 +36,7 @@ class artifact_manager_tester(object):
     self._recipes = {}
 
   def create_package(self, adesc, mutations = {}):
-    if check.is_string(adesc):
-      adesc = artifact_descriptor.parse(adesc)
-    check.check_artifact_descriptor(adesc)
+    adesc = self._parse_adesc(adesc)
     key = str(adesc)
     if not key in self._recipes:
       raise KeyError('recipe not found: %s' % (key))
@@ -48,12 +47,13 @@ class artifact_manager_tester(object):
     return recipe.create_package(tmp_file, debug = self._debug)
 
   def publish(self, adescs, mutations = {}):
-    adescs = object_util.listify(adescs)
+    #adescs = object_util.listify(adescs)
+    adescs = self._parse_adesc_list(adescs)
     for adesc in adescs:
       self._publish_one(adesc, mutations)
 
   def retire(self, adescs):
-    adescs = object_util.listify(adescs)
+    adescs = self._parse_adesc_list(adescs)
     for adesc in adescs:
       self._retire_one(adesc)
 
@@ -62,18 +62,33 @@ class artifact_manager_tester(object):
     self.retire(adescs)
 
   def _publish_one(self, adesc, mutations):
-    if check.is_string(adesc):
-      adesc = artifact_descriptor.parse(adesc)
-    check.check_artifact_descriptor(adesc)
+    adesc = self._parse_adesc(adesc)
     pkg = self.create_package(adesc, mutations = mutations)
     self.am.publish(pkg.filename, False, pkg.metadata)
 
   def _retire_one(self, adesc):
-    if check.is_string(adesc):
-      adesc = artifact_descriptor.parse(adesc)
-    check.check_artifact_descriptor(adesc)
+    adesc = self._parse_adesc(adesc)
     self.am.remove_artifact(adesc)
     
   def dump(self):
     for r in sorted(self._recipes.values()):
       print(r.metadata)
+
+  @classmethod
+  def _parse_adesc(clazz, adesc):
+    if check.is_string(adesc):
+      if adesc.startswith('fake_package'):
+        parts = string_util.split_by_white_space(adesc)
+        parts = parts[1:]
+        adesc = ';'.join(parts)
+      adesc = artifact_descriptor.parse(adesc)
+    check.check_artifact_descriptor(adesc)
+    return adesc
+
+  @classmethod
+  def _parse_adesc_list(clazz, adescs):
+    if check.is_string(adescs) and '\n' in adescs:
+      adescs = text_line_parser.parse_lines(adescs, strip_text = True, remove_empties = True)
+    else:
+      adescs = object_util.listify(adescs)
+    return adescs

@@ -1,6 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from os import path
+from bes.system import log
 from bes.fs import temp_file
 from bes.common import check
 
@@ -65,6 +66,7 @@ class fake_package_unit_test(object):
     mutations = mutations or {}
     tmp_packages = fake_package_unit_test.create_many_packages(recipes, mutations)
     for tmp_package in tmp_packages:
+      clazz.log_d('CACA: artifact_manager_publish: id=%s; tmp_package: %s' % (id(artifact_manager), tmp_package.metadata.artifact_descriptor))
       artifact_manager.publish(tmp_package.filename, False, tmp_package.metadata)
   
   @classmethod
@@ -72,3 +74,5 @@ class fake_package_unit_test(object):
     adescs = artifact_manager.list_all_by_descriptor(None)
     for adesc in adescs:
       artifact_manager.remove_artifact(adesc)
+      
+log.add_logging(fake_package_unit_test)

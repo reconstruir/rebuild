@@ -3,7 +3,7 @@
 
 from bes.testing.unit_test import unit_test
 from rebuild.base import package_descriptor as PD
-from rebuild.base import build_system, build_target, package_descriptor, requirement, requirement_list
+from rebuild.base import build_system, build_target, package_descriptor, requirement_list as RL
 from bes.common import string_util
 
 class test_package_descriptor(unit_test):
@@ -28,7 +28,7 @@ class test_package_descriptor(unit_test):
     self.assertFalse( PD.name_is_valid(None) )
     self.assertFalse( PD.name_is_valid('') )
 
-  TEST_REQUIREMENTS = requirement_list.parse('d1 >= 1.2.3-1 d2 >= 6.6.6-1', default_system_mask = build_system.ALL)
+  TEST_REQUIREMENTS = RL.parse('d1 >= 1.2.3-1 d2 >= 6.6.6-1', default_system_mask = build_system.ALL)
   TEST_PROPS = { 'a': 5, 'b': 66 }
 
   def test_to_json(self):
@@ -107,20 +107,20 @@ class test_package_descriptor(unit_test):
       'all: foo >= 1.2.3-1',
       'all: bar >= 6.6.6-6',
     ]
-    expected_requirements = requirement_list.parse('foo(all) >= 1.2.3-1 bar(all) >= 6.6.6-6')
+    expected_requirements = RL.parse('foo(all) >= 1.2.3-1 bar(all) >= 6.6.6-6')
     actual_requirements = PD.parse_requirements(requirements)
 
     self.assertEqual( expected_requirements, actual_requirements )
     
-  def __full_name_cmp(self, s1, s2):
+  def _full_name_cmp(self, s1, s2):
     pi1 = PD.parse(s1)
     p12 = PD.parse(s2)
     return PD.full_name_cmp(pi1, p12)
 
   def test_full_name_cmp(self):
-    self.assertEqual( 0, self.__full_name_cmp('foo-1.2.3-1', 'foo-1.2.3-1') )
-    self.assertEqual( 1, self.__full_name_cmp('foo-1.2.4-1', 'foo-1.2.3-1') )
-    self.assertEqual( 1, self.__full_name_cmp('foo-1.2.3-2', 'foo-1.2.3-1') )
+    self.assertEqual( 0, self._full_name_cmp('foo-1.2.3-1', 'foo-1.2.3-1') )
+    self.assertEqual( 1, self._full_name_cmp('foo-1.2.4-1', 'foo-1.2.3-1') )
+    self.assertEqual( 1, self._full_name_cmp('foo-1.2.3-2', 'foo-1.2.3-1') )
 
   def test_tarball_filename(self):
     self.assertEqual( 'foo-1.2.3-1.tar.gz', PD('foo', '1.2.3-1').tarball_filename )
@@ -131,5 +131,48 @@ class test_package_descriptor(unit_test):
     self.assertEqual( 'linux/x86_64/release/foo-1.2.3-1.tar.gz', PD('foo', '1.2.3-1').artifact_path(self.BT_LINUX_RELEASE) )
     self.assertEqual( 'linux/x86_64/debug/foo-1.2.3-1.tar.gz', PD('foo', '1.2.3-1').artifact_path(self.BT_LINUX_DEBUG) )
 
+  def test_matches_requirement_eq(self):
+    self.assertEqual( True, self._matches_requirement('foo-1.2.2', 'foo == 1.2.2') )
+    self.assertEqual( True, self._matches_requirement('foo-1.2.2-1', 'foo == 1.2.2-1') )
+    self.assertEqual( True, self._matches_requirement('foo-1.2', 'foo == 1.2') )
+    self.assertEqual( True, self._matches_requirement('foo-1', 'foo == 1') )
+    self.assertEqual( False, self._matches_requirement('foo-1.2.3', 'foo == 1.2.2') )
+    self.assertEqual( False, self._matches_requirement('foo-1.2.2-2', 'foo == 1.2.2-1') )
+    self.assertEqual( False, self._matches_requirement('foo-1.2', 'foo == 1.1') )
+    self.assertEqual( False, self._matches_requirement('foo-2', 'foo == 1') )
+    self.assertEqual( True, self._matches_requirement('foo-1.0', 'foo == 1.0') )
+    self.assertEqual( True, self._matches_requirement('foo-1.0-0', 'foo == 1.0-0') )
+    self.assertEqual( True, self._matches_requirement('foo-1.0-0', 'foo == 1.0') )
+    
+  def test_matches_requirement_le(self):
+    self.assertEqual( True, self._matches_requirement('foo-1.2.2', 'foo <= 1.2.2') )
+    self.assertEqual( True, self._matches_requirement('foo-1.2.2', 'foo <= 1.2.3') )
+    self.assertEqual( False, self._matches_requirement('foo-1.2.2', 'foo <= 1.2.1') )
+    self.assertEqual( False, self._matches_requirement('foo-1.2.2-1', 'foo <= 1.2.1-0') )
+    self.assertEqual( False, self._matches_requirement('foo-1.2.2-0', 'foo <= 1.2.1-1') )
+    self.assertEqual( True, self._matches_requirement('foo-1.2.2-0', 'foo <= 1.2.2-0') )
+    self.assertEqual( False, self._matches_requirement('foo-1.2.2', 'foo <= 1.2.1-1') )
+
+  def test_matches_requirement_lt(self):
+    self.assertEqual( False, self._matches_requirement('foo-1.2.2', 'foo < 1.2.2') )
+    self.assertEqual( True, self._matches_requirement('foo-1.2.2', 'foo < 1.2.3') )
+    self.assertEqual( False, self._matches_requirement('foo-1.2.2', 'foo < 1.2.1') )
+    self.assertEqual( False, self._matches_requirement('foo-1.2.2-1', 'foo < 1.2.1-0') )
+    self.assertEqual( False, self._matches_requirement('foo-1.2.2-0', 'foo < 1.2.1-1') )
+    self.assertEqual( False, self._matches_requirement('foo-1.2.2-0', 'foo < 1.2.2-0') )
+    self.assertEqual( True, self._matches_requirement('foo-1.2.0', 'foo < 1.2.1-1') )
+    self.assertEqual( False, self._matches_requirement('foo-1.2.0', 'foo < 1.2.0-0') )
+    
+  @classmethod
+  def _matches_requirement(clazz, pd_string, req_string):
+    assert pd_string
+    assert req_string
+    req = RL.parse(req_string)
+    assert len(req) == 1
+    assert req[0]
+    req = req[0]
+    pd = PD.parse(pd_string)
+    return pd.matches_requirement(req)
+    
 if __name__ == '__main__':
   unit_test.main()

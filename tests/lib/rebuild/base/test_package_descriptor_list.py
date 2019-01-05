@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from rebuild.base import package_descriptor as PD, package_descriptor_list as PDL
+from rebuild.base import package_descriptor as PD, package_descriptor_list as PDL, requirement_list as RL
 
 class test_package_descriptor_list(unit_test):
 
@@ -34,6 +34,23 @@ class test_package_descriptor_list(unit_test):
       PD('baz', '7.8.9'),
     ])
     self.assertEqual( l1, l2 )
-            
+
+  def test_filter_by_requirement(self):
+    P = PD.parse
+    l = PDL([
+      P('foo-1.0.0'),
+      P('foo-1.0.2'),
+      P('foo-1.0.2-1'),
+      P('foo-1.0.2-2'),
+      P('foo-1.0.9'),
+      P('foo-1.0.10'),
+      P('foo-1.0.10-1'),
+      P('foo-1.0.10-2'),
+    ])
+    self.assertEqual( [ P('foo-1.0.0') ], l.filter_by_requirement(RL.parse('foo == 1.0.0')[0]) )
+    self.assertEqual( [ P('foo-1.0.0'), P('foo-1.0.2') ], l.filter_by_requirement(RL.parse('foo <= 1.0.2')[0]) )
+    self.assertEqual( [ P('foo-1.0.0'), P('foo-1.0.2'), P('foo-1.0.2-1') ], l.filter_by_requirement(RL.parse('foo <= 1.0.2-1')[0]) )
+    self.assertEqual( [ P('foo-1.0.0'), P('foo-1.0.2'), P('foo-1.0.2-1') ], l.filter_by_requirement(RL.parse('foo <= 1.0.2-1')[0]) )
+    
 if __name__ == "__main__":
   unit_test.main()

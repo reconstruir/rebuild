@@ -23,10 +23,11 @@ class tools_manager(object):
   def root_dir(self):
     return self._root_dir
     
-  def ensure_tools(self, pkg_descs):
-    pkg_descs = package_descriptor_list.resolve(pkg_descs)
-    for package in pkg_descs:
-      self._ensure_one_tool(package)
+  def ensure_tools(self, packages):
+    packages = self._resolve_packages(packages)
+    check.check_package_descriptor_list(packages)
+    for pkg_desc in packages:
+      self._ensure_one_tool(pkg_desc)
 
   def _ensure_one_tool(self, pkg_desc):
     check.check_package_descriptor(pkg_desc)
@@ -35,22 +36,40 @@ class tools_manager(object):
     if path.exists(self._package_root_dir(pkg_desc)):
       return
     # Figure out the dependencies for this tool
-    resolved_tools = self._resolve_tools_deps(package_descriptor_list([pkg_desc]))
-    for tool in resolved_tools:
-      project_name = tool.full_name
+    packages = package_descriptor_list([ pkg_desc ])
+    #requrements = package_descriptor_list([ pkg_desc ]).to_requirement_list()
+    resolved_tools = self._resolve_tools_deps(packages)
+    for tool_pkg_desc in resolved_tools:
+      project_name = tool_pkg_desc.full_name
       self._timer.start('%s: resolve_and_update_packages' % (project_name))
-      self._manager.resolve_and_update_packages(project_name, [ tool.name ], self._build_target)
+      self._manager.resolve_and_update_packages(project_name,
+                                                package_descriptor_list([ tool_pkg_desc ]).to_requirement_list(),
+                                                self._build_target)
       self._timer.stop()
       self._manager.save_system_setup_scripts(project_name, self._build_target)
 
-  def _resolve_tools_deps(self, pkg_descs):
-    check.check_package_descriptor_list(pkg_descs)
-    return self._artifact_manager.resolve_deps(pkg_descs.names(), self._build_target, [ 'TOOL' ], True)
+  def _poto_resolve_tools_deps(self, requirements):
+    check.check_requirement_list(requirements)
+    return self._artifact_manager.poto_resolve_deps(requirements, self._build_target, [ 'TOOL' ], True)
 
-  def transform_env(self, env, pkg_descs):
+  def _resolve_tools_deps(self, packages):
+    check.check_package_descriptor_list(packages)
+    return self._artifact_manager.resolve_deps(packages.names(), self._build_target, [ 'TOOL' ], True)
+
+  @classmethod
+  def _resolve_packages(clazz, packages):
+    if check.is_package_descriptor(packages):
+      return package_descriptor_list([ packages ])
+    elif check.is_package_descriptor_list(packages):
+      return packages
+    else:
+      raise TypeError('Invalid packages: %s - %s' % (packages, type(packages)))
+    
+  def transform_env(self, env, packages):
     check.check_dict(env)
-    pkg_descs = package_descriptor_list.resolve(pkg_descs)
-    resolved_tools = self._resolve_tools_deps(pkg_descs)
+    packages = self._resolve_packages(packages)
+    check.check_package_descriptor_list(packages)
+    resolved_tools = self._resolve_tools_deps(packages)
     transformed_env = copy.deepcopy(env)
     for tool in resolved_tools:
       project_name = tool.full_name

@@ -4,7 +4,7 @@
 import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import file_find, temp_file
-from rebuild.base import artifact_descriptor as AD, build_target, package_descriptor as PD
+from rebuild.base import artifact_descriptor as AD, build_target as BT, package_descriptor as PD, requirement_list as RL
 from rebuild.package.db_error import *
 from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT
 from _rebuild_testing.fake_package_recipes import fake_package_recipes as RECIPES
@@ -15,8 +15,8 @@ class test_artifact_manager_local(unit_test):
   DEBUG = unit_test.DEBUG
   #DEBUG = True
 
-  LINUX_BT = build_target('linux', 'ubuntu', '18', 'x86_64', 'release')
-  MACOS_BT = build_target('macos', '', '10.14', 'x86_64', 'release')
+  LINUX_BT = BT('linux', 'ubuntu', '18', 'x86_64', 'release')
+  MACOS_BT = BT('macos', '', '10.14', 'x86_64', 'release')
 
   def __init__(self, *args, **kargs):
     super(test_artifact_manager_local, self).__init__(*args, **kargs)
@@ -24,6 +24,17 @@ class test_artifact_manager_local(unit_test):
   
   def test_publish(self):
     t = AMT(recipes = RECIPES.APPLE)
+    adesc = 'apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'
+    tmp_tarball = t.create_package(adesc)
+    filename = t.am.publish(tmp_tarball.filename, False, tmp_tarball.metadata)
+    self.assertTrue( path.exists(filename) )
+    expected = [
+      AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'),
+    ]
+    self.assertEqual( expected, t.am.list_all_by_descriptor(None) )
+
+  def test_publish_new_version(self):
+    t = AMT(recipes = RECIPES.TWO_APPLES)
     adesc = 'apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'
     tmp_tarball = t.create_package(adesc)
     filename = t.am.publish(tmp_tarball.filename, False, tmp_tarball.metadata)
@@ -285,19 +296,120 @@ fake_package water 1.0.11 0 0 linux release x86_64 centos 7
     t.publish('water;1.0.8;0;0;linux;release;x86_64;centos;7')
     t.publish('water;1.0.9;0;0;linux;release;x86_64;centos;7')
     t.publish('water;1.0.11;0;0;linux;release;x86_64;centos;7')
-    latest = t.am.latest_packages([ 'water' ], build_target('linux', 'ubuntu', '18', 'x86_64', 'release'))
-    print('latest ubuntu: %s' % (str(latest)))
+    latest = t.am.latest_packages([ 'water' ], BT('linux', 'ubuntu', '18', 'x86_64', 'release'))
     expected = [
       AD.parse('water;1.0.13;0;0;linux;release;x86_64;ubuntu;18'),
     ]
     self.assertEqual( expected, [ md.artifact_descriptor for md in latest ] )
 
-    latest = t.am.latest_packages([ 'water' ], build_target('linux', 'centos', '7', 'x86_64', 'release'))
-    print('latest centos: %s' % (str(latest)))
+    latest = t.am.latest_packages([ 'water' ], BT('linux', 'centos', '7', 'x86_64', 'release'))
     expected = [
       AD.parse('water;1.0.11;0;0;linux;release;x86_64;centos;7'),
     ]
     self.assertEqual( expected, [ md.artifact_descriptor for md in latest ] )
+    
+  def test_packages_dict(self):
+    water_recipes = '''
+fake_package water 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package water 1.0.1 0 0 linux release x86_64 ubuntu 18
+fake_package water 1.0.10 0 0 linux release x86_64 ubuntu 18
+fake_package water 1.0.13 0 0 linux release x86_64 ubuntu 18
+fake_package water 1.0.0 0 0 linux release x86_64 centos 7
+fake_package water 1.0.1 0 0 linux release x86_64 centos 7
+fake_package water 1.0.9 0 0 linux release x86_64 centos 7
+fake_package water 1.0.11 0 0 linux release x86_64 centos 7
+'''
+
+    milk_recipes = '''
+fake_package milk 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package milk 1.0.1 0 0 linux release x86_64 ubuntu 18
+fake_package milk 1.0.10 0 0 linux release x86_64 ubuntu 18
+fake_package milk 1.0.13 0 0 linux release x86_64 ubuntu 18
+fake_package milk 1.0.0 0 0 linux release x86_64 centos 7
+fake_package milk 1.0.1 0 0 linux release x86_64 centos 7
+fake_package milk 1.0.9 0 0 linux release x86_64 centos 7
+fake_package milk 1.0.11 0 0 linux release x86_64 centos 7
+'''
+    t = AMT()
+    t.add_recipes(water_recipes)
+    t.add_recipes(milk_recipes)
+    
+    t.publish(water_recipes)
+    t.publish(milk_recipes)
+
+    bt = BT.parse_path('linux-ubuntu-18/x86_64/release')
+
+    actual = t.am.packages_dict(bt)
+    self.assertEqual( [
+      'water-1.0.0',
+      'water-1.0.1',
+      'water-1.0.10',
+      'water-1.0.13'
+    ], actual['water'].names(True) )
+    self.assertEqual( [
+      'milk-1.0.0',
+      'milk-1.0.1',
+      'milk-1.0.10',
+      'milk-1.0.13'
+    ], actual['milk'].names(True) )
+
+  def test_list_all_filter_with_requirements(self):
+    water_recipes = '''
+fake_package water 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package water 1.0.1 0 0 linux release x86_64 ubuntu 18
+fake_package water 1.0.10 0 0 linux release x86_64 ubuntu 18
+fake_package water 1.0.13 0 0 linux release x86_64 ubuntu 18
+fake_package water 1.0.0 0 0 linux release x86_64 centos 7
+fake_package water 1.0.1 0 0 linux release x86_64 centos 7
+fake_package water 1.0.9 0 0 linux release x86_64 centos 7
+fake_package water 1.0.11 0 0 linux release x86_64 centos 7
+'''
+
+    milk_recipes = '''
+fake_package milk 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package milk 1.0.1 0 0 linux release x86_64 ubuntu 18
+fake_package milk 1.0.1 1 0 linux release x86_64 ubuntu 18
+fake_package milk 1.0.10 0 0 linux release x86_64 ubuntu 18
+fake_package milk 1.0.13 0 0 linux release x86_64 ubuntu 18
+fake_package milk 1.0.0 0 0 linux release x86_64 centos 7
+fake_package milk 1.0.1 0 0 linux release x86_64 centos 7
+fake_package milk 1.0.9 0 0 linux release x86_64 centos 7
+fake_package milk 1.0.11 0 0 linux release x86_64 centos 7
+'''
+    t = AMT()
+    t.add_recipes(water_recipes)
+    t.add_recipes(milk_recipes)
+    
+    t.publish(water_recipes)
+    t.publish(milk_recipes)
+
+    self.assertEqual( [
+      PD.parse('water-1.0.10'),
+      PD.parse('water-1.0.13'),
+      PD.parse('milk-1.0.0'),
+      PD.parse('milk-1.0.1'),
+      PD.parse('milk-1.0.1-1'),
+    ], t.am.list_all_filter_with_requirements(BT.parse_path('linux-ubuntu-18/x86_64/release'),
+                                              RL.parse('water >= 1.0.9 milk < 1.0.10')) )
+
+    self.assertEqual( [
+      PD.parse('water-1.0.10'),
+      PD.parse('water-1.0.13'),
+      PD.parse('milk-1.0.0'),
+      PD.parse('milk-1.0.1'),
+      PD.parse('milk-1.0.1-1'),
+    ], t.am.list_all_filter_with_requirements(BT.parse_path('linux-ubuntu-18/x86_64/release'),
+                                              RL.parse('water >= 1.0.9 milk < 1.0.10')) )
+
+    
+    self.assertEqual( [
+      PD.parse('water-1.0.9'),
+      PD.parse('water-1.0.11'),
+      PD.parse('milk-1.0.0'),
+      PD.parse('milk-1.0.1'),
+      PD.parse('milk-1.0.9'),
+    ], t.am.list_all_filter_with_requirements(BT.parse_path('linux-centos-7/x86_64/release'),
+                                              RL.parse('water >= 1.0.9 milk < 1.0.10')) )
     
 if __name__ == '__main__':
   unit_test.main()

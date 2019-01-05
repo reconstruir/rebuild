@@ -7,24 +7,18 @@ from bes.compat import StringIO
 from .build_system import build_system
 from .requirement_hardness import requirement_hardness
 
-class requirement(namedtuple('requirement', 'name,operator,version,system_mask,hardness')):
+class requirement(namedtuple('requirement', 'name, operator, version, system_mask, hardness')):
 
   def __new__(clazz, name, operator, version, system_mask = None, hardness = None):
-    assert name
-    assert name == str(name)
-    name = str(name)
-    if operator:
-      assert operator == str(operator)
-      operator = str(operator)
-    if version:
-      assert version == str(version)
+    check.check_string(name)
+    check.check_string(operator, allow_none = True)
+    if check.is_build_version(version):
       version = str(version)
-    if system_mask:
-      assert system_mask == str(system_mask)
-      system_mask = str(system_mask)
+    check.check_string(version, allow_none = True)
+    check.check_string(system_mask, allow_none = True)
     if hardness:
       hardness = requirement_hardness(hardness)
-      check.check_requirement_hardness(hardness)
+    check.check_requirement_hardness(hardness, allow_none = True)
     return clazz.__bases__[0].__new__(clazz, name, operator, version, system_mask, hardness)
 
   def __str__(self):

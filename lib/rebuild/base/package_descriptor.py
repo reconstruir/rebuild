@@ -172,4 +172,38 @@ class package_descriptor(namedtuple('package_descriptor', 'name, version, requir
   def clone(self, mutations = None):
     return tuple_util.clone(self, mutations = mutations)
   
+  def matches_requirement(self, req):
+    check.check_requirement(req)
+    if req.name != self.name:
+      return False
+
+    if req.version is None:
+      return True
+
+    if not req.operator:
+      raise ValueError('missing operator: %s' % (str(req)))
+
+    req_build_version = build_version.parse(req.version)
+    assert req_build_version.epoch == 0
+    v1 = self.version.upstream_version
+    r1 = self.version.revision
+    v2 = req_build_version.upstream_version
+    r2 = req_build_version.revision
+    
+    cmp_result = build_version.compare_version_and_revision(v1, r1, v2, r2)
+    #print('operator:%s: cmp(%s, %s, %s, %s) => %s' % (req.operator, v1, r1, v2, r2, cmp_result))
+    
+    if req.operator == '==':
+      return cmp_result == 0
+    elif req.operator == '>=':
+      return cmp_result >= 0
+    elif req.operator == '<=':
+      return cmp_result <= 0
+    elif req.operator == '>':
+      return cmp_result > 0
+    elif req.operator == '<':
+      return cmp_result < 0
+    else:
+      raise ValueError('invalid operator \"%s\": %s' % (req.operator, str(req)))
+  
 check.register_class(package_descriptor, include_seq = False)

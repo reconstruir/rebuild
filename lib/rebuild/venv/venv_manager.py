@@ -4,7 +4,7 @@ import os.path as path
 from bes.common import check
 from bes.fs import file_path, file_util
 from bes.system import log, os_env
-from rebuild.base import build_blurb, package_descriptor_list
+from rebuild.base import build_blurb, build_version, package_descriptor_list
 from bes.dependency import dependency_resolver
 from rebuild.package import package_manager
 from collections import namedtuple
@@ -65,26 +65,31 @@ class venv_manager(object):
     pm = self._package_manager(project_name, build_target)
     return pm.list_all_names(include_version = include_version)
 
-  resolve_result = namedtuple('resolve_result', 'available,missing,resolved')
-  def _resolve_packages(self, package_names, build_target):
-    self.log_d(' _resolve_packages: package_names=%s; build_target=%s' % (package_names, build_target.build_path))
-    resolved_deps = self._artifact_manager.resolve_deps(package_names, build_target, ['RUN'], True)
-    resolved_names = [ desc.name for desc in resolved_deps ]
-    available_packages = self._artifact_manager.list_all_by_metadata(build_target = build_target)
-    available_names = [ p.package_descriptor.name for p in available_packages ]
-    missing_packages = dependency_resolver.check_missing(available_names, package_names)
-    if missing_packages:
-      return self.resolve_result(available_packages, missing_packages, [])
-    resolved = self._artifact_manager.latest_packages(resolved_names, build_target)
-    resolved_descriptors = package_descriptor_list([ r.package_descriptor for r in resolved ])
-    for desc in resolved_descriptors:
-      self.log_d('_resolve_packages: RESOLVED: %s' % (str(desc)))
-    self.log_i('done resolving')
-    return self.resolve_result(available_packages, [], resolved_descriptors)
+  _resolve_result = namedtuple('_resolve_result', 'available, missing, resolved')
+  def _resolve_packages(self, build_target, requirements):
+    check.check_requirement_list(requirements)
+    check.check_build_target(build_target)
+    self.log_d('CACA: _resolve_packages: id=%s; all_available=%s' % (id(self._artifact_manager), self._artifact_manager.list_all_by_package_descriptor(build_target)))
+    self.log_d('_resolve_packages: build_target=%s; requirements=%s' % (build_target.build_path, requirements))
+    resolve_rv = self._artifact_manager.poto_resolve_deps(requirements, build_target, ['RUN'], True)
+    self.log_d('_resolve_packages: resolve_rv.resolved=%s' % (resolve_rv.resolved))
+    self.log_d('_resolve_packages: resolve_rv.available=%s' % (resolve_rv.available))
+    self.log_d('_resolve_packages: resolve_rv.latest=%s' % (resolve_rv.latest))
 
-  def resolve_and_update_packages(self, project_name, packages, build_target, options = None):
+    missing_packages = dependency_resolver.check_missing(resolve_rv.available.names(), requirements.names())
+    if missing_packages:
+      return self._resolve_result(resolve_rv.available, missing_packages, [])
+    for pdesc in resolve_rv.resolved:
+      self.log_d('_resolve_packages: RESOLVED: %s' % (pdesc.full_name))
+    return self._resolve_result(resolve_rv.available, [], resolve_rv.resolved)
+
+  def resolve_and_update_packages(self, project_name, requirements, build_target, options = None):
+    check.check_string(project_name)
+    check.check_requirement_list(requirements)
+    check.check_build_target(build_target)
     check.check_venv_install_options(options, allow_none = True)
-    resolve_rv = self._resolve_packages(packages, build_target)
+
+    resolve_rv = self._resolve_packages(build_target, requirements)
     if resolve_rv.missing:
       self.blurb('missing artifacts at %s: %s' % (self._artifact_manager.root_dir, ' '.join(resolve_rv.missing)))
       return []
@@ -133,13 +138,23 @@ class venv_manager(object):
     check.check_string(project_name)
     check.check_build_target(build_target)
     options = options or venv_install_options()
+    pm = self._package_manager(project_name, build_target)
     self.log_i('_update_project_from_config: project_name=%s; build_target=%s; options=%s' % (project_name, build_target, options))
     if options.wipe_first:
       self._wipe_project_dir(project_name, build_target)
-    packages = self._config.package_names(project_name, build_target)
-    if not packages:
+    
+    requirements = self._config.packages(project_name, build_target)
+    self.log_d('_update_project_from_config: requirements=%s' % (requirements))
+    if not requirements:
       return self.clear_project_from_config(project_name, build_target)
-    resolved_packages = self.resolve_and_update_packages(project_name, packages, build_target, options)
+
+    #all_artifacts = self._artifact_manager.list_all_by_package_descriptor(build_target)
+    #self.log_d('_update_project_from_config: all_artifacts=%s' % ([ a.full_name for a in all_artifacts ]))
+
+    #wanted_packages = self._package_descriptors_for_requirements(requirements, all_artifacts)
+    #self.log_d('_update_project_from_config: wanted_packages=%s' % (wanted_packages))
+    resolved_packages = self.resolve_and_update_packages(project_name, requirements, build_target, options)
+    self.log_d('_update_project_from_config: resolved_packages=%s' % (resolved_packages))
     if not resolved_packages:
       self.blurb('failed to update %s from %s' % (project_name, self._config.filename))
       return False
@@ -148,11 +163,48 @@ class venv_manager(object):
     self.log_i('%s - installed packages: %s' % (project_name, ' '.join(installed_packages.names())))
     self.log_i('%s - removed packages: %s' % (project_name, ' '.join(removed_packages_names)))
     if removed_packages_names:
-      pm = self._package_manager(project_name, build_target)
       self.uninstall_packages(project_name, pm.descriptors_for_names(removed_packages_names), build_target)
     if not options.dont_touch_scripts:
       self.save_system_setup_scripts(project_name, build_target)
     return True
+
+  def _find_latest_version(clazz, req, descriptors):
+    potential_matches = descriptors.filter_by_name(req.name)
+    clazz.log_d('_find_latest_version: potential_matches=%s' % (potential_matches.names(include_version = True)))
+    clazz.log_d('_find_latest_version: descriptors=%s' % (descriptors.names(include_version = True)))
+    latest_pdesc = None
+    for pd in potential_matches:
+      if not latest_pdesc:
+        latest_pdesc = pd
+      else:
+        if pd.version > latest_pdesc.version:
+          latest_pdesc = pd
+    return latest_pdesc
+  
+  def _find_matching_version(clazz, req, descriptors):
+    potential_matches = descriptors.filter_by_name(req.name)
+    latest_pdesc = None
+    for pd in potential_matches:
+      cmp_result = build_version.compare_upstream_version(req.version, str(pd.version))
+      if cmp_result == 0:
+        return pd
+      if not latest_pdesc:
+        latest_pdesc = pd
+      else:
+        if pd.version > latest_pdesc.version:
+          latest_pdesc = pd
+    return latest_pdesc
+
+  def _package_descriptors_for_requirements(clazz, reqs, descriptors):
+    result = package_descriptor_list()
+    for req in reqs:
+      if req.version:
+        pd = clazz._find_matching_version(req, descriptors)
+      else:
+        pd = clazz._find_latest_version(req, descriptors)
+      assert pd
+      result.append(pd)
+    return result
   
   def clear_project_from_config(self, project_name, build_target, options = None):
     options = options or venv_install_options()

@@ -215,7 +215,6 @@ jan 16
   so the hash should be not the filename but the python code that describes a project
 
 jan 17
-- change System.DARWIN to System.APPLE
 - make sure disabled packages dont affect dependency tree
 - add notion of unsupported per system along side disabled
 
@@ -1088,3 +1087,7 @@ move storage_artifactory from storage to artifactory and then figure out the "pl
 builder_env currently imports it like this:
 +from rebuild.storage.storage_artifactory import storage_artifactory
 otherwise the storage class does not get registered
+
+unit_test of a specific version change where the requirements of the versions also change
+tools_manager needs unit tests where mutiple versions of a tool are available and it installs the right one
+fix all requirement() callers that expect strings to convert to hardness and force them to use the enum

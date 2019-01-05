@@ -42,7 +42,7 @@ projects
     packages
       fiber
 '''
-    test = self._setup_test(config)
+    test = self._setup_test(config, recipes = RECIPES.FOODS)
     self.assertEqual( [], test.installed_packages('test1') )
 
   def test_packages_update(self):
@@ -55,7 +55,7 @@ projects
     packages
       fiber
 '''
-    test = self._setup_test(config)
+    test = self._setup_test(config, recipes = RECIPES.FOODS)
     test.update_from_config('test1')
     self.assertEqual( [ 'water' ], test.installed_packages('test1') )
 
@@ -78,7 +78,7 @@ projects
     packages
       water fiber orange_juice
 '''
-    test = self._setup_test(config1)
+    test = self._setup_test(config1, recipes = RECIPES.FOODS)
     test.update_from_config('test')
     self.assertEqual( [ 'water' ], test.installed_packages('test') )
 
@@ -103,7 +103,7 @@ projects
     packages
       pear_juice
 '''
-    test = self._setup_test(config1)
+    test = self._setup_test(config1, recipes = RECIPES.FOODS)
     test.update_from_config('test')
     self.assertEqual( [ 'citrus', 'fiber', 'fructose', 'fruit', 'orange', 'orange_juice', 'water' ], test.installed_packages('test') )
 
@@ -135,7 +135,7 @@ projects
   test
     packages
 '''
-    test = self._setup_test(config1)
+    test = self._setup_test(config1, recipes = RECIPES.FOODS)
     test.update_from_config('test')
     self.assertEqual( [ 'arsenic', 'mercury', 'water' ], test.installed_packages('test') )
 
@@ -158,7 +158,7 @@ projects
     packages
       arsenic mercury water
 '''
-    test = self._setup_test(config1)
+    test = self._setup_test(config1, recipes = RECIPES.FOODS)
     test.update_from_config('test')
     self.assertEqual( [ 'arsenic', 'mercury', 'water' ], test.installed_packages('test') )
     test.clear_project_from_config('test')
@@ -177,7 +177,9 @@ projects
     packages
       aflatoxin
 '''
-    test = self._setup_test(config, recipes = recipes1)
+    test = self._setup_test(config, recipes = None)
+    test.publish_artifacts(recipes1)
+
     test.update_from_config('test')
     self.assertEqual( [ 'aflatoxin-1.0.9' ], test.installed_packages('test', include_version = True) )
 
@@ -213,7 +215,7 @@ projects
     self.assertEqual( [ 'aflatoxin-1.0.9' ], test.installed_packages('test', include_version = True) )
 
     
-  def xtest_packages_update_specific_version(self):
+  def test_packages_update_specific_version(self):
     recipes1 = '''
 fake_package aflatoxin 1.0.0 0 0 linux release x86_64 ubuntu 18
 fake_package aflatoxin 1.0.1 0 0 linux release x86_64 ubuntu 18
@@ -238,7 +240,6 @@ projects
 
   @classmethod
   def _make_test_artifact_manager(clazz, recipes = None):
-    recipes = recipes or RECIPES.FOODS
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
     return FPUT.make_artifact_manager(debug = clazz.DEBUG,
                                       recipes = recipes,

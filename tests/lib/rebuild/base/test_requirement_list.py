@@ -100,5 +100,10 @@ class test_requirement_list(unit_test):
       ( 'd', '>=', '5.6', 'desktop', None ),
     ], r.filter_by_system('linux') )
     
+  def test_names(self):
+    r = RL.parse('a(linux) >= 1.2 b(macos) >= 2.3 c(android) >= 3.4 d(desktop) >= 5.6 e(mobile) >= 6.7 f(ios) >= 7.8')
+    self.assertEqual( [ 'a', 'b', 'c', 'd', 'e', 'f' ], r.names(include_version = False) )
+    self.assertEqual( [ 'a-1.2', 'b-2.3', 'c-3.4', 'd-5.6', 'e-6.7', 'f-7.8' ], r.names(include_version = True) )
+    
 if __name__ == "__main__":
   unit_test.main()

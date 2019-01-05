@@ -1,14 +1,14 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from os import path
-
+from collections import namedtuple
 from abc import abstractmethod, ABCMeta
 from bes.system.compat import with_metaclass
 from bes.common import check
 from bes.system import log
 from bes.debug import debug_timer
 
-from rebuild.base import artifact_descriptor, build_blurb, requirement_manager
+from rebuild.base import artifact_descriptor, build_blurb, package_descriptor_list, requirement_manager
 
 from .db_error import *
 from .artifact_manager_registry import artifact_manager_registry
@@ -107,6 +107,36 @@ class artifact_manager_base(with_metaclass(artifact_manager_register_meta, objec
       result.append(available_package)
     assert len(result) == len(package_names)
     return result
+
+  def packages_dict(self, build_target):
+    all_packages = self.list_all_by_package_descriptor(build_target)
+    result = {}
+    for pd in all_packages:
+      if pd.name not in result:
+        result[pd.name] = package_descriptor_list()
+      result[pd.name].append(pd)
+    return result
+
+  def list_all_filter_with_requirements(self, build_target, requirements):
+    pdict = self.packages_dict(build_target)
+    rdict = requirements.to_dict()
+    result = package_descriptor_list()
+    for name in pdict:
+      packages = pdict[name]
+      if name in rdict:
+        req = rdict[name]
+        packages = packages.filter_by_requirement(req)
+      result.extend(packages)
+    return result
+  
+  def latest_packages_dict(self, package_names, build_target):
+    latest = self.latest_packages(package_names, build_target)
+    result = {}
+    for l in latest:
+      pd = l.package_descriptor
+      assert pd.name not in result
+      result[pd.name] = pd
+    return result
   
   @classmethod
   def _find_latest_package(self, package_name, available_packages):
@@ -121,6 +151,7 @@ class artifact_manager_base(with_metaclass(artifact_manager_register_meta, objec
     return candidates[-1]
   
   def _reset_requirement_managers(self):
+    self.log_d('CACA: _reset_requirement_managers: id=%s' % (id(self)))
     self._requirement_managers = {}
 
   def _make_requirement_manager(self, build_target):
@@ -153,5 +184,22 @@ class artifact_manager_base(with_metaclass(artifact_manager_register_meta, objec
 
   def list_latest_versions(self, build_target):
     return self.list_all_by_descriptor(build_target).latest_versions()
+
+  _poto_resolve_result = namedtuple('_poto_resolve_result', 'available, latest, resolved')
+  def poto_resolve_deps(self, requirements, build_target, hardness, include_names):
+    check.check_requirement_list(requirements)
+    check.check_build_target(build_target)
+    check.check_string_seq(hardness)
+    check.check_bool(include_names)
+    self.log_i('resolve_deps(build_target=%s, requirements=%s; hardness=%s, include_names=%s)' % (build_target.build_path,
+                                                                                                  requirements,
+                                                                                                  ' '.join(hardness),
+                                                                                                  include_names))
+    rm = requirement_manager()
+    available = self.list_all_filter_with_requirements(build_target, requirements)
+    latest = available.latest_versions()
+    rm.add_packages(latest)
+    resolved = rm.resolve_deps(requirements.names(), build_target.system, hardness, include_names)
+    return self._poto_resolve_result(available, latest, resolved)
   
 check.register_class(artifact_manager_base, name = 'artifact_manager', include_seq = False)

@@ -63,9 +63,12 @@ class requirement_list(type_checked_list):
     'Return only the requirements that match system.'
     return requirement_list([ req for req in self if req.hardness_matches(hardness) and req.system_mask_matches(system) ])
 
-  def names(self):
+  def names(self, include_version = False):
     'Return only the requirements that match system.'
-    return [ req.name for req in self ]
+    if include_version:
+      return [ '%s-%s' % (req.name, req.version) for req in self ]
+    else:
+      return [ req.name for req in self ]
 
   @staticmethod
   def _check_cast_func(clazz, obj):
@@ -80,6 +83,14 @@ class requirement_list(type_checked_list):
     result = requirement_list()
     for n in l:
       result.extend(requirement_list.parse(n))
+    return result
+
+  def to_dict(self):
+    'Return a dict of requirements keyed by name.  Names must be unique.'
+    result = {}
+    for req in self:
+      assert not req.name in result
+      result[req.name] = req
     return result
   
 check.register_class(requirement_list, include_seq = False, cast_func = requirement_list._check_cast_func)

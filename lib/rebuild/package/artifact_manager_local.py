@@ -49,6 +49,7 @@ class artifact_manager_local(artifact_manager_base):
   #@abstractmethod
   def publish(self, tarball, allow_replace, metadata):
     check.check_package_metadata(metadata)
+    self.log_d('CACA: publish: id=%s; metadata: %s; all=%s' % (id(self), metadata.artifact_descriptor, self.list_all_by_package_descriptor(False)))
     if self._read_only:
       raise RuntimeError('artifact_manager is read only.')
     check.check_package_metadata(metadata)
@@ -62,6 +63,7 @@ class artifact_manager_local(artifact_manager_base):
       self._db.replace_artifact(pkg_metadata)
     else:
       self._db.add_artifact(pkg_metadata)
+    self.log_d('CACA: published: id=%s; metadata: %s; all=%s' % (id(self), metadata.artifact_descriptor, self.list_all_by_package_descriptor(False)))
     return artifact_path_abs
 
   #@abstractmethod

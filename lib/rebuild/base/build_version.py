@@ -137,6 +137,18 @@ class build_version(namedtuple('build_version', 'upstream_version, revision, epo
     tokens2 = [ token for token in upstream_version_lexer.tokenize(v2, 'build_version') ]
     return cmp(tokens1, tokens2)
 
+  @classmethod
+  def compare_version_and_revision(clazz, v1, r1, v2, r2):
+    check.check_string(v1)
+    check.check_int(r1)
+    check.check_string(v2)
+    check.check_int(r2)
+    assert '-' not in v1
+    assert '-' not in v2
+    s1 = '%s-%d' % (v1, r1)
+    s2 = '%s-%d' % (v2, r2)
+    return clazz.compare_upstream_version(s1, s2)
+  
   def clone(self, mutations = None):
     return tuple_util.clone(self, mutations = mutations)
   

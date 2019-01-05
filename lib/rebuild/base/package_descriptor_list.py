@@ -1,9 +1,10 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.compat import StringIO
 from bes.common import check, type_checked_list
 from .package_descriptor import package_descriptor
+from .requirement_list import requirement_list
+from .requirement import requirement
 
 class package_descriptor_list(type_checked_list):
 
@@ -25,9 +26,12 @@ class package_descriptor_list(type_checked_list):
   def __str__(self):
     return self.to_string()
 
-  def names(self):
+  def names(self, include_version = False):
     'Return the names for all the descriptors.'
-    return [ pd.name for pd in self ]
+    if include_version:
+      return [ pd.full_name for pd in self ]
+    else:
+      return [ pd.name for pd in self ]
 
   def latest_versions(self):
     'Return a list of only the lastest version of any package with multiple versions.'
@@ -42,17 +46,24 @@ class package_descriptor_list(type_checked_list):
     result.sort()
     return result
 
-  @classmethod
-  def resolve(clazz, what):
-    if check.is_string(what):
-      return clazz([ package_descriptor.parse(pkg_descs) ])
-    elif check.is_string_seq(what):
-      return clazz([ package_descriptor.parse(p) for p in what ])
-    elif check.is_package_descriptor(what):
-      return clazz([ what ])
-    elif check.is_package_descriptor_list(what):
-      return what
-    else:
-      raise TypeError('Cannot resolve to package descriptor list: %s - %s' % (str(what), type(what)))
+  def filter_by_name(self, name):
+    'Return a list of only those package descriptors whose name matches.'
+    return package_descriptor_list([ pd for pd in self if pd.name == name ])
+
+  def filter_by_requirement(self, req):
+    'Return a list of only those package descriptors that match the given requirement.'
+    check.check_requirement(req)
+    result = package_descriptor_list()
+    for pd in self:
+      if pd.matches_requirement(req):
+        result.append(pd)
+    return result
+  
+  def to_requirement_list(self):
+    'Return a list of requirement object for this package descriptor list.  Not this loses a bunch of info.'
+    result = requirement_list()
+    for pd in self:
+      result.append(requirement(pd.name, '==', str(pd.version)))
+    return result
   
 check.register_class(package_descriptor_list, include_seq = False)

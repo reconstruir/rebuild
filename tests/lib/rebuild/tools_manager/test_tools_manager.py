@@ -6,7 +6,7 @@ from bes.testing.unit_test import unit_test
 from bes.common import cached_property, dict_util, string_util
 from bes.fs import file_find, temp_file
 from bes.system import execute, os_env
-from rebuild.base import build_target, build_system, package_descriptor as PD
+from rebuild.base import build_target, build_system, package_descriptor as PD, package_descriptor_list as PDL
 from rebuild.tools_manager import tools_manager as TM
 from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT
 from _rebuild_testing.fake_package_recipes import fake_package_recipes as RECIPES

@@ -237,6 +237,18 @@ class test_artifact_db(unit_test):
     db.add_artifact(e2)
     self.assertEqual( [ pd2 ], db.list_all_by_package_descriptor(build_target = self.LINUX_BT) )
     self.assertEqual( [ pd1 ], db.list_all_by_package_descriptor(build_target = self.MACOS_BT) )
+
+  def test_list_all_version_upgrade(self):
+    tmp_db = self._make_tmp_db_path()
+    db = DB(tmp_db)
+    e1 = PM(2, 'foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', ( 'x86_64', ), '', '', [], {}, self.TEST_FILES)
+    e2 = PM(2, 'foo-1.2.4.tar.gz', 'foo', '1.2.4', 1, 0, 'macos', 'release', ( 'x86_64', ), '', '', [], {}, self.TEST_FILES)
+    pd1 = PD('foo', '1.2.3-1')
+    pd2 = PD('foo', '1.2.4-1')
+    db.add_artifact(e1)
+    self.assertEqual( [ pd1 ], db.list_all_by_package_descriptor() )
+    db.add_artifact(e2)
+    self.assertEqual( [ pd1, pd2 ], db.list_all_by_package_descriptor() )
     
 if __name__ == '__main__':
   unit_test.main()

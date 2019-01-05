@@ -33,6 +33,11 @@ class requirement_manager(object):
     tool_reqs = pdesc.requirements.filter_by_hardness(['TOOL'])
     self._is_tool_set |= set(tool_reqs.names())
     
+  def add_packages(self, packages):
+    check.check_package_descriptor_list(packages)
+    for pdesc in packages:
+      self.add_package(pdesc)
+    
   def is_tool(self, name):
     check.check_string(name)
     return name in self._is_tool_set
