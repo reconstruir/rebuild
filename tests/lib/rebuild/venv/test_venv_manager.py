@@ -164,7 +164,7 @@ projects
     test.clear_project_from_config('test')
     self.assertEqual( [], test.installed_packages('test') )
     
-  def test_packages_update_upgrade(self):
+  def xtest_packages_update_upgrade(self):
     recipes1 = '''
 fake_package aflatoxin 1.0.9 0 0 linux release x86_64 ubuntu 18
 '''
