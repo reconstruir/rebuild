@@ -927,11 +927,8 @@ rem_test: FAILED:  rebuild/tests/lib/rebuild/tools_manager/test_tools_manager.py
  - post_install_hooks should be post_install_hook also figure out the pluraliry of hooks
  - step.call_hooks should be step.call_hook
 2018-12-02
- - foo_dev and foo_undev are weird and confusing need better names
  - add remanager tool to visualize env
- - the names for tools dirs are messed up ~/proj/third_party/BUILD/tools/gnu_m4_1_4_18 should be gnu_m4_1.4.18
  - no error when 2 recipes define the same package name
- - ability to import existing rebuild.projects kinda urgent
  - might be nice for tester phase of build to tell what its doing to justify its slowness
  - tarball address for a git module with submodules doesnt work
 #      tarball_address
@@ -1081,3 +1078,5 @@ unit_test of a specific version change where the requirements of the versions al
 tools_manager needs unit tests where mutiple versions of a tool are available and it installs the right one
 fix all requirement() callers that expect strings to convert to hardness and force them to use the enum
 add try, except, rollback login to atrifact_db and package_db
+
+unit tests for checksums changing and not changing for example when a value_install_file value changes

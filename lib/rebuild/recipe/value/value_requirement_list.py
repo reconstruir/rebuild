@@ -29,7 +29,7 @@ class value_requirement_list(value_base):
     return self.value.to_string(delimiter = ' ')
 
   #@abstractmethod
-  def sources(self, recipe_env):
+  def sources(self, recipe_env, variables):
     'Return a list of sources this caca provides or None if no sources.'
     return []
 

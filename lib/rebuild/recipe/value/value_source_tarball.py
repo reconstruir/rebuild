@@ -24,7 +24,7 @@ class value_source_tarball(value_base):
     return buf.getvalue()
 
   #@abstractmethod
-  def sources(self, recipe_env):
+  def sources(self, recipe_env, variables):
     'Return a list of sources this value provides or None.'
     return [ recipe_env.storage.find_tarball(self.value) ]
 

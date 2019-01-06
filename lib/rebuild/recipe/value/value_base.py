@@ -91,7 +91,7 @@ class value_base(with_metaclass(value_register_meta, object)):
     assert False
   
   @abstractmethod
-  def sources(self, recipe_env):
+  def sources(self, recipe_env, variables):
     'Return a list of sources this caca provides or None if no sources.'
     assert False
 

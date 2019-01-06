@@ -25,7 +25,7 @@ class value_source_dir(value_base):
     return buf.getvalue()
 
   #@abstractmethod
-  def sources(self, recipe_env):
+  def sources(self, recipe_env, variables):
     'Return a list of sources this caca provides or None if no sources.'
     return [ self._tarball ]
 

@@ -28,7 +28,7 @@ class value_int(value_base):
     return str(self.value)
 
   #@abstractmethod
-  def sources(self, recipe_env):
+  def sources(self, recipe_env, variables):
     'Return a list of sources this caca provides or None if no sources.'
     return []
 

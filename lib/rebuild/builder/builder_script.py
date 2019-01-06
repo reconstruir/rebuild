@@ -132,7 +132,7 @@ class builder_script(object):
   file_checksums = namedtuple('file_checksums', 'sources, targets')
 
   def _script_sources(self):
-    sources = self._step_manager.sources(self.env.recipe_load_env)
+    sources = self._step_manager.sources(self.env.recipe_load_env, self.substitutions)
     sources.append(self.filename)
     sources = [ self._path_normalize(s) for s in sources if s ]
     return sorted(sources)

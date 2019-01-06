@@ -61,7 +61,7 @@ class step_setup_sources_download(step):
       downloaded_tarballs.append(self._downloaded_tarball(downloaded_path, dest, base_dir, strip_common_ancestor))
 
     if tarball:
-      tarball_path = tarball.sources(env.recipe_load_env)[0]
+      tarball_path = tarball.sources(env.recipe_load_env, script.substitutions)[0]
       if not tarball_path:
         blurb = 'No source (%s) found for %s using %s.' % (str(tarball.value),
                                                            script.descriptor.full_name,
@@ -80,7 +80,8 @@ class step_setup_sources_download(step):
       downloaded_tarballs.append(self._downloaded_tarball(tarball_path, dest, base_dir, strip_common_ancestor))
      
     if tarball_dir:
-      self.blurb('Creating tarball %s from %s' % (path.relpath(tarball_dir.sources(env.recipe_load_env)[0]), tarball_dir.where))
+      source_tarball = tarball_dir.sources(env.recipe_load_env, script.substitutions)[0]
+      self.blurb('Creating tarball %s from %s' % (path.relpath(source_tarball), tarball_dir.where))
       tarball_path = tarball_dir.tarball()
       if not tarball_path:
         return step_result(False, 'No tarball found for %s' % (script.descriptor.full_name))

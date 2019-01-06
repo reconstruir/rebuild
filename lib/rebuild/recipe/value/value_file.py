@@ -46,7 +46,7 @@ class value_file(value_base):
       raise ValueError('Invalid value_type: %s' % (class_name))
 
   #@abstractmethod
-  def sources(self, recipe_env):
+  def sources(self, recipe_env, variables):
     'Return a list of sources this caca provides or None if no sources.'
     return [ self.filename ]
 

@@ -51,7 +51,7 @@ class value_hook(value_base):
 #    return path.abspath(filename)
 
   #@abstractmethod
-  def sources(self, recipe_env):
+  def sources(self, recipe_env, variables):
     'Return a list of sources this caca provides or None if no sources.'
     return []
 

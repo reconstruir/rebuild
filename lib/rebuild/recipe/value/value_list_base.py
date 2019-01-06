@@ -72,10 +72,10 @@ class value_list_base(type_checked_list, value_base):
     return clazz()
 
   #@abstractmethod
-  def sources(self, recipe_env):
+  def sources(self, recipe_env, variables):
     result = []
     for value in self:
-      result.extend(value.sources(recipe_env))
+      result.extend(value.sources(recipe_env, variables))
     return result
 
   @classmethod
