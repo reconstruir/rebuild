@@ -324,18 +324,11 @@ mar 12
 - file cache never expires
 
 mar 13
-- fix the notion of build_target in PackageManager seems fucked up
-
-
+- build_target in package_manager.uninstall_packages is not used.
 
 CACA:
 theres no filtering of requirements in BuildScript.py used to be in __load_requirements()
 theres some weirdness about None system_mask in requirement
-step_setup_install_deps -> step_setup_install_requirements
-
-requirements dont take into account operators
-
-need better example projects that zlib and libpng
 
 mar 14
 unit_test: data_path -> unit_test_data_file or something
@@ -1045,7 +1038,6 @@ audit all the recipes and consider making setuptools be a BUILD dep not TOOL
 _make_storage() kind of funcs are cut-n-paste propagating
 allow variables substitution in requirements lists
 
-artifact_manager has 2 very simular and confusing methods list_latest_versions, latest_packages.
 add sql sorting magic for uptream versions using hooks to build_version.compare_upstream_version()
 
 when not ingesting still download the url and check the checksum so next time its ready to go
@@ -1091,3 +1083,4 @@ otherwise the storage class does not get registered
 unit_test of a specific version change where the requirements of the versions also change
 tools_manager needs unit tests where mutiple versions of a tool are available and it installs the right one
 fix all requirement() callers that expect strings to convert to hardness and force them to use the enum
+add try, except, rollback login to atrifact_db and package_db
