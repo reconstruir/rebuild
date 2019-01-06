@@ -18,9 +18,9 @@ class artifact_manager_local(artifact_manager_base):
     check.check_artifact_manager_factory_config(config)
     self._root_dir = config.storage_config.full_path
     file_util.mkdir(self._root_dir)
-    db_filename = path.join(self._root_dir, 'artifacts.db')
-    self.log_d('db_filename=%s' % (db_filename))
-    self._db = artifact_db(db_filename)
+    self._db_filename = path.join(self._root_dir, 'artifacts.db')
+    self.log_d('_db_filename=%s' % (self._db_filename))
+    self._db = artifact_db(self._db_filename)
     
   def __str__(self):
     return 'local:%s' % (self._root_dir)
@@ -49,7 +49,7 @@ class artifact_manager_local(artifact_manager_base):
   #@abstractmethod
   def publish(self, tarball, allow_replace, metadata):
     check.check_package_metadata(metadata)
-    self.log_d('CACA: publish: id=%s; metadata: %s; all=%s' % (id(self), metadata.artifact_descriptor, self.list_all_by_package_descriptor(False)))
+    self.log_d('publish: id=%s; metadata: %s' % (id(self), metadata.artifact_descriptor))
     if self._read_only:
       raise RuntimeError('artifact_manager is read only.')
     check.check_package_metadata(metadata)
@@ -63,7 +63,6 @@ class artifact_manager_local(artifact_manager_base):
       self._db.replace_artifact(pkg_metadata)
     else:
       self._db.add_artifact(pkg_metadata)
-    self.log_d('CACA: published: id=%s; metadata: %s; all=%s' % (id(self), metadata.artifact_descriptor, self.list_all_by_package_descriptor(False)))
     return artifact_path_abs
 
   #@abstractmethod
