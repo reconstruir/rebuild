@@ -4,9 +4,8 @@ import os.path as path
 from collections import namedtuple
 
 from bes.common import bool_util, check, dict_util, string_util
-from bes.config.simple_config import error, simple_config
+from bes.config.simple_config import simple_config
 from bes.fs import file_util
-from bes.config.simple_config import origin
 
 from .storage_config import storage_config
 
