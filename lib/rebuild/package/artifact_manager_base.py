@@ -93,21 +93,6 @@ class artifact_manager_base(with_metaclass(artifact_manager_register_meta, objec
       pass
     return False
  
-  def latest_packages(self, package_names, build_target):
-    self.log_i('latest_packages(package_names=%s, build_target=%s)' % (' '.join(package_names),
-                                                                       build_target.build_path))
-    result = []
-    available_packages = self.list_all_by_metadata(build_target)
-    for available_package in available_packages:
-      self.log_d('latest_packages: AVAILABLE: %s' % (str(available_package.artifact_descriptor)))
-    for package_name in package_names:
-      available_package = self._find_latest_package(package_name, available_packages)
-      if not available_package:
-        raise NotInstalledError('package \"%s\" not found' % (package_name))
-      result.append(available_package)
-    assert len(result) == len(package_names)
-    return result
-
   def packages_dict(self, build_target):
     all_packages = self.list_all_by_package_descriptor(build_target)
     result = {}
@@ -129,29 +114,8 @@ class artifact_manager_base(with_metaclass(artifact_manager_register_meta, objec
       result.extend(packages)
     return result
   
-  def latest_packages_dict(self, package_names, build_target):
-    latest = self.latest_packages(package_names, build_target)
-    result = {}
-    for l in latest:
-      pd = l.package_descriptor
-      assert pd.name not in result
-      result[pd.name] = pd
-    return result
-  
-  @classmethod
-  def _find_latest_package(self, package_name, available_packages):
-    check.check_package_metadata_list(available_packages)
-    candidates = [ p for p in available_packages if p.name == package_name ]
-    if not candidates:
-      return None
-    if len(candidates) > 1:
-      candidates = sorted(candidates, key = lambda candidate: candidate.build_version)
-    for candidate in candidates:
-      self.log_d('_find_latest_package: CANDIDATE for %s: %s' % (package_name, candidate.artifact_descriptor))
-    return candidates[-1]
-  
   def _reset_requirement_managers(self):
-    self.log_d('CACA: _reset_requirement_managers: id=%s' % (id(self)))
+    self.log_d('_reset_requirement_managers: id=%s' % (id(self)))
     self._requirement_managers = {}
 
   def _make_requirement_manager(self, build_target):
