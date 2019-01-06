@@ -47,6 +47,7 @@ class artifact_descriptor_list(type_checked_list):
         if adesc.build_version > latest[name].build_version:
           latest[name] = adesc
     result = artifact_descriptor_list(latest.values())
-    return sorted(result)
+    result.sort(key = lambda adesc: tuple(adesc))
+    return result
   
 check.register_class(artifact_descriptor_list, include_seq = False)
