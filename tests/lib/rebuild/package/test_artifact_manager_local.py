@@ -35,14 +35,18 @@ class test_artifact_manager_local(unit_test):
 
   def test_publish_new_version(self):
     t = AMT(recipes = RECIPES.TWO_APPLES)
-    adesc = 'apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'
-    tmp_tarball = t.create_package(adesc)
-    filename = t.am.publish(tmp_tarball.filename, False, tmp_tarball.metadata)
-    self.assertTrue( path.exists(filename) )
-    expected = [
+    tmp_tarball1 = t.create_package('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18')
+    t.am.publish(tmp_tarball1.filename, False, tmp_tarball1.metadata)
+    self.assertEqual( [
       AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'),
-    ]
-    self.assertEqual( expected, t.am.list_all_by_descriptor(None) )
+    ], t.am.list_all_by_descriptor(None) )
+
+    tmp_tarball2 = t.create_package('apple;1.2.4;1;0;linux;release;x86_64;ubuntu;18')
+    t.am.publish(tmp_tarball2.filename, False, tmp_tarball2.metadata)
+    self.assertEqual( [
+      AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('apple;1.2.4;1;0;linux;release;x86_64;ubuntu;18'),
+    ], t.am.list_all_by_descriptor(None) )
     
   def test_artifact_path(self):
     t = AMT(recipes = RECIPES.APPLE)
