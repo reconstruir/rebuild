@@ -43,7 +43,7 @@ class package_descriptor_list(type_checked_list):
         if pd.version > latest[pd.name].version:
           latest[pd.name] = pd
     result = package_descriptor_list(latest.values())
-    result.sort()
+    result.sort(key = lambda p: tuple(p))
     return result
 
   def filter_by_name(self, name):
