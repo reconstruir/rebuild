@@ -1,6 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import json, os.path as path
+from bes.system import log
 from bes.fs import file_check
 from bes.common import check, string_util
 from bes.sqlite import sqlite
@@ -35,6 +36,7 @@ create table artifacts(
 '''
 
   def __init__(self, filename):
+    log.add_logging(self, 'artifact_db')
     self._filename = path.abspath(filename)
     self._db = sqlite(self._filename)
     self._db.ensure_table('artifacts', self.SCHEMA_ARTIFACTS)
@@ -56,6 +58,8 @@ create table artifacts(
     adesc = md.artifact_descriptor
     if self.has_artifact(adesc):
       raise AlreadyInstalledError('Already installed: %s' % (str(adesc)), adesc)
+    self.log_d('add_artifact: adesc=%s' % (str(adesc)))
+    self._db.begin()
     self._add_artifact_i(md)
     self._db.commit()
 
@@ -71,6 +75,7 @@ create table artifacts(
     adesc = md.artifact_descriptor
     if not self.has_artifact(adesc):
       raise NotInstalledError('Not installed: %s' % (str(adesc)), adesc)
+    self._db.begin()
     self._remove_artifact_i(md.artifact_descriptor)
     self._add_artifact_i(md)
     self._db.commit()
@@ -78,6 +83,7 @@ create table artifacts(
   def add_or_replace_artifact(self, md):
     check.check_package_metadata(md)
     adesc = md.artifact_descriptor
+    self._db.begin()
     if not self.has_artifact(adesc):
       self._add_artifact_i(md)
     else:
@@ -114,6 +120,7 @@ create table artifacts(
     check.check_artifact_descriptor(adesc)
     if not self.has_artifact(adesc):
       raise NotInstalledError('Not installed: %s' % (str(adesc)), adesc)
+    self._db.begin()
     self._remove_artifact_i(adesc)
     self._db.commit()
 

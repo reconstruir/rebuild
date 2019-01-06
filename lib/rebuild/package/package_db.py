@@ -81,6 +81,7 @@ create table packages(
     }
     keys = ', '.join(d.keys())
     values = ', '.join(d.values())
+    self._db.begin()
     self._db.execute('insert into packages(%s) values(%s)' % (keys, values))
     self._files_db.add_table(entry.name, entry.manifest.files)
     self._files_db.add_table(self._make_env_files_table_name(entry.name), entry.manifest.env_files)
@@ -90,6 +91,7 @@ create table packages(
     if not self.has_package(name):
       raise NotInstalledError('not installed: %s' % (name), name)
     t = ( name, )
+    self._db.begin()
     self._db.execute('delete from packages where name=?', t)
     self._files_db.remove_table(name)
     self._files_db.remove_table(self._make_env_files_table_name(name))
