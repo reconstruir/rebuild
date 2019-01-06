@@ -123,9 +123,36 @@ class build_version(namedtuple('build_version', 'upstream_version, revision, epo
       return upstream_version_cmp
     return cmp(v1.revision, v2.revision)
 
+  @classmethod
+  def _cast_build_version(clazz, v):
+    if check.is_tuple(v):
+      return build_version(*v)
+    return v
+  
+  def __eq__(self, other):
+    other = self._cast_build_version(other)
+    check.check_build_version(other)
+    return self.compare(self, other) == 0
+    
   def __lt__(self, other):
+    other = self._cast_build_version(other)
     check.check_build_version(other)
     return self.compare(self, other) < 0
+    
+  def __le__(self, other):
+    other = self._cast_build_version(other)
+    check.check_build_version(other)
+    return self.compare(self, other) <= 0
+    
+  def __gt__(self, other):
+    other = self._cast_build_version(other)
+    check.check_build_version(other)
+    return self.compare(self, other) > 0
+    
+  def __ge__(self, other):
+    other = self._cast_build_version(other)
+    check.check_build_version(other)
+    return self.compare(self, other) >= 0
     
   # This function should implement exactly the algorithm described here (its close):
   # https://manpages.debian.org/wheezy/dpkg-dev/deb-version.5.en.html#Sorting_Algorithm
