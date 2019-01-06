@@ -71,6 +71,39 @@ class test_artifact_db(unit_test):
     db.add_artifact(e)
     self.assertTrue( db.has_artifact(adesc) )
 
+  def test_add_two(self):
+    tmp_db = self._make_tmp_db_path()
+    db = DB(tmp_db)
+
+    e1 = PM(2, 'foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', ( 'x86_64', ), '', '', [], {}, self.TEST_FILES)
+    adesc1 = e1.artifact_descriptor
+    self.assertFalse( db.has_artifact(adesc1) )
+    db.add_artifact(e1)
+    self.assertTrue( db.has_artifact(adesc1) )
+    
+    e2 = PM(2, 'foo-1.2.4.tar.gz', 'foo', '1.2.4', 1, 0, 'macos', 'release', ( 'x86_64', ), '', '', [], {}, self.TEST_FILES)
+    adesc2 = e2.artifact_descriptor
+    self.assertFalse( db.has_artifact(adesc2) )
+    db.add_artifact(e2)
+    self.assertTrue( db.has_artifact(adesc2) )
+
+  def test_add_persistent(self):
+    tmp_db = self._make_tmp_db_path()
+    db = DB(tmp_db)
+    e1 = PM(2, 'foo-1.2.3.tar.gz', 'foo', '1.2.3', 1, 0, 'macos', 'release', ( 'x86_64', ), '', '', [], {}, self.TEST_FILES)
+    adesc1 = e1.artifact_descriptor
+    self.assertFalse( db.has_artifact(adesc1) )
+    db.add_artifact(e1)
+    self.assertTrue( db.has_artifact(adesc1) )
+    e2 = PM(2, 'foo-1.2.4.tar.gz', 'foo', '1.2.4', 1, 0, 'macos', 'release', ( 'x86_64', ), '', '', [], {}, self.TEST_FILES)
+    adesc2 = e2.artifact_descriptor
+    self.assertFalse( db.has_artifact(adesc2) )
+    db.add_artifact(e2)
+    self.assertTrue( db.has_artifact(adesc2) )
+    db = DB(tmp_db)
+    self.assertTrue( db.has_artifact(adesc1) )
+    self.assertTrue( db.has_artifact(adesc2) )
+    
   def test_add_duplicate(self):
     tmp_db = self._make_tmp_db_path()
     db = DB(tmp_db)
