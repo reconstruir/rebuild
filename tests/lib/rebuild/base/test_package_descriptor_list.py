@@ -52,5 +52,25 @@ class test_package_descriptor_list(unit_test):
     self.assertEqual( [ P('foo-1.0.0'), P('foo-1.0.2'), P('foo-1.0.2-1') ], l.filter_by_requirement(RL.parse('foo <= 1.0.2-1')[0]) )
     self.assertEqual( [ P('foo-1.0.0'), P('foo-1.0.2'), P('foo-1.0.2-1') ], l.filter_by_requirement(RL.parse('foo <= 1.0.2-1')[0]) )
     
+  def test_latest_versions(self):
+    P = PD.parse
+    l = PDL([
+      P('foo-1.0.0'),
+      P('foo-1.0.2'),
+      P('foo-1.0.2-1'),
+      P('bar-1.0.9'),
+      P('bar-1.0.10'),
+      P('baz-1.0.0'),
+      P('baz-1.0.100'),
+      P('baz-1.0.99'),
+    ])
+    expected = PDL([
+      P('bar-1.0.10'),
+      P('baz-1.0.100'),
+      P('foo-1.0.2-1'),
+    ])
+    print('ACTUAL: %s\n' % (l.latest_versions().to_string()))
+    self.assertMultiLineEqual( expected.to_string(), l.latest_versions().to_string() )
+    
 if __name__ == "__main__":
   unit_test.main()
