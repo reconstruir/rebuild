@@ -1071,9 +1071,6 @@ recipe: add description
  - empty variable in recipe under variables: causes an exception
  - magic for new storage config
 
-urgent stuff:
-- versions for projects
-
 ressurect sources_cli.py
 move storage_artifactory from storage to artifactory and then figure out the "pluginness" of artifactory in general.
 builder_env currently imports it like this:

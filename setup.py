@@ -24,6 +24,6 @@ setup(
     'bin/rebuild_sudo_editor.py',
     'bin/rebuild_update_tarball_address.py',
     'bin/rebuilder.py',
-    'bin/remanager.py',
+    'bin/revenv.py',
   ],
 )
