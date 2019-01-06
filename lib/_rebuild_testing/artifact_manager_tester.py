@@ -87,8 +87,13 @@ class artifact_manager_tester(object):
 
   @classmethod
   def _parse_adesc_list(clazz, adescs):
-    if check.is_string(adescs) and '\n' in adescs:
+    if check.is_artifact_descriptor_list(adescs):
+      return adescs
+    elif check.is_artifact_descriptor(adescs):
+      return artifact_descriptor_list([ adescs ])
+    elif check.is_string(adescs) and '\n' in adescs:
       adescs = text_line_parser.parse_lines(adescs, strip_text = True, remove_empties = True)
+      adescs = [ adesc for adesc in adescs if adesc.startswith('fake_package') ]
     else:
       adescs = object_util.listify(adescs)
     return adescs
