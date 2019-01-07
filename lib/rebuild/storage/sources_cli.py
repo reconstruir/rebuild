@@ -431,9 +431,6 @@ class sources_cli(object):
       raise RuntimeError('not a directory: %s' % (local_dir))
 
     storage = self._make_storage('publish_artifacts', config_filename, config_name, 'artifacts')
-    print('storage: %s' % (str(storage)))
-
-    print('config: %s' % (str(storage._config.storage_config)))
 
     username = storage._config.storage_config.upload.username
     password = storage._config.storage_config.upload.password
@@ -466,7 +463,7 @@ class sources_cli(object):
         #print('%25s: %s' % ('exists same checksum', md.filename))
         continue
       if remote_checksum is not None and remote_checksum != local_checksum:
-        print('%25s: %s' % ('exists diff checksum', md.filename))
+        #print('%25s: %s' % ('exists diff checksum', md.filename))
         continue
       if dry_run:
         print('%25s: %s to %s' % ('dry run: would upload', md.filename, storage.make_address(remote_filename)))
