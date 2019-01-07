@@ -87,8 +87,7 @@ class builder_cli(build_target_cli):
     pfm = project_file_manager()
     pfm.load_project_files_from_env()
     pfm.load_project_file(args.project_file)
-    available_recipes = pfm.available_recipes(args.project_file, bt)
-    available_packages = available_recipes
+    available_packages = pfm.available_recipes(args.project_file, bt)
     
     if args.filter:
       if path.isfile(args.filter[0]):
@@ -97,7 +96,7 @@ class builder_cli(build_target_cli):
         target_packages_filter = args.filter[0].split(',')
       target_packages_filter = [ p for p in target_packages_filter if p ]
       available_packages = self._filter_target_packages(available_packages, target_packages_filter)
-    
+
     args.system = build_system.parse_system(args.system)
     args.level = build_level.parse_level(args.level)
     args.arch = build_arch.parse_arch(args.arch, args.system, args.distro)
@@ -148,6 +147,11 @@ class builder_cli(build_target_cli):
     config.ingest_only = args.ingest_only
     if config.ingest_only:
       config.no_tests = True
+
+    self.project_file_variables = pfm.available_variables(args.project_file,
+                                                          config.build_target)
+    self.host_project_file_variables = pfm.available_variables(args.project_file,
+                                                               config.host_build_target)
     
     env = builder_env(config, available_packages)
     
