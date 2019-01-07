@@ -1080,3 +1080,8 @@ fix all requirement() callers that expect strings to convert to hardness and for
 add try, except, rollback login to atrifact_db and package_db
 
 unit tests for checksums changing and not changing for example when a value_install_file value changes
+
+- project_file imports should be more granular at recipe level
+- project_file just artifacts import
+- recipe requirements variable_manager support
+

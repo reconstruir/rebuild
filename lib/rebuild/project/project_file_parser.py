@@ -4,7 +4,7 @@ from collections import namedtuple
 
 import os.path as path
 from bes.common import check, string_util
-from bes.key_value import key_value, key_value_parser
+from bes.key_value import key_value_list
 from bes.system import log
 from bes.text import string_list, tree_text_parser, text_fit
 
@@ -55,7 +55,7 @@ class project_file_parser(object):
     name = self._parse_project_name(node)
     description = None
     python_code = None
-    variables = masked_value_list()
+    variables = key_value_list()
     imports = masked_value_list()
     recipes = masked_value_list()
 
@@ -69,7 +69,7 @@ class project_file_parser(object):
       if text.startswith('description'):
         description = recipe_parser_util.parse_description(child, self._error)
       elif text.startswith('variables'):
-        variables.extend(recipe_parser_util.parse_variables(child, self.filename))
+        variables.extend(self._parse_variables(child, self.filename))
       elif text.startswith('recipes'):
         recipes.extend(self._parse_masked_list(child))
       elif text.startswith('imports'):
@@ -124,7 +124,19 @@ class project_file_parser(object):
     result.extend(values)
     return masked_value_list(result)
 
+  
   @classmethod
   def _node_get_string_list(clazz, node):
     text = node.get_text(node.CHILDREN_FLAT)
     return string_util.split_by_white_space(text, strip = True)
+
+  def _parse_variables(self, node, filename):
+    #self.log_d('_parse_variables: filename=%s\nnode=%s' % (self.filename, str(node)))
+    result = key_value_list()
+    for child in node.children:
+      result.extend(self._parse_variables_child(child))
+    return result
+
+  def _parse_variables_child(self, child):
+    text = child.get_text(child.NODE_FLAT)
+    return key_value_list.parse(text)

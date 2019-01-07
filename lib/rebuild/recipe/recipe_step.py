@@ -41,7 +41,7 @@ class recipe_step(namedtuple('recipe_step', 'name,description,values')):
 
   def resolve_values(self, substitutions, env):
     check.check_dict(substitutions)
-    check.check_recipe_load_env_base(env)
+    check.check_recipe_load_env(env)
     args_definition = self.description.step_class.args_definition()
     result = {}
     for value in self.values:

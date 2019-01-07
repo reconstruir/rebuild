@@ -6,6 +6,7 @@ from rebuild.base import build_target
 from rebuild.recipe import recipe_parser, testing_recipe_load_env
 from rebuild.recipe.value import value_file, value_file_list, value_git_address, value_install_file
 from rebuild.recipe.value import value_origin as VO
+from rebuild.recipe.variable_manager import variable_manager
 from bes.key_value import key_value as KV, key_value_list as KVL
 from bes.text import string_list
 from bes.git import git_address
@@ -150,7 +151,7 @@ package foo 1.2.3 4
 '''
     indented_values = clazz._add_indent(s, 3)
     recipe_text = recipe_template % (indented_values)
-    r = recipe_parser('<test>', recipe_text).parse()
+    r = recipe_parser('<test>', recipe_text).parse(variable_manager())
     return r[0].steps[0]
     
   @classmethod

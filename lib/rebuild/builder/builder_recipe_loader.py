@@ -44,9 +44,12 @@ class builder_recipe_loader(object):
   
   @classmethod
   def _load_recipes_v2(clazz, env, filename):
+    check.check_recipe_load_env(env)
+    check.check_variable_manager(env.variable_manager)
+    check.check_string(filename)
     content = file_util.read(filename, codec = 'utf8')
     parser = recipe_parser(filename, content)
-    recipes = parser.parse()
+    recipes = parser.parse(env.variable_manager)
 
     if False:
 #    if True:

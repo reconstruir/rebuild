@@ -78,7 +78,7 @@ class venv_config_parser(object):
       if text.startswith('description'):
         description = recipe_parser_util.parse_description(child, self._error)
       elif text.startswith('variables'):
-        variables.extend(recipe_parser_util.parse_variables(child, self.filename))
+        variables.extend(recipe_parser_util.parse_masked_variables(child, self.filename))
       elif text.startswith('packages'):
         packages.extend(recipe_parser_util.parse_requirements(child))
       elif text.startswith('python_code'):

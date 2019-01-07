@@ -105,8 +105,7 @@ class project_file_manager(object):
     variables = key_value_list()
     project_files = self.resolve_project_files(filename, build_target)
     for pf in project_files:
-      more_variables = pf.resolve_variables(build_target.system)
-      variables.extend(more_variables)
+      variables.extend(pf.variables)
     return variables
   
   @classmethod

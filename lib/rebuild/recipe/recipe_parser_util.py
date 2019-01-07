@@ -91,7 +91,7 @@ class recipe_parser_util(object):
     return original_python_code
   
   @classmethod
-  def parse_variables(clazz, node, filename):
+  def parse_masked_variables(clazz, node, filename):
     origin = value_origin(filename, node.data.line_number, node.data.text)
     values = value_key_values.xnew_parse(origin, node)
     return masked_value_list(values)

@@ -55,15 +55,12 @@ project foo
     text = '''!rebuild.project!
 project foo
   variables
-    all: FOO=hi BAR=666
-    linux: AUTHOR=linus
-    macos: AUTHOR=apple
+    FOO=hi BAR=666
+    AUTHOR=socrates
 '''
-
     p = self._parse(text)
     self.assertEqual( 1, len(p) )
-    self.assertEqual( [ KV('FOO', 'hi'), KV('BAR', '666'), KV('AUTHOR', 'linus') ], p[0].resolve_variables('linux') )
-    self.assertEqual( [ KV('FOO', 'hi'), KV('BAR', '666'), KV('AUTHOR', 'apple') ], p[0].resolve_variables('macos') )
+    self.assertEqual( [ KV('FOO', 'hi'), KV('BAR', '666'), KV('AUTHOR', 'socrates') ], p[0].variables )
     
   def test_recipes(self):
     text = '''!rebuild.project!

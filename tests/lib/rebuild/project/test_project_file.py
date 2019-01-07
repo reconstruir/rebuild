@@ -30,20 +30,15 @@ project foo
     self.assertMultiLineEqual( expected, str(p) )
   
   def test_str_variables(self):
-    variables = masked_value_list([
-      masked_value(None, value_key_values(value = key_value_list.parse('FOO=1 BAR=hello'))),
-      masked_value(None, value_key_values(value = key_value_list.parse('BAZ=kiwi'))),
-      masked_value('linux', value_key_values(value = key_value_list.parse('FAST=yes AUTHOR=linus'))),
-      masked_value('macos', value_key_values(value = key_value_list.parse('SLOW=yes AUTHOR=genius'))),
-    ])
+    variables = key_value_list.parse('FOO=1 BAR=hello BAZ=kiwi AUTHOR=socrates')
     p = PF(2, 'foo.reproject', 'foo', None, variables, None, None, None)
     expected = '''!rebuild.project!
 project foo
   variables
-    FOO=1 BAR=hello
+    FOO=1
+    BAR=hello
     BAZ=kiwi
-    linux: FAST=yes AUTHOR=linus
-    macos: SLOW=yes AUTHOR=genius
+    AUTHOR=socrates
 '''
     self.assertMultiLineEqual( expected, str(p) )
   

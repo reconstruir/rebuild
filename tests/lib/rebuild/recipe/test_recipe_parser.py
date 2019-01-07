@@ -4,6 +4,7 @@
 import inspect, os.path as path
 from bes.testing.unit_test import unit_test
 from rebuild.recipe import recipe, recipe_parser as P, recipe_error as ERR, recipe_step as RS, testing_recipe_load_env
+from rebuild.recipe.variable_manager import variable_manager
 from rebuild.step import compound_step, step, step_result
 from rebuild.base import build_target
 from bes.key_value import key_value as KV, key_value_list as KVL
@@ -19,8 +20,11 @@ class test_recipe_parser(unit_test):
   TEST_ENV = testing_recipe_load_env()
   
   @classmethod
-  def _parse(self, text, starting_line_number = 0):
-    return P(path.basename(__file__), text, starting_line_number = starting_line_number).parse()
+  def _parse(self, text, starting_line_number = 0, variables = None):
+    vm = variable_manager()
+    if variables:
+      vm.add_variables(KVL.parse(variables))
+    return P(path.basename(__file__), text, starting_line_number = starting_line_number).parse(vm)
 
   @classmethod
   def setUpClass(clazz):
@@ -35,7 +39,7 @@ class test_recipe_parser(unit_test):
     with self.assertRaises(ERR) as context:
       self._parse('nomagic')
 
-  def test_package_version_dash(self):
+  def test_package_version(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
 '''
@@ -44,12 +48,12 @@ package foo 1.2.3 4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
 
-  def test_package_version_space(self):
+  def test_package_version_is_a_variable(self):
     frame = inspect.getframeinfo(inspect.currentframe())
     text = '''!rebuild.recipe!
-package foo 1.2.3 4
+package ${_NAME} ${_VERSION} ${_REVISION}
 '''
-    r = self._parse(text, frame.lineno)
+    r = self._parse(text, frame.lineno, variables = '_NAME=foo _VERSION=1.2.3 _REVISION=4')
     self.assertEqual( 1, len(r) )
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
@@ -481,7 +485,7 @@ package foo 1.2.3 4
 
 '''
 
-    r = P(self._filename_for_parser(), text).parse()
+    r = P(self._filename_for_parser(), text).parse(variable_manager())
     self.assertEqual( 1, len(r) )
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
@@ -504,7 +508,7 @@ package foo 1.2.3 4
             def execute(self, script, env, args):
               return self.result(True)
 '''
-    r = P(self._filename_for_parser(), text).parse()
+    r = P(self._filename_for_parser(), text).parse(variable_manager())
     self.assertEqual( 1, len(r) )
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
@@ -530,7 +534,7 @@ package foo 1.2.3 4
             def execute(self, script, env, args):
               return self.result(True)
 '''
-    r = P(self._filename_for_parser(), text).parse()
+    r = P(self._filename_for_parser(), text).parse(variable_manager())
     self.assertEqual( 1, len(r) )
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
@@ -547,7 +551,7 @@ package foo 1.2.3 4
     step_takes_file_list
       file_list_value: test_file1.txt test_file2.txt
 '''
-    r = P(self._filename_for_parser(), text).parse()
+    r = P(self._filename_for_parser(), text).parse(variable_manager())
     self.assertEqual( 1, len(r) )
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_file_list\n    file_list_value: test_file1.txt test_file2.txt', str(r[0].steps[0]) )
@@ -560,7 +564,7 @@ package foo 1.2.3 4
     step_takes_file_list
       file_list_value: test_file1.txt test_file2.txt foo=5 bar=6
 '''
-    r = P(self._filename_for_parser(), text).parse()
+    r = P(self._filename_for_parser(), text).parse(variable_manager())
     self.assertEqual( 1, len(r) )
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_file_list\n    file_list_value: test_file1.txt test_file2.txt foo=5 bar=6', str(r[0].steps[0]) )
@@ -574,7 +578,7 @@ package foo 1.2.3 4
       file_list_value: test_file1.txt test_file2.txt foo=5
                        bar=6
 '''
-    r = P(self._filename_for_parser(), text).parse()
+    r = P(self._filename_for_parser(), text).parse(variable_manager())
     self.assertEqual( 1, len(r) )
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_file_list\n    file_list_value: test_file1.txt test_file2.txt foo=5 bar=6', str(r[0].steps[0]) )
@@ -587,7 +591,7 @@ package foo 1.2.3 4
     step_takes_file
       file_value: test_file1.txt
 '''
-    r = P(self._filename_for_parser(), text).parse()
+    r = P(self._filename_for_parser(), text).parse(variable_manager())
     self.assertEqual( 1, len(r) )
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_file\n    file_value: test_file1.txt', str(r[0].steps[0]) )
@@ -600,7 +604,7 @@ package foo 1.2.3 4
     step_takes_file
       file_value: test_file1.txt foo=1 bar=2 baz=\"hello kiwi\"
 '''
-    r = P(self._filename_for_parser(), text).parse()
+    r = P(self._filename_for_parser(), text).parse(variable_manager())
     self.assertEqual( 1, len(r) )
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_file\n    file_value: test_file1.txt foo=1 bar=2 baz=\"hello kiwi\"', str(r[0].steps[0]) )
@@ -613,7 +617,7 @@ package foo 1.2.3 4
     step_takes_install_file
       install_file_value: test_file1.txt etc/foo/f1.txt
 '''
-    r = P(self._filename_for_parser(), text).parse()
+    r = P(self._filename_for_parser(), text).parse(variable_manager())
     self.assertEqual( 1, len(r) )
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_install_file\n    install_file_value: test_file1.txt etc/foo/f1.txt', str(r[0].steps[0]) )
@@ -628,7 +632,7 @@ package foo 1.2.3 4
         all: test_file1.txt etc/foo/f1.txt
         all: test_file2.txt etc/foo/f2.txt
 '''
-    r = P(self._filename_for_parser(), text).parse()
+    r = P(self._filename_for_parser(), text).parse(variable_manager())
     self.assertEqual( 1, len(r) )
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_install_file\n  install_file_value\n    all: test_file1.txt etc/foo/f1.txt\n    all: test_file2.txt etc/foo/f2.txt', str(r[0].steps[0]) )
@@ -676,7 +680,7 @@ package foo 1.2.3 4
     step_takes_git_address
       git_address_value: test_file1.txt test_file2.txt
 '''
-    r = P(self._filename_for_parser(), text).parse()
+    r = P(self._filename_for_parser(), text).parse(variable_manager())
     self.assertEqual( 1, len(r) )
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_git_address\n    git_address_value: test_file1.txt test_file2.txt', str(r[0].steps[0]) )
@@ -690,7 +694,7 @@ package foo 1.2.3 4
         all: test_file1.txt
         all: test_file2.txt
 '''
-    r = P(self._filename_for_parser(), text).parse()
+    r = P(self._filename_for_parser(), text).parse(variable_manager())
     self.assertEqual( 1, len(r) )
     self.assertEqual( 1, len(r[0].steps) )
 
@@ -709,7 +713,7 @@ package foo 1.2.3 4
         all: #test_file1.txt
         all: test_file2.txt
 '''
-    r = P(self._filename_for_parser(), text).parse()
+    r = P(self._filename_for_parser(), text).parse(variable_manager())
     self.assertEqual( 1, len(r) )
     self.assertEqual( 1, len(r[0].steps) )
 
@@ -726,7 +730,7 @@ package foo 1.2.3 4
     step_takes_file_list
       file_list_value
 '''
-    r = P(self._filename_for_parser(), text).parse()
+    r = P(self._filename_for_parser(), text).parse(variable_manager())
     self.assertEqual( 1, len(r) )
     self.assertEqual( 1, len(r[0].steps) )
 
@@ -747,7 +751,7 @@ package foo 1.2.3 4
       string_value: myt string with ${FOO}
 '''
 
-    r = P(self._filename_for_parser(), text).parse()
+    r = P(self._filename_for_parser(), text).parse(variable_manager())
     self.assertEqual( 1, len(r) )
     self.assertEqual( [ KV('FOO', 'hi'), KV('BAR', '666'), KV('AUTHOR', 'linus') ], r[0].resolve_variables('linux') )
     self.assertEqual( [ KV('FOO', 'hi'), KV('BAR', '666'), KV('AUTHOR', 'apple') ], r[0].resolve_variables('macos') )

@@ -46,7 +46,8 @@ class recipe_parser(object):
       line_number = None
     raise recipe_error(msg, self.filename, line_number)
     
-  def parse(self):
+  def parse(self, variable_manager):
+    check.check_variable_manager(variable_manager)
     if not self.text.startswith(self.MAGIC):
       first_line = self.text.split('\n')[0]
       self._error('text should start with recipe magic \"%s\" instead of \"%s\"' % (self.MAGIC, first_line))
@@ -54,21 +55,21 @@ class recipe_parser(object):
       tree = tree_text_parser.parse(self.text, strip_comments = True)
     except Exception as ex:
       self._error('failed to parse: %s' % (ex.message))
-    return recipe_list(self._parse_tree(tree))
+    return recipe_list(self._parse_tree(tree, variable_manager))
 
-  def _parse_tree(self, root):
+  def _parse_tree(self, root, variable_manager):
     recipes = []
     if not root.children:
       self._error('invalid recipe', root)
     if root.children[0].data.text != self.MAGIC:
       self._error('invalid magic', root)
     for pkg_node in root.children[1:]:
-      recipe = self._parse_package(pkg_node)
+      recipe = self._parse_package(pkg_node, variable_manager)
       recipes.append(recipe)
     return recipes
   
-  def _parse_package(self, node):
-    name, version = self._parse_package_header(node)
+  def _parse_package(self, node, variable_manager):
+    name, version = self._parse_package_header(node, variable_manager)
     properties = {}
     requirements = []
     steps = []
@@ -89,7 +90,7 @@ class recipe_parser(object):
       elif text.startswith('requirements'):
         requirements.extend(recipe_parser_util.parse_requirements(child))
       elif text.startswith('variables'):
-        variables.extend(recipe_parser_util.parse_variables(child, self.filename))
+        variables.extend(recipe_parser_util.parse_masked_variables(child, self.filename))
       elif text.startswith('steps'):
         steps = self._parse_steps(child)
       elif text.startswith('enabled'):
@@ -108,7 +109,7 @@ class recipe_parser(object):
     return recipe(recipe.FORMAT_VERSION, self.filename, enabled, properties, requirements,
                   desc, instructions, steps, python_code, variables)
 
-  def _parse_package_header(self, node):
+  def _parse_package_header(self, node, variable_manager):
     parts = string_util.split_by_white_space(node.data.text, strip = True)
     num_parts = len(parts)
     if num_parts not in [ 3, 4 ]:
@@ -116,15 +117,15 @@ class recipe_parser(object):
     if parts[0] != 'package':
       self._error('package section should begin with \"package $name $ver $rev\" instead of \"%s\"' % (node.data.text), node)
     if num_parts == 3:
-      name = parts[1].strip()
-      version = build_version.parse(parts[2])
+      name = variable_manager.substitute(parts[1].strip())
+      version = build_version.parse(variable_manager.substitute(parts[2]))
       return name, version
     elif num_parts == 4:
-      name = parts[1].strip()
-      version = build_version.parse(parts[2])
+      name = variable_manager.substitute(parts[1].strip())
+      version = build_version.parse(variable_manager.substitute(parts[2]))
       if version.revision != 0:
         self._error('revision given multiple times: %s' % (node.data.text), node)
-      revision = parts[3].strip()
+      revision = variable_manager.substitute(parts[3].strip())
       return name, build_version(version.upstream_version, revision, version.epoch)
 
   def _parse_enabled(self, node):

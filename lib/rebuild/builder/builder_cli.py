@@ -157,10 +157,8 @@ class builder_cli(build_target_cli):
     if config.ingest_only:
       config.no_tests = True
 
-    self.project_file_variables = pfm.available_variables(args.project_file,
-                                                          config.build_target)
-    self.host_project_file_variables = pfm.available_variables(args.project_file,
-                                                               config.host_build_target)
+    config.project_file_variables = pfm.available_variables(args.project_file,
+                                                            config.build_target)
     
     env = builder_env(config, available_packages)
     

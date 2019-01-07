@@ -20,7 +20,7 @@ class project_file(namedtuple('project_file', 'format_version, filename, name, d
     check.check_string(filename)
     check.check_string(name)
     check.check_string(description, allow_none = True)
-    check.check_masked_value_list(variables, allow_none = True)
+    check.check_key_value_list(variables, allow_none = True)
     check.check_masked_value_list(imports, allow_none = True)
     check.check_masked_value_list(recipes, allow_none = True)
     check.check_string(python_code, allow_none = True)
@@ -41,7 +41,7 @@ class project_file(namedtuple('project_file', 'format_version, filename, name, d
       root.children.append(recipe_util.description_to_node(self.description))
       root.add_child('')
     if self.variables:
-      root.children.append(recipe_util.variables_to_node(self.variables))
+      root.children.append(self._variables_to_node(self.variables))
       root.add_child('')
     if self.imports:
       root.children.append(recipe_util.masked_value_list_to_node('imports', self.imports))
@@ -54,11 +54,6 @@ class project_file(namedtuple('project_file', 'format_version, filename, name, d
       root.add_child('')
     return root
 
-  def resolve_variables(self, system):
-    if not self.variables:
-      return key_value_list()
-    return self.variables.resolve(system, 'key_values')
-  
   def resolve_recipes(self, system):
     if not self.recipes:
       return string_list()
@@ -73,5 +68,13 @@ class project_file(namedtuple('project_file', 'format_version, filename, name, d
   def is_project_file(clazz, filename):
     'Return True if filename is a valid rebuild project file.'
     return recipe_util.file_starts_with_magic(filename, clazz.MAGIC)
+
+  @classmethod
+  def _variables_to_node(clazz, variables):
+    check.check_key_value_list(variables)
+    result = node('variables')
+    for kv in variables:
+      result.add_child(kv.to_string(quote_value = True))
+    return result
   
 check.register_class(project_file, include_seq = False)

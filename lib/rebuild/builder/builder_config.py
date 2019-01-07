@@ -7,6 +7,7 @@ from rebuild.base import build_arch, build_level, build_system, build_target
 from bes.common import time_util
 from bes.debug import debug_timer
 from bes.system import log
+from bes.key_value import key_value_list
 
 class builder_config(object):
 
@@ -43,8 +44,8 @@ class builder_config(object):
     self.storage_provider = 'local'
     self.ingest_only = False
     self.ingest = False
-    self.project_file_variables = []
-    self.host_project_file_variables = []
+    self.project_file_variables = key_value_list()
+    self.host_project_file_variables = key_value_list()
     
   def builds_dir(self, build_target):
     return path.join(self.build_root, 'builds', build_target.build_path)

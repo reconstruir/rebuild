@@ -14,6 +14,7 @@ from rebuild.storage import storage_factory
 from rebuild.recipe import recipe_load_env
 from rebuild.config import storage_config_manager
 from rebuild.source_ingester.http_download_cache import http_download_cache
+from rebuild.recipe.variable_manager import variable_manager
 
 from .builder_script_manager import builder_script_manager
 
@@ -39,6 +40,8 @@ class builder_env(object):
     self.tools_manager = tools_manager(path.join(config.build_root, 'tools'),
                                        self.config.host_build_target,
                                        self.artifact_manager)
+    self.variable_manager = variable_manager()
+    self.variable_manager.add_variables(config.project_file_variables)
     self.recipe_load_env = recipe_load_env(self)
     self.script_manager = builder_script_manager(filenames, self.config.build_target, self)
     self.requirement_manager = requirement_manager()
@@ -46,6 +49,7 @@ class builder_env(object):
     for script in self.script_manager.scripts.values():
       self.requirement_manager.add_package(script.descriptor)
 
+      
   def resolve_deps(self, descriptor, hardness, include_names):
     return self.requirement_manager.resolve_deps([descriptor.name], self.config.build_target.system, hardness, include_names)
   
