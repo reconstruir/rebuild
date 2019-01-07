@@ -36,18 +36,21 @@ class step_python_egg_build(step):
     setup_dir = values.get('setup_dir')
     
     if update_version_tag:
+      filename = path.join(script.build_dir, update_version_tag)
+      if not path.isfile(filename):
+        return self.result(False, 'update_version_tag: not found: %s' % (path.relpath(filename)))
+      v1 = version_info.read_file(filename)
       if tarball_address:
-        filename = path.join(script.build_dir, update_version_tag)
-        if not path.isfile(filename):
-          return self.result(False, 'update_version_tag: not found: %s' % (path.relpath(filename)))
-        v1 = version_info.read_file(filename)
         v2 = v1.change(address = tarball_address.address,
                        version = str(script.descriptor.version),
                        tag = tarball_address.revision,
                        timestamp = time_util.timestamp(timezone = True))
-        v2.save_file(filename)
       else:
-        self.blurb('WARNING: Skipping version_tag because no tarball_address is set.')
+        v2 = v1.change(address = '',
+                       version = str(script.descriptor.version),
+                       tag = '',
+                       timestamp = time_util.timestamp(timezone = True))
+      v2.save_file(filename)
     flags = ' '.join(shell_flags)
     cmd = '${PYTHON} %s bdist_egg --plat-name=${REBUILD_PYTHON_PLATFORM_NAME} %s' % (setup_script, flags)
     return self.call_shell(cmd, script, env, shell_env = shell_env, execution_dir = setup_dir)

@@ -80,6 +80,7 @@ class step_setup_sources_download(step):
       downloaded_tarballs.append(self._downloaded_tarball(tarball_path, dest, base_dir, strip_common_ancestor))
      
     if tarball_dir:
+      tarball_dir.update(env.recipe_load_env)
       source_tarball = tarball_dir.sources(env.recipe_load_env, script.substitutions)[0]
       self.blurb('Creating tarball %s from %s' % (path.relpath(source_tarball), tarball_dir.where))
       tarball_path = tarball_dir.tarball()

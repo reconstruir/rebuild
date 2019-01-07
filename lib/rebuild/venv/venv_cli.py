@@ -18,6 +18,11 @@ from .venv_install_options import venv_install_options
 from .venv_manager import venv_manager
 from .venv_shell_script import venv_shell_script
 
+# This is a hack to deal with the fact that storage_artifactory is a plugin
+# but there is no system (yet) to load such plugins
+from rebuild.storage.storage_artifactory import storage_artifactory
+from rebuild.storage.storage_local import storage_local
+
 class venv_cli(build_target_cli):
 
   def __init__(self):

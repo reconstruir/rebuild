@@ -1,9 +1,12 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
+from bes.system import execute
 from bes.common import check, string_util
 from bes.compat import StringIO
 from bes.archive import archiver
+from bes.fs import file_util, tar_util
+
 from .value_base import value_base
 
 class value_source_dir(value_base):
@@ -13,6 +16,7 @@ class value_source_dir(value_base):
     check.check_string(where)
     self.where = path.expanduser(where)
     self._tarball = None
+    self._resolved_where = None
     
   def __eq__(self, other):
     return self.where == other.where
@@ -27,12 +31,13 @@ class value_source_dir(value_base):
   #@abstractmethod
   def sources(self, recipe_env, variables):
     'Return a list of sources this caca provides or None if no sources.'
-    return [ self._tarball ]
+    return [ recipe_env.source_dir_zipballs.get_tarball(self._resolved_where) ]
 
   #@abstractmethod
   def substitutions_changed(self):
-    self._update_tarball_path()
-  
+    assert self.substitutions
+    self._resolved_where = self.substitute(self.where)
+    
   @classmethod
   #@abstractmethod
   def parse(clazz, origin, text, node):
@@ -58,18 +63,12 @@ class value_source_dir(value_base):
     # FIXME
     return values[-1]
   
-  def _update_tarball_path(self):
-    assert self.substitutions
-    temp_dir = self.substitute('${REBUILD_TEMP_DIR}')
-    self._full_name = self.substitute('${REBUILD_PACKAGE_FULL_NAME}')
-    self._resolved_where = self.substitute(self.where)
-    tarball_filename = '%s.tar.gz' % (self._full_name)
-    self._tarball = path.join(temp_dir, tarball_filename)
-    
   def tarball(self):
-    if not path.isfile(self._tarball):
-      archiver.create(self._tarball, self._resolved_where, base_dir = self._full_name)
-      assert path.isfile(self._tarball)
+    assert self._tarball
     return self._tarball
+
+  def update(self, recipe_env):
+    assert self._resolved_where
+    self._tarball = recipe_env.source_dir_zipballs.get_tarball(self._resolved_where)
   
 check.register_class(value_source_dir, include_seq = False)

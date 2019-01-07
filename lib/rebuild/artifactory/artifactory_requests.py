@@ -249,8 +249,8 @@ items.find({
 
     requirements = requirement_list.from_string_list(requirements)
          
-    return package_metadata(filename, name, version, revision, epoch, system,
-                            level, arch, distro, distro_version, requirements,
-                            properties, files)
+    return package_metadata(package_metadata.FORMAT_VERSION, filename, name,
+                            version, revision, epoch, system, level, arch, distro,
+                            distro_version, requirements, properties, files)
   
 log.add_logging(artifactory_requests, 'artifactory_requests')

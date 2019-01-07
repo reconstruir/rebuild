@@ -26,6 +26,10 @@ class recipe_load_env_base(with_metaclass(ABCMeta, object)):
   def _get_variable_manager(self):
     raise NotImplementedError
 
+  @abstractmethod
+  def _get_source_dir_zipballs(self):
+    raise NotImplementedError
+
   @property
   def build_target(self):
     return self._get_build_target()
@@ -41,6 +45,10 @@ class recipe_load_env_base(with_metaclass(ABCMeta, object)):
   @property
   def variable_manager(self):
     return self._get_variable_manager()
+  
+  @property
+  def source_dir_zipballs(self):
+    return self._get_source_dir_zipballs()
   
 class recipe_load_env(recipe_load_env_base):
 
@@ -63,6 +71,10 @@ class recipe_load_env(recipe_load_env_base):
   #@abstractmethod
   def _get_variable_manager(self):
     return self._builder_env.variable_manager
+
+  #@abstractmethod
+  def _get_source_dir_zipballs(self):
+    return self._builder_env.source_dir_zipballs
 
 class testing_recipe_load_env(recipe_load_env_base):
 
@@ -87,5 +99,9 @@ class testing_recipe_load_env(recipe_load_env_base):
   #@abstractmethod
   def _get_variable_manager(self):
     return self._variable_manager
+    
+  #@abstractmethod
+  def _get_source_dir_zipballs(self):
+    assert False #return self._source_dir_zipballs
     
 check.register_class(recipe_load_env_base, name = 'recipe_load_env', include_seq = False)

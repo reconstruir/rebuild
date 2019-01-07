@@ -15,15 +15,16 @@ from rebuild.recipe import recipe_load_env
 from rebuild.config import storage_config_manager
 from rebuild.source_ingester.http_download_cache import http_download_cache
 from rebuild.recipe.variable_manager import variable_manager
+from rebuild.storage.storage_artifactory import storage_artifactory
 
 from .builder_script_manager import builder_script_manager
-
-from rebuild.storage.storage_artifactory import storage_artifactory
+from .source_dir_zipball_cache import source_dir_zipball_cache
 
 class builder_env(object):
 
-  def __init__(self, config, filenames):
+  def __init__(self, config, filenames, project_file_manager):
     build_blurb.add_blurb(self, 'rebuild')
+    self.project_file_manager = project_file_manager
     self.config = config
     local_storage_cache_dir = path.join(config.storage_cache_dir, 'local')
     self.storage_config_manager = self._load_storage_config_file(config.storage_config)
@@ -36,6 +37,7 @@ class builder_env(object):
     self.checksum_manager = self._make_checksum_manager(config.build_root)
     self.git_downloads_manager = git_download_cache(path.join(config.build_root, 'downloads', 'git'))
     self.http_downloads_manager = http_download_cache(path.join(config.build_root, 'downloads', 'http'))
+    self.source_dir_zipballs = source_dir_zipball_cache(path.join(config.build_root, 'downloads', 'source_dir_zipball'))
     self.reload_artifact_manager()
     self.tools_manager = tools_manager(path.join(config.build_root, 'tools'),
                                        self.config.host_build_target,

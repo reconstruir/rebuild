@@ -1086,3 +1086,6 @@ unit tests for checksums changing and not changing for example when a value_inst
 - recipe parser enabled expression is not preserved.  __str__() will show the parsed expression not the source
 - true variable_manager support in venv_config_parser
 - unit tests for project variables being respected in the call_shell of recipe commands
+- not sure why i renamed bes_framework to rebuild_framework
+- logic of --dont-touch-scripts needs to be inversed by default it should not touch
+- revenv.py config checksum for project to quickly know if update needed

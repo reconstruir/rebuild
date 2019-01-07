@@ -3,7 +3,7 @@
 import copy, os.path as path
 from collections import namedtuple
 
-from bes.common import algorithm, check, string_util, type_checked_list, variable
+from bes.common import algorithm, check, json_util, string_util, type_checked_list, variable
 from bes.fs import file_checksum_list, file_util
 from bes.system import log
 from bes.debug import debug_timer
@@ -77,9 +77,39 @@ class builder_script(object):
       if kv.key in self.substitutions:
         raise ValueError('Cannot override system variables in recipe: %s' % (kv.key))
       self.substitutions[kv.key] = kv.value
+    for key, value in self.env.variable_manager.variables.items():
+      if key in self.substitutions:
+        raise ValueError('Cannot override system variables in recipe: %s' % (key))
+      self.substitutions[key] = value
 
+    self._env_checksum_filename = path.join(self.env.config.build_root,
+                                            'checksums',
+                                            self.build_target.build_path,
+                                            self.descriptor.full_name,
+                                            'env.json')
+    self._save_env_checksum_if_changed()
     self._add_steps()
 
+  def _save_env_checksum(self):
+    content = self._env_checksum_content()
+    file_util.save(self._env_checksum_filename, content = content)
+    
+  def _save_env_checksum_if_changed(self):
+    if not path.isfile(self._env_checksum_filename):
+      return
+    content = self._env_checksum_content()
+    if file_util.read(self._env_checksum_filename) == content:
+      return
+    file_util.save(self._env_checksum_filename, content = content)
+    
+  def _env_checksum_content(self):
+    vv = variable.find_variables(file_util.read(self.recipe.filename))
+    d = copy.deepcopy(self.substitutions)
+    for k, v in d.items():
+      if k not in vv or self.working_dir in v:
+        del d[k]
+    return json_util.to_json(d, indent = 2)
+    
   def step_values_as_dict(self):
     return self._step_manager.step_values_as_dict()
   
@@ -124,6 +154,7 @@ class builder_script(object):
     result = self._step_manager.execute(self, self.env)
     if result.success:
       if not self.env.config.is_partial_build:
+        self._save_env_checksum()
         self.env.checksum_manager.save_checksums(self._current_checksums(self.env.script_manager.scripts),
                                                  self.descriptor,
                                                  self.build_target)
@@ -162,6 +193,7 @@ class builder_script(object):
   def _sources(self, all_scripts):
     'Return a list of all script and dependency sources for this script.'
     sources = self._script_sources() + self._dep_sources(all_scripts)
+    sources.append(path.relpath(self._env_checksum_filename))
     result = []
     for source in sources:
       s = variable.substitute(source, self.substitutions)

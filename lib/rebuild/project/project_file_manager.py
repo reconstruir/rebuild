@@ -36,6 +36,7 @@ class project_file_manager(object):
     build_blurb.add_blurb(self, 'rebuild')
     self._filename_map = {}
     self._projects = {}
+    self._recipe_filename_to_project = {}
 
   def load_project_file(self, filename):
     filename = path.abspath(filename)
@@ -57,6 +58,12 @@ class project_file_manager(object):
         else:
           raise RuntimeError('Duplicate project \"%s\" found in: %s' % (name, filename))
       self._projects[name] = _project_entry(name, filename, checksum, pf)
+      for recipe in pf.recipes:
+        assert len(recipe.value.value) == 1
+        recipe_filename = path.join(path.dirname(pf.filename), recipe.value.value[0])
+        if recipe_filename in self._recipe_filename_to_project:
+          self.log_e('Overriding recipe \"%s\": %s' % (recipe_filename, pf.name))
+        self._recipe_filename_to_project[recipe_filename] = pf
     self._filename_map[filename] = project_files
     self.blurb('loaded project file %s' % (path.relpath(filename)))
     

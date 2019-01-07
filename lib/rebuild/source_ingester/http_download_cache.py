@@ -8,7 +8,7 @@ from bes.fs import file_util, temp_file
 from bes.git import git_util
 
 class http_download_cache(object):
-  'A git download cache.'
+  'An http download cache.'
 
   def __init__(self, root_dir):
     self.root_dir = root_dir
@@ -50,12 +50,6 @@ class http_download_cache(object):
   def _path_for_url(self, url):
     'Return path for local tarball.'
     return path.join(self.root_dir, git_util.sanitize_address(url))
-
-#  def tarball_path(self, address, revision):
-#    'Return True if the tarball with address and revision is in the cache.'
-#    local_cached_path = self._path_for_url(address)
-#    tarball_filename = '%s.tar.gz' % (revision)
-#    return path.join(local_cached_path, tarball_filename)
 
   @classmethod
   def _download_to_tmp_file(clazz, url, cookies, debug = False):

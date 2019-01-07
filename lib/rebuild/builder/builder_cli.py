@@ -160,7 +160,7 @@ class builder_cli(build_target_cli):
     config.project_file_variables = pfm.available_variables(args.project_file,
                                                             config.build_target)
     
-    env = builder_env(config, available_packages)
+    env = builder_env(config, available_packages, pfm)
     
     if args.print_step_values:
       env.script_manager.print_step_values()
