@@ -7,6 +7,7 @@ from bes.common import check
 from bes.system import log, os_env_var
 from bes.fs import file_find, file_path, file_util
 from bes.dependency import dependency_resolver
+from bes.key_value import key_value_list
 
 from rebuild.base import build_blurb
 
@@ -76,7 +77,8 @@ class project_file_manager(object):
     for name, imports in sorted(dep_map.items()):
       print('%s: %s' % (name, ' '.join(list(imports))))
 
-  def resolve(self, filename, build_target):
+  def resolve_project_files(self, filename, build_target):
+    'Return the complete list of project_files including imports for a given project filename.'
     check.check_string(filename)
     check.check_build_target(build_target)
     filename = path.abspath(filename)
@@ -91,12 +93,21 @@ class project_file_manager(object):
   def available_recipes(self, filename, build_target):
     check.check_build_target(build_target)
     recipes = []
-    project_files = self.resolve(filename, build_target)
+    project_files = self.resolve_project_files(filename, build_target)
     for pf in project_files:
       more_recipes = pf.resolve_recipes(build_target.system)
       more_recipes = [ path.join(path.dirname(pf.filename), r) for r in more_recipes ]
       recipes.extend(more_recipes)
     return recipes
+  
+  def available_variables(self, filename, build_target):
+    check.check_build_target(build_target)
+    variables = key_value_list()
+    project_files = self.resolve_project_files(filename, build_target)
+    for pf in project_files:
+      more_variables = pf.resolve_variables(build_target.system)
+      variables.extend(more_variables)
+    return variables
   
   @classmethod
   def _make_dep_map(clazz, projects, build_target):
