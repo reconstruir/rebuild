@@ -67,7 +67,7 @@ class value_file(value_base):
     else:
       filename_abs = path.abspath(path.join(base, filename))
       if not path.isfile(filename_abs):
-        raise RuntimeError('%s: file not found: %s' % (origin, filename_abs))
+        raise RuntimeError('%s: file not found: %s' % (origin, path.relpath(filename_abs)))
     properties = clazz.parse_properties(rest)
     return value_file(origin = origin, value = filename_abs, properties = properties)
 

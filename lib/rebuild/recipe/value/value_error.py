@@ -2,6 +2,7 @@
 
 from collections import namedtuple
 
+from os import path
 from bes.common import check
 from bes.text import text_line_parser
 
@@ -13,7 +14,7 @@ class value_error(Exception):
     check.check_string(recipe_text)
     super(value_error, self).__init__()
     self.message = message
-    self.filename = filename
+    self.filename = path.relpath(filename)
     self.line_number = line_number
     self.recipe_text = recipe_text
 

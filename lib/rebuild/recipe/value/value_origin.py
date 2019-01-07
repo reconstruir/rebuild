@@ -1,5 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+from os import path
 from collections import namedtuple
 from bes.common import check
 
@@ -7,6 +8,7 @@ class value_origin(namedtuple('value_origin', 'filename, line_number, text, reci
   'Class to keep track of the origin of a value.  Mostly useful for error reporting.'
   
   def __new__(clazz, filename, line_number, text, recipe_text = ''):
+    filename = path.relpath(filename)
     check.check_string(filename)
     check.check_int(line_number)
     check.check_string(text)
