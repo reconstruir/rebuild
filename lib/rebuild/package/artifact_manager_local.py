@@ -11,6 +11,8 @@ from .db_error import *
 
 #log.configure('artifact_manager=debug')
 
+from .artifact_manager_factory import artifact_manager_factory
+
 class artifact_manager_local(artifact_manager_base):
   
   def __init__(self, config):

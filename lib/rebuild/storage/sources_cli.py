@@ -16,7 +16,7 @@ from bes.archive import archiver, archive_extension
 from rebuild.binary_format import binary_detector
 from rebuild.source_ingester import ingest_util
 
-#from rebuild.config import storage_config
+from rebuild.config import storage_config_manager
 
 from .storage_db_entry import storage_db_entry
 from .storage_db_dict import storage_db_dict
@@ -26,6 +26,14 @@ from .storage_factory import storage_factory
 
 from rebuild.base import build_target
 from rebuild.package import artifact_manager_local
+
+from _rebuild_testing.artifact_manager_helper import artifact_manager_helper
+
+
+# This is a hack to deal with the fact that storage_artifactory is a plugin
+# but there is no system (yet) to load such plugins
+from rebuild.storage.storage_artifactory import storage_artifactory
+from rebuild.storage.storage_local import storage_local
 
 #from rebuild.artifactory.artifactory_requests import artifactory_requests
 from rebuild.storage.storage_address import storage_address
@@ -123,16 +131,16 @@ class sources_cli(object):
 
     # publish_artifacts
     publish_artifacts_parser = subparsers.add_parser('publish_artifacts', help = 'Publish artifacts to remote storage.')
-    publish_artifacts_parser.add_argument('config',
+    publish_artifacts_parser.add_argument('config_file',
                                           action = 'store',
                                           default = None,
                                           type = str,
                                           help = 'Config file for storage credentials and providers. [ None ]')
-    publish_artifacts_parser.add_argument('provider',
+    publish_artifacts_parser.add_argument('config_name',
                                           action = 'store',
                                           default = None,
                                           type = str,
-                                          help = 'Which provider to use for the upload. [ None ]')
+                                          help = 'Which config name in config file to use for for the upload. [ None ]')
     publish_artifacts_parser.add_argument('local_dir',
                                           action = 'store',
                                           default = None,
@@ -215,7 +223,7 @@ class sources_cli(object):
     elif args.command == 'update_properties':
       return self._command_update_properties(args.config, args.provider, args.local_dir, args.dry_run)
     elif args.command == 'publish_artifacts':
-      return self._command_publish_artifacts(args.config, args.provider, args.local_dir, args.dry_run, args.limit)
+      return self._command_publish_artifacts(args.config_file, args.config_name, args.local_dir, args.dry_run, args.limit)
     elif args.command == 'sync':
       return self._command_sync(args.local_directory, args.remote_directory)
     elif args.command == 'files':
@@ -240,16 +248,16 @@ class sources_cli(object):
     return path.join(self._pcloud_root_dir, remote_filename)
 
   @classmethod
-  def _make_storage(clazz, command, config_filename, provider, repo):
+  def _make_storage(clazz, command, config_filename, config_name, sub_repo):
     if not path.isfile(config_filename):
       raise IOError('%s: config_filename not found: %s' % (command, config_filename))
-    config = storage_config.from_file(config_filename)
-    storage_cache_dir = path.join(os.getcwd(), 'cache', provider)
-    download_credentials = config.get('download', provider)
-    upload_credentials = config.get('upload', provider)
-    local_storage_dir = path.join(storage_cache_dir, provider)
-    factory_config = storage_factory.config(local_storage_dir,  repo, False, download_credentials, upload_credentials)
-    return storage_factory.create(provider, factory_config)
+    scm = storage_config_manager.from_file(config_filename)
+    config = scm.get(config_name)
+    if not config:
+      raise RuntimeError('%s: \"%s\" not found in %s' % (command, config_name, config_filename))
+    local_cache_dir = path.join(os.getcwd(), 'cache', config.provider)
+    factory_config = storage_factory.config(local_cache_dir, sub_repo, False, config)
+    return storage_factory.create(factory_config)
   
   def _command_ingest(self, config_filename, provider, what, remote_filename,
                       dry_run, debug, arcname, checksum, repo):
@@ -410,24 +418,28 @@ class sources_cli(object):
           print(' failed: %s' % (md.filename))
     return 0
 
-  def _command_publish_artifacts(self, config_filename, provider, local_dir, dry_run, limit):
+  def _command_publish_artifacts(self, config_filename, config_name, local_dir, dry_run, limit):
     check.check_string(config_filename)
-    check.check_string(provider)
+    check.check_string(config_name)
     check.check_string(local_dir)
-    self.log_d('publish_artifacts: config_filename=%s; provider=%s; local_dir=%s; dry_run=%s; limit=%s' % (config_filename,
-                                                                                                           provider,
+    self.log_d('publish_artifacts: config_filename=%s; config_name=%s; local_dir=%s; dry_run=%s; limit=%s' % (config_filename,
+                                                                                                           config_name,
                                                                                                            local_dir,
                                                                                                            dry_run,
                                                                                                            limit))
     if not path.isdir(local_dir):
       raise RuntimeError('not a directory: %s' % (local_dir))
 
-    storage = self._make_storage('publish_artifacts', config_filename, provider, 'artifacts')
+    storage = self._make_storage('publish_artifacts', config_filename, config_name, 'artifacts')
+    print('storage: %s' % (str(storage)))
 
-    username = storage._config.upload_credentials.credentials.username
-    password = storage._config.upload_credentials.credentials.password
-    
-    am = artifact_manager_local(local_dir)
+    print('config: %s' % (str(storage._config.storage_config)))
+
+    username = storage._config.storage_config.upload.username
+    password = storage._config.storage_config.upload.password
+
+    am = artifact_manager_helper.make_local_artifact_manager(local_dir)
+        
     bt = build_target.make_host_build_target()
     artifacts = am.list_all_by_descriptor(bt)
     if limit:
