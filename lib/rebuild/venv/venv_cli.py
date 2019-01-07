@@ -191,12 +191,13 @@ class venv_cli(build_target_cli):
 
     if self.debug:
       log.configure('venv*=debug format=brief')
+
+    if command == 'version':
+      return self._command_version()
       
     self._packages_check_common_args(command, args)
       
-    if command == 'version':
-      return self._command_version()
-    elif command == 'packages:update':
+    if command == 'packages:update':
       options = venv_install_options(allow_downgrade = args.allow_downgrade,
                                      allow_same_version = args.allow_same_version,
                                      wipe_first = args.wipe_first,
