@@ -70,6 +70,8 @@ class builder_cli(build_target_cli):
     self.parser.add_argument('--ingest', action = 'store_true', help = 'Execute all the ingest build steps. [ False ]')
     self.parser.add_argument('--ingest-only', default = None, action = 'store_true',
                              help = 'Only ingest stuff needed for the build without building anything. [ True ]')
+    self.parser.add_argument('--version', default = None, action = 'store_true',
+                             help = 'Only print the version. [ True ]')
 
     for g in self.parser._action_groups:
       g._group_actions.sort(key = lambda x: x.dest)
@@ -79,6 +81,13 @@ class builder_cli(build_target_cli):
     bt = self.build_target_resolve(args)
     args.verbose = bool(args.verbose)
 
+    if args.version:
+      from bes.version import version_cli
+      import rebuild
+      vcli = version_cli(rebuild)
+      vcli.version_print_version()
+      return 0
+    
     if args.change_dir:
       os.chdir(args.change_dir)
 
