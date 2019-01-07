@@ -88,7 +88,7 @@ class recipe_parser(object):
       if text.startswith('properties'):
         properties = self._parse_properties(child)
       elif text.startswith('requirements'):
-        requirements.extend(recipe_parser_util.parse_requirements(child))
+        requirements.extend(recipe_parser_util.parse_requirements(child, variable_manager))
       elif text.startswith('variables'):
         variables.extend(recipe_parser_util.parse_masked_variables(child, self.filename))
       elif text.startswith('steps'):

@@ -103,10 +103,11 @@ class recipe_parser_util(object):
     return node.get_text(node.CHILDREN_INLINE, delimiter = '\n').strip()
 
   @classmethod
-  def parse_requirements(clazz, node):
+  def parse_requirements(clazz, node, variable_manager):
     reqs = []
     for child in node.children:
       req_text = child.get_text(child.NODE_FLAT)
+      req_text = variable_manager.substitute(req_text)
       next_reqs = requirement_list.parse(req_text)
       reqs.extend(next_reqs)
     return requirement_list(reqs)

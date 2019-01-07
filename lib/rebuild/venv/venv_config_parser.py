@@ -9,6 +9,7 @@ from bes.text import text_line_parser, tree_text_parser
 
 from rebuild.recipe import recipe_error, recipe_parser_util
 from rebuild.recipe.value import masked_value_list
+from rebuild.recipe.variable_manager import variable_manager
 from rebuild.base import requirement_list
 from rebuild.config import storage_config_manager
 
@@ -80,7 +81,7 @@ class venv_config_parser(object):
       elif text.startswith('variables'):
         variables.extend(recipe_parser_util.parse_masked_variables(child, self.filename))
       elif text.startswith('packages'):
-        packages.extend(recipe_parser_util.parse_requirements(child))
+        packages.extend(recipe_parser_util.parse_requirements(child, variable_manager()))
       elif text.startswith('python_code'):
         # already dealth with up top
         pass

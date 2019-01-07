@@ -18,6 +18,10 @@ class test_recipe_parser(unit_test):
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/recipe_parser'
 
   TEST_ENV = testing_recipe_load_env()
+
+  def __init__(self, *args, **kargs):
+    super(test_recipe_parser, self).__init__(*args, **kargs)
+    self.maxDiff = None
   
   @classmethod
   def _parse(self, text, starting_line_number = 0, variables = None):
@@ -48,7 +52,7 @@ package foo 1.2.3 4
     self.assertEqual( 'foo', r[0].descriptor.name )
     self.assertEqual( ( '1.2.3', 4, 0 ), r[0].descriptor.version )
 
-  def test_package_version_is_a_variable(self):
+  def test_package_version_with_variables(self):
     frame = inspect.getframeinfo(inspect.currentframe())
     text = '''!rebuild.recipe!
 package ${_NAME} ${_VERSION} ${_REVISION}
@@ -85,8 +89,6 @@ package foo 1.2.3 4
     self.assertMultiLineEqual( 'step_takes_bool\n    bool_value:', str(r[0].steps[0]) )
     
   def test_step_value_bool_with_mask(self):
-    self.maxDiff = None
-    
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
   steps
@@ -382,7 +384,6 @@ step_takes_key_values
     self.assertMultiLineEqual( expected, str(r[0].steps) )
 
   def test_complete(self):
-    self.maxDiff = None
     text = '''!rebuild.recipe!
 #comment
 
@@ -454,6 +455,34 @@ package foo 1.2.3 4
     actual = r[0].to_string(indent = 2)
     self.assertMultiLineEqual( expected, actual )
 
+  def test_requirements_with_variables(self):
+    text = '''!rebuild.recipe!
+package foo 1.2.3 4
+  requirements
+    all: cheese >= ${_CHEESE_VERSION}
+    linux: wine >= 2.0
+    grape >= 3.0
+
+  steps
+    step_apple
+      apple_bool_value: True
+'''
+    r = self._parse(text, variables = '_CHEESE_VERSION=1.2')
+    expected='''\
+package foo 1.2.3 4
+  enabled=True
+
+  requirements
+    all: cheese >= 1.2
+    linux: wine >= 2.0
+    all: grape >= 3.0
+
+  steps
+    step_apple
+      apple_bool_value: True'''
+    actual = r[0].to_string(indent = 2)
+    self.assertMultiLineEqual( expected, actual )
+    
   def test_step_inline_python_code(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
