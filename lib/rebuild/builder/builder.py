@@ -7,7 +7,7 @@ from bes.fs import dir_util, file_util
 from bes.dependency import dependency_resolver
 from collections import namedtuple
 from rebuild.step import step_aborted
-from rebuild.base import build_blurb
+from rebuild.base import build_blurb, package_descriptor_list
 from rebuild.package.db_error import *
 
 from .builder_script import builder_script
@@ -70,7 +70,7 @@ class builder(object):
   def remove_checksums(self, package_names):
     'Remove checksums for the given packages given as package names.'
     scripts = self._env.script_manager.subset(package_names)
-    descriptors = [ script.descriptor for script in scripts.values() ]
+    descriptors = package_descriptor_list([ script.descriptor for script in scripts.values() ])
     self._env.checksum_manager.remove_checksums(descriptors, self._env.config.build_target)
 
   def wipe_build_dirs(self, package_names):
