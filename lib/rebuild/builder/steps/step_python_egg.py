@@ -38,7 +38,8 @@ class step_python_egg_build(step):
     if update_version_tag:
       if tarball_address:
         filename = path.join(script.build_dir, update_version_tag)
-        assert path.isfile(filename)
+        if not path.isfile(filename):
+          return self.result(False, 'update_version_tag: not found: %s' % (path.relpath(filename)))
         v1 = version_info.read_file(filename)
         v2 = v1.change(address = tarball_address.address, tag = tarball_address.revision, timestamp = time_util.timestamp(timezone = True))
         v2.save_file(filename)
