@@ -1085,3 +1085,4 @@ unit tests for checksums changing and not changing for example when a value_inst
 - project_file just artifacts import
 - recipe parser enabled expression is not preserved.  __str__() will show the parsed expression not the source
 - true variable_manager support in venv_config_parser
+- unit tests for project variables being respected in the call_shell of recipe commands

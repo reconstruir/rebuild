@@ -2,7 +2,7 @@
 
 import os, os.path as path
 
-from bes.common import check
+from bes.common import check, dict_util
 from bes.archive import archiver
 from bes.key_value import key_value_list
 from bes.fs import file_util
@@ -99,7 +99,7 @@ class step_artifact_create_test_package(step):
                                           staged_tarball,
                                           env.artifact_manager,
                                           env.tools_manager,
-                                          package_test_env)
+                                          dict_util.combine(package_test_env.to_dict(), env.variable_manager.variables))
       tester = package_tester(config, test.filename)
       result =  tester.run()
       if not result.success:

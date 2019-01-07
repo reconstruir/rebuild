@@ -127,6 +127,7 @@ class step(with_metaclass(step_register_meta, object)):
     env['REBUILD_REQUIREMENTS_LDFLAGS'] = ' '.join(libs)
 
     env.update(script.substitutions)
+    env.update(script.env.variable_manager.variables)
     tool_deps = script.resolve_deps(['TOOL'], False)
     run_build_deps = script.resolve_deps(['RUN', 'BUILD'], False)
     env = script.env.tools_manager.transform_env(env, tool_deps)
