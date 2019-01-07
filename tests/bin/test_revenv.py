@@ -339,6 +339,12 @@ projects
     rv = self.run_script(args)
     self.assertEqual( 0, rv.exit_code )
     self.assertEqual( [ 'aflatoxin-1.0.11-1' ], self._parse_stdout_list(rv.stdout) )
+
+  def test_version(self):
+    rv = self.run_script(['version'])
+    self.assertEqual( 0, rv.exit_code )
+    version = rv.stdout.strip()
+    self.assertTrue( len(version) > 0 )
     
   @classmethod
   def _make_temp_dir(clazz):
