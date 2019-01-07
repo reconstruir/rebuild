@@ -315,17 +315,21 @@ projects
     self.assertEqual( 0, rv.exit_code )
     self.assertEqual( [ 'aflatoxin-1.0.1' ], self._parse_stdout_list(rv.stdout) )
 
-  def xtest_packages_update_specific_version(self):
+  def test_packages_update_specific_version(self):
     recipes1 = '''
-fake_package aflatoxin 1.0.0 0 0 linux release x86_64 ubuntu 18
 fake_package aflatoxin 1.0.1 0 0 linux release x86_64 ubuntu 18
+fake_package aflatoxin 1.0.11 0 0 linux release x86_64 ubuntu 18
+fake_package aflatoxin 1.0.11 1 0 linux release x86_64 ubuntu 18
 fake_package aflatoxin 1.0.2 0 0 linux release x86_64 ubuntu 18
+fake_package aflatoxin 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package aflatoxin 1.0.9 0 0 linux release x86_64 ubuntu 18
+fake_package aflatoxin 1.0.11 2 0 linux release x86_64 ubuntu 18
 '''
     config = '''{head}
 projects
   test
     packages
-      aflatoxin == 1.0.1
+      aflatoxin == 1.0.11-1
 '''
     test = self._setup_test(config, recipes = recipes1)
     args = self._make_packages_cmd('update', test.tmp_dir, 'test')
@@ -334,7 +338,7 @@ projects
     args = self._make_packages_cmd('print', test.tmp_dir, 'test', '--versions')
     rv = self.run_script(args)
     self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( [ 'aflatoxin-1.0.1' ], self._parse_stdout_list(rv.stdout) )
+    self.assertEqual( [ 'aflatoxin-1.0.11-1' ], self._parse_stdout_list(rv.stdout) )
     
   @classmethod
   def _make_temp_dir(clazz):
