@@ -109,11 +109,12 @@ class test_rebuilder_script(script_unit_test):
     self.assertEqual( [ 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
     self.assertEqual( [ 'fructose-3.4.5-6/sources.checksums', 'fructose-3.4.5-6/targets.checksums' ], test.checksums )
     expected = [
-      '$BUILD_PATH/$ARCH/release/fructose-3.4.5-6_timestamp/temp/fructose-3.4.5-6.tar.gz',
-      'fructose/rebuild.recipe'
+      'downloads/source_dir_zipball/$HOME_proj_rebuild_tests_test_data_rebuilder_one_project_fructose_.._.._.._sources/fructose-3.4.5.zip',
+      'fructose/rebuild.recipe',
+      '$BUILD_PATH/$ARCH/release/fructose-3.4.5-6/env.json',
     ]
     actual = test.checksums_contents['fructose-3.4.5-6/sources.checksums'].filenames()
-    self.assertEqual( expected, actual )
+    self.assertMultiLineEqual( '\n'.join(expected), '\n'.join(actual) )
     self.assertEqual( [ '$BUILD_PATH/$ARCH/release/fructose-3.4.5-6.tar.gz' ],
                       test.checksums_contents['fructose-3.4.5-6/targets.checksums'].filenames() )
 

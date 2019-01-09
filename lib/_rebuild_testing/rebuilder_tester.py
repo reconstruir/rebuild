@@ -1,9 +1,10 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import codecs, os.path as path, subprocess, sys
+import codecs, os, os.path as path, subprocess, sys
 from bes.fs import file_checksum, file_checksum_list, file_find, temp_file
 from bes.archive import archiver
 from bes.common import string_util
+from bes.git import git_util
 from collections import namedtuple
 from rebuild.base import build_arch, build_level, build_system, build_target
 
@@ -59,7 +60,7 @@ class rebuilder_tester(object):
     checksums_dir = path.join(tmp_dir, 'checksums', config.build_target.build_path)
     result = self.run_script(command, cwd = self._working_dir)
     artifacts = self._find_in_dir(artifacts_dir)
-    checksums = self._find_in_dir(checksums_dir)
+    checksums = self._find_in_dir(checksums_dir, patterns = [ '*.checksums' ])
     droppings = self._find_in_dir(tmp_dir)
     source_dir_droppings = self._find_in_dir(self._source_dir)
     
@@ -86,16 +87,20 @@ class rebuilder_tester(object):
                        source_dir_droppings)
 
   @classmethod
-  def _find_in_dir(clazz, where):
+  def _find_in_dir(clazz, where, patterns = None):
     if not path.isdir(where):
       return []
-    return file_find.find(where)
-
+    if patterns:
+      return file_find.find_fnmatch(where, patterns, file_type = file_find.FILE)
+    else:
+      return file_find.find(where, file_type = file_find.FILE)
+  
   @classmethod
   def _load_checksums(clazz, config, checksums_dir, tmp_dir, checksums):
     checksums_contents = {}
     for checksum in checksums:
       checksum_path = path.join(checksums_dir, checksum)
+      from bes.fs import file_util
       checksums_contents[checksum] = clazz._fix_checksums(config, file_checksum_list.load_checksums_file(checksum_path), tmp_dir)
     return checksums_contents
   
@@ -112,9 +117,11 @@ class rebuilder_tester(object):
         tmp_dir + path.sep: '',
         long_form: '$BUILD_PATH',
         short_form: '$BUILD_PATH',
+        git_util.sanitize_address(os.getcwd()): '$WORK_DIR',
+        git_util.sanitize_address(path.expanduser('~')): '$HOME',
         '-'.join(sorted(config.build_target.arch)): '$ARCH',
       }
-      new_filename = string_util.replace(checksum.filename, replacements)
+      new_filename = string_util.replace(checksum.filename, replacements, word_boundary = False)
       i = new_filename.rfind('$BUILD_PATH')
       if i > 0:
         new_filename = new_filename[i:]
