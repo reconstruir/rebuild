@@ -13,7 +13,8 @@ class source_dir_zipball_cache(object):
     self.root_dir = root_dir
 
   def get_tarball(self, d):
-    assert path.isabs(d)
+    if not path.isabs(d):
+      d = path.abspath(d)
     zip_filename = self.get_tarball_filename(d)
     file_util.mkdir(path.dirname(zip_filename))
     cmd = [ 'zip', '-x', '*.git*', '-u', '-r', zip_filename, path.basename(d) ]
