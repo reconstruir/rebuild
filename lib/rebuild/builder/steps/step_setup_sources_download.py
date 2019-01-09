@@ -42,7 +42,7 @@ class step_setup_sources_download(step):
       count += 1
     
     if count > 1:
-      return step_result(False, 'Only one of: tarball, tarball_address or tarball_dir can be given.')
+      return step_result(False, 'Only one of: tarball, tarball_address or tarball_dir can be given: %s' % (path.relpath(script.recipe.filename)))
 
     downloaded_tarballs = []
     outputs = {}
@@ -55,9 +55,6 @@ class step_setup_sources_download(step):
       dest = tarball_address.get_property('dest', '${REBUILD_SOURCE_UNPACKED_DIR}')
       base_dir = tarball_address.get_property('base', None)
       strip_common_ancestor = tarball_address.get_property('strip_common_ancestor', True)
-      commit_timestamp = tarball_address.get_property('_GIT_COMMIT_TIMESTAMP', None)
-      if commit_timestamp:
-        outputs['_REBUILD_UPSTREAM_VERSION_OVERRIDE'] = commit_timestamp
       downloaded_tarballs.append(self._downloaded_tarball(downloaded_path, dest, base_dir, strip_common_ancestor))
 
     if tarball:
@@ -82,7 +79,7 @@ class step_setup_sources_download(step):
     if tarball_dir:
       tarball_dir.update(env.recipe_load_env)
       source_tarball = tarball_dir.sources(env.recipe_load_env, script.substitutions)[0]
-      self.blurb('Creating tarball %s from %s' % (path.relpath(source_tarball), tarball_dir.where))
+      self.blurb('Creating tarball %s from %s' % (path.relpath(source_tarball), tarball_dir.value))
       tarball_path = tarball_dir.tarball()
       if not tarball_path:
         return step_result(False, 'No tarball found for %s' % (script.descriptor.full_name))

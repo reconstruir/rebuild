@@ -11,32 +11,33 @@ from .value_base import value_base
 
 class value_source_dir(value_base):
 
-  def __init__(self, origin = None, where = '', properties = None):
+  def __init__(self, origin = None, value = None, properties = None):
     super(value_source_dir, self).__init__(origin, properties = properties)
-    check.check_string(where)
-    self.where = path.expanduser(where)
+    check.check_string(value)
+    value = value or ''
+    self.value = path.expanduser(value)
     self._tarball = None
-    self._resolved_where = None
+    self._resolved_value = None
     
   def __eq__(self, other):
-    return self.where == other.where
+    return self.value == other.value
     
   #@abstractmethod
   def value_to_string(self, quote, include_properties = True):
     buf = StringIO()
-    buf.write(self.where)
+    buf.write(self.value)
     self._append_properties_string(buf, include_properties)
     return buf.getvalue()
 
   #@abstractmethod
   def sources(self, recipe_env, variables):
     'Return a list of sources this caca provides or None if no sources.'
-    return [ recipe_env.source_dir_zipballs.get_tarball(self._resolved_where) ]
+    return [ recipe_env.source_dir_zipballs.get_tarball(self._resolved_value) ]
 
   #@abstractmethod
   def substitutions_changed(self):
     assert self.substitutions
-    self._resolved_where = self.substitute(self.where)
+    self._resolved_value = self.substitute(self.value)
     
   @classmethod
   #@abstractmethod
@@ -47,10 +48,10 @@ class value_source_dir(value_base):
     parts = string_util.split_by_white_space(text)
     if len(parts) < 1:
       raise ValueError('%s: expected filename instead of: %s' % (origin, text))
-    where = parts[0]
-    rest = string_util.replace(text, { where: '' })
+    value = parts[0]
+    rest = string_util.replace(text, { value: '' })
     properties = clazz.parse_properties(rest)
-    return clazz(origin = origin, where = where, properties = properties)
+    return clazz(origin = origin, value = value, properties = properties)
   
   @classmethod
   #@abstractmethod
@@ -68,7 +69,7 @@ class value_source_dir(value_base):
     return self._tarball
 
   def update(self, recipe_env):
-    assert self._resolved_where
-    self._tarball = recipe_env.source_dir_zipballs.get_tarball(self._resolved_where)
+    assert self._resolved_value
+    self._tarball = recipe_env.source_dir_zipballs.get_tarball(self._resolved_value)
   
 check.register_class(value_source_dir, include_seq = False)

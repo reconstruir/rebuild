@@ -16,7 +16,8 @@ class value_git_address(value_base):
     if value:
       check.check_git_address(value)
     self.value = value
-
+    self.is_local_dir = False
+    
   def __eq__(self, other):
     return self.value == other.value
 
@@ -60,15 +61,19 @@ class value_git_address(value_base):
     rest = string_util.replace(text, { address: '', revision: '' })
     properties = clazz.parse_properties(rest)
     address = path.expanduser(address)
-    if path.isdir(address) and revision == 'HEAD':
-      revision = git.last_commit_hash(address, short_hash = True)
-      revision_timestamp = git.commit_timestamp(address, revision)
-      revision_version = time_util.timestamp(when = revision_timestamp,
-                                             milliseconds = False,
-                                             delimiter = '.',
-                                             timezone = True)
-      properties.append(key_value('_GIT_COMMIT_TIMESTAMP', revision_version))
+    if path.isdir(address):
+      if revision == 'HEAD':
+        revision = git.last_commit_hash(address, short_hash = True)
+        revision_timestamp = git.commit_timestamp(address, revision)
+        revision_version = time_util.timestamp(when = revision_timestamp,
+                                               milliseconds = False,
+                                               delimiter = '.',
+                                               timezone = True)
+      #elif revision == '[DIR]':
+        
     return clazz(origin = origin, value = git_address(address, revision), properties = properties)
+    #return clazz(origin = origin, value = value, properties = properties)
+    #return clazz(origin = origin, where = where, properties = properties)
   
   @classmethod
   #@abstractmethod

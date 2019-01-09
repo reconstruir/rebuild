@@ -225,20 +225,20 @@ class builder_script(object):
         current_checksums = self._current_checksums(self.env.script_manager.scripts)
         current_source_filenames = current_checksums.sources.filenames()
         current_target_filenames = current_checksums.targets.filenames()
-        if current_source_filenames != current_source_filenames:
-          return True
+        if current_source_filenames != loaded_source_filenames:
+          return True, 'sources list changed'
 
         if loaded_target_filenames != current_target_filenames:
-          return True
+          return True, 'target filenames changed'
           
       if not loaded_checksums:
-        return True
+        return True, 'checksums missing'
       verification = loaded_checksums.sources.verify()
       if not verification:
-        return True
+        return True, 'checksums changed'
       return False
     except IOError as ex:
-      return True
+      return True, 'error: %s' % (str(ex))
 
   def format_message(self, message):
     'Format a build message to be as pretty and compact as possible.'

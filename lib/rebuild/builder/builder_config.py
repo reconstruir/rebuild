@@ -46,6 +46,7 @@ class builder_config(object):
     self.ingest = False
     self.project_file_variables = key_value_list()
     self.host_project_file_variables = key_value_list()
+    self.cli_variables = None
     
   def builds_dir(self, build_target):
     return path.join(self.build_root, 'builds', build_target.build_path)

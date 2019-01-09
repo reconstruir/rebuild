@@ -72,6 +72,8 @@ class builder_cli(build_target_cli):
                              help = 'Only ingest stuff needed for the build without building anything. [ True ]')
     self.parser.add_argument('--version', default = None, action = 'store_true',
                              help = 'Only print the version. [ True ]')
+    self.parser.add_argument('--var', default = [], action = 'append', metavar = ( 'key', 'value' ), nargs = 2,
+                             help = 'Add or override environment variables. [ None ]')
 
     for g in self.parser._action_groups:
       g._group_actions.sort(key = lambda x: x.dest)
@@ -159,6 +161,8 @@ class builder_cli(build_target_cli):
 
     config.project_file_variables = pfm.available_variables(args.project_file,
                                                             config.build_target)
+
+    config.cli_variables = args.var
     
     env = builder_env(config, available_packages, pfm)
     

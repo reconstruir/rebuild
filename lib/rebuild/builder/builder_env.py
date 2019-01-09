@@ -44,6 +44,9 @@ class builder_env(object):
                                        self.artifact_manager)
     self.variable_manager = variable_manager()
     self.variable_manager.add_variables(config.project_file_variables)
+    for key, value in config.cli_variables:
+      self.variable_manager.add_variable(key, value)
+      
     self.recipe_load_env = recipe_load_env(self)
     self.script_manager = builder_script_manager(filenames, self.config.build_target, self)
     self.requirement_manager = requirement_manager()

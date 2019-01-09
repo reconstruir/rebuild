@@ -9,6 +9,11 @@ class variable_manager(object):
   def __init__(self):
     self.variables = {}
 
+  def add_variable(self, key, value):
+    check.check_string(key)
+    check.check_string(value)
+    self.variables[key] = value
+    
   def add_variables(self, kvl):
     check.check_key_value_list(kvl)
     self._add_system_variables()

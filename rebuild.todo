@@ -1089,3 +1089,4 @@ unit tests for checksums changing and not changing for example when a value_inst
 - not sure why i renamed bes_framework to rebuild_framework
 - logic of --dont-touch-scripts needs to be inversed by default it should not touch
 - revenv.py config checksum for project to quickly know if update needed
+- xattr sqlite replacement
