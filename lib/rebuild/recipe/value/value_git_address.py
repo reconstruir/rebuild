@@ -10,7 +10,6 @@ from bes.key_value import key_value
 
 from .value_base import value_base
 
-
 _LOG = logger('value_git_address')
 
 class value_git_address(value_base):
@@ -62,8 +61,6 @@ class value_git_address(value_base):
     rest = string_util.replace(text, { address: '', revision: '' })
     properties = clazz.parse_properties(rest)
     address = path.expanduser(address)
-    if path.isdir(address):
-      revision = address.resolved_revision
     return clazz(origin = origin, value = git_address(address, revision), properties = properties)
   
   @classmethod
@@ -86,7 +83,7 @@ class value_git_address(value_base):
     return result
   
   def download(self, recipe_env):
-    _LOG.log_d('downloaded: address=%s; revision=%s' % (self.address, self.revision))
+    _LOG.log_d('download: address=%s; revision=%s' % (self.address, self.revision))
     if self.revision == '[DIR]':
       return True
     if not recipe_env.git_downloads_manager.has_tarball(self.address, self.revision):
@@ -95,7 +92,7 @@ class value_git_address(value_base):
     assert not self.needs_download(recipe_env)
 
   def needs_download(self, recipe_env):
-    _LOG.log_d('needs_downloaded: address=%s; revision=%s' % (self.address, self.revision))
+    _LOG.log_d('needs_download: address=%s; revision=%s' % (self.address, self.revision))
     if self.revision == '[DIR]':
       return False
     return not path.isfile(self.downloaded_tarball_path(recipe_env))
