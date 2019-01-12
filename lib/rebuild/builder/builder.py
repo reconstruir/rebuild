@@ -168,22 +168,29 @@ class builder(object):
         return self._run_result(self.SCRIPT_FAILED, script_result)
   
   def _build_one_script_build(self, script, env):
+    script.timer_start('_build_one_script_build: %s' % (script.descriptor.full_name))
     needs_rebuilding, reason = self._needs_rebuilding(script, env)
     if not needs_rebuilding:
       # If the working directory is empty, it means no work happened and its useless
       if path.exists(script.working_dir) and dir_util.is_empty(script.working_dir):
         file_util.remove(script.working_dir)
+      script.timer_stop()
       return self._run_result(self.SCRIPT_CURRENT, None)
     build_blurb.blurb('rebuild', '%s - building because %s' % (script.descriptor.name, reason))
     script_result = script.execute()
     if script_result.success:
-      return self._run_result(self.SCRIPT_SUCCESS, script_result)
+      result = self._run_result(self.SCRIPT_SUCCESS, script_result)
     else:
-      return self._run_result(self.SCRIPT_FAILED, script_result)
-
+      result = self._run_result(self.SCRIPT_FAILED, script_result)
+    script.timer_stop()
+    return result
+      
   def _needs_rebuilding(self, script, env):
     if env.checksum_manager.is_ignored(script.descriptor.full_name):
       return True, 'checksum_ignored'
+#    imported = env.recipe_is_imported(script.recipe.filename)
+#    if imported:
+#      return False, 'imported'
     if env.external_artifact_manager:
       if env.external_artifact_manager.has_package_by_descriptor(script.descriptor, script.build_target):
         return False, 'package found in AM'
@@ -284,6 +291,14 @@ class builder(object):
     return result
   
   def _build_packages(self, scripts, packages_to_build, label):
+    #import cProfile
+    #cp = cProfile.Profile()
+    #cp.enable()
+    result = self._build_packages_real(scripts, packages_to_build, label)
+    #cp.dump_stats('rebuilder.cprofile')
+    return result
+
+  def _build_packages_real(self, scripts, packages_to_build, label):
     self.blurb('building %s: %s' % (label, ' '.join(packages_to_build)), fit = True)
     exit_code = self.EXIT_CODE_SUCCESS
     failed_packages = []

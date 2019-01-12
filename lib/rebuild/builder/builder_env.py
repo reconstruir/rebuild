@@ -53,8 +53,11 @@ class builder_env(object):
     self.trash = file_trash(self.config.trash_dir)
     for script in self.script_manager.scripts.values():
       self.requirement_manager.add_package(script.descriptor)
+    self.imported_recipes = self.project_file_manager.imported_recipes(config.project_file,
+                                                                       self.config.build_target)
+  def recipe_is_imported(self, recipe_filename):
+    return recipe_filename in self.imported_recipes
 
-      
   def resolve_deps(self, descriptor, hardness, include_names):
     return self.requirement_manager.resolve_deps([descriptor.name], self.config.build_target.system, hardness, include_names)
   
@@ -64,11 +67,6 @@ class builder_env(object):
     config = config_manager.get(config_name)
     if not config:
       raise RuntimeError('No storage config named \"%s\" found in: %s' % (config_name, config_manager.source))
-
-    #return clazz.__bases__[0].__new__(clazz, name, provider, location, repo, root_dir, download, upload)    
-    
-    #download_credentials = config.get('download', provider)
-    #upload_credentials = config.get('upload', provider)
     local_storage_dir = path.join(storage_cache_dir, config.provider)
     factory_config = storage_factory.config(local_storage_dir, sub_repo, no_network, config)
     return storage_factory.create(factory_config)
@@ -92,5 +90,5 @@ class builder_env(object):
     if not path.exists(filename):
       raise RuntimeError('storage config file not found: %s' % (filename))
     return storage_config_manager.from_file(filename)
-      
+  
 check.register_class(builder_env, include_seq = False)

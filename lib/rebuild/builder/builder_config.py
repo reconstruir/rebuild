@@ -35,7 +35,7 @@ class builder_config(object):
     self.verbose = False
     self.wipe = False
     self._performance = False
-    self.timer = debug_timer('perf', 'debug', disabled = True) 
+    self.timer = debug_timer('perf', 'debug', disabled = False) 
     self._performance = False
     self._trash_dir = None
     self.artifacts_dir = None

@@ -2,7 +2,7 @@
 
 from os import path
 from collections import namedtuple
-from bes.common import check
+from bes.common import algorithm, check
 
 from bes.system import log, os_env_var
 from bes.fs import file_find, file_path, file_util
@@ -13,6 +13,8 @@ from rebuild.base import build_blurb
 
 from .project_file import project_file
 from .project_file_parser import project_file_parser
+
+#from ._rebuild_testing import artifact_manager_helper
 
 class _project_entry(namedtuple('_project_entry', 'name, filename, checksum, project_file')):
 
@@ -65,7 +67,7 @@ class project_file_manager(object):
           self.log_e('Overriding recipe \"%s\": %s' % (recipe_filename, pf.name))
         self._recipe_filename_to_project[recipe_filename] = pf
     self._filename_map[filename] = project_files
-    self.blurb('loaded project file %s' % (path.relpath(filename)))
+    self.blurb_verbose('loaded project file %s' % (path.relpath(filename)))
     
   def load_project_files_from_env(self):
     from_env = self.find_env_project_files()
@@ -97,6 +99,29 @@ class project_file_manager(object):
     resolved_names = dependency_resolver.resolve_deps(dep_map, names)
     return [ self._projects[name].project_file for name in resolved_names ]
 
+  def imported_projects(self, filename, build_target):
+    'Return the list of recipes the given project file imports.'
+    filename = path.abspath(filename)
+    check.check_string(filename)
+    check.check_build_target(build_target)
+    pfiles = self.resolve_project_files(filename, build_target)
+    imported_pfiles = [ pf for pf in pfiles if pf.filename != filename ]
+    return algorithm.unique([ pf.filename for pf in imported_pfiles ])
+    
+  def available_recipes_dict(self, filename, build_target):
+    check.check_build_target(build_target)
+    filename = path.abspath(filename)
+    result = {}
+    project_files = self.resolve_project_files(filename, build_target)
+    for pf in project_files:
+      if pf.filename not in result:
+        result[pf.filename] = set()
+      recipes = pf.resolve_recipes(build_target.system)
+      recipes = [ path.join(path.dirname(pf.filename), r) for r in recipes ]
+      for r in recipes:
+        result[pf.filename].add(r)
+    return result
+
   def available_recipes(self, filename, build_target):
     check.check_build_target(build_target)
     recipes = []
@@ -107,6 +132,16 @@ class project_file_manager(object):
       recipes.extend(more_recipes)
     return recipes
   
+  def imported_recipes(self, filename, build_target):
+    check.check_build_target(build_target)
+    imported_projects = self.imported_projects(filename, build_target)
+    available = self.available_recipes_dict(filename, build_target)
+    result = []
+    for p in imported_projects:
+      assert p in available
+      result.extend(available[p])
+    return result
+    
   def available_variables(self, filename, build_target):
     check.check_build_target(build_target)
     variables = key_value_list()

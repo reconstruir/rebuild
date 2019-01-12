@@ -264,3 +264,9 @@ class builder_script(object):
     if relp.startswith('..'):
       return p
     return relp
+
+  def timer_start(self, thing):
+    self.timer.start(thing)
+
+  def timer_stop(self):
+    self.timer.stop()

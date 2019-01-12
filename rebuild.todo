@@ -1090,3 +1090,7 @@ unit tests for checksums changing and not changing for example when a value_inst
 - logic of --dont-touch-scripts needs to be inversed by default it should not touch
 - revenv.py config checksum for project to quickly know if update needed
 - xattr sqlite replacement
+
+
+- unit tests for project_file_manager that exercise imports of both projects and recipes
+- cleanup project_file in general

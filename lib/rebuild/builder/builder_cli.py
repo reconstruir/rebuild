@@ -79,10 +79,14 @@ class builder_cli(build_target_cli):
       g._group_actions.sort(key = lambda x: x.dest)
     
   def main(self):
+
     args = self.parser.parse_args()
     bt = self.build_target_resolve(args)
     args.verbose = bool(args.verbose)
 
+    build_blurb.set_process_name('rebuild')
+    build_blurb.set_verbose(args.verbose)
+    
     if args.version:
       from bes.version import version_cli
       import rebuild
@@ -99,6 +103,11 @@ class builder_cli(build_target_cli):
     pfm.load_project_files_from_env()
     pfm.load_project_file(args.project_file)
     available_packages = pfm.available_recipes(args.project_file, bt)
+    imported_projects = pfm.imported_projects(args.project_file, bt)
+    for p in imported_projects:
+      relp = path.relpath(p)
+      blurbp = relp if not relp.startswith(path.pardir) else p
+      build_blurb.blurb('rebuild', 'imported project %s' % (blurbp))
     
     if args.filter:
       if path.isfile(args.filter[0]):
@@ -111,9 +120,6 @@ class builder_cli(build_target_cli):
     args.system = build_system.parse_system(args.system)
     args.level = build_level.parse_level(args.level)
     args.arch = build_arch.parse_arch(args.arch, args.system, args.distro)
-    
-    build_blurb.set_process_name('rebuild')
-    build_blurb.set_verbose(args.verbose)
 
     # Tests only run on desktop
     if not bt.is_desktop():
@@ -159,6 +165,8 @@ class builder_cli(build_target_cli):
     if config.ingest_only:
       config.no_tests = True
 
+    config.project_file = path.abspath(args.project_file)
+      
     config.project_file_variables = pfm.available_variables(args.project_file,
                                                             config.build_target)
 
@@ -209,4 +217,9 @@ class builder_cli(build_target_cli):
   
   @classmethod
   def run(clazz):
-    raise SystemExit(builder_cli().main())
+    #import cProfile
+    #cp = cProfile.Profile()
+    #cp.enable()
+    exit_code = builder_cli().main()
+    #cp.dump_stats('rebuilder.cprofile')
+    raise SystemExit(exit_code)
