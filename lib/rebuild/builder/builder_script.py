@@ -210,8 +210,8 @@ class builder_script(object):
     return [ self._path_normalize(p) ]
 
   def _current_checksums(self, all_scripts):
-    return self.file_checksums(file_checksum_list.from_files(self._sources(all_scripts)),
-                               file_checksum_list.from_files(self._targets()))
+    return self.file_checksums(file_checksum_list.from_files(self._sources(all_scripts), getter = self.env.checksum_getter),
+                               file_checksum_list.from_files(self._targets(), getter = self.env.checksum_getter))
 
   def needs_rebuilding(self):
     try:
@@ -233,7 +233,7 @@ class builder_script(object):
           
       if not loaded_checksums:
         return True, 'checksums missing'
-      verification = loaded_checksums.sources.verify()
+      verification = loaded_checksums.sources.verify(getter = self.env.checksum_getter)
       if not verification:
         return True, 'checksums changed'
       return False

@@ -25,10 +25,6 @@ class package_file(namedtuple('package_file', 'filename, checksum, has_hardcoded
       checksum = file_util.checksum(function_name or 'sha256', filepath)
     return clazz(filename, checksum, has_hardcoded_path)
 
-  @classmethod
-  def file_checksum(clazz, filename, has_hardcoded_path, function_name):
-    return clazz.from_file(filename, has_hardcoded_path, function_name = function_name).checksum
-
   def to_list(self):
     return [ self.filename, self.checksum, self.has_hardcoded_path ]
 

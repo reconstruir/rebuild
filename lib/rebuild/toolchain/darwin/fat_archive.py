@@ -1,9 +1,8 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
 from collections import namedtuple
-from bes.fs import file_checksum, file_util, temp_file
+from bes.fs import file_util, temp_file
 from bes.archive import archiver
 from .lipo import lipo
 
@@ -15,7 +14,7 @@ class fat_archive(object):
     def __init__(self, member, dest_dir):
       self.member = member
       self.filename = path.join(dest_dir, member)
-      self.checksum = file_checksum.file_checksum(self.filename, 'sha256')
+      self.checksum = file_util.checksum('sha256', self.filename)
 
     def __str__(self):
       return str(self.member)

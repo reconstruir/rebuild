@@ -74,6 +74,9 @@ class builder_cli(build_target_cli):
                              help = 'Only print the version. [ True ]')
     self.parser.add_argument('--var', default = [], action = 'append', metavar = ( 'key', 'value' ), nargs = 2,
                              help = 'Add or override environment variables. [ None ]')
+    self.parser.add_argument('--checksum-cache', default = None,
+                             action = 'store', type = str,
+                             help = 'The checksum cache to speed up builds. [ None ]')
 
     for g in self.parser._action_groups:
       g._group_actions.sort(key = lambda x: x.dest)
@@ -99,7 +102,9 @@ class builder_cli(build_target_cli):
 
     target_packages = args.target_packages[0]
 
-    pfm = project_file_manager()
+    checksum_getter = self._make_checksum_getter(args.checksum_cache)
+
+    pfm = project_file_manager(checksum_getter)
     pfm.load_project_files_from_env()
     pfm.load_project_file(args.project_file)
     available_packages = pfm.available_recipes(args.project_file, bt)
@@ -172,7 +177,7 @@ class builder_cli(build_target_cli):
 
     config.cli_variables = args.var
     
-    env = builder_env(config, available_packages, pfm)
+    env = builder_env(config, available_packages, checksum_getter, pfm)
     
     if args.print_step_values:
       env.script_manager.print_step_values()
@@ -223,3 +228,13 @@ class builder_cli(build_target_cli):
     exit_code = builder_cli().main()
     #cp.dump_stats('rebuilder.cprofile')
     raise SystemExit(exit_code)
+
+  @classmethod
+  def _make_checksum_getter(clazz, checksum_cache):
+    from bes.fs.file_checksum_getter_db import file_checksum_getter_db
+    from bes.fs.file_checksum_getter_raw import file_checksum_getter_raw
+    if checksum_cache:
+      cache_filename = path.expanduser(checksum_cache)
+      return file_checksum_getter_db(cache_filename)
+    else:
+      return file_checksum_getter_raw()

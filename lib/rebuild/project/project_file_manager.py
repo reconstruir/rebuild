@@ -6,6 +6,7 @@ from bes.common import algorithm, check
 
 from bes.system import log, os_env_var
 from bes.fs import file_find, file_path, file_util
+from bes.fs.file_checksum_getter_raw import file_checksum_getter_raw
 from bes.dependency import dependency_resolver
 from bes.key_value import key_value_list
 
@@ -33,13 +34,20 @@ class _file_entry(namedtuple('_file_entry', 'filename, checksum')):
   
 class project_file_manager(object):
 
-  def __init__(self):
+  def __init__(self, checksum_getter = None):
     log.add_logging(self, 'project_file_manager')
+    check.check_file_checksum_getter(checksum_getter, allow_none = True)
+    checksum_getter = checksum_getter or file_checksum_getter_raw()
     build_blurb.add_blurb(self, 'rebuild')
     self._filename_map = {}
     self._projects = {}
     self._recipe_filename_to_project = {}
+    self._checksum_getter = checksum_getter
 
+  @property
+  def checksum_getter(self):
+    return self._checksum_getter
+    
   def load_project_file(self, filename):
     filename = path.abspath(filename)
     self.log_d('loading: %s' % (filename))
@@ -48,7 +56,7 @@ class project_file_manager(object):
     if not project_file.is_project_file(filename):
       raise RuntimeError('Not a project file: %s' % (filename))
     text = file_util.read(filename)
-    checksum = file_util.checksum('sha256', filename)
+    checksum = self._checksum_getter.checksum('sha256', filename)
     parser = project_file_parser(filename, text)
     project_files = parser.parse()
     for pf in project_files:

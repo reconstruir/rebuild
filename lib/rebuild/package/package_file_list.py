@@ -63,35 +63,14 @@ class package_file_list(type_checked_list):
   def files_with_hardcoded_paths(self):
     return [ c.filename for c in self if c.has_hardcoded_path ]
 
-  def reload(self, root_dir = None, function_name = None):
-    new_values = []
-    for value in self:
-      new_values.append(package_file.from_file(value.filename, False, root_dir = root_dir, function_name = function_name))
-    self._values = new_values
-  
-  def verify(self, root_dir = None):
-    current = self[:]
-    current.reload(root_dir = root_dir)
-    return self == current
-
-  def has_filename(self, filename):
-    current = self[:]
-    current.reload(root_dir = root_dir)
-    return self == current
-
-  def has_filename(self, filename):
-    current = self[:]
-    current.reload(root_dir = root_dir)
-    return self == current
-
   def checksum(self):
-    'Return a checksum of the files and file checksums themselves.'
+    'Return a checksum of the file list.'
     buf = StringIO()
     for value in self:
       buf.write(str(value))
     return hashlib.sha256(buf.getvalue().encode('utf-8')).hexdigest()
 
-  def to_dict(self):
+  def Xto_dict(self):
     'Return a dictionary of filenames to checksums.'
     result = {}
     for value in self:

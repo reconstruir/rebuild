@@ -69,10 +69,6 @@ class test_file_checksum(unit_test):
     a = FCL([ FC('a.txt', self.A_CHK, False), FC('b.txt', self.B_CHK, False) ])
     self.assertEqual( [ 'a.txt', 'b.txt' ], a.filenames() )
     
-  def test_file_checksum(self):
-    self.assertEqual( self.A_CHK, FC.file_checksum(self.data_path('a.txt'), False, 'sha256') )
-    self.assertEqual( self.B_CHK, FC.file_checksum(self.data_path('b.txt'), False, 'sha256') )
-
   def test_verify_true(self):
     a = FCL([ FC('a.txt', self.A_CHK, False), FC('b.txt', self.B_CHK, False) ])
     b = FCL([ FC('a.txt', self.A_CHK, False), FC('b.txt', self.B_CHK, False) ])

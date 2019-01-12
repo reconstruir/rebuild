@@ -5,6 +5,8 @@ import os.path as path
 from bes.fs import file_trash
 from bes.common import check
 from bes.git import git_download_cache, git_util
+from bes.fs.file_checksum_getter_db import file_checksum_getter_db
+from bes.fs.file_checksum_getter_raw import file_checksum_getter_raw
 
 from rebuild.tools_manager import tools_manager
 from rebuild.checksum import checksum_manager
@@ -22,10 +24,11 @@ from .source_dir_zipball_cache import source_dir_zipball_cache
 
 class builder_env(object):
 
-  def __init__(self, config, filenames, project_file_manager):
+  def __init__(self, config, filenames, checksum_getter, project_file_manager):
     build_blurb.add_blurb(self, 'rebuild')
-    self.project_file_manager = project_file_manager
     self.config = config
+    self.checksum_getter = checksum_getter
+    self.project_file_manager = project_file_manager
     local_storage_cache_dir = path.join(config.storage_cache_dir, 'local')
     self.storage_config_manager = self._load_storage_config_file(config.storage_config)
     self.sources_storage = self._make_storage(self.storage_config_manager,
@@ -90,5 +93,5 @@ class builder_env(object):
     if not path.exists(filename):
       raise RuntimeError('storage config file not found: %s' % (filename))
     return storage_config_manager.from_file(filename)
-  
+
 check.register_class(builder_env, include_seq = False)

@@ -3,7 +3,7 @@
 #
 
 import os.path as path
-from bes.fs import file_checksum, file_util, temp_file
+from bes.fs import file_util, temp_file
 from rebuild.toolchain.darwin import lipo
 from bes.system import host
 from bes.testing.unit_test.unit_test_skip import raise_skip_if_not_platform
@@ -47,19 +47,19 @@ class test_lipo(unit_test):
 
     for arch in lipo.POSSIBLE_ARCHS:
       thin_archive = path.join(tmp_dir, '%s_fruits.a' % (arch))
-      fat_checksum_before = file_checksum.file_checksum(fat_archive, 'sha256')
+      fat_checksum_before = file_util.checksum('sha256', fat_archive)
       lipo.fat_to_thin(fat_archive, thin_archive, arch)
       self.assertTrue( path.exists(thin_archive) )
-      self.assertEqual( fat_checksum_before, file_checksum.file_checksum(fat_archive, 'sha256') )
+      self.assertEqual( fat_checksum_before, file_util.checksum('sha256', fat_archive) )
       self.assertEqual( [ arch ], self._archs(thin_archive) )
     
   def test_thin_to_fat(self):
     tmp_dir = temp_file.make_temp_dir()
     thin_archives = [ self._test_file('lib%s.a' % (arch)) for arch in lipo.POSSIBLE_ARCHS]
     fat_archive = path.join(tmp_dir, 'tmp_fat_fruits.a')
-    thin_checksums_before = [ file_checksum.file_checksum(thin_archive, 'sha256') for thin_archive in thin_archives ]
+    thin_checksums_before = [ file_util.checksum('sha256', thin_archive) for thin_archive in thin_archives ]
     lipo.thin_to_fat(thin_archives, fat_archive)
-    thin_checksums_after = [ file_checksum.file_checksum(thin_archive, 'sha256') for thin_archive in thin_archives ]
+    thin_checksums_after = [ file_util.checksum('sha256', thin_archive) for thin_archive in thin_archives ]
     self.assertTrue( path.exists(fat_archive) )
     self.assertEqual( thin_checksums_before, thin_checksums_after )
     self.assertEqual( lipo.POSSIBLE_ARCHS, self._archs(fat_archive) )
