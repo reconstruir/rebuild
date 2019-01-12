@@ -289,16 +289,8 @@ class builder(object):
       host_script = builder_script(script.recipe, host_build_target, env)
       result[name] = host_script
     return result
-  
-  def _build_packages(self, scripts, packages_to_build, label):
-    #import cProfile
-    #cp = cProfile.Profile()
-    #cp.enable()
-    result = self._build_packages_real(scripts, packages_to_build, label)
-    #cp.dump_stats('rebuilder.cprofile')
-    return result
 
-  def _build_packages_real(self, scripts, packages_to_build, label):
+  def _build_packages(self, scripts, packages_to_build, label):
     self.blurb('building %s: %s' % (label, ' '.join(packages_to_build)), fit = True)
     exit_code = self.EXIT_CODE_SUCCESS
     failed_packages = []

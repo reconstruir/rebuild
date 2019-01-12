@@ -77,13 +77,23 @@ class builder_cli(build_target_cli):
     self.parser.add_argument('--checksum-cache', default = None,
                              action = 'store', type = str,
                              help = 'The checksum cache to speed up builds. [ None ]')
+    self.parser.add_argument('--profile', action = 'store_true', help = 'Use cProfile to profile. [ False ]')
 
     for g in self.parser._action_groups:
       g._group_actions.sort(key = lambda x: x.dest)
-    
-  def main(self):
 
+  def main(self):
     args = self.parser.parse_args()
+    if args.profile:
+      import cProfile
+      cp = cProfile.Profile()
+      cp.enable()
+    exit_code = self._real_main(args)
+    if args.profile:
+      cp.dump_stats('rebuilder.cprofile')
+    raise SystemExit(exit_code)
+
+  def _real_main(self, args):
     bt = self.build_target_resolve(args)
     args.verbose = bool(args.verbose)
 
