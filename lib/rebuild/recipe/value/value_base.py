@@ -78,7 +78,7 @@ class value_base(with_metaclass(value_register_meta, object)):
     self.substitutions_changed()
     
   def substitute(self, text):
-    return variable.substitute(text, self._substitutions)
+    return variable.substitute(text, self._substitutions, patterns = variable.BRACKET)
 
   @abstractmethod
   def substitutions_changed(self):

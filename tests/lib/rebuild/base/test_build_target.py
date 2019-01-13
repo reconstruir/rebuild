@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
-#
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
+
 from bes.testing.unit_test import unit_test
 from rebuild.base import build_arch as BA, build_system as BS, build_target as BT, build_level as BL
 
@@ -23,14 +23,14 @@ class test_build_target(unit_test):
     
   def test_parse_expression(self):
     F = self._parse_exp
-    self.assertTrue( F('macos-10.10/x86_64/release', '$system == MACOS and $level == RELEASE') )
-    self.assertFalse( F('macos-10.10/x86_64/release', '$system == MACOS and $level != RELEASE') )
-    self.assertTrue( F('linux-raspbian-9/x86_64/release', '$system == LINUX and $distro == RASPBIAN') )
-    self.assertFalse( F('linux-raspbian-9/x86_64/release', '$system is MACOS or ($system is LINUX and $distro is not RASPBIAN)') )
-    self.assertTrue( F('macos-10.10/x86_64/release', '$system is MACOS or ($system is LINUX and $distro is not RASPBIAN)') )
-    self.assertTrue( F('macos-10.10/x86_64/debug', '$system is MACOS or ($system is LINUX and $distro is not RASPBIAN)') )
-    self.assertTrue( F('linux-ubuntu-18/x86_64/release', '$system is MACOS or ($system is LINUX and $distro is not RASPBIAN)') )
-    self.assertTrue( F('linux-ubuntu-18/x86_64/debug', '$system is MACOS or ($system is LINUX and $distro is not RASPBIAN)') )
+    self.assertTrue( F('macos-10.10/x86_64/release', '${system} == MACOS and ${level} == RELEASE') )
+    self.assertFalse( F('macos-10.10/x86_64/release', '${system} == MACOS and ${level} != RELEASE') )
+    self.assertTrue( F('linux-raspbian-9/x86_64/release', '${system} == LINUX and ${distro} == RASPBIAN') )
+    self.assertFalse( F('linux-raspbian-9/x86_64/release', '${system} is MACOS or (${system} is LINUX and ${distro} is not RASPBIAN)') )
+    self.assertTrue( F('macos-10.10/x86_64/release', '${system} is MACOS or (${system} is LINUX and ${distro} is not RASPBIAN)') )
+    self.assertTrue( F('macos-10.10/x86_64/debug', '${system} is MACOS or (${system} is LINUX and ${distro} is not RASPBIAN)') )
+    self.assertTrue( F('linux-ubuntu-18/x86_64/release', '${system} is MACOS or (${system} is LINUX and ${distro} is not RASPBIAN)') )
+    self.assertTrue( F('linux-ubuntu-18/x86_64/debug', '${system} is MACOS or (${system} is LINUX and ${distro} is not RASPBIAN)') )
 
   def test_wildcard(self):
     self.assertEqual( 'macos-10.any/x86_64/any', BT('macos', '', '10.any', 'x86_64', 'any').build_path )

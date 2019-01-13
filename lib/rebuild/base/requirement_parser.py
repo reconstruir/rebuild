@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import re
@@ -13,7 +12,7 @@ class requirement_parser(object):
   @classmethod
   def parse(clazz, text, default_system_mask = None):
 
-    text = comments.strip_line(text)
+    text = comments.strip_line(text, allow_quoted = False)
     
     STATE_NAME = 'name'
     STATE_SYSTEM_MASK = 'system_mask'

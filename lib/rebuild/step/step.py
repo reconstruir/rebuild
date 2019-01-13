@@ -178,14 +178,14 @@ class step(with_metaclass(step_register_meta, object)):
 
     rogue_key = clazz._env_find_roque_dollar_sign(env)
     if rogue_key:
-      raise RuntimeError('Rogue dollar sign (\"$\") found in %s: %s' % (rogue_key, env[rogue_key]))
+      raise RuntimeError('%s: Rogue dollar sign (\"$\") found in %s: %s' % (script.recipe.filename, rogue_key, env[rogue_key]))
 
-    command = [ variable.substitute(part, env) for part in object_util.listify(command) ]
+    command = [ variable.substitute(part, env, patterns = variable.BRACKET) for part in object_util.listify(command) ]
 
     # Check that no rogue dollar signs are in the command
     for part in command:
       if variable.has_rogue_dollar_signs(part):
-        raise RuntimeError('Rogue dollar sign (\"$\") found in: %s' % (part))
+        raise RuntimeError('%s: Rogue dollar sign (\"$\") found in: %s' % (script.recipe.filename, part))
       
     build_blurb.blurb('rebuild', '%s - %s' % (script.descriptor.name, ' '.join(command)))
 
@@ -305,6 +305,6 @@ class step(with_metaclass(step_register_meta, object)):
   @classmethod
   def _env_substitite(clazz, env):
     for key in sorted(env.keys()):
-      env[key] = variable.substitute(str(env[key]), env)
+      env[key] = variable.substitute(str(env[key]), env, patterns = variable.BRACKET)
       
 check.register_class(step, include_seq = False)

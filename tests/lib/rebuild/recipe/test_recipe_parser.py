@@ -167,18 +167,6 @@ package foo 1.2.3 4
     self.assertEqual( 1, len(r[0].steps) )
     self.assertMultiLineEqual( 'step_takes_string\n    string_value: my string', str(r[0].steps[0]) )
     
-  def test_step_value_string_with_hash_in_quotes(self):
-    text = '''!rebuild.recipe!
-package foo 1.2.3 4
-  steps
-    step_takes_string
-      string_value: "my string # with a hash"
-'''
-    r = self._parse(text)
-    self.assertEqual( 1, len(r) )
-    self.assertEqual( 1, len(r[0].steps) )
-    self.assertMultiLineEqual( 'step_takes_string\n    string_value: "my string # with a hash"', str(r[0].steps[0]) )
-    
   def test_step_value_string_listx(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4

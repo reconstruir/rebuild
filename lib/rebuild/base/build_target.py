@@ -78,7 +78,7 @@ class build_target(namedtuple('build_target', 'system, distro, distro_version, a
       'distro': self.distro or 'None',
     }
     dict_util.quote_strings(variables)
-    exp_with_vars = variable.substitute(expression, variables)
+    exp_with_vars = variable.substitute(expression, variables, patterns = variable.BRACKET)
     constants = {
       'MACOS': 'macos',
       'LINUX': 'linux',

@@ -170,7 +170,7 @@ class package_tester(object):
       '_REBUILD_DEV_ROOT': pm.shell_framework_dir,
     })
     for key, value in config.extra_env.items():
-      shell_env[key] = variable.substitute(value, substitutions)
+      shell_env[key] = variable.substitute(value, substitutions, patterns = variable.BRACKET)
     shell_env.update(substitutions)
     file_replace.copy_with_substitute(test_source, test_source_with_replacements,
                                       substitutions, backup = False)

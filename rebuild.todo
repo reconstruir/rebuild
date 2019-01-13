@@ -1094,3 +1094,5 @@ unit tests for checksums changing and not changing for example when a value_inst
 
 - unit tests for project_file_manager that exercise imports of both projects and recipes
 - cleanup project_file in general
+- check what in rebuild calls key_value_list.substitute_variables
+- add getter to package_file

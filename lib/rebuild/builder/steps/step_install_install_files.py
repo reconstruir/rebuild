@@ -31,7 +31,7 @@ class step_install_install_files(step):
     check.check_value_install_file_seq(install_files)
 
     for install_file in install_files:
-      src = variable.substitute(install_file.filename, script.substitutions)
+      src = variable.substitute(install_file.filename, script.substitutions, patterns = variable.BRACKET)
       dst = path.join(script.staged_files_dir, install_file.dst_filename)
       if path.isfile(src):
         property_mode = install_file.get_property('mode', None)

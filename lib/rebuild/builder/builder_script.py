@@ -50,6 +50,7 @@ class builder_script(object):
     self.python_lib_dir = path.join(self.staged_files_dir, 'lib/python')
     self.requirements_manager = package_manager(path.join(self.working_dir, 'requirements'), env.artifact_manager)
     self.substitutions = {
+      'REBUILD_WORKING_DIR': self.working_dir,
       'REBUILD_BUILD_DIR': self.build_dir,
       'REBUILD_PACKAGE_DESCRIPTION':  self.descriptor.name,
       'REBUILD_PACKAGE_FULL_NAME':  self.descriptor.full_name,
@@ -196,7 +197,7 @@ class builder_script(object):
     sources.append(path.relpath(self._env_checksum_filename))
     result = []
     for source in sources:
-      s = variable.substitute(source, self.substitutions)
+      s = variable.substitute(source, self.substitutions, patterns = variable.BRACKET)
       if path.isfile(s):
         result.append(s)
       else:

@@ -22,7 +22,7 @@ class variable_manager(object):
       
   def substitute(self, text, word_boundary = True):
     check.check_string(text)
-    return variable.substitute(text, self.variables, word_boundary = word_boundary)
+    return variable.substitute(text, self.variables, word_boundary = word_boundary, patterns = variable.BRACKET)
 
   def _add_system_variables(self):
     self.variables['HOME'] = path.expanduser('~')

@@ -55,12 +55,12 @@ class value_install_file(value_base):
     if path.isdir(self.filename):
       return file_find.find(self.filename, relative = False)
     else:
-      # If the file comes from REBUILD_BUILD_DIR then dont use it a dependency.
-      # The user would have put it in REBUILD_BUILD_DIR from their own sources
+      # If the file comes from REBUILD_WORKING_DIR then dont use it a dependency.
+      # The user would have put it in REBUILD_WORKING_DIR from their own sources
       # which are already accounted for wither in a value_source_tarball or
       # value_git_address
-      build_dir = variables.get('REBUILD_BUILD_DIR', None)
-      if build_dir and self.filename.startswith(build_dir):
+      working_dir = variables.get('REBUILD_WORKING_DIR', None)
+      if working_dir and self.filename.startswith(working_dir):
         return []
       return [ self.filename ]
 
