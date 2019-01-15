@@ -9,7 +9,7 @@ from rebuild.toolchain import toolchain
 from bes.dependency import dependency_resolver
 from bes.common import algorithm, variable
 from bes.system import execute, os_env
-from bes.fs import file_replace
+from bes.fs import file_replace, file_util, temp_file
 from bes.debug import debug_timer
 
 from .package import package
@@ -76,8 +76,7 @@ class package_tester(object):
     if rv.exit_code != 0:
       return step_result(rv.exit_code == 0, rv.stdout)
     # Run the test
-    rv = execute.execute(test_exe, env = context.env, non_blocking = build_blurb.verbose,
-                         stderr_to_stdout = True, raise_error = False)
+    rv = clazz._execute_text(test_exe, context)
 
     # Restore the environment cause _make_test_context() hacks it
     os.environ = context.saved_env
@@ -88,6 +87,17 @@ class package_tester(object):
     return step_result(True, None)
 
   @classmethod
+  def _execute_text(clazz, cmd, context):
+    cwd = path.join(context.test_dir, 'cwd')
+    file_util.mkdir(cwd)
+    return execute.execute(cmd,
+                           env = context.env,
+                           cwd = cwd,
+                           non_blocking = build_blurb.verbose,
+                           stderr_to_stdout = True,
+                           raise_error = False)
+  
+  @classmethod
   def _run_python_test(clazz, config, test_source):
     context = clazz._make_test_context(config, test_source)
     build_blurb.blurb_verbose('tester', '%s: running python test %s' % (context.package_info.name, test_source))
@@ -95,8 +105,7 @@ class package_tester(object):
     context.env['PYTHONPATH'] = context.package_manager.python_lib_dir
     # Run the test
     cmd = 'python2.7 %s' % (context.test_source_with_replacements)
-    rv = execute.execute(cmd, env = context.env, non_blocking = build_blurb.verbose,
-                         stderr_to_stdout = True, raise_error = False)
+    rv = clazz._execute_text(cmd, context)
     if rv.exit_code != 0:
       return step_result(rv.exit_code == 0, rv.stdout)
     return step_result(True, None)
@@ -189,8 +198,7 @@ class package_tester(object):
     build_blurb.blurb_verbose('tester', '%s: running shell test %s' % (context.package_info.name, test_source))
     exe = clazz._determine_exe(exe_env_name, exe_default)
     cmd = '%s %s' % (exe, context.test_source_with_replacements)
-    rv = execute.execute(cmd, env = context.env, non_blocking = build_blurb.verbose,
-                         stderr_to_stdout = True, raise_error = False)
+    rv = clazz._execute_text(cmd, context)
     os.environ = context.saved_env
     if rv.exit_code != 0:
       return step_result(rv.exit_code == 0, rv.stdout)
