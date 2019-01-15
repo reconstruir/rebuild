@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ${REBUILD_SHELL_FRAMEWORK_DIR}/rebuild_framework.sh
+source ${REBUILD_SHELL_FRAMEWORK_DIR}/bes_shell.sh
 
 function test_codegen_dot_py()
 {
@@ -8,4 +8,4 @@ function test_codegen_dot_py()
     rebuild_assert "[ ' #include \"a.h\" int x_y_a_b() { return c; } ' = '${actual}' ]"
 }
 
-rebuild_testing_run_unit_tests
+bes_testing_run_unit_tests

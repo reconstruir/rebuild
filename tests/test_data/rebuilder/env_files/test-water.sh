@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ${REBUILD_SHELL_FRAMEWORK_DIR}/rebuild_framework.sh
+source ${REBUILD_SHELL_FRAMEWORK_DIR}/bes_shell.sh
 
 function test_water_dot_py()
 {
@@ -8,4 +8,4 @@ function test_water_dot_py()
   rebuild_assert "[ 'water: one two tre' = '$output' ]"
 }
 
-rebuild_testing_run_unit_tests
+bes_testing_run_unit_tests

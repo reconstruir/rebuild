@@ -366,8 +366,8 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
 
   def test_transform_env_append(self):
     code = '''
-      rebuild_env_path_append PATH /zzzz/bin
-      rebuild_env_path_append PYTHONPATH /zzzz/lib/python
+      bes_env_path_append PATH /zzzz/bin
+      bes_env_path_append PYTHONPATH /zzzz/lib/python
 '''
     pm = self._make_one_env_file_pm(code)
     env1 = {
@@ -385,9 +385,9 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
 
   def test_transform_env_prepend(self):
     code = '''
-      rebuild_env_path_prepend PATH /zzzz/bin
-      rebuild_env_path_prepend PYTHONPATH /zzzz/lib/python
-#      rebuild_env_path_prepend LD_LIBRARY_PATH /zzzz/lib
+      bes_env_path_prepend PATH /zzzz/bin
+      bes_env_path_prepend PYTHONPATH /zzzz/lib/python
+#      bes_env_path_prepend LD_LIBRARY_PATH /zzzz/lib
 '''
     pm = self._make_one_env_file_pm(code)
     env1 = {
@@ -454,7 +454,7 @@ fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18
       'db/packages.db',
       'env/bar.sh',
       'env/foo.sh',
-      'env/framework/rebuild_framework.sh',
+      'env/framework/bes_shell.sh',
       'stuff/bin/apple.sh',
       'stuff/bin/orange.sh',
     ]
@@ -477,7 +477,7 @@ fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18
     self.assertEqual( [ 'files-1.0.0' ], pm.list_all_names(include_version = True) )
     expected = [
       'db/packages.db',
-      'env/framework/rebuild_framework.sh',
+      'env/framework/bes_shell.sh',
       'stuff/bin/apple.sh',
       'stuff/bin/orange.sh',
     ]
@@ -504,7 +504,7 @@ fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18
       'db/packages.db',
       'env/bar.sh',
       'env/foo.sh',
-      'env/framework/rebuild_framework.sh',
+      'env/framework/bes_shell.sh',
     ]
     self.assertEqual( expected, file_find.find(pm.root_dir, relative = True) )
     
@@ -559,9 +559,9 @@ fake_package two_env_files 1.0.0 0 0 linux release x86_64 ubuntu 18
   env_files
     cabbage_env.sh
       \#@REBUILD_HEAD@
-      rebuild_env_path_append PATH ${REBUILD_STUFF_DIR}/bin
-      #rebuild_env_path_append PYTHONPATH ${REBUILD_STUFF_DIR}/lib/python
-      #rebuild_env_path_append LD_LIBRARY_PATH ${REBUILD_STUFF_DIR}/lib
+      bes_env_path_append PATH ${REBUILD_STUFF_DIR}/bin
+      #bes_env_path_append PYTHONPATH ${REBUILD_STUFF_DIR}/lib/python
+      #bes_env_path_append LD_LIBRARY_PATH ${REBUILD_STUFF_DIR}/lib
       \#@REBUILD_TAIL@
 
 fake_package unset 1.0.0 0 0 linux release x86_64 ubuntu 18

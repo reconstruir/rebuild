@@ -230,12 +230,12 @@ _@NAME@_setup()
   local _root=${_@NAME@_root}
   local _prefix=${_root}/stuff
   local _env_dir=$_root/env
-  source $_env_dir/framework/rebuild_framework.sh
-  rebuild_env_path_prepend PATH ${_prefix}/bin
-  rebuild_env_path_prepend PYTHONPATH ${_prefix}/lib/python
-  rebuild_env_path_prepend PKG_CONFIG_PATH ${_prefix}/lib/pkgconfig
-  rebuild_env_path_prepend LD_LIBRARY_PATH ${_prefix}/lib
-  rebuild_env_path_prepend MANPATH ${_prefix}/man
+  source $_env_dir/framework/bes_shell.sh
+  bes_env_path_prepend PATH ${_prefix}/bin
+  bes_env_path_prepend PYTHONPATH ${_prefix}/lib/python
+  bes_env_path_prepend PKG_CONFIG_PATH ${_prefix}/lib/pkgconfig
+  bes_env_path_prepend LD_LIBRARY_PATH ${_prefix}/lib
+  bes_env_path_prepend MANPATH ${_prefix}/man
   rebuild_source_dir $_env_dir
 }
 
@@ -244,7 +244,7 @@ _@NAME@_unsetup()
   local _root=${_@NAME@_root}
   local _prefix=${_root}/stuff
   local _env_dir=$_root/env
-  source $_env_dir/framework/rebuild_framework.sh
+  source $_env_dir/framework/bes_shell.sh
   rebuild_env_path_remove PATH ${_prefix}/bin
   rebuild_env_path_remove PYTHONPATH ${_prefix}/lib/python
   rebuild_env_path_remove PKG_CONFIG_PATH ${_prefix}/lib/pkgconfig
@@ -293,12 +293,12 @@ _rebuild_build_path()
   local _system_root=${_root}/${_system}
   local _prefix=${_system_root}/stuff
   local _env_dir=$_system_root/env
-  source $_env_dir/framework/rebuild_framework.sh
-  rebuild_env_path_prepend PATH ${_prefix}/bin
-  rebuild_env_path_prepend PYTHONPATH ${_prefix}/lib/python
-  rebuild_env_path_prepend PKG_CONFIG_PATH ${_prefix}/lib/pkgconfig
-  rebuild_env_path_prepend LD_LIBRARY_PATH ${_prefix}/lib
-  rebuild_env_path_prepend MANPATH ${_prefix}/man
+  source $_env_dir/framework/bes_shell.sh
+  bes_env_path_prepend PATH ${_prefix}/bin
+  bes_env_path_prepend PYTHONPATH ${_prefix}/lib/python
+  bes_env_path_prepend PKG_CONFIG_PATH ${_prefix}/lib/pkgconfig
+  bes_env_path_prepend LD_LIBRARY_PATH ${_prefix}/lib
+  bes_env_path_prepend MANPATH ${_prefix}/man
   rebuild_source_dir $_env_dir
 }
 
@@ -309,7 +309,7 @@ _rebuild_build_path()
   local _system_root=${_root}/${_system}
   local _prefix=${_system_root}/stuff
   local _env_dir=$_system_root/env
-  source $_env_dir/framework/rebuild_framework.sh
+  source $_env_dir/framework/bes_shell.sh
   rebuild_env_path_remove PATH ${_prefix}/bin
   rebuild_env_path_remove PYTHONPATH ${_prefix}/lib/python
   rebuild_env_path_remove PKG_CONFIG_PATH ${_prefix}/lib/pkgconfig

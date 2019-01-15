@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ${REBUILD_SHELL_FRAMEWORK_DIR}/rebuild_framework.sh
+source ${REBUILD_SHELL_FRAMEWORK_DIR}/bes_shell.sh
 
 function test_env_vars()
 {
@@ -10,4 +10,4 @@ function test_env_vars()
   rebuild_assert "[ '$TBAR_ENV2' = 'bar' ]"
 }
 
-rebuild_testing_run_unit_tests
+bes_testing_run_unit_tests

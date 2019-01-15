@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ${REBUILD_SHELL_FRAMEWORK_DIR}/rebuild_framework.sh
+source ${REBUILD_SHELL_FRAMEWORK_DIR}/bes_shell.sh
 
 function test_env()
 {
@@ -8,4 +8,4 @@ function test_env()
   rebuild_assert "[ $TFOO_ENV2 = tfoo_env2 ]"
 }
 
-rebuild_testing_run_unit_tests
+bes_testing_run_unit_tests

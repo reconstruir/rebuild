@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ${REBUILD_SHELL_FRAMEWORK_DIR}/rebuild_framework.sh
+source ${REBUILD_SHELL_FRAMEWORK_DIR}/bes_shell.sh
 
 function test_water_env()
 {
@@ -14,4 +14,4 @@ function test_water_env()
   rebuild_assert "[ '$LIBWATER_ENV2' = 'water_env2' ]"
 }
 
-rebuild_testing_run_unit_tests
+bes_testing_run_unit_tests

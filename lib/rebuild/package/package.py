@@ -103,7 +103,7 @@ REBUILD_SHELL_FRAMEWORK_DIR=$REBUILD_ENV_DIR/framework
 export _REBUILD_DEV_ROOT=$REBUILD_SHELL_FRAMEWORK_DIR
 
 if [ -d $REBUILD_SHELL_FRAMEWORK_DIR ]; then
-  source $REBUILD_SHELL_FRAMEWORK_DIR/rebuild_framework.sh
+  source $REBUILD_SHELL_FRAMEWORK_DIR/bes_shell.sh
 fi
 unset _this_file
 unset _unresolved_root
