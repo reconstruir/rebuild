@@ -40,6 +40,7 @@ class test_tools_manager(unit_test):
     knife_desc = PD.parse('knife-6.6.6')
     tm.ensure_tools(knife_desc)
     self.assertEqual( [
+      'knife-6.6.6/framework/bes_shell.sh',
       'knife-6.6.6/linux-ubuntu-18/x86_64/db/packages.db',
       'knife-6.6.6/linux-ubuntu-18/x86_64/env/framework/bes_shell.sh',
       'knife-6.6.6/linux-ubuntu-18/x86_64/env/knife_env.sh',
@@ -121,6 +122,7 @@ class test_tools_manager(unit_test):
     cuchillo = PD.parse('cuchillo-1.0.0')
     tm.ensure_tools(cuchillo)
     self.assertEqual( [
+      'cuchillo-1.0.0/framework/bes_shell.sh',
       'cuchillo-1.0.0/linux-ubuntu-18/x86_64/db/packages.db',
       'cuchillo-1.0.0/linux-ubuntu-18/x86_64/env/cuchillo_env.sh',
       'cuchillo-1.0.0/linux-ubuntu-18/x86_64/env/framework/bes_shell.sh',
@@ -129,6 +131,7 @@ class test_tools_manager(unit_test):
       'cuchillo-1.0.0/linux-ubuntu-18/x86_64/stuff/bin/cuchillo.py',
       'cuchillo-1.0.0/run.sh',
       'cuchillo-1.0.0/setup.sh',
+      'steel-1.0.0/framework/bes_shell.sh',
       'steel-1.0.0/linux-ubuntu-18/x86_64/db/packages.db',
       'steel-1.0.0/linux-ubuntu-18/x86_64/env/carbon_env.sh',
       'steel-1.0.0/linux-ubuntu-18/x86_64/env/framework/bes_shell.sh',
@@ -144,6 +147,7 @@ class test_tools_manager(unit_test):
       'steel-1.0.0/linux-ubuntu-18/x86_64/stuff/lib/python/steel.py',
       'steel-1.0.0/run.sh',
       'steel-1.0.0/setup.sh',
+      'wood-1.0.0/framework/bes_shell.sh',
       'wood-1.0.0/linux-ubuntu-18/x86_64/db/packages.db',
       'wood-1.0.0/linux-ubuntu-18/x86_64/env/framework/bes_shell.sh',
       'wood-1.0.0/linux-ubuntu-18/x86_64/env/wood_env.sh',
