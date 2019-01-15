@@ -14,9 +14,9 @@ from test_steps import *
 
 class test_recipe_step(unit_test):
 
-  BT_LINUX = build_target('linux', 'ubuntu', '18', ( 'x86_64' ), 'release')
-  BT_MACOS = build_target('macos', '', '', ( 'x86_64' ), 'release')
-  BT_ANDROID = build_target('android', '', '', ( 'armv7' ), 'release')
+  BT_LINUX = build_target('linux', 'ubuntu', '18', '', ( 'x86_64' ), 'release')
+  BT_MACOS = build_target('macos', '', '', '', ( 'x86_64' ), 'release')
+  BT_ANDROID = build_target('android', '', '', '', ( 'armv7' ), 'release')
   
   def test_empty_defaults(self):
     text = '''\

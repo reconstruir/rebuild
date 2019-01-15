@@ -66,13 +66,13 @@ class test_package_manager(unit_test):
   
   def test_install_tarball_simple(self):
     pm = self._make_empty_pm()
-    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
+    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version_major': '18' }
     water_tarball = FPUT.create_one_package(RECIPES.WATER, mutations)
     pm.install_tarball(water_tarball.filename, water_tarball.metadata, ['BUILD', 'RUN'])
     
   def test_install_tarball_pkg_config(self):
     recipe = '''
-fake_package libfoo 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package libfoo 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     lib/pkgconfig/libfoo.pc
       prefix=${REBUILD_PACKAGE_PREFIX}
@@ -90,7 +90,7 @@ fake_package libfoo 1.0.0 0 0 linux release x86_64 ubuntu 18
 
     self.maxDiff = None
     pm = self._make_test_pm_with_am()
-    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
+    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version_major': '18' }
     pkg = FPUT.create_one_package(recipe, metadata_mutations = mutations, debug = self.DEBUG)
     pm.install_tarball(pkg.filename, pkg.metadata, ['BUILD', 'RUN'])
     self.assertEqual( [ 'libfoo-1.0.0' ], pm.list_all_names(include_version = True) )
@@ -122,7 +122,7 @@ fake_package libfoo 1.0.0 0 0 linux release x86_64 ubuntu 18
 
   def test_install_tarball_conflicts(self):
     foo_recipe = '''
-fake_package foo 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package foo 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     foo/cellulose.txt
       cellulose
@@ -131,7 +131,7 @@ fake_package foo 1.0.0 0 0 linux release x86_64 ubuntu 18
 '''
 
     bar_recipe = '''
-fake_package bar 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package bar 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     foo/cellulose.txt
       cellulose
@@ -140,7 +140,7 @@ fake_package bar 1.0.0 0 0 linux release x86_64 ubuntu 18
 '''
 
     pm = self._make_empty_pm()
-    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
+    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version_major': '18' }
     foo_tarball = FPUT.create_one_package(foo_recipe, mutations)
     bar_tarball = FPUT.create_one_package(bar_recipe, mutations)
     pm.install_tarball(foo_tarball.filename, foo_tarball.metadata, ['BUILD', 'RUN'])
@@ -149,7 +149,7 @@ fake_package bar 1.0.0 0 0 linux release x86_64 ubuntu 18
 
   def test_install_tarball_already_installed(self):
     pm = self._make_empty_pm()
-    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
+    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version_major': '18' }
     water = FPUT.create_one_package(RECIPES.WATER, mutations)
     pm.install_tarball(water.filename, water.metadata, ['BUILD', 'RUN'])
     with self.assertRaises(AlreadyInstalledError) as context:
@@ -158,7 +158,7 @@ fake_package bar 1.0.0 0 0 linux release x86_64 ubuntu 18
 
   def test_install_tarball_missing_requirements(self):
     pm = self._make_test_pm_with_am()
-    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
+    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version_major': '18' }
     apple_package = FPUT.create_one_package(RECIPES.APPLE, mutations)
     with self.assertRaises(PackageMissingRequirementsError) as context:
       pm.install_tarball(apple_package.filename, apple_package.metadata, ['BUILD', 'RUN'])
@@ -166,22 +166,22 @@ fake_package bar 1.0.0 0 0 linux release x86_64 ubuntu 18
 
   def test_install_tarball_with_manual_requirements(self):
     foo_recipe = '''
-fake_package foo 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package foo 1.0.0 0 0 linux release x86_64 ubuntu 18 none
 '''
     bar_recipe = '''
-fake_package bar 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package bar 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   requirements
     foo >= 1.0.0
 '''
 
     baz_recipe = '''
-fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   requirements
     bar >= 1.0.0
 '''
     
     pm = self._make_test_pm_with_am()
-    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
+    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version_major': '18' }
     foo_tarball = FPUT.create_one_package(foo_recipe, mutations)
     bar_tarball = FPUT.create_one_package(bar_recipe, mutations)
     baz_tarball = FPUT.create_one_package(baz_recipe, mutations)
@@ -206,7 +206,7 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
   def test_is_installed(self):
     pm = self._make_empty_pm()
     self.assertFalse( pm.is_installed('water') )
-    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
+    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version_major': '18' }
     pkg = FPUT.create_one_package(RECIPES.WATER, mutations)
     pm.install_tarball(pkg.filename, pkg.metadata, ['BUILD', 'RUN'])
     self.assertTrue( pm.is_installed('water') )
@@ -214,7 +214,7 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
 
   @classmethod
   def _make_test_artifact_manager(clazz):
-    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
+    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version_major': '18' }
     return FPUT.make_artifact_manager(debug = clazz.DEBUG,
                                       recipes = RECIPES.FOODS,
                                       mutations = mutations)
@@ -314,8 +314,8 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
 
   def _make_cabbage_pm(self):
     t = AMT(recipes = self.VEGGIES)
-    t.publish('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
-    t.publish('unset;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    t.publish('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18;')
+    t.publish('unset;1.0.0;0;0;linux;release;x86_64;ubuntu;18;')
     pm = self._make_caca_test_pm(t.am)
     cabbage = PD.parse('cabbage-1.0.0')
     bt = BT.parse_path('linux-ubuntu-18/x86_64/release')
@@ -326,7 +326,7 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
   def _make_one_env_file_pm(self, code):
     recipe = self.ONE_ENV_FILE_RECIPE % (code)
     t = AMT(recipes = recipe)
-    t.publish('one_env_file;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    t.publish('one_env_file;1.0.0;0;0;linux;release;x86_64;ubuntu;18;')
     pm = self._make_caca_test_pm(t.am)
     pdesc = PD.parse('one_env_file-1.0.0')
     bt = BT.parse_path('linux-ubuntu-18/x86_64/release')
@@ -336,7 +336,7 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
   def _make_two_env_files_pm(self, code1, code2):
     recipe = self.TWO_ENV_FILES_RECIPE % (code1, code2)
     t = AMT(recipes = recipe)
-    t.publish('two_env_files;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    t.publish('two_env_files;1.0.0;0;0;linux;release;x86_64;ubuntu;18;')
     pm = self._make_caca_test_pm(t.am)
     pdesc = PD.parse('two_env_files-1.0.0')
     bt = BT.parse_path('linux-ubuntu-18/x86_64/release')
@@ -428,7 +428,7 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18
 
   def test_installed_files(self):
     recipe = '''
-fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/apple.sh
       \#!/bin/bash
@@ -446,7 +446,7 @@ fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18
       export BAR=bar
       \#@REBUILD_TAIL@
   '''
-    amt = self._make_test_amt(recipe, 'files;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    amt = self._make_test_amt(recipe, 'files;1.0.0;0;0;linux;release;x86_64;ubuntu;18;')
     pm = self._make_caca_test_pm(amt.am)
     self._install_package(pm, 'files-1.0.0', 'linux-ubuntu-18/x86_64/release')
     self.assertEqual( [ 'files-1.0.0' ], pm.list_all_names(include_version = True) )
@@ -462,7 +462,7 @@ fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18
 
   def test_installed_files_only_files(self):
     recipe = '''
-fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/apple.sh
       \#!/bin/bash
@@ -471,7 +471,7 @@ fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18
       \#!/bin/bash
       echo orange ; exit 0
   '''
-    amt = self._make_test_amt(recipe, 'files;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    amt = self._make_test_amt(recipe, 'files;1.0.0;0;0;linux;release;x86_64;ubuntu;18;')
     pm = self._make_caca_test_pm(amt.am)
     self._install_package(pm, 'files-1.0.0', 'linux-ubuntu-18/x86_64/release')
     self.assertEqual( [ 'files-1.0.0' ], pm.list_all_names(include_version = True) )
@@ -485,7 +485,7 @@ fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18
 
   def test_installed_files_only_env_files(self):
     recipe = '''
-fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   env_files
     foo.sh
       \#@REBUILD_HEAD@
@@ -496,7 +496,7 @@ fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18
       export BAR=bar
       \#@REBUILD_TAIL@
   '''
-    amt = self._make_test_amt(recipe, 'files;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    amt = self._make_test_amt(recipe, 'files;1.0.0;0;0;linux;release;x86_64;ubuntu;18;')
     pm = self._make_caca_test_pm(amt.am)
     self._install_package(pm, 'files-1.0.0', 'linux-ubuntu-18/x86_64/release')
     self.assertEqual( [ 'files-1.0.0' ], pm.list_all_names(include_version = True) )
@@ -526,7 +526,7 @@ fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18
     pm.install_package(desc, bt, [ 'RUN' ])
     
   ONE_ENV_FILE_RECIPE = '''
-fake_package one_env_file 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package one_env_file 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   env_files
     file1.sh
       \#@REBUILD_HEAD@
@@ -535,7 +535,7 @@ fake_package one_env_file 1.0.0 0 0 linux release x86_64 ubuntu 18
   '''
 
   TWO_ENV_FILES_RECIPE = '''
-fake_package two_env_files 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package two_env_files 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/cut.sh
       \#!/bin/bash
@@ -551,7 +551,7 @@ fake_package two_env_files 1.0.0 0 0 linux release x86_64 ubuntu 18
       \#@REBUILD_TAIL@
   '''
   
-  VEGGIES = '''fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
+  VEGGIES = '''fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/cut.sh
       \#!/bin/bash
@@ -564,7 +564,7 @@ fake_package two_env_files 1.0.0 0 0 linux release x86_64 ubuntu 18
       #bes_env_path_append LD_LIBRARY_PATH ${REBUILD_STUFF_DIR}/lib
       \#@REBUILD_TAIL@
 
-fake_package unset 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package unset 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/unsetcut.sh
       \#!/bin/bash
@@ -623,7 +623,7 @@ fake_package unset 1.0.0 0 0 linux release x86_64 ubuntu 18
     '''
 
     recipe1 = '''\
-fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/cabbage.sh
       \#!/bin/bash
@@ -631,7 +631,7 @@ fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
 '''
 
     recipe2 = '''\
-fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/cabbage.sh
       \#!/bin/bash
@@ -644,15 +644,15 @@ fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
     t = AMT()
     pm = self._make_caca_test_pm(t.am)
     t.add_recipes(recipe1)
-    t.publish('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    t.publish('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18;')
     pm.install_package(cabbage, bt, [ 'RUN' ])
     exe = pm.tool_exe('cabbage.sh')
     self.assertEqual( 'cabbage1', execute.execute(exe).stdout.strip() )
     
-    t.retire('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    t.retire('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18;')
     t.clear_recipes()
     t.add_recipes(recipe2)
-    t.publish('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    t.publish('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18;')
     pm.install_package(cabbage, bt, [ 'RUN' ], package_install_options(allow_same_version = False))
     self.assertEqual( 'cabbage1', execute.execute(exe).stdout.strip() )
     pm.install_package(cabbage, bt, [ 'RUN' ], package_install_options(allow_same_version = True))
@@ -665,7 +665,7 @@ fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
     '''
 
     recipe1 = '''\
-fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/unsetcut.sh
       \#!/bin/bash
@@ -678,7 +678,7 @@ fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
 '''
 
     recipe2 = '''\
-fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/unsetcut.sh
       \#!/bin/bash
@@ -696,15 +696,15 @@ fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
     t = AMT()
     pm = self._make_caca_test_pm(t.am)
     t.add_recipes(recipe1)
-    t.publish('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    t.publish('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18;')
     pm.install_package(cabbage, bt, [ 'RUN' ])
     result = pm.transform_env({}, [ 'cabbage' ])
     self.assertEqual( 'cabbage1', result['FOO'] )
 
-    t.retire('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    t.retire('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18;')
     t.clear_recipes()
     t.add_recipes(recipe2)
-    t.publish('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    t.publish('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18;')
     pm.install_package(cabbage, bt, [ 'RUN' ], package_install_options(allow_same_version = False))
     result = pm.transform_env({}, [ 'cabbage' ])
     self.assertEqual( 'cabbage1', result['FOO'] )
@@ -719,7 +719,7 @@ fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
     '''
 
     recipe = '''\
-fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/cabbage.sh
       \#!/bin/bash
@@ -730,7 +730,7 @@ fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18
     bt = BT.parse_path('linux-ubuntu-18/x86_64/release')
     t = AMT(recipes = recipe)
     pm = self._make_caca_test_pm(t.am)
-    t.publish('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
+    t.publish('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18;')
     pm.install_package(cabbage, bt, [ 'RUN' ])
     exe = pm.tool_exe('cabbage.sh')
     expected='prefix=%s' % (pm.installation_dir)

@@ -26,7 +26,7 @@ class test_package_metadata(unit_test):
     'contents_chk')
   TEST_PROPERTIES = { 'p1': 'v1', 'p2': 6 }
 
-  TEST_ENTRY = PM(2, 'kiwi-6.7.8-2.tar.gz', 'kiwi', '6.7.8', 2, 0, 'macos', 'release', [ 'x86_64' ], '', '',
+  TEST_ENTRY = PM(2, 'kiwi-6.7.8-2.tar.gz', 'kiwi', '6.7.8', 2, 0, 'macos', 'release', [ 'x86_64' ], '', '', '',
                   TEST_REQUIREMENTS, TEST_PROPERTIES, TEST_FILES)
 
   def test_descriptor(self):
@@ -34,7 +34,7 @@ class test_package_metadata(unit_test):
                       self.TEST_ENTRY.package_descriptor )
 
   def test_build_target(self):
-    self.assertEqual( build_target('macos', '', '', ( 'x86_64', ), 'release'), self.TEST_ENTRY.build_target )
+    self.assertEqual( build_target('macos', '', '', '', ( 'x86_64', ), 'release'), self.TEST_ENTRY.build_target )
 
   def test_to_json(self):
     self.maxDiff = None
@@ -45,7 +45,8 @@ class test_package_metadata(unit_test):
     "x86_64"
   ], 
   "distro": "", 
-  "distro_version": "", 
+  "distro_version_major": "", 
+  "distro_version_minor": "", 
   "epoch": 0, 
   "filename": "kiwi-6.7.8-2.tar.gz", 
   "level": "release", 
@@ -99,7 +100,8 @@ class test_package_metadata(unit_test):
     "x86_64"
   ], 
   "distro": "", 
-  "distro_version": "", 
+  "distro_version_major": "", 
+  "distro_version_minor": "", 
   "epoch": 0, 
   "filename": "kiwi-6.7.8-2.tar.gz", 
   "level": "release", 

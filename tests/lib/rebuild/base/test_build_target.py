@@ -7,19 +7,22 @@ from rebuild.base import build_arch as BA, build_system as BS, build_target as B
 class test_build_target(unit_test):
 
   def test_build_path(self):
-    self.assertEqual( 'macos-10.10/x86_64/release', BT('macos', '', '10.10', 'x86_64', 'release').build_path )
-    self.assertEqual( 'linux-ubuntu-18/x86_64/release', BT('linux', 'ubuntu', '18', 'x86_64', 'release').build_path )
-    self.assertEqual( 'ios-12/arm64-armv7/release', BT('ios', '', '12', 'armv7,arm64', 'release').build_path )
-    self.assertEqual( 'ios-12/arm64-armv7/debug', BT('ios', '', '12', 'armv7,arm64', 'debug').build_path )
-    self.assertEqual( 'ios-12/arm64/release', BT('ios', '', '12', 'arm64', 'release').build_path )
-    self.assertEqual( 'ios-12/arm64/debug', BT('ios', '', '12', 'arm64', 'debug').build_path )
-
+    self.assertEqual( 'macos-10.10/x86_64/release', BT('macos', '', '10', '10', 'x86_64', 'release').build_path )
+    self.assertEqual( 'macos-10/x86_64/release', BT('macos', '', '10', None, 'x86_64', 'release').build_path )
+    self.assertEqual( 'linux-ubuntu-18/x86_64/release', BT('linux', 'ubuntu', '18', None, 'x86_64', 'release').build_path )
+    self.assertEqual( 'ios-12/arm64-armv7/release', BT('ios', '', '12', None,  'armv7,arm64', 'release').build_path )
+    self.assertEqual( 'ios-12/arm64-armv7/debug', BT('ios', '', '12', None, 'armv7,arm64', 'debug').build_path )
+    self.assertEqual( 'ios-12/arm64/release', BT('ios', '', '12', None, 'arm64', 'release').build_path )
+    self.assertEqual( 'ios-12/arm64/debug', BT('ios', '', '12', None, 'arm64', 'debug').build_path )
+    self.assertEqual( 'macos/x86_64/release', BT('macos', '', '', None, 'x86_64', 'release').build_path )
+    self.assertEqual( 'linux-ubuntu/x86_64/release', BT('linux', 'ubuntu', '', None, 'x86_64', 'release').build_path )
+    
   def test_parse_path(self):
-    self.assertEqual( BT('macos', '', '10.10', 'x86_64', 'release'), BT.parse_path('macos-10.10/x86_64/release') )
-    self.assertEqual( BT('linux', 'ubuntu', '18', 'x86_64', 'release'), BT.parse_path('linux-ubuntu-18/x86_64/release') )
-    self.assertEqual( BT('linux', '', '', 'x86_64', 'release'), BT.parse_path('linux/x86_64/release') )
-    self.assertEqual( BT('ios', '', '12', 'armv7,arm64', 'release'), BT.parse_path('ios-12/arm64-armv7/release') )
-    self.assertEqual( BT('ios', '', '12', 'armv7,arm64', 'debug'), BT.parse_path('ios-12/arm64-armv7/debug') )
+    self.assertEqual( BT('macos', '', '10', '10', 'x86_64', 'release'), BT.parse_path('macos-10.10/x86_64/release') )
+    self.assertEqual( BT('linux', 'ubuntu', '18', None, 'x86_64', 'release'), BT.parse_path('linux-ubuntu-18/x86_64/release') )
+    self.assertEqual( BT('linux', '', '', None, 'x86_64', 'release'), BT.parse_path('linux/x86_64/release') )
+    self.assertEqual( BT('ios', '', '12', None, 'armv7,arm64', 'release'), BT.parse_path('ios-12/arm64-armv7/release') )
+    self.assertEqual( BT('ios', '', '12', None, 'armv7,arm64', 'debug'), BT.parse_path('ios-12/arm64-armv7/debug') )
     
   def test_parse_expression(self):
     F = self._parse_exp
@@ -33,7 +36,7 @@ class test_build_target(unit_test):
     self.assertTrue( F('linux-ubuntu-18/x86_64/debug', '${system} is MACOS or (${system} is LINUX and ${distro} is not RASPBIAN)') )
 
   def test_wildcard(self):
-    self.assertEqual( 'macos-10.any/x86_64/any', BT('macos', '', '10.any', 'x86_64', 'any').build_path )
+    self.assertEqual( 'macos-10.any/x86_64/any', BT('macos', '', '10', 'any', 'x86_64', 'any').build_path )
 
   def test_clone(self):
     p = BT.parse_path

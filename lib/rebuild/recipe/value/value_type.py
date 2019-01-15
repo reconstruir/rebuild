@@ -16,3 +16,5 @@ class value_type(object):
   SOURCE_TARBALL = 'source_tarball'
   STRING = 'string'
   STRING_LIST = 'string_list'
+  TUPLE = 'tuple'
+  TUPLE_LIST = 'tuple_list'

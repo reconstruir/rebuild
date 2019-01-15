@@ -28,9 +28,6 @@ dec 24
 jan 1
 - finish moving checksuming to BuildScript
 
-Command to test rebbe package installation:
-rebbe.py packages install -a tmp/artifacts /tmp/p poto python_libarchive libpng
-
 jan 3:
   centralize the code to find builtin tools from PkgConfig.py
   fix issue in software/lib/libtiff/build.py that requires --disable-cxx
@@ -57,14 +54,8 @@ jan 12
 jan 14
 - print decent error when a dependency is disabled
 
-jan 19
-- rebbe.py packages install -a ~/software/tmp/artifacts /tmp/v v python_virtualenv fails because of a missing dir
-- add more unit tests
-
 jan 25
 - consistent name for platform specific eggs.  macosx vs. darwin --plat-name= seems to be broken for bdist (not bdist_egg)
-rebbe.py packages install -a ~/software/tmp/artifacts ~/.tools re python_pythoscope scons cmake pkg_config uncrustify 
-- throw errors when a tool is used as a dep and also when a dep is used as a tool
 - when installing a package throws an error, the installation is left in an inconsistent state.  should cleanup the mess
 
 jan 27
@@ -133,13 +124,6 @@ feb 17
 - let dashes work in package names and versions cmon
 - add error for missing download url
 
-alias go='bes_refactor.py unit -l 1 ~/projects/lib/bes'
-alias go_cleanup='bes_refactor.py unit_cleanup ~/projects/lib/bes'
-alias go_test='bes_test.py ~/projects/lib/bes'
-
-rebbe.py packages install -a ~/software/tmp/artifacts ~/.retools global python_pyserial
-rebbe.py packages update -a ~/software/tmp/artifacts ~/.retools/
-
 feb 18
 - checks for python eggs and libs should be added automatically only some python projects doing it
 - add unit test for common_base when the archive has a member that is a single dot
@@ -157,9 +141,7 @@ feb 23
 - need some kind of hash of tool binaries (like cmake) against its package when updating tools cause of changes that did not rev a revision or version
 
 feb 24
-- reorganize ~/.retools kind of dirs by system
 - cccache support
-- retire Patch.depth() crap
 - vorbis and such for libsdl1_mixer
 
 feb 28
@@ -1095,3 +1077,7 @@ unit tests for checksums changing and not changing for example when a value_inst
 - cleanup project_file in general
 - check what in rebuild calls key_value_list.substitute_variables
 - add getter to package_file
+- version the pasted in bes_shell.sh files
+package_metadata.compare maybe use tuple() for p1 and p2
+s/test_remanager/test_revenv
+s/${BES_TEST_DATA_DIR}/remanager/${BES_TEST_DATA_DIR}/revenv

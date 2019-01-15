@@ -10,35 +10,42 @@ from .build_system import build_system
 
 from collections import namedtuple
 
-class build_target(namedtuple('build_target', 'system, distro, distro_version, arch, level')):
+class build_target(namedtuple('build_target', 'system, distro, distro_version_major, distro_version_minor, arch, level')):
 
-  def __new__(clazz, system, distro, distro_version, arch, level):
+  def __new__(clazz, system, distro, distro_version_major, distro_version_minor, arch, level):
     check.check_string(system)
-    if distro is not None:
-      check.check_string(distro)
-    check.check_string(distro_version)
+    check.check_string(distro, allow_none = True)
+    check.check_string(distro_version_major, allow_none = True)
+    check.check_string(distro_version_minor, allow_none = True)
     arch = build_arch.check_arch(arch, system, distro)
     check.check_string(level)
     system = build_system.parse_system(system)
     arch = build_arch.determine_arch(arch, system, distro)
     level = build_level.parse_level(level)
-    return clazz.__bases__[0].__new__(clazz, system, distro, distro_version, arch, level)
+    distro_version_minor = clazz.resolve_distro_version_minor(distro_version_minor)
+    return clazz.__bases__[0].__new__(clazz, system, distro, distro_version_major, distro_version_minor, arch, level)
 
   @cached_property
   def build_path(self):
-    return self._make_build_path(self.system, self.distro, self.distro_version, self.arch, self.level)    
+    return self._make_build_path(self.system, self.distro, self.distro_version_major, self.distro_version_minor, self.arch, self.level)    
   
   @classmethod
   def _arch_to_string(clazz, arch):
     return build_arch.join(arch, delimiter = '-')
   
   @classmethod
-  def _make_build_path(clazz, system, distro, distro_version, arch, level):
+  def _make_build_path(clazz, system, distro, distro_version_major, distro_version_minor, arch, level):
     system_parts = [ system ]
     if distro and distro != system:
       system_parts += [ distro ]
-    if distro_version:
-      system_parts += [ distro_version ]
+    version_parts = []
+    if distro_version_major:
+      version_parts.append(distro_version_major)
+    if distro_version_minor:
+      version_parts.append(distro_version_minor)
+    version = '.'.join(version_parts)
+    if version:
+      system_parts += [ version ]
     system_path = '-'.join(system_parts)
     parts = [ system_path, clazz._arch_to_string(arch), level ]
     return '/'.join(parts)
@@ -98,9 +105,9 @@ class build_target(namedtuple('build_target', 'system, distro, distro_version, a
     system = parts[0]
     arch = parts[1]
     level = parts[2]
-    system, distro, distro_version = clazz._parse_system(system)
+    system, distro, distro_version_major, distro_version_minor = clazz._parse_system(system)
     arch = build_arch.split(arch, delimiter = '-')
-    return clazz(system, distro, distro_version, arch, level)
+    return build_target(system, distro, distro_version_major, distro_version_minor, arch, level)
 
   @classmethod
   def _parse_system(clazz, s):
@@ -108,22 +115,41 @@ class build_target(namedtuple('build_target', 'system, distro, distro_version, a
     if len(parts) < 1:
       raise ValueError('Invalid system: %s' % (s))
     distro = ''
-    distro_version = ''
+    distro_version_major = ''
+    distro_version_minor = None
     system = parts.pop(0)
     if len(parts) == 1:
-      distro_version = parts[0]
+      distro_version_major, distro_version_minor = clazz._parse_version(parts[0])
     elif len(parts) == 2:
       distro = parts[0]
-      distro_version = parts[1]
+      distro_version_major, distro_version_minor = clazz._parse_version(parts[1])
     elif len(parts) > 2:
       raise ValueError('Invalid system: %s' % (s))
-    return system, distro, distro_version
+    return system, distro, distro_version_major, distro_version_minor
 
   @classmethod
-  def make_host_build_target(clazz, level = build_level.RELEASE):
-    return clazz(host.SYSTEM, host.DISTRO, host.VERSION, ( host.ARCH, ), level)
+  def _parse_version(clazz, s):
+    parts = s.split('.')
+    if not parts:
+      return None, None
+    distro_version_major = parts.pop(0)
+    distro_version_minor = parts.pop(0) if parts else None
+    return distro_version_major, distro_version_minor
+  
+  @classmethod
+  def make_host_build_target(clazz, level = build_level.RELEASE, version_minor = host.VERSION_MINOR):
+    return build_target(host.SYSTEM, host.DISTRO, host.VERSION_MAJOR, version_minor, ( host.ARCH, ), level)
   
   def clone(self, mutations = None):
     return tuple_util.clone(self, mutations = mutations)
+
+  @classmethod
+  def resolve_distro_version_minor(clazz, distro_version_minor):
+    if check.is_string(distro_version_minor):
+      if distro_version_minor.lower() == 'none':
+        distro_version_minor = ''
+    elif distro_version_minor is None:
+      distro_version_minor = ''
+    return distro_version_minor
   
 check.register_class(build_target)

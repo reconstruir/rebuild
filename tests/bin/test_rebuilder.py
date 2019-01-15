@@ -19,9 +19,9 @@ class test_rebuilder_script(script_unit_test):
   DEBUG = script_unit_test.DEBUG
   #DEBUG = True
 
-  HOST_BUILD_TARGET = build_target.make_host_build_target(level = 'release')
-  IOS_BUILD_TARGET = build_target('ios', None, '9', 'arm64', 'release')
-  ANDROID_BUILD_TARGET = build_target('android', '', '', 'armv7', 'release')
+  HOST_BUILD_TARGET = build_target.make_host_build_target(level = 'release', version_minor = '')
+  IOS_BUILD_TARGET = build_target('ios', None, '9', '', 'arm64', 'release')
+  ANDROID_BUILD_TARGET = build_target('android', '', '', '', 'armv7', 'release')
   
   DEFAULT_CONFIG = rebuilder_tester.config()
   
@@ -104,7 +104,7 @@ class test_rebuilder_script(script_unit_test):
     self.assertEqual( [ 'fiber-1.0.0.tar.gz', 'fiber-orange-6.5.4-3.tar.gz', 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
 
   def test_one_project(self):
-    test = self._run_test(rebuilder_tester.config(read_checksums = True), self.data_dir(), 'one_project', 'fructose')
+    test = self._run_test(rebuilder_tester.config(read_checksums = True), self.data_dir(), 'one_project', 'fructose', '--distro-version-minor', 'none')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
     self.assertEqual( [ 'fructose-3.4.5-6/sources.checksums', 'fructose-3.4.5-6/targets.checksums' ], test.checksums )
@@ -119,7 +119,7 @@ class test_rebuilder_script(script_unit_test):
                       test.checksums_contents['fructose-3.4.5-6/targets.checksums'].filenames() )
 
   def test_tool_tfoo(self):
-    test = self._run_test(self.DEFAULT_CONFIG, self.data_dir(), 'basic', 'tfoo')
+    test = self._run_test(self.DEFAULT_CONFIG, self.data_dir(), 'basic', 'tfoo', '--distro-version-minor', 'none')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'tfoo-1.0.0.tar.gz' ], test.artifacts )
     
@@ -140,7 +140,7 @@ class test_rebuilder_script(script_unit_test):
 
   @skip_if(not toolchain_testing.can_compile_ios(), 'cannot compile ios')
   def test_lib_libstarch_ios_cross_compile(self):
-    test = self._run_test(rebuilder_tester.config(bt = self.IOS_BUILD_TARGET), self.data_dir(), 'basic', 'libstarch', '-s', 'ios', '-a', 'arm64', '-d', '', '--distro-version', '9')
+    test = self._run_test(rebuilder_tester.config(bt = self.IOS_BUILD_TARGET), self.data_dir(), 'basic', 'libstarch', '-s', 'ios', '-a', 'arm64', '-d', '', '--distro-version-major', '9', '--distro-version-minor', '')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libstarch-1.0.0.tar.gz' ], test.artifacts )
 

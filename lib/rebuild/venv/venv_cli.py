@@ -150,7 +150,7 @@ class venv_cli(build_target_cli):
     self._root_dir = args.root_dir
     self._artifacts_config_name = args.artifacts_config_name
     self._build_target = self.build_target_resolve(args)
-
+    
     self.log_d('config: root_dir=%s' % (self._root_dir))
     self.log_d('config: config_filename=%s' % (self._config_filename))
     self.log_d('config: artifacts_config_name=%s' % (self._artifacts_config_name))

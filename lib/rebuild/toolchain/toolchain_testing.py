@@ -14,7 +14,7 @@ class toolchain_testing(object):
   def can_compile_ios(clazz):
     return host.is_macos()
 
-  BT = build_target(build_system.ANDROID, '', '', ( build_arch.ARMV7, ), build_level.RELEASE)
+  BT = build_target(build_system.ANDROID, '', '', None, ( build_arch.ARMV7, ), build_level.RELEASE)
   @classmethod
   def android_toolchain_is_valid(clazz):
     return toolchain.get_toolchain(clazz.BT).is_valid()

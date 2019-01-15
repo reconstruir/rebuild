@@ -73,7 +73,7 @@ int main(int argc, char* argv[])
 
   @classmethod
   def _make_compiler(clazz, system, arch):
-    return compiler(build_target(system, '', '', arch, 'release'))
+    return compiler(build_target(system, '', '', '', arch, 'release'))
 
 if __name__ == '__main__':
   unit_test.main()
