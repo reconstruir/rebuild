@@ -1,14 +1,20 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.common import check
+from bes.common import check, string_util
 from bes.key_value import key_value
-from bes.text import comments
-from rebuild.base import requirement_list
+from bes.text import comments, string_list
+from bes.system import logger
 
+from rebuild.base import build_system, requirement_list
+
+from .value import masked_value
 from .value import masked_value_list
 from .value import value_factory
 from .value import value_key_values
 from .value import value_origin
+from .value import value_string_list
+
+_LOG = logger('recipe_parser_util')
 
 class recipe_parser_util(object):
 
@@ -112,3 +118,22 @@ class recipe_parser_util(object):
       reqs.extend(next_reqs)
     return requirement_list(reqs)
   
+  @classmethod
+  def parse_masked_list_of_lists(clazz, child, filename):
+    origin = value_origin(filename, child.data.line_number, child.data.text)
+    parts = string_util.split_by_white_space(child.data.text, strip = True)
+    _LOG.log_d('parse_masked_list_child: parts=%s; \nchild=%s' % (parts, str(child)))
+    result = []
+    mask_valid = build_system.mask_is_valid(parts[0])
+    if mask_valid:
+      mask = parts.pop(0)
+    else:
+      mask = None
+    _LOG.log_d('parse_masked_list_child: mask_valid=%s; mask=%s; parts=%s' % (mask_valid, mask, parts))
+    if parts:
+      result.append(masked_value(mask, value_string_list(origin = origin, value = parts), origin = origin))
+    strings = child.get_text_children_as_string_list()
+    _LOG.log_d('parse_masked_list_child: strings=%s' % (strings))
+    values = [ masked_value(mask, value_string_list(origin = origin, value = [ s ]), origin = origin) for s in strings ]
+    result.extend(values)
+    return masked_value_list(result)
