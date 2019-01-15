@@ -202,7 +202,7 @@ class builder_script(object):
         result.append(s)
       else:
         pass #print('you suck so bad because file not found: %s' % (s))
-    return result
+    return algorithm.unique(result)
 
   def _targets(self):
     p = self.env.artifact_manager.artifact_path(self.descriptor, self.build_target, False)
