@@ -236,7 +236,7 @@ _@NAME@_setup()
   bes_env_path_prepend PKG_CONFIG_PATH ${_prefix}/lib/pkgconfig
   bes_env_path_prepend LD_LIBRARY_PATH ${_prefix}/lib
   bes_env_path_prepend MANPATH ${_prefix}/man
-  rebuild_source_dir $_env_dir
+  bes_source_dir $_env_dir
 }
 
 _@NAME@_unsetup()
@@ -245,11 +245,11 @@ _@NAME@_unsetup()
   local _prefix=${_root}/stuff
   local _env_dir=$_root/env
   source $_env_dir/framework/bes_shell.sh
-  rebuild_env_path_remove PATH ${_prefix}/bin
-  rebuild_env_path_remove PYTHONPATH ${_prefix}/lib/python
-  rebuild_env_path_remove PKG_CONFIG_PATH ${_prefix}/lib/pkgconfig
-  rebuild_env_path_remove LD_LIBRARY_PATH ${_prefix}/lib
-  rebuild_env_path_remove MANPATH ${_prefix}/man
+  bes_env_path_remove PATH ${_prefix}/bin
+  bes_env_path_remove PYTHONPATH ${_prefix}/lib/python
+  bes_env_path_remove PKG_CONFIG_PATH ${_prefix}/lib/pkgconfig
+  bes_env_path_remove LD_LIBRARY_PATH ${_prefix}/lib
+  bes_env_path_remove MANPATH ${_prefix}/man
 }
 '''
 
@@ -299,7 +299,7 @@ _rebuild_build_path()
   bes_env_path_prepend PKG_CONFIG_PATH ${_prefix}/lib/pkgconfig
   bes_env_path_prepend LD_LIBRARY_PATH ${_prefix}/lib
   bes_env_path_prepend MANPATH ${_prefix}/man
-  rebuild_source_dir $_env_dir
+  bes_source_dir $_env_dir
 }
 
 @NAME@_unsetup()
@@ -310,11 +310,11 @@ _rebuild_build_path()
   local _prefix=${_system_root}/stuff
   local _env_dir=$_system_root/env
   source $_env_dir/framework/bes_shell.sh
-  rebuild_env_path_remove PATH ${_prefix}/bin
-  rebuild_env_path_remove PYTHONPATH ${_prefix}/lib/python
-  rebuild_env_path_remove PKG_CONFIG_PATH ${_prefix}/lib/pkgconfig
-  rebuild_env_path_remove LD_LIBRARY_PATH ${_prefix}/lib
-  rebuild_env_path_remove MANPATH ${_prefix}/man
+  bes_env_path_remove PATH ${_prefix}/bin
+  bes_env_path_remove PYTHONPATH ${_prefix}/lib/python
+  bes_env_path_remove PKG_CONFIG_PATH ${_prefix}/lib/pkgconfig
+  bes_env_path_remove LD_LIBRARY_PATH ${_prefix}/lib
+  bes_env_path_remove MANPATH ${_prefix}/man
 }
 '''
 
