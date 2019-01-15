@@ -22,6 +22,7 @@ from .recipe_step import recipe_step
 from .recipe_step_list import recipe_step_list
 from .recipe_value import recipe_value
 from .recipe_enabled import recipe_enabled
+from .recipe_data_manager import recipe_data_manager
 
 from .value import masked_value
 from .value import masked_value_list
@@ -77,6 +78,7 @@ class recipe_parser(object):
     enabled = recipe_enabled(value_origin(self.filename, 1, ''), 'True')
     python_code = None
     variables = masked_value_list()
+    data = masked_value_list()
     
     # Need to deal with any inline python code first so its available for the rest of the recipe
     python_code_node = node.find_child(lambda child: child.data.text == 'python_code')
@@ -91,6 +93,8 @@ class recipe_parser(object):
         requirements.extend(recipe_parser_util.parse_requirements(child, variable_manager))
       elif text.startswith('variables'):
         variables.extend(recipe_parser_util.parse_masked_variables(child, self.filename))
+      elif text.startswith('data'):
+        data.extend(recipe_data_manager.parse_node(child, self.filename))
       elif text.startswith('steps'):
         steps = self._parse_steps(child)
       elif text.startswith('enabled'):
