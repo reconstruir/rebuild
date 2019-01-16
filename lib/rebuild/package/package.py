@@ -227,7 +227,8 @@ unset REBUILD_STUFF_DIR
                                 build_target.level,
                                 build_target.arch,
                                 build_target.distro,
-                                build_target.distro_version,
+                                build_target.distro_version_major,
+                                build_target.distro_version_minor,
                                 pkg_desc.requirements,
                                 properties,
                                 pkg_files)

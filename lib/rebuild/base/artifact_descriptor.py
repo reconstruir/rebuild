@@ -8,12 +8,12 @@ from .build_arch import build_arch
 from .build_target import build_target
 from .build_version import build_version
 
-class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revision, epoch, system, level, arch, distro, distro_version')):
+class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revision, epoch, system, level, arch, distro, distro_version_major, distro_version_minor')):
 
-  WHERE_EXPRESSION = 'name=? and version=? and revision=? and epoch=? and system=? and level=? and arch=? and distro=? and distro_version=?'
+  WHERE_EXPRESSION = 'name=? and version=? and revision=? and epoch=? and system=? and level=? and arch=? and distro=? and distro_version_major=? and distro_version_minor=?'
   
   def __new__(clazz, name, version, revision, epoch, system, level,
-              arch, distro, distro_version):
+              arch, distro, distro_version_major, distro_version_minor):
     check.check_string(name)
     check.check_string(version)
     revision = int(revision)
@@ -25,14 +25,17 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
     arch = build_arch.check_arch(arch, system, distro)
     check.check_tuple(arch)
     check.check_string(distro)
-    check.check_string(distro_version)
+    check.check_string(distro_version_major)
+    check.check_string(distro_version_minor, allow_none = True)
+    distro_version_minor = build_target.resolve_distro_version_minor(distro_version_minor)
     return clazz.__bases__[0].__new__(clazz, name, version, revision, epoch,
-                                      system, level, arch, distro, distro_version)
+                                      system, level, arch, distro,
+                                      distro_version_major, distro_version_minor)
 
   def __str__(self):
     arch_str = ','.join(self.arch)
-    return '%s;%s;%s;%s;%s;%s;%s;%s;%s' % (self.name, self.version, self.revision, self.epoch, self.system, self.level,
-                                           arch_str, self.distro, self.distro_version)
+    return '%s;%s;%s;%s;%s;%s;%s;%s;%s;%s' % (self.name, self.version, self.revision, self.epoch, self.system, self.level,
+                                              arch_str, self.distro, self.distro_version_major, self.distro_version_minor or '')
 
   def __hash__(self):
     return hash(str(self))
@@ -47,7 +50,7 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
   
   @cached_property
   def build_target(self):
-    return build_target(self.system, self.distro, self.distro_version, self.arch, self.level)
+    return build_target(self.system, self.distro, self.distro_version_major, self.distro_version_minor, self.arch, self.level)
 
   def to_sql_tuple(self):
     return (
@@ -59,7 +62,8 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
       self.level,
       self._sql_encode_string_list(self.arch),
       self.distro,
-      self.distro_version,
+      self.distro_version_major,
+      self.distro_version_minor,
     )
 
   @classmethod
@@ -82,16 +86,16 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
   @classmethod
   def parse(clazz, s):
     parts = s.split(';')
-    if len(parts) != 9:
+    if len(parts) != len(clazz._fields):
       raise ValueError('Invalid artifact descriptor: %s' % (s))
-    return clazz(*parts)
+    return artifact_descriptor(*parts)
 
   @classmethod
   def compare(clazz, a1, a2):
     check.check_artifact_descriptor(a1)
     check.check_artifact_descriptor(a2)
-    t1 = ( a1.name, a1.system, a1.level, a1.arch, a1.distro, a1.distro_version )
-    t2 = ( a2.name, a2.system, a2.level, a2.arch, a2.distro, a2.distro_version )
+    t1 = ( a1.name, a1.system, a1.level, a1.arch, a1.distro, a1.distro_version_major, a1.distro_version_minor )
+    t2 = ( a2.name, a2.system, a2.level, a2.arch, a2.distro, a2.distro_version_major, a2.distro_version_minor )
     result = cmp(t1, t2)
     if result != 0:
       return result

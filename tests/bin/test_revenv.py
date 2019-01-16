@@ -206,7 +206,8 @@ projects
       'test',
       '--system', 'linux',
       '--distro', 'ubuntu',
-      '--distro-version', '18',
+      '--distro-version-major', '18',
+      '--distro-version-minor', 'none',
       '--level', 'release',
     ]
     env = os_env.make_clean_env(keep_keys = [ 'PYTHONPATH' ],
@@ -285,10 +286,10 @@ projects
 
   def test_packages_update_upgrade(self):
     recipes1 = '''
-fake_package aflatoxin 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package aflatoxin 1.0.0 0 0 linux release x86_64 ubuntu 18 none
 '''
     recipes2 = '''
-fake_package aflatoxin 1.0.1 0 0 linux release x86_64 ubuntu 18
+fake_package aflatoxin 1.0.1 0 0 linux release x86_64 ubuntu 18 none
 '''
     config = '''{head}
 projects
@@ -317,13 +318,13 @@ projects
 
   def test_packages_update_specific_version(self):
     recipes1 = '''
-fake_package aflatoxin 1.0.1 0 0 linux release x86_64 ubuntu 18
-fake_package aflatoxin 1.0.11 0 0 linux release x86_64 ubuntu 18
-fake_package aflatoxin 1.0.11 1 0 linux release x86_64 ubuntu 18
-fake_package aflatoxin 1.0.2 0 0 linux release x86_64 ubuntu 18
-fake_package aflatoxin 1.0.0 0 0 linux release x86_64 ubuntu 18
-fake_package aflatoxin 1.0.9 0 0 linux release x86_64 ubuntu 18
-fake_package aflatoxin 1.0.11 2 0 linux release x86_64 ubuntu 18
+fake_package aflatoxin 1.0.1 0 0 linux release x86_64 ubuntu 18 none
+fake_package aflatoxin 1.0.11 0 0 linux release x86_64 ubuntu 18 none
+fake_package aflatoxin 1.0.11 1 0 linux release x86_64 ubuntu 18 none
+fake_package aflatoxin 1.0.2 0 0 linux release x86_64 ubuntu 18 none
+fake_package aflatoxin 1.0.0 0 0 linux release x86_64 ubuntu 18 none
+fake_package aflatoxin 1.0.9 0 0 linux release x86_64 ubuntu 18 none
+fake_package aflatoxin 1.0.11 2 0 linux release x86_64 ubuntu 18 none
 '''
     config = '''{head}
 projects
@@ -356,7 +357,7 @@ projects
   @classmethod
   def _make_test_artifact_manager(clazz, recipes = None):
     recipes = recipes or RECIPES.FOODS
-    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
+    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version_major': '18', 'distro_version_minor': None }
     return FPUT.make_artifact_manager(debug = clazz.DEBUG,
                                       recipes = recipes,
                                       mutations = mutations)
@@ -364,10 +365,14 @@ projects
   _setup = namedtuple('_setup', 'tmp_dir, config_filename, artifact_manager')
   @classmethod
   def _setup_test(clazz, config, recipes = None):
+    print('FUCK2')
     tmp_dir = clazz._make_temp_dir()
     am = clazz._make_test_artifact_manager(recipes = recipes)
+    for x in am.list_all_by_descriptor(None):
+      print('FUCK3: %s' % (str(x)))
     config_filename = path.join(tmp_dir, 'config.revenv')
     clazz._write_config_file(config_filename, config, am)
+    print('FUCK4')
     return clazz._setup(tmp_dir, config_filename, am)
     
   @classmethod
@@ -393,7 +398,8 @@ projects
       '--config', 'config.revenv',
       '--system', 'linux',
       '--distro', 'ubuntu',
-      '--distro-version', '18',
+      '--distro-version-major', '18',
+      '--distro-version-minor', 'none',
       '--level', 'release',
       'unit_test_storage',
     ] + list(args)

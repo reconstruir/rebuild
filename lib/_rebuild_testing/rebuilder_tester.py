@@ -13,7 +13,7 @@ class rebuilder_tester(object):
   class config(namedtuple('config', 'read_contents, read_checksums, build_target, no_network')):
 
     def __new__(clazz, read_contents = False, read_checksums = False, bt = None, no_network = True):
-      bt = bt or build_target.make_host_build_target(level = build_level.RELEASE)
+      bt = bt or build_target.make_host_build_target(level = build_level.RELEASE, version_minor = 'none')
       return clazz.__bases__[0].__new__(clazz, read_contents, read_checksums, bt, no_network)
   
   result = namedtuple('result', 'tmp_dir, command, result, artifacts_dir, artifacts, artifacts_members, artifacts_contents, droppings, checksums, checksums_contents, source_dir_droppings')
@@ -59,6 +59,7 @@ class rebuilder_tester(object):
     artifacts_dir = path.join(tmp_dir, 'artifacts', config.build_target.build_path)
     checksums_dir = path.join(tmp_dir, 'checksums', config.build_target.build_path)
     result = self.run_script(command, cwd = self._working_dir)
+    print('FUCK: artifacts_dir=%s' % (artifacts_dir))
     artifacts = self._find_in_dir(artifacts_dir)
     checksums = self._find_in_dir(checksums_dir, patterns = [ '*.checksums' ])
     droppings = self._find_in_dir(tmp_dir)
@@ -110,8 +111,8 @@ class rebuilder_tester(object):
     result = file_checksum_list()
     for checksum in checksums:
 
-      long_form = '%s-%s-%s' % (config.build_target.system, config.build_target.distro, config.build_target.distro_version)
-      short_form = '%s-%s' % (config.build_target.system, config.build_target.distro_version)
+      long_form = '%s-%s-%s' % (config.build_target.system, config.build_target.distro, config.build_target.distro_version_major)
+      short_form = '%s-%s' % (config.build_target.system, config.build_target.distro_version_major)
 
       replacements = {
         tmp_dir + path.sep: '',

@@ -21,7 +21,7 @@ class test_fake_package_recipe(unit_test):
   #DEBUG = True
 
   def test___str__(self):
-    r = R(AD('foo', '1.2.3', 0, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18'),
+    r = R(AD('foo', '1.2.3', 0, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18', None),
           [
             temp_item('bin/foo.sh', '#!/bin/bash\necho foo\nexit 0\n', 0o755),
             temp_item('bin/bar.sh', '#!/bin/bash\necho bar\nexit 1\n', 0o755),
@@ -44,7 +44,8 @@ class test_fake_package_recipe(unit_test):
     level release
     arch ('x86_64',)
     distro ubuntu
-    distro_version 18
+    distro_version_major 18
+    distro_version_minor 
 
 
   requirements
@@ -58,7 +59,7 @@ class test_fake_package_recipe(unit_test):
 
   def test_create_package(self):
     recipe = '''
-fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18
+fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/cut.sh
       \#!/bin/sh

@@ -18,20 +18,21 @@ class artifact_db(object):
 
   SCHEMA_ARTIFACTS = '''
 create table artifacts(
-  id                  integer primary key not null,
-  name                text not null, 
-  filename            text not null, 
-  contents_checksum   text not null, 
-  version             text not null, 
-  revision            integer not null, 
-  epoch               integer not null, 
-  system              text not null, 
-  level               text not null, 
-  arch                text not null, 
-  distro              text, 
-  distro_version      text, 
-  requirements        text,
-  properties          text
+  id                   integer primary key not null,
+  name                 text not null, 
+  filename             text not null, 
+  contents_checksum    text not null, 
+  version              text not null, 
+  revision             integer not null, 
+  epoch                integer not null, 
+  system               text not null, 
+  level                text not null, 
+  arch                 text not null, 
+  distro               text, 
+  distro_version_major text, 
+  distro_version_minor text, 
+  requirements         text,
+  properties           text
 );
 '''
 
@@ -103,7 +104,8 @@ create table artifacts(
       'level': sql_encoding.encode_string(md.level),
       'arch': sql_encoding.encode_string_list(md.arch),
       'distro': sql_encoding.encode_string(md.distro),
-      'distro_version': sql_encoding.encode_string(md.distro_version),
+      'distro_version_major': sql_encoding.encode_string(md.distro_version_major),
+      'distro_version_minor': sql_encoding.encode_string(md.distro_version_minor),
       'requirements': sql_encoding.encode_requirements(md.requirements),
       'properties': sql_encoding.encode_dict(md.properties),
       'contents_checksum': sql_encoding.encode_string(md.manifest.contents_checksum),
@@ -133,17 +135,17 @@ create table artifacts(
 
   @classmethod
   def _build_target_to_sql_tuple(clazz, bt):
-    return ( bt.system, bt.distro, bt.distro_version, sql_encoding.encode_string_list(bt.arch, quoted = False), bt.level )
+    return ( bt.system, bt.distro, bt.distro_version_major, bt.distro_version_minor or '', sql_encoding.encode_string_list(bt.arch, quoted = False), bt.level )
   
   def list_all_by_descriptor(self, build_target = None):
     if build_target:
       sql = '''\
-select name, version, revision, epoch, system, level, arch, distro, distro_version from artifacts \
-where system=? and distro=? and distro_version=? and arch=? and level=? \
-order by name asc, version asc, revision asc, epoch asc, system asc, level asc, arch asc, distro, distro_version asc'''
+select name, version, revision, epoch, system, level, arch, distro, distro_version_major, distro_version_minor from artifacts \
+where system=? and distro=? and distro_version_major=? and distro_version_minor=? and arch=? and level=? \
+order by name asc, version asc, revision asc, epoch asc, system asc, level asc, arch asc, distro, distro_version_major, distro_version_minor asc'''
       data = self._build_target_to_sql_tuple(build_target)
     else:
-      sql = '''select name, version, revision, epoch, system, level, arch, distro, distro_version from artifacts order by name asc, version asc, revision asc, epoch asc, system asc, level asc, arch asc, distro, distro_version asc'''
+      sql = '''select name, version, revision, epoch, system, level, arch, distro, distro_version_major, distro_version_minor from artifacts order by name asc, version asc, revision asc, epoch asc, system asc, level asc, arch asc, distro, distro_version_major, distro_version_minor asc'''
       data = ()
     rows = self._db.select_namedtuples(sql, data)
     values = [ self._load_row_to_artifact_descriptor(row) for row in rows ]
@@ -153,11 +155,11 @@ order by name asc, version asc, revision asc, epoch asc, system asc, level asc, 
   def list_all_by_metadata(self, build_target = None):
     if build_target:
       sql = '''\
-select * from artifacts where system=? and distro=? and distro_version=? and arch=? and level=? \
-order by name asc, version asc, revision asc, epoch asc, system asc, level asc, arch asc, distro, distro_version asc'''
+select * from artifacts where system=? and distro=? and distro_version_major=? and distro_version_minor=? and arch=? and level=? \
+order by name asc, version asc, revision asc, epoch asc, system asc, level asc, arch asc, distro, distro_version_major, distro_version_minor asc'''
       data = self._build_target_to_sql_tuple(build_target)
     else:
-      sql = '''select * from artifacts order by name asc, version asc, revision asc, epoch asc, system asc, level asc, arch asc, distro, distro_version asc'''
+      sql = '''select * from artifacts order by name asc, version asc, revision asc, epoch asc, system asc, level asc, arch asc, distro, distro_version_major, distro_version_minor asc'''
       data = ()
     rows = self._db.select_namedtuples(sql, data)
     if not rows:
@@ -169,7 +171,7 @@ order by name asc, version asc, revision asc, epoch asc, system asc, level asc, 
   def list_all_by_package_descriptor(self, build_target = None):
     if build_target:
       sql = '''select name, version, revision, epoch, properties, requirements from artifacts \
-where system=? and distro=? and distro_version=? and arch=? and level=? \
+where system=? and distro=? and distro_version_major=? and distro_version_minor=? and arch=? and level=? \
 order by name asc, version asc, revision asc, epoch asc'''
       data = self._build_target_to_sql_tuple(build_target)
     else:
@@ -193,7 +195,8 @@ order by name asc, version asc, revision asc, epoch asc'''
                                row.level,
                                tuple(json.loads(row.arch)),
                                row.distro,
-                               row.distro_version)
+                               row.distro_version_major,
+                               row.distro_version_minor)
   
   def _load_artifact(self, adesc):
     sql = 'select * from artifacts where {}'.format(adesc.WHERE_EXPRESSION)
@@ -221,7 +224,8 @@ order by name asc, version asc, revision asc, epoch asc'''
                            row.level,
                            tuple(json.loads(row.arch)),
                            row.distro,
-                           row.distro_version,
+                           row.distro_version_major,
+                           row.distro_version_minor,
                            sql_encoding.decode_requirements(row.requirements),
                            json.loads(row.properties),
                            files)

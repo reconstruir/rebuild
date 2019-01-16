@@ -40,7 +40,9 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
     metadata = root.add_child('metadata')
     for field in self.metadata._fields:
       value = getattr(self.metadata, field)
-      metadata.add_child('{field} {value}'.format(field = field, value = getattr(self.metadata, field)))
+      if value is None:
+        value = ''
+      metadata.add_child('{field} {value}'.format(field = field, value = value))
     if self.files:
       self._temp_item_seq_to_node('files', self.files)
       root.add_child('')

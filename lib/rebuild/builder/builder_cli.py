@@ -95,6 +95,9 @@ class builder_cli(build_target_cli):
 
   def _real_main(self, args):
     bt = self.build_target_resolve(args)
+    f = open('/tmp/fuck.log', 'wa')
+    f.write('FUCK: bt=%s\n' % (str(bt)))
+    f.flush()
     args.verbose = bool(args.verbose)
 
     build_blurb.set_process_name('rebuild')

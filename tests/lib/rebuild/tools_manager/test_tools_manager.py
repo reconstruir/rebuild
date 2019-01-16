@@ -28,7 +28,7 @@ class test_tools_manager(unit_test):
 
   def _make_test_tm(self):
     amt = AMT(recipes = RECIPES.KNIFE, debug = self.DEBUG)
-    amt.publish('knife;6.6.6;0;0;linux;release;x86_64;ubuntu;18')
+    amt.publish('knife;6.6.6;0;0;linux;release;x86_64;ubuntu;18;')
     root_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     tools_dir = path.join(root_dir, 'tools')
     if self.DEBUG:
@@ -155,7 +155,7 @@ class test_tools_manager(unit_test):
       ], file_find.find(tm.root_dir) )
     
   RECIPES = '''
-fake_package wood 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package wood 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/wood.py
       \#!/usr/bin/env python
@@ -166,7 +166,7 @@ fake_package wood 1.0.0 0 0 linux release x86_64 ubuntu 18
     wood_env.sh
       export WOOD_ENV1=wood_env1
 
-fake_package iron 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package iron 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/iron.py
       \#!/usr/bin/env python
@@ -177,7 +177,7 @@ fake_package iron 1.0.0 0 0 linux release x86_64 ubuntu 18
     iron_env.sh
       export IRON_ENV1=iron_env1
 
-fake_package carbon 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package carbon 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/carbon.py
       \#!/usr/bin/env python
@@ -188,7 +188,7 @@ fake_package carbon 1.0.0 0 0 linux release x86_64 ubuntu 18
     carbon_env.sh
       export CARBON_ENV1=carbon_env1
 
-fake_package steel 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package steel 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/steel_exe.py
       \#!/usr/bin/env python
@@ -213,7 +213,7 @@ fake_package steel 1.0.0 0 0 linux release x86_64 ubuntu 18
     all: RUN iron >= 1.0.0
     all: RUN carbon >= 1.0.0
 
-fake_package cuchillo 1.0.0 0 0 linux release x86_64 ubuntu 18
+fake_package cuchillo 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/cuchillo.py
       \#!/usr/bin/env python
@@ -231,11 +231,11 @@ fake_package cuchillo 1.0.0 0 0 linux release x86_64 ubuntu 18
 '''
 
   DESCRIPTORS = [
-    'carbon;1.0.0;0;0;linux;release;x86_64;ubuntu;18',
-    'cuchillo;1.0.0;0;0;linux;release;x86_64;ubuntu;18',
-    'iron;1.0.0;0;0;linux;release;x86_64;ubuntu;18',
-    'steel;1.0.0;0;0;linux;release;x86_64;ubuntu;18',
-    'wood;1.0.0;0;0;linux;release;x86_64;ubuntu;18',
+    'carbon;1.0.0;0;0;linux;release;x86_64;ubuntu;18;',
+    'cuchillo;1.0.0;0;0;linux;release;x86_64;ubuntu;18;',
+    'iron;1.0.0;0;0;linux;release;x86_64;ubuntu;18;',
+    'steel;1.0.0;0;0;linux;release;x86_64;ubuntu;18;',
+    'wood;1.0.0;0;0;linux;release;x86_64;ubuntu;18;',
   ]
   
 if __name__ == '__main__':

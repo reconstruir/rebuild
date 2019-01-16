@@ -8,10 +8,10 @@ from bes.common import string_util
 
 class test_package_descriptor(unit_test):
 
-  BT_LINUX_RELEASE = build_target('linux', '', '', ( 'x86_64' ), 'release')
-  BT_MACOS_RELEASE = build_target('macos', '', '', ( 'x86_64' ), 'release')
-  BT_LINUX_DEBUG = build_target('linux', '', '', ( 'x86_64' ), 'debug')
-  BT_MACOS_DEBUG = build_target('macos', '', '', ( 'x86_64' ), 'debug')
+  BT_LINUX_RELEASE = build_target('linux', '', '', None, ( 'x86_64' ), 'release')
+  BT_MACOS_RELEASE = build_target('macos', '', '', None, ( 'x86_64' ), 'release')
+  BT_LINUX_DEBUG = build_target('linux', '', '', None, ( 'x86_64' ), 'debug')
+  BT_MACOS_DEBUG = build_target('macos', '', '', None, ( 'x86_64' ), 'debug')
   
   def test_init(self):
     self.assertEqual( 'foo-1.2.3-1', PD('foo', '1.2.3-1', []).full_name )

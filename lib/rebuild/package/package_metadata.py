@@ -7,12 +7,12 @@ from rebuild.base import artifact_descriptor,  build_arch, build_target, build_v
 
 from .package_manifest import package_manifest
 
-class package_metadata(namedtuple('package_metadata', 'format_version, filename, name, version, revision, epoch, system, level, arch, distro, distro_version, requirements, properties, manifest')):
+class package_metadata(namedtuple('package_metadata', 'format_version, filename, name, version, revision, epoch, system, level, arch, distro, distro_version_major, distro_version_minor, requirements, properties, manifest')):
 
   FORMAT_VERSION = 2
   
   def __new__(clazz, format_version, filename, name, version, revision, epoch, system,
-              level, arch, distro, distro_version, requirements,
+              level, arch, distro, distro_version_major, distro_version_minor, requirements,
               properties, manifest):
     assert format_version == clazz.FORMAT_VERSION
     check.check_string(filename)
@@ -27,7 +27,8 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
     arch = build_arch.check_arch(arch, system, distro)
     check.check_tuple(arch)
     check.check_string(distro)
-    check.check_string(distro_version)
+    check.check_string(distro_version_major)
+    check.check_string(distro_version_minor, allow_none = True)
     if check.is_string(requirements):
       requirements = requirement_list.parse(requirements)
     requirements = requirements or requirement_list()
@@ -37,8 +38,8 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
     check.check_package_manifest(manifest)
     return clazz.__bases__[0].__new__(clazz, format_version, filename, name, version,
                                       revision, epoch, system, level, arch,
-                                      distro, distro_version, requirements,
-                                      properties, manifest)
+                                      distro, distro_version_major, distro_version_minor,
+                                      requirements, properties, manifest)
 
   def __hash__(self):
     return hash(str(self))
@@ -55,11 +56,11 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
   def artifact_descriptor(self):
     return artifact_descriptor(self.name, self.version, self.revision, self.epoch,
                                self.system, self.level, self.arch, self.distro,
-                               self.distro_version)
+                               self.distro_version_major, self.distro_version_minor)
 
   @cached_property
   def build_target(self):
-    return build_target(self.system, self.distro, self.distro_version, self.arch, self.level)
+    return build_target(self.system, self.distro, self.distro_version_major, self.distro_version_minor, self.arch, self.level)
     
   def to_json(self):
     return json_util.to_json(self.to_simple_dict(), indent = 2, sort_keys = True)
@@ -85,7 +86,8 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
                  o['level'],
                  tuple(o['arch']),
                  o['distro'],
-                 o['distro_version'],
+                 o['distro_version_major'],
+                 o['distro_version_minor'],
                  requirement_list.from_string_list(o['requirements']),
                  o['properties'],
                  package_manifest.parse_dict(o['manifest']))
@@ -103,7 +105,8 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
       'level': self.level,
       'arch': self.arch,
       'distro': self.distro,
-      'distro_version': self.distro_version,
+      'distro_version_major': self.distro_version_major,
+      'distro_version_minor': self.distro_version_minor,
       'requirements': self.requirements.to_string_list(),
       'properties': self.properties,
       'manifest': self.manifest.to_simple_dict(),
@@ -128,8 +131,8 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
   def compare(clazz, p1, p2):
     check.check_package_metadata(p1)
     check.check_package_metadata(p2)
-    t1 = ( p1.format_version, p1.filename, p1.name, p1.system, p1.level, p1.arch, p1.distro, p1.distro_version, p1.requirements, p1.properties, p1.manifest )
-    t2 = ( p2.format_version, p2.filename, p2.name, p2.system, p2.level, p2.arch, p2.distro, p2.distro_version, p2.requirements, p2.properties, p2.manifest )
+    t1 = ( p1.format_version, p1.filename, p1.name, p1.system, p1.level, p1.arch, p1.distro, p1.distro_version_major, p1.distro_version_minor, p1.requirements, p1.properties, p1.manifest )
+    t2 = ( p2.format_version, p2.filename, p2.name, p2.system, p2.level, p2.arch, p2.distro, p2.distro_version_major, p2.distro_version_minor, p2.requirements, p2.properties, p2.manifest )
     result = cmp(t1, t2)
     if result != 0:
       return result

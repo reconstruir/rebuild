@@ -159,10 +159,10 @@ projects
     
   def test_packages_update_upgrade(self):
     recipes1 = '''
-fake_package aflatoxin 1.0.9 0 0 linux release x86_64 ubuntu 18
+fake_package aflatoxin 1.0.9 0 0 linux release x86_64 ubuntu 18 none
 '''
     recipes2 = '''
-fake_package aflatoxin 1.0.10 0 0 linux release x86_64 ubuntu 18
+fake_package aflatoxin 1.0.10 0 0 linux release x86_64 ubuntu 18 none
 '''
     config = '''{head}
 projects
@@ -186,10 +186,10 @@ projects
     
   def test_packages_update_downgrade(self):
     recipes1 = '''
-fake_package aflatoxin 1.0.10 0 0 linux release x86_64 ubuntu 18
+fake_package aflatoxin 1.0.10 0 0 linux release x86_64 ubuntu 18 none
 '''
     recipes2 = '''
-fake_package aflatoxin 1.0.9 0 0 linux release x86_64 ubuntu 18
+fake_package aflatoxin 1.0.9 0 0 linux release x86_64 ubuntu 18 none
 '''
     config = '''{head}
 projects
@@ -217,9 +217,9 @@ projects
     
   def test_packages_update_specific_version(self):
     recipes1 = '''
-fake_package aflatoxin 1.0.0 0 0 linux release x86_64 ubuntu 18
-fake_package aflatoxin 1.0.1 0 0 linux release x86_64 ubuntu 18
-fake_package aflatoxin 1.0.2 0 0 linux release x86_64 ubuntu 18
+fake_package aflatoxin 1.0.0 0 0 linux release x86_64 ubuntu 18 none
+fake_package aflatoxin 1.0.1 0 0 linux release x86_64 ubuntu 18 none
+fake_package aflatoxin 1.0.2 0 0 linux release x86_64 ubuntu 18 none
 '''
     config = '''{head}
 projects

@@ -44,7 +44,7 @@ class package_manager(object):
 
   def __init__(self, root_dir, artifact_manager, log_tag = 'package_manager'):
     log.add_logging(self, log_tag)
-    build_blurb.add_blurb(self, label = 'retool')
+    build_blurb.add_blurb(self, label = 'package_manager')
     if artifact_manager:
       check.check_artifact_manager(artifact_manager)
     self._root_dir = root_dir

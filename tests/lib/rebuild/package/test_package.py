@@ -10,7 +10,7 @@ from _rebuild_testing.fake_package_unit_test import fake_package_unit_test
 class test_package(unit_test):
 
   _WATER = '''
-fake_package water 1.0.0 0 0 macos release x86_64 none 10.15
+fake_package water 1.0.0 0 0 macos release x86_64 none 10 15
   files
     bin/water_script.sh
       #!/bin/bash
@@ -24,7 +24,7 @@ fake_package water 1.0.0 0 0 macos release x86_64 none 10.15
 '''
 
   _ORANGE = '''
-fake_package orange 6.5.4 3 0 linux release x86_64 ubuntu 18
+fake_package orange 6.5.4 3 0 linux release x86_64 ubuntu 18 none
   files
     bin/orange_script.sh
       #!/bin/bash

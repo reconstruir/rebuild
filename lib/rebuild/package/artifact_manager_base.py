@@ -82,7 +82,8 @@ class artifact_manager_base(with_metaclass(artifact_manager_register_meta, objec
     adesc = artifact_descriptor(pdesc.name, pdesc.version.upstream_version,
                                 pdesc.version.revision, pdesc.version.epoch,
                                 build_target.system, build_target.level, build_target.arch,
-                                build_target.distro, build_target.distro_version)
+                                build_target.distro, build_target.distro_version_major,
+                                build_target.distro_version_minor)
     return self.find_by_artifact_descriptor(adesc, relative_filename)
  
   def has_package_by_descriptor(self, pdesc, build_target):
@@ -95,6 +96,7 @@ class artifact_manager_base(with_metaclass(artifact_manager_register_meta, objec
  
   def packages_dict(self, build_target):
     all_packages = self.list_all_by_package_descriptor(build_target)
+    print('FUCK: build_target=%s; all_packages=%s' % (str(build_target), all_packages))
     result = {}
     for pd in all_packages:
       if pd.name not in result:

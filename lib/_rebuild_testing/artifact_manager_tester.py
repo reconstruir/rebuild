@@ -26,12 +26,15 @@ class artifact_manager_tester(object):
     filename = filename or '<unknown>'
     check.check_string(filename)
     check.check_string(recipes)
+    result = {}
     for recipe in fake_package_recipe_parser(filename, recipes).parse():
       key = str(recipe.metadata)
       if key in self._recipes:
         raise RuntimeError('Already in recipes: %s' % (key))
       self._recipes[key] = recipe
-
+      result[key] = recipe
+    return result
+      
   def clear_recipes(self):
     self._recipes = {}
 
@@ -47,10 +50,12 @@ class artifact_manager_tester(object):
     return recipe.create_package(tmp_file, debug = self._debug)
 
   def publish(self, adescs, mutations = {}):
-    #adescs = object_util.listify(adescs)
     adescs = self._parse_adesc_list(adescs)
+    print('adescs: %s' % (adescs))
+    result = []
     for adesc in adescs:
-      self._publish_one(adesc, mutations)
+      result.append(self._publish_one(adesc, mutations))
+    return result
 
   def retire(self, adescs):
     adescs = self._parse_adesc_list(adescs)
@@ -65,7 +70,8 @@ class artifact_manager_tester(object):
     adesc = self._parse_adesc(adesc)
     pkg = self.create_package(adesc, mutations = mutations)
     self.am.publish(pkg.filename, False, pkg.metadata)
-
+    return pkg
+  
   def _retire_one(self, adesc):
     adesc = self._parse_adesc(adesc)
     self.am.remove_artifact(adesc)

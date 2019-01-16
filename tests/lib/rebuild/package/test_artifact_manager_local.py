@@ -15,8 +15,8 @@ class test_artifact_manager_local(unit_test):
   DEBUG = unit_test.DEBUG
   #DEBUG = True
 
-  LINUX_BT = BT('linux', 'ubuntu', '18', 'x86_64', 'release')
-  MACOS_BT = BT('macos', '', '10.14', 'x86_64', 'release')
+  LINUX_BT = BT('linux', 'ubuntu', '18', '', 'x86_64', 'release')
+  MACOS_BT = BT('macos', '', '10', '14', 'x86_64', 'release')
 
   def __init__(self, *args, **kargs):
     super(test_artifact_manager_local, self).__init__(*args, **kargs)
@@ -24,34 +24,34 @@ class test_artifact_manager_local(unit_test):
   
   def test_publish(self):
     t = AMT(recipes = RECIPES.APPLE)
-    adesc = 'apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'
+    adesc = 'apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18;'
     tmp_tarball = t.create_package(adesc)
     filename = t.am.publish(tmp_tarball.filename, False, tmp_tarball.metadata)
     self.assertTrue( path.exists(filename) )
     expected = [
-      AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18;'),
     ]
     self.assertEqual( expected, t.am.list_all_by_descriptor(None) )
 
   def test_publish_new_version(self):
     t = AMT(recipes = RECIPES.TWO_APPLES)
-    tmp_tarball1 = t.create_package('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18')
+    tmp_tarball1 = t.create_package('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18;')
     t.am.publish(tmp_tarball1.filename, False, tmp_tarball1.metadata)
     self.assertEqual( [
-      AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18;'),
     ], t.am.list_all_by_descriptor(None) )
 
-    tmp_tarball2 = t.create_package('apple;1.2.4;1;0;linux;release;x86_64;ubuntu;18')
+    tmp_tarball2 = t.create_package('apple;1.2.4;1;0;linux;release;x86_64;ubuntu;18;')
     t.am.publish(tmp_tarball2.filename, False, tmp_tarball2.metadata)
     self.assertEqual( [
-      AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'),
-      AD.parse('apple;1.2.4;1;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18;'),
+      AD.parse('apple;1.2.4;1;0;linux;release;x86_64;ubuntu;18;'),
     ], t.am.list_all_by_descriptor(None) )
     
   def test_artifact_path(self):
     t = AMT(recipes = RECIPES.APPLE)
     self.assertEqual( [], t.am.list_all_by_descriptor(None) )
-    t.publish('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18')
+    t.publish('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18;')
     self.assertEqual( 'linux-ubuntu-18/x86_64/release/apple-1.2.3-1.tar.gz',
                       t.am.artifact_path(PD('apple', '1.2.3-1'), self.LINUX_BT, True) )
     
@@ -61,7 +61,7 @@ class test_artifact_manager_local(unit_test):
     filename = am.publish(tmp_tarball.filename, False, tmp_tarball.metadata)
     self.assertTrue( path.exists(filename) )
     expected = [
-      AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18;'),
     ]
     self.assertEqual( expected, am.list_all_by_descriptor(None) )
     filename = am.publish(tmp_tarball.filename, True, tmp_tarball.metadata)
@@ -73,14 +73,14 @@ class test_artifact_manager_local(unit_test):
     filename = am.publish(tmp_tarball.filename, False, tmp_tarball.metadata)
     self.assertTrue( path.exists(filename) )
     expected = [
-      AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18;'),
     ]
     self.assertEqual( expected, am.list_all_by_descriptor(None) )
     with self.assertRaises(AlreadyInstalledError) as context:
       am.publish(tmp_tarball.filename, False, tmp_tarball.metadata)
     
   def test_find_by_package_descriptor_linux(self):
-    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
+    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version_major': '18' }
     am = FPUT.make_artifact_manager(self.DEBUG, RECIPES.FOODS, mutations)
     self.assertEqual( 'water-1.0.0', am.find_by_package_descriptor(PD('water', '1.0.0'), self.LINUX_BT, False).package_descriptor.full_name )
     self.assertEqual( 'water-1.0.0-1', am.find_by_package_descriptor(PD('water', '1.0.0-1'), self.LINUX_BT, False).package_descriptor.full_name )
@@ -92,7 +92,7 @@ class test_artifact_manager_local(unit_test):
     self.assertEqual( 'pear_juice-6.6.6', am.find_by_package_descriptor(PD('pear_juice', '6.6.6'), self.LINUX_BT, False).package_descriptor.full_name )
 
   def test_find_by_package_descriptor_macos(self):
-    mutations = { 'system': 'macos', 'distro': '', 'distro_version': '10.14' }
+    mutations = { 'system': 'macos', 'distro': '', 'distro_version_major': '10', 'distro_version_minor': '14' }
     am = FPUT.make_artifact_manager(self.DEBUG, RECIPES.FOODS, mutations)
     self.assertEqual( 'water-1.0.0', am.find_by_package_descriptor(PD('water', '1.0.0'), self.MACOS_BT, False).package_descriptor.full_name )
     self.assertEqual( 'water-1.0.0-1', am.find_by_package_descriptor(PD('water', '1.0.0-1'), self.MACOS_BT, False).package_descriptor.full_name )
@@ -104,65 +104,65 @@ class test_artifact_manager_local(unit_test):
     self.assertEqual( 'pear_juice-6.6.6', am.find_by_package_descriptor(PD('pear_juice', '6.6.6'), self.MACOS_BT, False).package_descriptor.full_name )
 
   def test_list_latest_versions_linux(self):
-    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version': '18' }
+    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version_major': '18' }
     am = FPUT.make_artifact_manager(self.DEBUG, RECIPES.FOODS, mutations)
     expected = [
-      AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18'),
-      AD.parse('arsenic;1.2.10;0;0;linux;release;x86_64;ubuntu;18'),
-      AD.parse('citrus;1.0.0;2;0;linux;release;x86_64;ubuntu;18'),
-      AD.parse('fiber;1.0.0;0;0;linux;release;x86_64;ubuntu;18'),
-      AD.parse('fructose;3.4.5;6;0;linux;release;x86_64;ubuntu;18'),
-      AD.parse('fruit;1.0.0;0;0;linux;release;x86_64;ubuntu;18'),
-      AD.parse('knife;1.0.0;0;0;linux;release;x86_64;ubuntu;18'),
-      AD.parse('mercury;1.2.9;0;0;linux;release;x86_64;ubuntu;18'),
-      AD.parse('orange;6.5.4;3;0;linux;release;x86_64;ubuntu;18'),
-      AD.parse('orange_juice;1.4.5;0;0;linux;release;x86_64;ubuntu;18'),
-      AD.parse('pear;1.2.3;1;0;linux;release;x86_64;ubuntu;18'),
-      AD.parse('pear_juice;6.6.6;0;0;linux;release;x86_64;ubuntu;18'),
-      AD.parse('smoothie;1.0.0;0;0;linux;release;x86_64;ubuntu;18'),
-      AD.parse('water;1.0.0;2;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('apple;1.2.3;1;0;linux;release;x86_64;ubuntu;18;'),
+      AD.parse('arsenic;1.2.10;0;0;linux;release;x86_64;ubuntu;18;'),
+      AD.parse('citrus;1.0.0;2;0;linux;release;x86_64;ubuntu;18;'),
+      AD.parse('fiber;1.0.0;0;0;linux;release;x86_64;ubuntu;18;'),
+      AD.parse('fructose;3.4.5;6;0;linux;release;x86_64;ubuntu;18;'),
+      AD.parse('fruit;1.0.0;0;0;linux;release;x86_64;ubuntu;18;'),
+      AD.parse('knife;1.0.0;0;0;linux;release;x86_64;ubuntu;18;'),
+      AD.parse('mercury;1.2.9;0;0;linux;release;x86_64;ubuntu;18;'),
+      AD.parse('orange;6.5.4;3;0;linux;release;x86_64;ubuntu;18;'),
+      AD.parse('orange_juice;1.4.5;0;0;linux;release;x86_64;ubuntu;18;'),
+      AD.parse('pear;1.2.3;1;0;linux;release;x86_64;ubuntu;18;'),
+      AD.parse('pear_juice;6.6.6;0;0;linux;release;x86_64;ubuntu;18;'),
+      AD.parse('smoothie;1.0.0;0;0;linux;release;x86_64;ubuntu;18;'),
+      AD.parse('water;1.0.0;2;0;linux;release;x86_64;ubuntu;18;'),
     ]
     self.assertEqual( expected, am.list_latest_versions(self.LINUX_BT) )
 
   def test_list_latest_versions_macos(self):
-    mutations = { 'system': 'macos', 'distro': '', 'distro_version': '10.14' }
+    mutations = { 'system': 'macos', 'distro': '', 'distro_version_major': '10', 'distro_version_minor': '14' }
     am = FPUT.make_artifact_manager(self.DEBUG, RECIPES.FOODS, mutations)
     expected = [
-      AD.parse('apple;1.2.3;1;0;macos;release;x86_64;;10.14'),
-      AD.parse('arsenic;1.2.10;0;0;macos;release;x86_64;;10.14'),
-      AD.parse('citrus;1.0.0;2;0;macos;release;x86_64;;10.14'),
-      AD.parse('fiber;1.0.0;0;0;macos;release;x86_64;;10.14'),
-      AD.parse('fructose;3.4.5;6;0;macos;release;x86_64;;10.14'),
-      AD.parse('fruit;1.0.0;0;0;macos;release;x86_64;;10.14'),
-      AD.parse('knife;1.0.0;0;0;macos;release;x86_64;;10.14'),
-      AD.parse('mercury;1.2.9;0;0;macos;release;x86_64;;10.14'),
-      AD.parse('orange;6.5.4;3;0;macos;release;x86_64;;10.14'),
-      AD.parse('orange_juice;1.4.5;0;0;macos;release;x86_64;;10.14'),
-      AD.parse('pear;1.2.3;1;0;macos;release;x86_64;;10.14'),
-      AD.parse('pear_juice;6.6.6;0;0;macos;release;x86_64;;10.14'),
-      AD.parse('smoothie;1.0.0;0;0;macos;release;x86_64;;10.14'),
-      AD.parse('water;1.0.0;2;0;macos;release;x86_64;;10.14'),
+      AD.parse('apple;1.2.3;1;0;macos;release;x86_64;;10;14'),
+      AD.parse('arsenic;1.2.10;0;0;macos;release;x86_64;;10;14'),
+      AD.parse('citrus;1.0.0;2;0;macos;release;x86_64;;10;14'),
+      AD.parse('fiber;1.0.0;0;0;macos;release;x86_64;;10;14'),
+      AD.parse('fructose;3.4.5;6;0;macos;release;x86_64;;10;14'),
+      AD.parse('fruit;1.0.0;0;0;macos;release;x86_64;;10;14'),
+      AD.parse('knife;1.0.0;0;0;macos;release;x86_64;;10;14'),
+      AD.parse('mercury;1.2.9;0;0;macos;release;x86_64;;10;14'),
+      AD.parse('orange;6.5.4;3;0;macos;release;x86_64;;10;14'),
+      AD.parse('orange_juice;1.4.5;0;0;macos;release;x86_64;;10;14'),
+      AD.parse('pear;1.2.3;1;0;macos;release;x86_64;;10;14'),
+      AD.parse('pear_juice;6.6.6;0;0;macos;release;x86_64;;10;14'),
+      AD.parse('smoothie;1.0.0;0;0;macos;release;x86_64;;10;14'),
+      AD.parse('water;1.0.0;2;0;macos;release;x86_64;;10;14'),
     ]
     self.assertEqual( expected, am.list_latest_versions(self.MACOS_BT) )
 
   def test_remove_artifact(self):
-    mutations = { 'system': 'macos', 'distro': '', 'distro_version': '10.14' }
+    mutations = { 'system': 'macos', 'distro': '', 'distro_version_major': '10', 'distro_version_minor': '14' }
     am = FPUT.make_artifact_manager(self.DEBUG, RECIPES.FOODS, mutations)
     expected = ADL([
-      AD.parse('apple;1.2.3;1;0;macos;release;x86_64;;10.14'),
-      AD.parse('arsenic;1.2.10;0;0;macos;release;x86_64;;10.14'),
-      AD.parse('citrus;1.0.0;2;0;macos;release;x86_64;;10.14'),
-      AD.parse('fiber;1.0.0;0;0;macos;release;x86_64;;10.14'),
-      AD.parse('fructose;3.4.5;6;0;macos;release;x86_64;;10.14'),
-      AD.parse('fruit;1.0.0;0;0;macos;release;x86_64;;10.14'),
-      AD.parse('knife;1.0.0;0;0;macos;release;x86_64;;10.14'),
-      AD.parse('mercury;1.2.9;0;0;macos;release;x86_64;;10.14'),
-      AD.parse('orange;6.5.4;3;0;macos;release;x86_64;;10.14'),
-      AD.parse('orange_juice;1.4.5;0;0;macos;release;x86_64;;10.14'),
-      AD.parse('pear;1.2.3;1;0;macos;release;x86_64;;10.14'),
-      AD.parse('pear_juice;6.6.6;0;0;macos;release;x86_64;;10.14'),
-      AD.parse('smoothie;1.0.0;0;0;macos;release;x86_64;;10.14'),
-      AD.parse('water;1.0.0;2;0;macos;release;x86_64;;10.14'),
+      AD.parse('apple;1.2.3;1;0;macos;release;x86_64;;10;14'),
+      AD.parse('arsenic;1.2.10;0;0;macos;release;x86_64;;10;14'),
+      AD.parse('citrus;1.0.0;2;0;macos;release;x86_64;;10;14'),
+      AD.parse('fiber;1.0.0;0;0;macos;release;x86_64;;10;14'),
+      AD.parse('fructose;3.4.5;6;0;macos;release;x86_64;;10;14'),
+      AD.parse('fruit;1.0.0;0;0;macos;release;x86_64;;10;14'),
+      AD.parse('knife;1.0.0;0;0;macos;release;x86_64;;10;14'),
+      AD.parse('mercury;1.2.9;0;0;macos;release;x86_64;;10;14'),
+      AD.parse('orange;6.5.4;3;0;macos;release;x86_64;;10;14'),
+      AD.parse('orange_juice;1.4.5;0;0;macos;release;x86_64;;10;14'),
+      AD.parse('pear;1.2.3;1;0;macos;release;x86_64;;10;14'),
+      AD.parse('pear_juice;6.6.6;0;0;macos;release;x86_64;;10;14'),
+      AD.parse('smoothie;1.0.0;0;0;macos;release;x86_64;;10;14'),
+      AD.parse('water;1.0.0;2;0;macos;release;x86_64;;10;14'),
     ])
     actual = am.list_latest_versions(self.MACOS_BT)
     self.assertMultiLineEqual( expected.to_string(), actual.to_string() )
@@ -190,21 +190,21 @@ class test_artifact_manager_local(unit_test):
       'macos-10.14/x86_64/release/water-1.0.0-2.tar.gz',
       'macos-10.14/x86_64/release/water-1.0.0.tar.gz',
       ], file_find.find(am.root_dir) )
-    am.remove_artifact(AD.parse('apple;1.2.3;1;0;macos;release;x86_64;;10.14'))
-    am.remove_artifact(AD.parse('smoothie;1.0.0;0;0;macos;release;x86_64;;10.14'))
+    am.remove_artifact(AD.parse('apple;1.2.3;1;0;macos;release;x86_64;;10;14'))
+    am.remove_artifact(AD.parse('smoothie;1.0.0;0;0;macos;release;x86_64;;10;14'))
     expected = [
-      AD.parse('arsenic;1.2.10;0;0;macos;release;x86_64;;10.14'),
-      AD.parse('citrus;1.0.0;2;0;macos;release;x86_64;;10.14'),
-      AD.parse('fiber;1.0.0;0;0;macos;release;x86_64;;10.14'),
-      AD.parse('fructose;3.4.5;6;0;macos;release;x86_64;;10.14'),
-      AD.parse('fruit;1.0.0;0;0;macos;release;x86_64;;10.14'),
-      AD.parse('knife;1.0.0;0;0;macos;release;x86_64;;10.14'),
-      AD.parse('mercury;1.2.9;0;0;macos;release;x86_64;;10.14'),
-      AD.parse('orange;6.5.4;3;0;macos;release;x86_64;;10.14'),
-      AD.parse('orange_juice;1.4.5;0;0;macos;release;x86_64;;10.14'),
-      AD.parse('pear;1.2.3;1;0;macos;release;x86_64;;10.14'),
-      AD.parse('pear_juice;6.6.6;0;0;macos;release;x86_64;;10.14'),
-      AD.parse('water;1.0.0;2;0;macos;release;x86_64;;10.14'),
+      AD.parse('arsenic;1.2.10;0;0;macos;release;x86_64;;10;14'),
+      AD.parse('citrus;1.0.0;2;0;macos;release;x86_64;;10;14'),
+      AD.parse('fiber;1.0.0;0;0;macos;release;x86_64;;10;14'),
+      AD.parse('fructose;3.4.5;6;0;macos;release;x86_64;;10;14'),
+      AD.parse('fruit;1.0.0;0;0;macos;release;x86_64;;10;14'),
+      AD.parse('knife;1.0.0;0;0;macos;release;x86_64;;10;14'),
+      AD.parse('mercury;1.2.9;0;0;macos;release;x86_64;;10;14'),
+      AD.parse('orange;6.5.4;3;0;macos;release;x86_64;;10;14'),
+      AD.parse('orange_juice;1.4.5;0;0;macos;release;x86_64;;10;14'),
+      AD.parse('pear;1.2.3;1;0;macos;release;x86_64;;10;14'),
+      AD.parse('pear_juice;6.6.6;0;0;macos;release;x86_64;;10;14'),
+      AD.parse('water;1.0.0;2;0;macos;release;x86_64;;10;14'),
     ]
     self.assertEqual( expected, am.list_latest_versions(self.MACOS_BT) )
     self.assertEqual( [
@@ -231,60 +231,60 @@ class test_artifact_manager_local(unit_test):
 
   def test_list_all_by_descriptor_many_versions(self):
     recipes = '''
-fake_package water 1.0.0 0 0 linux release x86_64 ubuntu 18
-fake_package water 1.0.1 0 0 linux release x86_64 ubuntu 18
-fake_package water 1.0.2 0 0 linux release x86_64 ubuntu 18
-fake_package water 1.0.3 0 0 linux release x86_64 ubuntu 18
-fake_package water 1.0.8 0 0 linux release x86_64 ubuntu 18
-fake_package water 1.0.9 0 0 linux release x86_64 ubuntu 18
-fake_package water 1.0.10 0 0 linux release x86_64 ubuntu 18
-fake_package water 1.0.11 0 0 linux release x86_64 ubuntu 18
-fake_package water 1.0.13 0 0 linux release x86_64 ubuntu 18
+fake_package water 1.0.0 0 0 linux release x86_64 ubuntu 18 none
+fake_package water 1.0.1 0 0 linux release x86_64 ubuntu 18 none
+fake_package water 1.0.2 0 0 linux release x86_64 ubuntu 18 none
+fake_package water 1.0.3 0 0 linux release x86_64 ubuntu 18 none
+fake_package water 1.0.8 0 0 linux release x86_64 ubuntu 18 none
+fake_package water 1.0.9 0 0 linux release x86_64 ubuntu 18 none
+fake_package water 1.0.10 0 0 linux release x86_64 ubuntu 18 none
+fake_package water 1.0.11 0 0 linux release x86_64 ubuntu 18 none
+fake_package water 1.0.13 0 0 linux release x86_64 ubuntu 18 none
 '''
     t = AMT(recipes = recipes)
-    t.publish('water;1.0.0;0;0;linux;release;x86_64;ubuntu;18')
-    t.publish('water;1.0.1;0;0;linux;release;x86_64;ubuntu;18')
-    t.publish('water;1.0.2;0;0;linux;release;x86_64;ubuntu;18')
-    t.publish('water;1.0.3;0;0;linux;release;x86_64;ubuntu;18')
-    t.publish('water;1.0.10;0;0;linux;release;x86_64;ubuntu;18')
-    t.publish('water;1.0.8;0;0;linux;release;x86_64;ubuntu;18')
-    t.publish('water;1.0.9;0;0;linux;release;x86_64;ubuntu;18')
-    t.publish('water;1.0.11;0;0;linux;release;x86_64;ubuntu;18')
-    t.publish('water;1.0.13;0;0;linux;release;x86_64;ubuntu;18')
+    t.publish('water;1.0.0;0;0;linux;release;x86_64;ubuntu;18;')
+    t.publish('water;1.0.1;0;0;linux;release;x86_64;ubuntu;18;')
+    t.publish('water;1.0.2;0;0;linux;release;x86_64;ubuntu;18;')
+    t.publish('water;1.0.3;0;0;linux;release;x86_64;ubuntu;18;')
+    t.publish('water;1.0.10;0;0;linux;release;x86_64;ubuntu;18;')
+    t.publish('water;1.0.8;0;0;linux;release;x86_64;ubuntu;18;')
+    t.publish('water;1.0.9;0;0;linux;release;x86_64;ubuntu;18;')
+    t.publish('water;1.0.11;0;0;linux;release;x86_64;ubuntu;18;')
+    t.publish('water;1.0.13;0;0;linux;release;x86_64;ubuntu;18;')
     expected = [
-      AD.parse('water;1.0.0;0;0;linux;release;x86_64;ubuntu;18'),
-      AD.parse('water;1.0.1;0;0;linux;release;x86_64;ubuntu;18'),
-      AD.parse('water;1.0.2;0;0;linux;release;x86_64;ubuntu;18'),
-      AD.parse('water;1.0.3;0;0;linux;release;x86_64;ubuntu;18'),
-      AD.parse('water;1.0.8;0;0;linux;release;x86_64;ubuntu;18'),
-      AD.parse('water;1.0.9;0;0;linux;release;x86_64;ubuntu;18'),
-      AD.parse('water;1.0.10;0;0;linux;release;x86_64;ubuntu;18'),
-      AD.parse('water;1.0.11;0;0;linux;release;x86_64;ubuntu;18'),
-      AD.parse('water;1.0.13;0;0;linux;release;x86_64;ubuntu;18'),
+      AD.parse('water;1.0.0;0;0;linux;release;x86_64;ubuntu;18;'),
+      AD.parse('water;1.0.1;0;0;linux;release;x86_64;ubuntu;18;'),
+      AD.parse('water;1.0.2;0;0;linux;release;x86_64;ubuntu;18;'),
+      AD.parse('water;1.0.3;0;0;linux;release;x86_64;ubuntu;18;'),
+      AD.parse('water;1.0.8;0;0;linux;release;x86_64;ubuntu;18;'),
+      AD.parse('water;1.0.9;0;0;linux;release;x86_64;ubuntu;18;'),
+      AD.parse('water;1.0.10;0;0;linux;release;x86_64;ubuntu;18;'),
+      AD.parse('water;1.0.11;0;0;linux;release;x86_64;ubuntu;18;'),
+      AD.parse('water;1.0.13;0;0;linux;release;x86_64;ubuntu;18;'),
     ]
     self.assertEqual( expected, t.am.list_all_by_descriptor(None) )
 
   def test_packages_dict(self):
     water_recipes = '''
-fake_package water 1.0.0 0 0 linux release x86_64 ubuntu 18
-fake_package water 1.0.1 0 0 linux release x86_64 ubuntu 18
-fake_package water 1.0.10 0 0 linux release x86_64 ubuntu 18
-fake_package water 1.0.13 0 0 linux release x86_64 ubuntu 18
-fake_package water 1.0.0 0 0 linux release x86_64 centos 7
-fake_package water 1.0.1 0 0 linux release x86_64 centos 7
-fake_package water 1.0.9 0 0 linux release x86_64 centos 7
-fake_package water 1.0.11 0 0 linux release x86_64 centos 7
+fake_package water 1.0.0 0 0 linux release x86_64 ubuntu 18 none
+fake_package water 1.0.1 0 0 linux release x86_64 ubuntu 18 none
+fake_package water 1.0.10 0 0 linux release x86_64 ubuntu 18 none
+fake_package water 1.0.13 0 0 linux release x86_64 ubuntu 18 none
+fake_package water 1.0.0 0 0 linux release x86_64 centos 7 none
+fake_package water 1.0.1 0 0 linux release x86_64 centos 7 none
+fake_package water 1.0.9 0 0 linux release x86_64 centos 7 none
+fake_package water 1.0.11 0 0 linux release x86_64 centos 7 none
 '''
 
     milk_recipes = '''
-fake_package milk 1.0.0 0 0 linux release x86_64 ubuntu 18
-fake_package milk 1.0.1 0 0 linux release x86_64 ubuntu 18
-fake_package milk 1.0.10 0 0 linux release x86_64 ubuntu 18
-fake_package milk 1.0.13 0 0 linux release x86_64 ubuntu 18
-fake_package milk 1.0.0 0 0 linux release x86_64 centos 7
-fake_package milk 1.0.1 0 0 linux release x86_64 centos 7
-fake_package milk 1.0.9 0 0 linux release x86_64 centos 7
-fake_package milk 1.0.11 0 0 linux release x86_64 centos 7
+fake_package milk 1.0.0 0 0 linux release x86_64 ubuntu 18 none
+fake_package milk 1.0.1 0 0 linux release x86_64 ubuntu 18 none
+fake_package milk 1.0.10 0 0 linux release x86_64 ubuntu 18 none
+fake_package milk 1.0.13 0 0 linux release x86_64 ubuntu 18 none
+fake_package milk 1.0.0 0 0 linux release x86_64 centos 7 none
+fake_package milk 1.0.1 0 0 linux release x86_64 centos 7 none
+fake_package milk 1.0.9 0 0 linux release x86_64 centos 7 none
+fake_package milk 1.0.11 0 0 linux release x86_64 centos 7 none
 '''
     t = AMT()
     t.add_recipes(water_recipes)
@@ -311,26 +311,26 @@ fake_package milk 1.0.11 0 0 linux release x86_64 centos 7
 
   def test_list_all_filter_with_requirements(self):
     water_recipes = '''
-fake_package water 1.0.0 0 0 linux release x86_64 ubuntu 18
-fake_package water 1.0.1 0 0 linux release x86_64 ubuntu 18
-fake_package water 1.0.10 0 0 linux release x86_64 ubuntu 18
-fake_package water 1.0.13 0 0 linux release x86_64 ubuntu 18
-fake_package water 1.0.0 0 0 linux release x86_64 centos 7
-fake_package water 1.0.1 0 0 linux release x86_64 centos 7
-fake_package water 1.0.9 0 0 linux release x86_64 centos 7
-fake_package water 1.0.11 0 0 linux release x86_64 centos 7
+fake_package water 1.0.0 0 0 linux release x86_64 ubuntu 18 none
+fake_package water 1.0.1 0 0 linux release x86_64 ubuntu 18 none
+fake_package water 1.0.10 0 0 linux release x86_64 ubuntu 18 none
+fake_package water 1.0.13 0 0 linux release x86_64 ubuntu 18 none
+fake_package water 1.0.0 0 0 linux release x86_64 centos 7 none
+fake_package water 1.0.1 0 0 linux release x86_64 centos 7 none
+fake_package water 1.0.9 0 0 linux release x86_64 centos 7 none
+fake_package water 1.0.11 0 0 linux release x86_64 centos 7 none
 '''
 
     milk_recipes = '''
-fake_package milk 1.0.0 0 0 linux release x86_64 ubuntu 18
-fake_package milk 1.0.1 0 0 linux release x86_64 ubuntu 18
-fake_package milk 1.0.1 1 0 linux release x86_64 ubuntu 18
-fake_package milk 1.0.10 0 0 linux release x86_64 ubuntu 18
-fake_package milk 1.0.13 0 0 linux release x86_64 ubuntu 18
-fake_package milk 1.0.0 0 0 linux release x86_64 centos 7
-fake_package milk 1.0.1 0 0 linux release x86_64 centos 7
-fake_package milk 1.0.9 0 0 linux release x86_64 centos 7
-fake_package milk 1.0.11 0 0 linux release x86_64 centos 7
+fake_package milk 1.0.0 0 0 linux release x86_64 ubuntu 18 none
+fake_package milk 1.0.1 0 0 linux release x86_64 ubuntu 18 none
+fake_package milk 1.0.1 1 0 linux release x86_64 ubuntu 18 none
+fake_package milk 1.0.10 0 0 linux release x86_64 ubuntu 18 none
+fake_package milk 1.0.13 0 0 linux release x86_64 ubuntu 18 none
+fake_package milk 1.0.0 0 0 linux release x86_64 centos 7 none
+fake_package milk 1.0.1 0 0 linux release x86_64 centos 7 none
+fake_package milk 1.0.9 0 0 linux release x86_64 centos 7 none
+fake_package milk 1.0.11 0 0 linux release x86_64 centos 7 none
 '''
     t = AMT()
     t.add_recipes(water_recipes)
