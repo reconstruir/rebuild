@@ -191,8 +191,7 @@ class package_manager(object):
     self.db.add_package(entry)
 
   def ensure_shell_framework(self):
-    ef = shell_framework()
-    ef.extract(self._shell_framework_dir)
+    shell_framework.extract(self._shell_framework_dir)
     
   def uninstall_package(self, pkg_desc):
     check.check_package_descriptor(pkg_desc)

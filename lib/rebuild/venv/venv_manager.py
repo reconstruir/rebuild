@@ -2,6 +2,7 @@
 
 import os.path as path
 from bes.common import check
+from bes.env import shell_framework
 from bes.fs import file_path, file_util
 from bes.system import log, os_env
 from rebuild.base import build_blurb, build_version, package_descriptor_list
@@ -228,28 +229,28 @@ unset _root
 _@NAME@_setup()
 {
   local _root=${_@NAME@_root}
-  local _prefix=${_root}/stuff
+  local _stuff_dir=${_root}/stuff
   local _env_dir=$_root/env
-  source $_env_dir/framework/bes_shell.sh
-  bes_env_path_prepend PATH ${_prefix}/bin
-  bes_env_path_prepend PYTHONPATH ${_prefix}/lib/python
-  bes_env_path_prepend PKG_CONFIG_PATH ${_prefix}/lib/pkgconfig
-  bes_env_path_prepend LD_LIBRARY_PATH ${_prefix}/lib
-  bes_env_path_prepend MANPATH ${_prefix}/man
-  bes_source_dir $_env_dir
+  source ${_env_dir}/framework/bes_shell.sh
+  bes_env_path_prepend PATH ${_stuff_dir}/bin
+  bes_env_path_prepend PYTHONPATH ${_stuff_dir}/lib/python
+  bes_env_path_prepend PKG_CONFIG_PATH ${_stuff_dir}/lib/pkgconfig
+  bes_env_path_prepend LD_LIBRARY_PATH ${_stuff_dir}/lib
+  bes_env_path_prepend MANPATH ${_stuff_dir}/man
+  bes_source_dir ${_env_dir}
 }
 
 _@NAME@_unsetup()
 {
   local _root=${_@NAME@_root}
-  local _prefix=${_root}/stuff
+  local _stuff_dir=${_root}/stuff
   local _env_dir=$_root/env
-  source $_env_dir/framework/bes_shell.sh
-  bes_env_path_remove PATH ${_prefix}/bin
-  bes_env_path_remove PYTHONPATH ${_prefix}/lib/python
-  bes_env_path_remove PKG_CONFIG_PATH ${_prefix}/lib/pkgconfig
-  bes_env_path_remove LD_LIBRARY_PATH ${_prefix}/lib
-  bes_env_path_remove MANPATH ${_prefix}/man
+  source ${_env_dir}/framework/bes_shell.sh
+  bes_env_path_remove PATH ${_stuff_dir}/bin
+  bes_env_path_remove PYTHONPATH ${_stuff_dir}/lib/python
+  bes_env_path_remove PKG_CONFIG_PATH ${_stuff_dir}/lib/pkgconfig
+  bes_env_path_remove LD_LIBRARY_PATH ${_stuff_dir}/lib
+  bes_env_path_remove MANPATH ${_stuff_dir}/man
 }
 '''
 
@@ -263,58 +264,36 @@ _@NAME@_root="$( command cd -P "$_root" > /dev/null && command pwd -P )"
 unset _this_file
 unset _root
 
-_rebuild_build_path()
-{
-  local _system=$(uname | sed 's/Darwin/macos/' | tr '[:upper:]' '[:lower:]')
-  local _arch=$(uname -m)
-  local _version
-  local _distro
-  local _path
-
-  case $_system in
-    macos)
-      _version=$(defaults read loginwindow SystemVersionStampAsString | awk -F"." '{ printf("%s.%s\\n", $1, $2); }')
-      _system=macos
-      _path=${_system}-${_version}/${_arch}
-      ;;
-	  linux)
-      _version=$(lsb_release -v -a 2> /dev/null | grep 'Release:' | awk '{ print $2; } '  | awk -F"." '{ print $1; } ')
-      _distro=$(lsb_release -v -a 2> /dev/null | grep 'Distributor ID:' | awk -F":" '{ print $2; } '  | awk -F"." '{ print $1; } '  | tr '[:upper:]' '[:lower:]'| awk '{ print $1; }')
-      _path=${_system}-${_distro}-${_version}/${_arch}
-      ;;
-	esac
-  echo ${_path}
-}
-
 @NAME@_setup()
 {
-  local _system=$(_rebuild_build_path)
   local _root=${_@NAME@_root}
-  local _system_root=${_root}/${_system}
-  local _prefix=${_system_root}/stuff
-  local _env_dir=$_system_root/env
-  source $_env_dir/framework/bes_shell.sh
-  bes_env_path_prepend PATH ${_prefix}/bin
-  bes_env_path_prepend PYTHONPATH ${_prefix}/lib/python
-  bes_env_path_prepend PKG_CONFIG_PATH ${_prefix}/lib/pkgconfig
-  bes_env_path_prepend LD_LIBRARY_PATH ${_prefix}/lib
-  bes_env_path_prepend MANPATH ${_prefix}/man
-  bes_source_dir $_env_dir
+  source ${_root}/framework/bes_shell.sh
+  local _system_path=$(bes_system_path)
+  local _system_root=${_root}/${_system_path}
+  local _stuff_dir=${_system_root}/stuff
+  local _env_dir=${_system_root}/env
+  bes_env_path_prepend PATH ${_stuff_dir}/bin
+  bes_env_path_prepend PYTHONPATH ${_stuff_dir}/lib/python
+  bes_env_path_prepend PKG_CONFIG_PATH ${_stuff_dir}/lib/pkgconfig
+  bes_env_path_prepend LD_LIBRARY_PATH ${_stuff_dir}/lib
+  bes_env_path_prepend MANPATH ${_stuff_dir}/man
+  bes_source_dir ${_env_dir}
 }
 
 @NAME@_unsetup()
 {
-  local _system=$(_rebuild_build_path)
   local _root=${_@NAME@_root}
-  local _system_root=${_root}/${_system}
-  local _prefix=${_system_root}/stuff
-  local _env_dir=$_system_root/env
-  source $_env_dir/framework/bes_shell.sh
-  bes_env_path_remove PATH ${_prefix}/bin
-  bes_env_path_remove PYTHONPATH ${_prefix}/lib/python
-  bes_env_path_remove PKG_CONFIG_PATH ${_prefix}/lib/pkgconfig
-  bes_env_path_remove LD_LIBRARY_PATH ${_prefix}/lib
-  bes_env_path_remove MANPATH ${_prefix}/man
+  source ${_root}/framework/bes_shell.sh
+  local _system_path=$(bes_system_path)
+  local _root=${_@NAME@_root}
+  local _system_root=${_root}/${_system_path}
+  local _stuff_dir=${_system_root}/stuff
+  local _env_dir=${_system_root}/env
+  bes_env_path_remove PATH ${_stuff_dir}/bin
+  bes_env_path_remove PYTHONPATH ${_stuff_dir}/lib/python
+  bes_env_path_remove PKG_CONFIG_PATH ${_stuff_dir}/lib/pkgconfig
+  bes_env_path_remove LD_LIBRARY_PATH ${_stuff_dir}/lib
+  bes_env_path_remove MANPATH ${_stuff_dir}/man
 }
 '''
 
@@ -337,6 +316,7 @@ exec ${1+"$@"}
     system_setup_script.save(pm.root_dir, variables)
     system_run_script.save(pm.root_dir, variables)
     parent_dir = path.join(self._root_dir, project_name)
+    shell_framework.extract(path.join(parent_dir, 'framework'))
     setup_script.save(parent_dir, variables)
     system_run_script.save(parent_dir, variables)
   
