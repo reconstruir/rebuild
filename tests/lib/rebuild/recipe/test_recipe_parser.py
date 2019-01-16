@@ -790,16 +790,6 @@ package foo 1.2.3 4
     r = self._parse(text)
     r2 =  r[0].steps[0].values[0].values
     print('R2: %s' % (r2[0].value))
-#    print('FUCK: %s' % (type(r[0].steps[0].values[0].values)))
-#    self.assertEqual( [
-#      ( None, True ),
-#    ], [ tuple(x) for x in r[0].steps[0].values[0].values ] )
-    
-#  steps  
-#    step_autoconf
-#      configure_env
-#        all: a=1
-#             b=1
 
 class test_recipe_step_value_bool(unit_test):
   

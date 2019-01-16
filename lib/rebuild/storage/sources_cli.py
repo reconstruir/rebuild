@@ -437,7 +437,7 @@ class sources_cli(object):
 
     am = artifact_manager_helper.make_local_artifact_manager(local_dir)
         
-    bt = build_target.make_host_build_target()
+    bt = build_target.make_host_build_target(level = 'release', version_minor = '')
     artifacts = am.list_all_by_descriptor(bt)
     if limit:
       artifacts = artifacts[0:limit]

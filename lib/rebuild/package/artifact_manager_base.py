@@ -96,7 +96,6 @@ class artifact_manager_base(with_metaclass(artifact_manager_register_meta, objec
  
   def packages_dict(self, build_target):
     all_packages = self.list_all_by_package_descriptor(build_target)
-    print('FUCK: build_target=%s; all_packages=%s' % (str(build_target), all_packages))
     result = {}
     for pd in all_packages:
       if pd.name not in result:

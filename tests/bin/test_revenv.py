@@ -365,14 +365,10 @@ projects
   _setup = namedtuple('_setup', 'tmp_dir, config_filename, artifact_manager')
   @classmethod
   def _setup_test(clazz, config, recipes = None):
-    print('FUCK2')
     tmp_dir = clazz._make_temp_dir()
     am = clazz._make_test_artifact_manager(recipes = recipes)
-    for x in am.list_all_by_descriptor(None):
-      print('FUCK3: %s' % (str(x)))
     config_filename = path.join(tmp_dir, 'config.revenv')
     clazz._write_config_file(config_filename, config, am)
-    print('FUCK4')
     return clazz._setup(tmp_dir, config_filename, am)
     
   @classmethod
