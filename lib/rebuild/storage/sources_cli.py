@@ -497,7 +497,8 @@ class sources_cli(object):
       'rebuild.level': md.level,
       'rebuild.arch': md.arch,
       'rebuild.distro': md.distro,
-      'rebuild.distro_version': md.distro_version,
+      'rebuild.distro_version_major': md.distro_version_major,
+      'rebuild.distro_version_minor': md.distro_version_minor,
       'rebuild.requirements': md.requirements.to_string_list(),
       }
     return properties
