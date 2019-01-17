@@ -26,7 +26,7 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
     check.check_tuple(arch)
     check.check_string(distro)
     check.check_string(distro_version_major)
-    check.check_string(distro_version_minor, allow_none = True)
+    check.check_string(distro_version_minor)
     distro_version_minor = build_target.resolve_distro_version_minor(distro_version_minor)
     return clazz.__bases__[0].__new__(clazz, name, version, revision, epoch,
                                       system, level, arch, distro,
@@ -35,15 +35,11 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
   def __str__(self):
     arch_str = ','.join(self.arch)
     return '%s;%s;%s;%s;%s;%s;%s;%s;%s;%s' % (self.name, self.version, self.revision, self.epoch, self.system, self.level,
-                                              arch_str, self.distro, self.distro_version_major, self.distro_version_minor or '')
+                                              arch_str, self.distro, self.distro_version_major, self.distro_version_minor)
 
   def __hash__(self):
     return hash(str(self))
   
-  @cached_property
-  def sql_table_name(self):
-    return string_util.replace_punctuation(str(self), '_')
-
   @cached_property
   def build_version(self):
     return build_version(self.version, self.revision, self.epoch)
@@ -52,7 +48,12 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
   def build_target(self):
     return build_target(self.system, self.distro, self.distro_version_major, self.distro_version_minor, self.arch, self.level)
 
-  def to_sql_tuple(self):
+  @cached_property
+  def sql_table_name(self):
+    return string_util.replace_punctuation(str(self), '_')
+
+  @cached_property
+  def sql_tuple(self):
     return (
       self.name,
       self.version,

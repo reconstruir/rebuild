@@ -2,17 +2,20 @@
 
 package fructose 3.4.5
 
+  data
+    all: checksum 3.4.5 6105aa5fd841e9bdf4c5a5d118a17353337c7e74d479a4bc0754cf15c271b676
+
   variables:
     all: _url=@URL@
+    all: _version=${REBUILD_PACKAGE_UPSTREAM_VERSION}
     all: _upstream_name=fructose
-    all: _filename=${_upstream_name}-${REBUILD_PACKAGE_UPSTREAM_VERSION}.tar.gz
+    all: _filename=${_upstream_name}-${_version}.tar.gz
     all: _ingested_filename=fructose/${_filename}
-    all: _checksum=6105aa5fd841e9bdf4c5a5d118a17353337c7e74d479a4bc0754cf15c271b676
 
   steps  
     step_autoconf
       upstream_source
-        all: ${_url}/${_filename} ingested_filename=${_ingested_filename} checksum=${_checksum}
+        all: ${_url}/${_filename} ingested_filename=${_ingested_filename} checksum=@{DATA:checksum:${_version}}
         
       tarball
         all: ${_ingested_filename}

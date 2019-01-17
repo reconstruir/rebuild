@@ -60,6 +60,18 @@ class test_artifact_descriptor(unit_test):
       AD.parse('water;1.0.13;0;0;linux;release;x86_64;ubuntu;18;'),
     ]
     self.assertEqual( expected, sorted(l) )
+
+  def test_sql_table_name(self):
+    self.assertEqual( 'water_1_0_0_0_0_linux_release_x86_64_ubuntu_18_',
+                      AD.parse('water;1.0.0;0;0;linux;release;x86_64;ubuntu;18;').sql_table_name )
+    self.assertEqual( 'water_1_0_0_0_0_linux_release_x86_64_ubuntu_18_4',
+                      AD.parse('water;1.0.0;0;0;linux;release;x86_64;ubuntu;18;4').sql_table_name )
+    self.assertEqual( 'water_1_0_0_0_0_linux_release_x86_64_ubuntu_18_',
+                      AD.parse('water;1.0.0;0;0;linux;release;x86_64;ubuntu;18;none').sql_table_name )
+
+  def test_sql_tuple(self):
+    self.assertEqual( ('water', '1.0.0', 0, 0, 'linux', 'release', '["x86_64"]', 'ubuntu', '18', ''),
+                      AD.parse('water;1.0.0;0;0;linux;release;x86_64;ubuntu;18;').sql_tuple )
     
 if __name__ == '__main__':
   unit_test.main()

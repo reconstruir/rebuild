@@ -41,11 +41,8 @@ class recipe_parser(object):
     self.starting_line_number = starting_line_number
 
   def _error(self, msg, pkg_node = None):
-    if pkg_node:
-      line_number = pkg_node.data.line_number + self.starting_line_number
-    else:
-      line_number = None
-    raise recipe_error(msg, self.filename, line_number)
+    raise recipe_error.make_error(msg, self.filename, pkg_node = pkg_node,
+                                  starting_line_number = self.starting_line_number)
     
   def parse(self, variable_manager):
     check.check_variable_manager(variable_manager)
@@ -111,7 +108,7 @@ class recipe_parser(object):
         self._error('unknown recipe section: \"%s\"' % (text), child)
     desc = package_descriptor(name, version, requirements = requirements, properties = properties)
     return recipe(recipe.FORMAT_VERSION, self.filename, enabled, properties, requirements,
-                  desc, instructions, steps, python_code, variables)
+                  desc, instructions, steps, python_code, variables, data)
 
   def _parse_package_header(self, node, variable_manager):
     parts = string_util.split_by_white_space(node.data.text, strip = True)

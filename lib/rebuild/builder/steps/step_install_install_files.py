@@ -45,7 +45,11 @@ class step_install_install_files(step):
         for f in files:
           self._install_one('DIR', path.join(src, f), path.join(dst, f), None)
       else:
-        return step_result(False, 'File or dir not found at %s: %s' % (str(install_file.origin), path.relpath(src)))
+        msg = 'File or dir not found at %s: %s' % (str(install_file.origin), path.relpath(src))
+        if not env.config.ignore_install_file_errors:
+          return step_result(False, msg)
+        else:
+          self.blurb('WARNING: %s' % (msg))
     return step_result(True, None)
 
   def _install_one(self, label, src, dst, mode):

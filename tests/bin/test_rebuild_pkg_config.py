@@ -39,7 +39,7 @@ class test_rebuild_pkg_config(script_unit_test):
     ]
     rv = self.run_script(cmd, env = self.clean_env)
     self.assertEquals( 0, rv.exit_code )
-    self.assertEquals( self.ALL_MODULES, self._parse_list_all_output(rv.stdout) )
+    self.assertEquals( self.ALL_MODULES, self._parse_list_all_output(rv.output) )
 
   @classmethod
   def _parse_list_all_output(clazz, stdout):
@@ -61,7 +61,7 @@ class test_rebuild_pkg_config(script_unit_test):
       '3.0.0', '2.2.0', '1.0.2d', '3.02.02', '6.9.2', '6.9.2', '1.2.8',
     ]
     self.assertEquals( 0, rv.exit_code )
-    self.assertEquals( expected_versions, rv.stdout.strip().split('\n') )
+    self.assertEquals( expected_versions, rv.output.strip().split('\n') )
 
 if __name__ == '__main__':
   script_unit_test.main()

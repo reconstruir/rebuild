@@ -12,6 +12,7 @@ from bes.dependency import dependency_provider
 from rebuild.step import step_description, step_manager
 from rebuild.package import package_manager
 from rebuild.recipe.value import value_file
+from rebuild.recipe.recipe_data_manager import recipe_data_manager
 
 class builder_script(object):
 
@@ -49,6 +50,9 @@ class builder_script(object):
     self.temp_dir = path.join(self.working_dir, 'temp')
     self.python_lib_dir = path.join(self.staged_files_dir, 'lib/python')
     self.requirements_manager = package_manager(path.join(self.working_dir, 'requirements'), env.artifact_manager)
+    self.recipe_data_manager = recipe_data_manager()
+    self.recipe_data_manager.set_from_tuples(self.recipe.resolve_data(self.build_target.system))
+      
     self.substitutions = {
       'REBUILD_WORKING_DIR': self.working_dir,
       'REBUILD_BUILD_DIR': self.build_dir,
@@ -57,7 +61,6 @@ class builder_script(object):
       'REBUILD_PACKAGE_FULL_VERSION':  str(self.descriptor.version),
       'REBUILD_PACKAGE_NAME':  self.descriptor.name,
       'REBUILD_PACKAGE_UPSTREAM_VERSION':  self.descriptor.version.upstream_version,
-      'REBUILD_PACKAGE_UPSTREAM_VERSION_SAFE':  string_util.replace_punctuation(self.descriptor.version.upstream_version, '_'),
       'REBUILD_PYTHON_PLATFORM_NAME':   self.build_target.system,
       'REBUILD_RECIPE_DIR': path.abspath(self.recipe_dir),
       'REBUILD_REQUIREMENTS_BIN_DIR': self.requirements_manager.bin_dir,

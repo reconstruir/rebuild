@@ -12,7 +12,7 @@ from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FP
 from _rebuild_testing.fake_package_recipes import fake_package_recipes as RECIPES
 from rebuild.base import build_target as BT
 
-class test_remanager(script_unit_test):
+class test_revenv(script_unit_test):
 
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/remanager'
   __script__ = __file__, '../../bin/revenv.py'
@@ -43,7 +43,7 @@ projects
     args = self._make_packages_cmd('print', test.tmp_dir, 'test1')
     rv = self.run_script(args)
     self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( [], self._parse_stdout_list(rv.stdout) )
+    self.assertEqual( [], self._parse_stdout_list(rv.output) )
 
   def test_packages_update(self):
     config = '''{head}
@@ -62,7 +62,7 @@ projects
     args = self._make_packages_cmd('print', test.tmp_dir, 'test1')
     rv = self.run_script(args)
     self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( [ 'water' ], self._parse_stdout_list(rv.stdout) )
+    self.assertEqual( [ 'water' ], self._parse_stdout_list(rv.output) )
 
   def test_packages_update_add_packages(self):
     config1 = '''{head}
@@ -84,7 +84,7 @@ projects
     print_args = self._make_packages_cmd('print', test.tmp_dir, 'test')
     rv = self.run_script(print_args)
     self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( [ 'citrus', 'fiber', 'fructose', 'fruit', 'orange', 'orange_juice', 'water' ], self._parse_stdout_list(rv.stdout) )
+    self.assertEqual( [ 'citrus', 'fiber', 'fructose', 'fruit', 'orange', 'orange_juice', 'water' ], self._parse_stdout_list(rv.output) )
 
     self._write_config_file(test.config_filename, config2, test.artifact_manager)
 
@@ -92,7 +92,7 @@ projects
     self.assertEqual( 0, rv.exit_code )
     rv = self.run_script(print_args)
     self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( [ 'citrus', 'fiber', 'fructose', 'fruit', 'orange', 'orange_juice', 'pear', 'pear_juice', 'water' ], self._parse_stdout_list(rv.stdout) )
+    self.assertEqual( [ 'citrus', 'fiber', 'fructose', 'fruit', 'orange', 'orange_juice', 'pear', 'pear_juice', 'water' ], self._parse_stdout_list(rv.output) )
 
   def test_packages_update_change_packages(self):
     config1 = '''{head}
@@ -114,7 +114,7 @@ projects
     print_args = self._make_packages_cmd('print', test.tmp_dir, 'test')
     rv = self.run_script(print_args)
     self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( [ 'citrus', 'fiber', 'fructose', 'fruit', 'orange', 'orange_juice', 'water' ], self._parse_stdout_list(rv.stdout) )
+    self.assertEqual( [ 'citrus', 'fiber', 'fructose', 'fruit', 'orange', 'orange_juice', 'water' ], self._parse_stdout_list(rv.output) )
 
     self._write_config_file(test.config_filename, config2, test.artifact_manager)
 
@@ -122,7 +122,7 @@ projects
     self.assertEqual( 0, rv.exit_code )
     rv = self.run_script(print_args)
     self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( [ 'fiber', 'fructose', 'fruit', 'pear', 'pear_juice', 'water' ], self._parse_stdout_list(rv.stdout) )
+    self.assertEqual( [ 'fiber', 'fructose', 'fruit', 'pear', 'pear_juice', 'water' ], self._parse_stdout_list(rv.output) )
 
   def test_packages_update_remove_packages(self):
     config1 = '''{head}
@@ -155,28 +155,28 @@ projects
     print_args = self._make_packages_cmd('print', test.tmp_dir, 'test')
     rv = self.run_script(print_args)
     self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( [ 'arsenic', 'mercury', 'water' ], self._parse_stdout_list(rv.stdout) )
+    self.assertEqual( [ 'arsenic', 'mercury', 'water' ], self._parse_stdout_list(rv.output) )
 
     self._write_config_file(test.config_filename, config2, test.artifact_manager)
     rv = self.run_script(update_args)
     self.assertEqual( 0, rv.exit_code )
     rv = self.run_script(print_args)
     self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( [ 'arsenic', 'mercury' ], self._parse_stdout_list(rv.stdout) )
+    self.assertEqual( [ 'arsenic', 'mercury' ], self._parse_stdout_list(rv.output) )
     
     self._write_config_file(test.config_filename, config3, test.artifact_manager)
     rv = self.run_script(update_args)
     self.assertEqual( 0, rv.exit_code )
     rv = self.run_script(print_args)
     self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( [ 'arsenic' ], self._parse_stdout_list(rv.stdout) )
+    self.assertEqual( [ 'arsenic' ], self._parse_stdout_list(rv.output) )
 
     self._write_config_file(test.config_filename, config4, test.artifact_manager)
     rv = self.run_script(update_args)
     self.assertEqual( 0, rv.exit_code )
     rv = self.run_script(print_args)
     self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( [], self._parse_stdout_list(rv.stdout) )
+    self.assertEqual( [], self._parse_stdout_list(rv.output) )
 
   def test_packages_update_with_update_dot_sh(self):
     config1 = '''{head}
@@ -198,7 +198,7 @@ projects
     print_args = self._make_packages_cmd('print', test.tmp_dir, 'test')
     rv = self.run_script(print_args)
     self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( [ 'citrus', 'fiber', 'fructose', 'fruit', 'orange', 'orange_juice', 'water' ], self._parse_stdout_list(rv.stdout) )
+    self.assertEqual( [ 'citrus', 'fiber', 'fructose', 'fruit', 'orange', 'orange_juice', 'water' ], self._parse_stdout_list(rv.output) )
     self._write_config_file(test.config_filename, config2, test.artifact_manager)
     update_dot_sh = path.join(test.tmp_dir, 'update.sh')
     cmd = [
@@ -216,11 +216,11 @@ projects
     if rv.exit_code != 0 or self.DEBUG:
       self.spew('update.sh command: %s' % (' '.join(cmd)))
       self.spew('update.sh script:\n----------\n%s\n----------\n' % (file_util.read(update_dot_sh)))
-      self.spew(rv.stdout)
+      self.spew(rv.output)
     self.assertEqual( 0, rv.exit_code )
     rv = self.run_script(print_args)
     self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( [ 'citrus', 'fiber', 'fructose', 'fruit', 'orange', 'orange_juice', 'pear', 'pear_juice', 'water' ], self._parse_stdout_list(rv.stdout) )
+    self.assertEqual( [ 'citrus', 'fiber', 'fructose', 'fruit', 'orange', 'orange_juice', 'pear', 'pear_juice', 'water' ], self._parse_stdout_list(rv.output) )
     
   def test_packages_clear(self):
     config1 = '''{head}
@@ -236,14 +236,14 @@ projects
     print_args = self._make_packages_cmd('print', test.tmp_dir, 'test')
     rv = self.run_script(print_args)
     self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( [ 'arsenic', 'mercury', 'water' ], self._parse_stdout_list(rv.stdout) )
+    self.assertEqual( [ 'arsenic', 'mercury', 'water' ], self._parse_stdout_list(rv.output) )
 
     clear_args = self._make_packages_cmd('clear', test.tmp_dir, 'test')
     rv = self.run_script(clear_args)
     self.assertEqual( 0, rv.exit_code )
     rv = self.run_script(print_args)
     self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( [], self._parse_stdout_list(rv.stdout) )
+    self.assertEqual( [], self._parse_stdout_list(rv.output) )
     
   def test_config_projects(self):
     config = '''{head}
@@ -259,7 +259,7 @@ projects
     args = self._make_config_cmd('projects', test.tmp_dir)
     rv = self.run_script(args)
     self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( [ 'test1', 'test2', 'test3' ], self._parse_stdout_list(rv.stdout) )
+    self.assertEqual( [ 'test1', 'test2', 'test3' ], self._parse_stdout_list(rv.output) )
     
   def test_config_packages(self):
     config = '''{head}
@@ -276,12 +276,12 @@ projects
     args = self._make_config_cmd('packages', test.tmp_dir, 'test1')
     rv = self.run_script(args)
     self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( [ 'orange_juice' ], self._parse_stdout_list(rv.stdout) )
+    self.assertEqual( [ 'orange_juice' ], self._parse_stdout_list(rv.output) )
 
     args = self._make_config_cmd('packages', test.tmp_dir, 'test2')
     rv = self.run_script(args)
     self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( [ 'arsenic', 'pear_juice' ], self._parse_stdout_list(rv.stdout) )
+    self.assertEqual( [ 'arsenic', 'pear_juice' ], self._parse_stdout_list(rv.output) )
 
   def test_packages_update_upgrade(self):
     recipes1 = '''
@@ -303,7 +303,7 @@ projects
     args = self._make_packages_cmd('print', test.tmp_dir, 'test', '--versions')
     rv = self.run_script(args)
     self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( [ 'aflatoxin-1.0.0' ], self._parse_stdout_list(rv.stdout) )
+    self.assertEqual( [ 'aflatoxin-1.0.0' ], self._parse_stdout_list(rv.output) )
 
     FPUT.artifact_manager_publish(test.artifact_manager, recipes = recipes2)
 
@@ -313,7 +313,7 @@ projects
     args = self._make_packages_cmd('print', test.tmp_dir, 'test', '--versions')
     rv = self.run_script(args)
     self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( [ 'aflatoxin-1.0.1' ], self._parse_stdout_list(rv.stdout) )
+    self.assertEqual( [ 'aflatoxin-1.0.1' ], self._parse_stdout_list(rv.output) )
 
   def test_packages_update_specific_version(self):
     recipes1 = '''
@@ -338,12 +338,12 @@ projects
     args = self._make_packages_cmd('print', test.tmp_dir, 'test', '--versions')
     rv = self.run_script(args)
     self.assertEqual( 0, rv.exit_code )
-    self.assertEqual( [ 'aflatoxin-1.0.11-1' ], self._parse_stdout_list(rv.stdout) )
+    self.assertEqual( [ 'aflatoxin-1.0.11-1' ], self._parse_stdout_list(rv.output) )
 
   def test_version(self):
     rv = self.run_script(['version'])
     self.assertEqual( 0, rv.exit_code )
-    version = rv.stdout.strip()
+    version = rv.output.strip()
     self.assertTrue( len(version) > 0 )
     
   @classmethod
@@ -356,7 +356,7 @@ projects
   @classmethod
   def _make_test_artifact_manager(clazz, recipes = None):
     recipes = recipes or RECIPES.FOODS
-    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version_major': '18', 'distro_version_minor': None }
+    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version_major': '18', 'distro_version_minor': '' }
     return FPUT.make_artifact_manager(debug = clazz.DEBUG,
                                       recipes = recipes,
                                       mutations = mutations)

@@ -2,6 +2,7 @@
 
 from bes.common import check
 from bes.fs import file_checksum, file_checksum_list
+from bes.system import log
 
 from .db_error import *
 from .package_file import package_file
@@ -18,6 +19,7 @@ CREATE TABLE {table_name} (
 '''
   
   def __init__(self, db):
+    log.add_logging(self, 'artifact_db')
     self._db = db
 
   @classmethod
@@ -56,6 +58,7 @@ CREATE TABLE {table_name} (
     check.check_string(name)
     check.check_package_file_list(files)
     table_name = self.table_name(name)
+    self.log_d('files_db: add_table(name=%s) table_name=%s' % (name, table_name))
     if self._db.has_table(table_name):
       raise RuntimeError('%s: already has table: %s' % (self._db.filename, table_name))
     
