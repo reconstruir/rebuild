@@ -220,7 +220,6 @@ projects
     self.assertEqual( 0, rv.exit_code )
     rv = self.run_script(print_args)
     self.assertEqual( 0, rv.exit_code )
-    print('CACA: stdout=\"%s\"' % (rv.stdout))
     self.assertEqual( [ 'citrus', 'fiber', 'fructose', 'fruit', 'orange', 'orange_juice', 'pear', 'pear_juice', 'water' ], self._parse_stdout_list(rv.stdout) )
     
   def test_packages_clear(self):

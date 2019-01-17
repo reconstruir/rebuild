@@ -32,9 +32,11 @@ class builder_cli(build_target_cli):
     self.build_target_add_arguments(self.parser)
     self.parser.add_argument('-C', '--change-dir', action = 'store', type = str, default = None)
     self.parser.add_argument('-f', '--project-file', action = 'store', type = str, default = 'rebuild.reproject')
+    self.parser.add_argument('-o', '--override-projects', action = 'store', type = str, default = None, help = 'Override projects with the content of the given project file [ None ]')
     self.parser.add_argument('-n', '--no-checksums', action = 'store_true')
     self.parser.add_argument('--print-step-values', action = 'store_true')
     self.parser.add_argument('--print-sources', action = 'store_true')
+    self.parser.add_argument('--print-variables', action = 'store_true')
     self.parser.add_argument('-v', '--verbose', action = 'store_true', default = False)
     self.parser.add_argument('-w', '--wipe', action = 'store_true')
     self.parser.add_argument('-k', '--keep-going', action = 'store_true')
@@ -117,6 +119,15 @@ class builder_cli(build_target_cli):
     pfm = project_file_manager(checksum_getter)
     pfm.load_project_files_from_env()
     pfm.load_project_file(args.project_file)
+    if args.override_projects:
+      if not pfm.override_projects(args.override_projects):
+        build_blurb.blurb('rebuild', 'failed to override projects:  %s' % (args.override_projects))
+        return 1
+
+    if args.print_variables:
+      pfm.print_variables()
+      return 0
+      
     available_packages = pfm.available_recipes(args.project_file, bt)
     imported_projects = pfm.imported_projects(args.project_file, bt)
     for p in imported_projects:

@@ -167,9 +167,36 @@ class project_file_manager(object):
       dep_map[name] = set(imports)
     return dep_map
 
-  
   @classmethod
   def find_env_project_files(clazz):
     return file_path.glob(os_env_var('REBUILD_RECIPE_PATH').path, '*.reproject')
-  
+
+  def override_projects(self, override_filename):
+    if not override_filename:
+      return
+    text = file_util.read(override_filename)
+    parser = project_file_parser(override_filename, text)
+    override_project_files = parser.parse()
+    for override_pf in override_project_files:
+      if not override_pf.name in self._projects:
+        self.log_e('Project for overriding not found: %s' % (override_pf.name))
+        return False
+      if not self._override_project(self._projects[override_pf.name].project_file, override_pf):
+        return False
+    return True
+    
+  def _override_project(self, pf, override_pf):
+    assert pf.name == override_pf.name
+    msg = 'overriding %s:%s with %s:%s' % (path.relpath(pf.filename), pf.name, path.relpath(override_pf.filename), override_pf.name)
+    self.log_d(msg)
+    self.blurb(msg)
+    pf.variables.update(override_pf.variables)
+    return True
+    
+  def print_variables(self):
+    for name in sorted(self._projects.keys()):
+      pf = self._projects[name].project_file
+      for v in pf.variables:
+        print('%s %s %s' % (path.relpath(pf.filename), pf.name, str(v)))
+    
 check.register_class(project_file_manager, include_seq = False)
