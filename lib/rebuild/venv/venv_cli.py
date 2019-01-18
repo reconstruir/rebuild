@@ -22,6 +22,7 @@ from .venv_shell_script import venv_shell_script
 # but there is no system (yet) to load such plugins
 from rebuild.storage.storage_artifactory import storage_artifactory
 from rebuild.storage.storage_local import storage_local
+from rebuild.package.artifact_manager_artifactory import artifact_manager_artifactory
 
 class venv_cli(build_target_cli):
 
