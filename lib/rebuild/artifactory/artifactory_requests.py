@@ -220,14 +220,17 @@ items.find({
     level = None
     arch = None
     distro = None
-    distro_version = None
+    distro_version_major = None
+    distro_version_minor = None
     requirements = []
     properties = {}
     files = package_manifest(None, None)
-    
+
     for artifactory_prop in artifactory_properties:
-      if artifactory_prop['key'] == 'rebuild.distro_version':
-        distro_version = artifactory_prop['value']
+      if artifactory_prop['key'] == 'rebuild.distro_version_major':
+        distro_version_major = artifactory_prop['value']
+      elif artifactory_prop['key'] == 'rebuild.distro_version_minor':
+        distro_version_minor = artifactory_prop.get('value', None)
       elif artifactory_prop['key'] == 'rebuild.name':
         name = artifactory_prop['value']
       elif artifactory_prop['key'] == 'rebuild.version':
@@ -251,6 +254,6 @@ items.find({
          
     return package_metadata(package_metadata.FORMAT_VERSION, filename, name,
                             version, revision, epoch, system, level, arch, distro,
-                            distro_version, requirements, properties, files)
+                            distro_version_major,  distro_version_minor, requirements, properties, files)
   
 log.add_logging(artifactory_requests, 'artifactory_requests')
