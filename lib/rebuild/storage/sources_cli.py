@@ -451,7 +451,7 @@ class sources_cli(object):
       self.log_d('publish_artifacts: local_filename=%s; remote_filename=%s' % (local_filename, remote_filename))
 
       if not path.isfile(local_filename):
-        print('%25s: %s' % ('missing', md.filename))
+        #print('%25s: %s' % ('missing', md.filename))
         continue
       
       remote_checksum = storage.remote_checksum(remote_filename)
