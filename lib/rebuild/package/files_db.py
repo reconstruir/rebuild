@@ -56,7 +56,9 @@ CREATE TABLE {table_name} (
     check.check_string(name)
     check.check_package_file_list(files)
     table_name = self.table_name(name)
-    assert not self._db.has_table(table_name)
+    if self._db.has_table(table_name):
+      raise RuntimeError('%s: already has table: %s' % (self._db.filename, table_name))
+    
     schema = self.SCHEMA_FILES.format(table_name = table_name)
     self._db.execute(schema)
     for f in files:
