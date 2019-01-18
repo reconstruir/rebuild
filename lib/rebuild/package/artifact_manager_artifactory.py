@@ -39,10 +39,12 @@ class artifact_manager_artifactory(artifact_manager_base):
     return 'artifactory:%s' % (str(self._address))
     
   def _load_remote_db(self):
-    assert False
     packages = artifactory_requests.list_all_artifacts(self._address,
                                                        self._config.storage_config.download.username,
                                                        self._config.storage_config.download.password)
+    for package in sorted(packages, key = lambda x: tuple(x)):
+      self.log_d('REMOTE PACKAGE: %s' % (str(package.artifact_descriptor)))
+      
     for package in packages:
       self._db.add_or_replace_artifact(package)
 
