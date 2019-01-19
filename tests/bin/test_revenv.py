@@ -356,7 +356,7 @@ projects
   @classmethod
   def _make_test_artifact_manager(clazz, recipes = None):
     recipes = recipes or RECIPES.FOODS
-    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version_major': '18', 'distro_version_minor': None }
+    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version_major': '18', 'distro_version_minor': '' }
     return FPUT.make_artifact_manager(debug = clazz.DEBUG,
                                       recipes = recipes,
                                       mutations = mutations)

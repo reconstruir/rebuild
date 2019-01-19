@@ -21,7 +21,7 @@ class test_fake_package_recipe(unit_test):
   #DEBUG = True
 
   def test___str__(self):
-    r = R(AD('foo', '1.2.3', 0, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18', None),
+    r = R(AD('foo', '1.2.3', 0, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18', ''),
           [
             temp_item('bin/foo.sh', '#!/bin/bash\necho foo\nexit 0\n', 0o755),
             temp_item('bin/bar.sh', '#!/bin/bash\necho bar\nexit 1\n', 0o755),

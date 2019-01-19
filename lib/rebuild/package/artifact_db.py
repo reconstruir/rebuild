@@ -38,6 +38,7 @@ create table artifacts(
 
   def __init__(self, filename):
     log.add_logging(self, 'artifact_db')
+#    log.configure('artifact_db=debug format=brief')
     self._filename = path.abspath(filename)
     self._db = sqlite(self._filename)
     self._db.ensure_table('artifacts', self.SCHEMA_ARTIFACTS)
@@ -50,8 +51,7 @@ create table artifacts(
   def has_artifact(self, adesc):
     check.check_artifact_descriptor(adesc)
     sql = 'select count(name) from artifacts where {}'.format(adesc.WHERE_EXPRESSION)
-    t = adesc.to_sql_tuple()
-    row = self._db.select_one(sql, adesc.to_sql_tuple())
+    row = self._db.select_one(sql, adesc.sql_tuple)
     return row[0] > 0
   
   def add_artifact(self, md):
@@ -66,6 +66,7 @@ create table artifacts(
 
   def _add_artifact_i(self, md):
     keys, values = self._metadata_to_sql_keys_and_values(md)
+
     self._db.execute('insert into artifacts(%s) values(%s)' % (keys, values))
     files_table_name = md.artifact_descriptor.sql_table_name
     self._files_db.add_table(files_table_name, md.manifest.files)
@@ -85,6 +86,7 @@ create table artifacts(
     check.check_package_metadata(md)
     adesc = md.artifact_descriptor
     self._db.begin()
+    self.log_d('add_or_replace_artifact(adesc=%s)' % (str(adesc)))
     if not self.has_artifact(adesc):
       self._add_artifact_i(md)
     else:
@@ -94,6 +96,11 @@ create table artifacts(
     
   @classmethod
   def _metadata_to_sql_keys_and_values(self, md):
+#    if md.distro_version_minor in [ None, '', 'none' ]:
+#      distro_version_minor = None
+#    else:
+#      distro_version_minor = sql_encoding.encode_string(md.distro_version_minor)
+
     d =  {
       'name': sql_encoding.encode_string(md.name),
       'filename': sql_encoding.encode_string(md.filename),
@@ -128,7 +135,7 @@ create table artifacts(
 
   def _remove_artifact_i(self, adesc):
     sql = 'delete from artifacts where {}'.format(adesc.WHERE_EXPRESSION)
-    self._db.execute(sql, adesc.to_sql_tuple())
+    self._db.execute(sql, adesc.sql_tuple)
     files_table_name = adesc.sql_table_name
     self._files_db.remove_table(files_table_name)
     self._files_db.remove_table(self._make_env_files_table_name(files_table_name))
@@ -200,7 +207,7 @@ order by name asc, version asc, revision asc, epoch asc'''
   
   def _load_artifact(self, adesc):
     sql = 'select * from artifacts where {}'.format(adesc.WHERE_EXPRESSION)
-    rows = self._db.select_namedtuples(sql, adesc.to_sql_tuple())
+    rows = self._db.select_namedtuples(sql, adesc.sql_tuple)
     if not rows:
       return None
     assert(len(rows) == 1)
