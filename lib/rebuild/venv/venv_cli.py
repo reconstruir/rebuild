@@ -226,7 +226,7 @@ class venv_cli(build_target_cli):
     if not self._verify_project_names([ project_name ]):
       return 1
     success = self._manager.update_from_config(project_name, self._build_target, options)
-    if not options.dont_touch_scripts:
+    if False: # not options.dont_touch_scripts:
       update_script = venv_shell_script(self.UPDATE_SCRIPT_TEMPLATE, 'update.sh')
       variables = {
         '@CONFIG_FILENAME@': self._config_filename,
