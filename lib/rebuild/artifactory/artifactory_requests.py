@@ -183,7 +183,6 @@ items.find({
     clazz.log_d('list_all_artifacts: aql=%s' % (aql), multi_line = True)
 
     url = artifactory_address.make_search_aql_url(address)
-    print('CACA: url=%s' % (url))
     clazz.log_d('list_all_artifacts: url=%s' % (url))
     auth = ( username, password )
     import requests
@@ -200,7 +199,6 @@ items.find({
       item_name = item.get('name', None)
       item_path = item.get('path', None)
       filename = path.join(file_util.remove_head(item_path, match_prefix), item_name)
-      #print('CACA: item_name=%s; item_path=%s; filename=%s' % (item_name, item_path, filename))
       item_properties = item.get('properties', None)
       if item_properties:
         md = clazz._parse_artifact_properties(filename, item_properties)
@@ -230,7 +228,7 @@ items.find({
       if artifactory_prop['key'] == 'rebuild.distro_version_major':
         distro_version_major = artifactory_prop['value']
       elif artifactory_prop['key'] == 'rebuild.distro_version_minor':
-        distro_version_minor = artifactory_prop.get('value', None)
+        distro_version_minor = artifactory_prop.get('value', '')
       elif artifactory_prop['key'] == 'rebuild.name':
         name = artifactory_prop['value']
       elif artifactory_prop['key'] == 'rebuild.version':
@@ -254,6 +252,7 @@ items.find({
          
     return package_metadata(package_metadata.FORMAT_VERSION, filename, name,
                             version, revision, epoch, system, level, arch, distro,
-                            distro_version_major,  distro_version_minor, requirements, properties, files)
+                            distro_version_major or '',  distro_version_minor or '',
+                            requirements, properties, files)
   
 log.add_logging(artifactory_requests, 'artifactory_requests')

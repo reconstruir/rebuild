@@ -1081,3 +1081,6 @@ unit tests for checksums changing and not changing for example when a value_inst
 package_metadata.compare maybe use tuple() for p1 and p2
 s/test_remanager/test_revenv
 s/${BES_TEST_DATA_DIR}/remanager/${BES_TEST_DATA_DIR}/revenv
+- way to mark non official artifacts as such so they dont get uploaded or maybe only do uploads in pipelines
+- distro for macos should be none maybe
+- namespace_source_all_project_setup_files needs to be in rebuild
