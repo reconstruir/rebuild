@@ -101,13 +101,15 @@ class builder_cli(build_target_cli):
 
     build_blurb.set_process_name('rebuild')
     build_blurb.set_verbose(args.verbose)
-    
+
     if args.version:
       from bes.version import version_cli
       import rebuild
       vcli = version_cli(rebuild)
       vcli.version_print_version()
       return 0
+
+    build_blurb.blurb_verbose('rebuild', 'command line: %s' % (' '.join(sys.argv)))
     
     if args.change_dir:
       os.chdir(args.change_dir)
@@ -217,7 +219,6 @@ class builder_cli(build_target_cli):
       return 1
 
     build_blurb.blurb('rebuild', 'target=%s; host=%s' % (config.build_target.build_path, config.host_build_target.build_path))
-    build_blurb.blurb_verbose('rebuild', 'command line: %s' % (' '.join(sys.argv)))
 
     if resolved_args.invalid_args:
       build_blurb.blurb('rebuild', 'Invalid targets: %s' % (' '.join(resolved_args.invalid_args)))
