@@ -61,7 +61,6 @@ class builder_script(object):
       'REBUILD_PACKAGE_FULL_VERSION':  str(self.descriptor.version),
       'REBUILD_PACKAGE_NAME':  self.descriptor.name,
       'REBUILD_PACKAGE_UPSTREAM_VERSION':  self.descriptor.version.upstream_version,
-      'REBUILD_PACKAGE_UPSTREAM_VERSION_SAFE':  string_util.replace_punctuation(self.descriptor.version.upstream_version, '_'),
       'REBUILD_PYTHON_PLATFORM_NAME':   self.build_target.system,
       'REBUILD_RECIPE_DIR': path.abspath(self.recipe_dir),
       'REBUILD_REQUIREMENTS_BIN_DIR': self.requirements_manager.bin_dir,
