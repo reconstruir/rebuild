@@ -13,6 +13,9 @@ class recipe_data_descriptor(namedtuple('recipe_data_descriptor', 'name, version
     check.check_value_origin(origin, allow_none = True)
     return clazz.__bases__[0].__new__(clazz, name, version, origin)
 
+  def __hash__(self):
+    return hash( ( self.name, self.version ) )
+  
   def __str__(self):
     return '@DATA:{name}:{version}'.format(name = self.name, version = self.version)
   

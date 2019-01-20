@@ -12,6 +12,7 @@ from bes.dependency import dependency_provider
 from rebuild.step import step_description, step_manager
 from rebuild.package import package_manager
 from rebuild.recipe.value import value_file
+from rebuild.recipe.recipe_data_manager import recipe_data_manager
 
 class builder_script(object):
 
@@ -49,6 +50,9 @@ class builder_script(object):
     self.temp_dir = path.join(self.working_dir, 'temp')
     self.python_lib_dir = path.join(self.staged_files_dir, 'lib/python')
     self.requirements_manager = package_manager(path.join(self.working_dir, 'requirements'), env.artifact_manager)
+    self.recipe_data_manager = recipe_data_manager()
+    self.recipe_data_manager.set_from_tuples(self.recipe.resolve_data(self.build_target.system))
+      
     self.substitutions = {
       'REBUILD_WORKING_DIR': self.working_dir,
       'REBUILD_BUILD_DIR': self.build_dir,

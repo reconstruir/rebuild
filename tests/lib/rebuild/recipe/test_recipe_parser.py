@@ -765,7 +765,7 @@ package foo 1.2.3 4
     macos: AUTHOR=apple
   steps
     step_takes_string
-      string_value: myt string with ${FOO}
+      string_value: my string with ${FOO}
 '''
 
     r = P(self._filename_for_parser(), text).parse(variable_manager())
@@ -773,6 +773,32 @@ package foo 1.2.3 4
     self.assertEqual( [ KV('FOO', 'hi'), KV('BAR', '666'), KV('AUTHOR', 'linus') ], r[0].resolve_variables('linux') )
     self.assertEqual( [ KV('FOO', 'hi'), KV('BAR', '666'), KV('AUTHOR', 'apple') ], r[0].resolve_variables('macos') )
 
+  def test_data(self):
+    text = '''!rebuild.recipe!
+package foo 1.2.3
+  variables:
+    all: _version=${REBUILD_PACKAGE_UPSTREAM_VERSION}
+
+  data
+    linux: foo 1.2.3 forlinux1
+    linux: bar 1.2.3 forlinux2
+    macos: foo 1.2.3 formacos1
+    macos: bar 1.2.3 formacos2
+
+  steps
+    step_takes_string
+      string_value: my string is @DATA:foo:${_version}
+'''
+
+    r = P(self._filename_for_parser(), text).parse(variable_manager())
+    self.assertEqual( 1, len(r) )
+    self.assertEqual( [ ( 'foo', '1.2.3', 'forlinux1' ), ( 'bar', '1.2.3', 'forlinux2') ],
+                      r[0].resolve_data('linux') )
+    self.assertEqual( [ ( 'foo', '1.2.3', 'formacos1' ), ( 'bar', '1.2.3', 'formacos2') ],
+                      r[0].resolve_data('macos') )
+
+    self.assertMultiLineEqual( 'step_takes_string\n    string_value: my string is @DATA:foo:${_version}', str(r[0].steps[0]) )
+      
   def _filename_for_parser(self):
     'Return a fake filename for parser.  Some values need it to find files relatively to filename.'
     return self.data_path('whatever')

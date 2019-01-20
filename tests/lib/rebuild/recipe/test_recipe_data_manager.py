@@ -3,6 +3,7 @@
 
 from bes.testing.unit_test import unit_test
 from rebuild.recipe.recipe_data_manager import recipe_data_manager as DM
+from rebuild.recipe.recipe_data_descriptor import recipe_data_descriptor as DD
 
 class test_recipe_data_manager(unit_test):
 
@@ -17,6 +18,28 @@ class test_recipe_data_manager(unit_test):
     self.assertEqual( 'hi', dm.get('@DATA:foo:1.2.3') )
     dm.set('@DATA:foo:1.2.3', 'bye')
     self.assertEqual( 'bye', dm.get('@DATA:foo:1.2.3') )
+    
+  def test_resolve_data_descriptor(self):
+    self.assertEqual( DD('foo', '1.2.3'), DM.resolve_data_descriptor('@DATA:foo:1.2.3') )
+    self.assertEqual( DD('foo', '1.2.3'), DM.resolve_data_descriptor( ( 'foo', '1.2.3', 'hi' ) ) )
+    self.assertEqual( DD('foo', '1.2.3'), DM.resolve_data_descriptor( ( 'foo', '1.2.3' ) ) )
+    self.assertEqual( DD('foo', '1.2.3'), DM.resolve_data_descriptor(DD('foo', '1.2.3')) )
+
+  def test_set_from_tuple(self):
+    dm = DM()
+    dm.set_from_tuple( ( 'foo', '1.2.3', 'hi' ) )
+    self.assertEqual( 'hi', dm.get('@DATA:foo:1.2.3') )
+    dm.set_from_tuple( ( 'foo', '1.2.3', 'bye' ) )
+    self.assertEqual( 'bye', dm.get('@DATA:foo:1.2.3') )
+    
+  def test_set_from_tuples(self):
+    dm = DM()
+    dm.set_from_tuples( [ ( 'foo', '1.2.3', 'hi' ), ( 'bar', '2.3.4', 'red' ) ] )
+    self.assertEqual( 'hi', dm.get('@DATA:foo:1.2.3') )
+    self.assertEqual( 'red', dm.get('@DATA:bar:2.3.4') )
+    dm.set_from_tuples( [ ( 'foo', '1.2.3', 'bye' ), ( 'bar', '2.3.4', 'green' ) ] )
+    self.assertEqual( 'bye', dm.get('@DATA:foo:1.2.3') )
+    self.assertEqual( 'green', dm.get('@DATA:bar:2.3.4') )
     
 if __name__ == '__main__':
   unit_test.main()

@@ -14,3 +14,11 @@ class recipe_error(Exception):
       return '%s: %s' % (self.filename, self.message)
     else:
       return '%s:%s: %s' % (self.filename, self.line_number, self.message)
+
+  @classmethod
+  def make_error(clazz, msg, filename, pkg_node = None, starting_line_number = 1):
+    if pkg_node:
+      line_number = pkg_node.data.line_number + starting_line_number
+    else:
+      line_number = None
+    return recipe_error(msg, filename, line_number)

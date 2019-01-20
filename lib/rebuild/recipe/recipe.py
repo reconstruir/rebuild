@@ -8,13 +8,13 @@ from bes.key_value import key_value_list
 from .recipe_error import recipe_error
 from .recipe_util import recipe_util
 
-class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties, requirements, descriptor, instructions, steps, python_code, variables')):
+class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties, requirements, descriptor, instructions, steps, python_code, variables, data')):
 
   CHECK_UNKNOWN_PROPERTIES = True
   FORMAT_VERSION = 2
   
   def __new__(clazz, format_version, filename, enabled, properties, requirements,
-              descriptor, instructions, steps, python_code, variables):
+              descriptor, instructions, steps, python_code, variables, data):
     check.check_int(format_version)
     check.check_recipe_enabled(enabled)
     if format_version != clazz.FORMAT_VERSION:
@@ -22,8 +22,11 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
     check.check_string(filename)
     check.check_string(python_code, allow_none = True)
     check.check_masked_value_list(variables, allow_none = True)
-    return clazz.__bases__[0].__new__(clazz, format_version, filename, enabled, properties,
-                                      requirements, descriptor, instructions, steps, python_code, variables)
+    check.check_masked_value_list(data, allow_none = True)
+    return clazz.__bases__[0].__new__(clazz, format_version, filename, enabled,
+                                      properties, requirements, descriptor,
+                                      instructions, steps, python_code, variables,
+                                      data)
 
   def __str__(self):
     return self.to_string()
@@ -42,6 +45,9 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
       root.add_child('')
     if self.variables:
       root.children.append(recipe_util.variables_to_node(self.variables))
+      root.add_child('')
+    if self.data:
+      root.children.append(recipe_util.variables_to_node(self.data))
       root.add_child('')
     if self.properties:
       root.children.append(self._properties_to_node(self.properties))
@@ -111,5 +117,14 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
     if not self.variables:
       return key_value_list()
     return self.variables.resolve(system, 'key_values')
+  
+  def resolve_data(self, system):
+    if not self.data:
+      return []
+    result = []
+    for value in self.data:
+      if value.mask_matches(system):
+        result.append(tuple(value.value.value))
+    return result
   
 check.register_class(recipe, include_seq = False)
