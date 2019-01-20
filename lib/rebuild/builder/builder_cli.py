@@ -80,6 +80,7 @@ class builder_cli(build_target_cli):
                              action = 'store', type = str,
                              help = 'The checksum cache to speed up builds. [ None ]')
     self.parser.add_argument('--profile', action = 'store_true', help = 'Use cProfile to profile. [ False ]')
+    self.parser.add_argument('--ignore-install-file-errors', action = 'store_true', help = 'Ignore install_files errors. [ False ]')
 
     for g in self.parser._action_groups:
       g._group_actions.sort(key = lambda x: x.dest)
@@ -199,6 +200,7 @@ class builder_cli(build_target_cli):
                                                             config.build_target)
 
     config.cli_variables = args.var
+    config.ignore_install_file_errors = args.ignore_install_file_errors
     
     env = builder_env(config, available_packages, checksum_getter, pfm)
     
