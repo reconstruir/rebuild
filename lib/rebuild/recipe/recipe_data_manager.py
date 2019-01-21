@@ -1,5 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+import re
+
 from bes.common import check, string_util
 from bes.text import string_list
 from bes.system import logger
@@ -92,5 +94,16 @@ class recipe_data_manager(object):
         parts.pop(0)
         return possible_mask
     return None
+
+  def substitute(self, text):
+    descs = recipe_data_descriptor.find(text)
+    replacements = {}
+    for desc in recipe_data_descriptor.find(text):
+      replacements[str(desc)] = self.get(desc)
+    return string_util.replace(text, replacements, word_boundary = False)
   
+  def dump(self):
+    import pprint
+    print(pprint.pformat(self._data))
+    
 check.register_class(recipe_data_manager, include_seq = False)

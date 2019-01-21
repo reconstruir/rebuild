@@ -30,10 +30,10 @@ class step_setup_ingest_upstream_sources(step):
 
     if upstream_source:
       url = string_util.unquote(upstream_source.value)
+      url = script.recipe_data_manager.substitute(url)
       arcname = upstream_source.get_property('arcname', None)
       checksum = upstream_source.get_property('checksum', None)
-      if checksum.startswith('@DATA'):
-        checksum = script.recipe_data_manager.get(checksum)
+      checksum = script.recipe_data_manager.substitute(checksum)
       if not checksum:
         self.blurb('warning: no checksum given for %s' % (url))
       ingested_filename = upstream_source.get_property('ingested_filename', None)

@@ -787,7 +787,7 @@ package foo 1.2.3
 
   steps
     step_takes_string
-      string_value: my string is @DATA:foo:${_version}
+      string_value: my string is @{DATA:foo:${_version}}
 '''
 
     r = P(self._filename_for_parser(), text).parse(variable_manager())
@@ -797,7 +797,7 @@ package foo 1.2.3
     self.assertEqual( [ ( 'foo', '1.2.3', 'formacos1' ), ( 'bar', '1.2.3', 'formacos2') ],
                       r[0].resolve_data('macos') )
 
-    self.assertMultiLineEqual( 'step_takes_string\n    string_value: my string is @DATA:foo:${_version}', str(r[0].steps[0]) )
+    self.assertMultiLineEqual( 'step_takes_string\n    string_value: my string is @{DATA:foo:${_version}}', str(r[0].steps[0]) )
       
   def _filename_for_parser(self):
     'Return a fake filename for parser.  Some values need it to find files relatively to filename.'
