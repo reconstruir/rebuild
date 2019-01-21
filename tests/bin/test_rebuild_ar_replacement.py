@@ -25,7 +25,7 @@ kiwi.o
       
       
     self.assertEqual( 0, rv.exit_code )
-    self.assert_string_equal_strip( expected, rv.stdout )
+    self.assert_string_equal_strip( expected, rv.output )
 
 if __name__ == '__main__':
   script_unit_test.main()
