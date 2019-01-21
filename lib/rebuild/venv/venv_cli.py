@@ -226,13 +226,12 @@ class venv_cli(build_target_cli):
     if not self._verify_project_names([ project_name ]):
       return 1
     success = self._manager.update_from_config(project_name, self._build_target, options)
-    if False: # not options.dont_touch_scripts:
-      update_script = venv_shell_script(self.UPDATE_SCRIPT_TEMPLATE, 'update.sh')
-      variables = {
-        '@CONFIG_FILENAME@': self._config_filename,
-        '@ARTIFACTS_CONFIG_NAME@': self._artifacts_config_name,
-      }
-      update_script.save(self._root_dir, variables)
+    update_script = venv_shell_script(self.UPDATE_SCRIPT_TEMPLATE, 'update.sh')
+    variables = {
+      '@CONFIG_FILENAME@': self._config_filename,
+      '@ARTIFACTS_CONFIG_NAME@': self._artifacts_config_name,
+    }
+    update_script.save(self._root_dir, variables, only_if_not_there = True)
     return self.bool_to_exit_code(success)
 
   def _verify_project_names(self, project_names):

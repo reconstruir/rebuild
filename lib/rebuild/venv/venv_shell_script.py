@@ -14,12 +14,14 @@ class venv_shell_script(object):
     else:
       self.mode = 0o644
   
-  def save(self, root_dir, variables):
+  def save(self, root_dir, variables, only_if_not_there = False):
     filename = path.join(root_dir, self.basename)
     variables = copy.deepcopy(variables)
     content = string_util.replace(self.template, variables)
     content = content.replace(path.expanduser('~'), '${HOME}')
     if self._content_changed(filename, content):
+      if only_if_not_there and path.isfile(filename):
+        return False
       file_util.save(filename, content = content, mode = self.mode)
       return True
     return False
