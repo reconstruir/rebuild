@@ -1,5 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+from os import path
 from collections import namedtuple
 from bes.common import check, variable
 from bes.system import os_env_var
@@ -37,7 +38,7 @@ class env_resolving_property(object):
     if not check.is_string(value):
       return value
     if value.startswith('~/'):
-      return path.expanduser(location)
+      return path.expanduser(value)
     return value
   
   @classmethod
@@ -51,7 +52,7 @@ class env_resolving_property(object):
       if not os_var.is_set:
         raise ValueError('%s not set in the current environment: \"%s\"' % (var, value))
       substitutions[var] = os_var.value
-    return variable.substitute(value, substitutions, word_boundary = True)
+    return variable.substitute(value, substitutions, word_boundary = False)
   
 class credentials(object):
 

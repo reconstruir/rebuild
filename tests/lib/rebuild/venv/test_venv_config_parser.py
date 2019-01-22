@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import os.path as path
+import os, os.path as path
 from bes.testing.unit_test import unit_test
 from rebuild.venv.venv_config_parser import venv_config_parser as P
 from rebuild.recipe import recipe_error as ERR
@@ -189,6 +189,73 @@ projects
 '''
     p = self._parse(text)
     self.assertEqual( 0, len(p.projects) )
+
+  def test_use_variables(self):
+    text = '''!rebuild.revenv!
+projects
+  foo
+    variables
+      all: GUAVA_VERSION=6.0.0
+      linux: KIWI_VERSION=1.0.0
+      macos: KIWI_VERSION=9.0.0
+      linux: ORANGE_VERSION=3.0.0
+      macos: ORANGE_VERSION=7.0.0
+      linux: LEMON_VERSION=2.0.0
+      macos: PLUM_VERSION=5.0.0
+
+    packages
+      guava == ${GUAVA_VERSION}
+      kiwi == ${KIWI_VERSION}
+      orange == ${ORANGE_VERSION}
+      linux: lemon == ${LEMON_VERSION}
+      macos: plum == ${PLUM_VERSION}
+'''
+    p = self._parse(text)
+    self.assertEqual( 1, len(p.projects) )
+    self.assertEqual( [
+      ( 'guava', '==', '6.0.0', None, None ),
+      ( 'kiwi', '==', '1.0.0', None, None ),
+      ( 'orange', '==', '3.0.0', None, None ),
+      ( 'lemon', '==', '2.0.0', 'linux', None ),
+    ], p.projects[0].resolve_packages('linux') )
+    return
+    self.assertEqual( [
+      ( 'guava', '==', '6.0.0', None, None ),
+      ( 'kiwi', '==', '9.0.0', None, None ),
+      ( 'orange', '==', '7.0.0', None, None ),
+      ( 'plum', '==', '5.0.0', 'macos', None ),
+    ], p.projects[0].resolve_packages('macos') )
+    
+  def test_use_env_vars(self):
+    text = '''!rebuild.revenv!
+projects
+  foo
+    variables
+      all: GUAVA_VERSION=6.0.0
+      linux: KIWI_VERSION=1.0.0
+      macos: KIWI_VERSION=9.0.0
+
+    packages
+      guava == ${GUAVA_VERSION}
+      kiwi == ${KIWI_VERSION}
+'''
+    try:
+      os.environ['GUAVA_VERSION'] = '6.6.6'
+      os.environ['KIWI_VERSION'] = '7.7.7'
+      p = self._parse(text)
+      self.assertEqual( 1, len(p.projects) )
+      self.assertEqual( [
+        ( 'guava', '==', '6.6.6', None, None ),
+        ( 'kiwi', '==', '7.7.7', None, None ),
+      ], p.projects[0].resolve_packages('linux') )
+      return
+      self.assertEqual( [
+        ( 'guava', '==', '6.0.0', None, None ),
+        ( 'kiwi', '==', '7.7.7', None, None ),
+      ], p.projects[0].resolve_packages('macos') )
+    finally:
+      del os.environ['GUAVA_VERSION']
+      del os.environ['KIWI_VERSION']
     
   def _filename_for_parser(self):
     'Return a fake filename for parser.  Some values need it to find files relatively to filename.'

@@ -5,8 +5,6 @@ import os.path as path
 from bes.fs import file_trash
 from bes.common import check
 from bes.git import git_download_cache, git_util
-from bes.fs.file_checksum_getter_db import file_checksum_getter_db
-from bes.fs.file_checksum_getter_raw import file_checksum_getter_raw
 
 from rebuild.tools_manager import tools_manager
 from rebuild.checksum import checksum_manager

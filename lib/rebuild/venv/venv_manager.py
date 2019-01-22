@@ -70,7 +70,9 @@ class venv_manager(object):
   def _resolve_packages(self, build_target, requirements):
     check.check_requirement_list(requirements)
     check.check_build_target(build_target)
-    self.log_d('_resolve_packages: all_available=%s' % (self._artifact_manager.list_all_by_package_descriptor(build_target)))
+#    available = self._artifact_manager.list_all_by_descriptor(None) #build_target)
+#    for a in available:
+#      self.log_d('_resolve_packages: AVAILABLE: %s' % (str(a)))
     self.log_d('_resolve_packages: build_target=%s; requirements=%s' % (build_target.build_path, requirements))
     resolve_rv = self._artifact_manager.poto_resolve_deps(requirements, build_target, ['RUN'], True)
     self.log_d('_resolve_packages: resolve_rv.resolved=%s' % (resolve_rv.resolved))

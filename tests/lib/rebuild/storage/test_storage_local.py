@@ -82,10 +82,10 @@ fake_package water 1.0.1 0 0 linux release x86_64 centos 7 none
 fake_package water 1.0.9 0 0 linux release x86_64 centos 7 none
 fake_package water 1.0.11 0 0 linux release x86_64 centos 7 none
 
-fake_package water 1.0.0 0 0 macos release x86_64 macos 10 none
-fake_package water 1.0.1 0 0 macos release x86_64 macos 10 none
-fake_package water 1.0.9 0 0 macos release x86_64 macos 10 none
-fake_package water 1.0.11 0 0 macos release x86_64 macos 10 none
+fake_package water 1.0.0 0 0 macos release x86_64 none 10 none
+fake_package water 1.0.1 0 0 macos release x86_64 none 10 none
+fake_package water 1.0.9 0 0 macos release x86_64 none 10 none
+fake_package water 1.0.11 0 0 macos release x86_64 none 10 none
 '''
 
     milk_recipes = '''
@@ -100,10 +100,10 @@ fake_package milk 1.0.1 0 0 linux release x86_64 centos 7 none
 fake_package milk 1.0.9 0 0 linux release x86_64 centos 7 none
 fake_package milk 1.0.11 0 0 linux release x86_64 centos 7 none
 
-fake_package milk 1.0.0 0 0 macos release x86_64 macos 10 none
-fake_package milk 1.0.1 0 0 macos release x86_64 macos 10 none
-fake_package milk 1.0.9 0 0 macos release x86_64 macos 10 none
-fake_package milk 1.0.11 0 0 macos release x86_64 macos 10 none
+fake_package milk 1.0.0 0 0 macos release x86_64 none 10 none
+fake_package milk 1.0.1 0 0 macos release x86_64 none 10 none
+fake_package milk 1.0.9 0 0 macos release x86_64 none 10 none
+fake_package milk 1.0.11 0 0 macos release x86_64 none 10 none
 
 '''
     t = AMT(debug = self.DEBUG)

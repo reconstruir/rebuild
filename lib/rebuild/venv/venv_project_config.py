@@ -1,7 +1,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+import os
 from collections import namedtuple
-from bes.common import check, node
+from bes.common import check, node, variable
 from bes.key_value import key_value_list
 from bes.text import string_list
 
@@ -58,7 +59,19 @@ class venv_project_config(namedtuple('venv_project_config', 'format_version, fil
   def resolve_packages(self, system):
     if not self.packages:
       return requirement_list()
-    return self.packages.resolve(system)
+    project_substitutions = self.resolve_variables(system).to_dict()
+    env_substitutions = dict(os.environ)
+    result = requirement_list()
+    for req in self.packages.resolve(system):
+      # Give the shell environment the first crack
+      if not req.version:
+        resolved_req = req
+      else:
+        version = variable.substitute(req.version, env_substitutions, word_boundary = False)
+        version = variable.substitute(version, project_substitutions, word_boundary = False)
+        resolved_req = req.clone(mutations = { 'version': version })
+      result.append(resolved_req)
+    return result
   
   @classmethod
   def is_venv_config(clazz, filename):

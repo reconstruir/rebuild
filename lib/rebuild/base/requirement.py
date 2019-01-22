@@ -1,6 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.common import check, object_util
+from bes.common import check, object_util, tuple_util
 from collections import namedtuple
 from bes.compat import StringIO
 
@@ -76,5 +76,8 @@ class requirement(namedtuple('requirement', 'name, operator, version, system_mas
       if self_hardness == requirement_hardness(h):
         return True
     return False
+
+  def clone(self, mutations = None):
+    return tuple_util.clone(self, mutations = mutations)
   
 check.register_class(requirement)

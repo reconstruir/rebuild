@@ -158,8 +158,6 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
                                   requirements = self.requirements)
     return package.create_package(filename, pkg_desc, self.metadata.build_target, stage_dir)
 
-#class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, env_files, requirements, properties, objects')):
-
   def clone(self, metadata_mutations):
     x = self.metadata.clone(metadata_mutations)
     print('X: %s' % (str(x)))

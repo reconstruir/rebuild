@@ -1088,3 +1088,4 @@ s/${BES_TEST_DATA_DIR}/remanager/${BES_TEST_DATA_DIR}/revenv
 - add a robust mask: foo bar baz kind of parser and use it everywhere
 - storage refactor that accepts build_target in list as well as repo ans sub repo etc
 - cleanup storage is a mess.  anything that calls ensure_source should be relative
+- used cached_property in package.py
