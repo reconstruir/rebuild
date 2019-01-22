@@ -1,12 +1,16 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+from os import path
 from collections import namedtuple
 from bes.common import cached_property, check, json_util, string_util, tuple_util
+from bes.archive import archive_extension
 from bes.compat import cmp
+from bes.fs import file_util
 
 from .build_arch import build_arch
 from .build_target import build_target
 from .build_version import build_version
+from .package_descriptor import package_descriptor
 
 class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revision, epoch, system, level, arch, distro, distro_version_major, distro_version_minor')):
 
@@ -90,6 +94,18 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
     if len(parts) != len(clazz._fields):
       raise ValueError('Invalid artifact descriptor: %s' % (s))
     return artifact_descriptor(*parts)
+
+  @classmethod
+  def parse_artifact_path(clazz, artifact_path):
+    build_path = path.dirname(artifact_path)
+    filename = path.basename(artifact_path)
+    bt = build_target.parse_path(build_path)
+    ext = archive_extension.extension_for_filename(filename)
+    nv = string_util.remove_tail(filename, '.' + ext)
+    pd = package_descriptor.parse(nv)
+    return artifact_descriptor(pd.name, pd.version.upstream_version, pd.version.revision,
+                               pd.version.epoch, bt.system, bt.level, bt.arch, bt.distro,
+                               bt.distro_version_major, bt.distro_version_minor)
 
   @classmethod
   def compare(clazz, a1, a2):

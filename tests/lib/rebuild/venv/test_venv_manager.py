@@ -15,7 +15,6 @@ from rebuild.venv.venv_manager import venv_manager
 from rebuild.venv.venv_install_options import venv_install_options
 
 from _rebuild_testing.fake_package_recipes import fake_package_recipes as RECIPES
-from _rebuild_testing.artifact_manager_tester import artifact_manager_tester as AMT
 from _rebuild_testing.venv_tester import venv_tester
 
 class test_venv_manager(unit_test):

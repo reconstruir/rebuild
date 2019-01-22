@@ -35,6 +35,13 @@ class venv_cli(build_target_cli):
 
     # version
     version_parser = commands_subparser.add_parser('version', help = 'Version')
+
+    # debug
+    self.debug_parser = commands_subparser.add_parser('debug', help = 'Debug')
+    self.debug_subparsers = self.debug_parser.add_subparsers(help = 'debug_commands', dest = 'subcommand')
+
+    # debug:env
+    self.debug_subparsers.add_parser('env', help = 'Print the environment')
     
     # packages
     self.packages_parser = commands_subparser.add_parser('packages', help = 'Packages')
@@ -200,7 +207,9 @@ class venv_cli(build_target_cli):
 
     if command == 'version':
       return self._command_version()
-      
+    elif command == 'debug:env':
+      return self._command_debug_env()
+
     self._packages_check_common_args(command, args)
       
     if command == 'packages:update':
@@ -292,7 +301,13 @@ revenv.py packages update ${_root_dir} @ARTIFACTS_CONFIG_NAME@ ${1+"$@"} --confi
     vcli = version_cli(rebuild)
     vcli.version_print_version()
     return 0
-   
+
+  def _command_debug_env(self):
+    for k, v in sorted(os.environ.items()):
+      print('ENV: %s=%s' % (k, v))
+      self.log_d('ENV: %s=%s' % (k, v))
+    return 0
+                 
   @classmethod
   def run(clazz):
     raise SystemExit(venv_cli().main())

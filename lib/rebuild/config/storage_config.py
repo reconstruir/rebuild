@@ -4,12 +4,15 @@ from os import path
 from collections import namedtuple
 
 from bes.common import cached_property, check
+from bes.system import logger, os_env_var
 
-from .credentials import credentials
+from .credentials import credentials, env_resolving_property
 
 class storage_config(namedtuple('storage_config', 'name, provider, location, repo, root_dir, download, upload')):
 
-  def __new__(clazz, name, provider, location, repo, root_dir, download, upload):
+  log = logger('storage_config')
+  
+  def __init__(self, name, provider, location, repo, root_dir, download, upload):
     check.check_string(name)
     check.check_string(provider)
     check.check_string(location, allow_none = True)
@@ -17,16 +20,48 @@ class storage_config(namedtuple('storage_config', 'name, provider, location, rep
     check.check_string(root_dir, allow_none = True)
     check.check_credentials(download)
     check.check_credentials(upload)
-    return clazz.__bases__[0].__new__(clazz, name, provider, location, repo, root_dir, download, upload)
+    self._name = name
+    self._provider = provider
+    self._location = location
+    self._repo = repo
+    self._root_dir = root_dir
+    self._upload = upload
+    self._download = download
 
+  @env_resolving_property
+  def name(self):
+    return self._name
+
+  @env_resolving_property
+  def provider(self):
+    return self._provider
+  
+  @env_resolving_property
+  def location(self):
+    return self._location
+  
+  @env_resolving_property
+  def repo(self):
+    return self._repo
+  
+  @env_resolving_property
+  def root_dir(self):
+    return self._root_dir
+  
+  @property
+  def download(self):
+    return self._download
+  
+  @property
+  def upload(self):
+    return self._upload
+  
   @classmethod
   def create_from_config(clazz, section):
     check.check_config_section(section)
     name = section.find_by_key('name')
     provider = section.find_by_key('provider')
     location = section.find_by_key('location', raise_error = False)
-    if location is not None and location.startswith('~/'):
-      location = path.expanduser(location)
     repo = section.find_by_key('repo', raise_error = False)
     root_dir = section.find_by_key('root_dir', raise_error = False)
     download_username = section.find_by_key('download.username', raise_error = False) or ''

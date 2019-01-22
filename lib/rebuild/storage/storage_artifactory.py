@@ -8,12 +8,12 @@ from bes.common import check
 from bes.text import string_list
 from bes.compat.url_compat import urljoin
 
-from .storage_base import storage_base
-
 from rebuild.base import build_blurb
 
 from rebuild.artifactory.artifactory_requests import artifactory_requests
-from rebuild.storage.storage_address import storage_address
+
+from .storage_base import storage_base
+from .storage_address import storage_address
 
 class storage_artifactory(storage_base):
 
@@ -45,7 +45,7 @@ class storage_artifactory(storage_base):
       self._available_files = self._load_available_remote()
   
   def _load_available_remote(self):
-    files = string_list([ entry.filename for entry in self.list_all_files() ])
+    files = string_list(self.list_all_files())
     file_util.save(self._cached_available_filename, content = files.to_json())
     return files
 
@@ -80,7 +80,7 @@ class storage_artifactory(storage_base):
 
   #@abstractmethod
   def ensure_source(self, filename):
-    assert filename.startswith(self._local_root_dir)
+    #assert filename.startswith(self._local_root_dir)
     if filename.startswith(self._local_root_dir):
       filename = file_util.remove_head(filename, self._local_root_dir)
     downloaded_filename = self._downloaded_filename(filename)
@@ -137,7 +137,7 @@ class storage_artifactory(storage_base):
     entries = artifactory_requests.list_all_files(self._address,
                                                   self._config.storage_config.download.username,
                                                   self._config.storage_config.download.password)
-    return [ self._entry(*entry) for entry in entries ]
+    return [ entry[0] for entry in entries ]
 
   def make_address(self, filename = None):
     return storage_address(self._config.storage_config.location,

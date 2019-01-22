@@ -15,6 +15,7 @@ class build_target(namedtuple('build_target', 'system, distro, distro_version_ma
   def __new__(clazz, system, distro, distro_version_major, distro_version_minor, arch, level):
     check.check_string(system)
     check.check_string(distro, allow_none = True)
+    distro = clazz.resolve_distro(distro)
     check.check_string(distro_version_major, allow_none = True)
     check.check_string(distro_version_minor, allow_none = True)
     arch = build_arch.check_arch(arch, system, distro)
@@ -151,5 +152,12 @@ class build_target(namedtuple('build_target', 'system, distro, distro_version_ma
     elif distro_version_minor is None:
       distro_version_minor = ''
     return distro_version_minor
+  
+  @classmethod
+  def resolve_distro(clazz, distro):
+    if check.is_string(distro):
+      if distro.lower() == 'none':
+        distro = None
+    return distro
   
 check.register_class(build_target)

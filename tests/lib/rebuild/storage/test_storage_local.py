@@ -9,6 +9,7 @@ from bes.archive.temp_archive import archive_extension, temp_archive
 from rebuild.storage import storage_local, storage_factory
 from rebuild.config import storage_config_manager
 import os.path as path
+from _rebuild_testing.artifact_manager_tester import artifact_manager_tester as AMT
 
 class source_dir_maker(object):
 
@@ -68,6 +69,87 @@ class test_storage_local(unit_test):
     expected = path.join(tmp_cache_dir, 'a/alpha-1.2.3.tar.gz')
     actual = storage.find_tarball('a/alpha-1.2.3.tar.gz')
     self.assertEqual( expected, actual )
+    
+  def test_list_all_files(self):
+    water_recipes = '''
+fake_package water 1.0.0 0 0 linux release x86_64 ubuntu 18 none
+fake_package water 1.0.1 0 0 linux release x86_64 ubuntu 18 none
+fake_package water 1.0.10 0 0 linux release x86_64 ubuntu 18 none
+fake_package water 1.0.13 0 0 linux release x86_64 ubuntu 18 none
+
+fake_package water 1.0.0 0 0 linux release x86_64 centos 7 none
+fake_package water 1.0.1 0 0 linux release x86_64 centos 7 none
+fake_package water 1.0.9 0 0 linux release x86_64 centos 7 none
+fake_package water 1.0.11 0 0 linux release x86_64 centos 7 none
+
+fake_package water 1.0.0 0 0 macos release x86_64 macos 10 none
+fake_package water 1.0.1 0 0 macos release x86_64 macos 10 none
+fake_package water 1.0.9 0 0 macos release x86_64 macos 10 none
+fake_package water 1.0.11 0 0 macos release x86_64 macos 10 none
+'''
+
+    milk_recipes = '''
+fake_package milk 1.0.0 0 0 linux release x86_64 ubuntu 18 none
+fake_package milk 1.0.1 0 0 linux release x86_64 ubuntu 18 none
+fake_package milk 1.0.1 1 0 linux release x86_64 ubuntu 18 none
+fake_package milk 1.0.10 0 0 linux release x86_64 ubuntu 18 none
+fake_package milk 1.0.13 0 0 linux release x86_64 ubuntu 18 none
+
+fake_package milk 1.0.0 0 0 linux release x86_64 centos 7 none
+fake_package milk 1.0.1 0 0 linux release x86_64 centos 7 none
+fake_package milk 1.0.9 0 0 linux release x86_64 centos 7 none
+fake_package milk 1.0.11 0 0 linux release x86_64 centos 7 none
+
+fake_package milk 1.0.0 0 0 macos release x86_64 macos 10 none
+fake_package milk 1.0.1 0 0 macos release x86_64 macos 10 none
+fake_package milk 1.0.9 0 0 macos release x86_64 macos 10 none
+fake_package milk 1.0.11 0 0 macos release x86_64 macos 10 none
+
+'''
+    t = AMT(debug = self.DEBUG)
+    t.add_recipes(water_recipes)
+    t.add_recipes(milk_recipes)
+    t.publish(water_recipes)
+    t.publish(milk_recipes)
+
+    tmp_cache_dir = temp_file.make_temp_dir(suffix = '.local_cache_dir', delete = not self.DEBUG)
+    tmp_dir = t.am.root_dir
+    if self.DEBUG:
+      print('tmp_dir: %s' % (tmp_dir))
+      print('tmp_cache_dir: %s' % (tmp_cache_dir))
+    
+    scm = storage_config_manager.make_local_config('unit_test', tmp_dir, None, None)
+    config = scm.get('unit_test')
+    factory_config = storage_factory.config(tmp_cache_dir, None, True, config)
+    storage = storage_local(factory_config)
+    expected = [
+      'linux-centos-7/x86_64/release/milk-1.0.0.tar.gz',
+      'linux-centos-7/x86_64/release/milk-1.0.1.tar.gz',
+      'linux-centos-7/x86_64/release/milk-1.0.11.tar.gz',
+      'linux-centos-7/x86_64/release/milk-1.0.9.tar.gz',
+      'linux-centos-7/x86_64/release/water-1.0.0.tar.gz',
+      'linux-centos-7/x86_64/release/water-1.0.1.tar.gz',
+      'linux-centos-7/x86_64/release/water-1.0.11.tar.gz',
+      'linux-centos-7/x86_64/release/water-1.0.9.tar.gz',
+      'linux-ubuntu-18/x86_64/release/milk-1.0.0.tar.gz',
+      'linux-ubuntu-18/x86_64/release/milk-1.0.1-1.tar.gz',
+      'linux-ubuntu-18/x86_64/release/milk-1.0.1.tar.gz',
+      'linux-ubuntu-18/x86_64/release/milk-1.0.10.tar.gz',
+      'linux-ubuntu-18/x86_64/release/milk-1.0.13.tar.gz',
+      'linux-ubuntu-18/x86_64/release/water-1.0.0.tar.gz',
+      'linux-ubuntu-18/x86_64/release/water-1.0.1.tar.gz',
+      'linux-ubuntu-18/x86_64/release/water-1.0.10.tar.gz',
+      'linux-ubuntu-18/x86_64/release/water-1.0.13.tar.gz',
+      'macos-10/x86_64/release/milk-1.0.0.tar.gz',
+      'macos-10/x86_64/release/milk-1.0.1.tar.gz',
+      'macos-10/x86_64/release/milk-1.0.11.tar.gz',
+      'macos-10/x86_64/release/milk-1.0.9.tar.gz',
+      'macos-10/x86_64/release/water-1.0.0.tar.gz',
+      'macos-10/x86_64/release/water-1.0.1.tar.gz',
+      'macos-10/x86_64/release/water-1.0.11.tar.gz',
+      'macos-10/x86_64/release/water-1.0.9.tar.gz',
+    ]
+    self.assertEqual( expected, storage.list_all_files() )
     
 if __name__ == '__main__':
   unit_test.main()

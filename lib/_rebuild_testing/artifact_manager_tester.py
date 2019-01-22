@@ -15,7 +15,7 @@ from .artifact_manager_helper import artifact_manager_helper
 class artifact_manager_tester(object):
 
   def __init__(self, root_dir = None, debug = False, recipes = None, filename = None):
-    root_dir = root_dir or temp_file.make_temp_dir(suffix = '.artifacts')
+    root_dir = root_dir or temp_file.make_temp_dir(suffix = '.artifacts', delete = not debug)
     self._debug = debug
     self.am = artifact_manager_helper.make_local_artifact_manager(root_dir)
     self._recipes = {}
@@ -51,7 +51,6 @@ class artifact_manager_tester(object):
 
   def publish(self, adescs, mutations = {}):
     adescs = self._parse_adesc_list(adescs)
-    print('adescs: %s' % (adescs))
     result = []
     for adesc in adescs:
       result.append(self._publish_one(adesc, mutations))

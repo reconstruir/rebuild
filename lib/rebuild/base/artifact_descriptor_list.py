@@ -26,15 +26,19 @@ class artifact_descriptor_list(type_checked_list):
 
   def filter_by_name(self, name):
     'Return only the descriptors that match name.'
-    return self.__class__([ adesc for adesc in self if adesc.name == name ])
+    return artifact_descriptor_list([ adesc for adesc in self if adesc.name == name ])
   
   def filter_by_level(self, level):
     'Return only the descriptors that match level.'
-    return self.__class__([ adesc for adesc in self if adesc.level == level ])
+    return artifact_descriptor_list([ adesc for adesc in self if adesc.level == level ])
   
   def filter_by_system(self, system):
     'Return only the descriptors that match system.'
-    return self.__class__([ adesc for adesc in self if adesc.system == system ])
+    return artifact_descriptor_list([ adesc for adesc in self if adesc.system == system ])
+
+  def filter_by_build_target(self, build_target):
+    'Return only the descriptors that match system.'
+    return artifact_descriptor_list([ adesc for adesc in self if adesc.build_target == build_target ])
 
   def latest_versions(self):
     'Return a list of only the lastest version of any artifact with multiple versions.'
@@ -49,5 +53,10 @@ class artifact_descriptor_list(type_checked_list):
     result = artifact_descriptor_list(latest.values())
     result.sort(key = lambda adesc: tuple(adesc))
     return result
-  
+
+  @classmethod
+  def parse_artifact_paths(self, paths):
+    'Return an artifact_descriptor_list by parsing the list of artifact files.'
+    return artifact_descriptor_list([ artifact_descriptor.parse_artifact_path(p.filename) for p in paths ])
+    
 check.register_class(artifact_descriptor_list, include_seq = False)
