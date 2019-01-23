@@ -244,7 +244,7 @@ items.find({
       elif artifactory_prop['key'] == 'rebuild.arch':
         arch = artifactory_prop['value']
       elif artifactory_prop['key'] == 'rebuild.distro':
-        distro = artifactory_prop['value']
+        distro = artifactory_prop.get('value', '')
       elif artifactory_prop['key'] == 'rebuild.requirements':
         requirements.append(artifactory_prop['value'])
 
