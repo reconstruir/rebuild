@@ -439,6 +439,8 @@ class sources_cli(object):
         
     bt = build_target.make_host_build_target(level = 'release', version_minor = '')
     artifacts = am.list_all_by_descriptor(bt)
+    # Never publish artifacts with .9999 in their version as that is testing stuff
+    artifacts = [ artifact for artifact in artifacts if '.9999' not in artifact.version ]
     if limit:
       artifacts = artifacts[0:limit]
     for adesc in artifacts:
