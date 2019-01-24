@@ -102,7 +102,7 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
 
     tmp_compiler_dir = path.join(tmp_dir, 'objects')
 
-    cc = compiler(build_target.make_host_build_target())
+    cc = compiler(build_target.make_host_build_target(level = 'release'))
 
     include_path = []
     lib_path = []

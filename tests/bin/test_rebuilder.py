@@ -19,7 +19,7 @@ class test_rebuilder_script(script_unit_test):
   DEBUG = script_unit_test.DEBUG
   #DEBUG = True
 
-  HOST_BUILD_TARGET = build_target.make_host_build_target(level = 'release', version_minor = '')
+  HOST_BUILD_TARGET = build_target.make_host_build_target(level = 'release')
   IOS_BUILD_TARGET = build_target('ios', None, '9', '', 'arm64', 'release')
   ANDROID_BUILD_TARGET = build_target('android', '', '', '', 'armv7', 'release')
   

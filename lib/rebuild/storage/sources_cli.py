@@ -402,7 +402,7 @@ class sources_cli(object):
     password = storage._config.upload_credentials.credentials.password
     
     am = artifact_manager_local(local_dir)
-    bt = build_target.make_host_build_target()
+    bt = build_target.make_host_build_target(level = 'release')
     artifacts = am.list_all_by_descriptor(bt)
     for adesc in artifacts:
       md = am.find_by_artifact_descriptor(adesc, True)
@@ -437,7 +437,7 @@ class sources_cli(object):
 
     am = artifact_manager_helper.make_local_artifact_manager(local_dir)
         
-    bt = build_target.make_host_build_target(level = 'release', version_minor = '')
+    bt = build_target.make_host_build_target(level = 'release')
     artifacts = am.list_all_by_descriptor(bt)
     # Never publish artifacts with .9999 in their version as that is testing stuff
     artifacts = [ artifact for artifact in artifacts if '.9999' not in artifact.version ]

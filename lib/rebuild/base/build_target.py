@@ -24,7 +24,7 @@ class build_target(namedtuple('build_target', 'system, distro, distro_version_ma
     arch = build_arch.determine_arch(arch, system, distro)
     level = build_level.parse_level(level)
     distro_version_minor = clazz.resolve_distro_version_minor(distro_version_minor)
-    if system != 'linux' and distro != '':
+    if system != host.LINUX and distro != '':
       raise ValueError('distro for %s should be empty/none' % (system))
     return clazz.__bases__[0].__new__(clazz, system, distro, distro_version_major, distro_version_minor, arch, level)
 
@@ -140,9 +140,14 @@ class build_target(namedtuple('build_target', 'system, distro, distro_version_ma
     return distro_version_major, distro_version_minor
   
   @classmethod
-  def make_host_build_target(clazz, level = build_level.RELEASE, version_minor = host.VERSION_MINOR):
-    return build_target(host.SYSTEM, host.DISTRO, host.VERSION_MAJOR, version_minor, ( host.ARCH, ), level)
-  
+  def make_host_build_target(clazz, level = build_level.RELEASE):
+    if host.SYSTEM == host.LINUX:
+      return build_target(host.SYSTEM, host.DISTRO, host.VERSION_MAJOR, None, ( host.ARCH, ), level)
+    elif host.SYSTEM == host.MACOS:
+      return build_target(host.SYSTEM, None, host.VERSION_MAJOR, None, ( host.ARCH, ), level)
+    else:
+      return build_target(host.SYSTEM, None, host.VERSION_MAJOR, host.VERSION_MINOR, ( host.ARCH, ), level)
+      
   def clone(self, mutations = None):
     return tuple_util.clone(self, mutations = mutations)
 

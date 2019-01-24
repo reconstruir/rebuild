@@ -15,8 +15,8 @@ class builder_config(object):
   
   def __init__(self):
     self._build_root = None
-    self.build_target = build_target.make_host_build_target(level = build_level.RELEASE, version_minor = '')
-    self.host_build_target = build_target.make_host_build_target(level = build_level.RELEASE, version_minor = '')
+    self.build_target = build_target.make_host_build_target(level = build_level.RELEASE)
+    self.host_build_target = build_target.make_host_build_target(level = build_level.RELEASE)
     self.root_dir = None
     self.deps_only = False
     self.disabled = False

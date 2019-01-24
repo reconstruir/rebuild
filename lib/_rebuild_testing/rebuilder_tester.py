@@ -13,7 +13,7 @@ class rebuilder_tester(object):
   class config(namedtuple('config', 'read_contents, read_checksums, build_target, no_network')):
 
     def __new__(clazz, read_contents = False, read_checksums = False, bt = None, no_network = True):
-      bt = bt or build_target.make_host_build_target(level = build_level.RELEASE, version_minor = 'none')
+      bt = bt or build_target.make_host_build_target(level = build_level.RELEASE)
       return clazz.__bases__[0].__new__(clazz, read_contents, read_checksums, bt, no_network)
   
   result = namedtuple('result', 'tmp_dir, command, result, artifacts_dir, artifacts, artifacts_members, artifacts_contents, droppings, checksums, checksums_contents, source_dir_droppings')
