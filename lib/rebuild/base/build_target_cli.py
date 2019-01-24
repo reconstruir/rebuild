@@ -50,10 +50,22 @@ class build_target_cli(object):
                         type = str,
                         default = default_distro_version_minor,
                         help = 'Distro Version. [ %s ]' % (default_distro_version_minor ))
+    parser.add_argument('--build-target',
+                        action = 'store',
+                        type = str,
+                        default = None,
+                        help = 'Build target as a path. [ None ]')
 
   def build_target_resolve(self, args):
-    args.system = build_system.parse_system(args.system)
-    args.level = build_level.parse_level(args.level)
-    args.arch = build_arch.parse_arch(args.arch, args.system, args.distro)
-    args.build_target = build_target(args.system, args.distro, args.distro_version_major, args.distro_version_minor, args.arch, args.level)
+    if args.build_target:
+      args.build_target = build_target.parse_path(args.build_target)
+      args.system = args.build_target.system
+      args.level = args.build_target.level
+      args.arch = args.build_target.arch
+    else:
+      args.system = build_system.parse_system(args.system)
+      args.level = build_level.parse_level(args.level)
+      args.arch = build_arch.parse_arch(args.arch, args.system, args.distro)
+      args.build_target = build_target(args.system, args.distro, args.distro_version_major,
+                                       args.distro_version_minor, args.arch, args.level)
     return args.build_target

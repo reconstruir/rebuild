@@ -1091,3 +1091,7 @@ s/${BES_TEST_DATA_DIR}/remanager/${BES_TEST_DATA_DIR}/revenv
 - used cached_property in package.py
 - add artifact_manager.has_artifact()
 - think about the problem of recipes matching the versions they are building have versions conditionals in recipes
+- this command is slow because it downloads from artifactory but it doesnt have to so the update availabe
+code in artifactory needs to be more lazy:
+
+BES_LOG="venv=debug" /tmp/boot/root/ego_devenv/run.sh revenv.py config packages  ~/. ego_artifactory ego_devenv  --config=/tmp/boot/root/config/ego.revenv

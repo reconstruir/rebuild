@@ -144,6 +144,12 @@ class test_rebuilder_script(script_unit_test):
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libstarch-1.0.0.tar.gz' ], test.artifacts )
 
+  @skip_if(not toolchain_testing.can_compile_ios(), 'cannot compile ios')
+  def test_lib_libstarch_ios_cross_compile_build_target(self):
+    test = self._run_test(rebuilder_tester.config(bt = self.IOS_BUILD_TARGET), self.data_dir(), 'basic', 'libstarch', '--build-target', 'ios-9/arm64/release')
+    self.assertEqual( 0, test.result.exit_code )
+    self.assertEqual( [ 'libstarch-1.0.0.tar.gz' ], test.artifacts )
+
   @skip_if(not toolchain_testing.can_compile_android(), 'cannot compile android')
   def test_lib_libstarch_android_cross_compile(self):
     test = self._run_test(rebuilder_tester.config(bt = self.ANDROID_BUILD_TARGET), self.data_dir(), 'basic', 'libstarch', '-s', 'android')
