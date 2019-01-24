@@ -136,19 +136,20 @@ class test_version(unit_test):
       build_version.parse('1:2:3')
 
   def test_cmp(self):
-    self.assertEqual( -1, self.__cmp('1.2.3', '1.2.4') )
-    self.assertEqual( 0, self.__cmp('1.2.3', '1.2.3') )
-    self.assertEqual( 1, self.__cmp('1.2.4', '1.2.3') )
-    self.assertEqual( -1, self.__cmp('1.2.8', '1.2.9') )
-    self.assertEqual( -1, self.__cmp('1.2.10', '1.2.11') )
-    self.assertEqual( -1, self.__cmp('1.2.9', '1.2.10') )
+    self.assertEqual( -1, self._call_cmp('1.2.3', '1.2.4') )
+    self.assertEqual( 0, self._call_cmp('1.2.3', '1.2.3') )
+    self.assertEqual( 1, self._call_cmp('1.2.4', '1.2.3') )
+    self.assertEqual( -1, self._call_cmp('1.2.8', '1.2.9') )
+    self.assertEqual( -1, self._call_cmp('1.2.10', '1.2.11') )
+    self.assertEqual( -1, self._call_cmp('1.2.9', '1.2.10') )
     
-    self.assertEqual( 1, self.__cmp('1:1.2.3', '1.2.4') )
-    self.assertEqual( -1, self.__cmp('0:1.2.3', '1.2.4') )
-    self.assertEqual( -1, self.__cmp('0:1.2.3', '0:1.2.3-1') )
-    self.assertEqual( 1, self.__cmp('0:1.2.3-3', '0:1.2.3-2') )
+    self.assertEqual( 1, self._call_cmp('1:1.2.3', '1.2.4') )
+    self.assertEqual( -1, self._call_cmp('0:1.2.3', '1.2.4') )
+    self.assertEqual( -1, self._call_cmp('0:1.2.3', '0:1.2.3-1') )
+    self.assertEqual( 1, self._call_cmp('0:1.2.3-3', '0:1.2.3-2') )
+    self.assertEqual( 1, self._call_cmp('1.2.3.alpha1', '1.2.3') )
 
-  def __cmp(self, v1, v2):
+  def _call_cmp(self, v1, v2):
     return build_version.compare(build_version.parse(v1), build_version.parse(v2))
 
 if __name__ == "__main__":
