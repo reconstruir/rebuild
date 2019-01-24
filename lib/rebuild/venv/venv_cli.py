@@ -188,8 +188,6 @@ class venv_cli(build_target_cli):
 
   def main(self):
     args = self.parser.parse_args()
-    if getattr(args, 'system', None) is not None:
-      self.build_target = self.build_target_resolve(args)
     subcommand = getattr(args, 'subcommand', None)
     if subcommand:
       command = '%s:%s' % (args.command, subcommand)
