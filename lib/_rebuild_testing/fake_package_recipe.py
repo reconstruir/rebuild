@@ -160,5 +160,4 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
 
   def clone(self, metadata_mutations):
     x = self.metadata.clone(metadata_mutations)
-    print('X: %s' % (str(x)))
     return tuple_util.clone(self, { 'metadata': self.metadata.clone(metadata_mutations) })
