@@ -1093,5 +1093,6 @@ s/${BES_TEST_DATA_DIR}/remanager/${BES_TEST_DATA_DIR}/revenv
 - think about the problem of recipes matching the versions they are building have versions conditionals in recipes
 - this command is slow because it downloads from artifactory but it doesnt have to so the update availabe
 code in artifactory needs to be more lazy:
+- control-c in update script corrupts the db.  need a way to autorecover
 
 BES_LOG="venv=debug" /tmp/boot/root/ego_devenv/run.sh revenv.py config packages  ~/. ego_artifactory ego_devenv  --config=/tmp/boot/root/config/ego.revenv
