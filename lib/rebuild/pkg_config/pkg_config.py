@@ -4,20 +4,30 @@
 import pkgutil
 import os, os.path as path
 from bes.common import algorithm, check, object_util, string_util
-from bes.system import execute, log, os_env_var, host
+from bes.system import execute, logger, os_env_var, host
 from bes.fs import file_find, file_match, file_path, file_util, temp_file
 from bes.python import package
 from rebuild.base import build_arch, build_blurb, build_system
 
 class pkg_config(object):
 
+  _LOG = logger('pkg_config')
+  
   _PKG_CONFIG_VERSION = 'pkg-config-0.29.1'
   _PKG_CONFIG_SUB_PATH = path.join('pkg_config_binaries', host.SYSTEM, build_arch.HOST_ARCH, _PKG_CONFIG_VERSION)
-  _PKG_CONFIG_EXE = file_path.which('pkgconf', raise_error = False)
-  if not _PKG_CONFIG_EXE:
-    _PKG_CONFIG_EXE = file_path.which('pkg-config', raise_error = False)
-  if not _PKG_CONFIG_EXE:
-    _PKG_CONFIG_EXE = package.get_data_program_exe(_PKG_CONFIG_SUB_PATH, __file__, __name__)
+
+  @classmethod
+  def pkg_config_exe(clazz):
+    if not hasattr(clazz, '_pkg_config_exe'):
+      exe = file_path.which('pkgconf', raise_error = False)
+      if not exe:
+        exe = file_path.which('pkg-config', raise_error = False)
+      if not exe:
+        for p in os_env_var('PATH').path:
+          clazz._LOG.log_e('PATH: %s' % (p))
+        raise RuntimeError('no pkgconf or pkg-config found in $PATH')
+      setattr(clazz, '_pkg_config_exe', exe)
+    return getattr(clazz, '_pkg_config_exe')
     
   @classmethod
   def list_all(clazz, PKG_CONFIG_PATH = []):
@@ -101,12 +111,11 @@ class pkg_config(object):
   @classmethod
   def _call_pkg_config(clazz, args, PKG_CONFIG_LIBDIR = [], PKG_CONFIG_PATH = []):
     check.check_string_seq(PKG_CONFIG_PATH)
-    cmd = [ clazz._PKG_CONFIG_EXE ] + object_util.listify(args)
+    cmd = [ clazz.pkg_config_exe() ] + object_util.listify(args)
     env = {
       'PKG_CONFIG_DEBUG_SPEW': '1',
       'PKG_CONFIG_LIBDIR': ':'.join(PKG_CONFIG_LIBDIR),
       'PKG_CONFIG_PATH': ':'.join(PKG_CONFIG_PATH),
-#      'PATH': os_env_var('PATH').value,
     }
     for p in PKG_CONFIG_PATH:
       file_util.mkdir(p)
@@ -120,5 +129,3 @@ class pkg_config(object):
   def _parse_flags(clazz, s):
     flags = string_util.split_by_white_space(s)
     return algorithm.unique([ flag.strip() for flag in flags ])
-
-log.add_logging(pkg_config, 'pkg_config')

@@ -1,5 +1,2 @@
 include bin/rebuild_ar_replacement.py
-include lib/rebuild/pkg_config/pkg_config_binaries/linux/armv7/pkg-config-0.29.1
-include lib/rebuild/pkg_config/pkg_config_binaries/linux/x86_64/pkg-config-0.29.1
-include lib/rebuild/pkg_config/pkg_config_binaries/macos/x86_64/pkg-config-0.29.1
 include lib/rebuild/toolchain/programs/rebuild_ar_replacement.py

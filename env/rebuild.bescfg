@@ -1,5 +1,6 @@
 # rebuild
 name: rebuild
-unixpath: ${root_dir}/bin
-pythonpath: ${root_dir}/lib:${rebuild_dir}/rebuild_deps/${system}/stuff/lib/python
+variables: BESTEST_UNIXPATH BESTEST_PYTHONPATH
+unixpath: ${root_dir}/bin:${BESTEST_UNIXPATH}
+pythonpath: ${root_dir}/lib:${BESTEST_PYTHONPATH}
 requires: bes
