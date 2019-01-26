@@ -21,13 +21,6 @@ from .builder_env import builder_env
 class builder_cli(build_target_cli):
 
   def __init__(self):
-    archs = ','.join(build_arch.DEFAULT_HOST_ARCHS)
-    build_levels = ','.join(build_level.LEVELS)
-    systems = ','.join(build_system.SYSTEMS)
-    default_system = build_system.HOST
-    default_level = build_level.RELEASE
-    default_arch = build_arch.HOST_ARCH
-    default_distro = build_system.HOST_DISTRO
     self.parser = argparse.ArgumentParser(description = 'Build packages.')
     self.build_target_add_arguments(self.parser)
     self.parser.add_argument('-C', '--change-dir', action = 'store', type = str, default = None)
@@ -145,10 +138,6 @@ class builder_cli(build_target_cli):
         target_packages_filter = args.filter[0].split(',')
       target_packages_filter = [ p for p in target_packages_filter if p ]
       available_packages = self._filter_target_packages(available_packages, target_packages_filter)
-
-    args.system = build_system.parse_system(args.system)
-    args.level = build_level.parse_level(args.level)
-    args.arch = build_arch.parse_arch(args.arch, args.system, args.distro)
 
     # Tests only run on desktop
     if not bt.is_desktop():

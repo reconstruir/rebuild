@@ -28,6 +28,9 @@ class build_target(namedtuple('build_target', 'system, distro, distro_version_ma
       raise ValueError('distro for %s should be empty/none' % (system))
     return clazz.__bases__[0].__new__(clazz, system, distro, distro_version_major, distro_version_minor, arch, level)
 
+  def __str__(self):
+    return self.build_path
+  
   @cached_property
   def build_path(self):
     return self._make_build_path(self.system, self.distro, self.distro_version_major, self.distro_version_minor, self.arch, self.level)    
@@ -103,11 +106,12 @@ class build_target(namedtuple('build_target', 'system, distro, distro_version_ma
   @classmethod
   def parse_path(clazz, s):
     parts = s.split('/')
-    if len(parts) != 3:
+    num_parts = len(parts)
+    if num_parts < 2:
       raise ValueError('Invalid build path: %s' % (s))
     system = parts[0]
     arch = parts[1]
-    level = parts[2]
+    level = parts[2] if num_parts > 2 else 'release'
     system, distro, distro_version_major, distro_version_minor = clazz._parse_system(system)
     arch = build_arch.split(arch, delimiter = '-')
     return build_target(system, distro, distro_version_major, distro_version_minor, arch, level)

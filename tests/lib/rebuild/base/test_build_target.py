@@ -24,6 +24,8 @@ class test_build_target(unit_test):
     self.assertEqual( BT('linux', '', '', None, 'x86_64', 'release'), BT.parse_path('linux/x86_64/release') )
     self.assertEqual( BT('ios', '', '12', None, 'armv7,arm64', 'release'), BT.parse_path('ios-12/arm64-armv7/release') )
     self.assertEqual( BT('ios', '', '12', None, 'armv7,arm64', 'debug'), BT.parse_path('ios-12/arm64-armv7/debug') )
+    self.assertEqual( BT('macos', '', '10', '', 'x86_64', 'debug'), BT.parse_path('macos-10/x86_64/debug') )
+    self.assertEqual( BT('macos', '', '10', '', 'x86_64', 'release'), BT.parse_path('macos-10/x86_64') )
     
   def test_parse_expression(self):
     F = self._parse_exp

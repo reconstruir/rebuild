@@ -229,6 +229,22 @@ projects
     test = venv_tester(config, recipes = recipes1)
     test.update_from_config('test')
     self.assertEqual( [ 'aflatoxin-1.0.1' ], test.installed_packages('test', include_version = True) )
+
+  def test_packages_missing_version(self):
+    recipes1 = '''
+fake_package aflatoxin 1.0.0 0 0 linux release x86_64 ubuntu 18 none
+fake_package aflatoxin 1.0.2 0 0 linux release x86_64 ubuntu 18 none
+'''
+    config = '''{head}
+projects
+  test
+    packages
+      aflatoxin == 1.0.1
+'''
+    test = venv_tester(config, recipes = recipes1)
+    rv = test.update_from_config('test')
+    self.assertEqual( False, rv )
+    self.assertEqual( [], test.installed_packages('test', include_version = True) )
     
   @classmethod
   def _make_temp_dir(clazz):

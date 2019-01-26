@@ -75,9 +75,20 @@ class venv_manager(object):
 #      self.log_d('_resolve_packages: AVAILABLE: %s' % (str(a)))
     self.log_d('_resolve_packages: build_target=%s; requirements=%s' % (build_target.build_path, requirements))
     resolve_rv = self._artifact_manager.poto_resolve_deps(requirements, build_target, ['RUN'], True)
+
+    if resolve_rv.missing:
+      rdict = requirements.to_dict()
+      for package in resolve_rv.missing:
+        self.blurb('missing artifact: %s' % (str(rdict[package])))
+      self.blurb('    build target: %s' % (build_target.build_path))
+      self.blurb(' config filename: %s' % (self._config.filename))
+#      self.blurb('         project: %s' % (project_name))
+      self.blurb('artifact manager: %s' % (str(self._artifact_manager)))
+    
     self.log_d('_resolve_packages: resolve_rv.resolved=%s' % (resolve_rv.resolved))
     self.log_d('_resolve_packages: resolve_rv.available=%s' % (resolve_rv.available))
     self.log_d('_resolve_packages: resolve_rv.latest=%s' % (resolve_rv.latest))
+    self.log_d('_resolve_packages: resolve_rv.missing=%s' % (resolve_rv.missing))
 
     missing_packages = dependency_resolver.check_missing(resolve_rv.available.names(), requirements.names())
     if missing_packages:

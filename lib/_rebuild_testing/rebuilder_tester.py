@@ -48,7 +48,7 @@ class rebuilder_tester(object):
     cmd += [
       '--verbose',
       '--root', tmp_dir,
-      '--level', self._level,
+#      '--level', self._level,
       '--timestamp', 'timestamp',
     ] + list(args)
     return cmd

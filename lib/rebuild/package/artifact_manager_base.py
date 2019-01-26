@@ -150,7 +150,7 @@ class artifact_manager_base(with_metaclass(artifact_manager_register_meta, objec
   def list_latest_versions(self, build_target):
     return self.list_all_by_descriptor(build_target).latest_versions()
 
-  _poto_resolve_result = namedtuple('_poto_resolve_result', 'available, latest, resolved')
+  _poto_resolve_result = namedtuple('_poto_resolve_result', 'available, latest, resolved, missing')
   def poto_resolve_deps(self, requirements, build_target, hardness, include_names):
     check.check_requirement_list(requirements)
     check.check_build_target(build_target)
@@ -164,7 +164,11 @@ class artifact_manager_base(with_metaclass(artifact_manager_register_meta, objec
     available = self.list_all_filter_with_requirements(build_target, requirements)
     latest = available.latest_versions()
     rm.add_packages(latest)
-    resolved = rm.resolve_deps(requirements.names(), build_target.system, hardness, include_names)
-    return self._poto_resolve_result(available, latest, resolved)
+    rm_rv = rm.resolve_deps_NEW(requirements.names(), build_target.system, hardness, include_names)
+    if rm_rv.missing:
+      result = self._poto_resolve_result(available, latest, None, rm_rv.missing)
+    else:
+      result = self._poto_resolve_result(available, latest, rm_rv.resolved, None)
+    return result
   
 check.register_class(artifact_manager_base, name = 'artifact_manager', include_seq = False)

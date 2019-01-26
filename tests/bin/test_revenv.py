@@ -204,11 +204,7 @@ projects
     cmd = [
       update_dot_sh,
       'test',
-      '--system', 'linux',
-      '--distro', 'ubuntu',
-      '--distro-version-major', '18',
-      '--distro-version-minor', 'none',
-      '--level', 'release',
+      '--build-target', 'linux-ubuntu-18/x86_64/release',
     ]
     env = os_env.make_clean_env(keep_keys = [ 'PYTHONPATH' ],
                                 update = { 'PATH': path.dirname(self.script) })
@@ -391,11 +387,7 @@ projects
       sub_command,
       root_dir,
       '--config', 'config.revenv',
-      '--system', 'linux',
-      '--distro', 'ubuntu',
-      '--distro-version-major', '18',
-      '--distro-version-minor', 'none',
-      '--level', 'release',
+      '--build-target', 'linux-ubuntu-18/x86_64/release',
       'unit_test_storage',
     ] + list(args)
   

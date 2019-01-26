@@ -1,5 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+from collections import namedtuple
+
 from bes.common import algorithm, check, dict_util, object_util
 from bes.dependency import dependency_resolver, missing_dependency_error
 from bes.system import log
@@ -96,5 +98,34 @@ class requirement_manager(object):
     result.remove_dups()
     self.log_i('resolve_deps() 2 result=%s' % (str(result.names())))
     return result
+
+  _resolve_result = namedtuple('_resolve_result', 'resolved, missing')
+  def resolve_deps_NEW(self, names, system, hardness, include_names):
+    'Resolve dependencies.'
+    self.log_i('resolve_deps(names=%s, system=%s, hardness=%s, include_names=%s)' % (' '.join(names),
+                                                                                     system, ' '.join(hardness),
+                                                                                     include_names))
+    check.check_string_seq(names)
+    names = object_util.listify(names)
+    hardness = self._normalize_hardness(hardness)
+    reqs = requirement_list()
+    missing = []
+    for name in names:
+      desc = self._descriptor_map.get(name, None)
+      if desc:
+        reqs.extend(desc.requirements.filter_by(hardness, system))
+      else:
+        missing.append(name)
+    if missing:
+      return self._resolve_result(None, missing)
+    self.log_i('resolve_deps() reqs=%s' % (str(reqs.names())))
+    dep_map = self.dependency_map(hardness, system)
+    result = package_descriptor_list(dependency_resolver.resolve_and_order_deps(reqs.names(), self._descriptor_map, dep_map))
+    self.log_i('resolve_deps() 1 result=%s' % (str(result.names())))
+    if include_names:
+      result += self.descriptors(names)
+    result.remove_dups()
+    self.log_i('resolve_deps() 2 result=%s' % (str(result.names())))
+    return self._resolve_result(result, None)
 
 check.register_class(requirement_manager, include_seq = False)
