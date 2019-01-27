@@ -27,6 +27,11 @@ class build_target(namedtuple('build_target', 'system, distro, distro_version_ma
     distro_version_minor = clazz.resolve_distro_version(distro_version_minor)
     if system != host.LINUX and distro != '':
       raise ValueError('distro for %s should be empty/none' % (system))
+    if system == host.LINUX and not distro:
+      if distro_version_major:
+        raise ValueError('no distro so distro_version_major should be empty/none instead of: %s' % (distro_version_major))
+      if distro_version_minor:
+        raise ValueError('no distro so distro_version_minor should be empty/none instead of: %s' % (distro_version_minor))
     return clazz.__bases__[0].__new__(clazz, system, distro, distro_version_major, distro_version_minor, arch, level)
 
   def __str__(self):
