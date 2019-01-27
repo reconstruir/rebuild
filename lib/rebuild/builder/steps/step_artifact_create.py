@@ -20,7 +20,6 @@ class step_artifact_create_make_package(step):
   def define_args(clazz):
     return '''
     build_target_distro string
-    build_target_distro_version string
     '''
     
   #@abstractmethod
@@ -40,13 +39,13 @@ class step_artifact_create_make_package(step):
     output_tarball_path = path.join(script.artifact_dir, descriptor.tarball_filename)
     build_target_mutations = {}
     build_target_distro = values.get('build_target_distro')
-    build_target_distro_version = values.get('build_target_distro_version')
     if build_target_distro:
+      if build_target_distro == 'any':
+        build_target_distro = ''
       build_target_mutations['distro'] = build_target_distro
-    if build_target_distro_version:
-      build_target_mutations['distro_version'] = build_target_distro_version
-    #bt = script.build_target.clone(mutations = build_target_mutations)
-    bt = script.build_target.clone()
+      build_target_mutations['distro_version_major'] = ''
+      build_target_mutations['distro_version_minor'] = ''
+    bt = script.build_target.clone(mutations = build_target_mutations)
     self.blurb('creating tarball %s from %s' % (path.relpath(output_tarball_path), path.relpath(script.stage_dir)), fit = True)
     staged_tarball, metadata = package.create_package(output_tarball_path,
                                                       descriptor,
