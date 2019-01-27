@@ -134,4 +134,10 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
                                build_target.distro, build_target.distro_version_major,
                                build_target.distro_version_minor)
 
+  def clone_without_distro(self):
+    mutations = {}
+    if self.distro:
+      mutations = { 'distro': '', 'distro_version_major': '', 'distro_version_minor': '' }
+    return self.clone(mutations = mutations)
+  
 check.register_class(artifact_descriptor, include_seq = False)

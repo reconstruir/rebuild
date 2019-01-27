@@ -84,6 +84,14 @@ class test_artifact_descriptor(unit_test):
   def test_sql_tuple(self):
     self.assertEqual( ('water', '1.0.0', 0, 0, 'linux', 'release', '["x86_64"]', 'ubuntu', '18', ''),
                       AD.parse('water;1.0.0;0;0;linux;release;x86_64;ubuntu;18;').sql_tuple )
+
+  def test_clone_without_distro(self):
+    self.assertEqual( AD.parse('water;1.0.0;0;0;linux;release;x86_64;;;'),
+                      AD.parse('water;1.0.0;0;0;linux;release;x86_64;ubuntu;18;').clone_without_distro() )
+    self.assertEqual( AD.parse('water;1.0.0;0;0;linux;release;x86_64;;;'),
+                      AD.parse('water;1.0.0;0;0;linux;release;x86_64;;;').clone_without_distro() )
+    self.assertEqual( AD.parse('water;1.0.0;0;0;macos;release;x86_64;;10;'),
+                      AD.parse('water;1.0.0;0;0;macos;release;x86_64;;10;').clone_without_distro() )
     
 if __name__ == '__main__':
   unit_test.main()
