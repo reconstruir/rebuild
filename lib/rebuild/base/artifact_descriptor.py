@@ -29,9 +29,11 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
     arch = build_arch.check_arch(arch, system, distro)
     check.check_tuple(arch)
     check.check_string(distro)
+    distro = build_target.resolve_distro(distro)
     check.check_string(distro_version_major)
+    distro_version_major = build_target.resolve_distro_version(distro_version_major)
     check.check_string(distro_version_minor)
-    distro_version_minor = build_target.resolve_distro_version_minor(distro_version_minor)
+    distro_version_minor = build_target.resolve_distro_version(distro_version_minor)
     return clazz.__bases__[0].__new__(clazz, name, version, revision, epoch,
                                       system, level, arch, distro,
                                       distro_version_major, distro_version_minor)
@@ -121,5 +123,15 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
   def __lt__(self, other):
     check.check_artifact_descriptor(other)
     return self.compare(self, other) < 0
-  
+
+  @classmethod
+  def make_from_package_descriptor(clazz, pdesc, build_target):
+    check.check_package_descriptor(pdesc)
+    check.check_build_target(build_target)
+    return artifact_descriptor(pdesc.name, pdesc.version.upstream_version,
+                               pdesc.version.revision, pdesc.version.epoch,
+                               build_target.system, build_target.level, build_target.arch,
+                               build_target.distro, build_target.distro_version_major,
+                               build_target.distro_version_minor)
+
 check.register_class(artifact_descriptor, include_seq = False)

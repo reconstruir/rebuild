@@ -246,6 +246,25 @@ projects
     self.assertEqual( False, rv )
     self.assertEqual( [], test.installed_packages('test', include_version = True) )
     
+  def test_none_distro(self):
+    recipes1 = '''
+fake_package kiwi 1.2.3 0 0 linux release x86_64 none none none
+  files
+    bin/kiwi_script.sh
+      #!/bin/bash
+      echo kiwi
+'''
+    config = '''{head}
+projects
+  test
+    packages
+      aflatoxin == 1.0.1
+'''
+    test = venv_tester(config, recipes = recipes1)
+    rv = test.update_from_config('test')
+    self.assertEqual( False, rv )
+    self.assertEqual( [], test.installed_packages('test', include_version = True) )
+    
   @classmethod
   def _make_temp_dir(clazz):
     tmp_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)

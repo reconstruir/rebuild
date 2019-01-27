@@ -366,6 +366,24 @@ fake_package milk 1.0.11 0 0 linux release x86_64 centos 7 none
       PD.parse('milk-1.0.9'),
     ], t.am.list_all_filter_with_requirements(BT.parse_path('linux-centos-7/x86_64/release'),
                                               RL.parse('water >= 1.0.9 milk < 1.0.10')) )
+
+  def xtest_none_distro(self):
+    recipe = '''
+fake_package kiwi 1.2.3 0 0 linux release x86_64 none none none
+  files
+    bin/kiwi_script.sh
+      #!/bin/bash
+      echo kiwi
+'''
+    t = AMT()
+    t.add_recipes(recipe)
+    t.publish(recipe)
+    self.assertEqual( [
+      AD.parse('kiwi;1.2.3;0;0;linux;release;x86_64;;;'),
+    ], t.am.list_all_by_descriptor(BT.parse_path('linux/x86_64/release')) )
+    self.assertEqual( [
+      AD.parse('kiwi;1.2.3;0;0;linux;release;x86_64;;;'),
+    ], t.am.list_all_by_descriptor(BT.parse_path('linux-alpine-3/x86_64/release')) )
     
 if __name__ == '__main__':
   unit_test.main()

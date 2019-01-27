@@ -23,7 +23,8 @@ class build_target(namedtuple('build_target', 'system, distro, distro_version_ma
     system = build_system.parse_system(system)
     arch = build_arch.determine_arch(arch, system, distro)
     level = build_level.parse_level(level)
-    distro_version_minor = clazz.resolve_distro_version_minor(distro_version_minor)
+    distro_version_major = clazz.resolve_distro_version(distro_version_major)
+    distro_version_minor = clazz.resolve_distro_version(distro_version_minor)
     if system != host.LINUX and distro != '':
       raise ValueError('distro for %s should be empty/none' % (system))
     return clazz.__bases__[0].__new__(clazz, system, distro, distro_version_major, distro_version_minor, arch, level)
@@ -156,13 +157,13 @@ class build_target(namedtuple('build_target', 'system, distro, distro_version_ma
     return tuple_util.clone(self, mutations = mutations)
 
   @classmethod
-  def resolve_distro_version_minor(clazz, distro_version_minor):
-    if check.is_string(distro_version_minor):
-      if distro_version_minor.lower() == 'none':
-        distro_version_minor = ''
-    elif distro_version_minor is None:
-      distro_version_minor = ''
-    return distro_version_minor
+  def resolve_distro_version(clazz, version):
+    if check.is_string(version):
+      if version.lower() == 'none':
+        version = ''
+    elif version is None:
+      version = ''
+    return version
   
   @classmethod
   def resolve_distro(clazz, distro):

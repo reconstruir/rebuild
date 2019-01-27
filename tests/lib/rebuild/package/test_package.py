@@ -67,5 +67,19 @@ fake_package orange 6.5.4 3 0 linux release x86_64 ubuntu 18 none
     self.assertTrue( package.is_package(tmp_tarball.filename) )
     self.assertFalse( package.is_package(temp_file.make_temp_file(content = 'notpackage')) )
 
+  def test_linux_no_distro(self):
+    recipe = '''
+fake_package kiwi 1.2.3 0 0 linux release x86_64 none none none
+  files
+    bin/kiwi_script.sh
+      #!/bin/bash
+      echo kiwi
+'''
+    tmp_tarball = fake_package_unit_test.create_one_package(recipe)
+    md = package(tmp_tarball.filename).metadata
+    self.assertEqual( '', md.distro )
+    self.assertEqual( '', md.distro_version_major )
+    self.assertEqual( '', md.distro_version_minor )
+    
 if __name__ == '__main__':
   unit_test.main()

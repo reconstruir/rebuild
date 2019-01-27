@@ -40,11 +40,10 @@ class step_artifact_create_make_package(step):
     build_target_mutations = {}
     build_target_distro = values.get('build_target_distro')
     if build_target_distro:
-      if build_target_distro == 'any':
-        build_target_distro = ''
+      if build_target_distro == 'none':
+        build_target_mutations['distro_version_major'] = 'none'
+        build_target_mutations['distro_version_minor'] = 'none'
       build_target_mutations['distro'] = build_target_distro
-      build_target_mutations['distro_version_major'] = ''
-      build_target_mutations['distro_version_minor'] = ''
     bt = script.build_target.clone(mutations = build_target_mutations)
     self.blurb('creating tarball %s from %s' % (path.relpath(output_tarball_path), path.relpath(script.stage_dir)), fit = True)
     staged_tarball, metadata = package.create_package(output_tarball_path,

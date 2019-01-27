@@ -79,11 +79,7 @@ class artifact_manager_base(with_metaclass(artifact_manager_register_meta, objec
     self.log_i('by_package_descriptor(pdesc=%s, build_target=%s, relative_filename=%s)' % (str(pdesc),
                                                                                            build_target.build_path,
                                                                                            relative_filename))
-    adesc = artifact_descriptor(pdesc.name, pdesc.version.upstream_version,
-                                pdesc.version.revision, pdesc.version.epoch,
-                                build_target.system, build_target.level, build_target.arch,
-                                build_target.distro, build_target.distro_version_major,
-                                build_target.distro_version_minor)
+    adesc = artifact_descriptor.make_from_package_descriptor(pdesc, build_target)
     return self.find_by_artifact_descriptor(adesc, relative_filename)
  
   def has_package_by_descriptor(self, pdesc, build_target):
