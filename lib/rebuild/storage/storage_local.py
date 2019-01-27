@@ -47,6 +47,10 @@ class storage_local(storage_base):
   
   #@abstractmethod
   def find_tarball(self, filename):
+    if filename.startswith('http'):
+      return None
+    self.ensure_source(filename)
+    #print('CACA: find_tarball(%s)' % (filename))
     local_filename = self._local_path(filename)
     if not path.isfile(local_filename):
       return None
@@ -54,6 +58,9 @@ class storage_local(storage_base):
 
   #@abstractmethod
   def ensure_source(self, caca_filename):
+    if caca_filename.startswith('http'):
+      return
+    #print('CACA: ensure_source(%s)' % (caca_filename))
     if caca_filename.startswith(self._local_root_dir):
       filename = file_util.remove_head(caca_filename, self._local_root_dir)
       filename_local = caca_filename
@@ -65,7 +72,7 @@ class storage_local(storage_base):
     #filename = file_util.remove_head(local_filename, self._local_root_dir)
     remote_path = self._remote_path(filename)
     self.log_d('ensure_source: filename_local=%s; remote_path=%s; filename=%s' % (filename_local, remote_path, filename))
-    print('ensure_source: filename_local=%s; remote_path=%s; filename=%s' % (filename_local, remote_path, filename))
+    #print('CACA: ensure_source: filename_local=%s; remote_path=%s; filename=%s' % (filename_local, remote_path, filename))
     if path.isfile(filename_local):
       return
     file_util.copy(remote_path, filename_local, use_hard_link = True)

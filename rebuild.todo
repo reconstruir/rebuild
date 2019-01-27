@@ -1098,3 +1098,5 @@ code in artifactory needs to be more lazy:
 - audit the usage of build level in devenv.  should always be release and not an option
 
 BES_LOG="venv=debug" /tmp/boot/root/ego_devenv/run.sh revenv.py config packages  ~/. ego_artifactory ego_devenv  --config=/tmp/boot/root/config/ego.revenv
+
+storage_local.py majorly messed up also value_source_tarball.  its calling storage_local.find/ensure with http urls
