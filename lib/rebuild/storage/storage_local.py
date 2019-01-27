@@ -47,16 +47,10 @@ class storage_local(storage_base):
   
   #@abstractmethod
   def find_tarball(self, filename):
-    self.log_d('find_tarball: filename=%s' % (filename))
-    available_files = archiver.find_archives(self._where, relative = True)
-    for available_file in available_files:
-      self.log_d('find_tarball: AVAILABLE: %s' % (available_file))
-    if not filename in available_files:
-      self.log_d('find_tarball: not found in available files: %s' % (filename))
+    local_filename = self._local_path(filename)
+    if not path.isfile(local_filename):
       return None
-    result = self._local_path(filename)
-    self.log_d('find_tarball: %s found in available files => %s' % (filename, result))
-    return result
+    return local_filename
 
   #@abstractmethod
   def ensure_source(self, caca_filename):
