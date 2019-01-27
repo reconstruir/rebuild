@@ -437,8 +437,8 @@ class sources_cli(object):
 
     am = artifact_manager_helper.make_local_artifact_manager(local_dir)
         
-    bt = build_target.make_host_build_target(level = 'release')
-    artifacts = am.list_all_by_descriptor(bt)
+    artifacts = am.list_all_by_descriptor(None)
+    
     # Never publish artifacts with .9999 in their version as that is testing stuff
     artifacts = [ artifact for artifact in artifacts if '.9999' not in artifact.version ]
     if limit:
