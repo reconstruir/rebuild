@@ -226,7 +226,7 @@ items.find({
 
     for artifactory_prop in artifactory_properties:
       if artifactory_prop['key'] == 'rebuild.distro_version_major':
-        distro_version_major = artifactory_prop['value']
+        distro_version_major = artifactory_prop.get('value', '')
       elif artifactory_prop['key'] == 'rebuild.distro_version_minor':
         distro_version_minor = artifactory_prop.get('value', '')
       elif artifactory_prop['key'] == 'rebuild.name':
