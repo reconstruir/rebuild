@@ -5,7 +5,7 @@ import os.path as path, re
 from collections import namedtuple
 
 from bes.archive import archive, archiver
-from bes.common import check, dict_util, json_util, string_util
+from bes.common import cached_property, check, dict_util, json_util, string_util
 from bes.fs import dir_util, file_check, file_find, file_mime, file_search, file_replace, file_util, tar_util, temp_file
 from bes.text import text_line_parser
 from bes.match import matcher_filename, matcher_multiple_filename
@@ -30,42 +30,34 @@ class package(object):
     file_check.check_file(tarball)
     assert archiver.is_valid(tarball)
     self.tarball = tarball
-    self._descriptor = None
-    self._files = None
-    self._metadata = None
-    self._raw_metadata = None
 
-  @property
+  @cached_property
   def metadata(self):
-    if not self._metadata:
-      self._metadata = package_metadata.parse_json(self.raw_metadata)
-    return self._metadata
+    return package_metadata.parse_json(self.raw_metadata)
 
-  @property
+  @cached_property
   def raw_metadata(self):
-    if not self._raw_metadata:
-      # FIXME: need to use a better root dir something that ends up in ~/.rebuild/tmp/package_members_cache or such
-      content = archiver.extract_member_to_string_cached(self.tarball, self.METADATA_FILENAME)
-      self._raw_metadata = content.decode('utf-8')
-    return self._raw_metadata
+    # FIXME: need to use a better root dir something that ends up in ~/.rebuild/tmp/package_members_cache or such
+    content = archiver.extract_member_to_string_cached(self.tarball, self.METADATA_FILENAME)
+    return content.decode('utf-8')
   
-  @property
+  @cached_property
   def package_descriptor(self):
     return self.metadata.package_descriptor
 
-  @property
+  @cached_property
   def artifact_descriptor(self):
     return self.metadata.artifact_descriptor
 
-  @property
+  @cached_property
   def system(self):
     return self.metadata.system
 
-  @property
+  @cached_property
   def build_target(self):
     return self.metadata.build_target
 
-  @property
+  @cached_property
   def files(self):
     return self.metadata.manifest.files.filenames()
 
@@ -146,11 +138,11 @@ unset REBUILD_STUFF_DIR
                                backup = False,
                                test_func = file_mime.is_text)
     
-  @property
+  @cached_property
   def pkg_config_files(self):
     return matcher_filename('*.pc').filter(self.files)
 
-  @property
+  @cached_property
   def old_crappy_config_files(self):
     return matcher_filename('*-config').filter(self.files)
 
@@ -272,5 +264,5 @@ unset REBUILD_STUFF_DIR
                                                         '2018-12-08')
     if timer:
       timer.stop()
-  
+      
 check.register_class(package, include_seq = False)
