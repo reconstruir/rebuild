@@ -736,6 +736,37 @@ fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     expected='prefix=%s' % (pm.installation_dir)
     self.assertEqual( expected, execute.execute(exe).stdout.strip() )
 
+  def test_install_package_hardcoded_paths_env_files(self):
+    '''
+    A test that proves package manager will properly install env files that
+    have the variables ${REBUILD_PACKAGE_PREFIX} in them (which is bad practice
+    for env files since things should generally be relative and not hardcoded
+    but it needs to work nontheless)
+    '''
+
+    recipe = '''\
+fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
+  env_files
+    foo.sh
+      \#@REBUILD_HEAD@
+      export FOO=${REBUILD_PACKAGE_PREFIX}/foo
+      \#@REBUILD_TAIL@
+    bar.sh
+      \#@REBUILD_HEAD@
+      export BAR=${REBUILD_PACKAGE_PREFIX}/bar
+      \#@REBUILD_TAIL@
+'''
+    cabbage = PD.parse('cabbage-1.0.0')
+    bt = BT.parse_path('linux-ubuntu-18/x86_64/release')
+    t = AMT(recipes = recipe)
+    pm = self._make_caca_test_pm(t.am)
+    t.publish('cabbage;1.0.0;0;0;linux;release;x86_64;ubuntu;18;')
+    pm.install_package(cabbage, bt, [ 'RUN' ])
+    env1 = {}
+    env2 = self._transform_env(pm, env1, [ 'cabbage' ])
+    self.assertEqual( '$ROOT_DIR/stuff/foo', env2['FOO'] )
+    self.assertEqual( '$ROOT_DIR/stuff/bar', env2['BAR'] )
+    
   def test_install_tarball_no_distro(self):
     recipes = '''
 fake_package foo 1.0.0 0 0 linux release x86_64 ubuntu 18 none

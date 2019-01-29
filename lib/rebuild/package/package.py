@@ -6,7 +6,7 @@ from collections import namedtuple
 
 from bes.archive import archive, archiver
 from bes.common import cached_property, check, dict_util, json_util, string_util
-from bes.fs import dir_util, file_check, file_find, file_mime, file_search, file_replace, file_util, tar_util, temp_file
+from bes.fs import dir_util, file_check, file_find, file_search, file_replace, file_util, tar_util, temp_file
 from bes.text import text_line_parser
 from bes.match import matcher_filename, matcher_multiple_filename
 from bes.python import setup_tools
@@ -75,10 +75,12 @@ class package(object):
     if path.isdir(src_stuff_dir):
       dir_util.move_files(src_stuff_dir, dst_stuff_dir)
     self._update_python_config_files(dst_stuff_dir)
-    self._replace_variables_files(dst_stuff_dir, dst_stuff_dir)
+    self._replace_variables_files(self.metadata.manifest.files.files_with_hardcoded_paths(),
+                                  dst_stuff_dir, dst_stuff_dir)
     if path.isdir(src_env_dir):
       dir_util.move_files(src_env_dir, dst_env_dir)
-    self._replace_variables_env_files(dst_env_dir, dst_stuff_dir)
+    self._replace_variables_env_files(self.metadata.manifest.env_files.files_with_hardcoded_paths(),
+                                  dst_env_dir, dst_stuff_dir)
     file_util.remove(tmp_dir)
       
   def _update_python_config_files(self, stuff_dir):
@@ -111,33 +113,41 @@ unset REBUILD_STUFF_DIR
 # END @REBUILD_TAIL@
 
 '''
+
+  _ENV_FILE_REPLACEMENT_VARIABLES = [
+    '${REBUILD_PACKAGE_PREFIX}',
+    '${REBUILD_PACKAGE_FULL_VERSION}',
+    '${REBUILD_PACKAGE_FULL_NAME}',
+    '#@REBUILD_HEAD@',
+    '#@REBUILD_TAIL@',
+  ]
   
-  def _replace_variables_files(self, where, stuff_dir):
-    files = self.metadata.manifest.files.files_with_hardcoded_paths()
+  def _replace_variables_files(self, files, where, stuff_dir):
+    self.log_d('_replace_variables_files: files=%s; where=%s; stuff_dir=%s' % (files, where, stuff_dir))
     replacements = {
       '${REBUILD_PACKAGE_PREFIX}': stuff_dir,
     }
     self.log_d('replacements=%s' % (replacements))
     for f in files:
-      filename = path.join(stuff_dir, f)
+      filename = path.join(where, f)
       self.log_d('doing replacements for: %s' % (path.relpath(filename)))
       file_replace.replace(filename, replacements, backup = False, word_boundary = True)
   
-  def _replace_variables_env_files(self, where, stuff_dir):
+  def _replace_variables_env_files(self, files, where, stuff_dir):
+    self.log_d('_replace_variables_env_files: files=%s; where=%s; stuff_dir=%s' % (files, where, stuff_dir))
     replacements = {
       '${REBUILD_PACKAGE_PREFIX}': stuff_dir,
-      '${REBUILD_PACKAGE_NAME}': self.metadata.name,
-      '${REBUILD_PACKAGE_DESCRIPTION}': self.metadata.name,
       '${REBUILD_PACKAGE_FULL_VERSION}': str(self.metadata.build_version),
       '${REBUILD_PACKAGE_FULL_NAME}': self.package_descriptor.full_name,
       '#@REBUILD_HEAD@': self._ENV_FILE_HEAD_TEMPLATE,
       '#@REBUILD_TAIL@': self._ENV_FILE_TAIL_TEMPLATE,
     }
-    file_search.search_replace(where,
-                               replacements,
-                               backup = False,
-                               test_func = file_mime.is_text)
-    
+    self.log_d('replacements=%s' % (replacements))
+    for f in files:
+      filename = path.join(where, f)
+      self.log_d('doing replacements for: %s' % (path.relpath(filename)))
+      file_replace.replace(filename, replacements, backup = False, word_boundary = True)
+  
   @cached_property
   def pkg_config_files(self):
     return matcher_filename('*.pc').filter(self.files)
@@ -192,10 +202,13 @@ unset REBUILD_STUFF_DIR
 
     timer.stop()
     timer.start('create_package - files checksums')
-    stage_package_file_list = package_file_list.from_files(files, files_with_hardcoded_paths, root_dir = stage_files_dir)
+    stage_package_file_list = package_file_list.from_files(files,
+                                                           files_with_hardcoded_paths,
+                                                           root_dir = stage_files_dir)
     timer.stop()
 
     stage_env_files_dir = path.join(stage_dir, 'env')
+    env_files_with_hardcoded_paths = clazz._find_env_files_with_variables_paths(stage_env_files_dir)
     timer.start('create_package - find env_files')
     if path.isdir(stage_env_files_dir):
       stage_env_files = file_find.find(stage_env_files_dir, relative = True, file_type = file_find.FILE | file_find.LINK)
@@ -203,7 +216,9 @@ unset REBUILD_STUFF_DIR
       stage_env_files = []
     timer.stop()
     timer.start('create_package - env_files checksums')
-    stage_env_package_file_list = package_file_list.from_files(stage_env_files, set(), root_dir = stage_env_files_dir)
+    stage_env_package_file_list = package_file_list.from_files(stage_env_files,
+                                                               env_files_with_hardcoded_paths,
+                                                               root_dir = stage_env_files_dir)
     timer.stop()
 
     pkg_files = package_manifest(stage_package_file_list, stage_env_package_file_list)
@@ -244,6 +259,15 @@ unset REBUILD_STUFF_DIR
     if not path.isdir(where):
       return set()
     found = file_search.search(where, '${REBUILD_PACKAGE_PREFIX}', relative = True)
+    return set([ item.filename for item in found ])
+  
+  @classmethod
+  def _find_env_files_with_variables_paths(clazz, where):
+    if not path.isdir(where):
+      return set()
+    found = []
+    for s in clazz._ENV_FILE_REPLACEMENT_VARIABLES:
+      found += file_search.search(where, s, relative = True)
     return set([ item.filename for item in found ])
   
   @classmethod

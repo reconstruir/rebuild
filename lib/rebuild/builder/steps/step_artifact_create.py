@@ -124,7 +124,7 @@ class step_artifact_create_publish_package(step):
       return step_result(False, message)
     assert archiver.is_valid(staged_tarball)
     published_tarball = env.artifact_manager.publish(staged_tarball, True, metadata)
-    self.blurb('published tarball: %s' % (path.relpath(published_tarball)))
+    self.blurb('published tarball locally: %s' % (path.relpath(published_tarball)))
     return step_result(True, None, outputs = { 'published_tarball': published_tarball })
 
 class step_artifact_create(compound_step):
