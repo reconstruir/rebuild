@@ -105,8 +105,7 @@ class venv_manager(object):
 
     resolve_rv = self._resolve_packages(build_target, requirements)
     if resolve_rv.missing:
-      self.blurb('you lose again')
-      self.blurb('missing artifacts at %s: %s' % (str(self._artifact_manager), ' '.join(resolve_rv.missing)))
+      self.blurb('missing artifacts for %s at %s: %s' % (project_name, str(self._artifact_manager), ' '.join(resolve_rv.missing)))
       return []
     self._update_packages(project_name, resolve_rv.resolved, build_target, options)
     return resolve_rv.resolved
