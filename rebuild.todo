@@ -1100,3 +1100,8 @@ code in artifactory needs to be more lazy:
 BES_LOG="venv=debug" /tmp/boot/root/ego_devenv/run.sh revenv.py config packages  ~/. ego_artifactory ego_devenv  --config=/tmp/boot/root/config/ego.revenv
 
 storage_local.py majorly messed up also value_source_tarball.  its calling storage_local.find/ensure with http urls
+
+
+2019-01-30
+- the origin line numer for hooks is wrong add a syntax error to _bootstrap_scons hook and notice it
+
