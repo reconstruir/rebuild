@@ -76,7 +76,7 @@ class artifact_manager_base(with_metaclass(artifact_manager_register_meta, objec
   def find_by_package_descriptor(self, pdesc, build_target, relative_filename):
     check.check_package_descriptor(pdesc)
     check.check_build_target(build_target)
-    self.log_i('by_package_descriptor(pdesc=%s, build_target=%s, relative_filename=%s)' % (str(pdesc),
+    self.log_d('by_package_descriptor(pdesc=%s, build_target=%s, relative_filename=%s)' % (str(pdesc),
                                                                                            build_target.build_path,
                                                                                            relative_filename))
     adesc = artifact_descriptor.make_from_package_descriptor(pdesc, build_target)
@@ -116,7 +116,7 @@ class artifact_manager_base(with_metaclass(artifact_manager_register_meta, objec
     self._requirement_managers = {}
 
   def _make_requirement_manager(self, build_target):
-    self.log_i('_make_requirement_manager(build_target=%s)' % (build_target.build_path))
+    self.log_d('_make_requirement_manager(build_target=%s)' % (build_target.build_path))
     self._timer.start('_make_requirement_manager() for %s' % (str(build_target)))
     rm = requirement_manager()
     latest_versions = self.list_all_by_package_descriptor(build_target).latest_versions()
@@ -135,12 +135,12 @@ class artifact_manager_base(with_metaclass(artifact_manager_register_meta, objec
     check.check_build_target(build_target)
     check.check_string_seq(hardness)
     check.check_bool(include_names)
-    self.log_i('resolve_deps(names=%s, build_target=%s, hardness=%s, include_names=%s)' % (' '.join(names),
+    self.log_d('resolve_deps(names=%s, build_target=%s, hardness=%s, include_names=%s)' % (' '.join(names),
                                                                                            build_target.build_path,
                                                                                            ' '.join(hardness),
                                                                                            include_names))
     rm = self.get_requirement_manager(build_target)
-    self.log_i('resolve_deps() requirements_manager dep_map=%s' % (rm.descriptor_map_to_string()))
+    self.log_d('resolve_deps() requirements_manager dep_map=%s' % (rm.descriptor_map_to_string()))
     return rm.resolve_deps(names, build_target.system, hardness, include_names)
 
   def list_latest_versions(self, build_target):
@@ -152,7 +152,7 @@ class artifact_manager_base(with_metaclass(artifact_manager_register_meta, objec
     check.check_build_target(build_target)
     check.check_string_seq(hardness)
     check.check_bool(include_names)
-    self.log_i('resolve_deps(build_target=%s, requirements=%s; hardness=%s, include_names=%s)' % (build_target.build_path,
+    self.log_d('resolve_deps(build_target=%s, requirements=%s; hardness=%s, include_names=%s)' % (build_target.build_path,
                                                                                                   requirements,
                                                                                                   ' '.join(hardness),
                                                                                                   include_names))
