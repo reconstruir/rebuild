@@ -92,7 +92,7 @@ class builder(object):
     for d in dirs:
       file_util.remove(d)
     # Since we just killed the directory where the artifacts db lives we need to reload it
-    self._env.reload_artifact_manager()
+    self._env.reload_build_artifact_manager()
     
   def wipe_old_build_dirs(self, package_names):
     for package_name in package_names:

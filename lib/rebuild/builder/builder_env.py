@@ -39,10 +39,10 @@ class builder_env(object):
     self.git_downloads_manager = git_download_cache(path.join(config.build_root, 'downloads', 'git'))
     self.http_downloads_manager = http_download_cache(path.join(config.build_root, 'downloads', 'http'))
     self.source_dir_zipballs = source_dir_zipball_cache(path.join(config.build_root, 'downloads', 'source_dir_zipball'))
-    self.reload_artifact_manager()
+    self.reload_build_artifact_manager()
     self.tools_manager = tools_manager(path.join(config.build_root, 'tools'),
                                        self.config.host_build_target,
-                                       self.artifact_manager)
+                                       self.build_artifact_manager)
     self.variable_manager = variable_manager()
     self.variable_manager.add_variables(config.project_file_variables)
     for key, value in config.cli_variables:
@@ -76,14 +76,14 @@ class builder_env(object):
   def _make_checksum_manager(clazz, build_dir):
     return checksum_manager(path.join(build_dir, 'checksums'))
 
-  def reload_artifact_manager(self):
+  def reload_build_artifact_manager(self):
     from rebuild.config import storage_config_manager
     from rebuild.package.artifact_manager_factory import artifact_manager_factory
     root_dir = path.join(self.config.build_root, 'artifacts')
     scm = storage_config_manager.make_local_config('builder_local', root_dir, None, None)
     config = scm.get('builder_local')
     factory_config = artifact_manager_factory.config(None, None, True, config)
-    self.artifact_manager = artifact_manager_local(factory_config)
+    self.build_artifact_manager = artifact_manager_local(factory_config)
     self.external_artifact_manager = None
 
   @classmethod

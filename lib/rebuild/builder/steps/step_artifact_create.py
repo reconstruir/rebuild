@@ -95,7 +95,7 @@ class step_artifact_create_test_package(step):
       check.check_value_file(test)
       config = package_tester.test_config(script,
                                           staged_tarball,
-                                          env.artifact_manager,
+                                          env.build_artifact_manager,
                                           env.tools_manager,
                                           dict_util.combine(package_test_env.to_dict(), env.variable_manager.variables))
       tester = package_tester(config, test.filename)
@@ -123,7 +123,7 @@ class step_artifact_create_publish_package(step):
       self.log_d(message)
       return step_result(False, message)
     assert archiver.is_valid(staged_tarball)
-    published_tarball = env.artifact_manager.publish(staged_tarball, True, metadata)
+    published_tarball = env.build_artifact_manager.publish(staged_tarball, True, metadata)
     self.blurb('published tarball locally: %s' % (path.relpath(published_tarball)))
     return step_result(True, None, outputs = { 'published_tarball': published_tarball })
 

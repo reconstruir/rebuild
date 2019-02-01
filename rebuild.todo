@@ -1104,4 +1104,7 @@ storage_local.py majorly messed up also value_source_tarball.  its calling stora
 
 2019-01-30
 - the origin line numer for hooks is wrong add a syntax error to _bootstrap_scons hook and notice it
-
+- a bad substitution in a data descriptor causes obscure not useful error for example checksum=@{DATA:checksum:${_version}} where _version is not defined
+- determine why reload build artifact manager is needed.
+- artifact manager read only crap
+- s/artifact_manager.publish/artifact_manager.add_artifact/
