@@ -41,7 +41,6 @@ class builder_config(object):
     self.artifacts_dir = None
     self.download_only = False
     self.storage_config = None
-    self.storage_provider = 'local'
     self.ingest_only = False
     self.ingest = False
     self.project_file_variables = key_value_list()
