@@ -182,7 +182,6 @@ class venv_cli(build_target_cli):
     factory_config = artifact_manager_factory.config(self._local_storage_cache_dir, 'artifacts', args.no_network, config)
     self.log_d('factory_config=%s' % (str(factory_config)))
     self._artifact_manager = artifact_manager_factory.create(factory_config)
-    self._artifact_manager = artifact_manager_factory.create(factory_config)
     self.log_d('artifact_manager=%s' % (str(self._artifact_manager)))
     self._manager = venv_manager(self._config, self._artifact_manager, self._build_target, self._root_dir)
 

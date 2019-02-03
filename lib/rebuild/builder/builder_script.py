@@ -49,7 +49,8 @@ class builder_script(object):
     self.check_dir = path.join(self.working_dir, 'check')
     self.temp_dir = path.join(self.working_dir, 'temp')
     self.python_lib_dir = path.join(self.staged_files_dir, 'lib/python')
-    self.requirements_manager = package_manager(path.join(self.working_dir, 'requirements'), env.build_artifact_manager)
+    self.requirements_manager = package_manager(path.join(self.working_dir, 'requirements'),
+                                                env.requirements_artifact_manager)
     self.recipe_data_manager = recipe_data_manager()
     self.recipe_data_manager.set_from_tuples(self.recipe.resolve_data(self.build_target.system))
       

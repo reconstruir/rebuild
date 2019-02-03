@@ -193,7 +193,7 @@ class builder(object):
 #      return False, 'imported'
     if env.external_artifact_manager:
       if env.external_artifact_manager.has_package_by_descriptor(script.descriptor, script.build_target):
-        return False, 'package found in AM'
+        return False, 'package found in external artifact manager'
     return script.needs_rebuilding(), 'checksums'
     
   def build_many_scripts(self, package_names):

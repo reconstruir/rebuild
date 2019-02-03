@@ -95,7 +95,7 @@ class step_artifact_create_test_package(step):
       check.check_value_file(test)
       config = package_tester.test_config(script,
                                           staged_tarball,
-                                          env.build_artifact_manager,
+                                          env.requirements_artifact_manager,
                                           env.tools_manager,
                                           dict_util.combine(package_test_env.to_dict(), env.variable_manager.variables))
       tester = package_tester(config, test.filename)

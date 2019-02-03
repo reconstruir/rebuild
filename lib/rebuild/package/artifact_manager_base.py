@@ -23,7 +23,7 @@ class artifact_manager_register_meta(ABCMeta):
 class artifact_manager_base(with_metaclass(artifact_manager_register_meta, object)):
 
   def __init__(self):
-    log.add_logging(self, 'artifact_manager')
+    log.add_logging(self, 'am')
     build_blurb.add_blurb(self, 'artifact_manager')
     self._reset_requirement_managers()
     self._read_only = False
@@ -72,13 +72,17 @@ class artifact_manager_base(with_metaclass(artifact_manager_register_meta, objec
   @abstractmethod
   def needs_download(self, adesc):
     pass
+
+  def _log_label(self, method):
+    return 'CACA: %s(%s): %s:' % (self.__class__.__name__, id(self), method)
   
   def find_by_package_descriptor(self, pdesc, build_target, relative_filename):
     check.check_package_descriptor(pdesc)
     check.check_build_target(build_target)
-    self.log_d('by_package_descriptor(pdesc=%s, build_target=%s, relative_filename=%s)' % (str(pdesc),
-                                                                                           build_target.build_path,
-                                                                                           relative_filename))
+    self.log_d('%s: pdesc=%s; build_target=%s; relative_filename=%s' % (self._log_label('find_by_package_descriptor'),
+                                                                        str(pdesc),
+                                                                        build_target.build_path,
+                                                                        relative_filename))
     adesc = artifact_descriptor.make_from_package_descriptor(pdesc, build_target)
     return self.find_by_artifact_descriptor(adesc, relative_filename)
  
@@ -112,14 +116,15 @@ class artifact_manager_base(with_metaclass(artifact_manager_register_meta, objec
     return result
   
   def _reset_requirement_managers(self):
-    self.log_d('_reset_requirement_managers: id=%s' % (id(self)))
+    self.log_d('%s' % (self._log_label('_reset_requirement_managers')))
     self._requirement_managers = {}
 
   def _make_requirement_manager(self, build_target):
-    self.log_d('_make_requirement_manager(build_target=%s)' % (build_target.build_path))
+    self.log_d('%s build_target=%s' % (self._log_label('_make_requirement_manager'), build_target.build_path))
     self._timer.start('_make_requirement_manager() for %s' % (str(build_target)))
     rm = requirement_manager()
     latest_versions = self.list_all_by_package_descriptor(build_target).latest_versions()
+    self.log_d('%s: latest_versions=%s' % (self._log_label('_make_requirement_manager'), str(latest_versions)))
     for pkg_desc in latest_versions:
       rm.add_package(pkg_desc)
     self._timer.stop()
@@ -135,12 +140,13 @@ class artifact_manager_base(with_metaclass(artifact_manager_register_meta, objec
     check.check_build_target(build_target)
     check.check_string_seq(hardness)
     check.check_bool(include_names)
-    self.log_d('resolve_deps(names=%s, build_target=%s, hardness=%s, include_names=%s)' % (' '.join(names),
-                                                                                           build_target.build_path,
-                                                                                           ' '.join(hardness),
-                                                                                           include_names))
+    self.log_d('%s: names=%s; build_target=%s; hardness=%s; include_names=%s' % (self._log_label('resolve_deps'),
+                                                                                       ' '.join(names),
+                                                                                       build_target.build_path,
+                                                                                       ' '.join(hardness),
+                                                                                       include_names))
     rm = self.get_requirement_manager(build_target)
-    self.log_d('resolve_deps() requirements_manager dep_map=%s' % (rm.descriptor_map_to_string()))
+    self.log_d('%s: build_target=%s; dep_map=%s' % (self._log_label('resolve_deps'), build_target, rm.descriptor_map_to_string()))
     return rm.resolve_deps(names, build_target.system, hardness, include_names)
 
   def list_latest_versions(self, build_target):
@@ -152,10 +158,11 @@ class artifact_manager_base(with_metaclass(artifact_manager_register_meta, objec
     check.check_build_target(build_target)
     check.check_string_seq(hardness)
     check.check_bool(include_names)
-    self.log_d('resolve_deps(build_target=%s, requirements=%s; hardness=%s, include_names=%s)' % (build_target.build_path,
-                                                                                                  requirements,
-                                                                                                  ' '.join(hardness),
-                                                                                                  include_names))
+    self.log_d('%s: build_target=%s; requirements=%s; hardness=%s; include_names=%s' % (self._log_label('poto_resolve_deps'),
+                                                                                        build_target.build_path,
+                                                                                        requirements,
+                                                                                        ' '.join(hardness),
+                                                                                        include_names))
     rm = requirement_manager()
     available = self.list_all_filter_with_requirements(build_target, requirements)
     latest = available.latest_versions()
@@ -166,5 +173,16 @@ class artifact_manager_base(with_metaclass(artifact_manager_register_meta, objec
     else:
       result = self._poto_resolve_result(available, latest, rm_rv.resolved, None)
     return result
+
+  def import_artifacts(self, other_am, build_target, checksum_getter):
+    check.check_artifact_manager(other_am)
+    for md in other_am.list_all_by_metadata(build_target):
+      old_tarball = self.artifact_path(md.package_descriptor, build_target, False)
+      old_checksum = checksum_getter.checksum('sha256', old_tarball) if old_tarball else None
+      new_tarball = other_am.artifact_path(md.package_descriptor, build_target, False)
+      assert path.isfile(new_tarball)
+      new_checksum = checksum_getter.checksum('sha256', new_tarball)
+      if old_checksum != new_checksum:
+        self.publish(new_tarball, True, md)
   
 check.register_class(artifact_manager_base, name = 'artifact_manager', include_seq = False)
