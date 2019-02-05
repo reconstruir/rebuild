@@ -101,9 +101,7 @@ class builder_cli(build_target_cli):
 
     if args.version:
       from bes.version import version_cli
-      import rebuild
-      vcli = version_cli(rebuild)
-      vcli.version_print_version()
+      version_cli.print_everything('rebuild', dependencies = [ 'bes' ], print_all = args.verbose)
       return 0
 
     build_blurb.blurb_verbose('rebuild', 'command line: %s' % (' '.join(sys.argv)))

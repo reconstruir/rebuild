@@ -8,6 +8,8 @@ from bes.archive import archiver
 from bes.key_value import key_value_parser
 from bes.system import host
 from bes.fs import file_util, temp_file
+from bes.version import version_cli
+
 from rebuild.base import build_arch, build_blurb, build_system, build_target, build_target_cli, build_level
 
 from rebuild.config import storage_config_manager
@@ -35,6 +37,7 @@ class venv_cli(build_target_cli):
 
     # version
     version_parser = commands_subparser.add_parser('version', help = 'Version')
+    version_cli.arg_sub_parser_add_arguments(version_parser)
 
     # debug
     self.debug_parser = commands_subparser.add_parser('debug', help = 'Debug')
@@ -203,7 +206,7 @@ class venv_cli(build_target_cli):
       log.configure('venv*=debug format=brief')
 
     if command == 'version':
-      return self._command_version()
+      return self._command_version(args.print_all, args.brief)
     elif command == 'debug:env':
       return self._command_debug_env()
 
@@ -292,11 +295,9 @@ revenv.py packages update ${_root_dir} @ARTIFACTS_CONFIG_NAME@ ${1+"$@"} --confi
    else:
      return 1
 
-  def _command_version(self):
+  def _command_version(self, print_all, brief):
     from bes.version import version_cli
-    import rebuild
-    vcli = version_cli(rebuild)
-    vcli.version_print_version()
+    version_cli.print_everything('rebuild', dependencies = [ 'bes' ], brief = brief, print_all = print_all)
     return 0
 
   def _command_debug_env(self):
