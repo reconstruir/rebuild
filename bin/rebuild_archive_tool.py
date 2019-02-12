@@ -308,7 +308,7 @@ def _command_download(name, url, tag):
   site = parts.netloc.split('.')[0]
   timestamp = time_util.timestamp(delimiter = '.', milliseconds = False)
   archive = '%s-%s-%s-%s.tar.gz' % (name, site, tag, timestamp)
-  git.download_tarball(name, tag, url, archive)
+  git.archive(url, tag, name, archive)
   print(archive)
   return 0
 
