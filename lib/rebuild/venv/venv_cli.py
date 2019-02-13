@@ -50,9 +50,6 @@ class venv_cli(build_target_cli):
     self.packages_parser = commands_subparser.add_parser('packages', help = 'Packages')
     self.packages_subparsers = self.packages_parser.add_subparsers(help = 'packages_commands', dest = 'subcommand')
 
-    self.packages_subparsers.add_parser('update', help = 'Update installed packages')
-    self.packages_subparsers.add_parser('print', help = 'Print installed packages')
-
     # packages:update
     update_parser = self.packages_subparsers.add_parser('update', help = 'Update packages')
     self._packages_add_common_args(update_parser)
