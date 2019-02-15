@@ -123,15 +123,18 @@ class artifactory_requests(object):
     check.check_string(username)
     check.check_string(password)
     clazz.log_d('upload: address=%s; filename=%s' % (address, filename))
+    return clazz.upload_url(address.url, filename, username, password)
+
+  @classmethod
+  def upload_url(clazz, url, filename, username, password):
+    check.check_string(url)
+    check.check_string(username)
+    check.check_string(password)
+    clazz.log_d('upload_url: url=%s; filename=%s' % (url, filename))
     import requests
-    headers = {
-      # 'content-type': content_type,
-      clazz._HEADER_CHECKSUM_MD5: file_util.checksum('md5', filename),
-      clazz._HEADER_CHECKSUM_SHA1: file_util.checksum('sha1', filename),
-      clazz._HEADER_CHECKSUM_SHA256: file_util.checksum('sha256', filename),
-    }
+    headers = clazz._make_upload_headers(filename)
     with open(filename, 'rb') as fin:
-      response = requests.put(address.url,
+      response = requests.put(url,
                               auth = (username, password),
                               data = fin,
                               headers = headers)
@@ -141,7 +144,15 @@ class artifactory_requests(object):
       data = response.json()
       assert 'downloadUri' in data
       return data['downloadUri']
-
+    
+  @classmethod
+  def _make_upload_headers(clazz, filename):
+    return {
+      clazz._HEADER_CHECKSUM_MD5: file_util.checksum('md5', filename),
+      clazz._HEADER_CHECKSUM_SHA1: file_util.checksum('sha1', filename),
+      clazz._HEADER_CHECKSUM_SHA256: file_util.checksum('sha256', filename),
+    }
+    
   @classmethod
   def set_properties(clazz, address, properties, username, password):
     check.check_storage_address(address)
