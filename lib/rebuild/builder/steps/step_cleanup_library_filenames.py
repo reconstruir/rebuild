@@ -15,8 +15,16 @@ class step_cleanup_library_filenames(step):
   def __init__(self):
     super(step_cleanup_library_filenames, self).__init__()
 
+  @classmethod
+  def define_args(clazz):
+    return '''
+    skip_binary_third_party_prefix   bool        False
+    '''
+    
   #@abstractmethod
   def execute(self, script, env, values, inputs):
+    if values.get('skip_binary_third_party_prefix'):
+      return step_result(True, None)
     if path.isdir(script.staged_files_lib_dir):
       libraries = library.list_libraries(script.staged_files_lib_dir, relative = True)
       for l in libraries:
