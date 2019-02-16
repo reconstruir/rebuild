@@ -1,7 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.compat import StringIO
-from bes.common import check, type_checked_list
+from bes.common import algorithm, check, type_checked_list
 from .requirement import requirement
 from .requirement_hardness import requirement_hardness
 from .requirement_parser import requirement_parser
@@ -92,5 +92,9 @@ class requirement_list(type_checked_list):
       assert not req.name in result
       result[req.name] = req
     return result
+
+  def dups(self):
+    'Return a list of the names of duplicated requirements in this list.'
+    return algorithm.not_unique(self.names())
   
 check.register_class(requirement_list, include_seq = False, cast_func = requirement_list._check_cast_func)

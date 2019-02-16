@@ -104,6 +104,13 @@ class test_requirement_list(unit_test):
     r = RL.parse('a(linux) >= 1.2 b(macos) >= 2.3 c(android) >= 3.4 d(desktop) >= 5.6 e(mobile) >= 6.7 f(ios) >= 7.8')
     self.assertEqual( [ 'a', 'b', 'c', 'd', 'e', 'f' ], r.names(include_version = False) )
     self.assertEqual( [ 'a-1.2', 'b-2.3', 'c-3.4', 'd-5.6', 'e-6.7', 'f-7.8' ], r.names(include_version = True) )
+
+  def test_dups(self):
+    reqs = RL([ R('kiwi', None, None), R('orange', None, None), R('apple', None, None) ])
+    self.assertEqual( [], reqs.dups() )
+    
+    reqs = RL([ R('kiwi', None, None), R('kiwi', None, None), R('orange', None, None), R('apple', None, None) ])
+    self.assertEqual( [ 'kiwi' ], reqs.dups() )
     
 if __name__ == "__main__":
   unit_test.main()

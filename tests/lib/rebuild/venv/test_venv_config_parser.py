@@ -100,6 +100,33 @@ projects
       ( 'forall3', '>=', '5.5', None, None ),
     ], p.projects[0].resolve_packages('android') )
 
+  def test_packages_dups(self):
+    text = '''!rebuild.revenv!
+projects
+  foo
+    packages
+      kiwi
+      orange
+      apple
+      kiwi
+'''
+    with self.assertRaises(ERR) as context:
+      self._parse(text)
+
+  def test_packages_dups_multiple_sections(self):
+    text = '''!rebuild.revenv!
+projects
+  foo
+    packages
+      orange
+      apple
+      kiwi
+    packages
+      kiwi
+'''
+    with self.assertRaises(ERR) as context:
+      self._parse(text)
+
   def test_python_code(self):
     text = '''!rebuild.revenv!
 projects

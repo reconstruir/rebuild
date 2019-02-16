@@ -81,7 +81,14 @@ class venv_config_parser(object):
       elif text.startswith('variables'):
         variables.extend(recipe_parser_util.parse_masked_variables(child, self.filename))
       elif text.startswith('packages'):
-        packages.extend(recipe_parser_util.parse_requirements(child, variable_manager()))
+        more_reqs = recipe_parser_util.parse_requirements(child, variable_manager())
+        dups = more_reqs.dups()
+        if dups:
+          self._error('duplicate package entries: %s' % (' '.join(dups)), child)
+        packages.extend(more_reqs)
+        dups = packages.dups()
+        if dups:
+          self._error('duplicate package entries: %s' % (' '.join(dups)), child)
       elif text.startswith('python_code'):
         # already dealth with up top
         pass
