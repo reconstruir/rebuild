@@ -68,16 +68,20 @@ class artifactory_requests(object):
   @classmethod
   def download_to_file(clazz, target, address, username, password, debug = False):
     'Download file to target.'
+    return self.download_url_to_file(target, address.url, username, password, debug = debug)
+
+  @classmethod
+  def download_url_to_file(clazz, target, url, username, password, debug = False):
+    'Download file to target.'
     check.check_string(target)
-    check.check_storage_address(address)
-    check.check_string(address.filename)
+    check.check_string(url)
     check.check_string(username)
     check.check_string(password)
     import requests
     tmp = temp_file.make_temp_file(suffix = '-' + path.basename(target), delete = not debug)
     auth = ( username, password )
-    response = requests.get(address.url, auth = auth, stream = True)
-    clazz.log_d('download_to_file: target=%s; address=%s; tmp=%s' % (target, address, tmp))
+    response = requests.get(url, auth = auth, stream = True)
+    clazz.log_d('download_to_file: target=%s; url=%s; tmp=%s' % (target, url, tmp))
     if response.status_code != 200:
       return False
     with open(tmp, 'wb') as fout:
