@@ -155,7 +155,7 @@ class step(with_metaclass(step_register_meta, object)):
   @classmethod
   def env_dump(clazz, env, package_name, label):
     for key, value in sorted(env.items()):
-      build_blurb.blurb_verbose('rebuild', '%s(%s): %s=%s' % (label, package_name, key, value))
+      build_blurb.blurb_verbose('rebuild', '%s(%s): %s=%s - %s' % (label, package_name, key, value, type(value)))
   
   @classmethod
   def call_shell(clazz, command, script, env, shell_env = None, save_logs = None, execution_dir = None):
@@ -172,8 +172,10 @@ class step(with_metaclass(step_register_meta, object)):
 
     env.update(shell_env)
 
-    #clazz.env_dump(env, script.descriptor.name, 'PRE ENVIRONMENT')
+    clazz.env_dump(env, script.descriptor.name, 'PRE ENVIRONMENT')
 
+    #self.log_i('%s=%s - %s' % (key, env[key], type(env[key])))
+    
     clazz._env_substitite(env)
 
     rogue_key = clazz._env_find_roque_dollar_sign(env)
