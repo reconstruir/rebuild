@@ -23,7 +23,7 @@ class _toolchain_linux(_toolchain_base):
       'RANLIB': 'ranlib',
       'STRIP': 'strip',
       'AR': 'ar',
-      'AR_REPLACEMENT': self.ar_replacement_program_exe(),
+      'AR_REPLACEMENT': self.ar_replacement_program_exe() or '',
       'AR_REAL': 'ar',
       'AR_FLAGS': 'r',
       'ARFLAGS': 'r',
