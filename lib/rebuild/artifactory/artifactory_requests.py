@@ -68,7 +68,7 @@ class artifactory_requests(object):
   @classmethod
   def download_to_file(clazz, target, address, username, password, debug = False):
     'Download file to target.'
-    return self.download_url_to_file(target, address.url, username, password, debug = debug)
+    return clazz.download_url_to_file(target, address.url, username, password, debug = debug)
 
   @classmethod
   def download_url_to_file(clazz, target, url, username, password, debug = False):
