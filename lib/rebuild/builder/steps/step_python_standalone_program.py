@@ -19,11 +19,13 @@ class step_python_make_standalone_program(step):
   def define_args(clazz):
     return '''
     standalone_programs   install_file
+    standalone_flags      string_list
     '''
     
   #@abstractmethod
   def execute(self, script, env, values, inputs):
     standalone_programs = values.get('standalone_programs', [])
+    standalone_flags = values.get('standalone_flags') or []
       
     if not standalone_programs:
       return step_result(True)
@@ -32,7 +34,7 @@ class step_python_make_standalone_program(step):
     for program in standalone_programs:
       src_program = path.join(script.build_dir, program.filename)
       if src_program.lower().endswith('.py'):
-        rv = self._make_standalone_python(program, script, env)
+        rv = self._make_standalone_python(program, script, list(standalone_flags), env)
         if not rv.success:
           return rv
       elif src_program.lower().endswith('.sh'):
@@ -43,7 +45,7 @@ class step_python_make_standalone_program(step):
         raise RuntimeError('Unknown standalone program type: %s' % (src_program))
     return step_result(True, None)
 
-  def _make_standalone_python(self, program, script, env):
+  def _make_standalone_python(self, program, script, flags, env):
     src_basename = path.basename(program.filename)
     dst_basename = path.basename(program.dst_filename)
     if dst_basename.endswith('.py'):
@@ -57,7 +59,11 @@ class step_python_make_standalone_program(step):
     file_util.copy(src_program, tmp_src_program)
     
     dst_program = path.join(script.build_dir, 'dist', dst_basename)
-    cmd = 'pyinstaller --log INFO -F %s' % (tmp_src_program)
+    cmd = [
+      'pyinstaller',
+    ] + flags + [
+      tmp_src_program,
+    ]
     rv = self.call_shell(cmd, script, env)
     if not rv.success:
       return rv
