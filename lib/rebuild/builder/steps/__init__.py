@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-###import pkgutil, sys
-###_steps_path = sys.modules['rebuild.builder.steps'].__path__
-###for _, modname, _ in pkgutil.iter_modules(path = _steps_path):
-###  _source = 'from .%s import *' % (modname)
-###  _code = compile(_source, __file__, 'exec')
-###  print('CACA: %s' % (_source))
-###  exec(_code, globals(), locals())
+'''
+import pkgutil, sys
+_steps_path = sys.modules['rebuild.builder.steps'].__path__
+for _, modname, _ in pkgutil.iter_modules(path = _steps_path):
+  _source = 'from .%s import *' % (modname)
+  _code = compile(_source, __file__, 'exec')
+  exec(_code, globals(), locals())
+'''
 
+#'''
 from .step_abort import *
 from .step_artifact_create import *
 from .step_autoconf import *
@@ -54,3 +56,4 @@ from .step_setup_sources_download import *
 from .step_setup_sources_unpack import *
 from .step_shell import *
 from .step_xcodebuild import *
+#'''
