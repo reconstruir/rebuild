@@ -4,7 +4,7 @@
 import os, os.path as path
 
 from bes.common import variable
-from bes.fs import file_util
+from bes.fs import file_replace, file_util
 from bes.system import execute
 from rebuild.step import compound_step, step, step_result
 from rebuild.tools import install
@@ -20,13 +20,15 @@ class step_python_make_standalone_program(step):
     return '''
     standalone_programs   install_file
     standalone_flags      string_list
+    standalone_spec       file
     '''
     
   #@abstractmethod
   def execute(self, script, env, values, inputs):
     standalone_programs = values.get('standalone_programs', [])
     standalone_flags = values.get('standalone_flags') or []
-      
+    standalone_spec = values.get('standalone_spec')
+
     if not standalone_programs:
       return step_result(True)
 
@@ -34,7 +36,7 @@ class step_python_make_standalone_program(step):
     for program in standalone_programs:
       src_program = path.join(script.build_dir, program.filename)
       if src_program.lower().endswith('.py'):
-        rv = self._make_standalone_python(program, script, list(standalone_flags), env)
+        rv = self._make_standalone_python(standalone_spec, program, script, list(standalone_flags), env)
         if not rv.success:
           return rv
       elif src_program.lower().endswith('.sh'):
@@ -45,7 +47,7 @@ class step_python_make_standalone_program(step):
         raise RuntimeError('Unknown standalone program type: %s' % (src_program))
     return step_result(True, None)
 
-  def _make_standalone_python(self, program, script, flags, env):
+  def _make_standalone_python(self, spec, program, script, flags, env):
     src_basename = path.basename(program.filename)
     dst_basename = path.basename(program.dst_filename)
     if dst_basename.endswith('.py'):
@@ -61,9 +63,15 @@ class step_python_make_standalone_program(step):
     dst_program = path.join(script.build_dir, 'dist', dst_basename)
     cmd = [
       'pyinstaller',
-    ] + flags + [
-      tmp_src_program,
     ]
+    cmd.extend(flags)
+    if spec:
+      tmp_spec = path.join(script.build_dir, path.basename(spec.filename))
+      file_replace.copy_with_substitute(spec.filename, tmp_spec,
+                                        script.substitutions, backup = False)
+      cmd.append(path.basename(tmp_spec))
+    else:
+      cmd.append(tmp_src_program)
     rv = self.call_shell(cmd, script, env)
     if not rv.success:
       return rv
