@@ -26,7 +26,7 @@ class _toolchain_darwin(_toolchain_base):
       'RANLIB': xcrun.find_tool(self.sdk, 'ranlib'),
       'STRIP': xcrun.find_tool(self.sdk, 'strip'),
       'AR': xcrun.find_tool(self.sdk, 'ar'),
-      'AR_REPLACEMENT': self.ar_replacement_program_exe(),
+      'AR_REPLACEMENT': self.ar_replacement_program_exe() or '',
       'AR_FLAGS': 'r',
       'ARFLAGS': 'r',
       'LIPO': xcrun.find_tool(self.sdk, 'lipo'),
