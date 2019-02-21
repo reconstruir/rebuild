@@ -33,7 +33,7 @@ class test_artifactory_requests(unit_test):
       'X-Checksum-Sha256': '25df4e10c263fb88b5ace923dd84bf9aa7f5019687b5e55382ffcdb8bede9db5',
       'X-Artifactory-Filename': 'rsa-3.4.2.tar.gz',
       'X-Artifactory-Id': 'aolshared4b-withme',
-                       }, dict_util.filter_with_keys(headers, [ 'X-Checksum-Sha1', 'X-Checksum-Md5', 'X-Artifactory-Filename', 'X-Artifactory-Id', 'X-Checksum-Sha256' ]) )
+    }, dict_util.filter_with_keys(headers, [ 'X-Checksum-Sha1', 'X-Checksum-Md5', 'X-Artifactory-Filename', 'X-Artifactory-Id', 'X-Checksum-Sha256' ]) )
 
   @skip_if(not _enabled, _reason)
   def test_fetch_checksums(self):
