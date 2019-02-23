@@ -55,7 +55,7 @@ class project_file_manager(object):
 #      raise RuntimeError('Already loaded: %s' % (filename))
     if not project_file.is_project_file(filename):
       raise RuntimeError('Not a project file: %s' % (filename))
-    text = file_util.read(filename)
+    text = file_util.read(filename, codec = 'utf8')
     checksum = self._checksum_getter.checksum('sha256', filename)
     parser = project_file_parser(filename, text)
     project_files = parser.parse()
@@ -161,7 +161,7 @@ class project_file_manager(object):
   @classmethod
   def _make_dep_map(clazz, projects, build_target):
     dep_map = {}
-    for name in projects.iterkeys():
+    for name in projects.keys():
       entry = projects[name]
       imports = entry.project_file.resolve_imports(build_target.system)
       dep_map[name] = set(imports)

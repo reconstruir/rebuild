@@ -104,6 +104,12 @@ class value_hook(value_base):
     'Execute the hook.  Same semantics as step.execute.'
     return self.value.execute(script, env)
 
+  @classmethod
+  #@abstractmethod
+  def _parse_plain_string(clazz, origin, s):
+    'Parse just a string.'
+    assert False
+  
 check.register_class(value_hook, include_seq = True)
 
 class value_hook_list(value_list_base):
@@ -113,4 +119,10 @@ class value_hook_list(value_list_base):
   def __init__(self, origin = None, value = None):
     super(value_hook_list, self).__init__(origin = origin, value = value)
 
+  @classmethod
+  #@abstractmethod
+  def _parse_plain_string(clazz, origin, s):
+    'Parse just a string.'
+    assert False
+    
 check.register_class(value_hook_list, include_seq = False)

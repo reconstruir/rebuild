@@ -107,7 +107,7 @@ class artifact_manager_base(with_metaclass(artifact_manager_register_meta, objec
     pdict = self.packages_dict(build_target)
     rdict = requirements.to_dict()
     result = package_descriptor_list()
-    for name in pdict:
+    for name in sorted(pdict.keys()):
       packages = pdict[name]
       if name in rdict:
         req = rdict[name]

@@ -36,7 +36,7 @@ from rebuild.storage.storage_artifactory import storage_artifactory
 from rebuild.storage.storage_local import storage_local
 
 #from rebuild.artifactory.artifactory_requests import artifactory_requests
-from rebuild.storage.storage_address import storage_address
+#from rebuild.storage.storage_address import storage_address
 
 class what_resolver(object):
   def __init__(self, what):

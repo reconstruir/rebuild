@@ -340,30 +340,20 @@ fake_package milk 1.0.11 0 0 linux release x86_64 centos 7 none
     t.publish(milk_recipes)
 
     self.assertEqual( [
-      PD.parse('water-1.0.10'),
-      PD.parse('water-1.0.13'),
       PD.parse('milk-1.0.0'),
       PD.parse('milk-1.0.1'),
       PD.parse('milk-1.0.1-1'),
+      PD.parse('water-1.0.10'),
+      PD.parse('water-1.0.13'),
     ], t.am.list_all_filter_with_requirements(BT.parse_path('linux-ubuntu-18/x86_64/release'),
                                               RL.parse('water >= 1.0.9 milk < 1.0.10')) )
 
     self.assertEqual( [
-      PD.parse('water-1.0.10'),
-      PD.parse('water-1.0.13'),
-      PD.parse('milk-1.0.0'),
-      PD.parse('milk-1.0.1'),
-      PD.parse('milk-1.0.1-1'),
-    ], t.am.list_all_filter_with_requirements(BT.parse_path('linux-ubuntu-18/x86_64/release'),
-                                              RL.parse('water >= 1.0.9 milk < 1.0.10')) )
-
-    
-    self.assertEqual( [
-      PD.parse('water-1.0.9'),
-      PD.parse('water-1.0.11'),
       PD.parse('milk-1.0.0'),
       PD.parse('milk-1.0.1'),
       PD.parse('milk-1.0.9'),
+      PD.parse('water-1.0.9'),
+      PD.parse('water-1.0.11'),
     ], t.am.list_all_filter_with_requirements(BT.parse_path('linux-centos-7/x86_64/release'),
                                               RL.parse('water >= 1.0.9 milk < 1.0.10')) )
 

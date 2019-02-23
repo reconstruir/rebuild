@@ -6,7 +6,7 @@ import copy, os.path as path, platform
 
 from bes.system import log
 from bes.archive import archive, archiver
-from bes.common import check, object_util, string_util, variable
+from bes.common import check, dict_util, object_util, string_util, variable
 from bes.dependency import dependency_resolver
 from bes.fs import file_path, file_util
 from bes.system import os_env
@@ -337,9 +337,8 @@ class package_manager(object):
       return result
     ed = env_dir(self._env_dir, files = files)
     result = ed.transform_env(result)
-    for key, value in result.items():
-      if key.startswith('_REBUILD'):
-        del result[key]
+    # Remove any item where the key starts with _REBUILD to not leak impl detail vars
+    dict_util.del_keys(result, [ key for key in result.keys() if key.startswith('_REBUILD') ])
     return result
 
   def expose_env(self, package_names):

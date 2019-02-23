@@ -42,7 +42,6 @@ class test_darwin_package_util(unit_test):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     fat_package = path.join(tmp_dir, 'fat.tgz')
     fat_archive.thin_to_fat(thin_packages, fat_package)
-    print('CACA: thin_to_fat: thin=%s fat=%s' % (thin_packages, fat_package))
     self.assertTrue( archiver.is_valid(fat_package) )
 
     tmp_extract_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
@@ -53,8 +52,7 @@ class test_darwin_package_util(unit_test):
     self.assertTrue( path.isfile(path.join(tmp_extract_dir, 'bar.txt')) )
     
     self.assertTrue( path.isfile(fat_library) )
-    print('CACA: archs for %s: %s' % (fat_library, lipo.archs(fat_library)))
-#    self.assertEqual( ['armv7', 'i386', 'x86_64'], lipo.archs(fat_library) )
+    self.assertEqual( ['armv7', 'i386', 'x86_64'], lipo.archs(fat_library) )
     
   def test_thin_to_fat_bad_normals_checksums(self):
     i386_other_items = [

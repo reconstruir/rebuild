@@ -44,6 +44,7 @@ class recipe_util(object):
   @classmethod
   def file_starts_with_magic(clazz, filename, magic):
     'Return True if filename starts with the given magic sequence.'
+    magic = magic.encode('ascii')
     with open(filename, 'rb') as fin:
       try:
         return fin.read(len(magic)) == magic

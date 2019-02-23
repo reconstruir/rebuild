@@ -96,5 +96,14 @@ class value_git_address(value_base):
     if self.revision == '[DIR]':
       return False
     return not path.isfile(self.downloaded_tarball_path(recipe_env))
-    
+
+  @classmethod
+  #@abstractmethod
+  def _parse_plain_string(clazz, origin, s):
+    'Parse just a string.'
+    try:
+      return int(s)
+    except Exception as ex:
+      value_parsing.raise_error(origin, 'Not a valid int: \"%s\"' % (s))
+  
 check.register_class(value_git_address, include_seq = False)
