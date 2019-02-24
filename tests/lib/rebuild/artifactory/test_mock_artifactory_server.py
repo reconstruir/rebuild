@@ -18,6 +18,7 @@ from bes.url import url_util
 from bes.fs.testing import temp_content
 
 from rebuild.artifactory.mock_artifactory_server import mock_artifactory_server
+from rebuild.artifactory.artifactory_requests import artifactory_requests as AR
 
 class test_mock_artifactory_server(unit_test):
 
@@ -29,7 +30,7 @@ class test_mock_artifactory_server(unit_test):
     temp_content.write_items(items, tmp_dir)
     return tmp_dir
   
-  def test_tarball_server(self):
+  def test_download_url_to_file(self):
     tmp_dir = self._make_temp_content([
       'file foo.txt "this is foo.txt\n"',
       'file subdir/bar.txt "bar.txt\n"',
@@ -43,21 +44,29 @@ class test_mock_artifactory_server(unit_test):
     port = server.address[1]
 
     url = self._make_url(port, 'foo.txt')
-    tmp = url_util.download_to_temp_file(url)
+
+    tmp = temp_file.make_temp_file()
+    AR.download_url_to_file(tmp, url, 'foo', 'bar')
     self.assertEqual( 'text/plain', file_mime.mime_type(tmp).mime_type )
     self.assertEqual( 'this is foo.txt\n', file_util.read(tmp, codec = 'utf8') )
 
     url = self._make_url(port, 'subdir/subberdir/baz.txt')
-    tmp = url_util.download_to_temp_file(url)
+    AR.download_url_to_file(tmp, url, '', '')
     self.assertEqual( 'text/plain', file_mime.mime_type(tmp).mime_type )
     self.assertEqual( 'this is baz.txt\n', file_util.read(tmp, codec = 'utf8') )
 
-    with self.assertRaises(HTTPError) as ctx:
-      url = self._make_url(port, 'notthere.txt')
-      tmp = url_util.download_to_temp_file(url)
-
     server.stop()
 
+  def test_upload_url(self):
+    server = web_server_controller(mock_artifactory_server)
+    tmp_root_dir = temp_file.make_temp_dir()
+    server.start(root_dir = tmp_root_dir)
+    port = server.address[1]
+
+    tmp = temp_file.make_temp_file(content = 'this is foo.txt\n')
+    url = self._make_url(port, 'foo.txt')
+    AR.upload_url(url, tmp, '', '')
+    
   @classmethod
   def _make_url(clazz, port, p):
     base = 'http://localhost:%d' % (port)
