@@ -11,6 +11,7 @@ from rebuild.project.project_file_parser import project_file_parser
 from rebuild.project.project_file import project_file
 
 from rebuild.project.project_file_manager import project_file_manager
+from rebuild.package.artifact_manager_artifactory import artifact_manager_artifactory
 
 from bes.fs import file_util
 
