@@ -53,12 +53,22 @@ class test_mock_artifactory_server(unit_test):
     self.assertEqual( 'this is foo.txt\n', file_util.read(tmp, codec = 'utf8') )
 
     url = self._make_url(port, 'subdir/subberdir/baz.txt')
-    AR.download_url_to_file(tmp, url, 'foo', 'bar')
+    AR.download_url_to_file(tmp, url, '', '')
     self.assertEqual( 'text/plain', file_mime.mime_type(tmp).mime_type )
     self.assertEqual( 'this is baz.txt\n', file_util.read(tmp, codec = 'utf8') )
 
     server.stop()
 
+  def test_upload_url(self):
+    server = web_server_controller(mock_artifactory_server)
+    tmp_root_dir = temp_file.make_temp_dir()
+    server.start(root_dir = tmp_root_dir)
+    port = server.address[1]
+
+    tmp = temp_file.make_temp_file(content = 'this is foo.txt\n')
+    url = self._make_url(port, 'foo.txt')
+    AR.upload_url(url, tmp, '', '')
+    
   @classmethod
   def _make_url(clazz, port, p):
     base = 'http://localhost:%d' % (port)
