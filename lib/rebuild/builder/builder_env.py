@@ -17,7 +17,6 @@ from rebuild.package.artifact_manager_factory import artifact_manager_factory
 from rebuild.source_ingester.http_download_cache import http_download_cache
 from rebuild.recipe.variable_manager import variable_manager
 from rebuild.storage.storage_artifactory import storage_artifactory
-#from rebuild.package.artifact_manager_chain import artifact_manager_chain
 
 from .builder_script_manager import builder_script_manager
 from .source_dir_zipball_cache import source_dir_zipball_cache
@@ -48,11 +47,6 @@ class builder_env(object):
     self.source_dir_zipballs = source_dir_zipball_cache(path.join(config.build_root, 'downloads', 'source_dir_zipball'))
     self.reload_build_artifact_manager()
     self.external_artifact_manager = self._make_external_artifact_manager(self.external_artifacts_storage)
-    self.import_artifacts(self.build_artifact_manager,
-                          self.external_artifact_manager,
-                          self.config.build_target,
-                          self.config.host_build_target,
-                          checksum_getter)
     self.requirements_artifact_manager = self.build_artifact_manager
     self.tools_manager = tools_manager(path.join(config.build_root, 'tools'),
                                        self.config.host_build_target,
@@ -112,14 +106,6 @@ class builder_env(object):
     factory_config = artifact_manager_factory.config(None, None, True, config)
     self.build_artifact_manager = artifact_manager_local(factory_config)
 
-#  def _make_requirements_artifact_manager(self):
-#    #return self.build_artifact_manager
-#    ram = artifact_manager_chain()
-#    if self.external_artifact_manager:
-#      ram.add(self.external_artifact_manager)
-#    ram.add(self.build_artifact_manager)
-#    return ram
-      
   @classmethod
   def _load_storage_config_file(clazz, filename):
     filename = path.abspath(filename)
@@ -127,12 +113,4 @@ class builder_env(object):
       raise RuntimeError('storage config file not found: %s' % (filename))
     return storage_config_manager.from_file(filename)
 
-  @classmethod
-  def import_artifacts(clazz, am, external_am, build_target, host_build_target, checksum_getter):
-    if not external_am:
-      return
-    am.import_artifacts(external_am, build_target, checksum_getter)
-    if build_target != host_build_target:
-      am.import_artifacts(external_am, host_build_target, checksum_getter)
-  
 check.register_class(builder_env, include_seq = False)

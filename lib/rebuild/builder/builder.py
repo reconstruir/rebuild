@@ -132,7 +132,7 @@ class builder(object):
       self.blurb('FAILED: %s - %s\n%s' % (script.descriptor.name, result.script_result.failed_step.__class__.__name__, result.script_result.message))
       return self.EXIT_CODE_FAILED
     elif result.status == self.SCRIPT_CURRENT:
-      self.blurb('%s - up-to-date.' % (script.descriptor.name))
+      self.blurb('%s - up-to-date: %s' % (script.descriptor.name, result.reason or ''))
       return self.EXIT_CODE_SUCCESS
     elif result.status == self.SCRIPT_ABORTED:
       self.blurb('aborted')
@@ -144,7 +144,7 @@ class builder(object):
   SCRIPT_FAILED = 'failed'
   SCRIPT_CURRENT = 'current'
   SCRIPT_ABORTED = 'aborted'
-  _run_result = namedtuple('_run_result', 'status,script_result')
+  _run_result = namedtuple('_run_result', 'status, script_result, reason')
   
   def _build_one_script(self, script, env):
     if env.config.download_only:
@@ -155,7 +155,7 @@ class builder(object):
       try:
         return self._build_one_script_build(script, env)
       except step_aborted as ex:
-        return self._run_result(self.SCRIPT_ABORTED, None)
+        return self._run_result(self.SCRIPT_ABORTED, None, None)
 
     assert False, 'Not Reached'
 
@@ -163,7 +163,7 @@ class builder(object):
       build_blurb.blurb('rebuild', '%s - %s' % (script.descriptor.name, label))
       script_result = script.execute()
       if script_result.success:
-        return self._run_result(self.SCRIPT_SUCCESS, script_result)
+        return self._run_result(self.SCRIPT_SUCCESS, script_result, None)
       else:
         return self._run_result(self.SCRIPT_FAILED, script_result)
   
@@ -175,25 +175,50 @@ class builder(object):
       if path.exists(script.working_dir) and dir_util.is_empty(script.working_dir):
         file_util.remove(script.working_dir)
       script.timer_stop()
-      return self._run_result(self.SCRIPT_CURRENT, None)
+      return self._run_result(self.SCRIPT_CURRENT, None, reason)
     build_blurb.blurb('rebuild', '%s - building because %s' % (script.descriptor.name, reason))
     script_result = script.execute()
     if script_result.success:
-      result = self._run_result(self.SCRIPT_SUCCESS, script_result)
+      result = self._run_result(self.SCRIPT_SUCCESS, script_result, None)
     else:
-      result = self._run_result(self.SCRIPT_FAILED, script_result)
+      result = self._run_result(self.SCRIPT_FAILED, script_result, None)
     script.timer_stop()
     return result
+
+  def _import_script_artifacts(self, script, env):
+    from rebuild.base import artifact_descriptor
+    
+    assert env.external_artifact_manager
+    other_am = env.external_artifact_manager
+    pkg_desc = script.descriptor
+    build_target = script.build_target
+    adesc = artifact_descriptor.make_from_package_descriptor(pkg_desc, build_target)
+
+    tools_reqs = script.resolve_deps(['TOOL'], False).to_requirement_list()
+    tools_resolve_rv = other_am.poto_resolve_deps(tools_reqs, build_target, ['TOOL'], False)
+    for next_pkg_desc in tools_resolve_rv.resolved:
+      env.build_artifact_manager.import_artifact(env.external_artifact_manager,
+                                                 next_pkg_desc,
+                                                 build_target,
+                                                 env.checksum_getter)
+
+    
+    reqs = script.resolve_deps(['BUILD', 'RUN'], True).to_requirement_list()
+    reqs_resolve_rv = other_am.poto_resolve_deps(reqs, build_target, ['BUILD', 'RUN'], True)
+    for next_pkg_desc in reqs_resolve_rv.resolved:
+      env.build_artifact_manager.import_artifact(env.external_artifact_manager,
+                                                 next_pkg_desc,
+                                                 build_target,
+                                                 env.checksum_getter)
       
   def _needs_rebuilding(self, script, env):
     if env.checksum_manager.is_ignored(script.descriptor.full_name):
       return True, 'checksum_ignored'
-#    imported = env.recipe_is_imported(script.recipe.filename)
-#    if imported:
-#      return False, 'imported'
-    if env.external_artifact_manager:
+    imported = env.recipe_is_imported(script.recipe.filename)
+    if imported and env.external_artifact_manager:
       if env.external_artifact_manager.has_package_by_descriptor(script.descriptor, script.build_target):
-        return False, 'package found in external artifact manager'
+        self._import_script_artifacts(script, env)
+        return False, 'package imported from external artifact manager'
     return script.needs_rebuilding(), 'checksums'
     
   def build_many_scripts(self, package_names):

@@ -74,7 +74,7 @@ class artifact_manager_base(with_metaclass(artifact_manager_register_meta, objec
     pass
 
   def _log_label(self, method):
-    return 'CACA: %s(%s): %s:' % (self.__class__.__name__, id(self), method)
+    return '%s(%s): %s:' % (self.__class__.__name__, id(self), method)
   
   def find_by_package_descriptor(self, pdesc, build_target, relative_filename):
     check.check_package_descriptor(pdesc)
@@ -174,15 +174,27 @@ class artifact_manager_base(with_metaclass(artifact_manager_register_meta, objec
       result = self._poto_resolve_result(available, latest, rm_rv.resolved, None)
     return result
 
-  def import_artifacts(self, other_am, build_target, checksum_getter):
+  def import_artifact(self, other_am, pkg_desc, build_target, checksum_getter):
     check.check_artifact_manager(other_am)
-    for md in other_am.list_all_by_metadata(build_target):
-      old_tarball = self.artifact_path(md.package_descriptor, build_target, False)
-      old_checksum = checksum_getter.checksum('sha256', old_tarball) if old_tarball else None
-      new_tarball = other_am.artifact_path(md.package_descriptor, build_target, False)
-      assert path.isfile(new_tarball)
-      new_checksum = checksum_getter.checksum('sha256', new_tarball)
-      if old_checksum != new_checksum:
-        self.publish(new_tarball, True, md)
+    check.check_package_descriptor(pkg_desc)
+    check.check_build_target(build_target)
+    check.check_file_checksum_getter(checksum_getter)
+    self.log_d('%s: other_am=%s; pkg_desc=%s; build_target=%s' % (self._log_label('import_artifact'),
+                                                                  other_am,
+                                                                  pkg_desc,
+                                                                  build_target))
+    adesc = artifact_descriptor.make_from_package_descriptor(pkg_desc, build_target)
+    if not other_am.has_package_by_descriptor(pkg_desc, build_target):
+      raise RuntimeError('Artifact \"%s\" not found in %s' % (adesc, other_am))
+    other_am.download(adesc)
+    old_tarball = self.artifact_path(pkg_desc, build_target, False)
+    old_checksum = checksum_getter.checksum('sha256', old_tarball) if old_tarball else None
+    new_tarball = other_am.artifact_path(pkg_desc, build_target, False)
+    assert path.isfile(new_tarball)
+    new_checksum = checksum_getter.checksum('sha256', new_tarball)
+    if old_checksum != new_checksum:
+      md = other_am.find_by_artifact_descriptor(adesc, False)
+      self.log_e('%s: importing %s from %s to %s' % (self._log_label('import_artifact'), adesc, other_am, self))
+      self.publish(new_tarball, True, md)
   
 check.register_class(artifact_manager_base, name = 'artifact_manager', include_seq = False)

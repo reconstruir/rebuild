@@ -49,8 +49,12 @@ class artifact_manager_artifactory(artifact_manager_base):
       self._db.add_or_replace_artifact(package)
 
   #@abstractmethod
-  def artifact_path(self, package_descriptor, build_target, relative):
-    assert False
+  def artifact_path(self, pkg_desc, build_target, relative):
+    check.check_package_descriptor(pkg_desc)
+    check.check_build_target(build_target)
+    check.check_bool(relative)
+    md = self.find_by_package_descriptor(pkg_desc, build_target, relative)
+    return md.filename
     
   #@abstractmethod
   def publish(self, tarball, allow_replace, metadata):
@@ -88,7 +92,7 @@ class artifact_manager_artifactory(artifact_manager_base):
       raise NotInstalledError('package not found: %s' % (str(adesc)))
     filename_abs = path.join(self._local_cache_dir, md.filename)
     if path.isfile(md.filename):
-      self.log_d('already downloaded: %s' % (filename_abs))
+      self.log_e('already downloaded: %s' % (filename_abs))
       return
     address = self._address.mutate_filename(md.filename)
     self.log_i('downloading: %s => %s' % (str(address), filename_abs))
