@@ -1112,4 +1112,10 @@ storage_local.py majorly messed up also value_source_tarball.  its calling stora
 2019-02-05
 - when copying a local dir for rebuild make sure to exclude the .git dir
 - standalone enhancements to support a spec file somehow
-- 
+
+2019-02-24
+- external_artifacts_manager stuff does not play nice with download-only
+- recipes should be managed in the projects they come from
+
+
+
