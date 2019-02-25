@@ -24,7 +24,7 @@ class artifact_manager_base(with_metaclass(artifact_manager_register_meta, objec
 
   def __init__(self):
     log.add_logging(self, 'am')
-    build_blurb.add_blurb(self, 'artifact_manager')
+    build_blurb.add_blurb(self, 'rebuild')
     self._reset_requirement_managers()
     self._read_only = False
     self._timer = debug_timer('am', 'error', disabled = True)
@@ -194,7 +194,8 @@ class artifact_manager_base(with_metaclass(artifact_manager_register_meta, objec
     new_checksum = checksum_getter.checksum('sha256', new_tarball)
     if old_checksum != new_checksum:
       md = other_am.find_by_artifact_descriptor(adesc, False)
-      self.log_e('%s: importing %s from %s to %s' % (self._log_label('import_artifact'), adesc, other_am, self))
+      self.log_d('%s: importing %s from %s to %s' % (self._log_label('import_artifact'), adesc, other_am, self))
+      self.blurb('imported %s from %s' % (str(adesc), str(other_am)))
       self.publish(new_tarball, True, md)
   
 check.register_class(artifact_manager_base, name = 'artifact_manager', include_seq = False)
