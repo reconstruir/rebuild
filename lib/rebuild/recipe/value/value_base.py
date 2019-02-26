@@ -1,5 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+from os import path
 from collections import namedtuple
 from abc import abstractmethod, ABCMeta
 
@@ -78,7 +79,10 @@ class value_base(with_metaclass(value_register_meta, object)):
     self.substitutions_changed()
     
   def substitute(self, text):
-    return variable.substitute(text, self._substitutions, patterns = variable.BRACKET)
+    result = variable.substitute(text, self._substitutions, patterns = variable.BRACKET)
+    if result.startswith('~'):
+      result = path.expanduser(result)
+    return result
 
   @abstractmethod
   def substitutions_changed(self):

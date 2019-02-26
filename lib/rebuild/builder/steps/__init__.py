@@ -33,6 +33,7 @@ from .step_install_delete_files import *
 from .step_install_env_files import *
 from .step_install_install_files import *
 from .step_install_post_install_hooks import *
+from .step_install_rebuild_files import *
 from .step_make import *
 from .step_make_instructions import *
 from .step_no_build import *

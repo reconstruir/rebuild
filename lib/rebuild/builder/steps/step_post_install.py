@@ -11,6 +11,7 @@ class step_post_install(compound_step):
   from .step_cleanup import step_cleanup
   from .step_install_delete_files import step_install_delete_files
   from .step_install_env_files import step_install_env_files
+  from .step_install_rebuild_files import step_install_rebuild_files
   from .step_install_install_files import step_install_install_files
   from .step_install_post_install_hooks import step_install_post_install_hooks
   from .step_make_instructions import step_make_instructions
@@ -22,6 +23,7 @@ class step_post_install(compound_step):
     step_install_install_files,
     step_pkg_config_make_pc,
     step_install_env_files,
+    step_install_rebuild_files,
     step_make_instructions,
     step_check_hard_coded_paths,
     step_check_darwin_archs,

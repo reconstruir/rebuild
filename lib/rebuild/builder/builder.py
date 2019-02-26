@@ -187,7 +187,7 @@ class builder(object):
 
   def _import_script_artifacts(self, script, env):
     from rebuild.base import artifact_descriptor
-    
+
     assert env.external_artifact_manager
     other_am = env.external_artifact_manager
     pkg_desc = script.descriptor
@@ -202,7 +202,6 @@ class builder(object):
                                                  build_target,
                                                  env.checksum_getter)
 
-    
     reqs = script.resolve_deps(['BUILD', 'RUN'], True).to_requirement_list()
     reqs_resolve_rv = other_am.poto_resolve_deps(reqs, build_target, ['BUILD', 'RUN'], True)
     for next_pkg_desc in reqs_resolve_rv.resolved:
