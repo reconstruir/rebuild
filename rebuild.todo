@@ -1119,3 +1119,4 @@ storage_local.py majorly messed up also value_source_tarball.  its calling stora
 - venvs report
 - venvs update report (minimal blurb)
 - add unit test for step_install_rebuild_files
+- restore the metadata cache for package.py:raw_metadata

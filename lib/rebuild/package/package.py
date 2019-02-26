@@ -37,8 +37,9 @@ class package(object):
 
   @cached_property
   def raw_metadata(self):
-    # FIXME: need to use a better root dir something that ends up in ~/.rebuild/tmp/package_members_cache or such
-    content = archiver.extract_member_to_string_cached(self.tarball, self.METADATA_FILENAME)
+    # FIXME: restore the cache
+    #content = archiver.extract_member_to_string_cached(self.tarball, self.METADATA_FILENAME)
+    content = archiver.extract_member_to_string(self.tarball, self.METADATA_FILENAME)
     return content.decode('utf-8')
   
   @cached_property
