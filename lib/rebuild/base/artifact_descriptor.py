@@ -14,8 +14,6 @@ from .package_descriptor import package_descriptor
 
 class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revision, epoch, system, level, arch, distro, distro_version_major, distro_version_minor')):
 
-  WHERE_EXPRESSION = 'name=? and version=? and revision=? and epoch=? and system=? and level=? and arch=? and distro=? and distro_version_major=? and distro_version_minor=?'
-  
   def __new__(clazz, name, version, revision, epoch, system, level,
               arch, distro, distro_version_major, distro_version_minor):
     check.check_string(name)
@@ -66,11 +64,11 @@ class artifact_descriptor(namedtuple('artifact_descriptor', 'name, version, revi
       self.revision,
       self.epoch,
       self.system,
-      self.level,
-      self._sql_encode_string_list(self.arch),
       self.distro,
       self.distro_version_major,
       self.distro_version_minor,
+      self._sql_encode_string_list(self.arch),
+      self.level,
     )
 
   @classmethod

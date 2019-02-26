@@ -71,6 +71,8 @@ class build_arch(object):
   @classmethod
   def check_arch(clazz, arch, system, distro):
     'Check that arch is valid for system or raise an error.'
+    if arch == 'any':
+      return arch
     validated_arch = clazz.validate(arch, system, distro)
     if not validated_arch:
       raise ValueError('Invalid arch \"%s\" for system \"%s\"' % (arch, system))
@@ -81,6 +83,8 @@ class build_arch(object):
     'Return True normalized arch if it is valid for system otherwise None.'
     arch = clazz.normalize(arch)
     check.check_string_seq(arch)
+    if system == 'any':
+      return arch
     build_system.check_system(system)
     valid_archs = clazz.VALID_ARCHS[system]
     for next_arch in arch:
@@ -100,6 +104,10 @@ class build_arch(object):
   # FIXME666 nothing is done with distro other than default case
   @classmethod
   def determine_arch(clazz, arch, system, distro):
+    if system == 'any':
+      if not arch:
+        return ( X86_64, )
+      return clazz.normalize(arch)
     build_system.check_system(system)
     if not arch:
       return clazz.default_arch(system, distro)

@@ -84,6 +84,11 @@ class artifact_manager_base(with_metaclass(artifact_manager_register_meta, objec
                                                                         build_target.build_path,
                                                                         relative_filename))
     adesc = artifact_descriptor.make_from_package_descriptor(pdesc, build_target)
+    adesc_no_distro = adesc.clone_without_distro()
+    try:
+      return self.find_by_artifact_descriptor(adesc_no_distro, relative_filename)
+    except NotInstalledError as ex:
+      pass
     return self.find_by_artifact_descriptor(adesc, relative_filename)
  
   def has_package_by_descriptor(self, pdesc, build_target):

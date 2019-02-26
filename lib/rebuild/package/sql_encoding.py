@@ -38,3 +38,8 @@ class sql_encoding(object):
   @classmethod
   def encode_files(clazz, files):
     return clazz.encode_string(json_util.to_json(files.to_simple_list()))
+
+  @classmethod
+  def decode_arch(clazz, arch):
+    check.check_string(arch)
+    return tuple(json.loads(arch))

@@ -769,9 +769,8 @@ fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     
   def test_install_tarball_no_distro(self):
     recipes = '''
-fake_package foo 1.0.0 0 0 linux release x86_64 ubuntu 18 none
+fake_package foo 1.0.0 0 0 linux release x86_64 any any none
 
-#fake_package bar 1.0.0 0 0 linux release x86_64 none none none
 fake_package bar 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   requirements
     foo >= 1.0.0
@@ -783,17 +782,19 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18 none
 
     t = AMT(recipes = recipes)
     t.publish([
-      'foo;1.0.0;0;0;linux;release;x86_64;ubuntu;18;',
-#      'bar;1.0.0;0;0;linux;release;x86_64;;;',
+      'foo;1.0.0;0;0;linux;release;x86_64;any;any;',
       'bar;1.0.0;0;0;linux;release;x86_64;ubuntu;18;',
       'baz;1.0.0;0;0;linux;release;x86_64;ubuntu;18;',
     ])
+    linux_bt = BT.parse_path('linux-ubuntu-18/x86_64/release')
+    
+    p = t.am.list_all_by_descriptor(linux_bt)
     pm = self._make_caca_test_pm(t.am)
     pm.install_packages(PDL([
       PD.parse('foo-1.0.0'),
       PD.parse('bar-1.0.0'),
       PD.parse('baz-1.0.0'),
-    ]), BT.parse_path('linux-ubuntu-18/x86_64/release'), ['BUILD', 'RUN'])
+    ]), linux_bt, ['BUILD', 'RUN'])
     self.assertEqual( [ 'bar-1.0.0', 'baz-1.0.0', 'foo-1.0.0' ], pm.list_all_names(include_version = True) )
     
 if __name__ == '__main__':

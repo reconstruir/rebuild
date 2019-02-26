@@ -25,8 +25,8 @@ class build_target(namedtuple('build_target', 'system, distro, distro_version_ma
     level = build_level.parse_level(level)
     distro_version_major = clazz.resolve_distro_version(distro_version_major)
     distro_version_minor = clazz.resolve_distro_version(distro_version_minor)
-    if system != host.LINUX and distro != '':
-      raise ValueError('distro for %s should be empty/none' % (system))
+    if system != host.LINUX and distro not in [ '', 'any', 'none' ]:
+      raise ValueError('distro for \"%s\" should be empty/none instead of \"%s\"' % (system, distro))
     if system == host.LINUX and not distro:
       if distro_version_major:
         raise ValueError('no distro so distro_version_major should be empty/none instead of: %s' % (distro_version_major))
@@ -178,5 +178,16 @@ class build_target(namedtuple('build_target', 'system, distro, distro_version_ma
     elif distro is None:
       distro = ''
     return distro
+  
+  def match(self, other):
+    'Return True if self matches other build_target'
+    check.check_build_target(other)
+    return \
+      (other.system == 'any' or (self.system == other.system)) and \
+      (other.distro == 'any' or (self.distro == other.distro)) and \
+      (other.distro_version_major == 'any' or (self.distro_version_major == other.distro_version_major)) and \
+      (other.distro_version_minor == 'any' or (self.distro_version_minor == other.distro_version_minor)) and \
+      (other.arch == 'any' or (self.arch == other.arch)) and \
+      (other.level == 'any' or (self.level == other.level))
   
 check.register_class(build_target)

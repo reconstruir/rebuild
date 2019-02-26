@@ -289,6 +289,6 @@ class test_artifact_db(unit_test):
     self.assertEqual( [ pd1 ], db.list_all_by_package_descriptor() )
     db.add_artifact(e2)
     self.assertEqual( [ pd1, pd2 ], db.list_all_by_package_descriptor() )
-    
+
 if __name__ == '__main__':
   unit_test.main()

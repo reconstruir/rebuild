@@ -165,6 +165,9 @@ class package_manager(object):
 
     if self.is_installed(pkg.package_descriptor.name):
       raise AlreadyInstalledError('package %s already installed' % (pkg.package_descriptor.name), pkg)
+
+    resolved_rv = self._package_resolve_deps(pkg, pkg.build_target, hardness, self._artifact_manager, False)
+
     missing_requirements = self._missing_requirements(pkg, pkg.build_target, hardness)
     
     if missing_requirements:
@@ -249,9 +252,11 @@ class package_manager(object):
     
   def _install_package(self, pkg_desc, build_target, hardness, options):
     options = options or package_install_options()
+    self.log_i('_install_package: pkg_desc=%s; build_target=%s; hardness=%s; options=%s' % (pkg_desc, build_target, hardness, options))
     pkg = self._artifact_manager.find_by_package_descriptor(pkg_desc, build_target, relative_filename = False)
     if not pkg:
       raise RuntimeError('Failed to find package in artifact manager: %s - %s' % (str(pkg_desc), str(build_target)))
+    self.log_i('_install_package: found pkg=%s' % (str(pkg.artifact_descriptor)))
     if self.is_installed(pkg.name):
       self.log_i('install_package: %s for %s' % (pkg_desc.full_name, ' '.join(hardness)))
       old_pkg_entry = self.db.find_package(pkg.name)
@@ -360,3 +365,14 @@ class package_manager(object):
   def descriptors_for_names(self, names):
     check.check_string_seq(names)
     return self.db.descriptors_for_names(sorted(names))
+
+  @classmethod
+  def _package_resolve_deps(clazz, pkg, build_target, hardness, artifact_manager, include_names):
+    check.check_build_target(build_target)
+#    check.check_requirement_hardness(hardness)
+    check.check_string_seq(hardness)
+    check.check_artifact_manager(artifact_manager)
+    check.check_bool(include_names)
+    requirements = pkg.package_descriptor.requirements.filter_by_system(build_target.system).filter_by_hardness(hardness)
+    return artifact_manager.poto_resolve_deps(requirements, build_target, hardness, include_names)
+  

@@ -44,6 +44,7 @@ class test_build_target(unit_test):
 
   def test_wildcard(self):
     self.assertEqual( 'macos-10.any/x86_64/any', BT('macos', '', '10', 'any', 'x86_64', 'any').build_path )
+    self.assertEqual( 'linux-any-any/x86_64/any', BT('linux', 'any', '', 'any', 'x86_64', 'any').build_path )
 
   def test_clone(self):
     p = BT.parse_path
@@ -59,5 +60,17 @@ class test_build_target(unit_test):
   def _parse_exp(self, bt_path, exp):
     return BT.parse_path(bt_path).parse_expression(exp)
 
+  def _match(self, a, b):
+    return BT.parse_path(a).match(BT.parse_path(b))
+
+  def test_match(self):
+    self.assertTrue( self._match('macos-10.10/x86_64/release', 'macos-10.10/x86_64/release') )
+    self.assertFalse( self._match('linux-ubuntu-18/x86_64/release', 'macos-10.10/x86_64/release') )
+    self.assertTrue( self._match('linux-ubuntu-18/x86_64/release', 'linux-ubuntu-any/x86_64/release') )
+    self.assertTrue( self._match('linux-ubuntu-18/x86_64/release', 'linux-any-any/x86_64/release') )
+    self.assertTrue( self._match('linux-fedora-29/x86_64/release', 'linux-any-any/x86_64/release') )
+    self.assertTrue( self._match('linux-fedora-29/x86_64/release', 'any-any-any/x86_64/release') )
+    self.assertTrue( self._match('macos-10/x86_64/release', 'any-any-any/x86_64/release') )
+    
 if __name__ == '__main__':
   unit_test.main()

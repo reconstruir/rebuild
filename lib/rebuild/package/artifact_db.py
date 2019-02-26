@@ -5,7 +5,7 @@ from bes.system import log
 from bes.fs import file_check
 from bes.common import check, string_util
 from bes.sqlite import sqlite
-from rebuild.base import artifact_descriptor, artifact_descriptor_list, package_descriptor,  package_descriptor_list, build_version
+from rebuild.base import artifact_descriptor, artifact_descriptor_list, package_descriptor,  package_descriptor_list, build_target, build_version
 
 from .db_error import *
 from .files_db import files_db
@@ -43,14 +43,35 @@ create table artifacts(
     self._db = sqlite(self._filename)
     self._db.ensure_table('artifacts', self.SCHEMA_ARTIFACTS)
     self._files_db = files_db(self._db)
-    
+    self._db.create_function('rebuild_build_target_matches', 12, self._build_target_matches)
+
+  @staticmethod
+  def _build_target_matches(system, distro, distro_version_major, distro_version_minor, arch, level,
+                            wanted_system, wanted_distro, wanted_distro_version_major, wanted_distro_version_minor, wanted_arch, wanted_level):
+    actual = build_target(system, distro,
+                          distro_version_major, distro_version_minor,
+                          sql_encoding.decode_arch(arch),
+                          level)
+    wanted = build_target(wanted_system, wanted_distro,
+                          wanted_distro_version_major, wanted_distro_version_minor,
+                          sql_encoding.decode_arch(wanted_arch),
+                          wanted_level)
+    return wanted.match(actual)
+      
   @property
   def filename(self):
     return self._filename
 
+  WHERE_EXPRESSION = '\
+name=? and \
+version=? and \
+revision=? and \
+epoch=? and \
+rebuild_build_target_matches(system, distro, distro_version_major, distro_version_minor, arch, level, ?, ?, ?, ?, ?, ?)'
+
   def has_artifact(self, adesc):
     check.check_artifact_descriptor(adesc)
-    sql = 'select count(name) from artifacts where {}'.format(adesc.WHERE_EXPRESSION)
+    sql = 'select count(name) from artifacts where {}'.format(self.WHERE_EXPRESSION)
     row = self._db.select_one(sql, adesc.sql_tuple)
     return row[0] > 0
   
@@ -134,7 +155,7 @@ create table artifacts(
     self._db.commit()
 
   def _remove_artifact_i(self, adesc):
-    sql = 'delete from artifacts where {}'.format(adesc.WHERE_EXPRESSION)
+    sql = 'delete from artifacts where {}'.format(self.WHERE_EXPRESSION)
     self._db.execute(sql, adesc.sql_tuple)
     files_table_name = adesc.sql_table_name
     self._files_db.remove_table(files_table_name)
@@ -148,7 +169,7 @@ create table artifacts(
     if build_target:
       sql = '''\
 select name, version, revision, epoch, system, level, arch, distro, distro_version_major, distro_version_minor from artifacts \
-where system=? and distro=? and distro_version_major=? and distro_version_minor=? and arch=? and level=? \
+where rebuild_build_target_matches(system, distro, distro_version_major, distro_version_minor, arch, level, ?, ?, ?, ?, ?, ?) \
 order by name asc, version asc, revision asc, epoch asc, system asc, level asc, arch asc, distro, distro_version_major, distro_version_minor asc'''
       data = self._build_target_to_sql_tuple(build_target)
     else:
@@ -162,7 +183,8 @@ order by name asc, version asc, revision asc, epoch asc, system asc, level asc, 
   def list_all_by_metadata(self, build_target = None):
     if build_target:
       sql = '''\
-select * from artifacts where system=? and distro=? and distro_version_major=? and distro_version_minor=? and arch=? and level=? \
+select * from artifacts \
+where rebuild_build_target_matches(system, distro, distro_version_major, distro_version_minor, arch, level, ?, ?, ?, ?, ?, ?) \
 order by name asc, version asc, revision asc, epoch asc, system asc, level asc, arch asc, distro, distro_version_major, distro_version_minor asc'''
       data = self._build_target_to_sql_tuple(build_target)
     else:
@@ -178,7 +200,7 @@ order by name asc, version asc, revision asc, epoch asc, system asc, level asc, 
   def list_all_by_package_descriptor(self, build_target = None):
     if build_target:
       sql = '''select name, version, revision, epoch, properties, requirements from artifacts \
-where system=? and distro=? and distro_version_major=? and distro_version_minor=? and arch=? and level=? \
+where rebuild_build_target_matches(system, distro, distro_version_major, distro_version_minor, arch, level, ?, ?, ?, ?, ?, ?) \
 order by name asc, version asc, revision asc, epoch asc'''
       data = self._build_target_to_sql_tuple(build_target)
     else:
@@ -200,23 +222,23 @@ order by name asc, version asc, revision asc, epoch asc'''
                                row.epoch,
                                row.system,
                                row.level,
-                               tuple(json.loads(row.arch)),
+                               sql_encoding.decode_arch(row.arch),
                                row.distro,
                                row.distro_version_major,
                                row.distro_version_minor)
   
   def _load_artifact(self, adesc):
-    sql = 'select * from artifacts where {}'.format(adesc.WHERE_EXPRESSION)
+    sql = 'select * from artifacts where {}'.format(self.WHERE_EXPRESSION)
     rows = self._db.select_namedtuples(sql, adesc.sql_tuple)
     if not rows:
       return None
     assert(len(rows) == 1)
-    md = self._load_row_to_package_metadata(rows[0], adesc = adesc)
+    md = self._load_row_to_package_metadata(rows[0])
     return md
   
-  def _load_row_to_package_metadata(self, row, adesc = None):
+  def _load_row_to_package_metadata(self, row):
     assert row
-    adesc = adesc or self._load_row_to_artifact_descriptor(row)
+    adesc = self._load_row_to_artifact_descriptor(row)
     files_table_name = adesc.sql_table_name
     files = package_manifest(self._files_db.package_manifest(files_table_name),
                              self._files_db.package_manifest(self._make_env_files_table_name(files_table_name)),
@@ -229,7 +251,7 @@ order by name asc, version asc, revision asc, epoch asc'''
                            row.epoch,
                            row.system,
                            row.level,
-                           tuple(json.loads(row.arch)),
+                           sql_encoding.decode_arch(row.arch),
                            row.distro,
                            row.distro_version_major,
                            row.distro_version_minor,

@@ -82,7 +82,7 @@ class test_artifact_descriptor(unit_test):
                       AD.parse('water;1.0.0;0;0;linux;release;x86_64;ubuntu;18;none').sql_table_name )
 
   def test_sql_tuple(self):
-    self.assertEqual( ('water', '1.0.0', 0, 0, 'linux', 'release', '["x86_64"]', 'ubuntu', '18', ''),
+    self.assertEqual( ('water', '1.0.0', 0, 0, 'linux', 'ubuntu', '18', '', '["x86_64"]', 'release'),
                       AD.parse('water;1.0.0;0;0;linux;release;x86_64;ubuntu;18;').sql_tuple )
 
   def test_clone_without_distro(self):
