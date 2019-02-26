@@ -19,7 +19,9 @@ class step_artifact_create_make_package(step):
   @classmethod
   def define_args(clazz):
     return '''
-    build_target_distro string
+    artifact_system_agnostic bool
+    artifact_distro_agnostic bool
+    artifact_arch_agnostic bool
     '''
     
   #@abstractmethod
@@ -28,24 +30,28 @@ class step_artifact_create_make_package(step):
     if not script.has_stage_dir():
       return step_result(False, script.format_message('No files to package found in {stage_dir}'))
 
-    if False:
-    #if '_REBUILD_UPSTREAM_VERSION_OVERRIDE' in inputs:
-      version = script.descriptor.version.clone(mutations = { 'upstream_version': inputs['_REBUILD_UPSTREAM_VERSION_OVERRIDE'],
-                                                              'revision': 0 })
-      descriptor = script.descriptor.clone(mutations = { 'version': version })
-    else:
-      descriptor = script.descriptor
+    descriptor = script.descriptor
 
     output_tarball_path = path.join(script.artifact_dir, descriptor.tarball_filename)
     build_target_mutations = {}
-    build_target_distro = values.get('build_target_distro')
-    if build_target_distro:
-      if build_target_distro == 'none':
-        build_target_mutations['distro_version_major'] = 'none'
-        build_target_mutations['distro_version_minor'] = 'none'
-      build_target_mutations['distro'] = build_target_distro
+
+    artifact_system_agnostic = values.get('artifact_system_agnostic')
+    artifact_distro_agnostic = values.get('artifact_distro_agnostic')
+    artifact_arch_agnostic = values.get('artifact_arch_agnostic')
+    #print('artifact_system_agnostic=%s' % (artifact_system_agnostic))
+    #print('artifact_distro_agnostic=%s' % (artifact_distro_agnostic))
+    #print('artifact_arch_agnostic=%s' % (artifact_arch_agnostic))
+    if artifact_system_agnostic:
+      artifact_distro_agnostic = True
+      
+    if artifact_distro_agnostic:
+      build_target_mutations['distro'] = 'any'
+      build_target_mutations['distro_version_major'] = ''
+      build_target_mutations['distro_version_minor'] = ''
+
     bt = script.build_target.clone(mutations = build_target_mutations)
-    self.blurb('creating tarball %s from %s' % (path.relpath(output_tarball_path), path.relpath(script.stage_dir)), fit = True)
+    self.blurb('creating tarball %s from %s' % (path.relpath(output_tarball_path),
+                                                path.relpath(script.stage_dir)), fit = True)
     staged_tarball, metadata = package.create_package(output_tarball_path,
                                                       descriptor,
                                                       bt,
