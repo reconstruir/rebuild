@@ -5,6 +5,7 @@ import os.path as path
 from bes.testing.unit_test import script_unit_test
 from bes.fs import file_replace, file_util, tar_util, temp_file
 from bes.git import repo
+from bes.git.git_unit_test import git_unit_test
 from rebuild.base import build_target
 from rebuild.toolchain import toolchain_testing
 from bes.testing.unit_test.unit_test_skip import skip_if
@@ -24,6 +25,14 @@ class test_rebuilder_script(script_unit_test):
   ANDROID_BUILD_TARGET = build_target('android', '', '', '', 'armv7', 'release')
   
   DEFAULT_CONFIG = rebuilder_tester.config()
+
+  @classmethod
+  def setUpClass(clazz):
+    git_unit_test.set_identity()
+
+  @classmethod
+  def tearDownClass(clazz):
+    git_unit_test.unset_identity()
   
   def test_autoconf_with_tarball(self):
     self.maxDiff = None
