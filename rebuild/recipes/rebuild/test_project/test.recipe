@@ -1,0 +1,17 @@
+!rebuild.recipe!
+
+package test ${REBUILD_RECIPES_VERSION}
+
+  steps  
+    step_setup
+      tarball_address
+        all: ${REBUILD_RECIPES_REPO} ${REBUILD_RECIPES_TAG} dest=${REBUILD_BUILD_DIR}
+
+    step_run_script
+      script
+        all: ${REBUILD_BUILD_DIR}/scripts/install.sh
+
+      script_env
+        all: PREFIX=${REBUILD_STAGE_PREFIX_DIR}
+
+    step_post_install

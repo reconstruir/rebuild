@@ -1,0 +1,18 @@
+!rebuild.project!
+
+project rebuild
+
+  description
+    Rebuild project for building https://gitlab.com/rebuilder/rebuild
+
+  imports
+    bes
+
+  variables
+    BES_VERSION=1.0.41
+    REBUILD_VERSION=0.0.0
+    REBUILD_REPO=https://gitlab.com/rebuilder/rebuild.git
+    REBUILD_TAG=${REBUILD_VERSION}
+
+  recipes
+    recipes/rebuild/rebuild.recipe

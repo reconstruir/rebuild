@@ -1,0 +1,29 @@
+!rebuild.recipe!
+
+package bes ${BES_VERSION}
+
+  requirements
+    all: TOOL python_setuptools >= 39.1.0
+    all: RUN bes == ${BES_VERSION}
+
+  steps  
+    step_python_egg
+    
+      shell_flags
+        all: --exclude-source-files
+        
+      install_files
+        all: ${REBUILD_BUILD_DIR}/bin/revenv.py bin/revenv.py
+        all: ${REBUILD_BUILD_DIR}/bin/rebuilder.py bin/rebuilder.py
+        
+      skip_binary_third_party_prefix: True
+
+      update_version_tag:
+        all: lib/rebuild/ver.py
+
+      tarball_address
+        all: ${REBUILD_REPO} ${REBUILD_TAG} dest=${REBUILD_BUILD_DIR}
+
+      tests
+        desktop: reb-rebuild-test-unit-tests.sh
+        desktop: reb-rebuild-test-version.sh

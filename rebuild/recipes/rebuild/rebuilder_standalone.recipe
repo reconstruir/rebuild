@@ -1,0 +1,28 @@
+!rebuild.recipe!
+
+package rebuilder_standalone ${EGO_REBUILD_VERSION}
+
+  requirements
+    all: BUILD rebuild == ${EGO_REBUILD_VERSION}
+    all: TOOL python_setuptools >= 19.4
+    all: BUILD python_pyinstaller >= 3.4-1
+
+  steps  
+    step_python_standalone_program
+    
+      skip_binary_third_party_prefix: True
+      
+      standalone_programs
+        all: bin/rebuilder.py bin/rebuilder
+
+      standalone_flags
+        all: --log INFO --onefile
+
+      standalone_spec
+        all: rebuilder_standalone.spec
+
+      tarball_address
+        all: ${EGO_REBUILD_REPO} ${EGO_REBUILD_TAG} dest=${REBUILD_BUILD_DIR}
+        
+      tests
+        desktop: test-rebuilder_standalone.sh
