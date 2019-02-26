@@ -1118,3 +1118,4 @@ storage_local.py majorly messed up also value_source_tarball.  its calling stora
 - recipes should be managed in the projects they come from
 - venvs report
 - venvs update report (minimal blurb)
+- add unit test for step_install_rebuild_files
