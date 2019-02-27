@@ -265,44 +265,5 @@ projects
     self.assertEqual( False, rv )
     self.assertEqual( [], test.installed_packages('test', include_version = True) )
     
-  @classmethod
-  def _make_temp_dir(clazz):
-    tmp_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
-    if clazz.DEBUG:
-      print("tmp_dir: ", tmp_dir)
-    return tmp_dir
-
-  @classmethod
-  def _write_config_file(clazz, filename, config, artifact_manager):
-    config_head = clazz._HEAD_TEMPLATE.format(artifacts_dir = artifact_manager._root_dir)
-    content = config.format(head = config_head)
-    file_util.save(filename, content = content)
-
-  @classmethod
-  def _make_packages_cmd(clazz, sub_command, root_dir, *args):
-    return clazz._make_cmd('packages', sub_command, root_dir, *args)
-  
-  @classmethod
-  def _make_config_cmd(clazz, sub_command, root_dir, *args):
-    return clazz._make_cmd('config', sub_command, root_dir, *args)
-
-  @classmethod
-  def _make_cmd(clazz, command, sub_command, root_dir, *args):
-    return [
-      command,
-      sub_command,
-      root_dir,
-      '--config', 'config.revenv',
-      '--system', 'linux',
-      '--distro', 'ubuntu',
-      '--distro-version', '18',
-      '--level', 'release',
-      'unit_test_storage',
-    ] + list(args)
-  
-  @classmethod
-  def _parse_stdout_list(clazz, s):
-    return [ x.strip() for x in s.split('\n') if x.strip() ]
-
 if __name__ == '__main__':
   unit_test.main()
