@@ -1,6 +1,6 @@
 !rebuild.recipe!
 
-package bes ${BES_VERSION}
+package rebuild ${REBUILD_VERSION}
 
   requirements
     all: TOOL python_setuptools >= 39.1.0
