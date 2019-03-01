@@ -42,16 +42,17 @@ class venv_config(object):
     return self._project_map[project_name].resolve_packages(build_target.system)
   
   @classmethod
-  def load(clazz, filename, build_target):
+  def load(clazz, filename, build_target, variable_manager):
     clazz.log_i('loading config: %s for %s' % (filename, build_target.build_path))
     check.check_string(filename)
     check.check_build_target(build_target)
+    check.check_variable_manager(variable_manager)
     if not path.isfile(filename):
       raise RuntimeError('venv config file not found: %s' % (filename))
     if venv_project_config.is_venv_config(filename):
       text = file_util.read(filename, codec = 'utf8')
       parser = venv_config_parser(filename, text)
-      projects, storage_config = parser.parse()
+      projects, storage_config = parser.parse(variable_manager)
       return venv_config(projects, storage_config, filename)
     else:
       raise RuntimeError('Not a valid venv config file: %s' % (filename))

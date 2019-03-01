@@ -3,6 +3,7 @@
 
 import os, os.path as path
 from bes.testing.unit_test import unit_test
+from rebuild.recipe.variable_manager import variable_manager
 from rebuild.venv.venv_config_parser import venv_config_parser as P
 from rebuild.recipe import recipe_error as ERR
 from rebuild.base import build_target
@@ -12,8 +13,11 @@ from bes.fs import file_util, temp_file
 class test_venv_parser(unit_test):
 
   @classmethod
-  def _parse(self, text, starting_line_number = 0):
-    return P(path.basename(__file__), text, starting_line_number = starting_line_number).parse()
+  def _parse(self, text, starting_line_number = 0, variables = None):
+    vm = variable_manager()
+    if variables:
+      vm.add_variables(KVL.parse(variables))
+    return P(path.basename(__file__), text, starting_line_number = starting_line_number).parse(vm)
 
   def test_invalid_magic(self):
     with self.assertRaises(ERR) as context:
@@ -275,14 +279,61 @@ projects
         ( 'guava', '==', '6.6.6', None, None ),
         ( 'kiwi', '==', '7.7.7', None, None ),
       ], p.projects[0].resolve_packages('linux') )
-      return
       self.assertEqual( [
-        ( 'guava', '==', '6.0.0', None, None ),
+        ( 'guava', '==', '6.6.6', None, None ),
         ( 'kiwi', '==', '7.7.7', None, None ),
       ], p.projects[0].resolve_packages('macos') )
     finally:
       del os.environ['GUAVA_VERSION']
       del os.environ['KIWI_VERSION']
+    
+  def test_use_variable_manager(self):
+    text = '''!rebuild.revenv!
+projects
+  foo
+#    variables
+#      all: GUAVA_VERSION=6.0.0
+#      linux: KIWI_VERSION=1.0.0
+#      macos: KIWI_VERSION=9.0.0
+
+    packages
+      guava == ${GUAVA_VERSION}
+      kiwi == ${KIWI_VERSION}
+'''
+    p = self._parse(text, variables = 'GUAVA_VERSION=9.9.9 KIWI_VERSION=7.7.7')
+    self.assertEqual( 1, len(p.projects) )
+    self.assertEqual( [
+      ( 'guava', '==', '9.9.9', None, None ),
+      ( 'kiwi', '==', '7.7.7', None, None ),
+    ], p.projects[0].resolve_packages('linux') )
+    self.assertEqual( [
+      ( 'guava', '==', '9.9.9', None, None ),
+      ( 'kiwi', '==', '7.7.7', None, None ),
+    ], p.projects[0].resolve_packages('macos') )
+    
+  def test_use_variable_manager_overrides_project_variables(self):
+    text = '''!rebuild.revenv!
+projects
+  foo
+    variables
+      all: GUAVA_VERSION=6.0.0
+      linux: KIWI_VERSION=1.0.0
+      macos: KIWI_VERSION=9.0.0
+
+    packages
+      guava == ${GUAVA_VERSION}
+      kiwi == ${KIWI_VERSION}
+'''
+    p = self._parse(text, variables = 'GUAVA_VERSION=9.9.9 KIWI_VERSION=7.7.7')
+    self.assertEqual( 1, len(p.projects) )
+    self.assertEqual( [
+      ( 'guava', '==', '9.9.9', None, None ),
+      ( 'kiwi', '==', '7.7.7', None, None ),
+    ], p.projects[0].resolve_packages('linux') )
+    self.assertEqual( [
+      ( 'guava', '==', '9.9.9', None, None ),
+      ( 'kiwi', '==', '7.7.7', None, None ),
+    ], p.projects[0].resolve_packages('macos') )
     
   def _filename_for_parser(self):
     'Return a fake filename for parser.  Some values need it to find files relatively to filename.'

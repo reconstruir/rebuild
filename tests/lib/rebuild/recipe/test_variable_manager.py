@@ -12,5 +12,10 @@ class test_variable_manager(unit_test):
     v.add_variables(KVL.parse('FOO=1.2.3 BAR=abcdefg'))
     self.assertEqual( 'FOO is 1.2.3; BAR is abcdefg', v.substitute('FOO is ${FOO}; BAR is ${BAR}') )
     
+  def test_substitute_dict(self):
+    v = VM()
+    v.add_variables({ 'FOO': '1.2.3', 'BAR': 'abcdefg' })
+    self.assertEqual( 'FOO is 1.2.3; BAR is abcdefg', v.substitute('FOO is ${FOO}; BAR is ${BAR}') )
+    
 if __name__ == '__main__':
   unit_test.main()

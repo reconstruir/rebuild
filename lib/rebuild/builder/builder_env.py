@@ -55,8 +55,7 @@ class builder_env(object):
     self.properties = self._make_properties(config.properties_file)
     self.variable_manager = variable_manager()
     self.variable_manager.add_variables(config.project_file_variables)
-    for key, value in self.properties.items():
-      self.variable_manager.add_variable(key, value)
+    self.variable_manager.add_variables(self.properties)
       
     for key, value in config.cli_variables:
       self.variable_manager.add_variable(key, value)
@@ -124,7 +123,7 @@ class builder_env(object):
       return {}
     filename = path.abspath(filename)
     if not path.exists(filename):
-      raise RuntimeError('storage config file not found: %s' % (filename))
+      raise RuntimeError('properties file not found: %s' % (filename))
     editor = properties_editor(filename)
     return editor.properties()
   

@@ -9,11 +9,13 @@ from bes.key_value import key_value_parser
 from bes.system import host
 from bes.fs import file_util, temp_file
 from bes.version import version_cli
+from bes.properties.properties_editor import properties_editor
 
 from rebuild.base import build_arch, build_blurb, build_system, build_target, build_target_cli, build_level
 
 from rebuild.config import storage_config_manager
 from rebuild.package.artifact_manager_factory import artifact_manager_factory
+from rebuild.recipe.variable_manager import variable_manager
 
 from .venv_config import venv_config
 from .venv_install_options import venv_install_options
@@ -129,6 +131,11 @@ class venv_cli(build_target_cli):
                         default = default_config,
                         type = str,
                         help = 'Configuration file for venvs. [ %s ]' % (default_config))
+    parser.add_argument('--properties-file',
+                        action = 'store',
+                        default = None,
+                        type = str,
+                        help = 'Properties file to add or override environment variables. [ None ]')
     parser.add_argument('--verbose',
                         '-v',
                         action = 'store_true',
@@ -153,6 +160,10 @@ class venv_cli(build_target_cli):
 
     if not path.isfile(args.config):
       raise IOError('%s: config file not found: %s' % (command, args.config))
+    
+    properties = self._load_properties(args.properties_file)
+    vm = variable_manager()
+    vm.add_variables(properties)
 
     self._config_filename = args.config
     self._root_dir = args.root_dir
@@ -164,7 +175,7 @@ class venv_cli(build_target_cli):
     self.log_d('config: artifacts_config_name=%s' % (self._artifacts_config_name))
     self.log_d('config: build_target=%s' % (str(self._build_target)))
     
-    self._config = venv_config.load(self._config_filename, self._build_target)
+    self._config = venv_config.load(self._config_filename, self._build_target, vm)
 
     storage_config = self._config.storage_config
 
@@ -185,6 +196,16 @@ class venv_cli(build_target_cli):
     self.log_d('artifact_manager=%s' % (str(self._artifact_manager)))
     self._manager = venv_manager(self._config, self._artifact_manager, self._build_target, self._root_dir)
 
+  @classmethod
+  def _load_properties(clazz, filename):
+    if not filename:
+      return {}
+    filename = path.abspath(filename)
+    if not path.exists(filename):
+      raise RuntimeError('properties file not found: %s' % (filename))
+    editor = properties_editor(filename)
+    return editor.properties()
+    
   def main(self):
     args = self.parser.parse_args()
     subcommand = getattr(args, 'subcommand', None)

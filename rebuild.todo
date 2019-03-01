@@ -1123,3 +1123,4 @@ storage_local.py majorly messed up also value_source_tarball.  its calling stora
 
 2019-02-28
 - write unit tests for --var and --properties in test_rebuilder.py
+- s/venv_config_parser/venv_project_config_parser/

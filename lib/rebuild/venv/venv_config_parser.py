@@ -35,7 +35,8 @@ class venv_config_parser(object):
     msg = '%s\n%s' % (msg, str(lp))
     raise recipe_error(msg, self.filename, line_number)
     
-  def parse(self):
+  def parse(self, variable_manager):
+    check.check_variable_manager(variable_manager)
     if not self.text.startswith(venv_project_config.MAGIC):
       first_line = self.text.split('\n')[0]
       self._error('text should start with recipe magic \"%s\" instead of \"%s\"' % (venv_project_config.MAGIC, first_line))
@@ -43,10 +44,10 @@ class venv_config_parser(object):
       tree = tree_text_parser.parse(self.text, strip_comments = True)
     except Exception as ex:
       self._error('failed to parse: %s' % (ex.message))
-    return self._parse_tree(tree)
+    return self._parse_tree(tree, variable_manager)
 
   _parse_result = namedtuple('_parse_result', 'projects, storage_config')
-  def _parse_tree(self, root):
+  def _parse_tree(self, root, variable_manager):
     if not root.children:
       self._error('invalid recipe', root)
     if root.children[0].data.text != venv_project_config.MAGIC:
@@ -58,11 +59,11 @@ class venv_config_parser(object):
     projects = venv_project_config_list()
     root_projects_node = root.find_child_by_text('projects')
     for project_node in (root_projects_node.children or []):
-      project = self._parse_project(project_node)
+      project = self._parse_project(project_node, variable_manager)
       projects.append(project)
     return self._parse_result(projects, storage_config)
   
-  def _parse_project(self, node):
+  def _parse_project(self, node, variable_manager):
     name = self._parse_project_name(node)
     description = None
     variables = masked_value_list()
@@ -81,7 +82,7 @@ class venv_config_parser(object):
       elif text.startswith('variables'):
         variables.extend(recipe_parser_util.parse_masked_variables(child, self.filename))
       elif text.startswith('packages'):
-        more_reqs = recipe_parser_util.parse_requirements(child, variable_manager())
+        more_reqs = recipe_parser_util.parse_requirements(child, variable_manager)
         dups = more_reqs.dups()
         if dups:
           self._error('duplicate package entries: %s' % (' '.join(dups)), child)
