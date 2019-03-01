@@ -336,6 +336,33 @@ projects
     self.assertEqual( 0, rv.exit_code )
     self.assertEqual( [ 'aflatoxin-1.0.11-1' ], self._parse_stdout_list(rv.output) )
 
+  def test_packages_update_use_properties_file(self):
+    recipes1 = '''
+fake_package aflatoxin 1.0.10 0 0 linux release x86_64 ubuntu 18 none
+fake_package aflatoxin 1.0.11 0 0 linux release x86_64 ubuntu 18 none
+fake_package aflatoxin 1.0.12 1 0 linux release x86_64 ubuntu 18 none
+'''
+    config = '''{head}
+projects
+  test
+    packages
+      aflatoxin == ${{AFLATOXIN_VERSION}}
+'''
+    test = self._setup_test(config, recipes = recipes1)
+
+    properties_content = '''\
+AFLATOXIN_VERSION: 1.0.11
+'''
+    tmp_props = temp_file.make_temp_file(content = properties_content)
+    
+    args = self._make_packages_cmd('update', test.tmp_dir, 'test', '--properties-file', tmp_props)
+    rv = self.run_script(args)
+    self.assertEqual( 0, rv.exit_code )
+    args = self._make_packages_cmd('print', test.tmp_dir, 'test', '--versions')
+    rv = self.run_script(args)
+    self.assertEqual( 0, rv.exit_code )
+    self.assertEqual( [ 'aflatoxin-1.0.11' ], self._parse_stdout_list(rv.output) )
+
   def test_version(self):
     rv = self.run_script(['version'])
     self.assertEqual( 0, rv.exit_code )
