@@ -33,6 +33,7 @@ class builder_cli(build_target_cli):
     self.parser.add_argument('--print-step-values', action = 'store_true')
     self.parser.add_argument('--print-sources', action = 'store_true')
     self.parser.add_argument('--print-variables', action = 'store_true')
+    self.parser.add_argument('--print-properties', action = 'store_true')
     self.parser.add_argument('-v', '--verbose', action = 'store_true', default = False)
     self.parser.add_argument('-w', '--wipe', action = 'store_true')
     self.parser.add_argument('-k', '--keep-going', action = 'store_true')
@@ -80,6 +81,8 @@ class builder_cli(build_target_cli):
                              help = 'The checksum cache to speed up builds. [ None ]')
     self.parser.add_argument('--profile', action = 'store_true', help = 'Use cProfile to profile. [ False ]')
     self.parser.add_argument('--ignore-install-file-errors', action = 'store_true', help = 'Ignore install_files errors. [ False ]')
+    self.parser.add_argument('--properties-file', default = None, action = 'store', type = str,
+                             help = 'Properties file to add or override environment variables. [ None ]')
 
     for g in self.parser._action_groups:
       g._group_actions.sort(key = lambda x: x.dest)
@@ -195,7 +198,8 @@ class builder_cli(build_target_cli):
 
     config.cli_variables = args.var
     config.ignore_install_file_errors = args.ignore_install_file_errors
-    
+    config.properties_file = args.properties_file
+
     env = builder_env(config, available_packages, checksum_getter, pfm)
     
     if args.print_step_values:
@@ -204,6 +208,10 @@ class builder_cli(build_target_cli):
     
     if args.print_sources:
       env.script_manager.print_sources()
+      return 0
+
+    if args.print_properties:
+      env.print_properties()
       return 0
     
     bldr = builder(env)
