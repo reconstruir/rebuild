@@ -16,10 +16,10 @@ from rebuild.config import storage_config_manager
 from .venv_project_config import venv_project_config
 from .venv_project_config_list import venv_project_config_list
 
-class venv_config_parser(object):
+class venv_project_config_parser(object):
 
   def __init__(self, filename, text, starting_line_number = 0):
-    log.add_logging(self, 'venv_config_parser')
+    log.add_logging(self, 'venv_project_config_parser')
     self.text = text
     self.filename = filename
     self.starting_line_number = starting_line_number

@@ -10,7 +10,7 @@ from rebuild.recipe import recipe_error
 from rebuild.recipe.recipe_util import recipe_util
 
 from .venv_project_config import venv_project_config
-from .venv_config_parser import venv_config_parser
+from .venv_project_config_parser import venv_project_config_parser
 
 class venv_config(object):
   'Virtual environment configurations.  For now storage and projects.'
@@ -51,7 +51,7 @@ class venv_config(object):
       raise RuntimeError('venv config file not found: %s' % (filename))
     if venv_project_config.is_venv_config(filename):
       text = file_util.read(filename, codec = 'utf8')
-      parser = venv_config_parser(filename, text)
+      parser = venv_project_config_parser(filename, text)
       projects, storage_config = parser.parse(variable_manager)
       return venv_config(projects, storage_config, filename)
     else:
