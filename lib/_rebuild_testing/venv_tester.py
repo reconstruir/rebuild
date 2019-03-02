@@ -69,3 +69,6 @@ config
     
   def clear_artifacts(self):
     self.amt.retire_all()
+
+  def transform_env(self, env, project_name, build_target):
+    return self.manager.transform_env(env, project_name, build_target)

@@ -265,5 +265,33 @@ projects
     self.assertEqual( False, rv )
     self.assertEqual( [], test.installed_packages('test', include_version = True) )
     
+  def test_transform_env(self):
+    recipes = '''\
+fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
+  env_files
+    foo.sh
+      \#@REBUILD_HEAD@
+      bes_env_path_append MYPATH foo
+      \#@REBUILD_TAIL@
+    bar.sh
+      \#@REBUILD_HEAD@
+      bes_env_path_append MYPATH bar
+      \#@REBUILD_TAIL@
+'''
+    config = '''{head}
+projects
+  test
+    packages
+      cabbage == 1.0.0
+'''
+    test = venv_tester(config, recipes = recipes)
+    rv = test.update_from_config('test')
+    self.assertEqual( True, rv )
+    self.assertEqual( [ 'cabbage-1.0.0' ], test.installed_packages('test', include_version = True) )
+    env = { 'PPP': 'hi' }
+    env2 = test.transform_env(env, 'test', test.build_target)
+    self.assertTrue( 'MYPATH' in env2 )
+    self.assertEqual( 'bar:foo', env2['MYPATH'] )
+    
 if __name__ == '__main__':
   unit_test.main()
