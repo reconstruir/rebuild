@@ -2,9 +2,12 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from bes.fs import temp_file
+from bes.fs import file_util, temp_file
+from bes.archive import archiver
+
 from rebuild.base import build_version, package_descriptor, requirement, requirement_list
 from rebuild.package.package import package
+from rebuild.package.package_metadata import package_metadata
 from _rebuild_testing.fake_package_unit_test import fake_package_unit_test
 
 class test_package(unit_test):
@@ -80,6 +83,19 @@ fake_package kiwi 1.2.3 0 0 linux release x86_64 none none none
     self.assertEqual( '', md.distro )
     self.assertEqual( '', md.distro_version_major )
     self.assertEqual( '', md.distro_version_minor )
-    
+
+  def test_mutate_metadata(self):
+    recipe = '''fake_package orange 1.2.3 0 0 linux release x86_64 ubuntu 18 none'''
+    src = fake_package_unit_test.create_one_package(recipe)
+    self.assertEqual( 'orange;1.2.3;0;0;linux;release;x86_64;ubuntu;18;', str(src.metadata.artifact_descriptor))
+
+    tmp_dst_filename = temp_file.make_temp_file()
+
+    mutations = { 'distro': 'fedora', 'distro_version_major': '29', 'distro_version_minor': '' }
+
+    dst = package.mutate_metadata(src.filename, tmp_dst_filename, mutations = mutations)
+    dst_metadata = package(tmp_dst_filename).metadata
+    self.assertEqual( 'orange;1.2.3;0;0;linux;release;x86_64;fedora;29;', str(dst_metadata.artifact_descriptor))
+
 if __name__ == '__main__':
   unit_test.main()

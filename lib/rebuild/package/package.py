@@ -289,5 +289,23 @@ unset REBUILD_STUFF_DIR
                                                         '2018-12-08')
     if timer:
       timer.stop()
-      
+
+  @classmethod
+  def mutate_metadata(clazz, src, dst, mutations = None):
+    'Mutate the metadata of a package and save a new one.  src and dst can be the same.'
+    tmp_dir = temp_file.make_temp_dir(prefix = 'package.mutate_metadata.', suffix = '.dir')
+    archiver.extract_all(src, tmp_dir)
+    src_metadata_filename = path.join(tmp_dir, clazz.METADATA_FILENAME)
+    src_metadata_json = file_util.read(src_metadata_filename)
+    src_metadata = package_metadata.parse_json(src_metadata_json)
+
+    dst_metadata = src_metadata.clone(mutations = mutations)
+    dst_metadata_json = dst_metadata.to_json()
+    file_util.save(src_metadata_filename, content = dst_metadata_json)
+    tmp_dst_archive = temp_file.make_temp_file(suffix = '.tar.gz')
+    archiver.create(tmp_dst_archive, tmp_dir)
+    if src == dst:
+      file_util.backup(src)
+    file_util.rename(tmp_dst_archive, dst)
+    
 check.register_class(package, include_seq = False)
