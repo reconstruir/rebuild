@@ -14,6 +14,8 @@ from bes.system import execute, log
 from rebuild.base import build_blurb, build_target, package_descriptor
 from bes.debug import debug_timer
 
+from rebuild.binary_format.binary_detector import binary_detector
+
 from .package_metadata import package_metadata
 from .package_manifest import package_manifest
 from .package_file_list import package_file_list
@@ -291,10 +293,15 @@ unset REBUILD_STUFF_DIR
       timer.stop()
 
   @classmethod
-  def mutate_metadata(clazz, src, dst, mutations = None, backup = True):
+  def mutate_metadata(clazz, src, dst, mutations = None, backup = True, fail_on_binaries = True):
     'Mutate the metadata of a package and save a new one.  src and dst can be the same.'
     tmp_dir = temp_file.make_temp_dir(prefix = 'package.mutate_metadata.', suffix = '.dir')
     archiver.extract_all(src, tmp_dir)
+    if fail_on_binaries:
+      files = file_find.find(tmp_dir, relative = False)
+      binary_files = [ f for f in files if binary_detector.is_binary(f) ]
+      if len(binary_files) > 0:
+        return False
     src_metadata_filename = path.join(tmp_dir, clazz.METADATA_FILENAME)
     src_metadata_json = file_util.read(src_metadata_filename)
     src_metadata = package_metadata.parse_json(src_metadata_json)
@@ -307,5 +314,6 @@ unset REBUILD_STUFF_DIR
     if src == dst and backup:
       file_util.backup(src)
     file_util.rename(tmp_dst_archive, dst)
+    return True
     
 check.register_class(package, include_seq = False)
