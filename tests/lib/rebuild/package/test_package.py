@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+from os import path
 from bes.testing.unit_test import unit_test
 from bes.fs import file_util, temp_file
 from bes.archive import archiver
@@ -97,5 +98,18 @@ fake_package kiwi 1.2.3 0 0 linux release x86_64 none none none
     dst_metadata = package(tmp_dst_filename).metadata
     self.assertEqual( 'orange;1.2.3;0;0;linux;release;x86_64;fedora;29;', str(dst_metadata.artifact_descriptor))
 
+  def test_mutate_metadata_same_file(self):
+    recipe = '''fake_package orange 1.2.3 0 0 linux release x86_64 ubuntu 18 none'''
+    src = fake_package_unit_test.create_one_package(recipe)
+    self.assertEqual( 'orange;1.2.3;0;0;linux;release;x86_64;ubuntu;18;', str(src.metadata.artifact_descriptor))
+
+    mutations = { 'distro': 'fedora', 'distro_version_major': '29', 'distro_version_minor': '' }
+
+    dst = package.mutate_metadata(src.filename, src.filename, mutations = mutations)
+    dst_metadata = package(src.filename).metadata
+    self.assertEqual( 'orange;1.2.3;0;0;linux;release;x86_64;fedora;29;', str(dst_metadata.artifact_descriptor))
+
+    self.assertTrue( path.exists(src.filename + '.bak') )
+    
 if __name__ == '__main__':
   unit_test.main()
