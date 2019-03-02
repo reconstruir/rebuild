@@ -67,3 +67,19 @@ class binary_detector(object):
     'Return True if filename is a binary executable.'
     assert filename
     return filename.lower().endswith('.class')
+
+  @classmethod
+  def is_binary(clazz, filename, format_name = None):
+    'Return True if filename is a binary.'
+    if clazz._ignore_file(filename):
+      return False
+    if format_name:
+      formats = [ f for f in clazz._FORMATS if f.name() == format_name ]
+    else:
+      formats = clazz._FORMATS
+    for fmt in formats:
+      if fmt.is_binary(filename):
+        return True
+    return False
+
+  
