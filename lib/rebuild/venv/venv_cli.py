@@ -161,7 +161,8 @@ class venv_cli(build_target_cli):
     if not path.isfile(args.config):
       raise IOError('%s: config file not found: %s' % (command, args.config))
     
-    properties = self._load_properties(args.properties_file)
+    properties = properties_editor.read_properties_file(args.properties_file)
+
     vm = variable_manager()
     vm.add_variables(properties)
 
@@ -195,16 +196,6 @@ class venv_cli(build_target_cli):
     self._artifact_manager = artifact_manager_factory.create(factory_config)
     self.log_d('artifact_manager=%s' % (str(self._artifact_manager)))
     self._manager = venv_manager(self._config, self._artifact_manager, self._build_target, self._root_dir)
-
-  @classmethod
-  def _load_properties(clazz, filename):
-    if not filename:
-      return {}
-    filename = path.abspath(filename)
-    if not path.exists(filename):
-      raise RuntimeError('properties file not found: %s' % (filename))
-    editor = properties_editor(filename)
-    return editor.properties()
     
   def main(self):
     args = self.parser.parse_args()

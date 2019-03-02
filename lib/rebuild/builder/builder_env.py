@@ -52,7 +52,7 @@ class builder_env(object):
     self.tools_manager = tools_manager(path.join(config.build_root, 'tools'),
                                        self.config.host_build_target,
                                        self.requirements_artifact_manager)
-    self.properties = self._make_properties(config.properties_file)
+    self.properties = properties_editor.read_properties_file(config.properties_file)
     self.variable_manager = variable_manager()
     self.variable_manager.add_variables(config.project_file_variables)
     self.variable_manager.add_variables(self.properties)
@@ -117,16 +117,6 @@ class builder_env(object):
       raise RuntimeError('storage config file not found: %s' % (filename))
     return storage_config_manager.from_file(filename)
 
-  @classmethod
-  def _make_properties(clazz, filename):
-    if not filename:
-      return {}
-    filename = path.abspath(filename)
-    if not path.exists(filename):
-      raise RuntimeError('properties file not found: %s' % (filename))
-    editor = properties_editor(filename)
-    return editor.properties()
-  
   @classmethod
   def print_properties(self):
     for key, value in sorted(self.properties.items()):
