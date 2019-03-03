@@ -5,7 +5,7 @@ import os.path as path
 from bes.fs import file_trash
 from bes.common import check
 from bes.git import git_download_cache, git_util
-from bes.properties.properties_editor import properties_editor
+from bes.properties.properties_file import properties_file
 
 from rebuild.tools_manager import tools_manager
 from rebuild.checksum import checksum_manager
@@ -52,7 +52,7 @@ class builder_env(object):
     self.tools_manager = tools_manager(path.join(config.build_root, 'tools'),
                                        self.config.host_build_target,
                                        self.requirements_artifact_manager)
-    self.properties = properties_editor.read_properties_file(config.properties_file)
+    self.properties = properties_file.read(config.properties_file)
     self.variable_manager = variable_manager()
     self.variable_manager.add_variables(config.project_file_variables)
     self.variable_manager.add_variables(self.properties)

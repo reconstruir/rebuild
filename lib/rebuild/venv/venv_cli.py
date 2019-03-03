@@ -9,7 +9,7 @@ from bes.key_value import key_value_parser
 from bes.system import host
 from bes.fs import file_util, temp_file
 from bes.version import version_cli
-from bes.properties.properties_editor import properties_editor
+from bes.properties.properties_file import properties_file
 
 from rebuild.base import build_arch, build_blurb, build_system, build_target, build_target_cli, build_level
 
@@ -161,7 +161,7 @@ class venv_cli(build_target_cli):
     if not path.isfile(args.config):
       raise IOError('%s: config file not found: %s' % (command, args.config))
     
-    properties = properties_editor.read_properties_file(args.properties_file)
+    properties = properties_file.read(args.properties_file)
 
     vm = variable_manager()
     vm.add_variables(properties)
