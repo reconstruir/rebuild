@@ -128,7 +128,7 @@ class venv_manager(object):
     check.check_build_target(build_target)
     pm = self._package_manager(project_name, build_target)
     return pm.transform_env(env, pm.list_all_names())
-  
+
   def bin_dir(self, project_name, build_target):
     check.check_string(project_name)
     check.check_build_target(build_target)
