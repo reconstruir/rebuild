@@ -58,4 +58,5 @@ from .step_setup_sources_unpack import *
 from .step_shell import *
 from .step_third_party_package import *
 from .step_xcodebuild import *
+from .step_docker import *
 #'''
