@@ -172,7 +172,7 @@ class step(with_metaclass(step_register_meta, object)):
 
     env.update(shell_env)
 
-    clazz.env_dump(env, script.descriptor.name, 'PRE ENVIRONMENT')
+    #clazz.env_dump(env, script.descriptor.name, 'PRE ENVIRONMENT')
 
     #self.log_i('%s=%s - %s' % (key, env[key], type(env[key])))
     
@@ -215,7 +215,7 @@ class step(with_metaclass(step_register_meta, object)):
     message = rv.stdout
     if rv.stderr:
       message = message + '\n' + rv.stderr
-    result = step_result(rv.exit_code == 0, message)
+    result = step_result(rv.exit_code == 0, message, stdout = rv.stdout)
     clazz.save_build_dir_logs(script, save_logs)
     return result
 
