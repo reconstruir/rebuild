@@ -1127,3 +1127,5 @@ storage_local.py majorly messed up also value_source_tarball.  its calling stora
 2019-03-02
 - figure out why this is so slow
   egoist: executing: /home/ramiro/proj/rebuild/bin/revenv.py packages update --properties-file /home/ramiro/imvu/ego-cicd-rebuild/ego-versions.yml --config /home/ramiro/imvu/ego-cicd-rebuild/rebuild_deps.revenv deps ego_artifactory rebuild_deps
+
+- replaces and conflicts support for rebuild requirements
