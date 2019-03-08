@@ -39,14 +39,15 @@ class artifact_manager_artifactory(artifact_manager_base):
     return 'artifactory:%s' % (str(self._address))
     
   def _load_remote_db(self):
+    self.log_d('_load_remote_db() start')
     packages = artifactory_requests.list_all_artifacts(self._address,
                                                        self._config.storage_config.download.username,
                                                        self._config.storage_config.download.password)
     for package in sorted(packages, key = lambda x: tuple(x)):
-      self.log_d('REMOTE PACKAGE: %s' % (str(package.artifact_descriptor)))
-      
-    for package in packages:
-      self._db.add_or_replace_artifact(package)
+      if not self._db.has_artifact(package.artifact_descriptor):
+        self.log_i('importing remote package: %s' % (str(package.artifact_descriptor)))
+        self._db.add_or_replace_artifact(package)
+    self.log_i('_load_remote_db() end')
 
   #@abstractmethod
   def artifact_path(self, pkg_desc, build_target, relative):
