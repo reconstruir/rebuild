@@ -5,12 +5,15 @@ from bes.web import web_server
 from bes.fs import file_mime, file_util
 from bes.compat import url_compat
 
+from .artifactory_requests import artifactory_requests
+
 class mock_artifactory_server(web_server):
   'A mock artifactory web server.  Tries to impersonate artifactory enough to do unit tests.'
 
-  def __init__(self, port = None, root_dir = None):
+  def __init__(self, port = None, root_dir = None, artifactory_id = ''):
     super(mock_artifactory_server, self).__init__(port = port, log_tag = 'file_web_server')
     self._root_dir = root_dir or os.getcwd()
+    self._artifactory_id = artifactory_id
 
   _ERROR_404_HTML = '''
 <html>
@@ -49,6 +52,8 @@ class mock_artifactory_server(web_server):
       return self._get(environ, start_response)
     elif method == 'PUT':
       return self._put(environ, start_response)
+    if method == 'HEAD':
+      return self._head(environ, start_response)
     else:
       start_response('405 Not supported', [
         ( 'Content-Type', 'text/html' ),
@@ -67,12 +72,36 @@ class mock_artifactory_server(web_server):
       return iter([ self._ERROR_404_HTML ])
     mime_type = file_mime.mime_type(file_path)
     content = file_util.read(file_path)
-    start_response('200 OK', [
+    headers = [
       ( 'Content-Type', str(mime_type) ),
       ( 'Content-Length', str(len(content)) ),
-    ])
+      ( 'X-Artifactory-Filename', path.basename(file_path) ),
+      ( 'X-Artifactory-Id', self._artifactory_id ),
+    ]
+    headers += artifactory_requests.checksum_headers_for_file(file_path).items()
+    start_response('200 OK', headers)
     return iter([ content ])
- 
+
+  def _head(self, environ, start_response):
+    filename = environ['PATH_INFO']
+    file_path = path.join(self._root_dir, file_util.lstrip_sep(filename))
+    if not path.isfile(file_path):
+      start_response('404 Not Found', [
+        ( 'Content-Type', 'text/html' ),
+        ( 'Content-Length', str(len(self._ERROR_404_HTML)) ),
+      ])
+      return iter([ self._ERROR_404_HTML ])
+    mime_type = file_mime.mime_type(file_path)
+    headers = [
+      ( 'Content-Type', str(mime_type) ),
+      ( 'Content-Length', str(file_util.size(file_path)) ),
+      ( 'X-Artifactory-Filename', path.basename(file_path) ),
+      ( 'X-Artifactory-Id', self._artifactory_id ),
+    ]
+    headers += artifactory_requests.checksum_headers_for_file(file_path).items()
+    start_response('200 OK', headers)
+    return iter([])
+  
   def _put(self, environ, start_response):
     'https://www.jfrog.com/confluence/display/RTF/Artifactory+REST+API#ArtifactoryRESTAPI-DeployArtifact'
     content_length = int(environ['CONTENT_LENGTH'])
