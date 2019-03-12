@@ -22,6 +22,8 @@ from bes.fs.testing import temp_content
 from rebuild.artifactory.mock_artifactory_server import mock_artifactory_server
 from rebuild.artifactory.artifactory_requests import artifactory_requests as AR
 
+from rebuild.storage.storage_address import storage_address
+
 class _test(namedtuple('_test', 'server, root_dir, port')):
 
   def __new__(clazz, artifactory_id, items = None):
@@ -46,6 +48,9 @@ class _test(namedtuple('_test', 'server, root_dir, port')):
   def make_url(self, p):
     base = 'http://localhost:%d' % (self.port)
     return urlparser.urljoin(base, p)
+  
+  def make_address(self, repo, root_dir, sub_repo, filename):
+    return storage_address(self.make_url(''), repo, root_dir, sub_repo, filename)
   
   def stop(self):
     self.server.stop()
@@ -84,6 +89,16 @@ class test_mock_artifactory_server(unit_test):
     url = test.make_url('foo.txt')
     AR.upload_url(url, tmp, '', '')
     test.stop()
+ 
+  def test_upload_address(self):
+    test = _test('myid')
+    tmp_upload = temp_file.make_temp_file(content = 'this is foo.txt\n')
+    address = test.make_address('mtrepo', 'myrootdir', 'mysubrepo', 'foo.txt')
+    AR.upload(address, tmp_upload, '', '')
+    tmp_download = temp_file.make_temp_file()
+    AR.download_url_to_file(tmp_download, address.url, 'foo', 'bar')
+    self.assertEqual( 'this is foo.txt\n', file_util.read(tmp_download) )
+    test.stop()
     
   def test_get_headers_for_url(self):
     test = _test('myid')
@@ -116,6 +131,6 @@ class test_mock_artifactory_server(unit_test):
     )
     self.assertEqual( expected, AR.get_checksums_for_url(url, 'foo', 'bar') )
     test.stop()
-
+    
 if __name__ == '__main__':
   unit_test.main()
