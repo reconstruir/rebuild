@@ -91,7 +91,7 @@ class test_mock_artifactory_server(unit_test):
     tmp = temp_file.make_temp_file(content = 'this is foo.txt\n')
     url = test.make_url('foo.txt')
     AR.upload_url(url, tmp, '', '')
-    headers = AR.get_headers_for_url(url, 'myid', 'bar')
+    headers = AR.get_headers_for_url(url, 'foo', 'bar')
     headers = dict_util.filter_with_keys(headers, [ 'X-Checksum-Sha1', 'X-Checksum-Md5', 'X-Artifactory-Filename', 'X-Artifactory-Id', 'X-Checksum-Sha256' ])
     
     self.assertEqual( {
@@ -101,6 +101,20 @@ class test_mock_artifactory_server(unit_test):
       'X-Artifactory-Filename': 'foo.txt',
       'X-Artifactory-Id': 'myid',
     }, headers )
+    test.stop()
+
+  def test_get_checksums_for_url(self):
+    test = _test('myid')
+
+    tmp = temp_file.make_temp_file(content = 'this is foo.txt\n')
+    url = test.make_url('foo.txt')
+    AR.upload_url(url, tmp, '', '')
+    expected = (
+      '503900058d0b024b42e2b6d02b45ca5b',
+      '33f82b8aa2879fa046b877cfa36158d6607294f9',
+      '75f3365f74a5cfbe304b17e1eb4bd99784f609792ffc163cdf4ed464cc08b5ec',
+    )
+    self.assertEqual( expected, AR.get_checksums_for_url(url, 'foo', 'bar') )
     test.stop()
 
 if __name__ == '__main__':
