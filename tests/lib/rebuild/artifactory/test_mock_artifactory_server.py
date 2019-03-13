@@ -54,7 +54,11 @@ class _test(namedtuple('_test', 'server, root_dir, port')):
   
   def stop(self):
     self.server.stop()
-  
+
+  def upload(self, address, content):
+    tmp_upload = temp_file.make_temp_file(content = content)
+    AR.upload(address, tmp_upload, '', '')
+    
 class test_mock_artifactory_server(unit_test):
 
   def test_download_url_to_file(self):
@@ -93,11 +97,24 @@ class test_mock_artifactory_server(unit_test):
   def test_upload_address(self):
     test = _test('myid')
     tmp_upload = temp_file.make_temp_file(content = 'this is foo.txt\n')
-    address = test.make_address('mtrepo', 'myrootdir', 'mysubrepo', 'foo.txt')
+    address = test.make_address('myrepo', 'myrootdir', 'mysubrepo', 'foo.txt')
     AR.upload(address, tmp_upload, '', '')
     tmp_download = temp_file.make_temp_file()
     AR.download_url_to_file(tmp_download, address.url, 'foo', 'bar')
     self.assertEqual( 'this is foo.txt\n', file_util.read(tmp_download) )
+    test.stop()
+    
+  def xtest_list_all_files(self):
+    test = _test('myid')
+
+    test.upload(test.make_address('myrepo', 'myrootdir', 'mysubrepo', 'foo.txt'), 'this is foo.txt\n')
+    test.upload(test.make_address('myrepo', 'myrootdir', 'mysubrepo', 'bar.txt'), 'this is bar.txt\n')
+
+    result = AR.list_all_files(test.make_address('myrepo', 'myrootdir', 'mysubrepo', None), '', '')
+    expected = [
+      'sscaca',
+    ]
+    self.assertEqual( expected, result )
     test.stop()
     
   def test_get_headers_for_url(self):
@@ -117,7 +134,7 @@ class test_mock_artifactory_server(unit_test):
       'X-Artifactory-Id': 'myid',
     }, headers )
     test.stop()
-
+    
   def test_get_checksums_for_url(self):
     test = _test('myid')
 

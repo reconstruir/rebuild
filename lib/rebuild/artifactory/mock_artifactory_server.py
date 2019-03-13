@@ -2,7 +2,8 @@
 
 import json, os, os.path as path
 from bes.web import web_server
-from bes.fs import file_mime, file_util
+from bes.system import log
+from bes.fs import file_mime, file_find, file_util
 from bes.compat import url_compat
 
 from .artifactory_requests import artifactory_requests
@@ -38,16 +39,23 @@ class mock_artifactory_server(web_server):
 '''
   
   def handle_request(self, environ, start_response):
-    if True:
-      for key, value in sorted(self.headers.items()):
-        print('HEADER: %s=%s' % (key, value))
-    
     print_environ = False
     #print_environ = True
+    
+    print_headers = False
+    #print_headers = True
+
+    if print_headers:
+      for key, value in sorted(self.headers.items()):
+        log._console_output('HEADER: %s=%s\n' % (key, value))
+
     if print_environ:
       for key, value in sorted(environ.items()):
-        print('%s=%s' % (key, value))
+        log._console_output('%s=%s\n' % (key, value))
     method = environ['REQUEST_METHOD']
+    filename = environ['PATH_INFO']
+    if filename.startswith('/api'):
+      return self._api(environ, start_response)
     if method == 'GET':
       return self._get(environ, start_response)
     elif method == 'PUT':
@@ -134,3 +142,24 @@ class mock_artifactory_server(web_server):
       ( 'Content-Length', str(len(content)) ),
     ])
     return iter([ content ])
+
+  def _api(self, environ, start_response):
+    filename = environ['PATH_INFO']
+    parts = filename.split('/')
+    what = parts[2]
+    if what == 'storage':
+      return self._api_storage(environ, start_response)
+    assert False
+
+  def _api_storage(self, environ, start_response):
+    filename = environ['PATH_INFO']
+    xpath = file_util.remove_head(filename, '/api/storage')
+    fpath = path.join(self._root_dir, xpath)
+    files = file_find.find(fpath, relative = True)
+    for f in files:
+      print('FILE: %s' % (f))
+#    print(xpath)
+    import sys
+    sys.stdout.flush()
+    assert False
+    
