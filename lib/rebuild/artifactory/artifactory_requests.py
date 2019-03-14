@@ -110,7 +110,7 @@ class artifactory_requests(object):
     if response.status_code != 200:
       raise RuntimeError('failed to list_all_files for: %s (status_code %d)' % (url, response.status_code))
     data = response.json()
-    file_util.save('caca.json', content = response.content)
+    #file_util.save('result.json', content = response.content)
     files = data.get('files', None)
     if not files:
       return []
