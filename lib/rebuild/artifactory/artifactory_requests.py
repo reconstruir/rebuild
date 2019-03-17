@@ -31,8 +31,6 @@ class artifactory_requests(object):
     auth = ( username, password )
     clazz.log_d('get_headers_for_url: url=%s' % (url))
     response = requests.head(url, auth = auth)
-    print('response code: %s' % (response.status_code))
-    print('response headers: %s' % (response.headers))
     clazz.log_d('get_headers_for_url: status_code=%s; headers=%s' % (response.status_code, response.headers))
     if response.status_code != 200:
       return None
@@ -84,7 +82,6 @@ class artifactory_requests(object):
     auth = ( username, password )
     response = requests.get(url, auth = auth, stream = True)
     clazz.log_d('download_to_file: target=%s; url=%s; tmp=%s' % (target, url, tmp))
-    print('response headers: %s' % (response.headers))
     if response.status_code != 200:
       return False
     with open(tmp, 'wb') as fout:
