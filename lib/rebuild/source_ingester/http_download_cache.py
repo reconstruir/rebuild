@@ -57,6 +57,12 @@ class http_download_cache(object):
     if not cookies:
       from bes.url import url_util
       return url_util.download_to_temp_file(url, delete = not debug)
+
+#import urllib2
+#opener = urllib2.build_opener()
+#opener.addheaders.append(('Cookie', 'cookiename=cookievalue'))
+#f = opener.open("http://example.com/")
+    
     import requests
     tmp = temp_file.make_temp_file(delete = not debug)
     clazz.log_d('_download_to_tmp_file: url=%s; tmp=%s' % (url, tmp))

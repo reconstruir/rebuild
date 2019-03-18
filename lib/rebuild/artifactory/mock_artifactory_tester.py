@@ -48,5 +48,6 @@ class mock_artifactory_tester(namedtuple('mock_artifactory_tester', 'server, roo
     self.server.stop()
 
   def upload(self, address, content):
+    check.check_storage_address(address)
     tmp_upload = temp_file.make_temp_file(content = content)
     artifactory_requests.upload(address, tmp_upload, '', '')
