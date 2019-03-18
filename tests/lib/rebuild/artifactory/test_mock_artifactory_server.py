@@ -5,11 +5,12 @@ from collections import namedtuple
 import json
 from bes.common import dict_util
 from bes.system import compat
+
 if compat.IS_PYTHON3:
-  import urllib.parse as urlparser
+  import urllib.parse as urlparse
   from http.client import RemoteDisconnected as HTTPError
 else:
-  import urlparse as urlparser
+  import urlparse as urlparse
   from urllib2 import HTTPError
   
 from bes.testing.unit_test import unit_test
@@ -47,7 +48,7 @@ class _test(namedtuple('_test', 'server, root_dir, port')):
 
   def make_url(self, p):
     base = 'http://localhost:%d' % (self.port)
-    return urlparser.urljoin(base, p)
+    return urlparse.urljoin(base, p)
   
   def make_address(self, repo, root_dir, sub_repo, filename):
     return storage_address(self.make_url(''), repo, root_dir, sub_repo, filename)
