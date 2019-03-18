@@ -1,22 +1,12 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from collections import namedtuple
-#import os
-#from os import path
-#from bes.archive import archiver
 from bes.fs import file_util, temp_file
-#from bes.git.git_unit_test import git_unit_test
 from bes.web import file_web_server, web_server_controller
-#from bes.git import repo as git_repo, temp_git_repo
-#from bes.url import url_util
-#
 from rebuild.artifactory.mock_artifactory_server import mock_artifactory_server
 from rebuild.storage.storage_address import storage_address
-#
-#from bes.testing.unit_test import unit_test
-#
-#from ego_automation.artifactory.artifactory import artifactory
-#
+
+from bes.fs.testing.temp_content import temp_content
 from bes.system import compat
 
 if compat.IS_PYTHON3:
@@ -24,6 +14,8 @@ if compat.IS_PYTHON3:
 else:
   import urlparse as urlparse
 
+from .artifactory_requests import artifactory_requests
+  
 class mock_artifactory_tester(namedtuple('mock_artifactory_tester', 'server, root_dir, port')):
 
   def __new__(clazz, artifactory_id, items = None):
@@ -55,6 +47,6 @@ class mock_artifactory_tester(namedtuple('mock_artifactory_tester', 'server, roo
   def stop(self):
     self.server.stop()
 
-#  def upload(self, address, content):
-#    tmp_upload = temp_file.make_temp_file(content = content)
-#    AR.upload(address, tmp_upload, '', '')
+  def upload(self, address, content):
+    tmp_upload = temp_file.make_temp_file(content = content)
+    artifactory_requests.upload(address, tmp_upload, '', '')

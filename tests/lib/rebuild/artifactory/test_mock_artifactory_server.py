@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from collections import namedtuple
-import json
 from bes.common import dict_util
 from bes.system import compat
 
@@ -14,52 +12,11 @@ else:
   from urllib2 import HTTPError
   
 from bes.testing.unit_test import unit_test
-from bes.web import file_web_server, web_server_controller
-from bes.archive import archiver, temp_archive
 from bes.fs import file_mime, file_util, temp_file
-from bes.url import url_util
-from bes.fs.testing import temp_content
 
-from rebuild.artifactory.mock_artifactory_server import mock_artifactory_server
+from rebuild.artifactory.mock_artifactory_tester import mock_artifactory_tester as MAT
 from rebuild.artifactory.artifactory_requests import artifactory_requests as AR
 
-from rebuild.storage.storage_address import storage_address
-
-class _test(namedtuple('_test', 'server, root_dir, port')):
-
-  def __new__(clazz, artifactory_id, items = None):
-    server = web_server_controller(mock_artifactory_server)
-    if items:
-      tmp_dir = clazz._make_temp_content(items)
-    else:
-      tmp_dir = temp_file.make_temp_dir()
-    server.start(root_dir = tmp_dir, artifactory_id = artifactory_id)
-    port = server.address[1]
-    return clazz.__bases__[0].__new__(clazz, server, tmp_dir, port)
-
-  def __str__(self):
-    return self.build_path
-
-  @classmethod
-  def _make_temp_content(clazz, items):
-    tmp_dir = temp_file.make_temp_dir()
-    temp_content.write_items(items, tmp_dir)
-    return tmp_dir
-
-  def make_url(self, p):
-    base = 'http://localhost:%d' % (self.port)
-    return urlparse.urljoin(base, p)
-  
-  def make_address(self, repo, root_dir, sub_repo, filename):
-    return storage_address(self.make_url(''), repo, root_dir, sub_repo, filename)
-  
-  def stop(self):
-    self.server.stop()
-
-  def upload(self, address, content):
-    tmp_upload = temp_file.make_temp_file(content = content)
-    AR.upload(address, tmp_upload, '', '')
-    
 class test_mock_artifactory_server(unit_test):
 
   def test_download_url_to_file(self):
@@ -71,7 +28,7 @@ class test_mock_artifactory_server(unit_test):
       'dir emptydir',
     ]
 
-    test = _test('myid', items = content)
+    test = MAT('myid', items = content)
 
     url = test.make_url('foo.txt')
 
@@ -88,7 +45,7 @@ class test_mock_artifactory_server(unit_test):
     test.stop()
 
   def test_upload_url(self):
-    test = _test('myid')
+    test = MAT('myid')
 
     tmp = temp_file.make_temp_file(content = 'this is foo.txt\n')
     url = test.make_url('foo.txt')
@@ -96,7 +53,7 @@ class test_mock_artifactory_server(unit_test):
     test.stop()
  
   def test_upload_address(self):
-    test = _test('myid')
+    test = MAT('myid')
     tmp_upload = temp_file.make_temp_file(content = 'this is foo.txt\n')
     address = test.make_address('myrepo', 'myrootdir', 'mysubrepo', 'foo.txt')
     AR.upload(address, tmp_upload, '', '')
@@ -106,7 +63,7 @@ class test_mock_artifactory_server(unit_test):
     test.stop()
     
   def xtest_list_all_files(self):
-    test = _test('myid')
+    test = MAT('myid')
 
     test.upload(test.make_address('myrepo', 'myrootdir', 'mysubrepo', 'foo.txt'), 'this is foo.txt\n')
     test.upload(test.make_address('myrepo', 'myrootdir', 'mysubrepo', 'bar.txt'), 'this is bar.txt\n')
@@ -119,7 +76,7 @@ class test_mock_artifactory_server(unit_test):
     test.stop()
     
   def test_get_headers_for_url(self):
-    test = _test('myid')
+    test = MAT('myid')
 
     tmp = temp_file.make_temp_file(content = 'this is foo.txt\n')
     url = test.make_url('foo.txt')
@@ -137,7 +94,7 @@ class test_mock_artifactory_server(unit_test):
     test.stop()
     
   def test_get_checksums_for_url(self):
-    test = _test('myid')
+    test = MAT('myid')
 
     tmp = temp_file.make_temp_file(content = 'this is foo.txt\n')
     url = test.make_url('foo.txt')
