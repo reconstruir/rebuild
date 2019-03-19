@@ -6,6 +6,7 @@ from bes.system import log
 from bes.common import check, string_util
 from bes.fs import file_util, temp_file
 from bes.git import git_util
+from bes.url import url_util
 
 class http_download_cache(object):
   'An http download cache.'
@@ -54,26 +55,7 @@ class http_download_cache(object):
   @classmethod
   def _download_to_tmp_file(clazz, url, cookies, debug = False):
     'Download url to tmp file.'
-    if not cookies:
-      from bes.url import url_util
-      return url_util.download_to_temp_file(url, delete = not debug)
-
-#import urllib2
-#opener = urllib2.build_opener()
-#opener.addheaders.append(('Cookie', 'cookiename=cookievalue'))
-#f = opener.open("http://example.com/")
-    
-    import requests
-    tmp = temp_file.make_temp_file(delete = not debug)
-    clazz.log_d('_download_to_tmp_file: url=%s; tmp=%s' % (url, tmp))
-    response = requests.get(url, stream = True, cookies = cookies or None)
-    clazz.log_d('_download_to_tmp_file: status_code=%d' % (response.status_code))
-    if response.status_code != 200:
-      return None
-    with open(tmp, 'wb') as fout:
-      shutil.copyfileobj(response.raw, fout)
-      fout.close()
-      return tmp
+    return url_util.download_to_temp_file(url, delete = not debug, cookies = cookies)
   
 check.register_class(http_download_cache, include_seq = False)
 log.add_logging(http_download_cache, 'http_download_cache')
