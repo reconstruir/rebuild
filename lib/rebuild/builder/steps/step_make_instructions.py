@@ -14,6 +14,11 @@ class step_make_instructions(step):
     super(step_make_instructions, self).__init__()
 
   #@abstractmethod
+  @classmethod
+  def define_args(clazz):
+    return ''
+    
+  #@abstractmethod
   def execute(self, script, env, values, inputs):
     if not script.instructions:
       message = 'No build instructions for %s' % (script.descriptor.full_name)

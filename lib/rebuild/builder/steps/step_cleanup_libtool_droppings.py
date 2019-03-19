@@ -12,6 +12,11 @@ class step_cleanup_libtool_droppings(step):
     super(step_cleanup_libtool_droppings, self).__init__()
 
   #@abstractmethod
+  @classmethod
+  def define_args(clazz):
+    return ''
+    
+  #@abstractmethod
   def execute(self, script, env, values, inputs):
     staged_files_lib_dir = path.join(script.staged_files_dir, 'lib')
     if path.isdir(staged_files_lib_dir):

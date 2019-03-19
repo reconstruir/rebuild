@@ -11,6 +11,11 @@ class step_check_hard_coded_paths(step):
     super(step_check_hard_coded_paths, self).__init__()
 
   #@abstractmethod
+  @classmethod
+  def define_args(clazz):
+    return ''
+    
+  #@abstractmethod
   def execute(self, script, env, values, inputs):
     if not script.has_staged_files_dir():
       return step_result(True, 'No files to check in %s' % (path.relpath(script.staged_files_dir)))

@@ -117,6 +117,11 @@ class step_artifact_create_publish_package(step):
     super(step_artifact_create_publish_package, self).__init__()
 
   #@abstractmethod
+  @classmethod
+  def define_args(clazz):
+    return ''
+    
+  #@abstractmethod
   def execute(self, script, env, values, inputs):
     staged_tarball = inputs.get('staged_tarball', None)
     if not staged_tarball or not path.isfile(staged_tarball):

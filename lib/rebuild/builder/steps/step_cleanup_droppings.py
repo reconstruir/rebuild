@@ -12,6 +12,11 @@ class step_cleanup_droppings(step):
     super(step_cleanup_droppings, self).__init__()
 
   #@abstractmethod
+  @classmethod
+  def define_args(clazz):
+    return ''
+    
+  #@abstractmethod
   def execute(self, script, env, values, inputs):
     if not script.has_staged_files_dir():
       return step_result(True, script.format_message('No droppings to cleanup in {staged_files_dir}'))

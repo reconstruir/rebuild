@@ -15,6 +15,11 @@ class step_cleanup_macos_fix_rpath(step):
     super(step_cleanup_macos_fix_rpath, self).__init__()
 
   #@abstractmethod
+  @classmethod
+  def define_args(clazz):
+    return ''
+    
+  #@abstractmethod
   def execute(self, script, env, values, inputs):
     if not script.build_target.is_darwin():
       return step_result(True, None)

@@ -12,6 +12,11 @@ class step_cleanup_python_droppings(step):
     super(step_cleanup_python_droppings, self).__init__()
 
   #@abstractmethod
+  @classmethod
+  def define_args(clazz):
+    return ''
+    
+  #@abstractmethod
   def execute(self, script, env, values, inputs):
     droppings = [
       'lib/python/easy-install.pth',

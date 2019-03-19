@@ -12,6 +12,11 @@ class step_cleanup_gnu_info(step):
     super(step_cleanup_gnu_info, self).__init__()
 
   #@abstractmethod
+  @classmethod
+  def define_args(clazz):
+    return ''
+    
+  #@abstractmethod
   def execute(self, script, env, values, inputs):
     info_dir = path.join(script.staged_files_dir, 'share/info')
     file_util.remove(info_dir)

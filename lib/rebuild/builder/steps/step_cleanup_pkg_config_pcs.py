@@ -13,6 +13,11 @@ class step_cleanup_pkg_config_pcs(step):
     super(step_cleanup_pkg_config_pcs, self).__init__()
 
   #@abstractmethod
+  @classmethod
+  def define_args(clazz):
+    return ''
+    
+  #@abstractmethod
   def execute(self, script, env, values, inputs):
     pc_files = pkg_config.find_pc_files(script.staged_files_dir)
     for pc_file in pc_files:

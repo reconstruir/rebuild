@@ -13,6 +13,11 @@ class step_setup_install_requirements(step):
     super(step_setup_install_requirements, self).__init__()
 
   #@abstractmethod
+  @classmethod
+  def define_args(clazz):
+    return ''
+    
+  #@abstractmethod
   def execute(self, script, env, values, inputs):
     if env.config.is_partial_build:
       return step_result(True, 'skipping step_install_requirements because build is partial')
