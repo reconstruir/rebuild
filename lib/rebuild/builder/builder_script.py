@@ -103,14 +103,14 @@ class builder_script(object):
     if not path.isfile(self._env_checksum_filename):
       return
     content = self._env_checksum_content()
-    if file_util.read(self._env_checksum_filename) == content:
+    if file_util.read(self._env_checksum_filename, codec = 'utf8') == content:
       return
     file_util.save(self._env_checksum_filename, content = content)
     
   def _env_checksum_content(self):
-    vv = variable.find_variables(file_util.read(self.recipe.filename))
+    vv = variable.find_variables(file_util.read(self.recipe.filename, codec = 'utf8'))
     d = copy.deepcopy(self.substitutions)
-    for k, v in d.items():
+    for k, v in self.substitutions.items():
       if k not in vv or self.working_dir in v:
         del d[k]
     return json_util.to_json(d, indent = 2)
