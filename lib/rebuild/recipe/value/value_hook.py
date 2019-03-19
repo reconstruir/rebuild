@@ -29,6 +29,9 @@ class value_hook(value_base):
     if value:
       check.check_hook(value)
     self.value = value
+
+  def __hash__(self):
+    return hash(str(self))
     
   def __eq__(self, other):
     return self.value == other.value
