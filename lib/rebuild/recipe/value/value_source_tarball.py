@@ -56,5 +56,11 @@ class value_source_tarball(value_base):
   def resolve(clazz, values, class_name):
     # FIXME
     return values[-1]
+
+  @classmethod
+  #@abstractmethod
+  def _parse_plain_string(clazz, origin, s):
+    'Parse just a string.'
+    assert False
   
 check.register_class(value_source_tarball, include_seq = False)
