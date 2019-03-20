@@ -6,6 +6,7 @@ from bes.fs import file_trash
 from bes.common import check
 from bes.git import git_download_cache, git_util
 from bes.properties.properties_file import properties_file
+from bes.url.http_download_cache import http_download_cache
 
 from rebuild.tools_manager import tools_manager
 from rebuild.checksum import checksum_manager
@@ -15,7 +16,6 @@ from rebuild.storage import storage_factory
 from rebuild.recipe import recipe_load_env
 from rebuild.config import storage_config_manager
 from rebuild.package.artifact_manager_factory import artifact_manager_factory
-from rebuild.source_ingester.http_download_cache import http_download_cache
 from rebuild.recipe.variable_manager import variable_manager
 from rebuild.storage.storage_artifactory import storage_artifactory
 
