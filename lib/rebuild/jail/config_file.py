@@ -3,7 +3,7 @@
 
 from bes.common import string_util, variable
 
-from bes.compat import ConfigParser
+from bes.compat.ConfigParser import ConfigParser
 
 from collections import namedtuple
 
