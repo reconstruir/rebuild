@@ -17,13 +17,12 @@ systemProp.gradle.wrapperUser=tuser
 systemProp.gradle.wrapperPassword=tpassword
 '''
     tmp_file = temp_file.make_temp_file(content = content)
-    p = GPL.read(tmp_file)
     self.assertEqual( {
       'devUser': 'fred@flintstone.com',
       'devPassword': 'flintpass',
       'systemProp.gradle.wrapperUser': 'tuser',
       'systemProp.gradle.wrapperPassword': 'tpassword',
-    }, GPL.read(tmp_file) )
+    }, GPL.read_file(tmp_file) )
     
 if __name__ == '__main__':
   unit_test.main()
