@@ -157,6 +157,10 @@ def main():
   diff_parser = subparsers.add_parser('diff', help = 'Diff the contents of the archive using ag (silver searcher).')
   diff_parser.add_argument('archive1', action = 'store', help = 'The first archive')
   diff_parser.add_argument('archive2', action = 'store', help = 'The second archive')
+  diff_parser.add_argument('--manifest',
+                           action = 'store_true',
+                           default = False,
+                           help = 'Diff only the manifests instead of the actualk contents [ False ]')
 
   args = parser.parse_args()
 
@@ -193,7 +197,7 @@ def main():
   elif args.command == 'download':
     return _command_download(args.name, args.url, args.tag)
   elif args.command == 'diff':
-    return _command_diff(args.archive1, args.archive2)
+    return _command_diff(args.archive1, args.archive2, args.manifest)
 
   return 0
 
@@ -312,10 +316,13 @@ def _command_download(name, url, tag):
   print(archive)
   return 0
 
-def _command_diff(archive1, archive2):
-  diff = archive_util.diff(archive1, archive2, strip_common_ancestor = True)
-  print(diff)
-  return 0
+def _command_diff(archive1, archive2, manifest):
+  if manifest:
+    rv = archive_util.diff_manifest(archive1, archive2, strip_common_ancestor = True)
+  else:
+    rv = archive_util.diff_contents(archive1, archive2, strip_common_ancestor = True)
+  print(rv.stdout)
+  return rv.exit_code
 
 if __name__ == '__main__':
   raise SystemExit(main())

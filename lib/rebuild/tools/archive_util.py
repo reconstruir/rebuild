@@ -79,18 +79,27 @@ class archive_util(object):
     return result
 
   @classmethod
-  def diff(clazz, archive1, archive2, strip_common_ancestor = False):
+  def diff_manifest(clazz, archive1, archive2, strip_common_ancestor = False):
     'Return the output of diffing the contents of 2 archives.'
-
     members1 = archiver.members(archive1)
     members2 = archiver.members(archive2)
-
     content1 = '\n'.join(members1)
     content2 = '\n'.join(members2)
-
     tmp_file1 = temp_file.make_temp_file(content = content1)
     tmp_file2 = temp_file.make_temp_file(content = content2)
+    cmd = [ 'diff', '-u', '-r', tmp_file1, tmp_file2 ]
+    rv = execute.execute(cmd, raise_error = False, stderr_to_stdout = True)
+    return rv
 
-    rv = execute.execute('diff -u %s %s' % (tmp_file1, tmp_file2), raise_error = False)
-
-    return rv.stdout
+  @classmethod
+  def diff_contents(clazz, archive1, archive2, strip_common_ancestor = False):
+    'Return the output of diffing the contents of 2 archives.'
+    tmp_dir = temp_file.make_temp_dir(delete = False)
+    tmp_dir1 = path.join(tmp_dir, 'a')
+    tmp_dir2 = path.join(tmp_dir, 'b')
+    archiver.extract_all(archive1, tmp_dir1, strip_common_ancestor = strip_common_ancestor)
+    archiver.extract_all(archive2, tmp_dir2, strip_common_ancestor = strip_common_ancestor)
+    cmd = [ 'diff', '-u', '-r', tmp_dir1, tmp_dir2 ]
+    rv = execute.execute(cmd, raise_error = False, stderr_to_stdout = True)
+    return rv
+  
