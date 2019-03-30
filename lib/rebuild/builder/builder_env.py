@@ -4,7 +4,8 @@ import os.path as path
 
 from bes.fs import file_trash
 from bes.common import check
-from bes.git import git_download_cache, git_util
+from bes.git import git_util
+from bes.git.git_archive_cache import git_archive_cache
 from bes.properties.properties_file import properties_file
 from bes.url.http_download_cache import http_download_cache
 
@@ -43,7 +44,7 @@ class builder_env(object):
     self.blurb('sources_storage: %s' % (self.sources_storage))
     self.blurb('external_artifacts_storage: %s' % (self.external_artifacts_storage))
     self.checksum_manager = self._make_checksum_manager(config.build_root)
-    self.git_downloads_manager = git_download_cache(path.join(config.build_root, 'downloads', 'git'))
+    self.git_downloads_manager = git_archive_cache(path.join(config.build_root, 'downloads', 'git'))
     self.http_downloads_manager = http_download_cache(path.join(config.build_root, 'downloads', 'http'))
     self.source_dir_zipballs = source_dir_zipball_cache(path.join(config.build_root, 'downloads', 'source_dir_zipball'))
     self.reload_build_artifact_manager()

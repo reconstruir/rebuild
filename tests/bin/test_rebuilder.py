@@ -4,7 +4,7 @@
 import os.path as path
 from bes.testing.unit_test import script_unit_test
 from bes.fs import file_replace, file_util, tar_util, temp_file
-from bes.git import temp_git_repo
+from bes.git.git_temp_repo import git_temp_repo
 from bes.git.git_unit_test import git_unit_test
 from rebuild.base import build_target
 from rebuild.toolchain import toolchain_testing
@@ -200,7 +200,7 @@ class test_rebuilder_script(script_unit_test):
     project_dir = path.join(self.data_dir(), 'tarball_git_address')
     source_dir = path.join(project_dir, 'src')
     tar_util.copy_tree_with_tar(project_dir, path.join(tmp_dir, 'tarball_git_address'))
-    gr = temp_git_repo(remote = False, debug = not self.DEBUG)
+    gr = git_temp_repo(remote = False, debug = not self.DEBUG)
     if self.DEBUG:
       print("temp git repo: ", gr.root)
     tar_util.copy_tree_with_tar(source_dir, gr.root)

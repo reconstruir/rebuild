@@ -2,7 +2,7 @@
 
 import os.path as path
 from bes.common import check
-from bes.git import repo
+from bes.git.git_repo import git_repo
 from rebuild.base import build_blurb
 
 from .storage_base import storage_base
@@ -10,7 +10,7 @@ from .storage_base import storage_base
 class storage_git_repo(storage_base):
 
   def __init__(self, root, address, no_network = False, update_only_once = False):
-    self.repo = repo(root, address)
+    self.repo = git_repo(root, address)
     self.no_network = no_network
     self.update_only_once = update_only_once
     self._updated = False
