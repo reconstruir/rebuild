@@ -36,7 +36,7 @@ class artifactory_requests(object):
       return None
     return response.headers
   
-  _checksums = namedtuple('namedtuple', 'md5, sha1, sha256')
+  _checksums = namedtuple('_checksums', 'md5, sha1, sha256')
 
   _HEADER_CHECKSUM_MD5 = 'X-Checksum-Md5'
   _HEADER_CHECKSUM_SHA1 = 'X-Checksum-Sha1'
@@ -52,6 +52,10 @@ class artifactory_requests(object):
     clazz.log_d('get_checksums_for_url: headers=%s' % (headers))
     if not headers:
       return None
+    return clazz._checksums_from_headers(headers)
+
+  @classmethod
+  def _checksums_from_headers(clazz, headers):
     md5 = headers.get(clazz._HEADER_CHECKSUM_MD5, None)
     sha1 = headers.get(clazz._HEADER_CHECKSUM_SHA1, None)
     sha256 = headers.get(clazz._HEADER_CHECKSUM_SHA256, None)
@@ -151,6 +155,24 @@ class artifactory_requests(object):
       return data['downloadUri']
     
   @classmethod
+  def delete_url(clazz, url, username, password):
+    check.check_string(url)
+    check.check_string(username)
+    check.check_string(password)
+    clazz.log_d('delete_url: url=%s' % (url))
+    import requests
+    response = requests.delete(url, auth = (username, password))
+    clazz.log_d('delete: response status_code=%d' % (response.status_code))
+    print('status_code: %s' % (response.status_code))
+    print('   response: %s' % (response.json()))
+#    if response.status_code != 201:
+#      raise RuntimeError('Failed to upload: %s (status_code %d)' % (url, response.status_code))
+#      data = response.json()
+#      assert 'downloadUri' in data
+#      return data['downloadUri']
+    return None
+    
+  @classmethod
   def checksum_headers_for_file(clazz, filename):
     return {
       clazz._HEADER_CHECKSUM_MD5: file_util.checksum('md5', filename),
@@ -186,15 +208,21 @@ class artifactory_requests(object):
     check.check_storage_address(address)
     clazz.log_d('list_all_artifacts: address=%s' % (str(address)))
 
+    print('ADDRESS: %s' % (str(address._asdict())))
+    
     # an artifactory AQL query to find all the artifacts in a repo
     template = '''
-items.find({
-  "repo":"%s",
-  "path" : {"$match":"%s/*"}
-}).include("*", "property.*")
+items.find({{
+  "repo":"{repo}",
+  "path" : {{"$match":"{match_prefix}/*"}}
+}}).include("*", "property.*")
 '''
     match_prefix = '{root_dir}/{sub_repo}'.format(root_dir = address.root_dir, sub_repo = address.sub_repo)
-    aql = template % (address.repo, match_prefix)
+    match_prefix = address.file_path
+    match_prefix = 'ego-devenv-v2/artifacts/macos-10/x86_64/release'
+    print('ADDRESS: %s' % (str(address._asdict())))
+    print('filepath=%s' % (address.file_path))
+    aql = template.format(repo = address.repo,  match_prefix = match_prefix)
 
     clazz.log_d('list_all_artifacts: aql=%s' % (aql), multi_line = True)
 
@@ -202,6 +230,8 @@ items.find({
     clazz.log_d('list_all_artifacts: url=%s' % (url))
     auth = ( username, password )
     import requests
+    print('url=%s' % (url))
+    print('aql=%s' % (aql))
     response = requests.post(url, data = aql, auth = auth)
     clazz.log_d('list_all_artifacts: response=%s; status_code=%d' % (str(response), response.status_code))
     if response.status_code != 200:
@@ -270,5 +300,26 @@ items.find({
                             version, revision, epoch, system, level, arch, distro,
                             distro_version_major or '',  distro_version_minor or '',
                             requirements, properties, files)
+
+  _file_info = namedtuple('_file_info', 'filename, content_length, content_type, date, etag, last_modified, md5, sha1, sha256')
+  @classmethod
+  def get_info_file_url(clazz, url, username, password):
+    'Return info for the given file url or None if it is not a file.'
+    check.check_string(url)
+    check.check_string(username)
+    check.check_string(password)
+    headers = clazz.get_headers_for_url(url, username, password)
+    if not headers:
+      return None
+    checksums = clazz._checksums_from_headers(headers)
+    return clazz._file_info(headers['X-Artifactory-Filename'],
+                            headers['Content-Length'],
+                            headers['Content-Type'],
+                            headers.get('Date', None),
+                            headers.get('ETag', None),
+                            headers.get('Last-Modified', None),
+                            checksums.md5,
+                            checksums.sha1,
+                            checksums.sha256)
   
 log.add_logging(artifactory_requests, 'artifactory_requests')
