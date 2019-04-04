@@ -4,7 +4,7 @@
 from bes.testing.unit_test import unit_test
 from bes.fs.testing import temp_content
 from bes.fs import temp_file
-from bes.git import repo
+from bes.git.git_repo import git_repo
 from bes.git.git_unit_test import git_unit_test
 from rebuild.storage import storage_git_repo
 import os.path as path
@@ -39,7 +39,7 @@ class test_storage_git_repo(unit_test):
   @classmethod
   def _make_git_repo(clazz, items, delete = True):
     tmp_source_dir = source_dir_maker.make(items, delete = True)
-    r = repo(tmp_source_dir)
+    r = git_repo(tmp_source_dir)
     r.init()
     r.add('.')
     r.commit('add', '.')
