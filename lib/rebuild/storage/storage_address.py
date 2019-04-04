@@ -12,7 +12,8 @@ class storage_address(namedtuple('storage_address', 'hostname, repo, root_dir, s
     hostname = clazz._normalize_hostname(hostname)
     check.check_string(repo)
     repo = clazz._normalize_path(repo)
-    root_dir = clazz._normalize_path(root_dir)
+    if root_dir:
+      root_dir = clazz._normalize_path(root_dir)
     if sub_repo is not None:
       check.check_string(sub_repo)
       sub_repo = clazz._normalize_path(sub_repo)
@@ -39,8 +40,9 @@ class storage_address(namedtuple('storage_address', 'hostname, repo, root_dir, s
     buf = StringIO()
     buf.write(self.hostname)
     buf.write(self.repo)
-    buf.write('/')
-    buf.write(self.root_dir)
+    if self.root_dir:
+      buf.write('/')
+      buf.write(self.root_dir)
     if self.sub_repo:
       buf.write('/')
       buf.write(self.sub_repo)
