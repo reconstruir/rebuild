@@ -1,6 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import json, os.path as path, shutil
+import datetime, json, os.path as path, shutil, time
 from collections import namedtuple
 
 from bes.system import execute, log, os_env
@@ -9,6 +9,7 @@ from bes.fs import file_path, file_util, temp_file
 
 from rebuild.base import requirement_list
 from rebuild.package import package_metadata, package_metadata_list, package_manifest
+from rebuild.storage.storage_address import storage_address
 
 from .artifactory_address import artifactory_address
 
@@ -94,6 +95,7 @@ class artifactory_requests(object):
       file_util.copy(tmp, target)
       return True
 
+  _file_item = namedtuple('_file_item', 'uri, filename, sha1')
   @classmethod
   def list_all_files(clazz, address, username, password):
     check.check_storage_address(address)
@@ -121,8 +123,9 @@ class artifactory_requests(object):
       assert 'uri' in f
       assert 'sha1' in f
       filename = file_util.lstrip_sep(f['uri'])
-      sha1_checksum = file_util.lstrip_sep(f['sha1'])
-      result.append( ( filename, sha1_checksum ) )
+      uri = str(address) + '/' + filename
+      sha1 = file_util.lstrip_sep(f['sha1'])
+      result.append(clazz._file_item(uri, filename, sha1))
     result.sort()
     return result
 
@@ -322,5 +325,42 @@ items.find({{
                             checksums.md5,
                             checksums.sha1,
                             checksums.sha256)
+
+  _file_stats = namedtuple('_file_stats', 'uri, download_count, last_downloaded, last_downloaded_by, remote_download_count, remote_last_downloaded')
+  @classmethod
+  def get_file_stats(clazz, url, username, password):
+    'Return download stats for the given artifactory url.'
+    check.check_string(url)
+    check.check_string(username)
+    check.check_string(password)
+    auth = ( username, password )
+    import requests
+    address = storage_address.parse_url(url, has_host_root = True)
+    url = artifactory_address.make_api_url(address, endpoint = 'storage', file_path = address.repo_filename, params = 'stats')
+    response = requests.get(url, auth = auth)
+    # 404 means nothing has been ingested to the repo yet
+    if response.status_code == 404:
+      return []
+    if response.status_code != 200:
+      raise RuntimeError('failed to get stats: %s (status_code %d)' % (url, response.status_code))
+    data = response.json()
+    uri = data.get('uri', None)
+    if not uri:
+      raise RuntimeError('malformed response for url: {} - {}' % (url, str(data)))
+    uri = data.get('uri', None)
+    download_count = data.get('downloadCount', None)
+    last_downloaded = clazz._epoch_timestamp_to_datetime(data.get('lastDownloaded', None))
+    last_downloaded_by = data.get('lastDownloadedBy', None)
+    remote_download_count = data.get('remoteDownloadCount', None)
+    remote_last_downloaded = clazz._epoch_timestamp_to_datetime(data.get('remoteLastDownloaded', None))
+    return clazz._file_stats(uri, download_count, last_downloaded, last_downloaded_by, remote_download_count, remote_last_downloaded)
+
+  @classmethod
+  def _epoch_timestamp_to_datetime(clazz, t):
+    'Convert an epoch timestamp in milliseconds to a datetime object.'
+    if not t:
+      return None
+    t_seconds = t / 1000.0
+    return datetime.datetime.strptime(time.ctime(t_seconds), '%a %b %d %H:%M:%S %Y')
   
 log.add_logging(artifactory_requests, 'artifactory_requests')
