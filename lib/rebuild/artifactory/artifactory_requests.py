@@ -99,12 +99,13 @@ class artifactory_requests(object):
     check.check_storage_address(address)
     check.check_string(username)
     check.check_string(password)
-    url = artifactory_address.make_api_url(address, endpoint = 'storage', file_path = address.file_folder, params = 'list&deep=1&listFolders=0')
-    clazz.log_d('list_all_files: address=%s; url=%s' % (address, url))
+    url = artifactory_address.make_api_url(address, endpoint = 'storage', file_path = address.repo_filename, params = 'list&deep=1&listFolders=0')
+    clazz.log_d('list_all_files:       address=%s' % (str(address)))
+    clazz.log_d('list_all_files:           url=%s' % (url))
+    clazz.log_d('list_all_files: repo_filename=%s' % (address.repo_filename))
     auth = ( username, password )
     import requests
     response = requests.get(url, auth = auth)
-    clazz.log_d('list_all_files: response status_code=%d' % (response.status_code))
     # 404 means nothing has been ingested to the repo yet
     if response.status_code == 404:
       return []

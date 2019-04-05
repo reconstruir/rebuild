@@ -40,7 +40,14 @@ class test_storage_address(unit_test):
     self.assertEqual( 'newf', SA('http://mycom.not/mycom', 'r', 'd', 's', None).mutate_filename('newf').filename )
     self.assertEqual( 'newf', SA('http://mycom.not/mycom', 'r', 'd', 's', 'f').mutate_filename('newf').filename )
     self.assertEqual( 'newf', SA('http://mycom.not/mycom', 'r', 'd', 's', '/f').mutate_filename('newf').filename )
+
+  def test_repo_filename(self):
+    SA.parse_url('http://mycom.not/mycom/repo/root/foo/bar/something-1.1.2.tar.gz', has_host_root = True)
+    self.assertEqual( 'repo/root/foo/bar/something-1.1.2.tar.gz', SA.parse_url('http://mycom.not/mycom/repo/root/foo/bar/something-1.1.2.tar.gz', has_host_root = True).repo_filename)
     
+  def test_parse_url(self):
+    self.assertEqual( SA('https://foo:bar@mycom.not:666/mycom', 'repo', 'root', 'subrepo', 'foo/bar/something-1.1.2.tar.gz'),
+                      SA.parse_url('https://foo:bar@mycom.not:666/mycom/repo/root/subrepo/foo/bar/something-1.1.2.tar.gz', has_host_root = True) )
     
 if __name__ == '__main__':
   unit_test.main()

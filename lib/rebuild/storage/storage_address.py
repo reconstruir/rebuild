@@ -4,6 +4,7 @@ from collections import namedtuple
 from bes.compat import StringIO
 from bes.common import check, cached_property, tuple_util
 from bes.fs import file_util
+from bes.compat.url_compat import urlparse
 
 class storage_address(namedtuple('storage_address', 'hostname, repo, root_dir, sub_repo, filename')):
 
@@ -52,22 +53,41 @@ class storage_address(namedtuple('storage_address', 'hostname, repo, root_dir, s
     return buf.getvalue()
 
   @cached_property
-  def file_folder(self):
+  def repo_filename(self):
     'Return the folder for self.filename'
-    return '{repo}/{root_dir}/{sub_repo}'.format(repo = self.repo, root_dir = self.root_dir, sub_repo = self.sub_repo)
-
-  @cached_property
-  def file_path(self):
-    'Return the full path for self.filename or raise an error if filename is None'
-    if not self.filename:
-      raise ValueError('no filename available')
-    return '{file_folder}/{filename}'.format(file_folder = self.file_folder, filename = self.filename)
-
+    return '{repo}/{root_dir}/{sub_repo}/{filename}'.format(repo = self.repo,
+                                                            root_dir = self.root_dir,
+                                                            sub_repo = self.sub_repo,
+                                                            filename = self.filename)
+  
   def clone(self, mutations = None):
     return tuple_util.clone(self, mutations = mutations)
   
   def mutate_filename(self, filename):
     return self.clone({ 'filename': filename })
+
+  @classmethod
+  def parse_url(self, url, has_host_root = False):
+    parts = urlparse(url)
+    path_parts = parts.path.split('/')
+    if path_parts[0] != '':
+      raise ValueError('invalid url: {}'.format(url))
+    path_parts.pop(0)
+    if has_host_root:
+      if not path_parts:
+        raise ValueError('url does not have a host_root: {}'.format(url))
+      host_root = path_parts.pop(0)
+    else:
+      host_root = None
+    hostname = '{scheme}://{netloc}'.format(**parts._asdict())
+    if host_root:
+      hostname = hostname + '/' + host_root
+    if not path_parts:
+      raise ValueError('url does not have a repo: {}'.format(url))
+    repo = path_parts.pop(0)
+    root_dir = path_parts.pop(0) if path_parts else None
+    sub_repo = path_parts.pop(0) if path_parts else None
+    filename = '/'.join(path_parts)
+    return storage_address(hostname, repo, root_dir, sub_repo, filename)
   
-    
 check.register_class(storage_address)
