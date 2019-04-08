@@ -1,6 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import os.path as path
+import os.path as path, pprint
 
 from bes.system import execute, log, os_env
 from bes.fs import file_util
@@ -137,7 +137,9 @@ class storage_artifactory(storage_base):
     entries = artifactory_requests.list_all_files(self._address,
                                                   self._config.storage_config.download.username,
                                                   self._config.storage_config.download.password)
-    return [ entry[0] for entry in entries ]
+    self.log_d('list_all_files: address={}'.format(self._address))
+    #self.log_d('list_all_files: entries={}'.format(pprint.pformat(entries)))
+    return [ entry.filename for entry in entries ]
 
   def make_address(self, filename = None):
     return storage_address(self._config.storage_config.location,

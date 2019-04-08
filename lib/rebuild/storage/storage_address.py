@@ -55,10 +55,9 @@ class storage_address(namedtuple('storage_address', 'hostname, repo, root_dir, s
   @cached_property
   def repo_filename(self):
     'Return the folder for self.filename'
-    return '{repo}/{root_dir}/{sub_repo}/{filename}'.format(repo = self.repo,
-                                                            root_dir = self.root_dir,
-                                                            sub_repo = self.sub_repo,
-                                                            filename = self.filename)
+    parts = [ self.repo, self.root_dir, self.sub_repo, self.filename ]
+    parts = [ p for p in parts if p ]
+    return '/'.join(parts)
   
   def clone(self, mutations = None):
     return tuple_util.clone(self, mutations = mutations)

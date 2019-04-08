@@ -167,8 +167,6 @@ class artifactory_requests(object):
     import requests
     response = requests.delete(url, auth = (username, password))
     clazz.log_d('delete: response status_code=%d' % (response.status_code))
-    print('status_code: %s' % (response.status_code))
-    print('   response: %s' % (response.json()))
 #    if response.status_code != 201:
 #      raise RuntimeError('Failed to upload: %s (status_code %d)' % (url, response.status_code))
 #      data = response.json()
@@ -212,8 +210,6 @@ class artifactory_requests(object):
     check.check_storage_address(address)
     clazz.log_d('list_all_artifacts: address=%s' % (str(address)))
 
-    print('ADDRESS: %s' % (str(address._asdict())))
-    
     # an artifactory AQL query to find all the artifacts in a repo
     template = '''
 items.find({{
@@ -224,8 +220,7 @@ items.find({{
     match_prefix = '{root_dir}/{sub_repo}'.format(root_dir = address.root_dir, sub_repo = address.sub_repo)
     match_prefix = address.repo_filename
     match_prefix = 'ego-devenv-v2/artifacts/macos-10/x86_64/release'
-    print('ADDRESS: %s' % (str(address._asdict())))
-    print('repo_filename=%s' % (address.repo_filename))
+    clazz.log_d('repo_filename=%s' % (address.repo_filename))
     aql = template.format(repo = address.repo,  match_prefix = match_prefix)
 
     clazz.log_d('list_all_artifacts: aql=%s' % (aql), multi_line = True)
@@ -234,8 +229,8 @@ items.find({{
     clazz.log_d('list_all_artifacts: url=%s' % (url))
     auth = ( username, password )
     import requests
-    print('url=%s' % (url))
-    print('aql=%s' % (aql))
+    clazz.log_d('list_all_artifacts: url={}'.format(url))
+    clazz.log_d('list_all_artifacts: aql={}'.format(aql))
     response = requests.post(url, data = aql, auth = auth)
     clazz.log_d('list_all_artifacts: response=%s; status_code=%d' % (str(response), response.status_code))
     if response.status_code != 200:
