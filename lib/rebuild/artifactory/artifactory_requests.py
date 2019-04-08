@@ -190,7 +190,7 @@ class artifactory_requests(object):
     check.check_dict(properties)
 
     import requests
-    url = artifactory_address.make_api_url(address, endpoint = 'metadata', file_path = address.file_path)
+    url = artifactory_address.make_api_url(address, endpoint = 'metadata', file_path = address.repo_filename)
     clazz.log_d('set_properties: address=%s; url=%s' % (address, url))
     
     # In order to patch properties artifactory expects dict with 'props'
