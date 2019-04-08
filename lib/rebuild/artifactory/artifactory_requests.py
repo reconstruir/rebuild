@@ -222,10 +222,10 @@ items.find({{
 }}).include("*", "property.*")
 '''
     match_prefix = '{root_dir}/{sub_repo}'.format(root_dir = address.root_dir, sub_repo = address.sub_repo)
-    match_prefix = address.file_path
+    match_prefix = address.repo_filename
     match_prefix = 'ego-devenv-v2/artifacts/macos-10/x86_64/release'
     print('ADDRESS: %s' % (str(address._asdict())))
-    print('filepath=%s' % (address.file_path))
+    print('repo_filename=%s' % (address.repo_filename))
     aql = template.format(repo = address.repo,  match_prefix = match_prefix)
 
     clazz.log_d('list_all_artifacts: aql=%s' % (aql), multi_line = True)
