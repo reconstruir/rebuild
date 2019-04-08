@@ -65,13 +65,13 @@ class test_mock_artifactory_server(unit_test):
     self.assertEqual( 'this is foo.txt\n', file_util.read(tmp_download) )
     test.stop()
     
-  def xtest_list_all_files(self):
+  def xtest_list_files(self):
     test = MAT('myid')
 
     test.upload(test.make_address('myrepo', 'myrootdir', 'mysubrepo', 'foo.txt'), 'this is foo.txt\n')
     test.upload(test.make_address('myrepo', 'myrootdir', 'mysubrepo', 'bar.txt'), 'this is bar.txt\n')
 
-    result = AR.list_all_files(test.make_address('myrepo', 'myrootdir', 'mysubrepo', None), '', '')
+    result = AR.list_files(test.make_address('myrepo', 'myrootdir', 'mysubrepo', None), '', '')
     expected = [
       'sscaca',
     ]
@@ -127,7 +127,7 @@ class test_mock_artifactory_server(unit_test):
       '33f82b8aa2879fa046b877cfa36158d6607294f9',
       '75f3365f74a5cfbe304b17e1eb4bd99784f609792ffc163cdf4ed464cc08b5ec',
     )
-    actual = AR.get_info_file_url(url, 'foo', 'bar')
+    actual = AR.get_file_info_url(url, 'foo', 'bar')
 
     self.assertMultiLineEqual( self._file_info_to_string(expected), self._file_info_to_string(actual) )
     test.stop()

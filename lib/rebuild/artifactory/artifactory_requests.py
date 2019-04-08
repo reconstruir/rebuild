@@ -97,14 +97,14 @@ class artifactory_requests(object):
 
   _file_item = namedtuple('_file_item', 'uri, filename, sha1')
   @classmethod
-  def list_all_files(clazz, address, username, password):
+  def list_files(clazz, address, username, password):
     check.check_storage_address(address)
     check.check_string(username)
     check.check_string(password)
     url = artifactory_address.make_api_url(address, endpoint = 'storage', file_path = address.repo_filename, params = 'list&deep=1&listFolders=0')
-    clazz.log_d('list_all_files:       address=%s' % (str(address)))
-    clazz.log_d('list_all_files:           url=%s' % (url))
-    clazz.log_d('list_all_files: repo_filename=%s' % (address.repo_filename))
+    clazz.log_d('list_files:       address=%s' % (str(address)))
+    clazz.log_d('list_files:           url=%s' % (url))
+    clazz.log_d('list_files: repo_filename=%s' % (address.repo_filename))
     auth = ( username, password )
     import requests
     response = requests.get(url, auth = auth)
@@ -112,7 +112,7 @@ class artifactory_requests(object):
     if response.status_code == 404:
       return []
     if response.status_code != 200:
-      raise RuntimeError('failed to list_all_files for: %s (status_code %d)' % (url, response.status_code))
+      raise RuntimeError('failed to list_files for: %s (status_code %d)' % (url, response.status_code))
     data = response.json()
     #file_util.save('result.json', content = response.content)
     files = data.get('files', None)
@@ -206,35 +206,31 @@ class artifactory_requests(object):
     return True
 
   @classmethod
-  def list_all_artifacts(clazz, address, username, password):
+  def list_artifacts(clazz, address, username, password):
+    'List artifacts in an artifactory directory.'
     check.check_storage_address(address)
-    clazz.log_d('list_all_artifacts: address=%s' % (str(address)))
-
+    clazz.log_d('list_artifacts: address=%s' % (str(address)))
     # an artifactory AQL query to find all the artifacts in a repo
     template = '''
 items.find({{
   "repo":"{repo}",
-  "path" : {{"$match":"{match_prefix}/*"}}
+  "path" : {{"$match":"{match_prefix}*"}}
 }}).include("*", "property.*")
 '''
-    match_prefix = '{root_dir}/{sub_repo}'.format(root_dir = address.root_dir, sub_repo = address.sub_repo)
-    match_prefix = address.repo_filename
-    match_prefix = 'ego-devenv-v2/artifacts/macos-10/x86_64/release'
-    clazz.log_d('repo_filename=%s' % (address.repo_filename))
+    match_prefix = file_util.remove_head(address.repo_filename, address.repo)
     aql = template.format(repo = address.repo,  match_prefix = match_prefix)
+    clazz.log_d('list_artifacts: address={}'.format(address))
+    clazz.log_d('list_artifacts: match_prefix={}'.format(match_prefix))
+    clazz.log_d('list_artifacts: aql=%s' % (aql), multi_line = True)
 
-    clazz.log_d('list_all_artifacts: aql=%s' % (aql), multi_line = True)
-
-    url = artifactory_address.make_search_aql_url(address)
-    clazz.log_d('list_all_artifacts: url=%s' % (url))
+    aql_url = artifactory_address.make_search_aql_url(address)
+    clazz.log_d('list_artifacts: aql_url=%s' % (aql_url))
     auth = ( username, password )
     import requests
-    clazz.log_d('list_all_artifacts: url={}'.format(url))
-    clazz.log_d('list_all_artifacts: aql={}'.format(aql))
-    response = requests.post(url, data = aql, auth = auth)
-    clazz.log_d('list_all_artifacts: response=%s; status_code=%d' % (str(response), response.status_code))
+    response = requests.post(aql_url, data = aql, auth = auth)
+    clazz.log_d('list_artifacts: response=%s; status_code=%d' % (str(response), response.status_code))
     if response.status_code != 200:
-      raise RuntimeError('failed to list_all_artifacts for: %s (status_code %d)' % (url, response.status_code))
+      raise RuntimeError('failed to list_artifacts for: %s (status_code %d)' % (aql_url, response.status_code))
     data = response.json()
     assert 'results' in data
     results = data['results']
@@ -302,7 +298,7 @@ items.find({{
 
   _file_info = namedtuple('_file_info', 'filename, content_length, content_type, date, etag, last_modified, md5, sha1, sha256')
   @classmethod
-  def get_info_file_url(clazz, url, username, password):
+  def get_file_info_url(clazz, url, username, password):
     'Return info for the given file url or None if it is not a file.'
     check.check_string(url)
     check.check_string(username)
@@ -331,17 +327,14 @@ items.find({{
     auth = ( username, password )
     import requests
     address = storage_address.parse_url(url, has_host_root = True)
-    url = artifactory_address.make_api_url(address, endpoint = 'storage', file_path = address.repo_filename, params = 'stats')
-    response = requests.get(url, auth = auth)
-    # 404 means nothing has been ingested to the repo yet
-    if response.status_code == 404:
-      return []
+    api_url = artifactory_address.make_api_url(address, endpoint = 'storage', file_path = address.repo_filename, params = 'stats')
+    response = requests.get(api_url, auth = auth)
     if response.status_code != 200:
-      raise RuntimeError('failed to get stats: %s (status_code %d)' % (url, response.status_code))
+      raise RuntimeError('failed to get stats: %s (status_code %d)' % (api_url, response.status_code))
     data = response.json()
     uri = data.get('uri', None)
     if not uri:
-      raise RuntimeError('malformed response for url: {} - {}' % (url, str(data)))
+      raise RuntimeError('malformed response for api_url: {} - {}' % (api_url, str(data)))
     uri = data.get('uri', None)
     download_count = data.get('downloadCount', None)
     last_downloaded = clazz._epoch_timestamp_to_datetime(data.get('lastDownloaded', None))
@@ -357,5 +350,24 @@ items.find({{
       return None
     t_seconds = t / 1000.0
     return datetime.datetime.strptime(time.ctime(t_seconds), '%a %b %d %H:%M:%S %Y')
+
+  @classmethod
+  def get_file_properties_url(clazz, url, username, password):
+    'Return info for the given file url or None if it is not a file.'
+    check.check_string(url)
+    check.check_string(username)
+    check.check_string(password)
+    auth = ( username, password )
+    import requests
+    address = storage_address.parse_url(url, has_host_root = True)
+    api_url = artifactory_address.make_api_url(address, endpoint = 'storage', file_path = address.repo_filename, params = 'properties')
+    response = requests.get(api_url, auth = auth)
+    if response.status_code != 200:
+      raise RuntimeError('failed to get properties: %s (status_code %d)' % (api_url, response.status_code))
+    data = response.json()
+    properties = data.get('properties', None)
+    if not properties:
+      raise RuntimeError('malformed response for api_url: {} - {}' % (api_url, str(data)))
+    return properties
   
 log.add_logging(artifactory_requests, 'artifactory_requests')

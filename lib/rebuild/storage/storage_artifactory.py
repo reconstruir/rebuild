@@ -134,9 +134,9 @@ class storage_artifactory(storage_base):
 
   #@abstractmethod
   def list_all_files(self):
-    entries = artifactory_requests.list_all_files(self._address,
-                                                  self._config.storage_config.download.username,
-                                                  self._config.storage_config.download.password)
+    entries = artifactory_requests.list_files(self._address,
+                                              self._config.storage_config.download.username,
+                                              self._config.storage_config.download.password)
     self.log_d('list_all_files: address={}'.format(self._address))
     #self.log_d('list_all_files: entries={}'.format(pprint.pformat(entries)))
     return [ entry.filename for entry in entries ]
