@@ -158,8 +158,9 @@ class artifactory_requests(object):
       assert 'downloadUri' in data
       return data['downloadUri']
     
+  _delete_result = namedtuple('_delete_result', 'success, status_code')
   @classmethod
-  def delete_url(clazz, url, username, password):
+  def delete_url(clazz, url, raise_error, username, password):
     check.check_string(url)
     check.check_string(username)
     check.check_string(password)
@@ -167,12 +168,10 @@ class artifactory_requests(object):
     import requests
     response = requests.delete(url, auth = (username, password))
     clazz.log_d('delete: response status_code=%d' % (response.status_code))
-#    if response.status_code != 201:
-#      raise RuntimeError('Failed to upload: %s (status_code %d)' % (url, response.status_code))
-#      data = response.json()
-#      assert 'downloadUri' in data
-#      return data['downloadUri']
-    return None
+    success = response.status_code == 204
+    if not success and raise_error:
+      raise RuntimeError('Failed to delete: %s (status_code %d)' % (url, response.status_code))
+    return clazz._delete_result(success, response.status_code)
     
   @classmethod
   def checksum_headers_for_file(clazz, filename):

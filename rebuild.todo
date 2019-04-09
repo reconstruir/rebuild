@@ -1134,3 +1134,7 @@ storage_local.py majorly messed up also value_source_tarball.  its calling stora
 2019-04-08
 - 'not ingesting' messages when the sources exist remotely are useless and misguided
 
+2019-04-09
+- time revenv.py packages print /ego ego_artifactory ego_devenv --config config/ego.revenv
+  is crazy slow.  i think its downloading artifaxts list each time.
+- removing a no longer referneced package from a venv does not remove its dependencies
