@@ -32,7 +32,7 @@ class step_cmake_configure(step):
     cmd = [ 'cmake' ]
     if env.config.verbose:
       cmd.append('--debug-output')
-    cmd.append('-DCMAKE_INSTALL_PREFIX=$REBUILD_STAGE_PREFIX_DIR')
+    cmd.append('-DCMAKE_INSTALL_PREFIX=${REBUILD_STAGE_PREFIX_DIR}')
     cmd.extend(cmake_flags)
     cmd.append(script.source_unpacked_dir)
     return self.call_shell(cmd, script, env,
@@ -56,7 +56,7 @@ class step_cmake_install(step):
 
   #@abstractmethod
   def execute(self, script, env, values, inputs):
-    cmd = 'make install prefix=$REBUILD_STAGE_PREFIX_DIR'
+    cmd = 'make install prefix=${REBUILD_STAGE_PREFIX_DIR}'
     return self.call_shell(cmd, script, env)
 
 class step_cmake(compound_step):
