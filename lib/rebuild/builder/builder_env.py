@@ -6,7 +6,7 @@ from bes.fs import file_trash
 from bes.common import check
 from bes.git import git_util
 from bes.git.git_archive_cache import git_archive_cache
-from bes.properties.properties_file import properties_file
+from bes.properties_file.properties_file import properties_file
 from bes.url.http_download_cache import http_download_cache
 
 from rebuild.tools_manager import tools_manager

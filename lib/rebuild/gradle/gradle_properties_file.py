@@ -6,7 +6,7 @@ from collections import namedtuple
 
 from bes.system import log
 from bes.common import check
-from bes.properties.properties_file import properties_file
+from bes.properties_file.properties_file import properties_file
 
 class gradle_properties_file(object):
 
@@ -45,7 +45,7 @@ class gradle_properties_file(object):
     return path.isfile(p)
 
   @classmethod
-  def credentials(clazz, root_dir = None):
+  def credentials(clazz, username_key, root_dir = None):
     props = clazz.load(root_dir = root_dir)
     username = props.get('systemProp.gradle.wrapperUser', None)
     password = props.get('systemProp.gradle.wrapperPassword', None)

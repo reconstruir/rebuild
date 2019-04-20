@@ -9,7 +9,7 @@ from bes.key_value import key_value_parser
 from bes.system import host
 from bes.fs import file_util, temp_file
 from bes.version import version_cli
-from bes.properties.properties_file import properties_file
+from bes.properties_file.properties_file import properties_file
 
 from rebuild.base import build_arch, build_blurb, build_system, build_target, build_target_cli, build_level
 
