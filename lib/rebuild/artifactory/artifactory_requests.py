@@ -76,12 +76,15 @@ class artifactory_requests(object):
     return clazz.download_url_to_file(target, address.url, username, password, debug = debug)
 
   @classmethod
-  def download_url_to_file(clazz, target, url, username, password, debug = False):
+  def download_url_to_file(clazz, target, url, username, password, debug = False, checksum = True):
     'Download file to target.'
     check.check_string(target)
     check.check_string(url)
     check.check_string(username)
     check.check_string(password)
+    check.check_bool(debug)
+    check.check_bool(checksum)
+
     import requests
     tmp = temp_file.make_temp_file(suffix = '-' + path.basename(target), delete = not debug)
     auth = ( username, password )
@@ -92,6 +95,12 @@ class artifactory_requests(object):
     with open(tmp, 'wb') as fout:
       shutil.copyfileobj(response.raw, fout)
       fout.close()
+      if checksum:
+        checksums = clazz.get_checksums_for_url(url, username, password)
+        expected_checksum = checksums.sha256
+        actual_checksum = file_util.checksum('sha256', tmp)
+        if expected_checksum != actual_checksum:
+          raise RuntimeError('Checksum for download does not match expected: {}'.format(url))
       file_util.copy(tmp, target)
       return True
 
