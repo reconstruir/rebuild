@@ -2,7 +2,8 @@
 
 from collections import namedtuple
 from bes.compat import StringIO
-from bes.common import check, cached_property, tuple_util
+from bes.common import check, tuple_util
+from bes.property.cached_property import cached_property
 from bes.fs import file_util
 from bes.compat.url_compat import urlparse
 

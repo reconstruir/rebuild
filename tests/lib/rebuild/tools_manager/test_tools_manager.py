@@ -3,7 +3,8 @@
 
 import copy, os.path as path
 from bes.testing.unit_test import unit_test
-from bes.common import cached_property, dict_util, string_util
+from bes.common import dict_util, string_util
+from bes.property.cached_property import cached_property
 from bes.fs import file_find, temp_file
 from bes.system import execute, os_env
 from rebuild.base import build_target, build_system, package_descriptor as PD, package_descriptor_list as PDL

@@ -5,7 +5,8 @@ import os.path as path, re
 from collections import namedtuple
 
 from bes.archive import archive, archiver
-from bes.common import cached_property, check, dict_util, json_util, string_util
+from bes.common import check, dict_util, json_util, string_util
+from bes.property.cached_property import cached_property
 from bes.fs import dir_util, file_check, file_find, file_search, file_replace, file_util, tar_util, temp_file
 from bes.text import text_line_parser
 from bes.match import matcher_filename, matcher_multiple_filename

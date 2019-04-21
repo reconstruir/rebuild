@@ -2,7 +2,8 @@
 
 from collections import namedtuple
 
-from bes.common import cached_property, check
+from bes.common import check
+from bes.property.cached_property import cached_property
 from rebuild.package import package_install_options
 
 class venv_install_options(namedtuple('venv_install_options', 'allow_downgrade, allow_same_version, wipe_first, dont_touch_scripts')):

@@ -2,7 +2,8 @@
 
 from bes.system.compat import with_metaclass
 from bes.system import host
-from bes.common import cached_property, check, dict_util, variable, string_util, tuple_util
+from bes.common import check, dict_util, variable, string_util, tuple_util
+from bes.property.cached_property import cached_property
 
 from .build_arch import build_arch
 from .build_level import build_level

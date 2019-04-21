@@ -2,7 +2,8 @@
 
 import json, os.path as path
 from collections import namedtuple
-from bes.common import cached_property, check, object_util, string_util, tuple_util
+from bes.common import check, object_util, string_util, tuple_util
+from bes.property.cached_property import cached_property
 from bes.compat import cmp
 
 from .build_version import build_version
