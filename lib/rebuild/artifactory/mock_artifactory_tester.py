@@ -18,13 +18,13 @@ from .artifactory_requests import artifactory_requests
   
 class mock_artifactory_tester(namedtuple('mock_artifactory_tester', 'server, root_dir, port')):
 
-  def __new__(clazz, artifactory_id, items = None):
+  def __new__(clazz, artifactory_id, items = None, users = None):
     server = web_server_controller(mock_artifactory_server)
     if items:
       tmp_dir = clazz._make_temp_content(items)
     else:
       tmp_dir = temp_file.make_temp_dir()
-    server.start(root_dir = tmp_dir, artifactory_id = artifactory_id)
+    server.start(root_dir = tmp_dir, artifactory_id = artifactory_id, users = users)
     port = server.address[1]
     return clazz.__bases__[0].__new__(clazz, server, tmp_dir, port)
 
