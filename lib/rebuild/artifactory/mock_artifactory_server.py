@@ -63,21 +63,13 @@ class mock_artifactory_server(web_server):
     if method == 'HEAD':
       return self._head(environ, start_response)
     else:
-      start_response('405 Not supported', [
-        ( 'Content-Type', 'text/html' ),
-        ( 'Content-Length', str(len(self._ERROR_405_HTML)) ),
-      ])
-      return iter([ self._ERROR_405_HTML ])
+      return self.response_error(start_response, 405)
 
   def _get(self, environ, start_response):
     filename = environ['PATH_INFO']
     file_path = path.join(self._root_dir, file_util.lstrip_sep(filename))
     if not path.isfile(file_path):
-      start_response('404 Not Found', [
-        ( 'Content-Type', 'text/html' ),
-        ( 'Content-Length', str(len(self._ERROR_404_HTML)) ),
-      ])
-      return iter([ self._ERROR_404_HTML ])
+      return self.response_error(start_response, 404)
     mime_type = file_mime.mime_type(file_path)
     content = file_util.read(file_path)
     headers = [
@@ -87,18 +79,13 @@ class mock_artifactory_server(web_server):
       ( 'X-Artifactory-Id', self._artifactory_id ),
     ]
     headers += artifactory_requests.checksum_headers_for_file(file_path).items()
-    start_response('200 OK', headers)
-    return iter([ content ])
+    return self.response_success(start_response, 200, [ content ], headers)
 
   def _head(self, environ, start_response):
     filename = environ['PATH_INFO']
     file_path = path.join(self._root_dir, file_util.lstrip_sep(filename))
     if not path.isfile(file_path):
-      start_response('404 Not Found', [
-        ( 'Content-Type', 'text/html' ),
-        ( 'Content-Length', str(len(self._ERROR_404_HTML)) ),
-      ])
-      return iter([ self._ERROR_404_HTML ])
+      return self.response_error(start_response, 404)
     mime_type = file_mime.mime_type(file_path)
     headers = [
       ( 'Content-Type', str(mime_type) ),
@@ -107,8 +94,7 @@ class mock_artifactory_server(web_server):
       ( 'X-Artifactory-Id', self._artifactory_id ),
     ]
     headers += artifactory_requests.checksum_headers_for_file(file_path).items()
-    start_response('200 OK', headers)
-    return iter([])
+    return self.response_success(start_response, 200, [], headers)
   
   def _put(self, environ, start_response):
     'https://www.jfrog.com/confluence/display/RTF/Artifactory+REST+API#ArtifactoryRESTAPI-DeployArtifact'
@@ -137,11 +123,11 @@ class mock_artifactory_server(web_server):
     }
     content = json.dumps(data, indent = 2) + '\n'
     content = content.encode('utf8')
-    start_response('201 Created', [
+    headers = [
       ( 'Content-Type', 'application/json' ),
       ( 'Content-Length', str(len(content)) ),
-    ])
-    return iter([ content ])
+    ]
+    return self.response_success(start_response, 201, [ content ], headers)
 
   def _api(self, environ, start_response):
     filename = environ['PATH_INFO']

@@ -139,7 +139,7 @@ class artifactory_requests(object):
     return result
 
   @classmethod
-  def upload(clazz, address, filename, username, password):
+  def upload(clazz, address, filename, username, password, num_tries = 1):
     check.check_storage_address(address)
     check.check_string(address.filename)
     check.check_string(username)
@@ -148,11 +148,31 @@ class artifactory_requests(object):
     return clazz.upload_url(address.url, filename, username, password)
 
   @classmethod
-  def upload_url(clazz, url, filename, username, password):
+  def upload_url(clazz, url, filename, username, password, num_tries = 1):
     check.check_string(url)
     check.check_string(username)
     check.check_string(password)
     clazz.log_d('upload_url: url=%s; filename=%s' % (url, filename))
+
+    if num_tries < 1 or num_tries > 10:
+      raise ValueError('num_tries should be between 1 and 10')
+
+    last_ex = None
+    for i in range(1, num_tries + 1):
+      clazz.log_d('upload_url: attempt {} of {} for {}'.format(i, num_tries, url))
+      try:
+        clazz._do_upload_url(url, filename, username, password)
+        clazz.log_d('upload_url: SUCCESS: attempt {} of {} for {}'.format(i, num_tries, url))
+        return
+      except RuntimeError as ex:
+        clazz.log_e('upload_url: FAILED: attempt {} of {} for {}'.format(i, num_tries, url))
+        last_ex = ex
+        
+    raise last_ex
+    
+  @classmethod
+  def _do_upload_url(clazz, url, filename, username, password):
+    clazz.log_d('_do_upload_url: url=%s; filename=%s' % (url, filename))
     import requests
     headers = clazz.checksum_headers_for_file(filename)
     with open(filename, 'rb') as fin:
@@ -160,7 +180,7 @@ class artifactory_requests(object):
                               auth = (username, password),
                               data = fin,
                               headers = headers)
-      clazz.log_d('upload: response status_code=%d' % (response.status_code))
+      clazz.log_d('_do_upload_url: response status_code=%d' % (response.status_code))
       if response.status_code != 201:
         raise RuntimeError('Failed to upload: %s (status_code %d)' % (url, response.status_code))
       data = response.json()

@@ -51,3 +51,6 @@ class mock_artifactory_tester(namedtuple('mock_artifactory_tester', 'server, roo
     check.check_storage_address(address)
     tmp_upload = temp_file.make_temp_file(content = content)
     artifactory_requests.upload(address, tmp_upload, '', '')
+
+  def fail_next_request(self, status_code):
+    self.server.fail_next_request(status_code)
