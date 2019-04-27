@@ -13,6 +13,14 @@ from rebuild.storage.storage_address import storage_address
 
 from .artifactory_address import artifactory_address
 
+class artifactory_error(Exception):
+
+  def __init__(self, message, status_code, content):
+    super(artifactory_error, self).__init__(message)
+    self.message = message
+    self.status_code = status_code
+    self.content = content
+
 class artifactory_requests(object):
 
   @classmethod
@@ -100,7 +108,8 @@ class artifactory_requests(object):
         expected_checksum = checksums.sha256
         actual_checksum = file_util.checksum('sha256', tmp)
         if expected_checksum != actual_checksum:
-          raise RuntimeError('Checksum for download does not match expected: {}'.format(url))
+          msg = 'Checksum for download does not match expected: {}'.format(url)
+          raise artifactory_error(msg, None, None)
       file_util.copy(tmp, target)
       return True
 
@@ -121,7 +130,8 @@ class artifactory_requests(object):
     if response.status_code == 404:
       return []
     if response.status_code != 200:
-      raise RuntimeError('failed to list_files for: %s (status_code %d)' % (url, response.status_code))
+      msg = 'failed to list_files for: {} (status_code {})'.format(url, response.status_code)
+      raise artifactory_error(msg, response.status_code, response.content)
     data = response.json()
     #file_util.save('result.json', content = response.content)
     files = data.get('files', None)
@@ -164,7 +174,7 @@ class artifactory_requests(object):
         clazz._do_upload_url(url, filename, username, password)
         clazz.log_d('upload_url: SUCCESS: attempt {} of {} for {}'.format(i, num_tries, url))
         return
-      except RuntimeError as ex:
+      except artifactory_error as ex:
         clazz.log_e('upload_url: FAILED: attempt {} of {} for {}'.format(i, num_tries, url))
         last_ex = ex
         
@@ -182,7 +192,8 @@ class artifactory_requests(object):
                               headers = headers)
       clazz.log_d('_do_upload_url: response status_code=%d' % (response.status_code))
       if response.status_code != 201:
-        raise RuntimeError('Failed to upload: %s (status_code %d)' % (url, response.status_code))
+        msg = 'Failed to upload: {} (status_code {})'.format(url, response.status_code)
+        raise artifactory_error(msg, response.status_code, response.content)
       data = response.json()
       assert 'downloadUri' in data
       return data['downloadUri']
@@ -199,7 +210,8 @@ class artifactory_requests(object):
     clazz.log_d('delete: response status_code=%d' % (response.status_code))
     success = response.status_code == 204
     if not success and raise_error:
-      raise RuntimeError('Failed to delete: %s (status_code %d)' % (url, response.status_code))
+      msg = 'Failed to delete: {} (status_code {})'.format(url, response.status_code)
+      raise artifactory_error(msg, response.status_code, response.content)
     return clazz._delete_result(success, response.status_code)
     
   @classmethod
@@ -258,7 +270,8 @@ items.find({{
     response = requests.post(aql_url, data = aql, auth = auth)
     clazz.log_d('list_artifacts: response=%s; status_code=%d' % (str(response), response.status_code))
     if response.status_code != 200:
-      raise RuntimeError('failed to list_artifacts for: %s (status_code %d)' % (aql_url, response.status_code))
+      msg = 'failed to list_artifacts for: {} (status_code {})'.format(aql_url, response.status_code)
+      raise artifactory_error(msg, response.status_code, response.content)
     data = response.json()
     assert 'results' in data
     results = data['results']
@@ -358,11 +371,13 @@ items.find({{
     api_url = artifactory_address.make_api_url(address, endpoint = 'storage', file_path = address.repo_filename, params = 'stats')
     response = requests.get(api_url, auth = auth)
     if response.status_code != 200:
-      raise RuntimeError('failed to get stats: %s (status_code %d)' % (api_url, response.status_code))
+      msg = 'failed to get stats: {} (status_code {})'.format(api_url, response.status_code)
+      raise artifactory_error(msg, response.status_code, response.content)
     data = response.json()
     uri = data.get('uri', None)
     if not uri:
-      raise RuntimeError('malformed response for api_url: {} - {}' % (api_url, str(data)))
+      msg = 'malformed response for api_url: {} - {}'.format(api_url, str(data))
+      raise artifactory_error(msg, response.status_code, response.content)
     uri = data.get('uri', None)
     download_count = data.get('downloadCount', None)
     last_downloaded = clazz._epoch_timestamp_to_datetime(data.get('lastDownloaded', None))
@@ -391,11 +406,13 @@ items.find({{
     api_url = artifactory_address.make_api_url(address, endpoint = 'storage', file_path = address.repo_filename, params = 'properties')
     response = requests.get(api_url, auth = auth)
     if response.status_code != 200:
-      raise RuntimeError('failed to get properties: %s (status_code %d)' % (api_url, response.status_code))
+      msg = 'failed to get properties: {} (status_code {})'.format(api_url, response.status_code)
+      raise artifactory_error(msg, response.status_code, response.content)
     data = response.json()
     properties = data.get('properties', None)
     if not properties:
-      raise RuntimeError('malformed response for api_url: {} - {}' % (api_url, str(data)))
+      msg = 'malformed response for api_url: {} - {}'.format(api_url, str(data))
+      raise artifactory_error(msg, response.status_code, response.content)
     return properties
   
 log.add_logging(artifactory_requests, 'artifactory_requests')
