@@ -1137,4 +1137,8 @@ storage_local.py majorly messed up also value_source_tarball.  its calling stora
 2019-04-09
 - time revenv.py packages print /ego ego_artifactory ego_devenv --config config/ego.revenv
   is crazy slow.  i think its downloading artifaxts list each time.
+  also it needs passwords which is lame
 - removing a no longer referneced package from a venv does not remove its dependencies
+- ~/.ego/ego_devenv/run.sh revenv.py packages print ~/.ego ego_artifactory ego_devenv --config config/ego.revenv --versions
+  thats a ridiculous command make it works by default.  if it needs config and not given use the first one
+  
