@@ -4,6 +4,7 @@
 import os
 from bes.testing.unit_test import unit_test
 from rebuild.config import credentials
+from bes.system.env_override import env_override
 
 class test_credentials(unit_test):
 
@@ -14,14 +15,9 @@ class test_credentials(unit_test):
     
   def test_env_vars(self):
     c = credentials('${MY_USERNAME}', '${MY_PASSWORD}')
-    try:
-      os.environ['MY_USERNAME'] = 'fred'
-      os.environ['MY_PASSWORD'] = 'flintpass'
+    with env_override( { 'MY_USERNAME': 'fred', 'MY_PASSWORD': 'flintpass' }) as env:
       self.assertEqual( 'fred', c.username )
       self.assertEqual( 'flintpass', c.password )
-    finally:
-      del os.environ['MY_USERNAME']
-      del os.environ['MY_PASSWORD']
 
 if __name__ == '__main__':
   unit_test.main()
