@@ -5,9 +5,10 @@ from collections import namedtuple
 
 from bes.common import check
 from bes.property.cached_property import cached_property
-from bes.system import logger, os_env_var
+from bes.property.env_var_property import env_var_property
+from bes.system import logger
 
-from .credentials import credentials, env_resolving_property
+from rebuild.credentials.credentials import credentials
 
 class storage_config(namedtuple('storage_config', 'name, provider, location, repo, root_dir, download, upload')):
 
@@ -29,23 +30,23 @@ class storage_config(namedtuple('storage_config', 'name, provider, location, rep
     self._upload = upload
     self._download = download
 
-  @env_resolving_property
+  @env_var_property
   def name(self):
     return self._name
 
-  @env_resolving_property
+  @env_var_property
   def provider(self):
     return self._provider
   
-  @env_resolving_property
+  @env_var_property
   def location(self):
     return self._location
   
-  @env_resolving_property
+  @env_var_property
   def repo(self):
     return self._repo
   
-  @env_resolving_property
+  @env_var_property
   def root_dir(self):
     return self._root_dir
   
@@ -69,8 +70,12 @@ class storage_config(namedtuple('storage_config', 'name, provider, location, rep
     download_password = section.find_by_key('download.password', raise_error = False) or ''
     upload_username = section.find_by_key('upload.username', raise_error = False) or ''
     upload_password = section.find_by_key('upload.password', raise_error = False) or ''
-    download = credentials(download_username, download_password)
-    upload = credentials(upload_username, upload_password)
+    download = credentials()
+    download.username = download_username
+    download.password = download_password
+    upload = credentials()
+    upload.username = upload_username
+    upload.password = upload_password
     return storage_config(name, provider, location, repo, root_dir, download, upload)
 
   @cached_property

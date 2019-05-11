@@ -52,7 +52,6 @@ systemProp.gradle.wrapperPassword=tpassword
       c = cm.credentials()
       self.assertEqual( 'xfred@flintstone.com', c.username )
       self.assertEqual( 'xflintpass', c.password )
-    
       
 if __name__ == '__main__':
   unit_test.main()

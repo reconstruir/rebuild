@@ -8,9 +8,11 @@ from bes.compat import StringIO
 
 class credentials(object):
 
-  def __init__(self):
+  def __init__(self, **kargs):
     self.__dict__['_credentials'] = {}
-
+    for key, value in kargs.items():
+      setattr(self, key, value)
+    
   def __str__(self):
     buf = StringIO()
     first = True
@@ -31,5 +33,7 @@ class credentials(object):
   def __setattr__(self, key, value):
     self.__dict__['_credentials'][key] = value
 
-    
+  def __eq__(self, other):
+    return self.__dict__['_credentials'] == other.__dict__['_credentials']
+
 check.register_class(credentials, include_seq = False)

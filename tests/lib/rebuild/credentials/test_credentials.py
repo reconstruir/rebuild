@@ -23,5 +23,10 @@ class test_credentials(unit_test):
       self.assertEqual( 'fred', c.username )
       self.assertEqual( 'flintpass', c.password )
 
+  def test_eq(self):
+    self.assertEqual( credentials(), credentials() )
+    self.assertEqual( credentials(username = 'foo'), credentials(username = 'foo') )
+    self.assertEqual( credentials(username = 'foo'), credentials(username = 'foo') )
+
 if __name__ == '__main__':
   unit_test.main()
