@@ -7,10 +7,36 @@ from collections import namedtuple
 from bes.system import log
 from bes.common import check
 from bes.properties_file.properties_file import properties_file
+from rebuild.credentials.credentials import credentials
 
 class gradle_properties(object):
 
-  _credentials = namedtuple('credentials', 'username, password')
+  def __init__(self, filename):
+    self._filename = filename
+
+  @property
+  def values(self):
+    try:
+      return self.read_file(self._filename)
+    except Exception as ex:
+      return None
+  
+  def credentials(self, name):
+    values = self.values
+    if not values:
+      return None
+    user_key = '{}User'.format(name)
+    user = values.get(user_key, None)
+    if not user:
+      return None
+    password_key = '{}Password'.format(name)
+    password = values.get(password_key, None)
+    if not password:
+      return None
+    c = credentials()
+    setattr(c, 'user', user)
+    setattr(c, 'password', password)
+    return c
   
   @classmethod
   def read_file(clazz, filename):
@@ -44,19 +70,19 @@ class gradle_properties(object):
     p = clazz._make_filepath(root_dir = root_dir)
     return path.isfile(p)
 
-  @classmethod
-  def credentials(clazz, username_key, root_dir = None):
-    props = clazz.load(root_dir = root_dir)
-    username = props.get('systemProp.gradle.wrapperUser', None)
-    password = props.get('systemProp.gradle.wrapperPassword', None)
-    return self._credentials(username, password)
+#  @classmethod
+#  def credentials(clazz, username_key, root_dir = None):
+#    props = clazz.load(root_dir = root_dir)
+#    username = props.get('systemProp.gradle.wrapperUser', None)
+#    password = props.get('systemProp.gradle.wrapperPassword', None)
+#    return self._credentials(username, password)
   
-  @classmethod
-  def username(clazz, root_dir = None):
-    return self.credentials(root_dir = root_dir).username
+#  @classmethod
+#  def username(clazz, root_dir = None):
+#    return self.credentials(root_dir = root_dir).username
   
-  @classmethod
-  def password(clazz, root_dir = None):
-    return self.credentials(root_dir = root_dir).password
+#  @classmethod
+#  def password(clazz, root_dir = None):
+#    return self.credentials(root_dir = root_dir).password
   
 log.add_logging(gradle_properties, 'gradle_properties')

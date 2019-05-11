@@ -5,24 +5,30 @@ from os import path
 from bes.testing.unit_test import unit_test
 from bes.fs import temp_file
 
-from rebuild.gradle.gradle_properties import gradle_properties as GPL
+from rebuild.gradle.gradle_properties import gradle_properties as GP
 
 class test_gradle_properties(unit_test):
 
-  def test_read(self):
+  def test_basic(self):
     content = '''\
 devUser=fred@flintstone.com
 devPassword=flintpass
 systemProp.gradle.wrapperUser=tuser
 systemProp.gradle.wrapperPassword=tpassword
 '''
-    tmp_file = temp_file.make_temp_file(content = content)
+    g = GP(temp_file.make_temp_file(content = content))
     self.assertEqual( {
       'devUser': 'fred@flintstone.com',
       'devPassword': 'flintpass',
       'systemProp.gradle.wrapperUser': 'tuser',
       'systemProp.gradle.wrapperPassword': 'tpassword',
-    }, GPL.read_file(tmp_file) )
+    }, g.values )
+    c = g.credentials('dev')
+    self.assertEqual( 'fred@flintstone.com', c.user )
+    self.assertEqual( 'flintpass', c.password )
+    c = g.credentials('systemProp.gradle.wrapper')
+    self.assertEqual( 'tuser', c.user )
+    self.assertEqual( 'tpassword', c.password )
     
 if __name__ == '__main__':
   unit_test.main()
