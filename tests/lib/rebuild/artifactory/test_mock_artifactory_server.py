@@ -19,9 +19,12 @@ from bes.key_value import key_value, key_value_list
 
 from rebuild.artifactory.mock_artifactory_tester import mock_artifactory_tester as MAT
 from rebuild.artifactory.artifactory_requests import artifactory_requests as AR
+from rebuild.credentials.credentials import credentials
 
 class test_mock_artifactory_server(unit_test):
 
+  _TEST_CRED = credentials(username = '', password = '')
+  
   def test_download_url_to_file(self):
     content = [
       'file foo.txt "this is foo.txt\n"',
@@ -36,12 +39,12 @@ class test_mock_artifactory_server(unit_test):
     url = test.make_url('foo.txt')
 
     tmp = temp_file.make_temp_file()
-    AR.download_url_to_file(tmp, url, 'myid', 'bar')
+    AR.download_url_to_file(tmp, url, self._TEST_CRED)
     self.assertEqual( 'text/plain', file_mime.mime_type(tmp).mime_type )
     self.assertEqual( 'this is foo.txt\n', file_util.read(tmp, codec = 'utf8') )
 
     url = test.make_url('subdir/subberdir/baz.txt')
-    AR.download_url_to_file(tmp, url, '', '')
+    AR.download_url_to_file(tmp, url, self._TEST_CRED)
     self.assertEqual( 'text/plain', file_mime.mime_type(tmp).mime_type )
     self.assertEqual( 'this is baz.txt\n', file_util.read(tmp, codec = 'utf8') )
 
@@ -52,16 +55,16 @@ class test_mock_artifactory_server(unit_test):
 
     tmp = temp_file.make_temp_file(content = 'this is foo.txt\n')
     url = test.make_url('foo.txt')
-    AR.upload_url(url, tmp, '', '')
+    AR.upload_url(url, tmp, self._TEST_CRED)
     test.stop()
  
   def test_upload_address(self):
     test = MAT('myid')
     tmp_upload = temp_file.make_temp_file(content = 'this is foo.txt\n')
     address = test.make_address('myrepo', 'myrootdir', 'mysubrepo', 'foo.txt')
-    AR.upload(address, tmp_upload, '', '')
+    AR.upload(address, tmp_upload, self._TEST_CRED)
     tmp_download = temp_file.make_temp_file()
-    AR.download_url_to_file(tmp_download, address.url, 'foo', 'bar')
+    AR.download_url_to_file(tmp_download, address.url, self._TEST_CRED)
     self.assertEqual( 'this is foo.txt\n', file_util.read(tmp_download) )
     test.stop()
     
@@ -71,7 +74,7 @@ class test_mock_artifactory_server(unit_test):
     test.upload(test.make_address('myrepo', 'myrootdir', 'mysubrepo', 'foo.txt'), 'this is foo.txt\n')
     test.upload(test.make_address('myrepo', 'myrootdir', 'mysubrepo', 'bar.txt'), 'this is bar.txt\n')
 
-    result = AR.list_files(test.make_address('myrepo', 'myrootdir', 'mysubrepo', None), '', '')
+    result = AR.list_files(test.make_address('myrepo', 'myrootdir', 'mysubrepo', None), self._TEST_CRED)
     expected = [
       'sscaca',
     ]
@@ -83,8 +86,8 @@ class test_mock_artifactory_server(unit_test):
 
     tmp = temp_file.make_temp_file(content = 'this is foo.txt\n')
     url = test.make_url('foo.txt')
-    AR.upload_url(url, tmp, '', '')
-    headers = AR.get_headers_for_url(url, 'foo', 'bar')
+    AR.upload_url(url, tmp, self._TEST_CRED)
+    headers = AR.get_headers_for_url(url, self._TEST_CRED)
     headers = dict_util.filter_with_keys(headers, [ 'X-Checksum-Sha1', 'X-Checksum-Md5', 'X-Artifactory-Filename', 'X-Artifactory-Id', 'X-Checksum-Sha256' ])
     
     self.assertEqual( {
@@ -101,13 +104,13 @@ class test_mock_artifactory_server(unit_test):
 
     tmp = temp_file.make_temp_file(content = 'this is foo.txt\n')
     url = test.make_url('foo.txt')
-    AR.upload_url(url, tmp, '', '')
+    AR.upload_url(url, tmp, self._TEST_CRED)
     expected = (
       '503900058d0b024b42e2b6d02b45ca5b',
       '33f82b8aa2879fa046b877cfa36158d6607294f9',
       '75f3365f74a5cfbe304b17e1eb4bd99784f609792ffc163cdf4ed464cc08b5ec',
     )
-    self.assertEqual( expected, AR.get_checksums_for_url(url, 'foo', 'bar') )
+    self.assertEqual( expected, AR.get_checksums_for_url(url, self._TEST_CRED) )
     test.stop()
     
   def test_get_checksums_for_url(self):
@@ -115,7 +118,7 @@ class test_mock_artifactory_server(unit_test):
 
     tmp = temp_file.make_temp_file(content = 'this is foo.txt\n')
     url = test.make_url('foo.txt')
-    AR.upload_url(url, tmp, '', '')
+    AR.upload_url(url, tmp, self._TEST_CRED)
     expected = AR._file_info(
       'foo.txt',
       '16',
@@ -127,7 +130,7 @@ class test_mock_artifactory_server(unit_test):
       '33f82b8aa2879fa046b877cfa36158d6607294f9',
       '75f3365f74a5cfbe304b17e1eb4bd99784f609792ffc163cdf4ed464cc08b5ec',
     )
-    actual = AR.get_file_info_url(url, 'foo', 'bar')
+    actual = AR.get_file_info_url(url, self._TEST_CRED)
 
     self.assertMultiLineEqual( self._file_info_to_string(expected), self._file_info_to_string(actual) )
     test.stop()

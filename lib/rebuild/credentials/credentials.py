@@ -10,8 +10,7 @@ class credentials(object):
 
   def __init__(self, **kargs):
     self.__dict__['_credentials'] = {}
-    for key, value in kargs.items():
-      setattr(self, key, value)
+    self.set_attrs(kargs)
     
   def __str__(self):
     buf = StringIO()
@@ -36,4 +35,8 @@ class credentials(object):
   def __eq__(self, other):
     return self.__dict__['_credentials'] == other.__dict__['_credentials']
 
+  def set_attrs(self, values):
+    for key, value in values.items():
+      setattr(self, key, value)
+  
 check.register_class(credentials, include_seq = False)

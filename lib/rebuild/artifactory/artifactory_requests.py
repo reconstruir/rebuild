@@ -10,6 +10,7 @@ from bes.fs import file_path, file_util, temp_file
 from rebuild.base import requirement_list
 from rebuild.package import package_metadata, package_metadata_list, package_manifest
 from rebuild.storage.storage_address import storage_address
+from rebuild.credentials.credentials import credentials
 
 from .artifactory_address import artifactory_address
 
@@ -24,20 +25,18 @@ class artifactory_error(Exception):
 class artifactory_requests(object):
 
   @classmethod
-  def get_headers(clazz, address, username, password):
+  def get_headers(clazz, address, credentials):
     check.check_storage_address(address)
     check.check_string(address.filename)
-    check.check_string(username)
-    check.check_string(password)
-    return clazz.get_headers_for_url(address.url, username, password)
+    check.check_credentials(credentials)
+    return clazz.get_headers_for_url(address.url, credentials)
 
   @classmethod
-  def get_headers_for_url(clazz, url, username, password):
+  def get_headers_for_url(clazz, url, credentials):
     check.check_string(url)
-    check.check_string(username)
-    check.check_string(password)
+    check.check_credentials(credentials)
     import requests
-    auth = ( username, password )
+    auth = ( credentials.username, credentials.password )
     clazz.log_d('get_headers_for_url: url=%s' % (url))
     response = requests.head(url, auth = auth)
     clazz.log_d('get_headers_for_url: status_code=%s; headers=%s' % (response.status_code, response.headers))
@@ -52,12 +51,11 @@ class artifactory_requests(object):
   _HEADER_CHECKSUM_SHA256 = 'X-Checksum-Sha256'
 
   @classmethod
-  def get_checksums_for_url(clazz, url, username, password):
+  def get_checksums_for_url(clazz, url, credentials):
     check.check_string(url)
-    check.check_string(username)
-    check.check_string(password)
+    check.check_credentials(credentials)
     clazz.log_d('get_checksums_for_url: url=%s' % (url))
-    headers = clazz.get_headers_for_url(url, username, password)
+    headers = clazz.get_headers_for_url(url, credentials)
     clazz.log_d('get_checksums_for_url: headers=%s' % (headers))
     if not headers:
       return None
@@ -71,31 +69,29 @@ class artifactory_requests(object):
     return clazz._checksums(md5, sha1, sha256)
   
   @classmethod
-  def get_checksums(clazz, address, username, password):
+  def get_checksums(clazz, address, credentials):
     check.check_storage_address(address)
     check.check_string(address.filename)
-    check.check_string(username)
-    check.check_string(password)
-    return clazz.get_checksums_for_url(address.url, username, password)
+    check.check_credentials(credentials)
+    return clazz.get_checksums_for_url(address.url, credentials)
 
   @classmethod
-  def download_to_file(clazz, target, address, username, password, debug = False):
+  def download_to_file(clazz, target, address, credentials, debug = False):
     'Download file to target.'
-    return clazz.download_url_to_file(target, address.url, username, password, debug = debug)
+    return clazz.download_url_to_file(target, address.url, credentials, debug = debug)
 
   @classmethod
-  def download_url_to_file(clazz, target, url, username, password, debug = False, checksum = True):
+  def download_url_to_file(clazz, target, url, credentials, debug = False, checksum = True):
     'Download file to target.'
     check.check_string(target)
     check.check_string(url)
-    check.check_string(username)
-    check.check_string(password)
+    check.check_credentials(credentials)
     check.check_bool(debug)
     check.check_bool(checksum)
 
     import requests
     tmp = temp_file.make_temp_file(suffix = '-' + path.basename(target), delete = not debug)
-    auth = ( username, password )
+    auth = ( credentials.username, credentials.password )
     response = requests.get(url, auth = auth, stream = True)
     clazz.log_d('download_to_file: target=%s; url=%s; tmp=%s' % (target, url, tmp))
     if response.status_code != 200:
@@ -104,7 +100,7 @@ class artifactory_requests(object):
       shutil.copyfileobj(response.raw, fout)
       fout.close()
       if checksum:
-        checksums = clazz.get_checksums_for_url(url, username, password)
+        checksums = clazz.get_checksums_for_url(url, credentials)
         expected_checksum = checksums.sha256
         actual_checksum = file_util.checksum('sha256', tmp)
         if expected_checksum != actual_checksum:
@@ -115,15 +111,14 @@ class artifactory_requests(object):
 
   _file_item = namedtuple('_file_item', 'uri, filename, sha1')
   @classmethod
-  def list_files(clazz, address, username, password):
+  def list_files(clazz, address, credentials):
     check.check_storage_address(address)
-    check.check_string(username)
-    check.check_string(password)
+    check.check_credentials(credentials)
     url = artifactory_address.make_api_url(address, endpoint = 'storage', file_path = address.repo_filename, params = 'list&deep=1&listFolders=0')
     clazz.log_d('list_files:       address=%s' % (str(address)))
     clazz.log_d('list_files:           url=%s' % (url))
     clazz.log_d('list_files: repo_filename=%s' % (address.repo_filename))
-    auth = ( username, password )
+    auth = ( credentials.username, credentials.password )
     import requests
     response = requests.get(url, auth = auth)
     # 404 means nothing has been ingested to the repo yet
@@ -149,19 +144,17 @@ class artifactory_requests(object):
     return result
 
   @classmethod
-  def upload(clazz, address, filename, username, password, num_tries = 1):
+  def upload(clazz, address, filename, credentials, num_tries = 1):
     check.check_storage_address(address)
     check.check_string(address.filename)
-    check.check_string(username)
-    check.check_string(password)
+    check.check_credentials(credentials)
     clazz.log_d('upload: address=%s; filename=%s' % (address, filename))
-    return clazz.upload_url(address.url, filename, username, password)
+    return clazz.upload_url(address.url, filename, credentials)
 
   @classmethod
-  def upload_url(clazz, url, filename, username, password, num_tries = 1):
+  def upload_url(clazz, url, filename, credentials, num_tries = 1):
     check.check_string(url)
-    check.check_string(username)
-    check.check_string(password)
+    check.check_credentials(credentials)
     clazz.log_d('upload_url: url=%s; filename=%s' % (url, filename))
 
     if num_tries < 1 or num_tries > 10:
@@ -171,7 +164,7 @@ class artifactory_requests(object):
     for i in range(1, num_tries + 1):
       clazz.log_d('upload_url: attempt {} of {} for {}'.format(i, num_tries, url))
       try:
-        clazz._do_upload_url(url, filename, username, password)
+        clazz._do_upload_url(url, filename, credentials)
         clazz.log_d('upload_url: SUCCESS: attempt {} of {} for {}'.format(i, num_tries, url))
         return
       except artifactory_error as ex:
@@ -181,13 +174,13 @@ class artifactory_requests(object):
     raise last_ex
     
   @classmethod
-  def _do_upload_url(clazz, url, filename, username, password):
+  def _do_upload_url(clazz, url, filename, credentials):
     clazz.log_d('_do_upload_url: url=%s; filename=%s' % (url, filename))
     import requests
     headers = clazz.checksum_headers_for_file(filename)
 
     '''
-    old_checksums = clazz.get_checksums_for_url(url, username, password)
+    old_checksums = clazz.get_checksums_for_url(url, credentials)
     if old_checksums:
       new_sha256 = headers[clazz._HEADER_CHECKSUM_SHA256]
       if old_checksums.sha256 == new_sha256:
@@ -196,10 +189,10 @@ class artifactory_requests(object):
       msg = 'Trying to re-upload artifact with different checksum:\nfilename={}\nurl={}'.format(filename, url)
       raise artifactory_error(msg, None, None)
 '''
-      
+    
     with open(filename, 'rb') as fin:
       response = requests.put(url,
-                              auth = (username, password),
+                              auth = ( credentials.username, credentials.password ),
                               data = fin,
                               headers = headers)
       clazz.log_d('_do_upload_url: response status_code=%d' % (response.status_code))
@@ -212,13 +205,12 @@ class artifactory_requests(object):
     
   _delete_result = namedtuple('_delete_result', 'success, status_code')
   @classmethod
-  def delete_url(clazz, url, raise_error, username, password):
+  def delete_url(clazz, url, raise_error, credentials):
     check.check_string(url)
-    check.check_string(username)
-    check.check_string(password)
+    check.check_credentials(credentials)
     clazz.log_d('delete_url: url=%s' % (url))
     import requests
-    response = requests.delete(url, auth = (username, password))
+    response = requests.delete(url, auth = (credentials.username, credentials.password))
     clazz.log_d('delete: response status_code=%d' % (response.status_code))
     success = response.status_code == 204
     if not success and raise_error:
@@ -235,10 +227,9 @@ class artifactory_requests(object):
     }
     
   @classmethod
-  def set_properties(clazz, address, properties, username, password):
+  def set_properties(clazz, address, properties, credentials):
     check.check_storage_address(address)
-    check.check_string(username)
-    check.check_string(password)
+    check.check_credentials(credentials)
     check.check_dict(properties)
 
     import requests
@@ -248,8 +239,8 @@ class artifactory_requests(object):
     # In order to patch properties artifactory expects dict with 'props'
     json_data = { 'props': properties }
     
-    auth = ( username, password )
-    clazz.log_d('set_properties: url=%s; username=%s; password=%s' % (url, username, password))
+    auth = ( credentials.username, credentials.password )
+    clazz.log_d('set_properties: url={}; credentials={}'.format(url, credentials))
     response = requests.patch(url, json = json_data, auth = auth)
     clazz.log_d('set_properties: response: %s' % (str(response)))
     if response.status_code != 204:
@@ -258,7 +249,7 @@ class artifactory_requests(object):
     return True
 
   @classmethod
-  def list_artifacts(clazz, address, username, password):
+  def list_artifacts(clazz, address, credentials):
     'List artifacts in an artifactory directory.'
     check.check_storage_address(address)
     clazz.log_d('list_artifacts: address=%s' % (str(address)))
@@ -277,7 +268,7 @@ items.find({{
 
     aql_url = artifactory_address.make_search_aql_url(address)
     clazz.log_d('list_artifacts: aql_url=%s' % (aql_url))
-    auth = ( username, password )
+    auth = ( credentials.username, credentials.password )
     import requests
     response = requests.post(aql_url, data = aql, auth = auth)
     clazz.log_d('list_artifacts: response=%s; status_code=%d' % (str(response), response.status_code))
@@ -351,12 +342,11 @@ items.find({{
 
   _file_info = namedtuple('_file_info', 'filename, content_length, content_type, date, etag, last_modified, md5, sha1, sha256')
   @classmethod
-  def get_file_info_url(clazz, url, username, password):
+  def get_file_info_url(clazz, url, credentials):
     'Return info for the given file url or None if it is not a file.'
     check.check_string(url)
-    check.check_string(username)
-    check.check_string(password)
-    headers = clazz.get_headers_for_url(url, username, password)
+    check.check_credentials(credentials)
+    headers = clazz.get_headers_for_url(url, credentials)
     if not headers:
       return None
     checksums = clazz._checksums_from_headers(headers)
@@ -372,12 +362,11 @@ items.find({{
 
   _file_stats = namedtuple('_file_stats', 'uri, download_count, last_downloaded, last_downloaded_by, remote_download_count, remote_last_downloaded')
   @classmethod
-  def get_file_stats(clazz, url, username, password):
+  def get_file_stats(clazz, url, credentials):
     'Return download stats for the given artifactory url.'
     check.check_string(url)
-    check.check_string(username)
-    check.check_string(password)
-    auth = ( username, password )
+    check.check_credentials(credentials)
+    auth = ( credentials.username, credentials.password )
     import requests
     address = storage_address.parse_url(url, has_host_root = True)
     api_url = artifactory_address.make_api_url(address, endpoint = 'storage', file_path = address.repo_filename, params = 'stats')
@@ -407,12 +396,11 @@ items.find({{
     return datetime.datetime.strptime(time.ctime(t_seconds), '%a %b %d %H:%M:%S %Y')
 
   @classmethod
-  def get_file_properties_url(clazz, url, username, password):
+  def get_file_properties_url(clazz, url, credentials):
     'Return info for the given file url or None if it is not a file.'
     check.check_string(url)
-    check.check_string(username)
-    check.check_string(password)
-    auth = ( username, password )
+    check.check_credentials(credentials)
+    auth = ( credentials.username, credentials.password )
     import requests
     address = storage_address.parse_url(url, has_host_root = True)
     api_url = artifactory_address.make_api_url(address, endpoint = 'storage', file_path = address.repo_filename, params = 'properties')
