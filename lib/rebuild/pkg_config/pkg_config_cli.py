@@ -41,7 +41,7 @@ class pkg_config_cli(object):
 
   def _command_list_all(self):
     all_modules = self.pc.list_all()
-    table = text_table(data = all_modules, column_delimiter = ' ')
+    table = text_table(data = all_modules)
     print(str(table))
     return 0
   
