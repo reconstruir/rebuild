@@ -185,6 +185,16 @@ class artifactory_requests(object):
     clazz.log_d('_do_upload_url: url=%s; filename=%s' % (url, filename))
     import requests
     headers = clazz.checksum_headers_for_file(filename)
+
+    old_checksums = clazz.get_checksums_for_url(url, username, password)
+    if old_checksums:
+      new_sha256 = headers[clazz._HEADER_CHECKSUM_SHA256]
+      if old_checksums.sha256 == new_sha256:
+        clazz.log_i('_do_upload_url: url exists with same checksum.  doing nothing: {}'.format(url))
+        return url
+      msg = 'Trying to re-upload artifact with different checksum:\nfilename={}\nurl={}'.format(filename, url)
+      raise artifactory_error(msg, None, None)
+      
     with open(filename, 'rb') as fin:
       response = requests.put(url,
                               auth = (username, password),
@@ -192,7 +202,7 @@ class artifactory_requests(object):
                               headers = headers)
       clazz.log_d('_do_upload_url: response status_code=%d' % (response.status_code))
       if response.status_code != 201:
-        msg = 'Failed to upload: {} (status_code {})'.format(url, response.status_code)
+        msg = 'Failed to upload: {} (status_code {} content {})'.format(url, response.status_code, response.content)
         raise artifactory_error(msg, response.status_code, response.content)
       data = response.json()
       assert 'downloadUri' in data
