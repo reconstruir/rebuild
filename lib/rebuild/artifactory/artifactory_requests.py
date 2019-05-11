@@ -186,6 +186,7 @@ class artifactory_requests(object):
     import requests
     headers = clazz.checksum_headers_for_file(filename)
 
+    '''
     old_checksums = clazz.get_checksums_for_url(url, username, password)
     if old_checksums:
       new_sha256 = headers[clazz._HEADER_CHECKSUM_SHA256]
@@ -194,6 +195,7 @@ class artifactory_requests(object):
         return url
       msg = 'Trying to re-upload artifact with different checksum:\nfilename={}\nurl={}'.format(filename, url)
       raise artifactory_error(msg, None, None)
+'''
       
     with open(filename, 'rb') as fin:
       response = requests.put(url,
