@@ -12,7 +12,13 @@ class credentials_manager(object):
   def add_source(self, source):
     check.check_credentials_source(source)
     self._sources.append(source)
-  
+
+  def is_valid(self):
+    for source in self._sources:
+      if source.is_valid():
+        return True
+    return False
+    
   def credentials(self):
     for source in self._sources:
       if source.is_valid():

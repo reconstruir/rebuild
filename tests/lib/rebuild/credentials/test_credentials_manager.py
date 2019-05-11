@@ -11,18 +11,21 @@ from bes.system.env_override import env_override
 
 class test_credentials_manager(unit_test):
 
-  def test_basic(self):
+  def test_env(self):
     cm = credentials_manager()
-    #c.username = 'fred'
-    #c.password = 'flintpass'
-    #self.assertEqual( 'fred', c.username )
-    #self.assertEqual( 'flintpass', c.password )
-    
-  def xtest_env_vars(self):
-    c = credentials()
-    c.username = '${MY_USERNAME}'
-    c.password = '${MY_PASSWORD}'
+    cm.add_source(credentials_source_env({ 'username': '${MY_USERNAME}', 'password': '${MY_PASSWORD}' }))
     with env_override( { 'MY_USERNAME': 'fred', 'MY_PASSWORD': 'flintpass' }) as env:
+      self.assertEqual( True, cm.is_valid() )
+      c = cm.credentials()
+      self.assertEqual( 'fred', c.username )
+      self.assertEqual( 'flintpass', c.password )
+    
+  def test_env_vars(self):
+    cm = credentials_manager()
+    cm.add_source(credentials_source_env({ 'username': '${MY_USERNAME}', 'password': '${MY_PASSWORD}' }))
+    with env_override( { 'MY_USERNAME': 'fred', 'MY_PASSWORD': 'flintpass' }) as env:
+      self.assertEqual( True, cm.is_valid() )
+      c = cm.credentials()
       self.assertEqual( 'fred', c.username )
       self.assertEqual( 'flintpass', c.password )
 
