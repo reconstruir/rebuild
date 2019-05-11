@@ -24,10 +24,10 @@ systemProp.gradle.wrapperPassword=tpassword
       'systemProp.gradle.wrapperPassword': 'tpassword',
     }, g.values )
     c = g.credentials('dev')
-    self.assertEqual( 'fred@flintstone.com', c.user )
+    self.assertEqual( 'fred@flintstone.com', c.username )
     self.assertEqual( 'flintpass', c.password )
     c = g.credentials('systemProp.gradle.wrapper')
-    self.assertEqual( 'tuser', c.user )
+    self.assertEqual( 'tuser', c.username )
     self.assertEqual( 'tpassword', c.password )
     
 if __name__ == '__main__':

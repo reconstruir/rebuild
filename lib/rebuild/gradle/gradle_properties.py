@@ -25,16 +25,16 @@ class gradle_properties(object):
     values = self.values
     if not values:
       return None
-    user_key = '{}User'.format(name)
-    user = values.get(user_key, None)
-    if not user:
+    username_key = '{}User'.format(name)
+    username = values.get(username_key, None)
+    if not username:
       return None
     password_key = '{}Password'.format(name)
     password = values.get(password_key, None)
     if not password:
       return None
     c = credentials()
-    setattr(c, 'user', user)
+    setattr(c, 'username', username)
     setattr(c, 'password', password)
     return c
   

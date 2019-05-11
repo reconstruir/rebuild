@@ -19,7 +19,7 @@ systemProp.gradle.wrapperPassword=tpassword
     cs = CSG(temp_file.make_temp_file(content = text), 'dev')
     self.assertEqual( True, cs.is_valid() )
     c = cs.credentials()
-    self.assertEqual( 'fred@flintstone.com', c.user )
+    self.assertEqual( 'fred@flintstone.com', c.username )
     self.assertEqual( 'flintpass', c.password )
     
   def test_invalid(self):
