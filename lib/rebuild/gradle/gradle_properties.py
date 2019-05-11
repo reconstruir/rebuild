@@ -8,7 +8,7 @@ from bes.system import log
 from bes.common import check
 from bes.properties_file.properties_file import properties_file
 
-class gradle_properties_file(object):
+class gradle_properties(object):
 
   _credentials = namedtuple('credentials', 'username, password')
   
@@ -59,4 +59,4 @@ class gradle_properties_file(object):
   def password(clazz, root_dir = None):
     return self.credentials(root_dir = root_dir).password
   
-log.add_logging(gradle_properties_file, 'gradle_properties_file')
+log.add_logging(gradle_properties, 'gradle_properties')

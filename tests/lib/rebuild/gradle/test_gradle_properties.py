@@ -5,9 +5,9 @@ from os import path
 from bes.testing.unit_test import unit_test
 from bes.fs import temp_file
 
-from rebuild.gradle.gradle_properties_file import gradle_properties_file as GPL
+from rebuild.gradle.gradle_properties import gradle_properties as GPL
 
-class test_gradle_properties_file(unit_test):
+class test_gradle_properties(unit_test):
 
   def test_read(self):
     content = '''\
