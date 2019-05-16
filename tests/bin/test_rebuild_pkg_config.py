@@ -32,7 +32,7 @@ class test_rebuild_pkg_config(script_unit_test):
     return os_env.make_clean_env(update = { 'PKG_CONFIG_PATH': ':'.join(self.pc_path) },
                                  keep_keys = os_env.KEYS_THAT_ARE_PATHS)
   
-  def test_list_all(self):
+  def xtest_list_all(self):
     self.maxDiff = None
     cmd = [
       '--list-all',
