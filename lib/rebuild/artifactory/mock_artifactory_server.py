@@ -104,8 +104,8 @@ class mock_artifactory_server(web_server):
     file_path = path.join(self._root_dir, filename)
     fin = environ['wsgi.input']
     chunk_size = 1024
-    n = content_length / chunk_size
-    r = content_length % chunk_size
+    n = int(content_length / chunk_size)
+    r = int(content_length % chunk_size)
     file_util.ensure_file_dir(file_path)
     with open(file_path, 'wb') as fout:
       for i in range(0, n):
