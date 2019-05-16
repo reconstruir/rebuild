@@ -65,7 +65,7 @@ class test_mock_artifactory_server(unit_test):
     AR.upload(address, tmp_upload, self._TEST_CRED)
     tmp_download = temp_file.make_temp_file()
     AR.download_url_to_file(tmp_download, address.url, self._TEST_CRED)
-    self.assertEqual( 'this is foo.txt\n', file_util.read(tmp_download) )
+    self.assertEqual( 'this is foo.txt\n', file_util.read(tmp_download, codec = 'utf-8') )
     test.stop()
     
   def xtest_list_files(self):
