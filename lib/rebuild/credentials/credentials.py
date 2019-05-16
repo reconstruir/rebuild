@@ -33,6 +33,7 @@ class credentials(object):
     self.__dict__['_credentials'][key] = value
 
   def __eq__(self, other):
+    check.check_credentials(other)
     return self.__dict__['_credentials'] == other.__dict__['_credentials']
 
   def set_attrs(self, values):

@@ -17,7 +17,7 @@ class credentials_source_gradle(credentials_source):
     if not path.isfile(self._filename):
       return False
     gp = gradle_properties(self._filename)
-    return gp.credentials(self._name) != None
+    return gp.credentials(self._name) is not None
 
   #@abstractmethod
   def credentials(self):
