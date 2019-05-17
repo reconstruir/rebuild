@@ -1,5 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+import copy
 from os import path
 from collections import namedtuple
 from bes.common import check, variable
@@ -39,5 +40,8 @@ class credentials(object):
   def set_attrs(self, values):
     for key, value in values.items():
       setattr(self, key, value)
-  
+
+  def to_dict(self):
+    return copy.deepcopy(self.__dict__['_credentials'])
+      
 check.register_class(credentials, include_seq = False)
