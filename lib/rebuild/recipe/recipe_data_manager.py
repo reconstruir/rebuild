@@ -99,7 +99,10 @@ class recipe_data_manager(object):
     descs = recipe_data_descriptor.find(text)
     replacements = {}
     for desc in recipe_data_descriptor.find(text):
-      replacements[str(desc)] = self.get(desc)
+      value = self.get(desc)
+      if not value:
+        raise ValueError('No data found for: {}'.format(desc))
+      replacements[str(desc)] = value
     return string_util.replace(text, replacements, word_boundary = False)
   
   def dump(self):
