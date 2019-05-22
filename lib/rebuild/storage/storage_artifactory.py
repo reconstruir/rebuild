@@ -66,8 +66,7 @@ class storage_artifactory(storage_base):
     self.log_d('_download_file: remote_filename=%s; downloaded_filename=%s; address=%s' % (remote_filename, downloaded_filename, address))
     artifactory_requests.download_to_file(downloaded_filename,
                                           address,
-                                          self._config.storage_config.download.username,
-                                          self._config.storage_config.download.password)
+                                          self._config.storage_config.download)
     
   def _downloaded_filename(self, filename):
     return path.join(self._local_root_dir, filename)
@@ -106,12 +105,10 @@ class storage_artifactory(storage_base):
     address = self.make_address(remote_filename)
     self.log_d('upload: address=%s' % (str(address)))
     download_url = artifactory_requests.upload(address, local_filename,
-                                               self._config.storage_config.upload.username,
-                                               self._config.storage_config.upload.password)
+                                               self._config.storage_config.upload)
     self.log_d('upload: download_url=%s' % (download_url))
     verification_checksums = artifactory_requests.get_checksums_for_url(download_url,
-                                                                        self._config.storage_config.download.username,
-                                                                        self._config.storage_config.download.password)
+                                                                        self._config.storage_config)
     if verification_checksums.sha256 != local_checksum:
       return False
     return True
@@ -120,23 +117,18 @@ class storage_artifactory(storage_base):
   def set_properties(self, filename, properties):
     address = self.make_address(filename)
     return artifactory_requests.set_properties(address, properties,
-                                               self._config.storage_config.upload.username,
-                                               self._config.storage_config.upload.password)
+                                               self._config.storage_config.upload)
   
   #@abstractmethod
   def remote_checksum(self, remote_filename):
     address = self.make_address(remote_filename)
-    auth = (self._config.storage_config.download.username, self._config.storage_config.download.password)
-    checksums = artifactory_requests.get_checksums(address,
-                                                   self._config.storage_config.download.username,
-                                                   self._config.storage_config.download.password)
+    checksums = artifactory_requests.get_checksums(address, self._config.storage_config.download)
     return checksums.sha256 if checksums else None
 
   #@abstractmethod
   def list_all_files(self):
     entries = artifactory_requests.list_files(self._address,
-                                              self._config.storage_config.download.username,
-                                              self._config.storage_config.download.password)
+                                              self._config.storage_config.download)
     self.log_d('list_all_files: address={}'.format(self._address))
     #self.log_d('list_all_files: entries={}'.format(pprint.pformat(entries)))
     return [ entry.filename for entry in entries ]

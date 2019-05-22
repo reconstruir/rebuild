@@ -41,8 +41,7 @@ class artifact_manager_artifactory(artifact_manager_base):
   def _load_remote_db(self):
     self.log_d('_load_remote_db: start. address={}'.format(str(self._address)))
     packages = artifactory_requests.list_artifacts(self._address,
-                                                   self._config.storage_config.download.username,
-                                                   self._config.storage_config.download.password)
+                                                   self._config.storage_config.download)
     self.log_d('_load_remote_db: packages={}'.format(str(packages)))
     for package in sorted(packages, key = lambda x: tuple(x)):
       if not self._db.has_artifact(package.artifact_descriptor):
@@ -100,8 +99,7 @@ class artifact_manager_artifactory(artifact_manager_base):
     self.log_i('downloading: %s => %s' % (str(address), filename_abs))
     artifactory_requests.download_to_file(filename_abs,
                                           address,
-                                          self._config.storage_config.download.username,
-                                          self._config.storage_config.download.password)
+                                          self._config.storage_config.download)
   
   #@abstractmethod
   def needs_download(self, adesc):
