@@ -106,9 +106,10 @@ class storage_artifactory(storage_base):
     self.log_d('upload: address=%s' % (str(address)))
     download_url = artifactory_requests.upload(address, local_filename,
                                                self._config.storage_config.upload)
+    assert download_url
     self.log_d('upload: download_url=%s' % (download_url))
     verification_checksums = artifactory_requests.get_checksums_for_url(download_url,
-                                                                        self._config.storage_config)
+                                                                        self._config.storage_config.download)
     if verification_checksums.sha256 != local_checksum:
       return False
     return True

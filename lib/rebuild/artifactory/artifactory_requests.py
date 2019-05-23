@@ -1,4 +1,4 @@
-#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
+  #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import datetime, json, os.path as path, shutil, time
 from collections import namedtuple
@@ -164,9 +164,9 @@ class artifactory_requests(object):
     for i in range(1, num_tries + 1):
       clazz.log_d('upload_url: attempt {} of {} for {}'.format(i, num_tries, url))
       try:
-        clazz._do_upload_url(url, filename, credentials)
-        clazz.log_d('upload_url: SUCCESS: attempt {} of {} for {}'.format(i, num_tries, url))
-        return
+        download_url = clazz._do_upload_url(url, filename, credentials)
+        clazz.log_d('upload_url: SUCCESS: attempt {} of {} for {} download_url={}'.format(i, num_tries, url, download_url))
+        return download_url
       except artifactory_error as ex:
         clazz.log_e('upload_url: FAILED: attempt {} of {} for {}'.format(i, num_tries, url))
         last_ex = ex
