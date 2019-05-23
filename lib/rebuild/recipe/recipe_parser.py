@@ -87,7 +87,10 @@ class recipe_parser(object):
       if text.startswith('properties'):
         properties = self._parse_properties(child)
       elif text.startswith('requirements'):
-        requirements.extend(recipe_parser_util.parse_requirements(child, variable_manager))
+        try:
+          requirements.extend(recipe_parser_util.parse_requirements(child, variable_manager))
+        except ValueError as ex:
+          self._error(str(ex), ex.child)
       elif text.startswith('variables'):
         variables.extend(recipe_parser_util.parse_masked_variables(child, self.filename))
       elif text.startswith('data'):

@@ -82,7 +82,10 @@ class venv_project_config_parser(object):
       elif text.startswith('variables'):
         variables.extend(recipe_parser_util.parse_masked_variables(child, self.filename))
       elif text.startswith('packages'):
-        more_reqs = recipe_parser_util.parse_requirements(child, variable_manager)
+        try:
+          more_reqs = recipe_parser_util.parse_requirements(child, variable_manager)
+        except ValueError as ex:
+          self._error(str(ex), ex.child)
         dups = more_reqs.dups()
         if dups:
           self._error('duplicate package entries: %s' % (' '.join(dups)), child)

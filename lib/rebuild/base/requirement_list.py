@@ -41,7 +41,7 @@ class requirement_list(type_checked_list):
     if check.is_string_seq(text):
       text = ' '.join(text)
     check.check_string(text)
-    reqs = clazz([ req for req in requirement_parser.parse(text, default_system_mask = default_system_mask) ])
+    reqs = requirement_list([ req for req in requirement_parser.parse(text, default_system_mask = default_system_mask) ])
     reqs.remove_dups()
     return reqs
 
@@ -72,7 +72,7 @@ class requirement_list(type_checked_list):
 
   @staticmethod
   def _check_cast_func(clazz, obj):
-    return clazz([ x for x in (obj or []) ])
+    return requirement_list([ x for x in (obj or []) ])
 
   def to_string_list(self):
     return [ str(r) for r in self ]
@@ -89,6 +89,8 @@ class requirement_list(type_checked_list):
     'Return a dict of requirements keyed by name.  Names must be unique.'
     result = {}
     for req in self:
+      if req.name in result:
+        print('inconsistent requirement: {}\n{}'.format(req, '\n'.join(self.to_string_list())))
       assert not req.name in result
       result[req.name] = req
     return result
@@ -96,5 +98,12 @@ class requirement_list(type_checked_list):
   def dups(self):
     'Return a list of the names of duplicated requirements in this list.'
     return algorithm.not_unique(self.names())
+  
+  def has_requirement(self, name, hardness):
+    'Return True if the list contains a requirement with name and hardness.'
+    for req in self:
+      if req.name == name and req.hardness == hardness:
+        return True
+    return False
   
 check.register_class(requirement_list, include_seq = False, cast_func = requirement_list._check_cast_func)

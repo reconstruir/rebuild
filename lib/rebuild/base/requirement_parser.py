@@ -74,7 +74,7 @@ class requirement_parser(object):
   _TOKEN_HARDNESS = 'hardness'
   _TOKEN_VERSION = 'version'
   _TOKEN_END = 'end'
-  _token = namedtuple('token', 'type,text,system_mask')
+  _token = namedtuple('token', 'type, text, system_mask')
 
   @classmethod
   def _tokenize(clazz, text):

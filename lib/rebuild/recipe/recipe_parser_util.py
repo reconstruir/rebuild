@@ -109,10 +109,15 @@ class recipe_parser_util(object):
 
   @classmethod
   def parse_requirements(clazz, node, variable_manager):
-    reqs = []
+    result = requirement_list()
     for child in node.children:
       req_text = child.get_text(child.NODE_FLAT)
       req_text = variable_manager.substitute(req_text)
-      next_reqs = requirement_list.parse(req_text)
-      reqs.extend(next_reqs)
-    return requirement_list(reqs)
+      reqs = requirement_list.parse(req_text)
+      for req in reqs:
+        if result.has_requirement(req.name, req.hardness):
+          ex = ValueError('duplicate or inconsistent requirement: {}'.format(req))
+          setattr(ex, 'child', child)
+          raise ex
+      result.extend(reqs)
+    return result
