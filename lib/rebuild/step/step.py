@@ -5,7 +5,9 @@ import copy, inspect, os, os.path as path, sys
 from abc import abstractmethod, ABCMeta
 from collections import namedtuple
 
-from bes.common import check, dict_util, object_util, string_util, variable
+from bes.common import check, dict_util, object_util, string_util
+from bes.common.variable import variable
+from bes.common.variable_pattern import variable_pattern
 from bes.dependency import dependency_resolver
 from bes.factory import singleton_class_registry
 from bes.fs import file_util
@@ -182,7 +184,7 @@ class step(with_metaclass(step_register_meta, object)):
     if rogue_key:
       raise RuntimeError('%s: Rogue dollar sign (\"$\") found in %s: %s' % (script.recipe.filename, rogue_key, env[rogue_key]))
 
-    command = [ variable.substitute(part, env, patterns = variable.BRACKET) for part in object_util.listify(command) ]
+    command = [ variable.substitute(part, env, patterns = variable_pattern.BRACKET) for part in object_util.listify(command) ]
 
     # Check that no rogue dollar signs are in the command
     for part in command:
@@ -307,6 +309,6 @@ class step(with_metaclass(step_register_meta, object)):
   @classmethod
   def _env_substitite(clazz, env):
     for key in sorted(env.keys()):
-      env[key] = variable.substitute(str(env[key]), env, patterns = variable.BRACKET)
+      env[key] = variable.substitute(str(env[key]), env, patterns = variable_pattern.BRACKET)
       
 check.register_class(step, include_seq = False)

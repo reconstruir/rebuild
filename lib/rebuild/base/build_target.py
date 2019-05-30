@@ -2,7 +2,9 @@
 
 from bes.system.compat import with_metaclass
 from bes.system import host
-from bes.common import check, dict_util, variable, string_util, tuple_util
+from bes.common import check, dict_util, string_util, tuple_util
+from bes.common.variable import variable
+from bes.common.variable_pattern import variable_pattern
 from bes.property.cached_property import cached_property
 
 from .build_arch import build_arch
@@ -98,7 +100,7 @@ class build_target(namedtuple('build_target', 'system, distro, distro_version_ma
       'distro': self.distro or 'None',
     }
     dict_util.quote_strings(variables)
-    exp_with_vars = variable.substitute(expression, variables, patterns = variable.BRACKET)
+    exp_with_vars = variable.substitute(expression, variables, patterns = variable_pattern.BRACKET)
     constants = {
       'MACOS': 'macos',
       'LINUX': 'linux',

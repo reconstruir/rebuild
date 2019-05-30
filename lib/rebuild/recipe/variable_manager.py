@@ -1,7 +1,9 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from os import path
-from bes.common import check, variable
+from bes.common.check import check
+from bes.common.variable import variable
+from bes.common.variable_pattern import variable_pattern
 from bes.system import user
 
 class variable_manager(object):
@@ -30,7 +32,7 @@ class variable_manager(object):
       
   def substitute(self, text, word_boundary = True):
     check.check_string(text)
-    return variable.substitute(text, self.variables, word_boundary = word_boundary, patterns = variable.BRACKET)
+    return variable.substitute(text, self.variables, word_boundary = word_boundary, patterns = variable_pattern.BRACKET)
 
   def _add_system_variables(self):
     self.variables['HOME'] = path.expanduser('~')

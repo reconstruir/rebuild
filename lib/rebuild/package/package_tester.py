@@ -7,7 +7,9 @@ from rebuild.step import step_result
 from rebuild.base import build_blurb, build_target
 from rebuild.toolchain import toolchain
 from bes.dependency import dependency_resolver
-from bes.common import algorithm, variable
+from bes.common.algorithm import algorithm
+from bes.common.variable import variable
+from bes.common.variable_pattern import variable_pattern
 from bes.system import execute, os_env
 from bes.fs import file_replace, file_util, temp_file
 from bes.debug import debug_timer
@@ -179,7 +181,7 @@ class package_tester(object):
       '_REBUILD_DEV_ROOT': pm.shell_framework_dir,
     })
     for key, value in config.extra_env.items():
-      shell_env[key] = variable.substitute(value, substitutions, patterns = variable.BRACKET)
+      shell_env[key] = variable.substitute(value, substitutions, patterns = variable_pattern.BRACKET)
     shell_env.update(substitutions)
     file_replace.copy_with_substitute(test_source, test_source_with_replacements,
                                       substitutions, backup = False)

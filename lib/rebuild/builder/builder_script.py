@@ -3,7 +3,9 @@
 import copy, os.path as path
 from collections import namedtuple
 
-from bes.common import algorithm, check, json_util, string_util, type_checked_list, variable
+from bes.common import algorithm, check, json_util, string_util, type_checked_list
+from bes.common.variable import variable
+from bes.common.variable_pattern import variable_pattern
 from bes.fs import file_checksum_list, file_util
 from bes.system import log
 from bes.debug import debug_timer
@@ -201,7 +203,7 @@ class builder_script(object):
     sources.append(path.relpath(self._env_checksum_filename))
     result = []
     for source in sources:
-      s = variable.substitute(source, self.substitutions, patterns = variable.BRACKET)
+      s = variable.substitute(source, self.substitutions, patterns = variable_pattern.BRACKET)
       if path.isfile(s):
         result.append(s)
       else:

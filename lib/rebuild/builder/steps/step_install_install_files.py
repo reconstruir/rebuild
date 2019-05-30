@@ -4,7 +4,9 @@ from rebuild.step import step, step_result
 
 from rebuild.recipe import recipe_parser_util
 
-from bes.common import check, object_util, variable
+from bes.common import check, object_util
+from bes.common.variable import variable
+from bes.common.variable_pattern import variable_pattern
 from bes.fs import file_find, file_util
 import os, os.path as path, shutil
 
@@ -31,7 +33,7 @@ class step_install_install_files(step):
     check.check_value_install_file_seq(install_files)
 
     for install_file in install_files:
-      src = variable.substitute(install_file.filename, script.substitutions, patterns = variable.BRACKET)
+      src = variable.substitute(install_file.filename, script.substitutions, patterns = variable_pattern.BRACKET)
       dst = path.join(script.staged_files_dir, install_file.dst_filename)
       if path.isfile(src):
         property_mode = install_file.get_property('mode', None)
