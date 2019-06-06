@@ -13,7 +13,8 @@ from rebuild.pkg_config import pkg_config
 from rebuild.package import artifact_manager_local, package, package_manager, package_install_options
 from rebuild.package import PackageFilesConflictError, PackageMissingRequirementsError
 from rebuild.package.db_error import *
-from bes.archive import archiver, temp_archive
+from bes.archive.archiver import archiver
+from bes.archive.temp_archive import temp_archive
 from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT
 from _rebuild_testing.fake_package_recipes import fake_package_recipes as RECIPES
 from _rebuild_testing.artifact_manager_tester import artifact_manager_tester as AMT

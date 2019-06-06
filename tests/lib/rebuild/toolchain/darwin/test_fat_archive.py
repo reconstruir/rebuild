@@ -4,7 +4,9 @@
 
 import os.path as path
 from bes.fs import temp_file
-from bes.archive import archiver, archive_extension, temp_archive
+from bes.archive.archiver import archiver
+from bes.archive.archive_extension import archive_extension
+from bes.archive.temp_archive import temp_archive
 from rebuild.toolchain.darwin import fat_archive, lipo
 from bes.system import host
 from bes.testing.unit_test.unit_test_skip import raise_skip_if_not_platform

@@ -4,7 +4,8 @@ import os.path as path, re
 
 from collections import namedtuple
 
-from bes.archive import archive, archiver
+from bes.archive.archive import archive
+from bes.archive.archiver import archiver
 from bes.common.check import check
 from bes.common.dict_util import dict_util
 from bes.common.json_util import json_util

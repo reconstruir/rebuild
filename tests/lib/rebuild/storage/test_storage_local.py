@@ -5,7 +5,8 @@ from bes.testing.unit_test import unit_test
 from bes.common import string_util
 from bes.fs.testing import temp_content
 from bes.fs import temp_file
-from bes.archive.temp_archive import archive_extension, temp_archive
+from bes.archive.archive_extension import archive_extension
+from bes.archive.temp_archive import temp_archive
 from rebuild.storage import storage_local, storage_factory
 from rebuild.config import storage_config_manager
 import os.path as path

@@ -5,7 +5,8 @@ from os import path
 from collections import namedtuple
 
 from bes.common import check
-from bes.archive import archiver, archive_extension
+from bes.archive.archiver import archiver
+from bes.archive.archive_extension import archive_extension
 from bes.fs import file_util, tar_util, temp_file
 from bes.system import execute, log
 from bes.url import url_util

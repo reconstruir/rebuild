@@ -5,7 +5,8 @@
 import copy, os.path as path, platform
 
 from bes.system import log
-from bes.archive import archive, archiver
+from bes.archive.archive import archive
+from bes.archive.archiver import archiver
 from bes.common.check import check
 from bes.common.dict_util import dict_util
 from bes.common.object_util import object_util
