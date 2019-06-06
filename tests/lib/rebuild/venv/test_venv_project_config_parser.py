@@ -7,7 +7,8 @@ from rebuild.recipe.variable_manager import variable_manager
 from rebuild.venv.venv_project_config_parser import venv_project_config_parser as P
 from rebuild.recipe import recipe_error as ERR
 from rebuild.base import build_target
-from bes.key_value import key_value as KV, key_value_list as KVL
+from bes.key_value.key_value import key_value as KV
+from bes.key_value.key_value_list import key_value_list as KVL
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
 

@@ -3,7 +3,8 @@
 
 from bes.testing.unit_test import unit_test
 from rebuild.recipe.value import masked_value as MV
-from bes.key_value import key_value as KV, key_value_list as KVL
+from bes.key_value.key_value import key_value as KV
+from bes.key_value.key_value_list import key_value_list as KVL
 
 from rebuild.recipe.value import value_int
 from rebuild.recipe.value import value_bool

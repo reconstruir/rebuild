@@ -18,7 +18,8 @@ from bes.testing.unit_test import unit_test
 from bes.fs.file_mime import file_mime
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
-from bes.key_value import key_value, key_value_list
+from bes.key_value.key_value import key_value
+from bes.key_value.key_value_list import key_value_list
 
 from rebuild.artifactory.mock_artifactory_tester import mock_artifactory_tester as MAT
 from rebuild.artifactory.artifactory_requests import artifactory_requests as AR

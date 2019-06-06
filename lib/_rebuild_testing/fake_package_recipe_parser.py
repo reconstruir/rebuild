@@ -5,7 +5,9 @@ from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_item
 from bes.common.check import check
 from bes.common.string_util import string_util
-from bes.key_value import key_value, key_value_list, key_value_parser
+from bes.key_value.key_value import key_value
+from bes.key_value.key_value_list import key_value_list
+from bes.key_value.key_value_parser import key_value_parser
 from bes.compat import StringIO
 from bes.text import string_list, tree_text_parser
 
