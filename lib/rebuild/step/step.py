@@ -15,7 +15,9 @@ from bes.dependency import dependency_resolver
 from bes.factory import singleton_class_registry
 from bes.fs import file_util
 from bes.key_value import key_value_list
-from bes.system import os_env, execute, log
+from bes.system.os_env import os_env
+from bes.system.execute import execute
+from bes.system.log import log
 from bes.system.compat import with_metaclass
 
 from rebuild.base import build_blurb, build_target

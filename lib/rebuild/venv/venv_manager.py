@@ -5,7 +5,8 @@ from bes.common import check
 from bes.env import shell_framework
 from bes.fs.file_path import file_path
 from bes.fs.file_util import file_util
-from bes.system import log, os_env
+from bes.system.log import log
+from bes.system.os_env import os_env
 from rebuild.base import build_blurb, build_version, package_descriptor_list
 from bes.dependency import dependency_resolver
 from rebuild.package import package_manager

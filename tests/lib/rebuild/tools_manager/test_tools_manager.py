@@ -8,7 +8,8 @@ from bes.common.string_util import string_util
 from bes.property.cached_property import cached_property
 from bes.fs.file_find import file_find
 from bes.fs.temp_file import temp_file
-from bes.system import execute, os_env
+from bes.system.execute import execute
+from bes.system.os_env import os_env
 from rebuild.base import build_target, build_system, package_descriptor as PD, package_descriptor_list as PDL
 from rebuild.tools_manager import tools_manager as TM
 from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT

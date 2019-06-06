@@ -10,7 +10,8 @@ from bes.archive.archive_extension import archive_extension
 from bes.fs.file_util import file_util
 from bes.fs.tar_util import tar_util
 from bes.fs.temp_file import temp_file
-from bes.system import execute, log
+from bes.system.execute import execute
+from bes.system.log import log
 from bes.url import url_util
 
 from rebuild.binary_format import binary_detector

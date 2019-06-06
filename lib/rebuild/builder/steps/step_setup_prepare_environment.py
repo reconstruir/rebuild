@@ -3,7 +3,8 @@
 import os
 
 from rebuild.step import step, step_result
-from bes.system import os_env, os_env_var
+from bes.system.os_env import os_env
+from bes.system.env_var import os_env_var
 
 class step_setup_prepare_environment(step):
   'Prepare the environment.'

@@ -3,7 +3,9 @@
 import datetime, json, os.path as path, shutil, time
 from collections import namedtuple
 
-from bes.system import execute, log, os_env
+from bes.system.execute import execute
+from bes.system.log import log
+from bes.system.os_env import os_env
 from bes.common import check
 from bes.fs.file_path import file_path
 from bes.fs.file_util import file_util

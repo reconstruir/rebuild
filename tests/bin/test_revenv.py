@@ -6,7 +6,8 @@ import os.path as path
 from collections import namedtuple
 
 from bes.testing.unit_test import script_unit_test
-from bes.system import os_env, execute
+from bes.system.os_env import os_env
+from bes.system.execute import execute
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
 from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT

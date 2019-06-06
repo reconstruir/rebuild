@@ -2,7 +2,9 @@
 
 import os.path as path
 
-from bes.system import execute, log, os_env
+from bes.system.execute import execute
+from bes.system.log import log
+from bes.system.os_env import os_env
 from bes.common import check
 from bes.fs import file_util
 from bes.compat.url_compat import urlparse

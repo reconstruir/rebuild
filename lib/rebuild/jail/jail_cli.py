@@ -5,7 +5,9 @@
 import argparse, os.path as path
 from rebuild.jail import config_file, jail
 from bes.fs import file_util
-from bes.system import execute, user, host
+from bes.system.execute import execute
+from bes.system.user import user
+from bes.system.host import host
 
 class jail_cli(object):
 

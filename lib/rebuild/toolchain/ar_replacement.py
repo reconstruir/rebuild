@@ -2,7 +2,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path, shutil
-from bes.system import execute, host
+from bes.system.execute import execute
+from bes.system.host import host
 from collections import namedtuple
 from rebuild.toolchain.darwin import lipo
 from bes.fs.dir_util import dir_util

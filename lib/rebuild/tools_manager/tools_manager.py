@@ -3,7 +3,8 @@
 import copy, os.path as path, os
 from bes.common.check import check
 from bes.common.object_util import object_util
-from bes.system import execute, os_env
+from bes.system.execute import execute
+from bes.system.os_env import os_env
 from rebuild.base import build_target, build_level, package_descriptor_list
 from rebuild.venv.venv_manager import venv_manager
 from bes.debug import debug_timer

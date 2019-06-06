@@ -10,7 +10,8 @@ from bes.dependency import dependency_resolver
 from bes.common.algorithm import algorithm
 from bes.common.variable import variable
 from bes.common.variable_pattern import variable_pattern
-from bes.system import execute, os_env
+from bes.system.execute import execute
+from bes.system.os_env import os_env
 from bes.fs.file_replace import file_replace
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file

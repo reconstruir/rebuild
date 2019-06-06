@@ -5,7 +5,8 @@ from collections import namedtuple
 from bes.common.algorithm import algorithm
 from bes.common.check import check
 
-from bes.system import log, os_env_var
+from bes.system.log import log
+from bes.system.env_var import os_env_var
 from bes.fs.file_find import file_find
 from bes.fs.file_path import file_path
 from bes.fs.file_util import file_util
