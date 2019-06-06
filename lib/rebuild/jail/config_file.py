@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.common import string_util, variable
+from bes.common.string_util import string_util
+from bes.common.variable import variable
 
 from bes.compat.ConfigParser import ConfigParser
 
@@ -102,4 +103,3 @@ class config_file(object):
   def __parse_list_lines(clazz, s, variables):
     result = [ x.strip() for x in s.split('\n') ]
     return [ variable.substitute(x, variables) for x in result if x ]
-

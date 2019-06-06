@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.common import check, variable
+from bes.common.check import check
+from bes.common.variable import variable
 from bes.key_value import key_value
 from collections import namedtuple
 from .entry_type import entry_type

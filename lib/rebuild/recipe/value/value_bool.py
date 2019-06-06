@@ -1,7 +1,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common import bool_util, check
+from bes.common.bool_util import bool_util
+from bes.common.check import check
 
 from .value_base import value_base
 from .value_type import value_type

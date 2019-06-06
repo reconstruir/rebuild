@@ -1,7 +1,12 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import re
-from bes.common import algorithm, check, object_util, string_util, number_util, tuple_util
+from bes.common.algorithm import algorithm
+from bes.common.check import check
+from bes.common.object_util import object_util
+from bes.common.string_util import string_util
+from bes.common.number_util import number_util
+from bes.common.tuple_util import tuple_util
 from collections import namedtuple
 from bes.compat import StringIO
 from bes.compat import cmp

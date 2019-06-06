@@ -2,7 +2,10 @@
 
 from bes.system.compat import with_metaclass
 from bes.system import host
-from bes.common import check, dict_util, string_util, tuple_util
+from bes.common.check import check
+from bes.common.dict_util import dict_util
+from bes.common.string_util import string_util
+from bes.common.tuple_util import tuple_util
 from bes.common.variable import variable
 from bes.common.variable_pattern import variable_pattern
 from bes.property.cached_property import cached_property

@@ -3,7 +3,8 @@
 
 import os, os.path as path
 
-from bes.common import object_util, variable
+from bes.common.object_util import object_util
+from bes.common.variable import variable
 from bes.fs import file_replace
 from rebuild.step import step, step_result
 

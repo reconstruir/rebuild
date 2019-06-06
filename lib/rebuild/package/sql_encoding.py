@@ -1,7 +1,9 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import json
-from bes.common import check, json_util, string_util
+from bes.common.check import check
+from bes.common.json_util import json_util
+from bes.common.string_util import string_util
 from rebuild.base import requirement_list
 
 class sql_encoding(object):

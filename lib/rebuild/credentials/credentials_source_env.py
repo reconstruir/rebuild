@@ -2,7 +2,8 @@
 
 from os import path
 import os
-from bes.common import check, variable
+from bes.common.check import check
+from bes.common.variable import variable
 
 from .credentials import credentials
 from .credentials_source import credentials_source

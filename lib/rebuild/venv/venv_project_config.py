@@ -2,7 +2,9 @@
 
 import os
 from collections import namedtuple
-from bes.common import check, node, variable
+from bes.common.check import check
+from bes.common.node import node
+from bes.common.variable import variable
 from bes.key_value import key_value_list
 from bes.text import string_list
 

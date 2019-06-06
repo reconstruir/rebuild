@@ -1,6 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.common import check, node
+from bes.common.check import check
+from bes.common.node import node
 from bes.text import text_line_parser, white_space
 
 class recipe_util(object):
@@ -59,4 +60,3 @@ class recipe_util(object):
     for req in requirements:
       result.add_child(req.to_string_colon_format())
     return result
-      

@@ -2,7 +2,8 @@
 
 from os import path
 from collections import namedtuple
-from bes.common import algorithm, check
+from bes.common.algorithm import algorithm
+from bes.common.check import check
 
 from bes.system import log, os_env_var
 from bes.fs import file_find, file_path, file_util

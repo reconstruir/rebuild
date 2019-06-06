@@ -4,7 +4,9 @@ import os.path as path
 from abc import ABCMeta, abstractmethod
 from bes.system.compat import with_metaclass
 from bes.compat import StringIO
-from bes.common import check, string_util, type_checked_list
+from bes.common.check import check
+from bes.common.string_util import string_util
+from bes.common.type_checked_list import type_checked_list
 
 from bes.dependency import dependency_provider
 

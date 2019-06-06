@@ -3,7 +3,11 @@
 
 import copy, re, glob, os.path as path
 from bes.fs import file_util
-from bes.common import algorithm, check, dict_util, string_util, type_checked_list
+from bes.common.algorithm import algorithm
+from bes.common.check import check
+from bes.common.dict_util import dict_util
+from bes.common.string_util import string_util
+from bes.common.type_checked_list import type_checked_list
 from bes.text import string_list_parser
 from bes.compat import StringIO
 from .instruction_list_parser import instruction_list_parser

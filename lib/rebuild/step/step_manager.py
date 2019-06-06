@@ -2,7 +2,9 @@
 
 import copy
 from abc import abstractmethod
-from bes.common import algorithm, check, dict_util
+from bes.common.algorithm import algorithm
+from bes.common.check import check
+from bes.common.dict_util import dict_util
 from bes.system import log
 
 from rebuild.base import build_blurb
@@ -106,4 +108,3 @@ class step_manager(object):
         if check.is_value_base(value):
           sources.extend(value.sources(env, variables))
     return algorithm.unique(sources)
-  

@@ -3,7 +3,8 @@
 from collections import namedtuple
 
 import os.path as path
-from bes.common import check, string_util
+from bes.common.check import check
+from bes.common.string_util import string_util
 from bes.system import log
 from bes.text import text_line_parser, tree_text_parser
 

@@ -7,7 +7,8 @@ from rebuild.base import build_target, build_system
 from rebuild.toolchain import compiler, toolchain, toolchain_testing
 from bes.system import host
 from bes.fs import file_util, temp_file
-from bes.common import object_util, variable
+from bes.common.object_util import object_util
+from bes.common.variable import variable
 from bes.testing.unit_test.unit_test_skip import skip_if
 
 CC_SOURCE = r'''

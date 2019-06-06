@@ -2,7 +2,9 @@
 
 import os.path as path
 from bes.system import logger
-from bes.common import check, string_util, time_util
+from bes.common.check import check
+from bes.common.string_util import string_util
+from bes.common.time_util import time_util
 from bes.compat import StringIO
 from bes.git import git_address
 from bes.git import git

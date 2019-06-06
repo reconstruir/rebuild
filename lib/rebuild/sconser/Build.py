@@ -5,7 +5,8 @@ from collections import namedtuple
 from datetime import datetime
 import os, os.path as path, platform, sys
 
-from bes.common import object_util, tuple_util
+from bes.common.object_util import object_util
+from bes.common.tuple_util import tuple_util
 from bes.system import execute
 from bes.text import text_canvas
 from bes.unix import terminal

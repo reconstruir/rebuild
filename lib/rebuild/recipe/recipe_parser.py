@@ -3,7 +3,8 @@
 from collections import namedtuple
 
 import os.path as path
-from bes.common import check, string_util
+from bes.common.check import check
+from bes.common.string_util import string_util
 from bes.key_value import key_value, key_value_parser
 from bes.system import log
 from bes.text import string_list, tree_text_parser, text_fit
@@ -239,4 +240,3 @@ class recipe_parser(object):
     mask, value = recipe_parser_util.split_mask_and_value(text)
     value = recipe_parser_util.make_value(origin, value, node, class_name)
     return masked_value(mask, value, origin)
-          

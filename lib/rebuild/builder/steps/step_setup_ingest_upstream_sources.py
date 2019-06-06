@@ -3,7 +3,11 @@
 import os.path as path
 from collections import namedtuple
 
-from bes.common import bool_util, check, dict_util, object_util, string_util
+from bes.common.bool_util import bool_util
+from bes.common.check import check
+from bes.common.dict_util import dict_util
+from bes.common.object_util import object_util
+from bes.common.string_util import string_util
 from bes.archive import archiver
 from bes.fs import file_util, temp_file
 from bes.key_value import key_value_list

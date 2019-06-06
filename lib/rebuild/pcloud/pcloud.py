@@ -5,7 +5,8 @@ from io import BytesIO
 from collections import namedtuple
 
 from bes.system import log
-from bes.common import check, node
+from bes.common.check import check
+from bes.common.node import node
 from bes.property.cached_property import cached_property
 from bes.fs import file_path, file_util, temp_file
 from bes.text import string_list
@@ -489,4 +490,3 @@ class pcloud(object):
 
   def make_path(self, f):
     return path.join(self.root_dir, f)
-

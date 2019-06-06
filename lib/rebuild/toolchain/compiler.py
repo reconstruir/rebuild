@@ -3,7 +3,8 @@
 import copy, os.path as path
 from .toolchain import toolchain
 from bes.fs import file_util
-from bes.common import object_util, variable
+from bes.common.object_util import object_util
+from bes.common.variable import variable
 from bes.system import execute
 
 from collections import namedtuple
@@ -86,5 +87,3 @@ class compiler(object):
     if clazz.DEBUG:
       print('COMPILER CMD: %s' % (cmd))
     return execute.execute(cmd)
-
-  

@@ -1,7 +1,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from collections import namedtuple
-from bes.common import check, string_util
+from bes.common.check import check
+from bes.common.string_util import string_util
 from bes.text import comments
 
 class value_definition(namedtuple('value_definition', 'name, class_name, default, line_number')):
@@ -40,4 +41,3 @@ class value_definition(namedtuple('value_definition', 'name, class_name, default
           raise ValueError('duplicate arg spec: %s' % (spec.name))
         result[spec.name] = spec
     return result
-  

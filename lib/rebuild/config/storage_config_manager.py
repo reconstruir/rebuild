@@ -3,7 +3,10 @@
 import os.path as path
 from collections import namedtuple
 
-from bes.common import bool_util, check, dict_util, string_util
+from bes.common.bool_util import bool_util
+from bes.common.check import check
+from bes.common.dict_util import dict_util
+from bes.common.string_util import string_util
 from bes.config.simple_config import simple_config
 from bes.fs import file_util
 
@@ -70,4 +73,3 @@ storage
     return content
   
 check.register_class(storage_config_manager, include_seq = False)
-  

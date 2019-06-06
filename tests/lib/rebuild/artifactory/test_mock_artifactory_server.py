@@ -3,7 +3,8 @@
 
 import pprint
 
-from bes.common import dict_util, tuple_util
+from bes.common.dict_util import dict_util
+from bes.common.tuple_util import tuple_util
 from bes.system import compat
 
 if compat.IS_PYTHON3:

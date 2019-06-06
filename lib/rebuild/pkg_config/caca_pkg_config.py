@@ -2,7 +2,9 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common import algorithm, check, object_util
+from bes.common.algorithm import algorithm
+from bes.common.check import check
+from bes.common.object_util import object_util
 from bes.fs import dir_util, file_util
 from bes.dependency import dependency_resolver
 from .caca_pkg_config_file import caca_pkg_config_file

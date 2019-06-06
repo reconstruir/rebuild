@@ -2,7 +2,10 @@
 
 from collections import namedtuple
 
-from bes.common import algorithm, check, dict_util, object_util
+from bes.common.algorithm import algorithm
+from bes.common.check import check
+from bes.common.dict_util import dict_util
+from bes.common.object_util import object_util
 from bes.dependency import dependency_resolver, missing_dependency_error
 from bes.system import log
 from bes.compat import StringIO

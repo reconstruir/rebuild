@@ -3,7 +3,8 @@
 import copy
 from os import path
 from collections import namedtuple
-from bes.common import check, variable
+from bes.common.check import check
+from bes.common.variable import variable
 from bes.property.env_var_property import env_var_property
 from bes.compat import StringIO
 

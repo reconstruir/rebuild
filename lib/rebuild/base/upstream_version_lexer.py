@@ -4,7 +4,8 @@ import string
 from collections import namedtuple
 
 from bes.compat import StringIO
-from bes.common import string_util, point
+from bes.common.string_util import string_util
+from bes.common.point import point
 from bes.system import log
 from bes.enum import flag_enum
 from bes.text import lexer_token

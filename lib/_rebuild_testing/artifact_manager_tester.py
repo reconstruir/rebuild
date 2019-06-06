@@ -2,7 +2,9 @@
 
 from os import path
 
-from bes.common import check, object_util, string_util
+from bes.common.check import check
+from bes.common.object_util import object_util
+from bes.common.string_util import string_util
 from bes.fs import temp_file
 from bes.text import text_line_parser
 

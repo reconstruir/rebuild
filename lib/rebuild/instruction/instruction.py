@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.common import check, node
+from bes.common.check import check
+from bes.common.node import node
 from bes.text import string_list, white_space
 from collections import namedtuple
 

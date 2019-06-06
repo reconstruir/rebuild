@@ -1,7 +1,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy, os.path as path, os
-from bes.common import check, object_util
+from bes.common.check import check
+from bes.common.object_util import object_util
 from bes.system import execute, os_env
 from rebuild.base import build_target, build_level, package_descriptor_list
 from rebuild.venv.venv_manager import venv_manager

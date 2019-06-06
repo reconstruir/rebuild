@@ -2,7 +2,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy, unittest
-from bes.common import check, dict_util
+from bes.common.check import check
+from bes.common.dict_util import dict_util
 from test_steps import *
 from rebuild.step import step, compound_step, step_description, step_manager
 from bes.testing.unit_test.unit_test_skip import raise_skip

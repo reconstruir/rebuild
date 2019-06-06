@@ -3,7 +3,10 @@
 
 import pkgutil
 import os, os.path as path
-from bes.common import algorithm, check, object_util, string_util
+from bes.common.algorithm import algorithm
+from bes.common.check import check
+from bes.common.object_util import object_util
+from bes.common.string_util import string_util
 from bes.system import execute, logger, os_env_var, host
 from bes.fs import file_find, file_match, file_path, file_util, temp_file
 from bes.python import package

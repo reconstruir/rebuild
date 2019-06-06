@@ -6,7 +6,11 @@ import copy, os.path as path, platform
 
 from bes.system import log
 from bes.archive import archive, archiver
-from bes.common import check, dict_util, object_util, string_util, variable
+from bes.common.check import check
+from bes.common.dict_util import dict_util
+from bes.common.object_util import object_util
+from bes.common.string_util import string_util
+from bes.common.variable import variable
 from bes.dependency import dependency_resolver
 from bes.fs import file_path, file_util
 from bes.system import os_env
@@ -375,4 +379,3 @@ class package_manager(object):
     check.check_bool(include_names)
     requirements = pkg.package_descriptor.requirements.filter_by_system(build_target.system).filter_by_hardness(hardness)
     return artifact_manager.poto_resolve_deps(requirements, build_target, hardness, include_names)
-  

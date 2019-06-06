@@ -4,7 +4,8 @@
 
 import argparse, os, os.path as path
 from rebuild.native_package_manager import native_package_manager as npm
-from bes.common import algorithm, dict_util
+from bes.common.algorithm import algorithm
+from bes.common.dict_util import dict_util
 
 def main():
 

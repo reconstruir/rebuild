@@ -2,7 +2,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import re
-from bes.common import object_util, string_util
+from bes.common.object_util import object_util
+from bes.common.string_util import string_util
 from bes.system import execute
 
 class lipo(object):

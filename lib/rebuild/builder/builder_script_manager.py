@@ -2,7 +2,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path, pprint
-from bes.common import check, dict_util
+from bes.common.check import check
+from bes.common.dict_util import dict_util
 from rebuild.base import build_blurb, package_descriptor, requirement, requirement_manager
 from bes.dependency import dependency_resolver, missing_dependency_error
 from collections import namedtuple

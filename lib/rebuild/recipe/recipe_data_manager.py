@@ -2,7 +2,8 @@
 
 import re
 
-from bes.common import check, string_util
+from bes.common.check import check
+from bes.common.string_util import string_util
 from bes.text import string_list
 from bes.system import logger
 

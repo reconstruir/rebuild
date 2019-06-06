@@ -4,7 +4,8 @@ import os.path as path
 
 from bes.fs import file_util, temp_file
 
-from bes.common import check, json_util
+from bes.common.check import check
+from bes.common.json_util import json_util
 
 from .storage_db_base import storage_db_base
 from .storage_db_dict import storage_db_dict

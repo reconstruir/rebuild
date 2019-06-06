@@ -4,7 +4,8 @@
 import os, os.path as path, re, subprocess, sys
 
 from bes.fs import compressed_file, file_find, file_util, file_mime, file_path, temp_file
-from bes.common import algorithm, object_util
+from bes.common.algorithm import algorithm
+from bes.common.object_util import object_util
 
 class patch(object):
 

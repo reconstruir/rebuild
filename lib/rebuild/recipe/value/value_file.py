@@ -1,7 +1,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common import check, string_util
+from bes.common.check import check
+from bes.common.string_util import string_util
 from bes.compat import StringIO
 
 from .value_base import value_base

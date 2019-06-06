@@ -1,7 +1,9 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.compat import StringIO
-from bes.common import algorithm, check, type_checked_list
+from bes.common.algorithm import algorithm
+from bes.common.check import check
+from bes.common.type_checked_list import type_checked_list
 from .requirement import requirement
 from .requirement_hardness import requirement_hardness
 from .requirement_parser import requirement_parser

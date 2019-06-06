@@ -2,7 +2,9 @@
 
 import json
 from collections import namedtuple
-from bes.common import check, json_util, string_util
+from bes.common.check import check
+from bes.common.json_util import json_util
+from bes.common.string_util import string_util
 from bes.property.cached_property import cached_property
 from rebuild.base import build_version, package_descriptor, requirement, requirement_list
 from .package_manifest import package_manifest

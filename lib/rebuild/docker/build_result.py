@@ -2,7 +2,8 @@
 
 import re
 from collections import namedtuple
-from bes.common import check, node
+from bes.common.check import check
+from bes.common.node import node
 from bes.key_value import key_value_list
 from bes.text import string_list
 
@@ -29,4 +30,3 @@ class build_result(object):
     if f and len(f) == 1:
       return f[0]
     return None
-  

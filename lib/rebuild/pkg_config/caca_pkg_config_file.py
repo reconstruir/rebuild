@@ -4,7 +4,9 @@
 # FIXME: maintain integrity of original pc whitespace and comments
 
 #import copy, glob, os.path as path
-from bes.common import check, variable, string_util
+from bes.common.check import check
+from bes.common.variable import variable
+from bes.common.string_util import string_util
 from bes.text import text_line_parser, string_list_parser
 from bes.key_value import key_value, key_value_list
 from bes.fs import file_util

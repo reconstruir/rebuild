@@ -2,7 +2,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import glob, os, os.path as path
-from bes.common import algorithm, string_list_util
+from bes.common.algorithm import algorithm
+from bes.common.string_list_util import string_list_util
 from bes.system import execute
 from bes.fs import dir_util, file_util
 from rebuild.native_package_manager import native_package_manager as npm

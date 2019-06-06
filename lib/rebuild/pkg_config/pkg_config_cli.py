@@ -4,7 +4,9 @@
 import argparse
 
 from rebuild.pkg_config import pkg_config
-from bes.common import algorithm, string_util, table as caca_table
+from bes.common.algorithm import algorithm
+from bes.common.string_util import string_util
+from bes.common.table import table as caca_table
 from bes.system import os_env_var
 from bes.text import text_table
 

@@ -3,7 +3,9 @@
 import os.path as path, re
 from collections import namedtuple
 
-from bes.common import algorithm, object_util, string_util
+from bes.common.algorithm import algorithm
+from bes.common.object_util import object_util
+from bes.common.string_util import string_util
 from bes.system import execute
 from bes.fs import dir_util, file_find, file_util, temp_file
 from bes.archive import archiver
@@ -102,4 +104,3 @@ class archive_util(object):
     cmd = [ 'diff', '-u', '-r', tmp_dir1, tmp_dir2 ]
     rv = execute.execute(cmd, raise_error = False, stderr_to_stdout = True)
     return rv
-  

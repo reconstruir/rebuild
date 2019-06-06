@@ -3,7 +3,8 @@
 import re
 
 from collections import namedtuple
-from bes.common import check, string_util
+from bes.common.check import check
+from bes.common.string_util import string_util
 
 from .recipe_error import recipe_error
 
@@ -44,4 +45,3 @@ class recipe_data_descriptor(namedtuple('recipe_data_descriptor', 'name, version
     return result
   
 check.register_class(recipe_data_descriptor, include_seq = False)
-  

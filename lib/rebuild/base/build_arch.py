@@ -2,7 +2,8 @@
 
 import copy, platform
 from .build_system import build_system
-from bes.common import check, string_util
+from bes.common.check import check
+from bes.common.string_util import string_util
 
 class build_arch(object):
 
@@ -124,4 +125,3 @@ class build_arch(object):
   @classmethod
   def arch_is_known(clazz, arch):
     return arch in clazz.KNOWN_ARCHS
-

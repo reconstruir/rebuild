@@ -4,7 +4,8 @@
 import os.path as path
 from rebuild.step import compound_step, step, step_result
 from bes.python import setup_tools
-from bes.common import string_util, time_util 
+from bes.common.string_util import string_util
+from bes.common.time_util import time_util
 from bes.version import version_info
 
 class step_python_egg_build(step):

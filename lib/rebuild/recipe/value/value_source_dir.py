@@ -2,7 +2,8 @@
 
 import os.path as path
 from bes.system import execute
-from bes.common import check, string_util
+from bes.common.check import check
+from bes.common.string_util import string_util
 from bes.compat import StringIO
 from bes.archive import archiver
 from bes.fs import file_util, tar_util

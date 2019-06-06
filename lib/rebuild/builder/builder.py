@@ -1,7 +1,10 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy, fnmatch, os, os.path as path, threading
-from bes.common import algorithm, check, dict_util, object_util
+from bes.common.algorithm import algorithm
+from bes.common.check import check
+from bes.common.dict_util import dict_util
+from bes.common.object_util import object_util
 from bes.thread import thread_pool
 from bes.fs import dir_util, file_util
 from bes.dependency import dependency_resolver

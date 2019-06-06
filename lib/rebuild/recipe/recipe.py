@@ -2,7 +2,8 @@
 
 import re
 from collections import namedtuple
-from bes.common import check, node
+from bes.common.check import check
+from bes.common.node import node
 from bes.key_value import key_value_list
 
 from .recipe_error import recipe_error

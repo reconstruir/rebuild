@@ -2,7 +2,9 @@
 
 from os import path
 from collections import namedtuple
-from bes.common import check, node, tuple_util
+from bes.common.check import check
+from bes.common.node import node
+from bes.common.tuple_util import tuple_util
 from bes.text import white_space
 from bes.fs import file_util, temp_file
 

@@ -5,7 +5,9 @@ import copy, os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs import file_find, file_util, temp_file
 from bes.system import execute, os_env
-from bes.common import check, dict_util, object_util
+from bes.common.check import check
+from bes.common.dict_util import dict_util
+from bes.common.object_util import object_util
 from rebuild.base import build_target as BT, package_descriptor as PD, package_descriptor_list as PDL
 from rebuild.pkg_config import pkg_config
 from rebuild.package import artifact_manager_local, package, package_manager, package_install_options

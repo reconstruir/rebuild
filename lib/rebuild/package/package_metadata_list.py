@@ -1,6 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.common import check, type_checked_list
+from bes.common.check import check
+from bes.common.type_checked_list import type_checked_list
 from rebuild.base import artifact_descriptor
 from .package_metadata import package_metadata
 

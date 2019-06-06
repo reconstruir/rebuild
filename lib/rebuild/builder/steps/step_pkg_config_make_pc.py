@@ -3,7 +3,10 @@
 
 import os, os.path as path
 
-from bes.common import dict_util, object_util, string_util, variable
+from bes.common.dict_util import dict_util
+from bes.common.object_util import object_util
+from bes.common.string_util import string_util
+from bes.common.variable import variable
 from bes.fs import file_replace
 from rebuild.step import step, step_result
 

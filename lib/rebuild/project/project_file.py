@@ -1,7 +1,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from collections import namedtuple
-from bes.common import check, node
+from bes.common.check import check
+from bes.common.node import node
 from bes.key_value import key_value_list
 from bes.text import string_list
 
