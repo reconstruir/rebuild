@@ -15,7 +15,8 @@ from bes.common.variable import variable
 from bes.dependency import dependency_resolver
 from bes.fs import file_path, file_util
 from bes.system import os_env
-from bes.env import env_dir, shell_framework
+from bes.env.env_dir import env_dir
+from bes.env.shell_framework import shell_framework
 
 from rebuild.base import build_system, requirement
 from rebuild.base import package_descriptor, package_descriptor_list
