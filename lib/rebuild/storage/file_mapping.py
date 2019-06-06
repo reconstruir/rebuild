@@ -5,7 +5,8 @@ import os.path as path
 from bes.system import execute, log, os_env
 from bes.common import check
 from bes.fs import file_util
-from bes.compat.url_compat import urlparse, urljoin
+from bes.compat.url_compat import urlparse
+from bes.compat.url_compat import urljoin
 
 from collections import namedtuple
 
@@ -94,4 +95,3 @@ class file_mapping(namedtuple('file_mapping', 'local_root, remote_root, url')):
     if not url.endswith('/'):
       url = url + '/'
     return url
-  
