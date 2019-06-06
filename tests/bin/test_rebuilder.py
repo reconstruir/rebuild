@@ -318,7 +318,8 @@ print("hook1 hook2")
     self.assertEqual( [ 'libpotato-1.0.0.tar.gz', 'libstarch-1.0.0.tar.gz' ], test.artifacts )
 
   def test_tarball_ingestion(self):
-    from bes.web import file_web_server, web_server_controller
+    from bes.web.file_web_server import file_web_server
+    from bes.web.web_server_controller import web_server_controller
 
     tmp_web_root = self._make_temp_dir('tmp_web_root')
     fructose_tarball_filename = 'rebuild_stuff/sources/fructose-3.4.5.tar.gz'

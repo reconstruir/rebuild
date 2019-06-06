@@ -3,7 +3,8 @@
 from collections import namedtuple
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
-from bes.web import file_web_server, web_server_controller
+from bes.web.file_web_server import file_web_server
+from bes.web.web_server_controller import web_server_controller
 from rebuild.artifactory.mock_artifactory_server import mock_artifactory_server
 from rebuild.storage.storage_address import storage_address
 
