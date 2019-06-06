@@ -9,7 +9,7 @@ from bes.archive import archiver
 from rebuild.package import package
 from rebuild.base import artifact_descriptor as AD, requirement_list as RL
 
-from bes.fs import temp_file, temp_item
+from bes.fs.temp_file import temp_file, temp_item
 
 from _rebuild_testing.fake_package_recipe import fake_package_recipe as R
 from _rebuild_testing.fake_package_recipe_parser import fake_package_recipe_parser as P

@@ -4,7 +4,8 @@
 import argparse, os.path as path
 from rebuild.builder.builder_recipe_loader import builder_recipe_loader
 from bes.git import repo
-from bes.fs import file_replace, temp_file
+from bes.fs.file_replace import file_replace
+from bes.fs.temp_file import temp_file
 from rebuild.recipe import testing_recipe_load_env
 
 class update_cli(object):
@@ -51,4 +52,3 @@ class update_cli(object):
       
 if __name__ == '__main__':
   update_cli.run()
-      

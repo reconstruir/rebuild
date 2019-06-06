@@ -11,7 +11,14 @@ from bes.common.dict_util import dict_util
 from bes.common.json_util import json_util
 from bes.common.string_util import string_util
 from bes.property.cached_property import cached_property
-from bes.fs import dir_util, file_check, file_find, file_search, file_replace, file_util, tar_util, temp_file
+from bes.fs.dir_util import dir_util
+from bes.fs.file_check import file_check
+from bes.fs.file_find import file_find
+from bes.fs.file_search import file_search
+from bes.fs.file_replace import file_replace
+from bes.fs.file_util import file_util
+from bes.fs.tar_util import tar_util
+from bes.fs.temp_file import temp_file
 from bes.text import text_line_parser
 from bes.match import matcher_filename, matcher_multiple_filename
 from bes.python import setup_tools

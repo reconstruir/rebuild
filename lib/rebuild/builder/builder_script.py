@@ -10,7 +10,8 @@ from bes.common.string_util import string_util
 from bes.common.type_checked_list import type_checked_list
 from bes.common.variable import variable
 from bes.common.variable_pattern import variable_pattern
-from bes.fs import file_checksum_list, file_util
+from bes.fs.file_checksum import file_checksum_list
+from bes.fs.file_util import file_util
 from bes.system import log
 from bes.debug import debug_timer
 from rebuild.base import build_blurb

@@ -3,7 +3,9 @@
 
 import os, os.path as path, re
 from bes.system import impl_import
-from bes.fs import dir_util, file_util, file_path
+from bes.fs.dir_util import dir_util
+from bes.fs.file_util import file_util
+from bes.fs.file_path import file_path
 
 from bes.system import host
 if host.SYSTEM == 'macos':
@@ -121,4 +123,3 @@ class library(_library_super_class):
 #    print('      result: %s' % (result))
     
     return result
-  

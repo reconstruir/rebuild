@@ -5,7 +5,9 @@ from collections import namedtuple
 
 from bes.system import execute, log, os_env
 from bes.common import check
-from bes.fs import file_path, file_util, temp_file
+from bes.fs.file_path import file_path
+from bes.fs.file_util import file_util
+from bes.fs.temp_file import temp_file
 
 from rebuild.base import requirement_list
 from rebuild.package import package_metadata, package_metadata_list, package_manifest

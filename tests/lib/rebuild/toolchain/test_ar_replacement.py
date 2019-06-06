@@ -6,7 +6,8 @@ import os.path as path
 from bes.system import host
 from rebuild.toolchain import ar_replacement
 from rebuild.base import build_system
-from bes.fs import dir_util, temp_file
+from bes.fs.dir_util import dir_util
+from bes.fs.temp_file import temp_file
 from bes.testing.unit_test.unit_test_skip import skip_if
 
 class test_ar_replacement(unit_test):

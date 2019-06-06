@@ -3,7 +3,9 @@
 import os.path as path
 from bes.common import check
 from bes.system import log
-from bes.fs import file_attributes, file_find, file_util
+from bes.fs.file_attributes import file_attributes
+from bes.fs.file_find import file_find
+from bes.fs.file_util import file_util
 from bes.archive import archiver
 
 from .storage_base import storage_base 
@@ -122,4 +124,3 @@ class storage_local(storage_base):
 
   def _remote_path(self, filename):
     return path.join(self._where, filename)
-  

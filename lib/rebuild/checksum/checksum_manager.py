@@ -3,7 +3,8 @@
 import os.path as path
 from bes.common.check import check
 from bes.common.object_util import object_util
-from bes.fs import file_checksum_list, file_util
+from bes.fs.file_checksum import file_checksum_list
+from bes.fs.file_util import file_util
 from rebuild.base import build_blurb, build_target, package_descriptor
 from collections import namedtuple
 

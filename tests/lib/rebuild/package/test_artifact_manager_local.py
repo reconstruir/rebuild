@@ -3,7 +3,8 @@
 
 import os.path as path
 from bes.testing.unit_test import unit_test
-from bes.fs import file_find, temp_file
+from bes.fs.file_find import file_find
+from bes.fs.temp_file import temp_file
 from rebuild.base import artifact_descriptor as AD, artifact_descriptor_list as ADL, build_target as BT, package_descriptor as PD, requirement_list as RL
 from rebuild.package.db_error import *
 from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT

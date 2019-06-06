@@ -5,7 +5,8 @@ import glob, os, os.path as path
 from bes.common.algorithm import algorithm
 from bes.common.string_list_util import string_list_util
 from bes.system import execute
-from bes.fs import dir_util, file_util
+from bes.fs.dir_util import dir_util
+from bes.fs.file_util import file_util
 from rebuild.native_package_manager import native_package_manager as npm
 from bes.match import matcher_util
 from rebuild.toolchain import library

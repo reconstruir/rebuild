@@ -4,7 +4,8 @@
 import os, os.path as path
 
 from bes.common import variable
-from bes.fs import file_replace, file_util
+from bes.fs.file_replace import file_replace
+from bes.fs.file_util import file_util
 from bes.system import execute
 from rebuild.step import compound_step, step, step_result
 from rebuild.tools import install

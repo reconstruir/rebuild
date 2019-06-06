@@ -5,7 +5,8 @@ from collections import namedtuple
 
 from bes.common import check
 from bes.compat import StringIO
-from bes.fs import file_util, file_checksum_list
+from bes.fs.file_util import file_util
+from bes.fs.file_checksum import file_checksum_list
 from bes.text import text_table
 
 from rebuild.storage import source_tool

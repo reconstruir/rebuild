@@ -7,7 +7,8 @@ import copy, glob, os.path as path
 from bes.common.algorithm import algorithm
 from bes.common.string_util import string_util
 from bes.key_value import key_value
-from bes.fs import dir_util, file_util
+from bes.fs.dir_util import dir_util
+from bes.fs.file_util import file_util
 from .entry import entry
 from rebuild.base import requirement, requirement_list
 

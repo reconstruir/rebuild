@@ -1,7 +1,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from collections import namedtuple
-from bes.fs import file_util, temp_file
+from bes.fs.file_util import file_util
+from bes.fs.temp_file import temp_file
 from bes.web import file_web_server, web_server_controller
 from rebuild.artifactory.mock_artifactory_server import mock_artifactory_server
 from rebuild.storage.storage_address import storage_address

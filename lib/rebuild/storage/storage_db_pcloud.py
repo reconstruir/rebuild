@@ -3,7 +3,8 @@
 import os.path as path
 
 from bes.common import check
-from bes.fs import file_util, temp_file
+from bes.fs.file_util import file_util
+from bes.fs.temp_file import temp_file
 
 from .storage_db_base import storage_db_base
 from .storage_db_dict import storage_db_dict

@@ -13,7 +13,8 @@ from bes.common.object_util import object_util
 from bes.common.string_util import string_util
 from bes.common.variable import variable
 from bes.dependency import dependency_resolver
-from bes.fs import file_path, file_util
+from bes.fs.file_path import file_path
+from bes.fs.file_util import file_util
 from bes.system import os_env
 from bes.env.env_dir import env_dir
 from bes.env.shell_framework import shell_framework

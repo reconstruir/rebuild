@@ -7,7 +7,9 @@ from collections import namedtuple
 from bes.common import check
 from bes.archive.archiver import archiver
 from bes.archive.archive_extension import archive_extension
-from bes.fs import file_util, tar_util, temp_file
+from bes.fs.file_util import file_util
+from bes.fs.tar_util import tar_util
+from bes.fs.temp_file import temp_file
 from bes.system import execute, log
 from bes.url import url_util
 

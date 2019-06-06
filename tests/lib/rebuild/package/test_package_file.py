@@ -3,7 +3,8 @@
 
 import os.path as path
 from bes.testing.unit_test import unit_test
-from bes.fs import file_util, temp_file
+from bes.fs.file_util import file_util
+from bes.fs.temp_file import temp_file
 
 from rebuild.package.package_file import package_file as FC
 from rebuild.package.package_file_list import package_file_list as FCL
@@ -85,4 +86,3 @@ class test_file_checksum(unit_test):
     
 if __name__ == '__main__':
   unit_test.main()
-    

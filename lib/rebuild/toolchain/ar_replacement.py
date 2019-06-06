@@ -5,7 +5,9 @@ import os.path as path, shutil
 from bes.system import execute, host
 from collections import namedtuple
 from rebuild.toolchain.darwin import lipo
-from bes.fs import dir_util, file_util, temp_file
+from bes.fs.dir_util import dir_util
+from bes.fs.file_util import file_util
+from bes.fs.temp_file import temp_file
 
 class ar_replacement(object):
   'A replacement for the ar with fat support.'

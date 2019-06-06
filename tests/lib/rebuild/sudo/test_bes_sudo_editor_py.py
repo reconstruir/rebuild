@@ -4,7 +4,9 @@
 
 import os, os.path as path
 from bes.testing.unit_test import unit_test
-from bes.fs import file_util, file_find, temp_file
+from bes.fs.file_util import file_util
+from bes.fs.file_find import file_find
+from bes.fs.temp_file import temp_file
 from bes.system import os_env
 
 class test_bes_sudo_editor_py(unit_test):

@@ -3,7 +3,9 @@
 import json, os, os.path as path
 from bes.web import web_server
 from bes.system import log
-from bes.fs import file_mime, file_find, file_util
+from bes.fs.file_mime import file_mime
+from bes.fs.file_find import file_find
+from bes.fs.file_util import file_util
 from bes.compat import url_compat
 
 from .artifactory_requests import artifactory_requests
@@ -148,4 +150,3 @@ class mock_artifactory_server(web_server):
     import sys
     sys.stdout.flush()
     assert False
-    

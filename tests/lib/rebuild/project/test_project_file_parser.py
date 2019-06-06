@@ -8,7 +8,8 @@ from rebuild.project.project_file_parser import project_file_parser as P
 from rebuild.recipe import recipe_error as ERR
 from rebuild.base import build_target
 from bes.key_value import key_value as KV, key_value_list as KVL
-from bes.fs import file_util, temp_file
+from bes.fs.file_util import file_util
+from bes.fs.temp_file import temp_file
 
 class test_project_file_parser(unit_test):
 

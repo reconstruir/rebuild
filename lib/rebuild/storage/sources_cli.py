@@ -8,7 +8,9 @@ from bes.archive import archiver
 from bes.common.check import check
 from bes.common.node import node
 from bes.compat import StringIO
-from bes.fs import file_find, file_util, temp_file
+from bes.fs.file_find import file_find
+from bes.fs.file_util import file_util
+from bes.fs.temp_file import temp_file
 from bes.common import node
 from bes.text import text_table
 from bes.url import url_util

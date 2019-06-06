@@ -8,7 +8,11 @@ from bes.common.check import check
 from bes.common.object_util import object_util
 from bes.common.string_util import string_util
 from bes.system import execute, logger, os_env_var, host
-from bes.fs import file_find, file_match, file_path, file_util, temp_file
+from bes.fs.file_find import file_find
+from bes.fs.file_match import file_match
+from bes.fs.file_path import file_path
+from bes.fs.file_util import file_util
+from bes.fs.temp_file import temp_file
 from bes.python import package
 from rebuild.base import build_arch, build_blurb, build_system
 

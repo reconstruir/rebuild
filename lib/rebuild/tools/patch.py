@@ -3,7 +3,12 @@
 
 import os, os.path as path, re, subprocess, sys
 
-from bes.fs import compressed_file, file_find, file_util, file_mime, file_path, temp_file
+from bes.fs.compressed_file import compressed_file
+from bes.fs.file_find import file_find
+from bes.fs.file_util import file_util
+from bes.fs.file_mime import file_mime
+from bes.fs.file_path import file_path
+from bes.fs.temp_file import temp_file
 from bes.common.algorithm import algorithm
 from bes.common.object_util import object_util
 

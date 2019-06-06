@@ -6,7 +6,8 @@ from bes.common.check import check
 from bes.common.dict_util import dict_util
 from bes.common.object_util import object_util
 from bes.thread import thread_pool
-from bes.fs import dir_util, file_util
+from bes.fs.dir_util import dir_util
+from bes.fs.file_util import file_util
 from bes.dependency import dependency_resolver
 from collections import namedtuple
 from rebuild.step import step_aborted

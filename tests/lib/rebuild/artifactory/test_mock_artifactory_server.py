@@ -15,7 +15,9 @@ else:
   from urllib2 import HTTPError
   
 from bes.testing.unit_test import unit_test
-from bes.fs import file_mime, file_util, temp_file
+from bes.fs.file_mime import file_mime
+from bes.fs.file_util import file_util
+from bes.fs.temp_file import temp_file
 from bes.key_value import key_value, key_value_list
 
 from rebuild.artifactory.mock_artifactory_tester import mock_artifactory_tester as MAT

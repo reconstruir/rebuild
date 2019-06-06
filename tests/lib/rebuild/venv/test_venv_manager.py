@@ -7,7 +7,8 @@ from collections import namedtuple
 
 from bes.testing.unit_test import unit_test
 from bes.system import os_env, execute
-from bes.fs import file_util, temp_file
+from bes.fs.file_util import file_util
+from bes.fs.temp_file import temp_file
 
 from rebuild.base import build_target as BT
 from rebuild.venv.venv_config import venv_config

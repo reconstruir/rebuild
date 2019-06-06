@@ -8,7 +8,8 @@ from bes.common.check import check
 from bes.common.object_util import object_util
 from bes.common.variable import variable
 from bes.common.variable_pattern import variable_pattern
-from bes.fs import file_find, file_util
+from bes.fs.file_find import file_find
+from bes.fs.file_util import file_util
 import os, os.path as path, shutil
 
 class step_install_install_files(step):

@@ -3,7 +3,8 @@
 
 import os.path as path
 
-from bes.fs import dir_util, file_util
+from bes.fs.dir_util import dir_util
+from bes.fs.file_util import file_util
 from rebuild.step import step, step_result
 
 class step_cleanup_binary_filenames(step):

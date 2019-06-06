@@ -6,7 +6,8 @@ from bes.common.check import check
 from bes.common.string_util import string_util
 from bes.compat import StringIO
 from bes.archive import archiver
-from bes.fs import file_util, tar_util
+from bes.fs.file_util import file_util
+from bes.fs.tar_util import tar_util
 
 from .value_base import value_base
 

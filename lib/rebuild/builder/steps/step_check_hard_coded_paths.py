@@ -2,7 +2,8 @@
 
 import os.path as path
 from rebuild.step import step, step_result
-from bes.fs import file_search, file_mime
+from bes.fs.file_search import file_search
+from bes.fs.file_mime import file_mime
 
 class step_check_hard_coded_paths(step):
   'Check that no files in the stage directory have hard coded paths.'

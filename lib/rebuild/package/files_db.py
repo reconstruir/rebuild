@@ -1,7 +1,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.common import check
-from bes.fs import file_checksum, file_checksum_list
+from bes.fs.file_checksum import file_checksum
+from bes.fs.file_checksum import file_checksum_list
 from bes.system import log
 
 from .db_error import *

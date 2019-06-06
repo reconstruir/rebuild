@@ -3,7 +3,10 @@
 
 import os.path as path
 from bes.testing.unit_test import script_unit_test
-from bes.fs import file_replace, file_util, tar_util, temp_file
+from bes.fs.file_replace import file_replace
+from bes.fs.file_util import file_util
+from bes.fs.tar_util import tar_util
+from bes.fs.temp_file import temp_file
 from bes.git.git_temp_repo import git_temp_repo
 from bes.git.git_unit_test import git_unit_test
 from rebuild.base import build_target

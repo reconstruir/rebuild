@@ -6,7 +6,9 @@ from bes.common.algorithm import algorithm
 from bes.common.check import check
 
 from bes.system import log, os_env_var
-from bes.fs import file_find, file_path, file_util
+from bes.fs.file_find import file_find
+from bes.fs.file_path import file_path
+from bes.fs.file_util import file_util
 from bes.fs.file_checksum_getter_raw import file_checksum_getter_raw
 from bes.dependency import dependency_resolver
 from bes.key_value import key_value_list

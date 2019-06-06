@@ -1,7 +1,10 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import codecs, os, os.path as path, subprocess, sys
-from bes.fs import file_checksum, file_checksum_list, file_find, temp_file
+from bes.fs.file_checksum import file_checksum
+from bes.fs.file_checksum import file_checksum_list
+from bes.fs.file_find import file_find
+from bes.fs.temp_file import temp_file
 from bes.archive import archiver
 from bes.common import string_util
 from bes.git import git_util
@@ -170,4 +173,3 @@ class rebuilder_tester(object):
     stdout, _ = process.communicate()
     exit_code = process.wait()
     return clazz.exec_result(exit_code, stdout.strip())
-  
