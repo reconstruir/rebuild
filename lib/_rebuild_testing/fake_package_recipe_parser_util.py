@@ -1,6 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.text import string_list, tree_text_parser
+from bes.text.string_list import string_list
+from bes.text.tree_text_parser import tree_text_parser
     
 class fake_package_recipe_parser_util(object):
 

@@ -8,7 +8,9 @@ from bes.common.string_util import string_util
 from bes.key_value.key_value import key_value
 from bes.key_value.key_value_parser import key_value_parser
 from bes.system import log
-from bes.text import string_list, tree_text_parser, text_fit
+from bes.text.string_list import string_list
+from bes.text.tree_text_parser import tree_text_parser
+from bes.text.text_fit import text_fit
 
 from rebuild.base import build_version, requirement, requirement_list, package_descriptor
 from rebuild.step.step_description import step_description

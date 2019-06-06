@@ -2,7 +2,8 @@
 
 from bes.common.check import check
 from bes.common.node import node
-from bes.text import text_line_parser, white_space
+from bes.text.text_line_parser import text_line_parser
+from bes.text.white_space import white_space
 
 class recipe_util(object):
 

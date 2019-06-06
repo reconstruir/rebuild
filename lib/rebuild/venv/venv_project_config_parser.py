@@ -6,7 +6,8 @@ import os.path as path
 from bes.common.check import check
 from bes.common.string_util import string_util
 from bes.system import log
-from bes.text import text_line_parser, tree_text_parser
+from bes.text.text_line_parser import text_line_parser
+from bes.text.tree_text_parser import tree_text_parser
 
 from rebuild.recipe import recipe_error, recipe_parser_util
 from rebuild.recipe.value import masked_value_list

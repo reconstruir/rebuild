@@ -3,7 +3,8 @@
 
 from bes.common.check import check
 from bes.common.node import node
-from bes.text import string_list, white_space
+from bes.text.string_list import string_list
+from bes.text.white_space import white_space
 from collections import namedtuple
 
 class instruction(namedtuple('instruction', 'name,flags,requires')):

@@ -7,7 +7,9 @@ from bes.common.check import check
 from bes.common.string_util import string_util
 from bes.key_value import key_value_list
 from bes.system import log
-from bes.text import string_list, tree_text_parser, text_fit
+from bes.text.string_list import string_list
+from bes.text.tree_text_parser import tree_text_parser
+from bes.text.text_fit import text_fit
 
 from rebuild.base import build_system
 from rebuild.recipe import recipe_error, recipe_parser_util
