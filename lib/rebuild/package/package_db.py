@@ -1,8 +1,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import json, os.path as path
-from bes.common import check
-from bes.sqlite import sqlite
+from bes.common.check import check
+from bes.sqlite.sqlite import sqlite
 from rebuild.base import build_version, package_descriptor, package_descriptor_list
 
 from .db_error import *

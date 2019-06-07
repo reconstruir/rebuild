@@ -6,9 +6,9 @@ from collections import namedtuple
 from bes.common.algorithm import algorithm
 from bes.common.check import check
 from bes.common.string_util import string_util
-from bes.compat import StringIO
+from bes.compat.StringIO import StringIO
 from bes.dependency import dependency_provider
-from bes.fs import file_find
+from bes.fs.file_find import file_find
 
 from .value_base import value_base
 from .value_list_base import value_list_base

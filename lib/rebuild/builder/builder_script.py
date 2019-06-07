@@ -12,8 +12,8 @@ from bes.common.variable import variable
 from bes.common.variable_pattern import variable_pattern
 from bes.fs.file_checksum import file_checksum_list
 from bes.fs.file_util import file_util
-from bes.system import log
-from bes.debug import debug_timer
+from bes.system.log import log
+from bes.debug.debug_timer import debug_timer
 from rebuild.base import build_blurb
 from bes.dependency import dependency_provider
 from rebuild.step import step_description, step_manager

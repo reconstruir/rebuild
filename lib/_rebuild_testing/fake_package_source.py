@@ -4,8 +4,8 @@ from os import path
 from collections import namedtuple
 from bes.common.check import check
 from bes.common.node import node
-from bes.text import white_space
-from bes.fs import file_util
+from bes.text.white_space import white_space
+from bes.fs.file_util import file_util
 
 from .fake_package_recipe_parser_util import fake_package_recipe_parser_util
 

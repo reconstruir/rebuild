@@ -5,7 +5,7 @@ from collections import namedtuple
 import os.path as path
 from bes.common.check import check
 from bes.common.string_util import string_util
-from bes.system import log
+from bes.system.log import log
 from bes.text.text_line_parser import text_line_parser
 from bes.text.tree_text_parser import tree_text_parser
 

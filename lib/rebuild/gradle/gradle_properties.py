@@ -4,8 +4,8 @@
 from os import path
 from collections import namedtuple
 
-from bes.system import log
-from bes.common import check
+from bes.system.log import log
+from bes.common.check import check
 from bes.properties_file.properties_file import properties_file
 from rebuild.credentials.credentials import credentials
 

@@ -7,7 +7,7 @@ from bes.common.bool_util import bool_util
 from bes.common.check import check
 from bes.common.dict_util import dict_util
 from bes.common.object_util import object_util
-from bes.archive import archiver
+from bes.archive.archiver import archiver
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
 

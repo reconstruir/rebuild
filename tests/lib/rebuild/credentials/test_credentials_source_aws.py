@@ -5,7 +5,7 @@ import os
 from bes.testing.unit_test import unit_test
 from rebuild.credentials.credentials_source_aws import credentials_source_aws as CSA
 from bes.system.env_override import env_override
-from bes.fs import temp_file
+from bes.fs.temp_file import temp_file
 
 class test_credentials_source_aws(unit_test):
 

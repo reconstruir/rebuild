@@ -7,7 +7,7 @@ from bes.common.check import check
 from bes.common.object_util import object_util
 from bes.fs.dir_util import dir_util
 from bes.fs.file_util import file_util
-from bes.dependency import dependency_resolver
+from bes.dependency.dependency_resolver import dependency_resolver
 from .caca_pkg_config_file import caca_pkg_config_file
 from collections import namedtuple
 

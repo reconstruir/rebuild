@@ -2,11 +2,11 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path, sys
-from bes.common import json_util
+from bes.common.json_util import json_util
 from bes.system.add_method import add_method
-from bes.unix import terminal
-from bes.fs import file_util
-from bes.text import text_fit
+from bes.unix.terminal import terminal
+from bes.fs.file_util import file_util
+from bes.text.text_fit import text_fit
 
 class build_blurb(object):
 

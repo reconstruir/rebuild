@@ -4,7 +4,7 @@
 import re
 from bes.common.object_util import object_util
 from bes.common.string_util import string_util
-from bes.system import execute
+from bes.system.execute import execute
 
 class lipo(object):
 

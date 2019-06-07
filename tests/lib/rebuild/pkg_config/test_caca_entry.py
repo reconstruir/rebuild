@@ -4,7 +4,7 @@
 from bes.testing.unit_test import unit_test
 from rebuild.pkg_config.caca_entry import caca_entry
 from rebuild.pkg_config.entry_type import entry_type
-from bes.text import text_line
+from bes.text.text_line import text_line
 
 class test_caca_entry(unit_test):
 

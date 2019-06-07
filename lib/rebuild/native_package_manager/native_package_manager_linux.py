@@ -5,7 +5,7 @@ import os.path as path
 from .native_package_manager_base import native_package_manager_base
 from bes.common.string_util import string_util
 from bes.common.string_list_util import string_list_util
-from bes.system import execute
+from bes.system.execute import execute
 
 class native_package_manager_linux(native_package_manager_base):
 

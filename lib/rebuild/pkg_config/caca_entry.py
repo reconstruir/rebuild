@@ -3,7 +3,7 @@
 
 from bes.common.check import check
 from bes.common.variable import variable
-from bes.key_value import key_value
+from bes.key_value.key_value import key_value
 from collections import namedtuple
 from .entry_type import entry_type
 

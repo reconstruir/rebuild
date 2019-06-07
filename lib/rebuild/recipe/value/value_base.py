@@ -4,12 +4,12 @@ from os import path
 from collections import namedtuple
 from abc import abstractmethod, ABCMeta
 
-from bes.system import log
+from bes.system.log import log
 from bes.system.compat import with_metaclass
 from bes.common.check import check
 from bes.common.variable import variable
 from bes.common.variable_pattern import variable_pattern
-from bes.key_value import key_value_list
+from bes.key_value.key_value_list import key_value_list
 
 from .value_registry import value_registry
 from .value_parsing import value_parsing

@@ -5,9 +5,9 @@ import os.path as path
 from bes.testing.unit_test import unit_test
 from rebuild.venv.venv_project_config import venv_project_config as VC
 from rebuild.recipe.value import masked_value, masked_value_list, value_origin, value_key_values, value_string_list
-from bes.key_value import key_value_list
-from bes.text import string_list
-from bes.fs import temp_file
+from bes.key_value.key_value_list import key_value_list
+from bes.text.string_list import string_list
+from bes.fs.temp_file import temp_file
 from rebuild.base import requirement_list
 
 class test_venv_project_config(unit_test):

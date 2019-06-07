@@ -3,8 +3,8 @@
 
 import os.path as path
 from .library_base import library_base
-from bes.common import algorithm
-from bes.system import execute
+from bes.common.algorithm import algorithm
+from bes.system.execute import execute
 from rebuild.binary_format import binary_format_macho
 
 class library_macos(library_base):

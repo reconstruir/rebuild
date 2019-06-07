@@ -15,7 +15,7 @@ from rebuild.project.project_file_manager import project_file_manager
 # needed so that artifact_manager_artifactory ends up in the standalone package
 from rebuild.package.artifact_manager_artifactory import artifact_manager_artifactory
 
-from bes.fs import file_util
+from bes.fs.file_util import file_util
 
 from .builder import builder
 from .builder_config import builder_config
@@ -106,7 +106,7 @@ class builder_cli(build_target_cli):
     build_blurb.set_verbose(args.verbose)
 
     if args.version:
-      from bes.version import version_cli
+      from bes.version.version_cli import version_cli
       version_cli.print_everything('rebuild', dependencies = [ 'bes' ], print_all = args.verbose)
       return 0
 

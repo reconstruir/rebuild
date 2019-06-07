@@ -3,7 +3,7 @@
 
 from bes.testing.unit_test import unit_test
 from rebuild.instruction import instruction as I
-from bes.text import string_list as SL
+from bes.text.string_list import string_list as SL
 
 class test_instruction(unit_test):
 

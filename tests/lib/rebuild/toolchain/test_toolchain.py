@@ -5,12 +5,12 @@ import os.path as path
 from bes.testing.unit_test import unit_test
 from rebuild.base import build_target, build_system
 from rebuild.toolchain import compiler, toolchain, toolchain_testing
-from bes.system import host
+from bes.system.host import host
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
 from bes.common.object_util import object_util
 from bes.common.variable import variable
-from bes.testing.unit_test.unit_test_skip import skip_if
+from bes.testing.unit_test_skip import skip_if
 
 class test_toolchain(unit_test):
 

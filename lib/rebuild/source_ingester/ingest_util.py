@@ -4,7 +4,7 @@ import os, shutil
 from os import path
 from collections import namedtuple
 
-from bes.common import check
+from bes.common.check import check
 from bes.archive.archiver import archiver
 from bes.archive.archive_extension import archive_extension
 from bes.fs.file_util import file_util

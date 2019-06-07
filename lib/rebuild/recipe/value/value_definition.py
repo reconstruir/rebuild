@@ -3,7 +3,7 @@
 from collections import namedtuple
 from bes.common.check import check
 from bes.common.string_util import string_util
-from bes.text import comments
+from bes.text.comments import comments
 
 class value_definition(namedtuple('value_definition', 'name, class_name, default, line_number')):
   

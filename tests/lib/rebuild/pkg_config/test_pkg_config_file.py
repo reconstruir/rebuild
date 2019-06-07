@@ -3,7 +3,7 @@
 
 from bes.testing.unit_test import unit_test
 import copy, glob, os.path as path
-from bes.fs import temp_file
+from bes.fs.temp_file import temp_file
 from rebuild.pkg_config import pkg_config_file
 from rebuild.pkg_config.entry import entry
 

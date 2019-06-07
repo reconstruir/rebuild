@@ -2,7 +2,7 @@
 
 import os, os.path as path
 
-from bes.common import object_util
+from bes.common.object_util import object_util
 from rebuild.step import step, step_result
 from rebuild.base import build_blurb
 

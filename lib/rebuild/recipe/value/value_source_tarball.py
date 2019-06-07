@@ -4,7 +4,7 @@ import os.path as path
 from bes.common.check import check
 from bes.common.string_util import string_util
 from bes.property.cached_property import cached_property
-from bes.compat import StringIO
+from bes.compat.StringIO import StringIO
 from .value_base import value_base
 
 class value_source_tarball(value_base):

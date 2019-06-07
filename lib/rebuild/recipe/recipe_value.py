@@ -1,8 +1,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from collections import namedtuple
-from bes.common import check
-from bes.compat import StringIO
+from bes.common.check import check
+from bes.compat.StringIO import StringIO
 from .value import masked_value_list
 
 class recipe_value(namedtuple('recipe_value', 'key,values')):

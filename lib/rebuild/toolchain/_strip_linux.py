@@ -4,7 +4,7 @@
 from ._strip_base import _strip_base
 
 from .toolchain import toolchain
-from bes.system import execute
+from bes.system.execute import execute
 
 class _strip_linux(_strip_base):
 

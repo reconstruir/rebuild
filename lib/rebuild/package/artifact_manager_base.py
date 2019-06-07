@@ -4,9 +4,9 @@ from os import path
 from collections import namedtuple
 from abc import abstractmethod, ABCMeta
 from bes.system.compat import with_metaclass
-from bes.common import check
-from bes.system import log
-from bes.debug import debug_timer
+from bes.common.check import check
+from bes.system.log import log
+from bes.debug.debug_timer import debug_timer
 
 from rebuild.base import artifact_descriptor, build_blurb, package_descriptor_list, requirement_manager
 

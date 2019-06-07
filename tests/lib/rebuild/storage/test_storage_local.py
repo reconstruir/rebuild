@@ -2,9 +2,9 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from bes.common import string_util
-from bes.fs.testing import temp_content
-from bes.fs import temp_file
+from bes.common.string_util import string_util
+from bes.fs.testing.temp_content import temp_content
+from bes.fs.temp_file import temp_file
 from bes.archive.archive_extension import archive_extension
 from bes.archive.temp_archive import temp_archive
 from rebuild.storage import storage_local, storage_factory

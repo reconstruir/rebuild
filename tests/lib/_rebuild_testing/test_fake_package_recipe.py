@@ -4,7 +4,7 @@
 from os import path
 
 from bes.testing.unit_test import unit_test
-from bes.archive import archiver
+from bes.archive.archiver import archiver
 
 from rebuild.package import package
 from rebuild.base import artifact_descriptor as AD, requirement_list as RL

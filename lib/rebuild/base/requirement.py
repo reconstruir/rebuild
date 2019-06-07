@@ -4,7 +4,7 @@ from bes.common.check import check
 from bes.common.object_util import object_util
 from bes.common.tuple_util import tuple_util
 from collections import namedtuple
-from bes.compat import StringIO
+from bes.compat.StringIO import StringIO
 
 from .build_system import build_system
 from .requirement_hardness import requirement_hardness

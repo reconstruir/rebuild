@@ -7,7 +7,7 @@ from bes.system.execute import execute
 from bes.system.os_env import os_env
 from rebuild.base import build_target, build_level, package_descriptor_list
 from rebuild.venv.venv_manager import venv_manager
-from bes.debug import debug_timer
+from bes.debug.debug_timer import debug_timer
 
 class tools_manager(object):
 

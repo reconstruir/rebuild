@@ -4,7 +4,7 @@
 import os.path as path
 
 from bes.testing.unit_test import unit_test
-from bes.fs import temp_file
+from bes.fs.temp_file import temp_file
 
 from rebuild.config import storage_config_manager
 from rebuild.storage import storage_factory

@@ -3,8 +3,8 @@
 from collections import namedtuple
 
 from os import path
-from bes.common import check
-from bes.text import text_line_parser
+from bes.common.check import check
+from bes.text.text_line_parser import text_line_parser
 
 class value_error(Exception):
   def __init__(self, message, filename, line_number, recipe_text):

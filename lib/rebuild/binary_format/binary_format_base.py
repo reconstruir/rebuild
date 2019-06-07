@@ -4,7 +4,7 @@
 import struct
 from collections import namedtuple
 from abc import abstractmethod, ABCMeta
-from bes.common import object_util
+from bes.common.object_util import object_util
 from bes.system.compat import with_metaclass
 
 binary_format_object = namedtuple('binary_format_object', 'magic,cpu_type,file_type')

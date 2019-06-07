@@ -7,7 +7,7 @@ from bes.common.object_util import object_util
 from bes.common.string_util import string_util
 from bes.common.tuple_util import tuple_util
 from bes.property.cached_property import cached_property
-from bes.compat import cmp
+from bes.compat.cmp import cmp
 
 from .build_version import build_version
 from .requirement import requirement

@@ -1,6 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.common import check
+from bes.common.check import check
 from collections import namedtuple
 
 class hook_result(namedtuple('hook_result', 'success, message')):

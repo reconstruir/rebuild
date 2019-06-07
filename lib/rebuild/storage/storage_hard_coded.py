@@ -1,6 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.archive import archiver
+from bes.archive.archiver import archiver
 
 from .storage_base import storage_base 
 

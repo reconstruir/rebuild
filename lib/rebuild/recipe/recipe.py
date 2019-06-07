@@ -4,7 +4,7 @@ import re
 from collections import namedtuple
 from bes.common.check import check
 from bes.common.node import node
-from bes.key_value import key_value_list
+from bes.key_value.key_value_list import key_value_list
 
 from .recipe_error import recipe_error
 from .recipe_util import recipe_util

@@ -5,7 +5,7 @@ from abc import abstractmethod
 from bes.common.algorithm import algorithm
 from bes.common.check import check
 from bes.common.dict_util import dict_util
-from bes.system import log
+from bes.system.log import log
 
 from rebuild.base import build_blurb
 

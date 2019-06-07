@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-from bes.system import host
-from bes.common import string_util
-from bes.fs import file_util
+from bes.system.host import host
+from bes.common.string_util import string_util
+from bes.fs.file_util import file_util
 import os.path as path
 
 DEBUG = False

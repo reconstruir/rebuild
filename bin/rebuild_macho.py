@@ -3,7 +3,7 @@
 #
 
 import argparse, os, os.path as path, sys
-from bes.fs import file_util
+from bes.fs.file_util import file_util
 from rebuild import binary_format_macho
 
 def main():

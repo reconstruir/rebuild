@@ -4,8 +4,8 @@ import re
 
 from bes.common.check import check
 from bes.common.string_util import string_util
-from bes.text import string_list
-from bes.system import logger
+from bes.text.string_list import string_list
+from bes.system.log import logger
 
 from rebuild.base import build_system
 

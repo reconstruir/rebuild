@@ -1,7 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import re
-from bes.text import comments
+from bes.text.comments import comments
 from collections import namedtuple
 from bes.common.check import check
 from bes.common.string_util import string_util

@@ -2,8 +2,8 @@
 #-*- coding:utf-8 -*-
 
 import getpass, os.path as path, subprocess
-from bes.common import json_util
-from bes.system import execute
+from bes.common.json_util import json_util
+from bes.system.execute import execute
 
 #from mac_address import mac_address
 #import re

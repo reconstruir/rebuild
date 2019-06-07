@@ -1,11 +1,11 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from collections import namedtuple
-from bes.compat import StringIO
+from bes.compat.StringIO import StringIO
 from bes.common.check import check
 from bes.common.tuple_util import tuple_util
 from bes.property.cached_property import cached_property
-from bes.fs import file_util
+from bes.fs.file_util import file_util
 from bes.compat.url_compat import urlparse
 
 class storage_address(namedtuple('storage_address', 'hostname, repo, root_dir, sub_repo, filename')):

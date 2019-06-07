@@ -1,7 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from ._toolchain_base import _toolchain_base
-from bes.system import host
+from bes.system.host import host
 from rebuild.base import build_arch, build_blurb, build_system, build_level
 import os, os.path as path
 

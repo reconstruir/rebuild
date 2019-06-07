@@ -4,7 +4,7 @@ import os.path as path
 from collections import namedtuple
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
-from bes.archive import archiver
+from bes.archive.archiver import archiver
 from .lipo import lipo
 
 class fat_archive(object):

@@ -4,7 +4,7 @@
 
 import copy, os.path as path, platform
 
-from bes.system import log
+from bes.system.log import log
 from bes.archive.archive import archive
 from bes.archive.archiver import archiver
 from bes.common.check import check
@@ -12,10 +12,10 @@ from bes.common.dict_util import dict_util
 from bes.common.object_util import object_util
 from bes.common.string_util import string_util
 from bes.common.variable import variable
-from bes.dependency import dependency_resolver
+from bes.dependency.dependency_resolver import dependency_resolver
 from bes.fs.file_path import file_path
 from bes.fs.file_util import file_util
-from bes.system import os_env
+from bes.system.os_env import os_env
 from bes.env.env_dir import env_dir
 from bes.env.shell_framework import shell_framework
 

@@ -2,7 +2,7 @@
 
 from collections import namedtuple
 
-from bes.common import check
+from bes.common.check import check
 from .value_error import value_error
 
 class value_parsing(object):

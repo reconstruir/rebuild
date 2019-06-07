@@ -1,11 +1,11 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.system import execute
+from bes.system.execute import execute
 from bes.common.check import check
 from bes.common.string_util import string_util
-from bes.compat import StringIO
-from bes.archive import archiver
+from bes.compat.StringIO import StringIO
+from bes.archive.archiver import archiver
 from bes.fs.file_util import file_util
 from bes.fs.tar_util import tar_util
 

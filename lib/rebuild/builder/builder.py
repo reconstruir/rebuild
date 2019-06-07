@@ -5,10 +5,9 @@ from bes.common.algorithm import algorithm
 from bes.common.check import check
 from bes.common.dict_util import dict_util
 from bes.common.object_util import object_util
-from bes.thread import thread_pool
 from bes.fs.dir_util import dir_util
 from bes.fs.file_util import file_util
-from bes.dependency import dependency_resolver
+from bes.dependency.dependency_resolver import dependency_resolver
 from collections import namedtuple
 from rebuild.step import step_aborted
 from rebuild.base import build_blurb, package_descriptor_list
@@ -23,7 +22,6 @@ class builder(object):
   def __init__(self, env):
     build_blurb.add_blurb(self, label = 'rebuild')
     self._env = env
-    self.thread_pool = thread_pool(1)
 
   def exclude(self, excluded_packages):
     excluded_packages = object_util.listify(excluded_packages)

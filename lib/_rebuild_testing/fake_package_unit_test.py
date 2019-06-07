@@ -1,9 +1,9 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from os import path
-from bes.system import log
-from bes.fs import temp_file
-from bes.common import check
+from bes.system.log import log
+from bes.fs.temp_file import temp_file
+from bes.common.check import check
 
 from .fake_package_recipe_parser import fake_package_recipe_parser
 from .fake_package_recipe import fake_package_recipe

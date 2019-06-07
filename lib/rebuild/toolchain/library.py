@@ -7,7 +7,7 @@ from bes.fs.dir_util import dir_util
 from bes.fs.file_util import file_util
 from bes.fs.file_path import file_path
 
-from bes.system import host
+from bes.system.host import host
 if host.SYSTEM == 'macos':
   from .library_macos import library_macos as _library_super_class
 elif host.SYSTEM == 'linux':

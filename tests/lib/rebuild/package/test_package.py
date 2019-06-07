@@ -5,7 +5,7 @@ from os import path
 from bes.testing.unit_test import unit_test
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
-from bes.archive import archiver
+from bes.archive.archiver import archiver
 
 from rebuild.base import build_version, package_descriptor, requirement, requirement_list
 from rebuild.package.package import package

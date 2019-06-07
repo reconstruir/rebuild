@@ -3,7 +3,7 @@
 import sys
 from abc import abstractmethod, ABCMeta
 from bes.system.compat import with_metaclass
-from bes.common import check
+from bes.common.check import check
 
 from .hook_result import hook_result
 from .hook_registry import hook_registry

@@ -2,8 +2,8 @@
 
 from os import path
 from collections import namedtuple
-from bes.common import check
-from bes.text import string_list
+from bes.common.check import check
+from bes.text.string_list import string_list
 
 class pcloud_metadata(namedtuple('pcloud_metadata', 'name, path, pcloud_id, is_folder, size, category, content_type, content_hash, contents, checksum')):
   '''

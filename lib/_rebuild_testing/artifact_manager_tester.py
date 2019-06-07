@@ -5,8 +5,8 @@ from os import path
 from bes.common.check import check
 from bes.common.object_util import object_util
 from bes.common.string_util import string_util
-from bes.fs import temp_file
-from bes.text import text_line_parser
+from bes.fs.temp_file import temp_file
+from bes.text.text_line_parser import text_line_parser
 
 from rebuild.package import artifact_manager_local
 from rebuild.base import artifact_descriptor

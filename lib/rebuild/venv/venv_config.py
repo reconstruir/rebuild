@@ -1,10 +1,10 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from os import path
-from bes.common import check
-from bes.text import string_list
-from bes.fs import file_util
-from bes.system import log
+from bes.common.check import check
+from bes.text.string_list import string_list
+from bes.fs.file_util import file_util
+from bes.system.log import log
 
 from rebuild.recipe import recipe_error
 from rebuild.recipe.recipe_util import recipe_util

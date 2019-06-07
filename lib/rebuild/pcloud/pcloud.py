@@ -4,14 +4,14 @@ import hashlib, os.path as path
 from io import BytesIO
 from collections import namedtuple
 
-from bes.system import log
+from bes.system.log import log
 from bes.common.check import check
 from bes.common.node import node
 from bes.property.cached_property import cached_property
 from bes.fs.file_path import file_path
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
-from bes.text import string_list
+from bes.text.string_list import string_list
 
 from .pcloud_error import pcloud_error
 from .pcloud_metadata import pcloud_metadata

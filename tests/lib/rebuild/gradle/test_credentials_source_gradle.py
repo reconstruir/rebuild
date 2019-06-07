@@ -5,7 +5,7 @@ import os
 from bes.testing.unit_test import unit_test
 from rebuild.gradle.credentials_source_gradle import credentials_source_gradle as CSG
 from bes.system.env_override import env_override
-from bes.fs import temp_file
+from bes.fs.temp_file import temp_file
 
 class test_credentials_source_gradle(unit_test):
 

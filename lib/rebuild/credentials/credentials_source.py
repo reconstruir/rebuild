@@ -6,7 +6,7 @@ from abc import abstractmethod, ABCMeta
 from collections import namedtuple
 from bes.common.check import check
 from bes.common.variable import variable
-from bes.system import os_env
+from bes.system.os_env import os_env
 from bes.system.compat import with_metaclass
 
 class credentials_source(with_metaclass(ABCMeta, object)):

@@ -3,7 +3,7 @@
 import os.path as path
 from bes.common.check import check
 from bes.common.string_util import string_util
-from bes.compat import StringIO
+from bes.compat.StringIO import StringIO
 
 from .value_base import value_base
 from .value_type import value_type

@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.testing.unit_test import script_unit_test
+from bes.testing.script_unit_test import script_unit_test
 from bes.fs.file_replace import file_replace
 from bes.fs.file_util import file_util
 from bes.fs.tar_util import tar_util
@@ -11,7 +11,7 @@ from bes.git.git_temp_repo import git_temp_repo
 from bes.git.git_unit_test import git_unit_test
 from rebuild.base import build_target
 from rebuild.toolchain import toolchain_testing
-from bes.testing.unit_test.unit_test_skip import skip_if
+from bes.testing.unit_test_skip import skip_if
 
 from _rebuild_testing.rebuilder_tester import rebuilder_tester
 

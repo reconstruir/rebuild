@@ -3,7 +3,7 @@
 
 import argparse, os, os.path as path, sys
 
-from bes.system import execute
+from bes.system.execute import execute
 from rebuild.toolchain.darwin import darwin_sdk
 from rebuild.toolchain.darwin import xcrun
 from rebuild.toolchain import ar_replacement

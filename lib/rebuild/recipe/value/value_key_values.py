@@ -1,8 +1,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common import check
-from bes.key_value import key_value_list
+from bes.common.check import check
+from bes.key_value.key_value_list import key_value_list
 from .value_base import value_base
 
 class value_key_values(value_base):

@@ -11,7 +11,7 @@ from bes.text.text_line_parser import text_line_parser
 from bes.text.string_list_parser import string_list_parser
 from bes.key_value.key_value import key_value
 from bes.key_value.key_value_list import key_value_list
-from bes.fs import file_util
+from bes.fs.file_util import file_util
 #from .entry import entry
 from rebuild.base import requirement, requirement_list
 from .caca_entry import caca_entry

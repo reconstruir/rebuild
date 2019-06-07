@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from rebuild.step import step, step_result
-from bes.common import check
+from bes.common.check import check
 
 class step_shell(step):
   'A build step that is a shell command.'

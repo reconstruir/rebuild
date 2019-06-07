@@ -1,8 +1,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import json, os, os.path as path
-from bes.web import web_server
-from bes.system import log
+from bes.web.web_server import web_server
+from bes.system.log import log
 from bes.fs.file_mime import file_mime
 from bes.fs.file_find import file_find
 from bes.fs.file_util import file_util

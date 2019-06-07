@@ -7,7 +7,7 @@ import os.path as path
 from bes.compat.plistlib import plistlib_loads
 from bes.common.algorithm import algorithm
 from bes.common.string_list_util import string_list_util
-from bes.system import execute
+from bes.system.execute import execute
 
 class native_package_manager_macos(native_package_manager_base):
     

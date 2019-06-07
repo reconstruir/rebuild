@@ -19,13 +19,13 @@ from bes.fs.file_replace import file_replace
 from bes.fs.file_util import file_util
 from bes.fs.tar_util import tar_util
 from bes.fs.temp_file import temp_file
-from bes.text import text_line_parser
+from bes.text.text_line_parser import text_line_parser
 from bes.match.matcher_filename import matcher_filename, matcher_multiple_filename
-from bes.python import setup_tools
+from bes.python.setup_tools import setup_tools
 from bes.system.execute import execute
 from bes.system.log import log
 from rebuild.base import build_blurb, build_target, package_descriptor
-from bes.debug import debug_timer
+from bes.debug.debug_timer import debug_timer
 
 from rebuild.binary_format.binary_detector import binary_detector
 

@@ -5,7 +5,7 @@ from collections import namedtuple
 from bes.common.check import check
 from bes.common.node import node
 from bes.common.tuple_util import tuple_util
-from bes.text import white_space
+from bes.text.white_space import white_space
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
 

@@ -2,7 +2,7 @@
 
 from rebuild.recipe import recipe, recipe_parser
 from rebuild.recipe.variable_manager import variable_manager
-from bes.key_value import key_value_list as KVL
+from bes.key_value.key_value_list import key_value_list as KVL
 
 class recipe_parser_testing(object):
 

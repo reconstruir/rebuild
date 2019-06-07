@@ -4,7 +4,7 @@
 from bes.system import impl_import
 from rebuild.binary_format import binary_detector
 
-from bes.system import host
+from bes.system.host import host
 if host.SYSTEM == 'macos':
   from ._strip_macos import _strip_macos as _strip_super_class
 elif host.SYSTEM == 'linux':

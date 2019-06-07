@@ -3,8 +3,8 @@
 
 import os.path as path
 from bes.testing.unit_test import unit_test
-from bes.fs import temp_file
-from bes.sqlite import sqlite
+from bes.fs.temp_file import temp_file
+from bes.sqlite.sqlite import sqlite
 from rebuild.package.files_db import files_db as DB
 from rebuild.package.package_file_list import package_file_list
 

@@ -24,7 +24,7 @@ from _rebuild_testing.artifact_manager_tester import artifact_manager_tester as 
 from _rebuild_testing.artifact_manager_helper import artifact_manager_helper
 
 from rebuild.base import build_system
-from bes.testing.unit_test.unit_test_skip import skip_if
+from bes.testing.unit_test_skip import skip_if
 
 class test_package_manager(unit_test):
 

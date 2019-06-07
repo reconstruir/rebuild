@@ -3,7 +3,7 @@
 #
 
 from bes.testing.unit_test import unit_test
-from bes.fs import temp_file
+from bes.fs.temp_file import temp_file
 from rebuild.jail import config_file
 
 class test_config_file(unit_test):

@@ -3,7 +3,7 @@
 
 import os.path as path
 from rebuild.step import compound_step, step, step_result
-from bes.python import setup_tools
+from bes.python.setup_tools import setup_tools
 
 class step_python_lib_build(step):
   'A step to do the "build" target of setuptools.'

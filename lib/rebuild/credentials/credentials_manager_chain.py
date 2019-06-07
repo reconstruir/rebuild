@@ -2,7 +2,7 @@
 
 from os import path
 
-from bes.common import check
+from bes.common.check import check
 
 class credentials_manager_chain(object):
 

@@ -1,8 +1,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy, os.path as path
-from bes.common import string_util
-from bes.fs import file_util
+from bes.common.string_util import string_util
+from bes.fs.file_util import file_util
 
 class venv_shell_script(object):
 

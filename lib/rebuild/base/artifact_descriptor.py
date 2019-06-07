@@ -7,9 +7,9 @@ from bes.common.json_util import json_util
 from bes.common.string_util import string_util
 from bes.common.tuple_util import tuple_util
 from bes.property.cached_property import cached_property
-from bes.archive import archive_extension
-from bes.compat import cmp
-from bes.fs import file_util
+from bes.archive.archive_extension import archive_extension
+from bes.compat.cmp import cmp
+from bes.fs.file_util import file_util
 
 from .build_arch import build_arch
 from .build_target import build_target

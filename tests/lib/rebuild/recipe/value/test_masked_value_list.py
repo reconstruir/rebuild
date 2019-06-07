@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from bes.text import tree_text_parser
+from bes.text.tree_text_parser import tree_text_parser
 from rebuild.recipe import recipe_parser as RP
 from rebuild.base import build_system
 from rebuild.recipe.value import value_type as VT, value_origin as VO

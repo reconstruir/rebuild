@@ -1,9 +1,9 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.common import check
-from bes.key_value import key_value
-from bes.text import comments
-from bes.system import logger
+from bes.common.check import check
+from bes.key_value.key_value import key_value
+from bes.text.comments import comments
+from bes.system.log import logger
 
 from rebuild.base import requirement_list
 

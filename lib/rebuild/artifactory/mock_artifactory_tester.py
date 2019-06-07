@@ -9,7 +9,7 @@ from rebuild.artifactory.mock_artifactory_server import mock_artifactory_server
 from rebuild.storage.storage_address import storage_address
 
 from bes.fs.testing.temp_content import temp_content
-from bes.system import compat
+from bes.system.compat import compat
 
 if compat.IS_PYTHON3:
   import urllib.parse as urlparse

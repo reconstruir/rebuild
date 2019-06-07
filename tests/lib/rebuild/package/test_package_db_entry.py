@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 import os.path as path
 from bes.testing.unit_test import unit_test
-from bes.sqlite import sqlite
+from bes.sqlite.sqlite import sqlite
 from rebuild.base import build_system, build_target, package_descriptor, requirement as R, requirement_list as RL
 from rebuild.package.package_db_entry import package_db_entry as PE
 from rebuild.package.package_db import package_db as DB

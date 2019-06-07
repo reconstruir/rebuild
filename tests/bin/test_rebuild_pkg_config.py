@@ -2,9 +2,9 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.testing.unit_test import script_unit_test
-from bes.common import string_util
-from bes.system import os_env
+from bes.testing.script_unit_test import script_unit_test
+from bes.common.string_util import string_util
+from bes.system.os_env import os_env
 
 class test_rebuild_pkg_config(script_unit_test):
 

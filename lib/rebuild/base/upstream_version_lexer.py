@@ -3,13 +3,13 @@
 import string
 from collections import namedtuple
 
-from bes.compat import StringIO
+from bes.compat.StringIO import StringIO
 from bes.common.string_util import string_util
 from bes.common.point import point
-from bes.system import log
-from bes.enum import flag_enum
-from bes.text import lexer_token
-from bes.enum import enum
+from bes.system.log import log
+from bes.enum.flag_enum import flag_enum
+from bes.text.lexer_token import lexer_token
+from bes.enum.enum import enum
 
 from collections import namedtuple
 

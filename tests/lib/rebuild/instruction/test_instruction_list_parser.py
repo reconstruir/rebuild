@@ -4,7 +4,7 @@
 from bes.testing.unit_test import unit_test
 from rebuild.instruction.instruction_list_parser import instruction_list_parser as P
 from rebuild.instruction import instruction as I
-from bes.text import string_list as SL
+from bes.text.string_list import string_list as SL
 
 class test_instruction_list_parser(unit_test):
 

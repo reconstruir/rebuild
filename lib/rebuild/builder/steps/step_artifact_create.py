@@ -4,10 +4,9 @@ import os, os.path as path
 
 from bes.common.check import check
 from bes.common.dict_util import dict_util
-from bes.archive import archiver
-from bes.key_value import key_value_list
-from bes.fs import file_util
-from bes.common import dict_util
+from bes.archive.archiver import archiver
+from bes.key_value.key_value_list import key_value_list
+from bes.fs.file_util import file_util
 from rebuild.step import compound_step, step, step_result
 from rebuild.package import package, package_tester
 

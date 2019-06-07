@@ -2,7 +2,7 @@
 
 import copy, os, os.path as path
 
-from bes.system import os_env
+from bes.system.os_env import os_env
 from rebuild.step import step, step_result
 from rebuild.base import build_blurb
 

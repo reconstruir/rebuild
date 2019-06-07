@@ -3,7 +3,7 @@
 
 from rebuild.step import step, step_result
 
-from bes.fs import file_util
+from bes.fs.file_util import file_util
 import os.path as path
 
 class step_install_delete_files(step):

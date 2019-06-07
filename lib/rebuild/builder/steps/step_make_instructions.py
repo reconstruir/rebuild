@@ -3,8 +3,8 @@
 
 import os, os.path as path
 
-from bes.common import variable
-from bes.fs import file_util
+from bes.common.variable import variable
+from bes.fs.file_util import file_util
 from rebuild.step import step, step_result
 
 class step_make_instructions(step):

@@ -3,7 +3,7 @@
 
 from bes.testing.unit_test import unit_test
 from rebuild.recipe.variable_manager import variable_manager as VM
-from bes.key_value import key_value_list as KVL
+from bes.key_value.key_value_list import key_value_list as KVL
 
 class test_variable_manager(unit_test):
 

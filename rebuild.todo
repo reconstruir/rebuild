@@ -1141,4 +1141,6 @@ storage_local.py majorly messed up also value_source_tarball.  its calling stora
 - removing a no longer referneced package from a venv does not remove its dependencies
 - ~/.ego/ego_devenv/run.sh revenv.py packages print ~/.ego ego_artifactory ego_devenv --config config/ego.revenv --versions
   thats a ridiculous command make it works by default.  if it needs config and not given use the first one
-  
+
+
+- upstream_version_lexer might be not needed

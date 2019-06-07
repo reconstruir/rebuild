@@ -3,8 +3,8 @@
 #
 from bes.testing.unit_test import unit_test
 import copy, glob, os.path as path, unittest
-from bes.fs import temp_file
-from bes.key_value import key_value_list
+from bes.fs.temp_file import temp_file
+from bes.key_value.key_value_list import key_value_list
 from rebuild.pkg_config import caca_pkg_config_file
 #from rebuild.pkg_config.entry import entry
 

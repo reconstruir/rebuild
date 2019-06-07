@@ -5,7 +5,7 @@ import pprint
 
 from bes.common.dict_util import dict_util
 from bes.common.tuple_util import tuple_util
-from bes.system import compat
+from bes.system.compat import compat
 
 if compat.IS_PYTHON3:
   import urllib.parse as urlparse

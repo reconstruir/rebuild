@@ -6,10 +6,10 @@ from bes.testing.unit_test import unit_test
 from rebuild.project.project_file import project_file
 from rebuild.project.project_file_manager import project_file_manager as PFM
 from rebuild.base import build_target as BT
-from bes.system import os_env_var
+from bes.system.os_env import os_env_var
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
-from bes.fs.testing import temp_content
+from bes.fs.testing.temp_content import temp_content
 
 class test_project_file_manager(unit_test):
 

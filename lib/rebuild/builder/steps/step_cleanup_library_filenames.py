@@ -3,8 +3,8 @@
 
 import os.path as path
 
-from bes.fs import file_util
-from bes.common import string_util
+from bes.fs.file_util import file_util
+from bes.common.string_util import string_util
 from rebuild.toolchain import library
 from rebuild.step import step, step_result
 from rebuild.pkg_config import pkg_config

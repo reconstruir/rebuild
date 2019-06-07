@@ -2,7 +2,7 @@
 
 import copy, json, os.path as path
 
-from bes.fs import file_util
+from bes.fs.file_util import file_util
 from bes.common.check import check
 from bes.common.json_util import json_util
 

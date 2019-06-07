@@ -4,9 +4,9 @@
 import os.path as path
 from rebuild.step import compound_step, step, step_result
 from rebuild.base import build_system
-from bes.python import setup_tools
-from bes.system import execute
-from bes.common import check
+from bes.python.setup_tools import setup_tools
+from bes.system.execute import execute
+from bes.common.check import check
 
 class step_perl_module_setup(step):
   'Setup a perl module for compilation.'

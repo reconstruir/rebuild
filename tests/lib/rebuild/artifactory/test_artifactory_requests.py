@@ -4,7 +4,7 @@
 import os
 from bes.common import dict_util
 from bes.testing.unit_test import unit_test
-from bes.testing.unit_test.unit_test_skip import skip_if
+from bes.testing.unit_test_skip import skip_if
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
 from rebuild.artifactory.artifactory_requests import artifactory_requests as AR

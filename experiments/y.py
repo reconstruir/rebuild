@@ -5,7 +5,7 @@ from rebuild.package.package_db_entry import package_db_entry as PE
 from rebuild.base import build_system, build_target, package_descriptor, requirement as R, requirement_list as RL
 from bes.fs.file_checksum import file_checksum_list
 from bes.fs.temp_file import temp_file
-from bes.debug import debug_timer
+from bes.debug.debug_timer import debug_timer
 
 db = DB('foo.sqlite')
 

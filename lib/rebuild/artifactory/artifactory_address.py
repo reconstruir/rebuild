@@ -4,7 +4,7 @@ import os.path as path
 
 from rebuild.storage.storage_address import storage_address
 
-from bes.common import check
+from bes.common.check import check
 
 class artifactory_address(object):
 

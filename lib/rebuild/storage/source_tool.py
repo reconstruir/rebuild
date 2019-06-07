@@ -2,7 +2,7 @@
 
 import os, os.path as path
 
-from bes.archive import archiver
+from bes.archive.archiver import archiver
 from bes.fs.file_checksum import file_checksum_list
 from bes.fs.file_find import file_find
 

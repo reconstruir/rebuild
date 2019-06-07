@@ -3,7 +3,7 @@
 
 import argparse, os, os.path as path, sys
 
-from bes.system import execute
+from bes.system.execute import execute
 
 from rebuild.base import build_blurb
 

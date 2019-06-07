@@ -18,7 +18,7 @@ from _rebuild_testing.artifact_manager_tester import artifact_manager_tester as 
 
 from _rebuild_testing.rebuilder_tester import rebuilder_tester
 
-from bes.testing.unit_test.unit_test_skip import skip_if
+from bes.testing.unit_test_skip import skip_if
 
 class test_tools_manager(unit_test):
 

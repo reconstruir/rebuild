@@ -8,10 +8,10 @@ from bes.common.check import check
 from bes.common.dict_util import dict_util
 from bes.common.object_util import object_util
 from bes.common.string_util import string_util
-from bes.archive import archiver
+from bes.archive.archiver import archiver
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
-from bes.key_value import key_value_list
+from bes.key_value.key_value_list import key_value_list
 
 from rebuild.step import step, step_result
 from rebuild.base import build_blurb

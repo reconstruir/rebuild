@@ -4,7 +4,7 @@
 from .binary_format_macho import binary_format_macho
 from .binary_format_elf import binary_format_elf
 
-from bes.fs import file_find
+from bes.fs.file_find import file_find
 
 class binary_detector(object):
   'Detect binaries (executables and shared libraries).'

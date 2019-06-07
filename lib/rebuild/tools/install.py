@@ -4,7 +4,7 @@
 import os, os.path as path
 from collections import namedtuple
 
-from bes.fs import file_util
+from bes.fs.file_util import file_util
 
 class install(object):
 

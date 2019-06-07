@@ -5,7 +5,7 @@ import os.path as path
 
 from collections import namedtuple
 
-from bes.testing.unit_test import script_unit_test
+from bes.testing.script_unit_test import script_unit_test
 from bes.system.os_env import os_env
 from bes.system.execute import execute
 from bes.fs.file_util import file_util

@@ -7,9 +7,9 @@ import os, os.path as path, platform, sys
 
 from bes.common.object_util import object_util
 from bes.common.tuple_util import tuple_util
-from bes.system import execute
+from bes.system.execute import execute
 from bes.text import text_canvas
-from bes.unix import terminal
+from bes.unix.terminal import terminal
 
 from rebuild.base import build_blurb, build_target
 from .PackageFlags import PackageFlags

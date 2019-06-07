@@ -3,7 +3,7 @@
 import os.path as path
 from rebuild.step import step, step_result
 from rebuild.tools import patch
-from bes.common import variable
+from bes.common.variable import variable
 
 class step_setup_patch(step):
   'patch.'

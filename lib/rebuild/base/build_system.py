@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.system import host
+from bes.system.host import host
 from bes.common.algorithm import algorithm
 from bes.common.check import check
 from bes.common.string_util import string_util

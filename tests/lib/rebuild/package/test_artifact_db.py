@@ -3,12 +3,12 @@
 
 import os.path as path
 from bes.testing.unit_test import unit_test
-from bes.fs import temp_file
+from bes.fs.temp_file import temp_file
 from rebuild.base import artifact_descriptor as AD, build_level, build_system, build_target as BT, package_descriptor as PD, requirement_list as RL
 from rebuild.package.artifact_db import artifact_db as DB
 from rebuild.package.db_error import *
 from rebuild.package.package_metadata import package_metadata as PM
-from bes.debug import debug_timer
+from bes.debug.debug_timer import debug_timer
 from rebuild.package import package_manifest
 from rebuild.package.package_file_list import package_file_list as FCL
 

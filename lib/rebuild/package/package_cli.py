@@ -1,10 +1,10 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import argparse, os.path as path
-from bes.key_value import key_value_list
-from bes.unix import terminal
-from bes.compat import StringIO
-from bes.text import text_fit
+from bes.key_value.key_value_list import key_value_list
+from bes.unix.terminal import terminal
+from bes.compat.StringIO import StringIO
+from bes.text.text_fit import text_fit
 
 from .package import package
 from .package_manager import package_manager

@@ -4,10 +4,10 @@
 import os.path as path
 from collections import namedtuple
 from rebuild.base import build_arch, build_level, build_system, build_target
-from bes.common import time_util
-from bes.debug import debug_timer
-from bes.system import log
-from bes.key_value import key_value_list
+from bes.common.time_util import time_util
+from bes.debug.debug_timer import debug_timer
+from bes.system.log import log
+from bes.key_value.key_value_list import key_value_list
 
 class builder_config(object):
 

@@ -4,8 +4,8 @@
 
 import argparse, os, os.path as path, sys
 
-from bes.fs import file_util
-from bes.archive import archiver
+from bes.fs.file_util import file_util
+from bes.archive.archiver import archiver
 from rebuild.tools import patch, archive_util
 from rebuild.base import package_descriptor
 
@@ -305,8 +305,8 @@ def _command_find(root_dir, name, version):
   return 0
 
 def _command_download(name, url, tag):
-  from bes.git import git
-  from bes.common import time_util
+  from bes.git.git import git
+  from bes.common.time_util import time_util
   import urlparse
   parts = urlparse.urlparse(url)
   site = parts.netloc.split('.')[0]

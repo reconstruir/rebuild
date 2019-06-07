@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 
-from bes.common import variable
+from bes.common.variable import variable
 
 class entry(object):
   'A single pkg-config .pc file entry.'

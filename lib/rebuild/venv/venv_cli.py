@@ -3,13 +3,13 @@
 import argparse, copy, os, os.path as path
 from collections import namedtuple
 
-from bes.system import log
-from bes.archive import archiver
-from bes.key_value import key_value_parser
-from bes.system import host
+from bes.system.log import log
+from bes.archive.archiver import archiver
+from bes.key_value.key_value_parser import key_value_parser
+from bes.system.host import host
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
-from bes.version import version_cli
+from bes.version.version_cli import version_cli
 from bes.properties_file.properties_file import properties_file
 
 from rebuild.base import build_arch, build_blurb, build_system, build_target, build_target_cli, build_level
@@ -306,7 +306,7 @@ revenv.py packages update ${_root_dir} @ARTIFACTS_CONFIG_NAME@ ${1+"$@"} --confi
      return 1
 
   def _command_version(self, print_all, brief):
-    from bes.version import version_cli
+    from bes.version.version_cli import version_cli
     version_cli.print_everything('rebuild', dependencies = [ 'bes' ], brief = brief, print_all = print_all)
     return 0
 

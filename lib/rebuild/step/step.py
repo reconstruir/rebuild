@@ -11,10 +11,10 @@ from bes.common.object_util import object_util
 from bes.common.string_util import string_util
 from bes.common.variable import variable
 from bes.common.variable_pattern import variable_pattern
-from bes.dependency import dependency_resolver
-from bes.factory import singleton_class_registry
-from bes.fs import file_util
-from bes.key_value import key_value_list
+from bes.dependency.dependency_resolver import dependency_resolver
+from bes.factory.singleton_class_registry import singleton_class_registry
+from bes.fs.file_util import file_util
+from bes.key_value.key_value_list import key_value_list
 from bes.system.os_env import os_env
 from bes.system.execute import execute
 from bes.system.log import log
@@ -230,7 +230,7 @@ class step(with_metaclass(step_register_meta, object)):
 
   @classmethod
   def _write_retry_script(clazz, command, env, script):
-    from bes.compat import StringIO
+    from bes.compat.StringIO import StringIO
     s = StringIO()
     s.write('#!/bin/bash\n')
     s.write('mkdir -p %s\n' % (script.staged_files_dir))

@@ -1,14 +1,14 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common import check
-from bes.env import shell_framework
+from bes.common.check import check
+from bes.env.shell_framework import shell_framework
 from bes.fs.file_path import file_path
 from bes.fs.file_util import file_util
 from bes.system.log import log
 from bes.system.os_env import os_env
 from rebuild.base import build_blurb, build_version, package_descriptor_list
-from bes.dependency import dependency_resolver
+from bes.dependency.dependency_resolver import dependency_resolver
 from rebuild.package import package_manager
 from collections import namedtuple
 

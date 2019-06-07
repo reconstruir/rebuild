@@ -8,7 +8,7 @@ from bes.common.string_util import string_util
 from bes.key_value.key_value import key_value
 from bes.key_value.key_value_list import key_value_list
 from bes.key_value.key_value_parser import key_value_parser
-from bes.compat import StringIO
+from bes.compat.StringIO import StringIO
 from bes.text.string_list import string_list
 from bes.text.tree_text_parser import tree_text_parser
 

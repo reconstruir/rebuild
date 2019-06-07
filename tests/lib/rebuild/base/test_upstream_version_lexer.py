@@ -2,8 +2,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from bes.text import lexer_token
-from bes.common import point
+from bes.text.lexer_token import lexer_token
+from bes.common.point import point
 
 from rebuild.base.upstream_version_lexer import upstream_version_lexer
 

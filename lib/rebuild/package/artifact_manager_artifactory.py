@@ -4,10 +4,10 @@ from os import path
 
 from abc import abstractmethod, ABCMeta
 from bes.system.compat import with_metaclass
-from bes.common import check
-from bes.system import log
-from bes.debug import debug_timer
-from bes.fs import file_util
+from bes.common.check import check
+from bes.system.log import log
+from bes.debug.debug_timer import debug_timer
+from bes.fs.file_util import file_util
 
 from rebuild.base import artifact_descriptor, build_blurb, requirement_manager
 from rebuild.artifactory.artifactory_requests import artifactory_requests

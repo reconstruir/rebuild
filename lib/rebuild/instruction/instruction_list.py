@@ -2,17 +2,17 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy, re, glob, os.path as path
-from bes.fs import file_util
+from bes.fs.file_util import file_util
 from bes.common.algorithm import algorithm
 from bes.common.check import check
 from bes.common.dict_util import dict_util
 from bes.common.string_util import string_util
 from bes.common.type_checked_list import type_checked_list
-from bes.text import string_list_parser
-from bes.compat import StringIO
+from bes.text.string_list import string_list_parser
+from bes.compat.StringIO import StringIO
 from .instruction_list_parser import instruction_list_parser
 from .instruction import instruction
-from bes.dependency import dependency_resolver
+from bes.dependency.dependency_resolver import dependency_resolver
 
 class instruction_list(type_checked_list):
 

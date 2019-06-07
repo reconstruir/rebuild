@@ -2,8 +2,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from bes.fs.testing import temp_content
-from bes.fs import temp_file
+from bes.fs.testing.temp_content import temp_content
+from bes.fs.temp_file import temp_file
 from bes.git.git_repo import git_repo
 from bes.git.git_unit_test import git_unit_test
 from rebuild.storage import storage_git_repo

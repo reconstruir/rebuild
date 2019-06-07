@@ -6,12 +6,12 @@ from collections import namedtuple
 from bes.common.algorithm import algorithm
 from bes.common.object_util import object_util
 from bes.common.string_util import string_util
-from bes.system import execute
+from bes.system.execute import execute
 from bes.fs.dir_util import dir_util
 from bes.fs.file_find import file_find
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
-from bes.archive import archiver
+from bes.archive.archiver import archiver
 
 class archive_util(object):
 

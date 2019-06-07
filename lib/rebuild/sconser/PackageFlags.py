@@ -3,7 +3,7 @@
 
 # TODO: add duplicate flag handling
 
-from bes.common import object_util
+from bes.common.object_util import object_util
 
 class PackageFlags(object):
 

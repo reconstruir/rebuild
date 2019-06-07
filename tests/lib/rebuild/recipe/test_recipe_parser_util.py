@@ -2,8 +2,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from bes.key_value import key_value_list as KVL
-from bes.text import tree_text_parser as TTP
+from bes.key_value.key_value_list import key_value_list as KVL
+from bes.text.tree_text_parser import tree_text_parser as TTP
 from rebuild.recipe import recipe_parser_util as RPU
 from rebuild.recipe.value import value_type as VT, value_origin as VO, value_key_values as VKV, value_string_list as VSL
 

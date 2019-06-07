@@ -11,8 +11,8 @@ from bes.fs.file_find import file_find
 from bes.fs.file_path import file_path
 from bes.fs.file_util import file_util
 from bes.fs.file_checksum_getter_raw import file_checksum_getter_raw
-from bes.dependency import dependency_resolver
-from bes.key_value import key_value_list
+from bes.dependency.dependency_resolver import dependency_resolver
+from bes.key_value.key_value_list import key_value_list
 
 from rebuild.base import build_blurb
 

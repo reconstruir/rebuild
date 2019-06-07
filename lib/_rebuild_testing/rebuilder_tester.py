@@ -5,9 +5,9 @@ from bes.fs.file_checksum import file_checksum
 from bes.fs.file_checksum import file_checksum_list
 from bes.fs.file_find import file_find
 from bes.fs.temp_file import temp_file
-from bes.archive import archiver
-from bes.common import string_util
-from bes.git import git_util
+from bes.archive.archiver import archiver
+from bes.common.string_util import string_util
+from bes.git.git_util import git_util
 from collections import namedtuple
 from rebuild.base import build_arch, build_level, build_system, build_target
 
@@ -103,7 +103,7 @@ class rebuilder_tester(object):
     checksums_contents = {}
     for checksum in checksums:
       checksum_path = path.join(checksums_dir, checksum)
-      from bes.fs import file_util
+      from bes.fs.file_util import file_util
       checksums_contents[checksum] = clazz._fix_checksums(config, file_checksum_list.load_checksums_file(checksum_path), tmp_dir)
     return checksums_contents
   

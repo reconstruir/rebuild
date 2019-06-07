@@ -1,12 +1,12 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common import check
-from bes.system import log
+from bes.common.check import check
+from bes.system.log import log
 from bes.fs.file_attributes import file_attributes
 from bes.fs.file_find import file_find
 from bes.fs.file_util import file_util
-from bes.archive import archiver
+from bes.archive.archiver import archiver
 
 from .storage_base import storage_base 
 from .storage_address import storage_address

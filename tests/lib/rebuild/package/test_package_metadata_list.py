@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 import os.path as path
-from bes.sqlite import sqlite
+from bes.sqlite.sqlite import sqlite
 from bes.testing.unit_test import unit_test
 from rebuild.base import requirement_list as RL
 from rebuild.package import package_metadata as PM,  package_metadata_list as PML, package_manifest as PF

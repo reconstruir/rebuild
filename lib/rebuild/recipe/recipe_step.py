@@ -1,10 +1,10 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from collections import namedtuple
-from bes.compat import StringIO
-from bes.common import check
-from bes.key_value import key_value_list
-from bes.text import tree_text_parser
+from bes.compat.StringIO import StringIO
+from bes.common.check import check
+from bes.key_value.key_value_list import key_value_list
+from bes.text.tree_text_parser import tree_text_parser
 
 from .recipe_value_list import recipe_value_list
 from .recipe_parser_util import recipe_parser_util

@@ -3,8 +3,8 @@
 import argparse, copy, os, os.path as path
 from collections import namedtuple
 
-from bes.system import log
-from bes.key_value import key_value_parser
+from bes.system.log import log
+from bes.key_value.key_value_parser import key_value_parser
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
 from rebuild.base import build_blurb, build_target, build_target_cli, build_level

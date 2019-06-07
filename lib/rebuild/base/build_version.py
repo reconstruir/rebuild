@@ -8,8 +8,8 @@ from bes.common.string_util import string_util
 from bes.common.number_util import number_util
 from bes.common.tuple_util import tuple_util
 from collections import namedtuple
-from bes.compat import StringIO
-from bes.compat import cmp
+from bes.compat.StringIO import StringIO
+from bes.compat.cmp import cmp
 from .upstream_version_lexer import upstream_version_lexer
 
 class build_version(namedtuple('build_version', 'upstream_version, revision, epoch')):

@@ -3,8 +3,8 @@
 from collections import namedtuple
 from bes.common.check import check
 from bes.common.node import node
-from bes.key_value import key_value_list
-from bes.text import string_list
+from bes.key_value.key_value_list import key_value_list
+from bes.text.string_list import string_list
 
 from rebuild.recipe import recipe_error
 from rebuild.recipe.recipe_util import recipe_util

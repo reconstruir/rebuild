@@ -5,8 +5,8 @@ import os.path as path
 from bes.system.execute import execute
 from bes.system.log import log
 from bes.system.os_env import os_env
-from bes.common import check
-from bes.fs import file_util
+from bes.common.check import check
+from bes.fs.file_util import file_util
 from bes.compat.url_compat import urlparse
 from bes.compat.url_compat import urljoin
 

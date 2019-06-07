@@ -3,7 +3,7 @@
 
 from bes.testing.unit_test import unit_test
 from rebuild.recipe.value import value_file, value_origin
-from bes.key_value import key_value_list
+from bes.key_value.key_value_list import key_value_list
 
 import pickle
 

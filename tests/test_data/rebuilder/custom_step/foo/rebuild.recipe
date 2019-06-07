@@ -14,7 +14,7 @@ package foo 1.0.0
         #@abstractmethod
         def execute(self, script, env, values, inputs):
           import os.path as path
-          from bes.fs import file_util
+          from bes.fs.file_util import file_util
           foo_filename = path.join(script.build_dir, 'foo.py')
           file_util.save(foo_filename, content = self.CONTENT, mode = 0o644)
           return self.result(True, outputs = { 'foo_filename': foo_filename })
@@ -29,7 +29,7 @@ package foo 1.0.0
         def execute(self, script, env, values, inputs):
           import os.path as path
           from rebuild.tools import install
-          from bes.fs import file_util
+          from bes.fs.file_util import file_util
           src_filename = inputs.get('foo_filename')
           install.install(src_filename, script.python_lib_dir, mode = 0o644)
           file_util.save(path.join(script.python_lib_dir, '__init__.py'), content = '', mode = 0o644)

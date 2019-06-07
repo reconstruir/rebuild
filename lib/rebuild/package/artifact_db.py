@@ -1,11 +1,11 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import json, os.path as path
-from bes.system import log
+from bes.system.log import log
 from bes.fs import file_check
 from bes.common.check import check
 from bes.common.string_util import string_util
-from bes.sqlite import sqlite
+from bes.sqlite.sqlite import sqlite
 from rebuild.base import artifact_descriptor, artifact_descriptor_list, package_descriptor,  package_descriptor_list, build_target, build_version
 
 from .db_error import *

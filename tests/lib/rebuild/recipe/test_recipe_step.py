@@ -9,8 +9,8 @@ from rebuild.recipe.value import value_origin as VO
 from rebuild.recipe.variable_manager import variable_manager
 from bes.key_value.key_value import key_value as KV
 from bes.key_value.key_value_list import key_value_list as KVL
-from bes.text import string_list
-from bes.git import git_address
+from bes.text.string_list import string_list
+from bes.git.git_address import git_address
 from test_steps import *
 
 class test_recipe_step(unit_test):

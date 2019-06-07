@@ -5,8 +5,8 @@ from collections import namedtuple
 import os.path as path
 from bes.common.check import check
 from bes.common.string_util import string_util
-from bes.key_value import key_value_list
-from bes.system import log
+from bes.key_value.key_value_list import key_value_list
+from bes.system.log import log
 from bes.text.string_list import string_list
 from bes.text.tree_text_parser import tree_text_parser
 from bes.text.text_fit import text_fit

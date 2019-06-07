@@ -2,10 +2,10 @@
 
 import copy, os.path as path
 from .toolchain import toolchain
-from bes.fs import file_util
+from bes.fs.file_util import file_util
 from bes.common.object_util import object_util
 from bes.common.variable import variable
-from bes.system import execute
+from bes.system.execute import execute
 
 from collections import namedtuple
 

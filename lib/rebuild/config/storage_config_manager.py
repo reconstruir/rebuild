@@ -8,7 +8,7 @@ from bes.common.check import check
 from bes.common.dict_util import dict_util
 from bes.common.string_util import string_util
 from bes.config.simple_config import simple_config
-from bes.fs import file_util
+from bes.fs.file_util import file_util
 
 from .storage_config import storage_config
 

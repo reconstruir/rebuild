@@ -3,8 +3,8 @@
 
 from bes.testing.unit_test import unit_test
 from rebuild.recipe import recipe_value as RV, recipe_value_list as RVL
-from bes.key_value import key_value_list as KVL
-from bes.text import string_list
+from bes.key_value.key_value_list import key_value_list as KVL
+from bes.text.string_list import string_list
 from rebuild.recipe.value import value_key_values as VKV
 from rebuild.recipe.value import value_definition as VD
 from rebuild.recipe.value import masked_value as MV, masked_value_list as MVL

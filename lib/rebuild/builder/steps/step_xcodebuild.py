@@ -1,7 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common import check
+from bes.common.check import check
 from rebuild.step import compound_step, step, step_result
 
 class step_xcodebuild_build(step):

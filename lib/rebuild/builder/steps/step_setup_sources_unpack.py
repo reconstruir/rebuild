@@ -2,7 +2,7 @@
 
 import os.path as path
 
-from bes.archive import archiver
+from bes.archive.archiver import archiver
 
 from rebuild.step import step, step_result
 
