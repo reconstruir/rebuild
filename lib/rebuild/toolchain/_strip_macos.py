@@ -4,7 +4,7 @@
 from ._strip_base import _strip_base
 
 from rebuild.binary_format import binary_format_macho
-from rebuild.toolchain import toolchain
+from rebuild.toolchain.toolchain import toolchain
 from bes.system.execute import execute
 
 class _strip_macos(_strip_base):

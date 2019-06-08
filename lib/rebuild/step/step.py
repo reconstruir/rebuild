@@ -24,7 +24,7 @@ from rebuild.base.build_blurb import build_blurb
 from rebuild.base.build_target import build_target
 from rebuild.recipe.value.value_definition import value_definition
 from rebuild.recipe.value.value_type import value_type
-from rebuild.toolchain import toolchain
+from rebuild.toolchain.toolchain import toolchain
 
 from .step_registry import step_registry
 from .step_result import step_result

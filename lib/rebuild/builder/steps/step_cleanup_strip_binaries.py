@@ -5,7 +5,7 @@ from rebuild.step.step import step
 from rebuild.step.step_result import step_result
 from rebuild.binary_format import binary_detector
 from rebuild.base.build_level import build_level
-from rebuild.toolchain import strip
+from rebuild.toolchain.strip import strip
 
 class step_cleanup_strip_binaries(step):
   'Strip binaries.'

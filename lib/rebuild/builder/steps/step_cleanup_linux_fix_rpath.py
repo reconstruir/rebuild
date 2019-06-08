@@ -4,7 +4,7 @@ import os.path as path
 from bes.system.execute import execute
 from rebuild.step import step
 from rebuild.binary_format import binary_detector
-from rebuild.toolchain import library
+from rebuild.toolchain.library import library
 
 class step_cleanup_linux_fix_rpath(step):
   'Check the rpath of binaries is relative to the executable_path.'

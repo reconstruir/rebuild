@@ -9,7 +9,7 @@ from bes.fs.dir_util import dir_util
 from bes.fs.file_util import file_util
 from rebuild.native_package_manager.native_package_manager import native_package_manager as npm
 from bes.match import matcher_util
-from rebuild.toolchain import library
+from rebuild.toolchain.library import library
 
 from .config_file import config_file
 from .sync import sync

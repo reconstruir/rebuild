@@ -5,7 +5,7 @@ import os.path as path
 
 from bes.fs.dir_util import dir_util
 from bes.fs.file_util import file_util
-from rebuild.toolchain import library
+from rebuild.toolchain.library import library
 from rebuild.toolchain.darwin import lipo
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result

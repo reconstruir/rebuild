@@ -5,7 +5,7 @@ import os.path as path
 
 from bes.fs.file_util import file_util
 from bes.common.string_util import string_util
-from rebuild.toolchain import library
+from rebuild.toolchain.library import library
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result
 from rebuild.pkg_config import pkg_config
