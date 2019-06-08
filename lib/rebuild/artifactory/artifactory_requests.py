@@ -30,6 +30,8 @@ class artifactory_error(Exception):
 
 class artifactory_requests(object):
 
+  DEFAULT_NUM_TRIES = 5
+  
   @classmethod
   def get_headers(clazz, address, credentials):
     check.check_storage_address(address)
@@ -150,18 +152,22 @@ class artifactory_requests(object):
     return result
 
   @classmethod
-  def upload(clazz, address, filename, credentials, num_tries = 1):
+  def upload(clazz, address, filename, credentials, num_tries = None):
     check.check_storage_address(address)
     check.check_string(address.filename)
     check.check_credentials(credentials)
+    check.check_int(num_tries, allow_none = True)
+
     clazz.log_d('upload: address=%s; filename=%s' % (address, filename))
-    return clazz.upload_url(address.url, filename, credentials)
+    clazz.upload_url(address.url, filename, credentials, num_tries = num_tries)
 
   @classmethod
-  def upload_url(clazz, url, filename, credentials, num_tries = 1):
+  def upload_url(clazz, url, filename, credentials, num_tries = None):
     check.check_string(url)
     check.check_credentials(credentials)
-    clazz.log_d('upload_url: url=%s; filename=%s' % (url, filename))
+    num_tries = num_tries or clazz.DEFAULT_NUM_TRIES
+    
+    clazz.log_d('upload_url: url={}; filename={}; num_tries={}'.format(url, filename, num_tries))
 
     if num_tries < 1 or num_tries > 10:
       raise ValueError('num_tries should be between 1 and 10')
