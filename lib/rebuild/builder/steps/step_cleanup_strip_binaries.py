@@ -3,7 +3,7 @@
 import os.path as path
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result
-from rebuild.binary_format import binary_detector
+from rebuild.binary_format.binary_detector import binary_detector
 from rebuild.base.build_level import build_level
 from rebuild.toolchain.strip import strip
 

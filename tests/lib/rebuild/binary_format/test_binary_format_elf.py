@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from rebuild.binary_format import binary_format_elf as elf
+from rebuild.binary_format.binary_format_elf import binary_format_elf as elf
 
 class test_binary_format_elf(unit_test):
 

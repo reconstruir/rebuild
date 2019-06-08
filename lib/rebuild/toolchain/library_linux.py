@@ -5,7 +5,7 @@ from .library_base import library_base
 import os.path as path
 from bes.common.string_util import string_util
 from bes.system.execute import execute
-from rebuild.binary_format import binary_format_elf
+from rebuild.binary_format.binary_format_elf import binary_format_elf
 
 class library_linux(library_base):
 

@@ -1,6 +1,1 @@
-#!/usr/bin/env python
-#-*- coding:utf-8 -*-
-
-from .binary_detector import binary_detector
-from .binary_format_elf import binary_format_elf
-from .binary_format_macho import binary_format_macho
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-

@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.system import impl_import
-from rebuild.binary_format import binary_detector
+from rebuild.binary_format.binary_detector import binary_detector
 
 from bes.system.host import host
 if host.SYSTEM == 'macos':

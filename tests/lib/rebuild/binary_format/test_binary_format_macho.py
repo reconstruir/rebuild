@@ -3,7 +3,7 @@
 #
 
 from bes.testing.unit_test import unit_test
-from rebuild.binary_format import binary_format_macho as macho
+from rebuild.binary_format.binary_format_macho import binary_format_macho as macho
 
 class test_binary_format_macho(unit_test):
 

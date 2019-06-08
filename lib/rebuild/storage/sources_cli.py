@@ -17,7 +17,7 @@ from bes.url import url_util
 
 from bes.archive.archiver import archiver
 from bes.archive.archive_extension import archive_extension
-from rebuild.binary_format import binary_detector
+from rebuild.binary_format.binary_detector import binary_detector
 from rebuild.source_ingester.ingest_util import ingest_util
 
 from rebuild.config import storage_config_manager

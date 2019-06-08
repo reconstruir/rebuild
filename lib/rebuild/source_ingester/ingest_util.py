@@ -14,7 +14,7 @@ from bes.system.execute import execute
 from bes.system.log import log
 from bes.url import url_util
 
-from rebuild.binary_format import binary_detector
+from rebuild.binary_format.binary_detector import binary_detector
 
 class ingest_util(object):
 

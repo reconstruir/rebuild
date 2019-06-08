@@ -3,7 +3,7 @@
 import os.path as path
 from bes.system.execute import execute
 from rebuild.step.step import step
-from rebuild.binary_format import binary_detector
+from rebuild.binary_format.binary_detector import binary_detector
 from rebuild.toolchain.library import library
 
 class step_cleanup_linux_fix_rpath(step):

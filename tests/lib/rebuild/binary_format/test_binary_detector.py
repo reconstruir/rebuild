@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from rebuild.binary_format import binary_detector
+from rebuild.binary_format.binary_detector import binary_detector
 
 class test_binary_detector(unit_test):
 
