@@ -5,7 +5,7 @@ from bes.key_value.key_value import key_value
 from bes.text.comments import comments
 from bes.system.log import logger
 
-from rebuild.base import requirement_list
+from rebuild.base.requirement_list import requirement_list
 
 from .value import masked_value
 from .value import masked_value_list

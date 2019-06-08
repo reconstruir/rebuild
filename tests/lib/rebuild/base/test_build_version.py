@@ -3,7 +3,7 @@
 #
 
 from bes.testing.unit_test import unit_test
-from rebuild.base import build_version
+from rebuild.base.build_version import build_version
 
 class test_version(unit_test):
 

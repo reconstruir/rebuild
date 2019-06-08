@@ -4,7 +4,7 @@ import os.path as path
 from bes.common.check import check
 from bes.common.string_util import string_util
 from bes.system.log import log
-from rebuild.base import build_blurb
+from rebuild.base.build_blurb import build_blurb
 from bes.fs.file_util import file_util
 from .artifact_manager_base import artifact_manager_base
 from .artifact_db import artifact_db

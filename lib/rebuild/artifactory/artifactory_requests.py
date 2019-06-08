@@ -11,7 +11,7 @@ from bes.fs.file_path import file_path
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
 
-from rebuild.base import requirement_list
+from rebuild.base.requirement_list import requirement_list
 from rebuild.package.package_manifest import package_manifest
 from rebuild.package.package_metadata import package_metadata
 from rebuild.package.package_metadata_list import package_metadata_list

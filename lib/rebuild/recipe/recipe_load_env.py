@@ -4,7 +4,7 @@ from abc import abstractmethod, ABCMeta
 
 from bes.common.check import check
 from bes.system.compat import with_metaclass
-from rebuild.base import build_target as BT
+from rebuild.base.build_target import build_target as BT
 
 from .variable_manager import variable_manager
 

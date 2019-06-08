@@ -7,7 +7,7 @@ from bes.common.check import check
 from bes.common.dict_util import dict_util
 from bes.system.log import log
 
-from rebuild.base import build_blurb
+from rebuild.base.build_blurb import build_blurb
 
 from .compound_step import compound_step
 from .step import step

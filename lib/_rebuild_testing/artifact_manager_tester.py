@@ -9,7 +9,7 @@ from bes.fs.temp_file import temp_file
 from bes.text.text_line_parser import text_line_parser
 
 from rebuild.package import artifact_manager_local
-from rebuild.base import artifact_descriptor
+from rebuild.base.artifact_descriptor import artifact_descriptor
 
 from .fake_package_recipe_parser import fake_package_recipe_parser
 from .artifact_manager_helper import artifact_manager_helper

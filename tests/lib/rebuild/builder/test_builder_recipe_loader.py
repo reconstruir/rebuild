@@ -3,7 +3,7 @@
 
 import os.path as path
 from bes.testing.unit_test import unit_test
-from rebuild.base import build_target
+from rebuild.base.build_target import build_target
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
 from rebuild.builder.builder_recipe_loader import builder_recipe_loader

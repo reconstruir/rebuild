@@ -3,7 +3,7 @@
 
 from ._toolchain_base import _toolchain_base
 
-from rebuild.base import build_level
+from rebuild.base.build_level import build_level
 from rebuild.toolchain.darwin.xcrun import xcrun
 from rebuild.toolchain.darwin import darwin_sdk
 import os.path as path

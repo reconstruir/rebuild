@@ -2,7 +2,7 @@
 
 from bes.system import impl_import
 
-from rebuild.base import build_system
+from rebuild.base.build_system import build_system
 
 class toolchain(object):
   'Foo.'

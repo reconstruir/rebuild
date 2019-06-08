@@ -32,7 +32,7 @@ from _rebuild_testing.fake_package_recipes import fake_package_recipes as RECIPE
 from _rebuild_testing.artifact_manager_tester import artifact_manager_tester as AMT
 from _rebuild_testing.artifact_manager_helper import artifact_manager_helper
 
-from rebuild.base import build_system
+from rebuild.base.build_system import build_system
 from bes.testing.unit_test_skip import skip_if
 
 class test_package_manager(unit_test):

@@ -3,7 +3,7 @@
 import os.path as path
 from bes.common.check import check
 from bes.git.git_repo import git_repo
-from rebuild.base import build_blurb
+from rebuild.base.build_blurb import build_blurb
 
 from .storage_base import storage_base
 

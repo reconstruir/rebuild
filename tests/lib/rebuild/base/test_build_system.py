@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 #
 from bes.testing.unit_test import unit_test
-from rebuild.base import build_system as BS
+from rebuild.base.build_system import build_system as BS
   
 class test_build_system(unit_test):
 

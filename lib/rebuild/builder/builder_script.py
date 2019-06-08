@@ -14,7 +14,7 @@ from bes.fs.file_checksum import file_checksum_list
 from bes.fs.file_util import file_util
 from bes.system.log import log
 from bes.debug.debug_timer import debug_timer
-from rebuild.base import build_blurb
+from rebuild.base.build_blurb import build_blurb
 from bes.dependency import dependency_provider
 from rebuild.step.step_description import step_description
 from rebuild.step.step_manager import step_manager

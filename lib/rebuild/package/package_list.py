@@ -2,7 +2,8 @@
 
 from bes.common.check import check
 from bes.common.type_checked_list import type_checked_list
-from rebuild.base import package_descriptor_list
+from rebuild.base.package_descriptor_list import package_descriptor_list
+
 from .package import package
 
 class package_list(type_checked_list):

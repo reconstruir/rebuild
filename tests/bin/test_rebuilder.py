@@ -9,7 +9,7 @@ from bes.fs.tar_util import tar_util
 from bes.fs.temp_file import temp_file
 from bes.git.git_temp_repo import git_temp_repo
 from bes.git.git_unit_test import git_unit_test
-from rebuild.base import build_target
+from rebuild.base.build_target import build_target
 from rebuild.toolchain import toolchain_testing
 from bes.testing.unit_test_skip import skip_if
 

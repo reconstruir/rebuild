@@ -189,7 +189,7 @@ class builder(object):
     return result
 
   def _import_script_artifacts(self, script, env):
-    from rebuild.base import artifact_descriptor
+    from rebuild.base.artifact_descriptor import artifact_descriptor
 
     assert env.external_artifact_manager
     other_am = env.external_artifact_manager

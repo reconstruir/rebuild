@@ -3,7 +3,7 @@
 
 from bes.testing.unit_test import unit_test
 from rebuild.base.requirement_parser import requirement_parser as RP
-from rebuild.base import requirement_hardness
+from rebuild.base.requirement import requirement_hardness
 
 class test_requirement_parser(unit_test):
 

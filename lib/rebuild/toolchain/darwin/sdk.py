@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from rebuild.base import build_system
+from rebuild.base.build_system import build_system
 
 class sdk(object):
   'Constants for xcode sdks and maps to convert with System constants.'

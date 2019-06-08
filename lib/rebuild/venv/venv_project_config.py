@@ -10,7 +10,7 @@ from bes.text.string_list import string_list
 
 from rebuild.recipe import recipe_error
 from rebuild.recipe.recipe_util import recipe_util
-from rebuild.base import requirement_list
+from rebuild.base.requirement_list import requirement_list
 
 class venv_project_config(namedtuple('venv_project_config', 'format_version, filename, name, description, variables, packages, python_code')):
 

@@ -10,7 +10,7 @@ from bes.common.check import check
 from bes.text.string_list import string_list
 from bes.compat.url_compat import urljoin
 
-from rebuild.base import build_blurb
+from rebuild.base.build_blurb import build_blurb
 
 from rebuild.artifactory.artifactory_requests import artifactory_requests
 

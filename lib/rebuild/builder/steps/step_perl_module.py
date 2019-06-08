@@ -5,7 +5,7 @@ import os.path as path
 from rebuild.step.compound_step import compound_step
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result
-from rebuild.base import build_system
+from rebuild.base.build_system import build_system
 from bes.python.setup_tools import setup_tools
 from bes.system.execute import execute
 from bes.common.check import check

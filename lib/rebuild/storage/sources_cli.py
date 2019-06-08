@@ -28,7 +28,7 @@ from .storage_db_entry import storage_db_entry
 from .storage_db import storage_db
 from .storage_factory import storage_factory
 
-from rebuild.base import build_target
+from rebuild.base.build_target import build_target
 from rebuild.package import artifact_manager_local
 
 from _rebuild_testing.artifact_manager_helper import artifact_manager_helper
