@@ -11,7 +11,7 @@ from bes.url.http_download_cache import http_download_cache
 
 from rebuild.tools_manager import tools_manager
 from rebuild.checksum import checksum_manager
-from rebuild.package import artifact_manager_local
+from rebuild.package.artifact_manager_local import artifact_manager_local
 from rebuild.base.build_blurb import build_blurb
 from rebuild.base.package_descriptor import package_descriptor
 from rebuild.base.requirement_manager import requirement_manager

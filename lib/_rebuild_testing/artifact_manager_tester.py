@@ -8,7 +8,7 @@ from bes.common.string_util import string_util
 from bes.fs.temp_file import temp_file
 from bes.text.text_line_parser import text_line_parser
 
-from rebuild.package import artifact_manager_local
+from rebuild.package.artifact_manager_local import artifact_manager_local
 from rebuild.base.artifact_descriptor import artifact_descriptor
 
 from .fake_package_recipe_parser import fake_package_recipe_parser

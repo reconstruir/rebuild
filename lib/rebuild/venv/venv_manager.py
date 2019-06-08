@@ -11,7 +11,7 @@ from rebuild.base.build_blurb import build_blurb
 from rebuild.base.build_version import build_version
 from rebuild.base.package_descriptor_list import package_descriptor_list
 from bes.dependency.dependency_resolver import dependency_resolver
-from rebuild.package import package_manager
+from rebuild.package.package_manager import package_manager
 from collections import namedtuple
 
 from .venv_shell_script import venv_shell_script

@@ -11,7 +11,7 @@ from bes.fs.temp_file import temp_file
 
 from rebuild.base.build_target import build_target
 from rebuild.base.package_descriptor import package_descriptor
-from rebuild.package import package
+from rebuild.package.package import package
 from rebuild.toolchain import compiler
 
 class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, env_files, requirements, properties, objects')):

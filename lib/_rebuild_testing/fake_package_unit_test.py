@@ -7,7 +7,7 @@ from bes.common.check import check
 
 from .fake_package_recipe_parser import fake_package_recipe_parser
 from .fake_package_recipe import fake_package_recipe
-from rebuild.package import package
+from rebuild.package.package import package
 
 from .artifact_manager_helper import artifact_manager_helper
 

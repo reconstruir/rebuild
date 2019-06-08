@@ -9,7 +9,7 @@ from rebuild.base.package_descriptor import package_descriptor
 from rebuild.base.requirement_list import requirement_list as RL
 from rebuild.package.package_metadata import package_metadata as PM
 from rebuild.package.artifact_db import artifact_db as DB
-from rebuild.package import package_manifest
+from rebuild.package.package_manifest import package_manifest
 from rebuild.package.package_file_list import package_file_list as FCL
 
 class test_package_metadata(unit_test):

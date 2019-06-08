@@ -23,6 +23,8 @@ from rebuild.config import storage_config_manager
 from rebuild.package.artifact_manager_factory import artifact_manager_factory
 from rebuild.recipe.variable_manager import variable_manager
 
+from rebuild.package.artifact_manager_local import artifact_manager_local
+
 from .venv_config import venv_config
 from .venv_install_options import venv_install_options
 from .venv_manager import venv_manager

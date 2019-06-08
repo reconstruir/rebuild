@@ -6,7 +6,7 @@ from os import path
 from bes.testing.unit_test import unit_test
 from bes.archive.archiver import archiver
 
-from rebuild.package import package
+from rebuild.package.package import package
 from rebuild.base.artifact_descriptor import artifact_descriptor as AD
 from rebuild.base.requirement_list import requirement_list as RL
 

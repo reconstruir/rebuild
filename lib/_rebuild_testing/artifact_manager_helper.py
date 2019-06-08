@@ -2,7 +2,7 @@
 
 from rebuild.config import storage_config_manager
 from rebuild.package.artifact_manager_factory import artifact_manager_factory
-from rebuild.package import artifact_manager_local
+from rebuild.package.artifact_manager_local import artifact_manager_local
 
 class artifact_manager_helper(object):
 
