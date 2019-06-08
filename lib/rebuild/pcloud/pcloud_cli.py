@@ -9,7 +9,7 @@ from bes.fs.file_util import file_util
 from bes.fs.file_checksum import file_checksum_list
 from bes.text import text_table
 
-from rebuild.storage import source_tool
+from rebuild.storage.source_tool import source_tool
 from rebuild.storage.storage_db import storage_db
 from rebuild.storage.storage_db_dict import storage_db_dict
 

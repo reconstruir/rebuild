@@ -7,7 +7,7 @@ from bes.testing.unit_test import unit_test
 from bes.fs.temp_file import temp_file
 
 from rebuild.config import storage_config_manager
-from rebuild.storage import storage_factory
+from rebuild.storage.storage_factory import storage_factory
 from rebuild.storage.storage_base import storage_base
 
 class storage_kiwi(storage_base):

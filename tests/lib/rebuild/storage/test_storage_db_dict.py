@@ -6,8 +6,8 @@ from bes.common.json_util import json_util
 from bes.common.string_util import string_util
 import json, os.path as path
 
-from rebuild.storage import storage_db_dict as F
-from rebuild.storage import storage_db_entry as E
+from rebuild.storage.storage_db_dict import storage_db_dict as F
+from rebuild.storage.storage_db_entry import storage_db_entry as E
 
 class test_storage_db_dict(unit_test):
 

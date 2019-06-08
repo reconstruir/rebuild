@@ -3,7 +3,7 @@
 
 from bes.testing.unit_test import unit_test
 
-from rebuild.storage import storage_db_entry
+from rebuild.storage.storage_db_entry import storage_db_entry
 import os.path as path
 
 class test_storage_db_dict(unit_test):

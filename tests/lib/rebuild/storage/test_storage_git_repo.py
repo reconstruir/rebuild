@@ -6,7 +6,7 @@ from bes.fs.testing.temp_content import temp_content
 from bes.fs.temp_file import temp_file
 from bes.git.git_repo import git_repo
 from bes.git.git_unit_test import git_unit_test
-from rebuild.storage import storage_git_repo
+from rebuild.storage.storage_git_repo import storage_git_repo
 import os.path as path
 
 from test_storage_local import source_dir_maker
