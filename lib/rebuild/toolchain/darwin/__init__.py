@@ -1,7 +1,1 @@
-#!/usr/bin/env python
-#-*- coding:utf-8 -*-
-
-from .darwin_sdk import darwin_sdk
-from .fat_archive import fat_archive
-from .lipo import lipo
-from .xcrun import xcrun
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-

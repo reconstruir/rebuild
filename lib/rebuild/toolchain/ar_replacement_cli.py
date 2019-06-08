@@ -4,8 +4,8 @@
 import argparse, os, os.path as path, sys
 
 from bes.system.execute import execute
-from rebuild.toolchain.darwin import darwin_sdk
-from rebuild.toolchain.darwin import xcrun
+from rebuild.toolchain.darwin.darwin_sdk import darwin_sdk
+from rebuild.toolchain.darwin.xcrun import xcrun
 from rebuild.toolchain.ar_replacement import ar_replacement
   
 class ar_replacement_cli(object):

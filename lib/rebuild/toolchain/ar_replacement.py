@@ -5,7 +5,7 @@ import os.path as path, shutil
 from bes.system.execute import execute
 from bes.system.host import host
 from collections import namedtuple
-from rebuild.toolchain.darwin import lipo
+from rebuild.toolchain.darwin.lipo import lipo
 from bes.fs.dir_util import dir_util
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
