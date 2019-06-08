@@ -7,7 +7,7 @@ from rebuild.base.build_target import build_target
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
 from rebuild.builder.builder_recipe_loader import builder_recipe_loader
-from rebuild.recipe import testing_recipe_load_env
+from rebuild.recipe.recipe_load_env import testing_recipe_load_env
 
 class test_builder_recipe_loader(unit_test):
 

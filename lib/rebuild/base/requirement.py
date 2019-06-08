@@ -7,6 +7,7 @@ from collections import namedtuple
 from bes.compat.StringIO import StringIO
 
 from .build_system import build_system
+from .build_version import build_version
 from .requirement_hardness import requirement_hardness
 
 class requirement(namedtuple('requirement', 'name, operator, version, system_mask, hardness')):

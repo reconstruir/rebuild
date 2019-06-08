@@ -8,7 +8,7 @@ from bes.common.variable import variable
 from bes.key_value.key_value_list import key_value_list
 from bes.text.string_list import string_list
 
-from rebuild.recipe import recipe_error
+from rebuild.recipe.recipe_error import recipe_error
 from rebuild.recipe.recipe_util import recipe_util
 from rebuild.base.requirement_list import requirement_list
 

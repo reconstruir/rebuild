@@ -6,7 +6,7 @@ from rebuild.builder.builder_recipe_loader import builder_recipe_loader
 from bes.git import repo
 from bes.fs.file_replace import file_replace
 from bes.fs.temp_file import temp_file
-from rebuild.recipe import testing_recipe_load_env
+from rebuild.recipe.testing_recipe_load_env import testing_recipe_load_env
 
 class update_cli(object):
   

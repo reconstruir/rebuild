@@ -4,7 +4,7 @@
 from bes.testing.unit_test import unit_test
 from bes.key_value.key_value_list import key_value_list as KVL
 from bes.text.tree_text_parser import tree_text_parser as TTP
-from rebuild.recipe import recipe_parser_util as RPU
+from rebuild.recipe.recipe_parser_util import recipe_parser_util as RPU
 from rebuild.recipe.value.value_key_values import value_key_values as VKV
 from rebuild.recipe.value.value_origin import value_origin as VO
 from rebuild.recipe.value.value_string_list import value_string_list as VSL

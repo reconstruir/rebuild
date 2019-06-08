@@ -6,7 +6,7 @@ from bes.text.string_list import string_list
 from bes.fs.file_util import file_util
 from bes.system.log import log
 
-from rebuild.recipe import recipe_error
+from rebuild.recipe.recipe_error import recipe_error
 from rebuild.recipe.recipe_util import recipe_util
 
 from .venv_project_config import venv_project_config
