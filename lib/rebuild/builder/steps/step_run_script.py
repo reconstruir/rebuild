@@ -3,7 +3,7 @@
 import os.path as path
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result
-from rebuild.tools import patch
+from rebuild.tools.patch import patch
 
 class step_run_script(step):
   'Run a script.'

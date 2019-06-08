@@ -5,7 +5,7 @@ from bes.testing.unit_test import unit_test
 import os.path as path
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
-from rebuild.tools import install
+from rebuild.tools.install import install
 
 class test_install(unit_test):
 
