@@ -9,7 +9,7 @@ from rebuild.recipe.value.value_origin import value_origin as VO
 from rebuild.recipe.value.value_type import value_type as VT
 from rebuild.recipe.value.masked_value import masked_value as V
 from rebuild.recipe.value.masked_value_list import masked_value_list as VL
-from rebuild.recipe.value import value_int
+from rebuild.recipe.value.value_int import value_int
 
 class test_masked_value_list(unit_test):
 

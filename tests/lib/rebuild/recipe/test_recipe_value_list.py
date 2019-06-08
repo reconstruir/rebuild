@@ -6,12 +6,12 @@ from rebuild.recipe.recipe_value import recipe_value as RV
 from rebuild.recipe.recipe_value_list import recipe_value_list as RVL
 from bes.key_value.key_value_list import key_value_list as KVL
 from bes.text.string_list import string_list
-from rebuild.recipe.value import value_key_values as VKV
-from rebuild.recipe.value import value_definition as VD
+from rebuild.recipe.value.value_key_values import value_key_values as VKV
+from rebuild.recipe.value.value_definition import value_definition as VD
 from rebuild.recipe.value.masked_value import masked_value as MV
 from rebuild.recipe.value.masked_value_list import masked_value_list as MVL
-from rebuild.recipe.value import value_bool
-from rebuild.recipe.value import value_string_list
+from rebuild.recipe.value.value_bool import value_bool
+from rebuild.recipe.value.value_string_list import value_string_list
 
 class test_recipe_value_list(unit_test):
 

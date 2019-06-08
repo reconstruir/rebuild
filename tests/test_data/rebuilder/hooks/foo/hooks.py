@@ -1,6 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from rebuild.recipe.value import value_hook
+from rebuild.recipe.value.value_hook import value_hook
 
 class _test_hook1(value_hook):
     

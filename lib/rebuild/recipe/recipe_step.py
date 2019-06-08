@@ -9,9 +9,9 @@ from bes.text.tree_text_parser import tree_text_parser
 from .recipe_value_list import recipe_value_list
 from .recipe_parser_util import recipe_parser_util
 
-from .value import value_origin
-from .value import value_type
-from .value import value_factory
+from .value.value_origin import value_origin
+from .value.value_type import value_type
+from .value.value_factory import value_factory
 
 class recipe_step(namedtuple('recipe_step', 'name,description,values')):
 

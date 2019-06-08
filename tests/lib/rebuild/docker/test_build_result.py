@@ -4,7 +4,7 @@
 import os.path as path
 from bes.testing.unit_test import unit_test
 #from rebuild.project.project_file import project_file as PF
-#from rebuild.recipe.value import masked_value, masked_value_list, value_origin, value_key_values, value_string_list
+#from rebuild.recipe.value.masked_value import masked_value, masked_value_list, value_origin, value_key_values, value_string_list
 #from bes.key_value.key_value_list import key_value_list
 #from bes.text.string_list import string_list
 #from bes.fs.temp_file import temp_file

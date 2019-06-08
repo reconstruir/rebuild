@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from rebuild.recipe.value import value_definition as VD
+from rebuild.recipe.value.value_definition import value_definition as VD
 
 class test_value_definition(unit_test):
 

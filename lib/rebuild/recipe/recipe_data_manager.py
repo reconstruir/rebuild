@@ -13,12 +13,12 @@ from .recipe_data_descriptor import recipe_data_descriptor
 from .recipe_parser_util import recipe_parser_util
 from .recipe_error import recipe_error
 
-from .value import masked_value_list
-from .value import value_factory
-from .value import value_key_values
-from .value import value_origin
-from .value import masked_value
-from .value import value_string_list
+from .value.masked_value_list import masked_value_list
+from .value.value_factory import value_factory
+from .value.value_key_values import value_key_values
+from .value.value_origin import value_origin
+from .value.masked_value import masked_value
+from .value.value_string_list import value_string_list
 
 class recipe_data_manager(object):
 

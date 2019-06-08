@@ -18,7 +18,7 @@ from rebuild.base.requirement import requirement
 from rebuild.base.requirement_list import requirement_list
 from rebuild.step.step_description import step_description
 
-from rebuild.recipe.value import value_type
+from rebuild.recipe.value.value_type import value_type
 from rebuild.instruction import instruction_list
 
 from .recipe import recipe
@@ -31,12 +31,17 @@ from .recipe_value import recipe_value
 from .recipe_enabled import recipe_enabled
 from .recipe_data_manager import recipe_data_manager
 
-from .value import masked_value
-from .value import masked_value_list
-from .value import value_factory
-from .value import value_file
-from .value import value_origin
-from .value import value_key_values
+from .value.masked_value import masked_value
+from .value.masked_value_list import masked_value_list
+from .value.value_factory import value_factory
+from .value.value_file import value_file
+from .value.value_origin import value_origin
+from .value.value_key_values import value_key_values
+from .value.value_string import value_string
+from .value.value_int import value_int
+from .value.value_bool import value_bool
+from .value.value_git_address import value_git_address
+from .value.value_hook import value_hook
 
 class recipe_parser(object):
 

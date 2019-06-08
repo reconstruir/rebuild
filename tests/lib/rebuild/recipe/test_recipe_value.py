@@ -5,15 +5,15 @@ from bes.testing.unit_test import unit_test
 from rebuild.recipe.recipe_value import recipe_value as V
 from bes.key_value.key_value import key_value as KV
 from bes.key_value.key_value_list import key_value_list as KVL
-from rebuild.recipe.value import value_key_values as VKV
-from rebuild.recipe.value import value_type as VT
+from rebuild.recipe.value.value_key_values import value_key_values as VKV
+from rebuild.recipe.value.value_type import value_type as VT
 from rebuild.recipe.value.masked_value import masked_value as MV
 from rebuild.recipe.value.masked_value_list import masked_value_list as MVL
 
-from rebuild.recipe.value import value_bool
-from rebuild.recipe.value import value_string
-from rebuild.recipe.value import value_string_list
-from rebuild.recipe.value import value_int
+from rebuild.recipe.value.value_bool import value_bool
+from rebuild.recipe.value.value_string import value_string
+from rebuild.recipe.value.value_string_list import value_string_list
+from rebuild.recipe.value.value_int import value_int
 
 class test_recipe_value(unit_test):
 
