@@ -9,7 +9,7 @@ from bes.fs.dir_util import dir_util
 from bes.fs.file_util import file_util
 from bes.dependency.dependency_resolver import dependency_resolver
 from collections import namedtuple
-from rebuild.step import step_aborted
+from rebuild.step.step_aborted import step_aborted
 from rebuild.base.build_blurb import build_blurb
 from rebuild.base.package_descriptor_list import package_descriptor_list
 from rebuild.package.db_error import *

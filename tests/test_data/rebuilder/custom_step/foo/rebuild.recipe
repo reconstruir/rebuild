@@ -2,7 +2,7 @@
 
 package foo 1.0.0
   python_code
-    > from rebuild.step import step
+    > from rebuild.step.step import step
       class _custom_step_make_foo(step):
         'make a foo.'
     

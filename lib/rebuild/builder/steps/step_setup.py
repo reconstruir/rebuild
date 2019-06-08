@@ -1,6 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from rebuild.step import compound_step
+from rebuild.step.compound_step import compound_step
 
 from .step_setup_install_requirements import step_setup_install_requirements
 from .step_setup_install_tool_requirements import step_setup_install_tool_requirements

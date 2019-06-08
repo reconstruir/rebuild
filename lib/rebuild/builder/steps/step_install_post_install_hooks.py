@@ -1,7 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy
-from rebuild.step import step
+from rebuild.step.step import step
 
 class step_install_post_install_hooks(step):
   'A step to run a hook right after the setup steps are done.'

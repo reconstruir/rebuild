@@ -490,7 +490,7 @@ package foo 1.2.3 4
       bool_value: True
 
   python_code
-    > from rebuild.step import step
+    > from rebuild.step.step import step
       class test_inline_step1(step):
         def __init__(self):
           super(test_inline_step1, self).__init__()

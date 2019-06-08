@@ -2,7 +2,7 @@
 
 from os import path
 from bes.fs import tar_util
-from rebuild.step import step
+from rebuild.step.step import step
 
 class step_install_rebuild_files(step):
   'Install rebuild files in the root of the build_dir.'

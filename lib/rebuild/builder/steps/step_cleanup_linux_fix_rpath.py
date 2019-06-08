@@ -2,7 +2,7 @@
 
 import os.path as path
 from bes.system.execute import execute
-from rebuild.step import step
+from rebuild.step.step import step
 from rebuild.binary_format import binary_detector
 from rebuild.toolchain.library import library
 

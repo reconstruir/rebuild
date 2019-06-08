@@ -1,7 +1,6 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from rebuild.step import step
+from rebuild.step.step import step
 
 class step_setup_post_setup_hook(step):
   'A step to run a hook right after the setup steps are done.'

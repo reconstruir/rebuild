@@ -1,6 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from rebuild.step import compound_step
+from rebuild.step.compound_step import compound_step
 
 class step_post_install(compound_step):
   'Everything that needs to happen after the install step.'

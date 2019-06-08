@@ -3,7 +3,7 @@
 import os, os.path as path
 from collections import namedtuple
 
-from rebuild.step import step_result
+from rebuild.step.step_result import step_result
 from rebuild.base.build_blurb import build_blurb
 from rebuild.base.build_target import build_target
 from rebuild.toolchain.toolchain import toolchain
