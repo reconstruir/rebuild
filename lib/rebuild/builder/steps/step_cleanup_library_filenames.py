@@ -8,7 +8,7 @@ from bes.common.string_util import string_util
 from rebuild.toolchain.library import library
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result
-from rebuild.pkg_config import pkg_config
+from rebuild.pkg_config.pkg_config import pkg_config
 
 class step_cleanup_library_filenames(step):
   'Cleanups realted to the filenames of libraries.'

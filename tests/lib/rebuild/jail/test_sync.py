@@ -8,7 +8,7 @@ from bes.fs.file_find import file_find
 from bes.fs.file_util import file_util
 from bes.fs.tar_util import tar_util
 from bes.fs.temp_file import temp_file
-from rebuild.jail import sync
+from rebuild.jail.sync import sync
 
 class test_sync(unit_test):
 

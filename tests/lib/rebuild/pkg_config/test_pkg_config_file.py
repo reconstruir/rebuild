@@ -4,7 +4,7 @@
 from bes.testing.unit_test import unit_test
 import copy, glob, os.path as path
 from bes.fs.temp_file import temp_file
-from rebuild.pkg_config import pkg_config_file
+from rebuild.pkg_config.pkg_config_file import pkg_config_file
 from rebuild.pkg_config.entry import entry
 
 class test_pkg_config_file(unit_test):

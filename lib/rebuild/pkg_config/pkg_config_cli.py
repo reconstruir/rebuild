@@ -3,14 +3,14 @@
 
 import argparse
 
-from rebuild.pkg_config import pkg_config
+from rebuild.pkg_config.pkg_config import pkg_config
 from bes.common.algorithm import algorithm
 from bes.common.string_util import string_util
 from bes.common.table import table as caca_table
 from bes.system.os_env import os_env_var
 from bes.text import text_table
 
-from rebuild.pkg_config import caca_pkg_config
+from rebuild.pkg_config.caca_pkg_config import caca_pkg_config
 
 class pkg_config_cli(object):
 

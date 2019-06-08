@@ -4,7 +4,7 @@
 import os.path as path, unittest
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
-from rebuild.pkg_config import pkg_config
+from rebuild.pkg_config.pkg_config import pkg_config
 
 class test_pkg_config(unittest.TestCase):
 

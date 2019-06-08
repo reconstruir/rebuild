@@ -24,7 +24,7 @@ from rebuild.base.requirement import requirement
 from rebuild.base.package_descriptor import package_descriptor
 from rebuild.base.package_descriptor_list import package_descriptor_list
 from rebuild.instruction.instruction_list import instruction_list
-from rebuild.pkg_config import pkg_config
+from rebuild.pkg_config.pkg_config import pkg_config
 from rebuild.base.build_blurb import build_blurb
 
 from .package import package

@@ -4,7 +4,7 @@
 from bes.testing.unit_test import unit_test
 
 import os.path as path
-from rebuild.pkg_config import caca_pkg_config
+from rebuild.pkg_config.caca_pkg_config import caca_pkg_config
 
 class test_caca_pkg_config(unit_test):
 

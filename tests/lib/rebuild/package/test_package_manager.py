@@ -25,7 +25,7 @@ from rebuild.package.package_install_options import package_install_options
 from rebuild.package.package_manager import PackageFilesConflictError
 from rebuild.package.package_manager import PackageMissingRequirementsError
 from rebuild.package.package_manager import package_manager
-from rebuild.pkg_config import pkg_config
+from rebuild.pkg_config.pkg_config import pkg_config
 
 from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT
 from _rebuild_testing.fake_package_recipes import fake_package_recipes as RECIPES
