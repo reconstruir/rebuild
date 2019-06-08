@@ -14,7 +14,7 @@ from rebuild.recipe.recipe_parser_util import recipe_parser_util
 from rebuild.recipe.value.masked_value_list import masked_value_list
 from rebuild.recipe.variable_manager import variable_manager
 from rebuild.base.requirement_list import requirement_list
-from rebuild.config import storage_config_manager
+from rebuild.config.storage_config_manager import storage_config_manager
 
 from .venv_project_config import venv_project_config
 from .venv_project_config_list import venv_project_config_list

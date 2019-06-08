@@ -3,7 +3,7 @@
 
 import os
 from bes.testing.unit_test import unit_test
-from rebuild.config import storage_config_manager as SCM
+from rebuild.config.storage_config_manager import storage_config_manager as SCM
 
 class test_storage_config_manager(unit_test):
     

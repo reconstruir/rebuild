@@ -226,7 +226,7 @@ class test_rebuilder_script(script_unit_test):
     self.assertTrue( 'files/lib/pkgconfig/libpotato.pc' in test.artifacts_members['libpotato-1.0.0.tar.gz'] )
     
   def test_extra_tarballs(self):
-    from rebuild.config import storage_config_manager
+    from rebuild.config.storage_config_manager import storage_config_manager
     location = path.join(self.data_dir(), 'extra_tarballs/source')
     content = storage_config_manager.make_local_config_content('unit_test', location, 'rebuild_stuff', None)
     tmp_config = temp_file.make_temp_file(content = content, delete = not self.DEBUG)

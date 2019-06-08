@@ -1,6 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from rebuild.config import storage_config_manager
+from rebuild.config.storage_config_manager import storage_config_manager
 from rebuild.package.artifact_manager_factory import artifact_manager_factory
 from rebuild.package.artifact_manager_local import artifact_manager_local
 

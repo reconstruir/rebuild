@@ -39,7 +39,7 @@ class rebuilder_tester(object):
 
   def _make_command(self, config, tmp_dir, *args):
     if not  '--storage-config' in args:
-      from rebuild.config import storage_config_manager
+      from rebuild.config.storage_config_manager import storage_config_manager
       location = self._source_dir
       content = storage_config_manager.make_local_config_content('unit_test', location, 'rebuild_stuff', None)
       tmp_config = temp_file.make_temp_file(content = content, delete = not self._debug)

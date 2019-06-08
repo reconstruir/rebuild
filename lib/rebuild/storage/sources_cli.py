@@ -20,7 +20,7 @@ from bes.archive.archive_extension import archive_extension
 from rebuild.binary_format.binary_detector import binary_detector
 from rebuild.source_ingester.ingest_util import ingest_util
 
-from rebuild.config import storage_config_manager
+from rebuild.config.storage_config_manager import storage_config_manager
 
 from .storage_db_entry import storage_db_entry
 from .storage_db_dict import storage_db_dict
