@@ -11,4 +11,5 @@ from .builder_config import builder_config
 from .builder_env import builder_env
 
 from rebuild.builder.steps import *
-from rebuild.step import step, step_result
+from rebuild.step.step import step
+from rebuild.step.step_result import step_result

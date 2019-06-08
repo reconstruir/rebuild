@@ -12,7 +12,12 @@ from bes.fs.temp_file import temp_file
 from bes.version.version_cli import version_cli
 from bes.properties_file.properties_file import properties_file
 
-from rebuild.base import build_arch, build_blurb, build_system, build_target, build_target_cli, build_level
+from rebuild.base.build_arch import build_arch
+from rebuild.base.build_blurb import build_blurb
+from rebuild.base.build_level import build_level
+from rebuild.base.build_system import build_system
+from rebuild.base.build_target import build_target
+from rebuild.base.build_target_cli import build_target_cli
 
 from rebuild.config import storage_config_manager
 from rebuild.package.artifact_manager_factory import artifact_manager_factory

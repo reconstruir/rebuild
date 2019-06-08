@@ -3,8 +3,11 @@
 
 import os.path as path
 from bes.testing.unit_test import unit_test
-from rebuild.base import build_target, build_system
-from rebuild.toolchain import compiler, toolchain, toolchain_testing
+from rebuild.base.build_system import build_system
+from rebuild.base.build_target import build_target
+from rebuild.toolchain.compiler import compiler
+from rebuild.toolchain.toolchain import toolchain
+from rebuild.toolchain.toolchain_testing import toolchain_testing
 from bes.system.host import host
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file

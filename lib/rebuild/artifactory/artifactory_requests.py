@@ -12,7 +12,9 @@ from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
 
 from rebuild.base import requirement_list
-from rebuild.package import package_metadata, package_metadata_list, package_manifest
+from rebuild.package.package_manifest import package_manifest
+from rebuild.package.package_metadata import package_metadata
+from rebuild.package.package_metadata_list import package_metadata_list
 from rebuild.storage.storage_address import storage_address
 from rebuild.credentials.credentials import credentials
 

@@ -19,8 +19,10 @@ from bes.system.os_env import os_env
 from bes.env.env_dir import env_dir
 from bes.env.shell_framework import shell_framework
 
-from rebuild.base import build_system, requirement
-from rebuild.base import package_descriptor, package_descriptor_list
+from rebuild.base.build_system import build_system
+from rebuild.base.requirement import requirement
+from rebuild.base.package_descriptor import package_descriptor
+from rebuild.base.package_descriptor_list import package_descriptor_list
 from rebuild.instruction import instruction_list
 from rebuild.pkg_config import pkg_config
 from rebuild.base import build_blurb

@@ -2,7 +2,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from rebuild.recipe.value import value_parsing as P, value_origin as VO
+from rebuild.recipe.value.value_origin import value_origin as VO
+from rebuild.recipe.value.value_parsing import value_parsing as P
 
 class test_value_parsing(unit_test):
 

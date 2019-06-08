@@ -6,7 +6,9 @@ from collections import namedtuple
 from bes.common.check import check
 from bes.fs.file_util import file_util
 
-from rebuild.recipe import recipe, recipe_parser, recipe_error
+from rebuild.recipe.recipe import recipe
+from rebuild.recipe.recipe_error import recipe_error
+from rebuild.recipe.recipe_parser import recipe_parser
 
 class builder_recipe_loader(object):
 

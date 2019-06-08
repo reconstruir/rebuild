@@ -24,7 +24,9 @@ from bes.match.matcher_filename import matcher_filename, matcher_multiple_filena
 from bes.python.setup_tools import setup_tools
 from bes.system.execute import execute
 from bes.system.log import log
-from rebuild.base import build_blurb, build_target, package_descriptor
+from rebuild.base.build_blurb import build_blurb
+from rebuild.base.build_target import build_target
+from rebuild.base.package_descriptor import package_descriptor
 from bes.debug.debug_timer import debug_timer
 
 from rebuild.binary_format.binary_detector import binary_detector

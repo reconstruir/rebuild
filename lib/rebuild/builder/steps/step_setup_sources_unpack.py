@@ -4,7 +4,8 @@ import os.path as path
 
 from bes.archive.archiver import archiver
 
-from rebuild.step import step, step_result
+from rebuild.step.step import step
+from rebuild.step.step_result import step_result
 
 class step_setup_sources_unpack(step):
   'Prepare source tarballs..'

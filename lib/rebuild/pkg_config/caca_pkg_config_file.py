@@ -13,7 +13,8 @@ from bes.key_value.key_value import key_value
 from bes.key_value.key_value_list import key_value_list
 from bes.fs.file_util import file_util
 #from .entry import entry
-from rebuild.base import requirement, requirement_list
+from rebuild.base.requirement import requirement
+from rebuild.base.requirement_list import requirement_list
 from .caca_entry import caca_entry
 
 from collections import namedtuple

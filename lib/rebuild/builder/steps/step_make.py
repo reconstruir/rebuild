@@ -2,7 +2,9 @@
 
 import os.path as path
 from bes.common.check import check
-from rebuild.step import compound_step, step, step_result
+from rebuild.step.compound_step import compound_step
+from rebuild.step.step import step
+from rebuild.step.step_result import step_result
 
 class step_make(step):
   'step to make something with make on unix (gnu or bsd).'

@@ -3,7 +3,8 @@
 #
 
 import argparse, os.path as path
-from rebuild.jail import config_file, jail
+from rebuild.jail.config_file import config_file
+from rebuild.jail.jail import jail
 from bes.fs.file_util import file_util
 from bes.system.execute import execute
 from bes.system.user import user

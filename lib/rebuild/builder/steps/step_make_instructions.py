@@ -5,7 +5,8 @@ import os, os.path as path
 
 from bes.common.variable import variable
 from bes.fs.file_util import file_util
-from rebuild.step import step, step_result
+from rebuild.step.step import step
+from rebuild.step.step_result import step_result
 
 class step_make_instructions(step):
   'Make and save build instructions for packages.'

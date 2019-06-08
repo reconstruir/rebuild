@@ -7,7 +7,9 @@ from bes.common.variable import variable
 from bes.fs.file_replace import file_replace
 from bes.fs.file_util import file_util
 from bes.system.execute import execute
-from rebuild.step import compound_step, step, step_result
+from rebuild.step.compound_step import compound_step
+from rebuild.step.step import step
+from rebuild.step.step_result import step_result
 from rebuild.tools import install
 
 class step_python_make_standalone_program(step):

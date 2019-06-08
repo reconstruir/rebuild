@@ -5,7 +5,10 @@ from bes.testing.unit_test import unit_test
 from bes.key_value.key_value_list import key_value_list as KVL
 from bes.text.tree_text_parser import tree_text_parser as TTP
 from rebuild.recipe import recipe_parser_util as RPU
-from rebuild.recipe.value import value_type as VT, value_origin as VO, value_key_values as VKV, value_string_list as VSL
+from rebuild.recipe.value.value_key_values import value_key_values as VKV
+from rebuild.recipe.value.value_origin import value_origin as VO
+from rebuild.recipe.value.value_string_list import value_string_list as VSL
+from rebuild.recipe.value.value_type import value_type as VT
 
 class test_recipe_parser_util(unit_test):
 

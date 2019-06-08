@@ -20,8 +20,10 @@ from bes.system.execute import execute
 from bes.system.log import log
 from bes.system.compat import with_metaclass
 
-from rebuild.base import build_blurb, build_target
-from rebuild.recipe.value import value_definition, value_type
+from rebuild.base.build_blurb import build_blurb
+from rebuild.base.build_target import build_target
+from rebuild.recipe.value.value_definition import value_definition
+from rebuild.recipe.value.value_type import value_type
 from rebuild.toolchain import toolchain
 
 from .step_registry import step_registry

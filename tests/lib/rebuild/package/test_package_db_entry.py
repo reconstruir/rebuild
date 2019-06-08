@@ -3,7 +3,11 @@
 import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.sqlite.sqlite import sqlite
-from rebuild.base import build_system, build_target, package_descriptor, requirement as R, requirement_list as RL
+from rebuild.base.build_system import build_system
+from rebuild.base.build_target import build_target
+from rebuild.base.package_descriptor import package_descriptor
+from rebuild.base.requirement import requirement as R
+from rebuild.base.requirement_list import requirement_list as RL
 from rebuild.package.package_db_entry import package_db_entry as PE
 from rebuild.package.package_db import package_db as DB
 from rebuild.package import package_manifest

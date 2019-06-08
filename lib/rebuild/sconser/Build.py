@@ -11,7 +11,8 @@ from bes.system.execute import execute
 from bes.text import text_canvas
 from bes.unix.terminal import terminal
 
-from rebuild.base import build_blurb, build_target
+from rebuild.base.build_blurb import build_blurb
+from rebuild.base.build_target import build_target
 from .PackageFlags import PackageFlags
 
 class Build(object):

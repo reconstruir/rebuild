@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from rebuild.base import build_system, build_level
+from rebuild.base.build_level import build_level
+from rebuild.base.build_system import build_system
 
 class CompileFlags(object):
 

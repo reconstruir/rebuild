@@ -3,7 +3,10 @@
 
 from bes.testing.unit_test import unit_test
 from rebuild.base import package_descriptor as PD
-from rebuild.base import build_system, build_target, package_descriptor, requirement_list as RL
+from rebuild.base.build_system import build_system
+from rebuild.base.build_target import build_target
+from rebuild.base.package_descriptor import package_descriptor
+from rebuild.base.requirement_list import requirement_list as RL
 from bes.common.string_util import string_util
 
 class test_package_descriptor(unit_test):

@@ -4,8 +4,13 @@
 from bes.testing.unit_test import unit_test
 import os.path as path
 from bes.fs.temp_file import temp_file
-from rebuild.base import build_target, package_descriptor, requirement
-from rebuild.builder import builder_script, builder_script_manager, builder_config, builder_env
+from rebuild.base.build_target import build_target
+from rebuild.base.package_descriptor import package_descriptor
+from rebuild.base.requirement import requirement
+from rebuild.builder.builder_config import builder_config
+from rebuild.builder.builder_env import builder_env
+from rebuild.builder.builder_script import builder_script
+from rebuild.builder.builder_script_manager import builder_script_manager
 
 class test_builder_script(unit_test):
 

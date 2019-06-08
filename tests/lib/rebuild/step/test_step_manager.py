@@ -5,7 +5,10 @@ import copy, unittest
 from bes.common.check import check
 from bes.common.dict_util import dict_util
 from test_steps import *
-from rebuild.step import step, compound_step, step_description, step_manager
+from rebuild.step.compound_step import compound_step
+from rebuild.step.step import step
+from rebuild.step.step_description import step_description
+from rebuild.step.step_manager import step_manager
 from bes.testing.unit_test_skip import raise_skip
 
 class test_step_manager(unittest.TestCase):

@@ -7,7 +7,9 @@ from bes.fs.file_path import file_path
 from bes.fs.file_util import file_util
 from bes.system.log import log
 from bes.system.os_env import os_env
-from rebuild.base import build_blurb, build_version, package_descriptor_list
+from rebuild.base.build_blurb import build_blurb
+from rebuild.base.build_version import build_version
+from rebuild.base.package_descriptor_list import package_descriptor_list
 from bes.dependency.dependency_resolver import dependency_resolver
 from rebuild.package import package_manager
 from collections import namedtuple

@@ -1,7 +1,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from rebuild.step import step, step_result
+from rebuild.step.step import step
+from rebuild.step.step_result import step_result
 from rebuild.tools import patch
 
 class step_run_script(step):

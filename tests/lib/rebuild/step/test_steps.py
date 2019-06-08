@@ -2,7 +2,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy
-from rebuild.step import step, step_result
+from rebuild.step.step import step
+from rebuild.step.step_result import step_result
 
 def _save_args(args):
   assert isinstance(args, dict)
@@ -106,4 +107,3 @@ class step_with_output4(step):
   def execute(self, script, env, args):
     self.saved_args = copy.deepcopy(args)
     return step_result(True, None, output = { 'drink': 'bourbon' })
-  

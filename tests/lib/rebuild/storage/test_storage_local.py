@@ -7,7 +7,8 @@ from bes.fs.testing.temp_content import temp_content
 from bes.fs.temp_file import temp_file
 from bes.archive.archive_extension import archive_extension
 from bes.archive.temp_archive import temp_archive
-from rebuild.storage import storage_local, storage_factory
+from rebuild.storage.storage_factory import storage_factory
+from rebuild.storage.storage_local import storage_local
 from rebuild.config import storage_config_manager
 import os.path as path
 from _rebuild_testing.artifact_manager_tester import artifact_manager_tester as AMT

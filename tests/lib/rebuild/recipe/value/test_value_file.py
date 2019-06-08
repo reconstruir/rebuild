@@ -2,7 +2,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from rebuild.recipe.value import value_file, value_origin
+from rebuild.recipe.value.value_file import value_file
+from rebuild.recipe.value.value_origin import value_origin
 from bes.key_value.key_value_list import key_value_list
 
 import pickle

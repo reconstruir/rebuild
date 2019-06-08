@@ -2,7 +2,11 @@
 
 from rebuild.package.package_db import package_db as DB
 from rebuild.package.package_db_entry import package_db_entry as PE
-from rebuild.base import build_system, build_target, package_descriptor, requirement as R, requirement_list as RL
+from rebuild.base.build_system import build_system
+from rebuild.base.build_target import build_target
+from rebuild.base.package_descriptor import package_descriptor
+from rebuild.base.requirement import requirement as R
+from rebuild.base.requirement_list import requirement_list as RL
 from bes.fs.file_checksum import file_checksum_list
 from bes.fs.temp_file import temp_file
 from bes.debug.debug_timer import debug_timer

@@ -8,7 +8,12 @@ from bes.common.string_util import string_util
 from bes.common.tuple_util import tuple_util
 from bes.property.cached_property import cached_property
 from bes.compat.cmp import cmp
-from rebuild.base import artifact_descriptor,  build_arch, build_target, build_version, package_descriptor, requirement_list
+from rebuild.base.artifact_descriptor import artifact_descriptor
+from rebuild.base.build_arch import build_arch
+from rebuild.base.build_target import build_target
+from rebuild.base.build_version import build_version
+from rebuild.base.package_descriptor import package_descriptor
+from rebuild.base.requirement_list import requirement_list
 
 from .package_manifest import package_manifest
 

@@ -2,7 +2,8 @@
 #-*- coding:utf-8 -*-
 
 from ._toolchain_base import _toolchain_base
-from rebuild.base import build_arch, build_level
+from rebuild.base.build_arch import build_arch
+from rebuild.base.build_level import build_level
 import os.path as path
 
 class _toolchain_linux(_toolchain_base):

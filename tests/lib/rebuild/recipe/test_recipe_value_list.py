@@ -2,12 +2,14 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from rebuild.recipe import recipe_value as RV, recipe_value_list as RVL
+from rebuild.recipe.recipe_value import recipe_value as RV
+from rebuild.recipe.recipe_value_list import recipe_value_list as RVL
 from bes.key_value.key_value_list import key_value_list as KVL
 from bes.text.string_list import string_list
 from rebuild.recipe.value import value_key_values as VKV
 from rebuild.recipe.value import value_definition as VD
-from rebuild.recipe.value import masked_value as MV, masked_value_list as MVL
+from rebuild.recipe.value.masked_value import masked_value as MV
+from rebuild.recipe.value.masked_value_list import masked_value_list as MVL
 from rebuild.recipe.value import value_bool
 from rebuild.recipe.value import value_string_list
 

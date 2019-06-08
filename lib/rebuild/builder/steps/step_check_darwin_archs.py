@@ -7,7 +7,8 @@ from bes.fs.dir_util import dir_util
 from bes.fs.file_util import file_util
 from rebuild.toolchain import library
 from rebuild.toolchain.darwin import lipo
-from rebuild.step import step, step_result
+from rebuild.step.step import step
+from rebuild.step.step_result import step_result
 
 class step_check_darwin_archs(step):
   'Cleanups realted to the filenames of libraries.'

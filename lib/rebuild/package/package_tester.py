@@ -4,7 +4,8 @@ import os, os.path as path
 from collections import namedtuple
 
 from rebuild.step import step_result
-from rebuild.base import build_blurb, build_target
+from rebuild.base.build_blurb import build_blurb
+from rebuild.base.build_target import build_target
 from rebuild.toolchain import toolchain
 from bes.dependency.dependency_resolver import dependency_resolver
 from bes.common.algorithm import algorithm

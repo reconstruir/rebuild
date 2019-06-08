@@ -2,7 +2,9 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from rebuild.base import package_descriptor as PD, package_descriptor_list as PDL, requirement_list as RL
+from rebuild.base.package_descriptor import package_descriptor as PD
+from rebuild.base.package_descriptor_list import package_descriptor_list as PDL
+from rebuild.base.requirement_list import requirement_list as RL
 
 class test_package_descriptor_list(unit_test):
 

@@ -2,7 +2,10 @@
 
 from ._toolchain_base import _toolchain_base
 from bes.system.host import host
-from rebuild.base import build_arch, build_blurb, build_system, build_level
+from rebuild.base.build_arch import build_arch
+from rebuild.base.build_blurb import build_blurb
+from rebuild.base.build_level import build_level
+from rebuild.base.build_system import build_system
 import os, os.path as path
 
 assert False

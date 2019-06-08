@@ -4,7 +4,12 @@
 import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs.temp_file import temp_file
-from rebuild.base import artifact_descriptor as AD, build_level, build_system, build_target as BT, package_descriptor as PD, requirement_list as RL
+from rebuild.base.artifact_descriptor import artifact_descriptor as AD
+from rebuild.base.build_level import build_level
+from rebuild.base.build_system import build_system
+from rebuild.base.build_target import build_target as BT
+from rebuild.base.package_descriptor import package_descriptor as PD
+from rebuild.base.requirement_list import requirement_list as RL
 from rebuild.package.artifact_db import artifact_db as DB
 from rebuild.package.db_error import *
 from rebuild.package.package_metadata import package_metadata as PM

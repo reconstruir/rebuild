@@ -1,6 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from rebuild.recipe import recipe, recipe_parser
+from rebuild.recipe.recipe import recipe
+from rebuild.recipe.recipe_parser import recipe_parser
 from rebuild.recipe.variable_manager import variable_manager
 from bes.key_value.key_value_list import key_value_list as KVL
 

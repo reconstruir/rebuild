@@ -3,7 +3,8 @@
 
 import os.path as path
 from bes.fs.file_util import file_util
-from rebuild.step import step, step_result
+from rebuild.step.step import step
+from rebuild.step.step_result import step_result
 
 class step_cleanup_python_droppings(step):
   'Cleanup python droppings.  The easy install crap.'

@@ -2,22 +2,31 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy, os.path as path
-from bes.testing.unit_test import unit_test
+
+from bes.archive.archiver import archiver
+from bes.archive.temp_archive import temp_archive
+from bes.common.check import check
+from bes.common.dict_util import dict_util
+from bes.common.object_util import object_util
 from bes.fs.file_find import file_find
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
 from bes.system.execute import execute
 from bes.system.os_env import os_env
-from bes.common.check import check
-from bes.common.dict_util import dict_util
-from bes.common.object_util import object_util
-from rebuild.base import build_target as BT, package_descriptor as PD, package_descriptor_list as PDL
-from rebuild.pkg_config import pkg_config
-from rebuild.package import artifact_manager_local, package, package_manager, package_install_options
-from rebuild.package import PackageFilesConflictError, PackageMissingRequirementsError
+from bes.testing.unit_test import unit_test
+
+from rebuild.base.build_target import build_target as BT
+from rebuild.base.package_descriptor import package_descriptor as PD
+from rebuild.base.package_descriptor_list import package_descriptor_list as PDL
+from rebuild.package.artifact_manager_local import artifact_manager_local
 from rebuild.package.db_error import *
-from bes.archive.archiver import archiver
-from bes.archive.temp_archive import temp_archive
+from rebuild.package.package import package
+from rebuild.package.package_install_options import package_install_options
+from rebuild.package.package_manager import PackageFilesConflictError
+from rebuild.package.package_manager import PackageMissingRequirementsError
+from rebuild.package.package_manager import package_manager
+from rebuild.pkg_config import pkg_config
+
 from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT
 from _rebuild_testing.fake_package_recipes import fake_package_recipes as RECIPES
 from _rebuild_testing.artifact_manager_tester import artifact_manager_tester as AMT

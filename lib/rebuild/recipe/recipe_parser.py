@@ -12,7 +12,10 @@ from bes.text.string_list import string_list
 from bes.text.tree_text_parser import tree_text_parser
 from bes.text.text_fit import text_fit
 
-from rebuild.base import build_version, requirement, requirement_list, package_descriptor
+from rebuild.base.build_version import build_version
+from rebuild.base.package_descriptor import package_descriptor
+from rebuild.base.requirement import requirement
+from rebuild.base.requirement_list import requirement_list
 from rebuild.step.step_description import step_description
 
 from rebuild.recipe.value import value_type

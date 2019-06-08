@@ -2,7 +2,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from rebuild.instruction import instruction_list as IL, instruction as I
+from rebuild.instruction.instruction import instruction as I
+from rebuild.instruction.instruction_list import instruction_list as IL
 
 class test_instruction_list(unit_test):
 

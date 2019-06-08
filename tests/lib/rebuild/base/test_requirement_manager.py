@@ -2,7 +2,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from rebuild.base import requirement as R, requirement_manager as RM
+from rebuild.base.requirement import requirement as R
+from rebuild.base.requirement_manager import requirement_manager as RM
 
 class test_requirement_manager(unit_test):
 

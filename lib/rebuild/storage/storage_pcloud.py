@@ -10,7 +10,9 @@ from .storage_base import storage_base
 from .file_mapping import file_mapping
 
 from rebuild.base import build_blurb
-from rebuild.pcloud import pcloud, pcloud_error, pcloud_credentials
+from rebuild.pcloud.pcloud import pcloud
+from rebuild.pcloud.pcloud_credentials import pcloud_credentials
+from rebuild.pcloud.pcloud_error import pcloud_error
 
 class storage_pcloud(storage_base):
 

@@ -9,7 +9,9 @@ from bes.system.log import log
 from bes.debug.debug_timer import debug_timer
 from bes.fs.file_util import file_util
 
-from rebuild.base import artifact_descriptor, build_blurb, requirement_manager
+from rebuild.base.artifact_descriptor import artifact_descriptor
+from rebuild.base.build_blurb import build_blurb
+from rebuild.base.requirement_manager import requirement_manager
 from rebuild.artifactory.artifactory_requests import artifactory_requests
 from rebuild.storage.storage_address import storage_address
 

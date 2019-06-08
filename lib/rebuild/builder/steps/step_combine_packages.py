@@ -4,7 +4,9 @@ import os.path as path
 from bes.common.check import check
 from bes.archive.archiver import archiver
 
-from rebuild.step import compound_step, step, step_result
+from rebuild.step.compound_step import compound_step
+from rebuild.step.step import step
+from rebuild.step.step_result import step_result
 from rebuild.base import package_descriptor
 
 class _step_combine_packages_unpack(step):

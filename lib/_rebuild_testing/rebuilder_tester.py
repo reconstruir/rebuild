@@ -9,7 +9,10 @@ from bes.archive.archiver import archiver
 from bes.common.string_util import string_util
 from bes.git.git_util import git_util
 from collections import namedtuple
-from rebuild.base import build_arch, build_level, build_system, build_target
+from rebuild.base.build_arch import build_arch
+from rebuild.base.build_level import build_level
+from rebuild.base.build_system import build_system
+from rebuild.base.build_target import build_target
 
 class rebuilder_tester(object):
 

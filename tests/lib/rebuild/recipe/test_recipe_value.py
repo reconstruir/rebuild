@@ -7,7 +7,8 @@ from bes.key_value.key_value import key_value as KV
 from bes.key_value.key_value_list import key_value_list as KVL
 from rebuild.recipe.value import value_key_values as VKV
 from rebuild.recipe.value import value_type as VT
-from rebuild.recipe.value import masked_value as MV, masked_value_list as MVL
+from rebuild.recipe.value.masked_value import masked_value as MV
+from rebuild.recipe.value.masked_value_list import masked_value_list as MVL
 
 from rebuild.recipe.value import value_bool
 from rebuild.recipe.value import value_string

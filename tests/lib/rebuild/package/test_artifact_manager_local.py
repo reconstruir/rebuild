@@ -5,7 +5,11 @@ import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs.file_find import file_find
 from bes.fs.temp_file import temp_file
-from rebuild.base import artifact_descriptor as AD, artifact_descriptor_list as ADL, build_target as BT, package_descriptor as PD, requirement_list as RL
+from rebuild.base.artifact_descriptor import artifact_descriptor as AD
+from rebuild.base.artifact_descriptor_list import artifact_descriptor_list as ADL
+from rebuild.base.build_target import build_target as BT
+from rebuild.base.package_descriptor import package_descriptor as PD
+from rebuild.base.requirement_list import requirement_list as RL
 from rebuild.package.db_error import *
 from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT
 from _rebuild_testing.fake_package_recipes import fake_package_recipes as RECIPES

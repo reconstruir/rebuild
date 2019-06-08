@@ -12,7 +12,9 @@ from bes.url.http_download_cache import http_download_cache
 from rebuild.tools_manager import tools_manager
 from rebuild.checksum import checksum_manager
 from rebuild.package import artifact_manager_local
-from rebuild.base import build_blurb, package_descriptor, requirement_manager
+from rebuild.base.build_blurb import build_blurb
+from rebuild.base.package_descriptor import package_descriptor
+from rebuild.base.requirement_manager import requirement_manager
 from rebuild.storage import storage_factory
 from rebuild.recipe import recipe_load_env
 from rebuild.config import storage_config_manager

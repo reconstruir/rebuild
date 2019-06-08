@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from rebuild.step import compound_step, step, step_result
+from rebuild.step.compound_step import compound_step
+from rebuild.step.step import step
+from rebuild.step.step_result import step_result
 
 class step_foo(step):
   def __init__(self):
@@ -216,5 +218,3 @@ class step_pear(step):
   
   def execute(self, script, env, args):
     return step_result(True)
-  
-  

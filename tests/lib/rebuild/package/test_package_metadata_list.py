@@ -4,7 +4,9 @@ import os.path as path
 from bes.sqlite.sqlite import sqlite
 from bes.testing.unit_test import unit_test
 from rebuild.base import requirement_list as RL
-from rebuild.package import package_metadata as PM,  package_metadata_list as PML, package_manifest as PF
+from rebuild.package.package_manifest import package_manifest as PF
+from rebuild.package.package_metadata import package_metadata as PM
+from rebuild.package.package_metadata_list import package_metadata_list as PML
 from rebuild.package import package_manifest
 from rebuild.package.package_file_list import package_file_list as FCL
 

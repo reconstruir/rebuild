@@ -9,7 +9,8 @@ from bes.system.log import log
 from bes.text.text_line_parser import text_line_parser
 from bes.text.tree_text_parser import tree_text_parser
 
-from rebuild.recipe import recipe_error, recipe_parser_util
+from rebuild.recipe.recipe_error import recipe_error
+from rebuild.recipe.recipe_parser_util import recipe_parser_util
 from rebuild.recipe.value import masked_value_list
 from rebuild.recipe.variable_manager import variable_manager
 from rebuild.base import requirement_list

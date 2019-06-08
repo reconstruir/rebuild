@@ -3,8 +3,12 @@
 
 from bes.testing.unit_test import unit_test
 from rebuild.base import build_target
-from rebuild.recipe import recipe_parser, testing_recipe_load_env
-from rebuild.recipe.value import value_file, value_file_list, value_git_address, value_install_file
+from rebuild.recipe.recipe_parser import recipe_parser
+from rebuild.recipe.recipe_load_env import testing_recipe_load_env
+from rebuild.recipe.value.value_file import value_file
+from rebuild.recipe.value.value_file import value_file_list
+from rebuild.recipe.value.value_git_address import value_git_address
+from rebuild.recipe.value.value_install_file import value_install_file
 from rebuild.recipe.value import value_origin as VO
 from rebuild.recipe.variable_manager import variable_manager
 from bes.key_value.key_value import key_value as KV

@@ -3,7 +3,9 @@
 import os.path as path
 from bes.common.check import check
 from bes.fs.file_util import file_util
-from rebuild.step import compound_step, step, step_result
+from rebuild.step.compound_step import compound_step
+from rebuild.step.step import step
+from rebuild.step.step_result import step_result
 from rebuild.toolchain import toolchain
 from rebuild.docker.build_result import build_result
 

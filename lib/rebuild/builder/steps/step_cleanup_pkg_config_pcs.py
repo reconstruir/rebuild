@@ -3,8 +3,10 @@
 
 import os.path as path
 
-from rebuild.step import step, step_result
-from rebuild.pkg_config import pkg_config, pkg_config_file
+from rebuild.step.step import step
+from rebuild.step.step_result import step_result
+from rebuild.pkg_config.pkg_config import pkg_config
+from rebuild.pkg_config.pkg_config_file import pkg_config_file
 
 class step_cleanup_pkg_config_pcs(step):
   'Fix duplicate flags in pc files.'

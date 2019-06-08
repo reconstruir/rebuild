@@ -11,7 +11,8 @@ from bes.archive.archiver import archiver
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
 
-from rebuild.step import step, step_result
+from rebuild.step.step import step
+from rebuild.step.step_result import step_result
 from rebuild.base import build_blurb
 
 class step_setup_sources_download(step):

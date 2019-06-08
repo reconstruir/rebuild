@@ -7,7 +7,8 @@ from bes.fs.temp_file import temp_file
 from bes.archive.archiver import archiver
 from bes.archive.archive_extension import archive_extension
 from bes.archive.temp_archive import temp_archive
-from rebuild.toolchain.darwin import fat_archive, lipo
+from rebuild.toolchain.darwin.fat_archive import fat_archive
+from rebuild.toolchain.darwin.lipo import lipo
 from bes.system.host import host
 from bes.testing.unit_test_skip import raise_skip_if_not_platform
 from bes.testing.unit_test import unit_test
