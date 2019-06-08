@@ -1,5 +1,1 @@
-#!/usr/bin/env python
-#-*- coding:utf-8 -*-
-
-from .instruction import instruction
-from .instruction_list import instruction_list
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-

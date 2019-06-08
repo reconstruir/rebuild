@@ -19,7 +19,7 @@ from rebuild.base.requirement_list import requirement_list
 from rebuild.step.step_description import step_description
 
 from rebuild.recipe.value.value_type import value_type
-from rebuild.instruction import instruction_list
+from rebuild.instruction.instruction_list import instruction_list
 
 from .recipe import recipe
 from .recipe_error import recipe_error
