@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from rebuild.checksum import checksum_manager
+from rebuild.checksum.checksum_manager import checksum_manager
 from bes.fs.temp_file import temp_file
 
 class test_checksum_manager(unit_test):
