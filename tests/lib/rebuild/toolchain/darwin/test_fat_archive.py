@@ -30,17 +30,17 @@ class test_darwin_package_util(unit_test):
       temp_archive.item('bar.txt', content = 'bar.txt\n'),
     ]
 
-    i386_archive = self.__make_test_archive('lib/libsomething.a', 'i386', other_items)
-    x86_64_archive = self.__make_test_archive('lib/libsomething.a', 'x86_64', other_items)
-    armv7_archive = self.__make_test_archive('lib/libsomething.a', 'armv7', other_items)
+    i386_archive = self._make_test_archive('lib/libsomething.a', 'i386', other_items)
+    x86_64_archive = self._make_test_archive('lib/libsomething.a', 'x86_64', other_items)
+    armv7_archive = self._make_test_archive('lib/libsomething.a', 'armv7', other_items)
     self.assertEqual( [ 'i386' ], lipo.archs(self.__test_file('libi386.a') ) )
     self.assertEqual( [ 'x86_64' ], lipo.archs(self.__test_file('libx86_64.a') ) )
     self.assertEqual( [ 'armv7' ], lipo.archs(self.__test_file('libarmv7.a') ) )
 
     thin_packages = [
-      i386_archive.filename,
-      x86_64_archive.filename,
-      armv7_archive.filename,
+      i386_archive,
+      x86_64_archive,
+      armv7_archive,
     ]
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     fat_package = path.join(tmp_dir, 'fat.tgz')
@@ -62,22 +62,22 @@ class test_darwin_package_util(unit_test):
       temp_archive.item('foo.txt', content = 'i386 foo.txt\n'),
       temp_archive.item('bar.txt', content = 'i386 bar.txt\n'),
     ]
-    i386_archive = self.__make_test_archive('lib/libsomething.a', 'i386', i386_other_items)
+    i386_archive = self._make_test_archive('lib/libsomething.a', 'i386', i386_other_items)
     x86_64_other_items = [
       temp_archive.item('foo.txt', content = 'x86_64 foo.txt\n'),
       temp_archive.item('bar.txt', content = 'x86_64 bar.txt\n'),
     ]
-    x86_64_archive = self.__make_test_archive('lib/libsomething.a', 'x86_64', x86_64_other_items)
+    x86_64_archive = self._make_test_archive('lib/libsomething.a', 'x86_64', x86_64_other_items)
     armv7_other_items = [
       temp_archive.item('foo.txt', content = 'armv7 foo.txt\n'),
       temp_archive.item('bar.txt', content = 'armv7 bar.txt\n'),
     ]
-    armv7_archive = self.__make_test_archive('lib/libsomething.a', 'armv7', armv7_other_items)
+    armv7_archive = self._make_test_archive('lib/libsomething.a', 'armv7', armv7_other_items)
 
     thin_packages = [
-      i386_archive.filename,
-      x86_64_archive.filename,
-      armv7_archive.filename,
+      i386_archive,
+      x86_64_archive,
+      armv7_archive,
     ]
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     fat_package = path.join(tmp_dir, 'fat.tgz')
@@ -89,7 +89,7 @@ class test_darwin_package_util(unit_test):
   def __test_file(self, filename):
     return self.data_path(filename, platform_specific = True)
       
-  def __make_test_archive(self, target, arch, other_items):
+  def _make_test_archive(self, target, arch, other_items):
     items = [
       temp_archive.item(target, filename = self.__test_file('lib%s.a' % (arch))),
     ]

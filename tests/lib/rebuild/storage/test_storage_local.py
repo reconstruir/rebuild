@@ -31,6 +31,7 @@ class source_dir_maker(object):
     ext = clazz._item_ext(item)
     assert ext
     tarball = clazz._tarball_for_ext(ext)
+    print('FUCK: tarball={}'.format(tarball))
     return item.replace('${tarball}', tarball)
     
   @classmethod
@@ -48,7 +49,7 @@ class source_dir_maker(object):
   # Any tarball will do for the tests as long as the file type is an archive
   @classmethod
   def make_tarball(clazz, ext):
-    return temp_archive.make_temp_archive([ temp_archive.item('foo.txt', content = 'foo.txt\n') ], ext).filename
+    return temp_archive.make_temp_archive([ temp_archive.item('foo.txt', content = 'foo.txt\n') ], ext)
 
 class test_storage_local(unit_test):
 
