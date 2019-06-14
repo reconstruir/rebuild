@@ -10,24 +10,25 @@ from bes.common.check import check
 from bes.common.dict_util import dict_util
 from bes.common.json_util import json_util
 from bes.common.string_util import string_util
-from bes.property.cached_property import cached_property
+from bes.debug.debug_timer import debug_timer
 from bes.fs.dir_util import dir_util
 from bes.fs.file_check import file_check
+from bes.fs.file_copy import file_copy
 from bes.fs.file_find import file_find
-from bes.fs.file_search import file_search
 from bes.fs.file_replace import file_replace
+from bes.fs.file_search import file_search
 from bes.fs.file_util import file_util
 from bes.fs.tar_util import tar_util
 from bes.fs.temp_file import temp_file
-from bes.text.text_line_parser import text_line_parser
 from bes.match.matcher_filename import matcher_filename, matcher_multiple_filename
+from bes.property.cached_property import cached_property
 from bes.python.setup_tools import setup_tools
 from bes.system.execute import execute
 from bes.system.log import log
+from bes.text.text_line_parser import text_line_parser
 from rebuild.base.build_blurb import build_blurb
 from rebuild.base.build_target import build_target
 from rebuild.base.package_descriptor import package_descriptor
-from bes.debug.debug_timer import debug_timer
 
 from rebuild.binary_format.binary_detector import binary_detector
 
@@ -91,12 +92,12 @@ class package(object):
     src_stuff_dir = path.join(tmp_dir, self.FILES_DIR)
     src_env_dir = path.join(tmp_dir, self.ENV_DIR)
     if path.isdir(src_stuff_dir):
-      dir_util.move_files(src_stuff_dir, dst_stuff_dir)
+      file_copy.move_files(src_stuff_dir, dst_stuff_dir)
     self._update_python_config_files(dst_stuff_dir)
     self._replace_variables_files(self.metadata.manifest.files.files_with_hardcoded_paths(),
                                   dst_stuff_dir, dst_stuff_dir)
     if path.isdir(src_env_dir):
-      dir_util.move_files(src_env_dir, dst_env_dir)
+      file_copy.move_files(src_env_dir, dst_env_dir)
     self._replace_variables_env_files(self.metadata.manifest.env_files.files_with_hardcoded_paths(),
                                   dst_env_dir, dst_stuff_dir)
     file_util.remove(tmp_dir)
