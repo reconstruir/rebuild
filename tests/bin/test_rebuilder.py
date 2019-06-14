@@ -202,11 +202,11 @@ class test_rebuilder_script(script_unit_test):
     tmp_dir = self._make_temp_dir('tmp_dir')
     project_dir = path.join(self.data_dir(), 'tarball_git_address')
     source_dir = path.join(project_dir, 'src')
-    tar_util.copy_tree_with_tar(project_dir, path.join(tmp_dir, 'tarball_git_address'))
+    tar_util.copy_tree(project_dir, path.join(tmp_dir, 'tarball_git_address'))
     gr = git_temp_repo(remote = False, debug = not self.DEBUG)
     if self.DEBUG:
       print("temp git repo: ", gr.root)
-    tar_util.copy_tree_with_tar(source_dir, gr.root)
+    tar_util.copy_tree(source_dir, gr.root)
     gr.add('.')
     gr.commit('add', '.')
     replacements = {
@@ -334,7 +334,7 @@ print("hook1 hook2")
     self.debug_spew_filename('\n' + 'url', url)
     project_dir_tmp = self._make_temp_dir('project_dir_tmp')
     project_dir_src = path.join(self.data_dir(), 'tarball_ingestion')
-    tar_util.copy_tree_with_tar(project_dir_src, project_dir_tmp)
+    tar_util.copy_tree(project_dir_src, project_dir_tmp)
     replacements = {
       '@URL@': url,
     }

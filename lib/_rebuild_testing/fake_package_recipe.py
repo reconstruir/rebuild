@@ -7,7 +7,7 @@ from bes.common.node import node
 from bes.common.tuple_util import tuple_util
 from bes.text.white_space import white_space
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
+from bes.fs.temp_file import temp_file, temp_item
 
 from rebuild.base.build_target import build_target
 from rebuild.base.package_descriptor import package_descriptor
@@ -23,8 +23,6 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
     requirements = requirements or []
     properties = properties or {}
     check.check_artifact_descriptor(metadata)
-    check.check_temp_item_seq(files)
-    check.check_temp_item_seq(env_files)
     check.check_requirement_list(requirements)
     check.check_dict(properties)
     objects = objects or {}
@@ -65,7 +63,7 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
   def _temp_item_seq_to_node(clazz, label, items):
     result = node(label)
     for item in items:
-      check.check_temp_item(item)
+      assert isinstance(item, temp_item)
       item_node = result.add_child(item.filename)
       for line in item.content.split('\n'):
         item_node.add_child(line)

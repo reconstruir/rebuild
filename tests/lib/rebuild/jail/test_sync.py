@@ -36,7 +36,7 @@ class test_sync(unit_test):
     ]
 
     src_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
-    tar_util.copy_tree_with_tar(self.data_dir(), src_dir)
+    tar_util.copy_tree(self.data_dir(), src_dir)
     
     num_links_before = self.num_links(src_dir)
 

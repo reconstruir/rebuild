@@ -26,5 +26,5 @@ class step_install_rebuild_files(step):
       self.log_d(message)
       return self.result(True, message)
     dest_dir = path.join(script.staged_files_dir, 'share', 'rebuild')
-    tar_util.copy_tree_with_tar(rebuild_dir, dest_dir)
+    tar_util.copy_tree(rebuild_dir, dest_dir)
     return self.result(True)
