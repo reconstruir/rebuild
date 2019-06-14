@@ -1,7 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from os import path
-from bes.fs import tar_util
+from bes.fs.file_copy import file_copy
 from rebuild.step.step import step
 
 class step_install_rebuild_files(step):
@@ -26,5 +26,5 @@ class step_install_rebuild_files(step):
       self.log_d(message)
       return self.result(True, message)
     dest_dir = path.join(script.staged_files_dir, 'share', 'rebuild')
-    tar_util.copy_tree(rebuild_dir, dest_dir)
+    file_copy.copy_tree(rebuild_dir, dest_dir)
     return self.result(True)

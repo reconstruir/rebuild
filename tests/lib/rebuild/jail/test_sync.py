@@ -6,7 +6,7 @@ import os, os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs.file_find import file_find
 from bes.fs.file_util import file_util
-from bes.fs.tar_util import tar_util
+from bes.fs.file_copy import file_copy
 from bes.fs.temp_file import temp_file
 from rebuild.jail.sync import sync
 
@@ -36,7 +36,7 @@ class test_sync(unit_test):
     ]
 
     src_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
-    tar_util.copy_tree(self.data_dir(), src_dir)
+    file_copy.copy_tree(self.data_dir(), src_dir)
     
     num_links_before = self.num_links(src_dir)
 
