@@ -4,7 +4,7 @@
 import os.path as path
 
 from bes.fs.dir_util import dir_util
-from bes.fs.file_util import file_util
+from bes.fs.file_symlink import file_symlink
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result
 
@@ -33,7 +33,7 @@ class step_cleanup_binary_filenames(step):
       if not link_src.startswith(env.config.third_party_prefix):
         link_filename = '%s%s' % (env.config.third_party_prefix, link_src)
         link_dst = path.join(script.staged_files_bin_dir, link_filename)
-        file_util.symlink(link_src, link_dst)
+        file_symlink.symlink(link_src, link_dst)
     return step_result(True, None)
 
   @classmethod

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
@@ -8,7 +7,7 @@ from rebuild.step.step_result import step_result
 from bes.python.setup_tools import setup_tools
 from bes.common.string_util import string_util
 from bes.common.time_util import time_util
-from bes.version import version_info
+from bes.version.version_info import version_info
 
 class step_python_egg_build(step):
   'A step to do the "bdist_egg" target of setuptools.'

@@ -3,7 +3,7 @@
 
 import os.path as path
 
-from bes.fs.file_util import file_util
+from bes.fs.file_symlink import file_symlink
 from bes.common.string_util import string_util
 from rebuild.toolchain.library import library
 from rebuild.step.step import step
@@ -31,13 +31,13 @@ class step_cleanup_library_filenames(step):
       for l in libraries:
         link_filename = library.name_add_prefix(l, env.config.third_party_prefix)
         link_path = path.join(script.staged_files_lib_dir, link_filename)
-        file_util.symlink(l, link_path)
+        file_symlink.symlink(l, link_path)
 
     pc_files = pkg_config.find_pc_files(script.staged_files_dir)
     for pc_file in pc_files:
       pc_file_basename = path.basename(pc_file)
       new_pc_file = self._pc_file_add_third_party_prefix(script, env, pc_file)
-      file_util.symlink(pc_file_basename, new_pc_file)
+      file_symlink.symlink(pc_file_basename, new_pc_file)
     return step_result(True, None)
 
   @classmethod
