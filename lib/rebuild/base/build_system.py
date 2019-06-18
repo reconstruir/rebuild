@@ -14,12 +14,13 @@ class build_system(object):
   IOS_SIM = 'ios_sim'
   LINUX = host.LINUX
   MACOS = host.MACOS
+  WINDOWS = host.WINDOWS
 
   # System masks
   NONE = 'none'
   ALL = 'all'
   MOBILE = 'android|ios'
-  DESKTOP = 'macos|linux'
+  DESKTOP = 'macos|linux|windows'
   DARWIN = 'macos|ios|ios_sim'
   HOST = host.SYSTEM
   HOST_DISTRO = host.DISTRO
@@ -29,7 +30,7 @@ class build_system(object):
   
   DELIMITER = '|'
 
-  SYSTEMS = [ ANDROID, IOS, IOS_SIM, LINUX, MACOS ]
+  SYSTEMS = [ ANDROID, IOS, IOS_SIM, LINUX, MACOS, WINDOWS ]
 
   RASPBIAN = host.RASPBIAN
   
@@ -94,8 +95,11 @@ class build_system(object):
     check.check_string(s)
     systems = clazz.mask_split(clazz.resolve_mask(s))
     if len(systems) != 1:
-      raise ValueError('Invalid system: %s' % (str(s)))
-    return systems[0]
+      raise ValueError('Invalid system: {}'.format(str(s)))
+    system = systems[0]
+    if not system in clazz.SYSTEMS:
+      raise ValueError('Invalid system: {}'.format(system))
+    return system
   
   @classmethod
   def system_is_valid(clazz, system):

@@ -11,6 +11,7 @@ class build_arch(object):
   ARM64 = 'arm64'
   I386 = 'i386'
   X86_64 = 'x86_64'
+  AMD64 = 'amd64'
 
 #  MIPS = 'mips'
 #  MIPS64 = 'mips64'
@@ -21,14 +22,17 @@ class build_arch(object):
     build_system.IOS: [ ARM64, ARMV7 ],
     build_system.IOS_SIM: [ I386, X86_64 ],
     build_system.LINUX: [ I386, X86_64, ARMV7 ],
+    build_system.WINDOWS: [ AMD64 ],
   }
 
-  KNOWN_ARCHS = [ ARMV7, ARM64, I386, X86_64 ]
+  KNOWN_ARCHS = [ ARMV7, ARM64, I386, X86_64,AMD64 ]
 
   HOST_ARCH = platform.machine()
   # deal with armv7l, armv7b
   if HOST_ARCH.startswith('armv7'):
     HOST_ARCH = ARMV7
+  elif HOST_ARCH == 'AMD64':
+    HOST_ARCH = AMD64
   if not HOST_ARCH in KNOWN_ARCHS:
     raise ValueError('Unknown host arch: %s' % (HOST_ARCH))
 
@@ -39,6 +43,7 @@ class build_arch(object):
     build_system.IOS: ( ARM64, ARMV7 ),
     build_system.IOS_SIM: ( I386, X86_64 ),
     build_system.LINUX: ( X86_64, ),
+    build_system.WINDOWS: ( AMD64, ),
   }
 
   DEFAULT_HOST_ARCHS = DEFAULT_ARCHS[build_system.HOST]
