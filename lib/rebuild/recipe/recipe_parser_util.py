@@ -3,6 +3,7 @@
 from bes.common.check import check
 from bes.key_value.key_value import key_value
 from bes.text.comments import comments
+from bes.text.line_break import line_break
 from bes.system.log import logger
 
 from rebuild.base.requirement_list import requirement_list
@@ -88,7 +89,7 @@ class recipe_parser_util(object):
     # fill the top of the code with empty lines so that the python error line numbers
     # will match the line numbers in the recipe when compilation errors happen
     original_python_code = code_node.data.text
-    filler_lines = '\n' * node.data.line_number
+    filler_lines = line_break.DEFAULT_LINE_BREAK * node.data.line_number
     filled_source_code = filler_lines + original_python_code
     c = compile(filled_source_code, filename, 'exec')
     exec_locals = {}
@@ -105,7 +106,7 @@ class recipe_parser_util(object):
   def parse_description(clazz, node, error_func):
     if len(node.children) == 0:
       error_func('description missing', node)
-    return node.get_text(node.CHILDREN_INLINE, delimiter = '\n').strip()
+    return node.get_text(node.CHILDREN_INLINE, delimiter = line_break.DEFAULT_LINE_BREAK).strip()
 
   @classmethod
   def parse_requirements(clazz, node, variable_manager):
