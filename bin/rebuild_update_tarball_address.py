@@ -3,10 +3,10 @@
 
 import argparse, os.path as path
 from rebuild.builder.builder_recipe_loader import builder_recipe_loader
-from bes.git import repo
+from bes.git.git_repo import git_repo
 from bes.fs.file_replace import file_replace
 from bes.fs.temp_file import temp_file
-from rebuild.recipe.testing_recipe_load_env import testing_recipe_load_env
+from rebuild.recipe.recipe_load_env import testing_recipe_load_env
 
 class update_cli(object):
   
@@ -40,7 +40,7 @@ class update_cli(object):
       if tarball_address:
         tarball_address_address = tarball_address.address
         old_revision = tarball_address.revision
-        gr = repo(temp_file.make_temp_dir(), address = tarball_address_address)
+        gr = git_repo(temp_file.make_temp_dir(), address = tarball_address_address)
         gr.clone()
         new_revision = gr.last_commit_hash(short_hash = True)
         if old_revision == new_revision:
