@@ -161,6 +161,8 @@ class build_target(namedtuple('build_target', 'system, distro, distro_version_ma
       return build_target(host.SYSTEM, host.DISTRO, host.VERSION_MAJOR, None, ( host.ARCH, ), level)
     elif host.SYSTEM == host.MACOS:
       return build_target(host.SYSTEM, None, host.VERSION_MAJOR, None, ( host.ARCH, ), level)
+    elif host.SYSTEM == host.WINDOWS:
+      return build_target(host.SYSTEM, None, host.VERSION_MAJOR, None, ( host.ARCH, ), level)
     else:
       return build_target(host.SYSTEM, None, host.VERSION_MAJOR, host.VERSION_MINOR, ( host.ARCH, ), level)
       
