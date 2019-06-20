@@ -3,7 +3,6 @@
 import json, os, os.path as path
 from bes.web.web_server import web_server
 from bes.system.log import log
-from bes.fs.file_mime import file_mime
 from bes.fs.file_find import file_find
 from bes.fs.file_util import file_util
 from bes.compat import url_compat
@@ -55,61 +54,57 @@ class mock_artifactory_server(web_server):
       for key, value in sorted(environ.items()):
         log._console_output('%s=%s\n' % (key, value))
     method = environ['REQUEST_METHOD']
-    filename = environ['PATH_INFO']
-    if filename.startswith('/api'):
-      return self._api(environ, start_response)
+    path_info = self.path_info(environ)
+    if path_info.path_info.startswith('/api'):
+      return self._api(environ, path_info, start_response)
     if method == 'GET':
-      return self._get(environ, start_response)
+      return self._get(environ, path_info, start_response)
     elif method == 'PUT':
-      return self._put(environ, start_response)
+      return self._put(environ, path_info, start_response)
     if method == 'HEAD':
-      return self._head(environ, start_response)
+      return self._head(environ, path_info, start_response)
     else:
       return self.response_error(start_response, 405)
 
-  def _get(self, environ, start_response):
-    filename = environ['PATH_INFO']
-    file_path = path.join(self._root_dir, file_util.lstrip_sep(filename))
-    if not path.isfile(file_path):
+  def _get(self, environ, path_info, start_response):
+    if not path.isfile(path_info.rooted_filename):
       return self.response_error(start_response, 404)
-    mime_type = file_mime.mime_type(file_path)
-    content = file_util.read(file_path)
+    mime_type = self.mime_type(path_info.rooted_filename)
+    content = file_util.read(path_info.rooted_filename)
     headers = [
       ( 'Content-Type', str(mime_type) ),
       ( 'Content-Length', str(len(content)) ),
-      ( 'X-Artifactory-Filename', path.basename(file_path) ),
+      ( 'X-Artifactory-Filename', path.basename(path_info.path_info) ),
       ( 'X-Artifactory-Id', self._artifactory_id ),
     ]
-    headers += artifactory_requests.checksum_headers_for_file(file_path).items()
+    headers += artifactory_requests.checksum_headers_for_file(path_info.rooted_filename).items()
     return self.response_success(start_response, 200, [ content ], headers)
 
-  def _head(self, environ, start_response):
-    filename = environ['PATH_INFO']
-    file_path = path.join(self._root_dir, file_util.lstrip_sep(filename))
-    if not path.isfile(file_path):
+  def _head(self, environ, path_info, start_response):
+    if not path.isfile(path_info.rooted_filename):
       return self.response_error(start_response, 404)
-    mime_type = file_mime.mime_type(file_path)
+    mime_type = self.mime_type(path_info.rooted_filename)
     headers = [
       ( 'Content-Type', str(mime_type) ),
-      ( 'Content-Length', str(file_util.size(file_path)) ),
-      ( 'X-Artifactory-Filename', path.basename(file_path) ),
+      ( 'Content-Length', str(file_util.size(path_info.rooted_filename)) ),
+      ( 'X-Artifactory-Filename', path.basename(path_info.path_info) ),
       ( 'X-Artifactory-Id', self._artifactory_id ),
     ]
-    headers += artifactory_requests.checksum_headers_for_file(file_path).items()
+    headers += artifactory_requests.checksum_headers_for_file(path_info.rooted_filename).items()
     return self.response_success(start_response, 200, [], headers)
   
-  def _put(self, environ, start_response):
+  def _put(self, environ, path_info, start_response):
     'https://www.jfrog.com/confluence/display/RTF/Artifactory+REST+API#ArtifactoryRESTAPI-DeployArtifact'
     content_length = int(environ['CONTENT_LENGTH'])
-    filename = environ['PATH_INFO']
-    filename = file_util.lstrip_sep(filename)
-    file_path = path.join(self._root_dir, filename)
+#    filename = environ['PATH_INFO']
+#    filename = file_util.lstrip_sep(filename)
+#    file_path = path.join(self._root_dir, filename)
     fin = environ['wsgi.input']
     chunk_size = 1024
     n = int(content_length / chunk_size)
     r = int(content_length % chunk_size)
-    file_util.ensure_file_dir(file_path)
-    with open(file_path, 'wb') as fout:
+    file_util.ensure_file_dir(path_info.rooted_filename)
+    with open(path_info.rooted_filename, 'wb') as fout:
       for i in range(0, n):
         chunk = fin.read(chunk_size)
         fout.write(chunk)
@@ -119,7 +114,7 @@ class mock_artifactory_server(web_server):
       fout.flush()
       fout.close()
     base = '%s://%s' % (environ['wsgi.url_scheme'], environ['HTTP_HOST'])
-    uri = url_compat.urljoin(base, filename)
+    uri = url_compat.urljoin(base, path_info.path_info)
     data = {
       'downloadUri': uri,
     }
@@ -131,17 +126,15 @@ class mock_artifactory_server(web_server):
     ]
     return self.response_success(start_response, 201, [ content ], headers)
 
-  def _api(self, environ, start_response):
-    filename = environ['PATH_INFO']
-    parts = filename.split('/')
+  def _api(self, environ, path_info, start_response):
+    parts = path_info.path_info.split('/')
     what = parts[2]
     if what == 'storage':
-      return self._api_storage(environ, start_response)
+      return self._api_storage(environ, path_info, start_response)
     assert False
 
-  def _api_storage(self, environ, start_response):
-    filename = environ['PATH_INFO']
-    xpath = file_util.remove_head(filename, '/api/storage')
+  def _api_storage(self, environ, path_info, start_response):
+    xpath = file_util.remove_head(path_info.path_info, '/api/storage')
     fpath = path.join(self._root_dir, xpath)
     files = file_find.find(fpath, relative = True)
     for f in files:
