@@ -8,7 +8,6 @@ from rebuild.project.project_file_manager import project_file_manager as PFM
 from rebuild.base.build_target import build_target as BT
 from bes.system.os_env import os_env_var
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
 from bes.fs.testing.temp_content import temp_content
 
 class test_project_file_manager(unit_test):
@@ -28,9 +27,9 @@ class test_project_file_manager(unit_test):
 
     try:
       self.assertEqual( [
-        path.join(tmp_dir, 'fructose/fructose.reproject'),
-        path.join(tmp_dir, 'kiwi/kiwi.reproject'),
-        path.join(tmp_dir, 'orange/orange.reproject'),
+        path.join(tmp_dir, self.p('fructose/fructose.reproject')),
+        path.join(tmp_dir, self.p('kiwi/kiwi.reproject')),
+        path.join(tmp_dir, self.p('orange/orange.reproject')),
       ], PFM.find_env_project_files() )
     finally:
       os_env_var('REBUILD_RECIPE_PATH').unset
@@ -50,7 +49,7 @@ project smoothie
   imports
     kiwi
 '''
-    smoothie_pf = temp_file.make_temp_file(content = smoothie_project)
+    smoothie_pf = self.make_temp_file(content = smoothie_project)
     p.load_project_file(smoothie_pf)
     available = p.available_recipes(smoothie_pf, bt)
     for r in available:
@@ -60,9 +59,7 @@ project smoothie
     #p.print_dep_map()
     
   def _make_tmp_project_files(self):
-    tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
-    if self.DEBUG:
-      print('tmp_dir: %s' % (tmp_dir))
+    tmp_dir = self.make_temp_dir()
 
     fructose_project = '''!rebuild.project!
 project fructose
@@ -98,9 +95,9 @@ project lemon
 '''
     
     items = [
-      'file fructose/fructose.reproject "{project_file}" 644'.format(project_file = temp_file.make_temp_file(content = fructose_project)),
-      'file kiwi/kiwi.reproject "{project_file}" 644'.format(project_file = temp_file.make_temp_file(content = kiwi_project)),
-      'file orange/orange.reproject "{project_file}" 644'.format(project_file = temp_file.make_temp_file(content = orange_project)),
+      'file fructose/fructose.reproject "{project_file}" 644'.format(project_file = self.make_temp_file(content = fructose_project)),
+      'file kiwi/kiwi.reproject "{project_file}" 644'.format(project_file = self.make_temp_file(content = kiwi_project)),
+      'file orange/orange.reproject "{project_file}" 644'.format(project_file = self.make_temp_file(content = orange_project)),
     ]
     temp_content.write_items(items, tmp_dir)
     return tmp_dir
