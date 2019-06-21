@@ -49,11 +49,11 @@ class mock_artifactory_server(web_server):
 
     if print_headers:
       for key, value in sorted(self.headers.items()):
-        log._console_output('HEADER: %s=%s\n' % (key, value))
+        log.output('HEADER: %s=%s\n' % (key, value), console = True)
 
     if print_environ:
       for key, value in sorted(environ.items()):
-        log._console_output('%s=%s\n' % (key, value))
+        log.output('%s=%s\n' % (key, value), console = True)
     method = environ['REQUEST_METHOD']
     filename = environ['PATH_INFO']
     if filename.startswith('/api'):
