@@ -7,7 +7,7 @@ from bes.common.check import check
 from bes.common.string_util import string_util
 
 from .recipe_error import recipe_error
-from value.value_origin import value_origin
+from .value.value_origin import value_origin
 
 class recipe_data_descriptor(namedtuple('recipe_data_descriptor', 'name, version, origin')):
 

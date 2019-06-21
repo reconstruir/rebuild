@@ -1,25 +1,14 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import pprint
-
 from bes.common.dict_util import dict_util
 from bes.common.tuple_util import tuple_util
-from bes.system.compat import compat
-
-if compat.IS_PYTHON3:
-  import urllib.parse as urlparse
-  from http.client import RemoteDisconnected as HTTPError
-else:
-  import urlparse as urlparse
-  from urllib2 import HTTPError
-  
-from bes.testing.unit_test import unit_test
 from bes.fs.file_mime import file_mime
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
 from bes.key_value.key_value import key_value
 from bes.key_value.key_value_list import key_value_list
+from bes.system.compat import compat
+from bes.testing.unit_test import unit_test
 
 from rebuild.artifactory.mock_artifactory_tester import mock_artifactory_tester as MAT
 from rebuild.artifactory.artifactory_requests import artifactory_requests as AR
@@ -42,7 +31,7 @@ class test_mock_artifactory_server(unit_test):
 
     url = test.make_url('foo.txt')
 
-    tmp = temp_file.make_temp_file()
+    tmp = self.make_temp_file(suffix = '.txt')
     AR.download_url_to_file(tmp, url, self._TEST_CRED)
     self.assertEqual( 'text/plain', file_mime.mime_type(tmp).mime_type )
     self.assertEqual( 'this is foo.txt\n', file_util.read(tmp, codec = 'utf8') )
@@ -57,17 +46,17 @@ class test_mock_artifactory_server(unit_test):
   def test_upload_url(self):
     test = MAT('myid')
 
-    tmp = temp_file.make_temp_file(content = 'this is foo.txt\n')
+    tmp = self.make_temp_file(content = 'this is foo.txt\n')
     url = test.make_url('foo.txt')
     AR.upload_url(url, tmp, self._TEST_CRED)
     test.stop()
  
   def test_upload_address(self):
     test = MAT('myid')
-    tmp_upload = temp_file.make_temp_file(content = 'this is foo.txt\n')
+    tmp_upload = self.make_temp_file(content = 'this is foo.txt\n')
     address = test.make_address('myrepo', 'myrootdir', 'mysubrepo', 'foo.txt')
     AR.upload(address, tmp_upload, self._TEST_CRED)
-    tmp_download = temp_file.make_temp_file()
+    tmp_download = self.make_temp_file()
     AR.download_url_to_file(tmp_download, address.url, self._TEST_CRED)
     self.assertEqual( 'this is foo.txt\n', file_util.read(tmp_download, codec = 'utf-8') )
     test.stop()
@@ -88,7 +77,7 @@ class test_mock_artifactory_server(unit_test):
   def test_get_headers_for_url(self):
     test = MAT('myid')
 
-    tmp = temp_file.make_temp_file(content = 'this is foo.txt\n')
+    tmp = self.make_temp_file(content = 'this is foo.txt\n')
     url = test.make_url('foo.txt')
     AR.upload_url(url, tmp, self._TEST_CRED)
     headers = AR.get_headers_for_url(url, self._TEST_CRED)
@@ -106,7 +95,7 @@ class test_mock_artifactory_server(unit_test):
   def test_get_checksums_for_url(self):
     test = MAT('myid')
 
-    tmp = temp_file.make_temp_file(content = 'this is foo.txt\n')
+    tmp = self.make_temp_file(content = 'this is foo.txt\n')
     url = test.make_url('foo.txt')
     AR.upload_url(url, tmp, self._TEST_CRED)
     expected = (
@@ -119,8 +108,7 @@ class test_mock_artifactory_server(unit_test):
     
   def test_get_checksums_for_url(self):
     test = MAT('myid')
-
-    tmp = temp_file.make_temp_file(content = 'this is foo.txt\n')
+    tmp = self.make_temp_file(content = 'this is foo.txt\n')
     url = test.make_url('foo.txt')
     AR.upload_url(url, tmp, self._TEST_CRED)
     expected = AR._file_info(
