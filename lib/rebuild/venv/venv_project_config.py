@@ -4,7 +4,7 @@ import os
 from collections import namedtuple
 from bes.common.check import check
 from bes.common.node import node
-from bes.common.variable import variable
+from bes.variable.variable import variable
 from bes.key_value.key_value_list import key_value_list
 from bes.text.string_list import string_list
 
@@ -69,8 +69,8 @@ class venv_project_config(namedtuple('venv_project_config', 'format_version, fil
       if not req.version:
         resolved_req = req
       else:
-        version = variable.substitute(req.version, env_substitutions, word_boundary = False)
-        version = variable.substitute(version, project_substitutions, word_boundary = False)
+        version = variable.substitute(req.version, env_substitutions)
+        version = variable.substitute(version, project_substitutions)
         resolved_req = req.clone(mutations = { 'version': version })
       result.append(resolved_req)
     return result
