@@ -7,8 +7,7 @@ from abc import abstractmethod, ABCMeta
 from bes.system.log import log
 from bes.system.compat import with_metaclass
 from bes.common.check import check
-from bes.common.variable import variable
-from bes.common.variable_pattern import variable_pattern
+from bes.variable.variable import variable
 from bes.key_value.key_value_list import key_value_list
 
 from .value_registry import value_registry
@@ -81,7 +80,7 @@ class value_base(with_metaclass(value_register_meta, object)):
     self.substitutions_changed()
     
   def substitute(self, text):
-    result = variable.substitute(text, self._substitutions, patterns = variable_pattern.BRACKET)
+    result = variable.substitute(text, self._substitutions)
     if result.startswith('~'):
       result = path.expanduser(result)
     return result

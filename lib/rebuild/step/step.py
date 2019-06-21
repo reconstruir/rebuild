@@ -9,8 +9,7 @@ from bes.common.check import check
 from bes.common.dict_util import dict_util
 from bes.common.object_util import object_util
 from bes.common.string_util import string_util
-from bes.common.variable import variable
-from bes.common.variable_pattern import variable_pattern
+from bes.variable.variable import variable
 from bes.dependency.dependency_resolver import dependency_resolver
 from bes.factory.singleton_class_registry import singleton_class_registry
 from bes.fs.file_util import file_util
@@ -191,7 +190,7 @@ class step(with_metaclass(step_register_meta, object)):
     if rogue_key:
       raise RuntimeError('%s: Rogue dollar sign (\"$\") found in %s: %s' % (script.recipe.filename, rogue_key, env[rogue_key]))
 
-    command = [ variable.substitute(part, env, patterns = variable_pattern.BRACKET) for part in object_util.listify(command) ]
+    command = [ variable.substitute(part, env) for part in object_util.listify(command) ]
 
     # Check that no rogue dollar signs are in the command
     for part in command:
@@ -316,6 +315,6 @@ class step(with_metaclass(step_register_meta, object)):
   @classmethod
   def _env_substitite(clazz, env):
     for key in sorted(env.keys()):
-      env[key] = variable.substitute(str(env[key]), env, patterns = variable_pattern.BRACKET)
+      env[key] = variable.substitute(str(env[key]), env)
       
 check.register_class(step, include_seq = False)

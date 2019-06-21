@@ -54,9 +54,6 @@ class caca_entry(namedtuple('caca_entry', 'line,etype,value')):
   def is_property(self):
     return self.etype == entry_type.PROPERTY
 
-#  def replace(self, replacements):
-#    self.value = variable.substitute(self.value, replacements)
-
   @classmethod
   def _first_delimiter(clazz, s):
     'Return which delimiter comes first in s (either : or =).'
