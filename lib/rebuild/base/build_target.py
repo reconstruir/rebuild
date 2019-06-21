@@ -6,8 +6,7 @@ from bes.common.check import check
 from bes.common.dict_util import dict_util
 from bes.common.string_util import string_util
 from bes.common.tuple_util import tuple_util
-from bes.common.variable import variable
-from bes.common.variable_pattern import variable_pattern
+from bes.variable.variable import variable
 from bes.property.cached_property import cached_property
 
 from .build_arch import build_arch
@@ -103,7 +102,7 @@ class build_target(namedtuple('build_target', 'system, distro, distro_version_ma
       'distro': self.distro or 'None',
     }
     dict_util.quote_strings(variables)
-    exp_with_vars = variable.substitute(expression, variables, patterns = variable_pattern.BRACKET)
+    exp_with_vars = variable.substitute(expression, variables)
     constants = {
       'MACOS': 'macos',
       'LINUX': 'linux',
