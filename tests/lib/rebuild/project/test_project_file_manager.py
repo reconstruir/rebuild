@@ -95,9 +95,9 @@ project lemon
 '''
     
     items = [
-      'file fructose/fructose.reproject "{project_file}" 644'.format(project_file = self.make_temp_file(content = fructose_project)),
-      'file kiwi/kiwi.reproject "{project_file}" 644'.format(project_file = self.make_temp_file(content = kiwi_project)),
-      'file orange/orange.reproject "{project_file}" 644'.format(project_file = self.make_temp_file(content = orange_project)),
+      'file fructose/fructose.reproject "file:{}" 644'.format(self.make_temp_file(content = fructose_project)),
+      'file kiwi/kiwi.reproject "file:{}" 644'.format(self.make_temp_file(content = kiwi_project)),
+      'file orange/orange.reproject "file:{}" 644'.format(self.make_temp_file(content = orange_project)),
     ]
     temp_content.write_items(items, tmp_dir)
     return tmp_dir
