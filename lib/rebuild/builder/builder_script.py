@@ -9,7 +9,6 @@ from bes.common.json_util import json_util
 from bes.common.string_util import string_util
 from bes.common.type_checked_list import type_checked_list
 from bes.common.variable import variable
-from bes.common.variable_pattern import variable_pattern
 from bes.fs.file_checksum import file_checksum_list
 from bes.fs.file_util import file_util
 from bes.system.log import log
@@ -209,7 +208,7 @@ class builder_script(object):
     sources.append(path.relpath(self._env_checksum_filename))
     result = []
     for source in sources:
-      s = variable.substitute(source, self.substitutions, patterns = variable_pattern.BRACKET)
+      s = variable.substitute(source, self.substitutions, patterns = variable.BRACKET)
       if path.isfile(s):
         result.append(s)
       else:

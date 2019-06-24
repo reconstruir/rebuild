@@ -9,7 +9,7 @@ from rebuild.base.build_target import build_target
 from rebuild.toolchain.toolchain import toolchain
 from bes.dependency.dependency_resolver import dependency_resolver
 from bes.common.algorithm import algorithm
-from bes.variable.variable import variable
+from bes.common.variable import variable
 from bes.system.execute import execute
 from bes.system.os_env import os_env
 from bes.fs.file_replace import file_replace

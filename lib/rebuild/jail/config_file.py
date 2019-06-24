@@ -1,7 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.common.string_util import string_util
-from bes.variable.variable import variable
+from bes.common.variable import variable
 
 from bes.compat.ConfigParser import ConfigParser
 

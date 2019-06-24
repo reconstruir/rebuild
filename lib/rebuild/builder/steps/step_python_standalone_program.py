@@ -3,7 +3,7 @@
 
 import os, os.path as path
 
-from bes.variable.variable import variable
+from bes.common.variable import variable
 from bes.fs.file_replace import file_replace
 from bes.fs.file_util import file_util
 from bes.system.execute import execute

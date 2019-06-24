@@ -9,7 +9,7 @@ from bes.common.check import check
 from bes.common.dict_util import dict_util
 from bes.common.object_util import object_util
 from bes.common.string_util import string_util
-from bes.variable.variable import variable
+from bes.common.variable import variable
 from bes.dependency.dependency_resolver import dependency_resolver
 from bes.factory.singleton_class_registry import singleton_class_registry
 from bes.fs.file_util import file_util

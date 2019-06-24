@@ -6,7 +6,7 @@ from bes.common.check import check
 from bes.common.dict_util import dict_util
 from bes.common.string_util import string_util
 from bes.common.tuple_util import tuple_util
-from bes.variable.variable import variable
+from bes.common.variable import variable
 from bes.property.cached_property import cached_property
 
 from .build_arch import build_arch

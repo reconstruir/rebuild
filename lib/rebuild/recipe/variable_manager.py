@@ -2,7 +2,7 @@
 
 from os import path
 from bes.common.check import check
-from bes.variable.variable import variable
+from bes.common.variable import variable
 from bes.system.user import user
 
 class variable_manager(object):
