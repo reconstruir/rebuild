@@ -319,8 +319,8 @@ unset REBUILD_STUFF_DIR
   @classmethod
   def _create_tarball(clazz, filename, stage_dir, files):
     'Create the tarball.'
-    clazz._create_tarball_deterministic(filename, stage_dir, files)
-    #archiver.create(filename, stage_dir, includes = files)
+    #clazz._create_tarball_deterministic(filename, stage_dir, files)
+    archiver.create(filename, stage_dir, include = files, extension = 'tar.gz')
     
   @classmethod
   def _create_tarball_deterministic(clazz, filename, stage_dir, files):
