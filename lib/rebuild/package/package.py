@@ -17,7 +17,6 @@ from bes.fs.file_find import file_find
 from bes.fs.file_replace import file_replace
 from bes.fs.file_search import file_search
 from bes.fs.file_util import file_util
-from bes.fs.tar_util import tar_util
 from bes.fs.temp_file import temp_file
 from bes.match.matcher_filename import matcher_filename, matcher_multiple_filename
 from bes.property.cached_property import cached_property
@@ -289,10 +288,7 @@ unset REBUILD_STUFF_DIR
     manifest = temp_file.make_temp_file(content = '\n'.join(files_to_package))
     if timer:
       timer.start('create_package - creating tarball %s' % (tarball_filename))
-    tar_util.create_deterministic_tarball_with_manifest(tarball_filename,
-                                                        stage_dir,
-                                                        manifest,
-                                                        '2018-12-08')
+    clazz._create_tarball(tarball_filename, stage_dir, files_to_package)
     if timer:
       timer.stop()
 
@@ -319,5 +315,27 @@ unset REBUILD_STUFF_DIR
       file_util.backup(src)
     file_util.rename(tmp_dst_archive, dst)
     return True
+
+  @classmethod
+  def _create_tarball(clazz, filename, stage_dir, files):
+    'Create the tarball.'
+    clazz._create_tarball_deterministic(filename, stage_dir, files)
+    #archiver.create(filename, stage_dir, includes = files)
+    
+  @classmethod
+  def _create_tarball_deterministic(clazz, filename, stage_dir, files):
+    '''Attempt to create a tarball with a deterministic checksum
+    by hardcoding the timestamp.  It doesn't work and needs more 
+    research.  The dilemma is that tarball checksums are different 
+    depending on the creation checksums of the contents.
+    '''
+    from bes.fs.tar_util import tar_util
+    file_util.mkdir(path.dirname(filename))
+    manifest = temp_file.make_temp_file(content = '\n'.join(files))
+    tar_util.create_deterministic_tarball_with_manifest(filename,
+                                                        stage_dir,
+                                                        manifest,
+                                                        '2018-12-08')
+  
     
 check.register_class(package, include_seq = False)

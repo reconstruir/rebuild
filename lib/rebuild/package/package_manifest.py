@@ -77,6 +77,6 @@ class package_manifest(namedtuple('package_manifest', 'files, env_files, content
   
   @classmethod
   def _determine_files_windows(clazz, stage_dir):
-    assert False
+    return file_find.find(stage_dir, relative = True, file_type = file_find.FILE | file_find.LINK)
   
 check.register_class(package_manifest, include_seq = False)
