@@ -1,7 +1,13 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from collections import namedtuple
+
 from bes.common.check import check
+from bes.fs.dir_util import dir_util
+from bes.fs.file_find import file_find
+from bes.system.execute import execute
+from bes.system.host import host
+from bes.text.text_line_parser import text_line_parser
 
 from .package_file_list import package_file_list
 from .sql_encoding import sql_encoding
@@ -44,4 +50,33 @@ class package_manifest(namedtuple('package_manifest', 'files, env_files, content
     }
     return d
 
+  C = 1
+  
+  @classmethod
+  def determine_files(clazz, stage_dir):
+    '''Return the list of files to package.
+    Maybe could do some filtering here.
+    Using find on unix because its faster that bes.fs.file_find.'
+    '''
+    clazz.C += 1
+    if host.is_unix():
+      return clazz._determine_files_unix(stage_dir)
+    elif host.is_windows():
+      return clazz._determine_files_windows(stage_dir)
+    else:
+      host.raise_unsupported_system()
+
+  @classmethod
+  def _determine_files_unix(clazz, stage_dir):
+    stuff = dir_util.list(stage_dir, relative = True)
+    rv = execute.execute([ 'find' ] + stuff + ['-type', 'f' ], cwd = stage_dir)
+    files = text_line_parser.parse_lines(rv.stdout, strip_text = True, remove_empties = True)
+    rv = execute.execute([ 'find' ] + stuff + ['-type', 'l' ], cwd = stage_dir)
+    links = text_line_parser.parse_lines(rv.stdout, strip_text = True, remove_empties = True)
+    return sorted(files + links)
+  
+  @classmethod
+  def _determine_files_windows(clazz, stage_dir):
+    assert False
+  
 check.register_class(package_manifest, include_seq = False)

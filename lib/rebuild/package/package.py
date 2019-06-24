@@ -11,7 +11,6 @@ from bes.common.dict_util import dict_util
 from bes.common.json_util import json_util
 from bes.common.string_util import string_util
 from bes.debug.debug_timer import debug_timer
-from bes.fs.dir_util import dir_util
 from bes.fs.file_check import file_check
 from bes.fs.file_copy import file_copy
 from bes.fs.file_find import file_find
@@ -25,7 +24,6 @@ from bes.property.cached_property import cached_property
 from bes.python.setup_tools import setup_tools
 from bes.system.execute import execute
 from bes.system.log import log
-from bes.text.text_line_parser import text_line_parser
 from rebuild.base.build_blurb import build_blurb
 from rebuild.base.build_target import build_target
 from rebuild.base.package_descriptor import package_descriptor
@@ -264,16 +262,6 @@ unset REBUILD_STUFF_DIR
     return clazz._create_package_result(tarball_path, metadata)
 
   @classmethod
-  def _determine_manifest(clazz, stage_dir):
-    'Return the list of files to package.  Maybe could do some filtering here.  Using find because its faster that bes.fs.file_find.'
-    stuff = dir_util.list(stage_dir, relative = True)
-    rv = execute.execute([ 'find' ] + stuff + ['-type', 'f' ], cwd = stage_dir)
-    files = text_line_parser.parse_lines(rv.stdout, strip_text = True, remove_empties = True)
-    rv = execute.execute([ 'find' ] + stuff + ['-type', 'l' ], cwd = stage_dir)
-    links = text_line_parser.parse_lines(rv.stdout, strip_text = True, remove_empties = True)
-    return sorted(files + links)
-
-  @classmethod
   def _find_files_with_hardcoded_paths(clazz, where):
     if not path.isdir(where):
       return set()
@@ -291,10 +279,10 @@ unset REBUILD_STUFF_DIR
   
   @classmethod
   def _create_package(clazz, tarball_filename, stage_dir, timer):
-    'Return the list of files to package.  Maybe could do some filtering here.  Using find because its faster that bes.fs.file_find.'
+    'Create the package.'
     if timer:
       timer.start('create_package - determine manifest')
-    files_to_package = clazz._determine_manifest(stage_dir)
+    files_to_package = package_manifest.determine_files(stage_dir)
     if timer:
       timer.stop()
     file_util.mkdir(path.dirname(tarball_filename))
