@@ -3,7 +3,7 @@
 
 import os.path as path
 from bes.testing.unit_test import unit_test
-from rebuild.project.ingest_file import ingest_file as PF
+from rebuild.ingest.ingest_file import ingest_file as PF
 from rebuild.recipe.value.masked_value import masked_value
 from rebuild.recipe.value.masked_value_list import masked_value_list
 from rebuild.recipe.value.value_key_values import value_key_values
@@ -18,14 +18,14 @@ class test_ingest_file(unit_test):
   def test_str_name(self):
 #  def __new__(clazz, format_version, filename, name, description, variables, imports, recipes, python_code):
     p = PF(2, 'foo.reproject', 'foo', None, None, None, None, None)
-    expected = '''!rebuild.project!
+    expected = '''!rebuild.ingest!
 project foo
 '''
     self.assertMultiLineEqual( expected, str(p) )
   
   def test_str_description(self):
     p = PF(2, 'foo.reproject', 'foo', 'foo is nice\nvery very nice.', None, None, None, None)
-    expected = '''!rebuild.project!
+    expected = '''!rebuild.ingest!
 project foo
   description
     foo is nice
@@ -36,7 +36,7 @@ project foo
   def test_str_variables(self):
     variables = key_value_list.parse('FOO=1 BAR=hello BAZ=kiwi AUTHOR=socrates')
     p = PF(2, 'foo.reproject', 'foo', None, variables, None, None, None)
-    expected = '''!rebuild.project!
+    expected = '''!rebuild.ingest!
 project foo
   variables
     FOO=1
@@ -54,7 +54,7 @@ project foo
       masked_value('macos', value_string_list(value = string_list.parse('xcode'))),
     ])
     p = PF(2, 'foo.reproject', 'foo', None, None, imports, None, None)
-    expected = '''!rebuild.project!
+    expected = '''!rebuild.ingest!
 project foo
   imports
     libs
@@ -74,7 +74,7 @@ project foo
       masked_value('macos', value_string_list(value = string_list.parse('for_macos/bar/bar_macos.recipe'))),
     ])
     p = PF(2, 'foo.reproject', 'foo', None, None, None, recipes, None)
-    expected = '''!rebuild.project!
+    expected = '''!rebuild.ingest!
 project foo
   recipes
     for_all/foo/foo_all.recipe
@@ -91,7 +91,7 @@ project foo
 print('hello from python_code inside a ingest_file')
 print('hello again')'''
     p = PF(2, 'foo.reproject', 'foo', None, None, None, None, python_code)
-    expected = '''!rebuild.project!
+    expected = '''!rebuild.ingest!
 project foo
   python_code
     > print('hello from python_code inside a ingest_file')
@@ -100,7 +100,7 @@ project foo
     self.assertMultiLineEqual( expected, str(p) )
 
   def test_is_ingest_file(self):
-    text = '''!rebuild.project!
+    text = '''!rebuild.ingest!
 project foo
   recipes
     foo/foo.recipe

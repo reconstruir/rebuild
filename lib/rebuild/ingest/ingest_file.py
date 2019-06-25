@@ -12,7 +12,7 @@ from rebuild.recipe.recipe_util import recipe_util
 class ingest_file(namedtuple('ingest_file', 'format_version, filename, name, description, variables, imports, recipes, python_code')):
 
   FORMAT_VERSION = 2
-  MAGIC = '!rebuild.project!'
+  MAGIC = '!rebuild.ingest!'
   
   def __new__(clazz, format_version, filename, name, description, variables, imports, recipes, python_code):
     check.check_int(format_version)
@@ -67,7 +67,7 @@ class ingest_file(namedtuple('ingest_file', 'format_version, filename, name, des
 
   @classmethod
   def is_ingest_file(clazz, filename):
-    'Return True if filename is a valid rebuild project file.'
+    'Return True if filename is a valid rebuild.ingest file.'
     return recipe_util.file_starts_with_magic(filename, clazz.MAGIC)
 
   @classmethod

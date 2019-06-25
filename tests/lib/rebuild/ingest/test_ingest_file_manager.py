@@ -3,8 +3,8 @@
 
 import os.path as path
 from bes.testing.unit_test import unit_test
-from rebuild.project.ingest_file import ingest_file
-from rebuild.project.ingest_file_manager import ingest_file_manager as PFM
+from rebuild.ingest.ingest_file import ingest_file
+from rebuild.ingest.ingest_file_manager import ingest_file_manager as PFM
 from rebuild.base.build_target import build_target as BT
 from bes.system.os_env import os_env_var
 from bes.fs.file_util import file_util
@@ -42,7 +42,7 @@ class test_ingest_file_manager(unit_test):
     p.load_ingest_file(path.join(tmp_dir, 'kiwi/kiwi.reproject'))
     p.load_ingest_file(path.join(tmp_dir, 'orange/orange.reproject'))
 
-    smoothie_project = '''!rebuild.project!
+    smoothie_project = '''!rebuild.ingest!
 project smoothie
   recipes
     recipes/smoothie/mysmoothie.recipe
@@ -61,13 +61,13 @@ project smoothie
   def _make_tmp_ingest_files(self):
     tmp_dir = self.make_temp_dir()
 
-    fructose_project = '''!rebuild.project!
+    fructose_project = '''!rebuild.ingest!
 project fructose
   recipes
     recipes/fructose/myfructose.recipe
 '''
       
-    kiwi_project = '''!rebuild.project!
+    kiwi_project = '''!rebuild.ingest!
 project kiwi
   recipes
     recipes/kiwi/mykiwi.recipe
@@ -79,7 +79,7 @@ project citrus
     recipes/citrus/mycitrus.recipe
 '''
     
-    orange_project = '''!rebuild.project!
+    orange_project = '''!rebuild.ingest!
 project orange
   recipes
     recipes/orange/myorange.recipe

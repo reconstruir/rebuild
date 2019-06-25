@@ -3,8 +3,8 @@
 
 import os.path as path
 from bes.testing.unit_test import unit_test
-from rebuild.project.ingest_file import ingest_file
-from rebuild.project.ingest_file_parser import ingest_file_parser as P
+from rebuild.ingest.ingest_file import ingest_file
+from rebuild.ingest.ingest_file_parser import ingest_file_parser as P
 from rebuild.recipe.recipe_error import recipe_error as ERR
 from rebuild.base.build_target import build_target
 from bes.key_value.key_value import key_value as KV
@@ -23,7 +23,7 @@ class test_ingest_file_parser(unit_test):
       self._parse('nomagic')
 
   def test_name(self):
-    text = '''!rebuild.project!
+    text = '''!rebuild.ingest!
 project foo
 '''
     p = self._parse(text)
@@ -31,7 +31,7 @@ project foo
     self.assertEqual( 'foo', p[0].name )
 
   def test_description(self):
-    text = '''!rebuild.project!
+    text = '''!rebuild.ingest!
 project foo
   description
     foo is nice
@@ -42,7 +42,7 @@ project foo
     self.assertEqual( 'foo is nice', p[0].description )
     
   def test_description_multiline(self):
-    text = '''!rebuild.project!
+    text = '''!rebuild.ingest!
 project foo
   description
     foo is nice
@@ -54,7 +54,7 @@ project foo
     self.assertEqual( 'foo is nice\nvery nice!', p[0].description )
 
   def test_variables(self):
-    text = '''!rebuild.project!
+    text = '''!rebuild.ingest!
 project foo
   variables
     FOO=hi BAR=666
@@ -65,7 +65,7 @@ project foo
     self.assertEqual( [ KV('FOO', 'hi'), KV('BAR', '666'), KV('AUTHOR', 'socrates') ], p[0].variables )
     
   def test_recipes(self):
-    text = '''!rebuild.project!
+    text = '''!rebuild.ingest!
 project foo
   recipes
     for_all/foo/foo_all.recipe
@@ -115,7 +115,7 @@ project foo
     ], p[0].resolve_recipes('android') )
     
   def test_imports(self):
-    text = '''!rebuild.project!
+    text = '''!rebuild.ingest!
 project foo
   imports
     all libraries python/packages gnu
@@ -137,7 +137,7 @@ project foo
     ], p[0].resolve_imports('macos') )
     
   def test_python_code(self):
-    text = '''!rebuild.project!
+    text = '''!rebuild.ingest!
 project foo
   python_code
     > print('hello from python_code inside a ingest_file')
