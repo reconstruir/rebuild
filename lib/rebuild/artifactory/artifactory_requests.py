@@ -159,7 +159,7 @@ class artifactory_requests(object):
     check.check_int(num_tries, allow_none = True)
 
     clazz.log_d('upload: address=%s; filename=%s' % (address, filename))
-    clazz.upload_url(address.url, filename, credentials, num_tries = num_tries)
+    return clazz.upload_url(address.url, filename, credentials, num_tries = num_tries)
 
   @classmethod
   def upload_url(clazz, url, filename, credentials, num_tries = None):
