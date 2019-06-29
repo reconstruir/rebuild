@@ -8,8 +8,8 @@ import os, os.path as path, platform, sys
 from bes.common.object_util import object_util
 from bes.common.tuple_util import tuple_util
 from bes.system.execute import execute
+from bes.system.console import console
 from bes.text import text_canvas
-from bes.unix.terminal import terminal
 
 from rebuild.base.build_blurb import build_blurb
 from rebuild.base.build_target import build_target
@@ -324,7 +324,7 @@ class Build(object):
 
     justified_label = build_blurb.justified_label(label)
 
-    width = terminal.width()
+    width = console.terminal_width(default = 80)
 
     target_strings = [ str(n) for n in target ]
     source_strings = [ str(n) for n in source ]

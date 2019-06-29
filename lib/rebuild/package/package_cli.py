@@ -2,7 +2,7 @@
 
 import argparse, os.path as path
 from bes.key_value.key_value_list import key_value_list
-from bes.unix.terminal import terminal
+from bes.system.console import console
 from bes.compat.StringIO import StringIO
 from bes.text.text_fit import text_fit
 
@@ -87,7 +87,7 @@ class package_cli(object):
     buf.write(delimiter)
     lines = []
     if True:
-      terminal_width = terminal.width()
+      terminal_width = console.terminal_width(default = 80)
       width = terminal_width - left_width
       if len(message) > width:
         lines = text_fit.fit_text(message, width)

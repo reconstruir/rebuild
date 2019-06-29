@@ -1,10 +1,9 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path, sys
 from bes.common.json_util import json_util
 from bes.system.add_method import add_method
-from bes.unix.terminal import terminal
+from bes.system.console import console
 from bes.fs.file_util import file_util
 from bes.text.text_fit import text_fit
 
@@ -34,10 +33,7 @@ class build_blurb(object):
     output.write(delimiter)
     lines = []
     if fit:
-      try:
-        terminal_width = terminal.width()
-      except Exception as ex:
-        terminal_width = 80
+      terminal_width = console.terminal_width(default = 80)
       width = terminal_width - left_width
       if len(message) > width:
         lines = text_fit.fit_text(message, width)
