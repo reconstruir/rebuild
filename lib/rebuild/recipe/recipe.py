@@ -45,10 +45,10 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
       root.add_child('enabled=%s' % (self.enabled.expression))
       root.add_child('')
     if self.variables:
-      root.children.append(recipe_util.variables_to_node(self.variables))
+      root.children.append(recipe_util.variables_to_node('variables', self.variables))
       root.add_child('')
     if self.data:
-      root.children.append(recipe_util.variables_to_node(self.data))
+      root.children.append(recipe_util.variables_to_node('data', self.data))
       root.add_child('')
     if self.properties:
       root.children.append(self._properties_to_node(self.properties))

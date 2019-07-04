@@ -5,7 +5,7 @@ from bes.testing.unit_test import unit_test
 from bes.fs.testing.temp_content import temp_content
 from bes.fs.temp_file import temp_file
 from bes.git.git_repo import git_repo
-from bes.git.git_unit_test import git_unit_test
+from bes.git.git_unit_test import git_temp_home_func
 from rebuild.storage.storage_git_repo import storage_git_repo
 import os.path as path
 
@@ -13,17 +13,7 @@ from test_storage_local import source_dir_maker
 
 class test_storage_git_repo(unit_test):
 
-  DEBUG = False
-  #DEBUG = True
-
-  @classmethod
-  def setUpClass(clazz):
-    git_unit_test.set_identity()
-
-  @classmethod
-  def tearDownClass(clazz):
-    git_unit_test.unset_identity()
-  
+  @git_temp_home_func()
   def test_repo_find_tarball(self):
     tmp_source_repo = self._make_git_repo([
       'file a/alpha-1.2.3.tar.gz "${tarball}" 644',

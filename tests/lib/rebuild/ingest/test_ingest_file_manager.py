@@ -9,9 +9,14 @@ from rebuild.base.build_target import build_target as BT
 from bes.system.os_env import os_env_var
 from bes.fs.file_util import file_util
 from bes.fs.testing.temp_content import temp_content
+from bes.testing.unit_test_skip import raise_skip
 
 class test_ingest_file_manager(unit_test):
 
+  @classmethod
+  def setUpClass(clazz):
+    raise_skip('wip disabled')
+  
   def test_env_ingest_files_unset(self):
     os_env_var('REBUILD_RECIPE_PATH').unset()
     self.assertEqual( [], PFM.find_env_ingest_files() )

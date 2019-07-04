@@ -11,9 +11,14 @@ from bes.key_value.key_value import key_value as KV
 from bes.key_value.key_value_list import key_value_list as KVL
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
+from bes.testing.unit_test_skip import raise_skip
 
 class test_ingest_file_parser(unit_test):
 
+  @classmethod
+  def setUpClass(clazz):
+    raise_skip('wip disabled')
+  
   @classmethod
   def _parse(self, text, starting_line_number = 0):
     return P(path.basename(__file__), text, starting_line_number = starting_line_number).parse()

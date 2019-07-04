@@ -43,7 +43,7 @@ class venv_project_config(namedtuple('venv_project_config', 'format_version, fil
       root.children.append(recipe_util.description_to_node(self.description))
       root.add_child('')
     if self.variables:
-      root.children.append(recipe_util.variables_to_node(self.variables))
+      root.children.append(recipe_util.variables_to_node('variables', self.variables))
       root.add_child('')
     if self.packages:
       root.children.append(recipe_util.requirements_to_node('packages', self.packages))

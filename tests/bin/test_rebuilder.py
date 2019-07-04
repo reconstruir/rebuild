@@ -8,7 +8,7 @@ from bes.fs.file_util import file_util
 from bes.fs.file_copy import file_copy
 from bes.fs.temp_file import temp_file
 from bes.git.git_temp_repo import git_temp_repo
-from bes.git.git_unit_test import git_unit_test
+from bes.git.git_unit_test import git_temp_home_func
 from rebuild.base.build_target import build_target
 from rebuild.toolchain.toolchain_testing import toolchain_testing
 from bes.testing.unit_test_skip import skip_if
@@ -20,23 +20,13 @@ class test_rebuilder_script(script_unit_test):
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/rebuilder'
   __script__ = __file__, '../../bin/rebuilder.py'
   
-  DEBUG = script_unit_test.DEBUG
-  #DEBUG = True
-
   HOST_BUILD_TARGET = build_target.make_host_build_target(level = 'release')
   IOS_BUILD_TARGET = build_target('ios', None, '9', '', 'arm64', 'release')
   ANDROID_BUILD_TARGET = build_target('android', '', '', '', 'armv7', 'release')
   
   DEFAULT_CONFIG = rebuilder_tester.config()
-
-  @classmethod
-  def setUpClass(clazz):
-    git_unit_test.set_identity()
-
-  @classmethod
-  def tearDownClass(clazz):
-    git_unit_test.unset_identity()
   
+  @git_temp_home_func()
   def test_autoconf_with_tarball(self):
     self.maxDiff = None
     test = self._run_test(self.DEFAULT_CONFIG, self.data_dir(), 'autoconf', 'arsenic')
@@ -198,6 +188,7 @@ class test_rebuilder_script(script_unit_test):
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
 
+  @git_temp_home_func()
   def test_tarball_git_address(self):
     tmp_dir = self._make_temp_dir('tmp_dir')
     project_dir = path.join(self.data_dir(), 'tarball_git_address')

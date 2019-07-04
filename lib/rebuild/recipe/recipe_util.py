@@ -18,8 +18,8 @@ class recipe_util(object):
     return result
 
   @classmethod
-  def variables_to_node(clazz, variables):
-    return clazz.masked_value_list_to_node('variables', variables)
+  def variables_to_node(clazz, label, variables):
+    return clazz.masked_value_list_to_node(label, variables)
 
   @classmethod
   def masked_value_list_to_node(clazz, name, mvl):
