@@ -163,7 +163,11 @@ remote_checksum: %s''' % (local_filename, local_checksum, remote_checksum)
       if not storage.upload(local_filename, ingested_filename, local_checksum):
         return clazz._ingest_result(False, 'Failed to upload.  Something went wrong.  FIXME: should delete the remote file.')
       clazz.log_d('ingest_file: successfully uploaded: %s' % (ingested_filename))
-      properties_rv = storage.set_properties(ingested_filename, properties)
+      try:
+        properties_rv = storage.set_properties(ingested_filename, properties)
+      except Exception as ex:
+        properties_rv = None
+        print('CAUGHT exception setting properties for {}: {}'.format(ingested_filename, str(ex)))
       if not properties_rv:
         return clazz._ingest_result(False, 'Failed to set properties.  Something went wrong.  FIXME: should delete the remote file.')
     finally:

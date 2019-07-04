@@ -168,7 +168,7 @@ class builder(object):
       if script_result.success:
         return self._run_result(self.SCRIPT_SUCCESS, script_result, None)
       else:
-        return self._run_result(self.SCRIPT_FAILED, script_result)
+        return self._run_result(self.SCRIPT_FAILED, script_result, script_result.message)
   
   def _build_one_script_build(self, script, env):
     script.timer_start('_build_one_script_build: %s' % (script.descriptor.full_name))
