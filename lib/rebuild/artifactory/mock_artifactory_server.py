@@ -13,7 +13,7 @@ class mock_artifactory_server(web_server):
   'A mock artifactory web server.  Tries to impersonate artifactory enough to do unit tests.'
 
   def __init__(self, port = None, root_dir = None, artifactory_id = '', users = None):
-    super(mock_artifactory_server, self).__init__(port = port, users = users, log_tag = 'file_web_server')
+    super(mock_artifactory_server, self).__init__(port = port, users = users, log_tag = 'artifactory')
     self._root_dir = root_dir or os.getcwd()
     self._artifactory_id = artifactory_id
 
