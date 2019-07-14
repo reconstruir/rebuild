@@ -6,7 +6,6 @@ from bes.testing.unit_test import unit_test
 from rebuild.project.project_file import project_file as PF
 from rebuild.recipe.value.masked_value import masked_value
 from rebuild.recipe.value.masked_value_list import masked_value_list
-from rebuild.recipe.value.value_key_values import value_key_values
 from rebuild.recipe.value.value_origin import value_origin
 from rebuild.recipe.value.value_string_list import value_string_list
 from bes.key_value.key_value_list import key_value_list
