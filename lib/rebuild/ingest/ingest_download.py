@@ -14,4 +14,4 @@ class ingest_download(namedtuple('ingest_download', 'url, git')):
     check.check_masked_value_list(git, allow_none = True)
     return clazz.__bases__[0].__new__(clazz, url, git)
 
-  check.register_class(ingest_download, include_seq = False)
+check.register_class(ingest_download, include_seq = False)
