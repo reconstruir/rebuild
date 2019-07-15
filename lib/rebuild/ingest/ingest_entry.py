@@ -66,4 +66,13 @@ class ingest_entry(namedtuple('ingest_entry', 'name, version, description, data,
       return key_value_list()
     return self.variables.resolve(system, 'key_values')
   
+  def resolve_data(self, system):
+    if not self.data:
+      return []
+    result = []
+    for value in self.data:
+      if value.mask_matches(system):
+        result.append(tuple(value.value.value))
+    return result
+  
 check.register_class(ingest_entry, include_seq = False)
