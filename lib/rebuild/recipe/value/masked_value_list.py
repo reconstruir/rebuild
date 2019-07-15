@@ -41,6 +41,9 @@ class masked_value_list(object):
       buf.write(';')
     return buf.getvalue()
     
+  def __repr__(self):
+    return str(self)
+    
   def append(self, value):
     check.check_masked_value(value)
     if self._values:
