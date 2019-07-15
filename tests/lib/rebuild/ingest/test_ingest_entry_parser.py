@@ -32,26 +32,30 @@ class test_ingest_entry_parse(unit_test):
   
   def test_parse(self):
     text = '''\
-entry libyaml 0.1.7
+entry libfoo 1.2.3
 
   description
-    Used by python_yaml
-
-  data
-    all: checksum 0.1.7 8088e457264a98ba451a90b8661fcb4f9d6f478f7265d48322a196cec2480729
-    all: checksum 0.2.2 4a9100ab61047fd9bd395bcef3ce5403365cafd55c1e0d0299cde14958e47be9
+    foo is nice
 
   variables
-    all: _home_url=http://pyyaml.org/download/libyaml
-    all: _upstream_name=yaml
+    all: FOO=hello
+    all: BAR=666
+
+  data
+    all: checksum 1.2.3 0123456789012345678901234567890123456789012345678901234567890123
+    all: checksum 1.2.4 abcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcd
+
+  variables
+    all: _home_url=http://example.com/download
+    all: _upstream_name=foo
     all: _upstream_filename=${_upstream_name}-${VERSION}.tar.gz
     all: _filename=${NAME}-${VERSION}.tar.gz
     all: _ingested_filename=lib/${_filename}
-    
-  download
-    url
-      all: url=${_url} ingested_filename=${_ingested_filename} checksum=@{DATA:checksum:${VERSION}}
-      macos: url=${_url}.foo ingested_filename=${_ingested_filename} checksum=@{DATA:checksum:${VERSION}}
+
+  method download
+    all: url=${_url}
+    all: checksum=@{DATA:checksum:${VERSION}}
+    all: ingested_filename=${_ingested_filename}
 '''
 
     tree = tree_text_parser.parse(text, strip_comments = True)
