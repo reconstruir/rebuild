@@ -102,7 +102,7 @@ entry libfoo 1.2.3
     with self.assertRaises(recipe_error) as ctx:
       self._parse(text)
 
-  def xtest_resolve_method_values(self):
+  def test_resolve_method_values(self):
     text = '''\
 entry libfoo 1.2.3
 
@@ -112,18 +112,17 @@ entry libfoo 1.2.3
     all: checksum=foo #@{DATA:checksum:${VERSION}}
     all: ingested_filename=foo.zip #${_ingested_filename}
 '''
-
     entry = self._parse(text)
-#    self.assertEqual( [
-#      ( 'url', 'http://www.example.com/macos/foo.zip' ),
-#      ( 'checksum', 'foo'),
-#      ( 'ingested_filename', 'foo.zip' ),
-#    ], entry.resolve_method_values('macos' ) )
     self.assertEqual( [
-      ( 'url', 'http://www.example.com/linux/foo.zip' ),
-      ( 'checksum', 'foo'),
-      ( 'ingested_filename', 'foo.zip' ),
-    ], entry.resolve_method_values('linux' ) )
+      KV('url', 'http://www.example.com/macos/foo.zip'),
+      KV('checksum', 'foo'),
+      KV('ingested_filename', 'foo.zip'),
+    ], entry.resolve_method_values('macos' ) )
+    self.assertEqual( [
+      KV('url', 'http://www.example.com/linux/foo.zip'),
+      KV('checksum', 'foo'),
+      KV('ingested_filename', 'foo.zip'),
+    ], entry.resolve_method_values('linux') )
     
   def test_resolve_variable(self):
     text = '''\

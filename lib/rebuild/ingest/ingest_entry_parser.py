@@ -4,9 +4,15 @@ from bes.common.check import check
 from bes.common.string_util import string_util
 from bes.system.log import log
 
+from rebuild.base.build_system import build_system
 from rebuild.recipe.recipe_data_manager import recipe_data_manager
 from rebuild.recipe.recipe_parser_util import recipe_parser_util
+from rebuild.recipe.value.masked_value import masked_value
 from rebuild.recipe.value.masked_value_list import masked_value_list
+from rebuild.recipe.value.value_origin import value_origin
+from rebuild.recipe.value.value_key_values import value_key_values
+from rebuild.recipe.value.value_parsing import value_parsing
+from bes.key_value.key_value_list import key_value_list
 
 from .ingest_download import ingest_download
 from .ingest_entry import ingest_entry
@@ -77,9 +83,7 @@ class ingest_entry_parser(object):
       desc = ingest_method_descriptor_download()
     else:
       error_func('invalid method: {} - should be one of: git download'.format(method))
-    values = masked_value_list()
-    for child in node.children:
-      values.extend(recipe_parser_util.parse_masked_variables(child, self.filename))
+    values = self._parse_masked_key_values_children(node, error_func)
     keys = set()
     for v in values:
       for kv in v.value:
@@ -89,3 +93,23 @@ class ingest_entry_parser(object):
     if missing_keys:
       error_func('method "{}" missing the following fields: {}'.format(method, ' '.join(missing_keys)))
     return ingest_method(method, values)
+
+  def _parse_masked_key_values_children(self, node, error_func):
+    #self.log_d('_parse_masked_key_values_children: filename=%s\nnode=%s' % (self.filename, str(node)))
+    result = masked_value_list()
+    for child in node.children:
+      result.extend(self._parse_masked_key_values_node(child, error_func))
+    return result
+
+  def _parse_masked_key_values_node(self, node, error_func):
+    origin = value_origin(self.filename, node.data.line_number, node.data.text)
+    text = node.get_text(node.NODE_FLAT)
+    mav = value_parsing.split_mask_and_value(origin, text)
+    result = []
+    if not build_system.mask_is_valid(mav.mask):
+      error_func('invalid system mask: {}"'.format(mav.mask))
+    self.log_d('_parse_masked_key_values_node: mask={}; value={}'.format(mav.mask, mav.value))
+    key_values = key_value_list.parse(mav.value)
+    result.append(masked_value(mav.mask, value_key_values(origin = origin, value = key_values), origin = origin))
+    return masked_value_list(result)
+  

@@ -130,7 +130,6 @@ class project_file_parser(object):
     values = [ masked_value(mask, value_string_list(origin = origin, value = [ s ]), origin = origin) for s in strings ]
     result.extend(values)
     return masked_value_list(result)
-
   
   @classmethod
   def _node_get_string_list(clazz, node):
