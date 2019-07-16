@@ -16,6 +16,8 @@ from bes.key_value.key_value_list import key_value_list
 from bes.text.string_list import string_list
 from bes.fs.temp_file import temp_file
 from bes.text.tree_text_parser import tree_text_parser
+from bes.key_value.key_value import key_value as KV
+from bes.key_value.key_value_list import key_value_list as KVL
 
 from rebuild.ingest.ingest_entry_parser import ingest_entry_parser as IEP
 
@@ -60,10 +62,7 @@ entry libfoo 1.2.3
     all: ingested_filename=${_ingested_filename}
 '''
 
-    tree = tree_text_parser.parse(text, strip_comments = True)
-    entry_node = tree.children[0]
-    vm = variable_manager()
-    entry = IEP('<unittest>', vm).parse(entry_node, self._error)
+    entry = self._parse(text)
     self.assertEqual( 'libfoo', entry.name )
     self.assertEqual( '1.2.3', entry.version )
     self.assertEqual( 'foo is nice', entry.description )
@@ -89,11 +88,8 @@ entry libfoo 1.2.3
     all: url=http://www.examples.com/foo.zip
 '''
 
-    tree = tree_text_parser.parse(text, strip_comments = True)
-    entry_node = tree.children[0]
-    vm = variable_manager()
     with self.assertRaises(recipe_error) as ctx:
-      entry = IEP('<unittest>', vm).parse(entry_node, self._error)
+      self._parse(text)
 
   def test_parse_method_git_missing_fields(self):
     text = '''\
@@ -103,12 +99,68 @@ entry libfoo 1.2.3
     all: address=http://www.examples.com/foo.git
 '''
 
+    with self.assertRaises(recipe_error) as ctx:
+      self._parse(text)
+
+  def xtest_resolve_method_values(self):
+    text = '''\
+entry libfoo 1.2.3
+
+  method download
+    linux: url=http://www.example.com/linux/foo.zip
+    macos: url=http://www.example.com/macos/foo.zip
+    all: checksum=foo #@{DATA:checksum:${VERSION}}
+    all: ingested_filename=foo.zip #${_ingested_filename}
+'''
+
+    entry = self._parse(text)
+#    self.assertEqual( [
+#      ( 'url', 'http://www.example.com/macos/foo.zip' ),
+#      ( 'checksum', 'foo'),
+#      ( 'ingested_filename', 'foo.zip' ),
+#    ], entry.resolve_method_values('macos' ) )
+    self.assertEqual( [
+      ( 'url', 'http://www.example.com/linux/foo.zip' ),
+      ( 'checksum', 'foo'),
+      ( 'ingested_filename', 'foo.zip' ),
+    ], entry.resolve_method_values('linux' ) )
+    
+  def test_resolve_variable(self):
+    text = '''\
+entry libfoo 1.2.3
+
+  variables
+    all: FOO=hello
+    all: BAR=default
+    macos: BAR=macos
+    linux: BAR=linux
+
+  method download
+    all: url=http://www.example.com/linux/foo.zip
+    all: checksum=foo
+    all: ingested_filename=foo.zip
+'''
+
+    entry = self._parse(text)
+    self.assertEqual( [
+      ( 'FOO', 'hello' ),
+      ( 'BAR', 'linux'),
+    ], entry.resolve_variables('linux' ) )
+    self.assertEqual( [
+      ( 'FOO', 'hello' ),
+      ( 'BAR', 'macos'),
+    ], entry.resolve_variables('macos' ) )
+    self.assertEqual( [
+      ( 'FOO', 'hello' ),
+      ( 'BAR', 'default' ),
+    ], entry.resolve_variables('android' ) )
+    
+  def _parse(self, text):
     tree = tree_text_parser.parse(text, strip_comments = True)
     entry_node = tree.children[0]
     vm = variable_manager()
-    with self.assertRaises(recipe_error) as ctx:
-      entry = IEP('<unittest>', vm).parse(entry_node, self._error)
-      
+    return IEP('<unittest>', vm).parse(entry_node, self._error)
+    
   @classmethod
   def _parse_variables(clazz, mask, s):
     return masked_value(mask, value_key_values(value = key_value_list.parse(s)))

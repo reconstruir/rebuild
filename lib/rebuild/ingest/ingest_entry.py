@@ -74,5 +74,8 @@ class ingest_entry(namedtuple('ingest_entry', 'name, version, description, data,
       if value.mask_matches(system):
         result.append(tuple(value.value.value))
     return result
+
+  def resolve_method_values(self, system):
+    return self.method.resolve_values(system)
   
 check.register_class(ingest_entry, include_seq = False)

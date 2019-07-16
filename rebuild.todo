@@ -1144,3 +1144,12 @@ storage_local.py majorly messed up also value_source_tarball.  its calling stora
 
 
 - upstream_version_lexer might be not needed
+
+this masked values list sequence:
+  variables
+    all: FOO=hello
+    macos: BAR=macos
+    linux: BAR=linux
+    all: BAR=default
+
+doesnt work because the all: BAR=default at the end clobbers the previous platform specific one.  resolution needs to take this into account

@@ -22,6 +22,9 @@ class ingest_method(namedtuple('ingest_method', 'method, values')):
     for v in self.values:
       method_node.add_child(str(v))
     return method_node
+
+  def resolve_values(self, system):
+    return self.values.resolve(system, 'key_values')
   
 check.register_class(ingest_method, include_seq = False)
     
