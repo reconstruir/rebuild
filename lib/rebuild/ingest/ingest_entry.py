@@ -16,18 +16,18 @@ from rebuild.recipe.recipe_util import recipe_util
 from rebuild.recipe.value.masked_value import masked_value
 from rebuild.recipe.value.masked_value_list import masked_value_list
 
-from .ingest_download import ingest_download
+from .ingest_method import ingest_method
 
-class ingest_entry(namedtuple('ingest_entry', 'name, version, description, data, variables, download')):
+class ingest_entry(namedtuple('ingest_entry', 'name, version, description, data, variables, method')):
 
-  def __new__(clazz, name, version, description, data, variables, download):
+  def __new__(clazz, name, version, description, data, variables, method):
     check.check_string(name)
     check.check_string(version)
     check.check_string(description, allow_none = True)
     check.check_masked_value_list(data, allow_none = True)
     check.check_masked_value_list(variables, allow_none = True)
-    check.check_ingest_download(download, allow_none = True)
-    return clazz.__bases__[0].__new__(clazz, name, version, description, data, variables, download)
+    check.check_ingest_method(method)
+    return clazz.__bases__[0].__new__(clazz, name, version, description, data, variables, method)
 
   def __str__(self):
     return self.to_string().strip() + '\n'
@@ -47,8 +47,8 @@ class ingest_entry(namedtuple('ingest_entry', 'name, version, description, data,
     if self.variables:
       root.children.append(recipe_util.variables_to_node('variables', self.variables))
       root.add_child('')
-    if self.download:
-      root.children.append(self._download_to_node(self.download))
+    if self.method:
+      root.children.append(self.method.to_node())
       root.add_child('')
     return root
 

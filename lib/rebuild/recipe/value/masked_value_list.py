@@ -83,4 +83,10 @@ class masked_value_list(object):
         result.append(value.value)
     return result
 
+  def keys(self):
+    keys = set()
+    for v in self._values:
+      keys.add(v.value.key)
+    return keys
+  
 check.register_class(masked_value_list, include_seq = False)

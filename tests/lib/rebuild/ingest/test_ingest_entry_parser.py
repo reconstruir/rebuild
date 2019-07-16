@@ -81,6 +81,34 @@ entry libfoo 1.2.3
       self._parse_data('all', 'checksum 1.2.4 abcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcd'),
     ]), entry.data )
 
+  def test_parse_method_download_missing_fields(self):
+    text = '''\
+entry libfoo 1.2.3
+
+  method download
+    all: url=http://www.examples.com/foo.zip
+'''
+
+    tree = tree_text_parser.parse(text, strip_comments = True)
+    entry_node = tree.children[0]
+    vm = variable_manager()
+    with self.assertRaises(recipe_error) as ctx:
+      entry = IEP('<unittest>', vm).parse(entry_node, self._error)
+
+  def test_parse_method_git_missing_fields(self):
+    text = '''\
+entry libfoo 1.2.3
+
+  method git
+    all: address=http://www.examples.com/foo.git
+'''
+
+    tree = tree_text_parser.parse(text, strip_comments = True)
+    entry_node = tree.children[0]
+    vm = variable_manager()
+    with self.assertRaises(recipe_error) as ctx:
+      entry = IEP('<unittest>', vm).parse(entry_node, self._error)
+      
   @classmethod
   def _parse_variables(clazz, mask, s):
     return masked_value(mask, value_key_values(value = key_value_list.parse(s)))

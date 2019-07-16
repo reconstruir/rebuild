@@ -11,6 +11,10 @@ from rebuild.recipe.value.masked_value_list import masked_value_list
 from .ingest_download import ingest_download
 from .ingest_entry import ingest_entry
 
+from .ingest_method_descriptor_download import ingest_method_descriptor_download
+from .ingest_method_descriptor_git import ingest_method_descriptor_git
+from .ingest_method import ingest_method
+
 class ingest_entry_parser(object):
 
   def __init__(self, filename, variable_manager):
@@ -27,7 +31,7 @@ class ingest_entry_parser(object):
     description = None
     data = None
     variables = None
-    download = None
+    method = None
     
     for child in entry_node.children:
       text = child.data.text
@@ -41,10 +45,10 @@ class ingest_entry_parser(object):
         if not variables:
           variables = masked_value_list()
         variables.extend(recipe_parser_util.parse_masked_variables(child, self.filename))
-      elif text.startswith('download'):
-        download = self._parse_download(child)
+      elif text.startswith('method'):
+        method = self._parse_method(child, error_func)
 
-    return ingest_entry(name, version, description, data, variables, download)
+    return ingest_entry(name, version, description, data, variables, method)
 
   def _parse_header(self, node, error_func):
     parts = string_util.split_by_white_space(node.data.text, strip = True)
@@ -56,17 +60,32 @@ class ingest_entry_parser(object):
     version = self.variable_manager.substitute(parts[2].strip())
     return name, version
 
-  def _parse_download(self, node):
-    url = None
-    git = None
+  def _parse_method(self, node, error_func):
+    text = node.data.text
+    if not text.startswith('method'):
+      error_func('invalid method header: {} - should be "method git|download"'.format(text))
+    parts = string_util.split_by_white_space(text, strip = True)
+    if len(parts) != 2:
+      error_func('invalid method header: {} - should be "method git|download"'.format(text))
+    if not text.startswith('method'):
+      error_func('invalid method header: {} - should be "method git|download"'.format(text))
+    method = parts[1]
+    desc = None
+    if method == 'git':
+      desc = ingest_method_descriptor_git()
+    elif method == 'download':
+      desc = ingest_method_descriptor_download()
+    else:
+      error_func('invalid method: {} - should be one of: git download'.format(method))
+    values = masked_value_list()
     for child in node.children:
-      text = child.data.text
-      if text.startswith('url'):
-        if not url:
-          url = masked_value_list()
-        url.extend(recipe_parser_util.parse_masked_variables(child, self.filename))
-      elif text.startswith('git'):
-        if not git:
-          git = masked_value_list()
-        git.extend(recipe_parser_util.parse_masked_variables(child, self.filename))
-    return ingest_download(url, git)
+      values.extend(recipe_parser_util.parse_masked_variables(child, self.filename))
+    keys = set()
+    for v in values:
+      for kv in v.value:
+        keys.add(kv.key)
+    required_keys = desc.required_field_keys()
+    missing_keys = required_keys - keys
+    if missing_keys:
+      error_func('method "{}" missing the following fields: {}'.format(method, ' '.join(missing_keys)))
+    return ingest_method(method, values)
