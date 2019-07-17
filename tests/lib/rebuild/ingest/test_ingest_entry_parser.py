@@ -124,7 +124,7 @@ entry libfoo 1.2.3
       KV('ingested_filename', 'foo.zip'),
     ], entry.resolve_method_values('linux') )
     
-  def test_resolve_variable(self):
+  def test_resolve_variables(self):
     text = '''\
 entry libfoo 1.2.3
 
@@ -153,6 +153,35 @@ entry libfoo 1.2.3
       ( 'FOO', 'hello' ),
       ( 'BAR', 'default' ),
     ], entry.resolve_variables('android' ) )
+
+  def test_resolve_method_values_with_variables(self):
+    text = '''\
+entry libfoo 1.2.3
+
+  variables
+    all: URL_HOME=http://www.example.com
+    macos: DIR=macos
+    linux: DIR=linux
+    all: FILE=foo.zip
+
+  method download
+    all: url=${URL_HOME}/${DIR}/${FILE}
+    all: checksum=foo
+    all: ingested_filename=${FILE}
+'''
+    
+    entry = self._parse(text)
+    self.assertEqual( [
+      KV('url', 'http://www.example.com/macos/foo.zip'),
+      KV('checksum', 'foo'),
+      KV('ingested_filename', 'foo.zip'),
+    ], entry.resolve_method_values('macos') )
+    self.assertEqual( [
+      KV('url', 'http://www.example.com/linux/foo.zip'),
+      KV('checksum', 'foo'),
+      KV('ingested_filename', 'foo.zip'),
+    ], entry.resolve_method_values('linux') )
+    
     
   def _parse(self, text):
     tree = tree_text_parser.parse(text, strip_comments = True)

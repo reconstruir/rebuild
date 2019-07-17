@@ -8,6 +8,7 @@ from bes.common.node import node
 from bes.common.string_util import string_util
 from bes.key_value.key_value_list import key_value_list
 from bes.system.log import log
+from bes.common.variable import variable
 
 from rebuild.recipe.recipe_data_manager import recipe_data_manager
 from rebuild.recipe.recipe_error import recipe_error
@@ -75,14 +76,10 @@ class ingest_entry(namedtuple('ingest_entry', 'name, version, description, data,
         result.append(tuple(value.value.value))
     return result
 
-  def xxresolve_method_values(self, system):
-    return self.method.resolve_values(system)
-
   def resolve_method_values(self, system):
-    result = []
-    for value in self.method.values:
-      if value.mask_matches(system):
-        result.extend(value.value.value)
+    substitutions = self.resolve_variables(system).to_dict()
+    result = self.method.resolve_values(system)
+    result.substitute_variables(substitutions, patterns = variable.BRACKET)
     return result
-  
+
 check.register_class(ingest_entry, include_seq = False)
