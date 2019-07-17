@@ -159,15 +159,15 @@ entry libfoo 1.2.3
 entry libfoo 1.2.3
 
   variables
-    all: URL_HOME=http://www.example.com
-    macos: DIR=macos
-    linux: DIR=linux
-    all: FILE=foo.zip
+    all: url_home=http://www.example.com
+    macos: dir=macos
+    linux: dir=linux
+    all: file=foo.zip
 
   method download
-    all: url=${URL_HOME}/${DIR}/${FILE}
+    all: url=${url_home}/${dir}/${file}
     all: checksum=foo
-    all: ingested_filename=${FILE}
+    all: ingested_filename=${file}
 '''
     
     entry = self._parse(text)
@@ -181,7 +181,66 @@ entry libfoo 1.2.3
       KV('checksum', 'foo'),
       KV('ingested_filename', 'foo.zip'),
     ], entry.resolve_method_values('linux') )
+
+  def test_resolve_method_values_with_builtin_variables(self):
+    text = '''\
+entry libfoo 1.2.3
+
+  variables
+    all: url_home=http://www.example.com
+    macos: dir=macos
+    linux: dir=linux
+    all: file=foo-${VERSION}.zip
+
+  method download
+    all: url=${url_home}/${dir}/${file}
+    all: checksum=foo
+    all: ingested_filename=${file}
+'''
     
+    entry = self._parse(text)
+    self.assertEqual( [
+      KV('url', 'http://www.example.com/macos/foo-1.2.3.zip'),
+      KV('checksum', 'foo'),
+      KV('ingested_filename', 'foo-1.2.3.zip'),
+    ], entry.resolve_method_values('macos') )
+    self.assertEqual( [
+      KV('url', 'http://www.example.com/linux/foo-1.2.3.zip'),
+      KV('checksum', 'foo'),
+      KV('ingested_filename', 'foo-1.2.3.zip'),
+    ], entry.resolve_method_values('linux') )
+    
+  def xtest_resolve_method_values_with_variables_and_data(self):
+    text = '''\
+entry libfoo 1.2.3
+
+  data
+    all: checksum 1.2.3 01234567890
+    all: checksum 1.2.4 abcdefabcde
+
+  variables
+    all: url_home=http://www.example.com
+    macos: dir=macos
+    linux: dir=linux
+    all: file=foo.zip
+
+  method download
+    all: url=${url_home}/${dir}/${file}
+    all: checksum=@{DATA:checksum:${VERSION}}
+    all: ingested_filename=${file}
+'''
+    
+    entry = self._parse(text)
+    self.assertEqual( [
+      KV('url', 'http://www.example.com/macos/foo.zip'),
+      KV('checksum', 'foo'),
+      KV('ingested_filename', 'foo.zip'),
+    ], entry.resolve_method_values('macos') )
+    self.assertEqual( [
+      KV('url', 'http://www.example.com/linux/foo.zip'),
+      KV('checksum', 'foo'),
+      KV('ingested_filename', 'foo.zip'),
+    ], entry.resolve_method_values('linux') )
     
   def _parse(self, text):
     tree = tree_text_parser.parse(text, strip_comments = True)

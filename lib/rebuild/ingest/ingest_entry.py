@@ -5,6 +5,7 @@ import os.path as path
 
 from bes.common.check import check
 from bes.common.node import node
+from bes.property.cached_property import cached_property
 from bes.common.string_util import string_util
 from bes.key_value.key_value_list import key_value_list
 from bes.system.log import log
@@ -32,6 +33,13 @@ class ingest_entry(namedtuple('ingest_entry', 'name, version, description, data,
 
   def __str__(self):
     return self.to_string().strip() + '\n'
+
+  @cached_property
+  def builtin_variables(self):
+    return {
+      'NAME': self.name,
+      'VERSION': self.version,
+    }
 
   def to_string(self, depth = 0, indent = 2):
     return recipe_util.root_node_to_string(self.to_node(), depth = depth, indent = indent)
@@ -78,6 +86,7 @@ class ingest_entry(namedtuple('ingest_entry', 'name, version, description, data,
 
   def resolve_method_values(self, system):
     substitutions = self.resolve_variables(system).to_dict()
+    substitutions.update(self.builtin_variables)
     result = self.method.resolve_values(system)
     result.substitute_variables(substitutions, patterns = variable.BRACKET)
     return result
