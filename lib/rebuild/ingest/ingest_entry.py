@@ -7,6 +7,7 @@ from bes.common.check import check
 from bes.common.node import node
 from bes.property.cached_property import cached_property
 from bes.common.string_util import string_util
+from bes.key_value.key_value import key_value
 from bes.key_value.key_value_list import key_value_list
 from bes.system.log import log
 from bes.common.variable import variable
@@ -17,6 +18,7 @@ from rebuild.recipe.recipe_parser_util import recipe_parser_util
 from rebuild.recipe.recipe_util import recipe_util
 from rebuild.recipe.value.masked_value import masked_value
 from rebuild.recipe.value.masked_value_list import masked_value_list
+from rebuild.recipe.recipe_data_manager import recipe_data_manager
 
 from .ingest_method import ingest_method
 
@@ -25,10 +27,10 @@ class ingest_entry(namedtuple('ingest_entry', 'name, version, description, data,
   def __new__(clazz, name, version, description, data, variables, method):
     check.check_string(name)
     check.check_string(version)
+    check.check_ingest_method(method)
     check.check_string(description, allow_none = True)
     check.check_masked_value_list(data, allow_none = True)
     check.check_masked_value_list(variables, allow_none = True)
-    check.check_ingest_method(method)
     return clazz.__bases__[0].__new__(clazz, name, version, description, data, variables, method)
 
   def __str__(self):
@@ -89,6 +91,15 @@ class ingest_entry(namedtuple('ingest_entry', 'name, version, description, data,
     substitutions.update(self.builtin_variables)
     result = self.method.resolve_values(system)
     result.substitute_variables(substitutions, patterns = variable.BRACKET)
+    dm = recipe_data_manager()
+    dm.set_from_tuples(self.resolve_data(system))
+    for i, kv in enumerate(result):
+      result[i] = key_value(kv.key, dm.substitute(kv.value))
     return result
 
+  def data_substitutions(self, system):
+    dm = recipe_data_manager()
+    dm.set_from_tuples(self.resolve_data(system))
+    return dm.substitutions()
+  
 check.register_class(ingest_entry, include_seq = False)

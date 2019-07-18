@@ -62,10 +62,11 @@ entry libfoo 1.2.3
     all: _upstream_filename=${_upstream_name}-${VERSION}.tar.gz
     all: _filename=${NAME}-${VERSION}.tar.gz
     all: _ingested_filename=lib/${_filename}
-    
-  download
-    all: ${_home_url}/${_filename} ingested_filename=${_ingested_filename} checksum=@{DATA:checksum:${VERSION}}
 
+  method download
+    all: url=http://www.examples.com/foo.zip
+    all: checksum=chk
+    all: ingested_filename=foo.zip
 '''
     f = self._parse(text)
     print(f.entries)

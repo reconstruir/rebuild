@@ -210,13 +210,13 @@ entry libfoo 1.2.3
       KV('ingested_filename', 'foo-1.2.3.zip'),
     ], entry.resolve_method_values('linux') )
     
-  def xtest_resolve_method_values_with_variables_and_data(self):
+  def test_resolve_method_values_with_variables_and_data(self):
     text = '''\
 entry libfoo 1.2.3
 
   data
-    all: checksum 1.2.3 01234567890
-    all: checksum 1.2.4 abcdefabcde
+    linux: checksum 1.2.3 linux_01234567890
+    macos: checksum 1.2.3 macos_01234567890
 
   variables
     all: url_home=http://www.example.com
@@ -233,12 +233,12 @@ entry libfoo 1.2.3
     entry = self._parse(text)
     self.assertEqual( [
       KV('url', 'http://www.example.com/macos/foo.zip'),
-      KV('checksum', 'foo'),
+      KV('checksum', 'macos_01234567890'),
       KV('ingested_filename', 'foo.zip'),
     ], entry.resolve_method_values('macos') )
     self.assertEqual( [
       KV('url', 'http://www.example.com/linux/foo.zip'),
-      KV('checksum', 'foo'),
+      KV('checksum', 'linux_01234567890'),
       KV('ingested_filename', 'foo.zip'),
     ], entry.resolve_method_values('linux') )
     

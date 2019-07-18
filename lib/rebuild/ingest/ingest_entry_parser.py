@@ -47,7 +47,6 @@ class ingest_entry_parser(object):
         if not data:
           data = masked_value_list()
         next_data = recipe_data_manager.parse_node(child, self.filename)
-        print('next_data: {}'.format(next_data))
         data.extend(recipe_data_manager.parse_node(child, self.filename))
       elif text.startswith('variables'):
         if not variables:
