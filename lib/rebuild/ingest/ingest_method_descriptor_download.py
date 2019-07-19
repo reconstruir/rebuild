@@ -17,3 +17,12 @@ class ingest_method_descriptor_download(ingest_method_descriptor_base):
       ingest_method_field('ingested_filename'),
       ingest_method_field('cookies', optional = True),
     )
+
+  #@abstractmethod
+  def download(self, *args, **kargs):
+    url = self._check_download_field(kargs, 'url')
+    checksum = self._check_download_field(kargs, 'checksum')
+    ingested_filename = self._check_download_field(kargs, 'ingested_filename')
+    cookies = self._check_download_field(kargs, 'cookies', optional = True)
+    cache_dir = self._check_download_field(kargs, 'cache_dir')
+    #local_filename = http_cache.get_url(url, checksum, cookies = cookies, debug = debug)

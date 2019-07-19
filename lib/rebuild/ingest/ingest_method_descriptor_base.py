@@ -16,6 +16,19 @@ class ingest_method_descriptor_base(with_metaclass(ABCMeta, object)):
   def fields(self):
     pass
 
+  @abstractmethod
+  def download(self, *args, **kargs):
+    pass
+
   def required_field_keys(self):
     return set([ field.key for field in self.fields() if not field.optional ])
   
+  @classmethod
+  def _check_download_field(clazz, kargs, field, optional = False):
+    if not field in kargs:
+      if optional:
+        return None
+      raise KeyError('missing field: {}'.format(field))
+    return kargs[field]
+
+check.register_class(ingest_method_descriptor_base, name = 'ingest_method_descriptor')

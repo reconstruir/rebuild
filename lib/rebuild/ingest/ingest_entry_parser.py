@@ -93,7 +93,7 @@ class ingest_entry_parser(object):
     missing_keys = required_keys - keys
     if missing_keys:
       error_func('method "{}" missing the following fields: {}'.format(method, ' '.join(missing_keys)), node)
-    return ingest_method(method, values)
+    return ingest_method(desc, values)
 
   def _parse_masked_key_values_children(self, node, error_func):
     #self.log_d('_parse_masked_key_values_children: filename=%s\nnode=%s' % (self.filename, str(node)))

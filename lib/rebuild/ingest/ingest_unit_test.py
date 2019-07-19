@@ -6,6 +6,10 @@ from bes.key_value.key_value_list import key_value_list
 from rebuild.recipe.value.masked_value import masked_value
 from rebuild.recipe.value.masked_value_list import masked_value_list
 from rebuild.recipe.value.value_key_values import value_key_values
+
+from .ingest_method_descriptor_download import ingest_method_descriptor_download
+from .ingest_method_descriptor_git import ingest_method_descriptor_git
+
 from .ingest_method import ingest_method
 
 class ingest_unit_test(object):
@@ -21,4 +25,12 @@ class ingest_unit_test(object):
       masked_value('all', value_key_values(value = key_value_list.parse('checksum={}'.format(checksum)))),
       masked_value('all', value_key_values(value = key_value_list.parse('ingested_filename={}'.format(ingested_filename)))),
     ])
-    return ingest_method(method, values)
+
+    if method == 'git':
+      desc = ingest_method_descriptor_git()
+    elif method == 'download':
+      desc = ingest_method_descriptor_download()
+    else:
+      raise RuntimeError('invalid method: {} - should be one of: git download'.format(method))
+    
+    return ingest_method(desc, values)

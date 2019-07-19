@@ -46,16 +46,5 @@ entry foo 1.2.3
 
     self.assertMultiLineEqual( expected, str(entry) )
 
-
-    method = None
-
-    method_values = masked_value_list([
-      masked_value('all', value_key_values(value = key_value_list.parse('url=http://www.examples.com/foo.zip'))),
-      masked_value('all', value_key_values(value = key_value_list.parse('checksum=chk'))),
-      masked_value('all', value_key_values(value = key_value_list.parse('ingested_filename=foo.zip'))),
-    ])
-
-    method = ingest_method('download', method_values)
-    
 if __name__ == '__main__':
   unit_test.main()

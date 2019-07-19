@@ -63,15 +63,6 @@ class ingest_entry(namedtuple('ingest_entry', 'name, version, description, data,
       root.add_child('')
     return root
 
-  @classmethod
-  def _download_to_node(clazz, download):
-    download_node = node('download')
-    if download.url:
-      download_node.children.append(recipe_util.variables_to_node('url', download.url))
-    if download.git:
-      download_node.children.append(recipe_util.variables_to_node('git', download.git))
-    return download_node
-
   def resolve_variables(self, system):
     if not self.variables:
       return key_value_list()
@@ -101,5 +92,8 @@ class ingest_entry(namedtuple('ingest_entry', 'name, version, description, data,
     dm = recipe_data_manager()
     dm.set_from_tuples(self.resolve_data(system))
     return dm.substitutions()
+
+  def download(self, system, dest_dir):
+    pass
   
 check.register_class(ingest_entry, include_seq = False)
