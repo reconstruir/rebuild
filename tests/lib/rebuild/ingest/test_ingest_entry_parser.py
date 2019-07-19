@@ -241,6 +241,39 @@ entry libfoo 1.2.3
       KV('checksum', 'linux_01234567890'),
       KV('ingested_filename', 'foo.zip'),
     ], entry.resolve_method_values('linux') )
+
+  def test_resolve_method_values_with_everything(self):
+    text = '''\
+entry libfoo 1.2.3
+
+  data
+    linux: checksum 1.2.3 linux_01234567890
+    macos: checksum 1.2.3 macos_01234567890
+
+  variables
+    all: url_home=http://www.example.com
+    macos: system=macos
+    linux: system=linux
+    all: dir=${system}
+    all: file=foo-${VERSION}.zip
+
+  method download
+    all: url=${url_home}/${dir}/${file}
+    all: checksum=@{DATA:checksum:${VERSION}}
+    all: ingested_filename=${file}
+'''
+    
+    entry = self._parse(text)
+    self.assertEqual( [
+      KV('url', 'http://www.example.com/macos/foo-1.2.3.zip'),
+      KV('checksum', 'macos_01234567890'),
+      KV('ingested_filename', 'foo-1.2.3.zip'),
+    ], entry.resolve_method_values('macos') )
+    self.assertEqual( [
+      KV('url', 'http://www.example.com/linux/foo-1.2.3.zip'),
+      KV('checksum', 'linux_01234567890'),
+      KV('ingested_filename', 'foo-1.2.3.zip'),
+    ], entry.resolve_method_values('linux') )
     
   def _parse(self, text):
     tree = tree_text_parser.parse(text, strip_comments = True)
