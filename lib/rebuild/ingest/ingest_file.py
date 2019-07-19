@@ -18,7 +18,7 @@ from .ingest_entry_list import ingest_entry_list
 class ingest_file(namedtuple('ingest_file', 'format_version, filename, description, variables, entries')):
 
   FORMAT_VERSION = 1
-  MAGIC = '!rebuild.ingest!'
+  MAGIC = '!rebuild.ingest.v1!'
   
   def __new__(clazz, format_version, filename, description, variables, entries):
     check.check_int(format_version)

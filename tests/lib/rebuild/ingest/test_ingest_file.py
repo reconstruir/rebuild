@@ -18,7 +18,7 @@ class test_ingest_file(unit_test):
   def test_parse(self):
     p = IF(IF.FORMAT_VERSION, 'foo.reingest', 'foo is nice', None, None)
     expected = '''\
-!rebuild.ingest!
+!rebuild.ingest.v1!
 
 description
   foo is nice

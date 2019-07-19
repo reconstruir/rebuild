@@ -60,9 +60,9 @@ class ingest_entry_parser(object):
   def _parse_header(self, node, error_func):
     parts = string_util.split_by_white_space(node.data.text, strip = True)
     if len(parts) != 3:
-      error_func('invalid entry: {} - should be "entry $name $version"'.format(node.data.text))
+      error_func('invalid entry: {} - should be "entry $name $version"'.format(node.data.text), node)
     if parts[0].strip() != 'entry':
-      error_func('invalid entry: {} - should be "entry $name $version"'.format(node.data.text))
+      error_func('invalid entry: {} - should be "entry $name $version"'.format(node.data.text), node)
     name = self.variable_manager.substitute(parts[1].strip())
     version = self.variable_manager.substitute(parts[2].strip())
     return name, version
@@ -70,12 +70,12 @@ class ingest_entry_parser(object):
   def _parse_method(self, node, error_func):
     text = node.data.text
     if not text.startswith('method'):
-      error_func('invalid method header: {} - should be "method git|download"'.format(text))
+      error_func('invalid method header: {} - should be "method git|download"'.format(text), node)
     parts = string_util.split_by_white_space(text, strip = True)
     if len(parts) != 2:
-      error_func('invalid method header: {} - should be "method git|download"'.format(text))
+      error_func('invalid method header: {} - should be "method git|download"'.format(text), node)
     if not text.startswith('method'):
-      error_func('invalid method header: {} - should be "method git|download"'.format(text))
+      error_func('invalid method header: {} - should be "method git|download"'.format(text), node)
     method = parts[1]
     desc = None
     if method == 'git':
@@ -83,7 +83,7 @@ class ingest_entry_parser(object):
     elif method == 'download':
       desc = ingest_method_descriptor_download()
     else:
-      error_func('invalid method: {} - should be one of: git download'.format(method))
+      error_func('invalid method: {} - should be one of: git download'.format(method), node)
     values = self._parse_masked_key_values_children(node, error_func)
     keys = set()
     for v in values:
@@ -92,7 +92,7 @@ class ingest_entry_parser(object):
     required_keys = desc.required_field_keys()
     missing_keys = required_keys - keys
     if missing_keys:
-      error_func('method "{}" missing the following fields: {}'.format(method, ' '.join(missing_keys)))
+      error_func('method "{}" missing the following fields: {}'.format(method, ' '.join(missing_keys)), node)
     return ingest_method(method, values)
 
   def _parse_masked_key_values_children(self, node, error_func):
@@ -108,7 +108,7 @@ class ingest_entry_parser(object):
     mav = value_parsing.split_mask_and_value(origin, text)
     result = []
     if not build_system.mask_is_valid(mav.mask):
-      error_func('invalid system mask: {}"'.format(mav.mask))
+      error_func('invalid system mask: {}"'.format(mav.mask), node)
     self.log_d('_parse_masked_key_values_node: mask={}; value={}'.format(mav.mask, mav.value))
     key_values = key_value_list.parse(mav.value)
     result.append(masked_value(mav.mask, value_key_values(origin = origin, value = key_values), origin = origin))

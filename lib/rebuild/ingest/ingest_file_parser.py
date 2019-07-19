@@ -4,20 +4,13 @@ from collections import namedtuple
 
 import os.path as path
 from bes.common.check import check
-from bes.common.string_util import string_util
 from bes.key_value.key_value_list import key_value_list
+from bes.fs.file_util import file_util
 from bes.system.log import log
-from bes.text.string_list import string_list
 from bes.text.tree_text_parser import tree_text_parser
-from bes.text.text_fit import text_fit
 
-from rebuild.base.build_system import build_system
 from rebuild.recipe.recipe_error import recipe_error
 from rebuild.recipe.recipe_parser_util import recipe_parser_util
-from rebuild.recipe.value.masked_value import masked_value
-from rebuild.recipe.value.masked_value_list import masked_value_list
-from rebuild.recipe.value.value_origin import value_origin
-from rebuild.recipe.value.value_string_list import value_string_list
 
 from .ingest_file import ingest_file
 from .ingest_entry import ingest_entry
@@ -34,9 +27,9 @@ class ingest_file_parser(object):
     self.filename = filename
     self.starting_line_number = starting_line_number
 
-  def _error(self, msg, pkg_node = None):
-    if pkg_node:
-      line_number = pkg_node.data.line_number + self.starting_line_number
+  def _error(self, msg, node = None):
+    if node:
+      line_number = node.data.line_number + self.starting_line_number
     else:
       line_number = None
     raise recipe_error(msg, self.filename, line_number)
@@ -87,3 +80,8 @@ class ingest_file_parser(object):
   def _parse_variables_child(self, child):
     text = child.get_text(child.NODE_FLAT)
     return key_value_list.parse(text)
+
+  @classmethod
+  def parse_file(clazz, filename):
+    content = file_util.read(filename)
+    return ingest_file_parser(filename, content).parse()

@@ -15,10 +15,6 @@ from bes.testing.unit_test_skip import raise_skip
 
 class test_ingest_file_parser(unit_test):
 
-#  @classmethod
-#  def setUpClass(clazz):
-#    raise_skip('wip disabled')
-  
   @classmethod
   def _parse(self, text, starting_line_number = 0):
     return P(path.basename(__file__), text, starting_line_number = starting_line_number).parse()
@@ -28,7 +24,7 @@ class test_ingest_file_parser(unit_test):
       self._parse('nomagic')
 
   def test_description(self):
-    text = '''!rebuild.ingest!
+    text = '''!rebuild.ingest.v1!
 description
   foo is nice
 '''
@@ -36,7 +32,7 @@ description
     self.assertEqual( 'foo is nice', f.description )
     
   def test_variables(self):
-    text = '''!rebuild.ingest!
+    text = '''!rebuild.ingest.v1!
 variables
   FOO=hello
   BAR=666
@@ -49,7 +45,7 @@ variables
     ], f.variables)
   
   def test_entries(self):
-    text = '''!rebuild.ingest!
+    text = '''!rebuild.ingest.v1!
 entry libfoo 1.2.3
 
   data
