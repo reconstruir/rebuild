@@ -94,9 +94,8 @@ class ingest_entry(namedtuple('ingest_entry', 'name, version, description, data,
     return dm.substitutions()
 
   def download(self, system, cache_dir, dest_dir):
-    values = self.resolve_method_values(system).to_dict()
-    values['cache_dir'] = cache_dir
-    filename = self.method.download(**values)
-    pass
+    args = self.resolve_method_values(system).to_dict()
+    args['cache_dir'] = cache_dir
+    return self.method.download(args)
   
 check.register_class(ingest_entry, include_seq = False)

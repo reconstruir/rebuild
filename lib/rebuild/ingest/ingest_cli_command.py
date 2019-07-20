@@ -22,7 +22,7 @@ class ingest_cli_command(object):
 
     project = ingest_file_parser.parse_file(project_file)
 
-@    http_cache = clazz._make_http_cache()
+#    http_cache = clazz._make_http_cache()
 #    git_cache = clazz._make_git_cache()
     
     for entry in project.entries:
@@ -31,6 +31,9 @@ class ingest_cli_command(object):
       for kv in values:
         print('  method: {}'.format(entry.method.descriptor.method()))
         print('  {}: {}'.format(kv.key, kv.value))
+      import os
+      filename = entry.download(system, cache_dir, os.getcwd())
+      print('filename={}'.format(filename))
       print('\n')
       
     return 0

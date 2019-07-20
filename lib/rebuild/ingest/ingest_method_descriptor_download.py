@@ -1,5 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+from bes.url.http_download_cache import http_download_cache
+
 from .ingest_method_descriptor_base import ingest_method_descriptor_base
 from .ingest_method_field import ingest_method_field
 
@@ -25,4 +27,6 @@ class ingest_method_descriptor_download(ingest_method_descriptor_base):
     ingested_filename = self._check_download_field(args, 'ingested_filename')
     cookies = self._check_download_field(args, 'cookies', optional = True)
     cache_dir = self._check_download_field(args, 'cache_dir')
-    #local_filename = http_cache.get_url(url, checksum, cookies = cookies, debug = debug)
+    cache = http_download_cache(cache_dir)
+    print('url={}'.format(url))
+    return cache.get_url(url, checksum = checksum, cookies = cookies)
