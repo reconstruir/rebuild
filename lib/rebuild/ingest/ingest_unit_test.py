@@ -7,7 +7,7 @@ from rebuild.recipe.value.masked_value import masked_value
 from rebuild.recipe.value.masked_value_list import masked_value_list
 from rebuild.recipe.value.value_key_values import value_key_values
 
-from .ingest_method_descriptor_download import ingest_method_descriptor_download
+from .ingest_method_descriptor_http import ingest_method_descriptor_http
 from .ingest_method_descriptor_git import ingest_method_descriptor_git
 
 from .ingest_method import ingest_method
@@ -29,7 +29,7 @@ class ingest_unit_test(object):
     if method == 'git':
       desc = ingest_method_descriptor_git()
     elif method == 'download':
-      desc = ingest_method_descriptor_download()
+      desc = ingest_method_descriptor_http()
     else:
       raise RuntimeError('invalid method: {} - should be one of: git download'.format(method))
     

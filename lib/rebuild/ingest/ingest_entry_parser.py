@@ -17,7 +17,7 @@ from bes.key_value.key_value_list import key_value_list
 from .ingest_download import ingest_download
 from .ingest_entry import ingest_entry
 
-from .ingest_method_descriptor_download import ingest_method_descriptor_download
+from .ingest_method_descriptor_http import ingest_method_descriptor_http
 from .ingest_method_descriptor_git import ingest_method_descriptor_git
 from .ingest_method import ingest_method
 
@@ -81,7 +81,7 @@ class ingest_entry_parser(object):
     if method == 'git':
       desc = ingest_method_descriptor_git()
     elif method == 'download':
-      desc = ingest_method_descriptor_download()
+      desc = ingest_method_descriptor_http()
     else:
       error_func('invalid method: {} - should be one of: git download'.format(method), node)
     values = self._parse_masked_key_values_children(node, error_func)
