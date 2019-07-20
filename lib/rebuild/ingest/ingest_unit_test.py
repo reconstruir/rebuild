@@ -16,7 +16,7 @@ class ingest_unit_test(object):
 
   @classmethod
   def make_ingest_method(clazz, method, url = None, checksum = None, ingested_filename = None):
-    method = method or 'download'
+    method = method or 'http'
     url = url or 'http://www.examples.com/foo.zip'
     checksum = checksum or 'chk'
     ingested_filename = ingested_filename or 'foo.zop'
@@ -28,9 +28,9 @@ class ingest_unit_test(object):
 
     if method == 'git':
       desc = ingest_method_descriptor_git()
-    elif method == 'download':
+    elif method == 'http':
       desc = ingest_method_descriptor_http()
     else:
-      raise RuntimeError('invalid method: {} - should be one of: git download'.format(method))
+      raise RuntimeError('invalid method: {} - should be one of: git http'.format(method))
     
     return ingest_method(desc, values)

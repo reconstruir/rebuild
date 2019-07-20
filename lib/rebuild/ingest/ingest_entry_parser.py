@@ -80,7 +80,7 @@ class ingest_entry_parser(object):
     desc = None
     if method == 'git':
       desc = ingest_method_descriptor_git()
-    elif method == 'download':
+    elif method == 'http':
       desc = ingest_method_descriptor_http()
     else:
       error_func('invalid method: {} - should be one of: git download'.format(method), node)

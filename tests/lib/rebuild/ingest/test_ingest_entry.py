@@ -17,7 +17,7 @@ class test_ingest_entry(unit_test):
 
   def test___str__(self):
     data = None
-    method = ingest_unit_test.make_ingest_method('download',
+    method = ingest_unit_test.make_ingest_method('http',
                                                  'http://www.examples.com/foo.zip',
                                                  'chk',
                                                  'foo.zip')
@@ -38,7 +38,7 @@ entry foo 1.2.3
     all: FOO=hello
     all: BAR=666
 
-  method download
+  method http
     all: url=http://www.examples.com/foo.zip
     all: checksum=chk
     all: ingested_filename=foo.zip

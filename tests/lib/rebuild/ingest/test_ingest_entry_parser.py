@@ -56,7 +56,7 @@ entry libfoo 1.2.3
     all: _filename=${NAME}-${VERSION}.tar.gz
     all: _ingested_filename=lib/${_filename}
 
-  method download
+  method http
     all: url=${_url}
     all: checksum=@{DATA:checksum:${VERSION}}
     all: ingested_filename=${_ingested_filename}
@@ -84,7 +84,7 @@ entry libfoo 1.2.3
     text = '''\
 entry libfoo 1.2.3
 
-  method download
+  method http
     all: url=http://www.examples.com/foo.zip
 '''
 
@@ -106,7 +106,7 @@ entry libfoo 1.2.3
     text = '''\
 entry libfoo 1.2.3
 
-  method download
+  method http
     linux: url=http://www.example.com/linux/foo.zip
     macos: url=http://www.example.com/macos/foo.zip
     all: checksum=foo #@{DATA:checksum:${VERSION}}
@@ -134,7 +134,7 @@ entry libfoo 1.2.3
     macos: BAR=macos
     linux: BAR=linux
 
-  method download
+  method http
     all: url=http://www.example.com/linux/foo.zip
     all: checksum=foo
     all: ingested_filename=foo.zip
@@ -164,7 +164,7 @@ entry libfoo 1.2.3
     linux: dir=linux
     all: file=foo.zip
 
-  method download
+  method http
     all: url=${url_home}/${dir}/${file}
     all: checksum=foo
     all: ingested_filename=${file}
@@ -192,7 +192,7 @@ entry libfoo 1.2.3
     linux: dir=linux
     all: file=foo-${VERSION}.zip
 
-  method download
+  method http
     all: url=${url_home}/${dir}/${file}
     all: checksum=foo
     all: ingested_filename=${file}
@@ -224,7 +224,7 @@ entry libfoo 1.2.3
     linux: dir=linux
     all: file=foo.zip
 
-  method download
+  method http
     all: url=${url_home}/${dir}/${file}
     all: checksum=@{DATA:checksum:${VERSION}}
     all: ingested_filename=${file}
@@ -257,7 +257,7 @@ entry libfoo 1.2.3
     all: dir=${system}
     all: file=foo-${VERSION}.zip
 
-  method download
+  method http
     all: url=${url_home}/${dir}/${file}
     all: checksum=@{DATA:checksum:${VERSION}}
     all: ingested_filename=${file}

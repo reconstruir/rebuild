@@ -59,7 +59,7 @@ entry libfoo 1.2.3
     all: _filename=${NAME}-${VERSION}.tar.gz
     all: _ingested_filename=lib/${_filename}
 
-  method download
+  method http
     all: url=http://www.examples.com/foo.zip
     all: checksum=chk
     all: ingested_filename=foo.zip
