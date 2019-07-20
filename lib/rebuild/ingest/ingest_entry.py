@@ -93,7 +93,10 @@ class ingest_entry(namedtuple('ingest_entry', 'name, version, description, data,
     dm.set_from_tuples(self.resolve_data(system))
     return dm.substitutions()
 
-  def download(self, system, dest_dir):
+  def download(self, system, cache_dir, dest_dir):
+    values = self.resolve_method_values(system).to_dict()
+    values['cache_dir'] = cache_dir
+    filename = self.method.download(**values)
     pass
   
 check.register_class(ingest_entry, include_seq = False)

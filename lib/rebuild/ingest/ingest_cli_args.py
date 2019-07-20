@@ -16,6 +16,7 @@ class ingest_cli_args(object):
   
   def ingest_add_args(self, subparser):
     default_system = build_system.HOST
+    default_cache_dir = path.expanduser('~/.egoist/ingest/downloads')
     
     p = subparser.add_parser('run', help = 'Run ingestion for a ingestion project.')
     p.add_argument('project_file', action = 'store', default = None, type = str,
@@ -25,6 +26,8 @@ class ingest_cli_args(object):
     p.add_argument('--system', action = 'store', default = default_system, type = str,
                    choices = tuple(build_system.SYSTEMS),
                    help = 'The system to ingest for. [ None ]')
+    p.add_argument('--cache-dir', action = 'store', default = default_cache_dir, type = str,
+                   help = 'The directory where downloads are cached. [ {} ]'.format(default_cache_dir))
     p.add_argument('--dry-run', action = 'store_true', default = False,
                    help = 'Do not ingest anything just print what would happen. [ False ]')
     p.add_argument('--verbose', action = 'store_true', default = False,
@@ -36,5 +39,5 @@ class ingest_cli_args(object):
 #    p.add_argument('--tries', action = 'store', default = 1, type = int, dest = 'num_tries',
 #                   help = 'The number of tries to publish. [ 1 ]')
     
-  def _command_ingest_run(self, project_file, storage_config, system, dry_run, verbose):
-    return ingest_cli_command.run(project_file, storage_config, system, dry_run, verbose)
+  def _command_ingest_run(self, project_file, storage_config, system, cache_dir, dry_run, verbose):
+    return ingest_cli_command.run(project_file, storage_config, system, cache_dir, dry_run, verbose)

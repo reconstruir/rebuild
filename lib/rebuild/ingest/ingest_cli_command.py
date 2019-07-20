@@ -12,7 +12,7 @@ class ingest_cli_command(object):
   'Implementations of the vault cli commands.'
   
   @classmethod
-  def run(clazz, project_file, storage_config, system, dry_run, verbose):
+  def run(clazz, project_file, storage_config, system, cache_dir, dry_run, verbose):
     'Run the ingestion process.'
     check.check_string(project_file)
     check.check_string(storage_config)
@@ -22,8 +22,8 @@ class ingest_cli_command(object):
 
     project = ingest_file_parser.parse_file(project_file)
 
-    http_cache = clazz._make_http_cache()
-    git_cache = clazz._make_git_cache()
+@    http_cache = clazz._make_http_cache()
+#    git_cache = clazz._make_git_cache()
     
     for entry in project.entries:
       values = entry.resolve_method_values(system)

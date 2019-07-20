@@ -26,5 +26,8 @@ class ingest_method(namedtuple('ingest_method', 'descriptor, values')):
   def resolve_values(self, system):
     return self.values.resolve(system, 'key_values')
   
+  def download(self, values):
+    return self.descriptor.download(values)
+  
 check.register_class(ingest_method, include_seq = False)
     

@@ -17,7 +17,7 @@ class ingest_method_descriptor_base(with_metaclass(ABCMeta, object)):
     pass
 
   @abstractmethod
-  def download(self, *args, **kargs):
+  def download(self, args):
     pass
 
   def required_field_keys(self):
