@@ -28,5 +28,4 @@ class ingest_method_descriptor_download(ingest_method_descriptor_base):
     cookies = self._check_download_field(args, 'cookies', optional = True)
     cache_dir = self._check_download_field(args, 'cache_dir')
     cache = http_download_cache(cache_dir)
-    print('url={}'.format(url))
     return cache.get_url(url, checksum = checksum, cookies = cookies)
