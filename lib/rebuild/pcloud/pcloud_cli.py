@@ -34,7 +34,7 @@ class pcloud_cli(object):
     ls_parser.add_argument('-r', '--reversed',
                            action = 'store_true',
                            default = False,
-                           help = 'Reverese the order when sorting. [ False ]')
+                           help = 'Reverse the order when sorting. [ False ]')
     ls_parser.add_argument('-c', '--checksums',
                             action = 'store_true',
                             default = False,
