@@ -18,4 +18,5 @@ class credentials_source(with_metaclass(ABCMeta, object)):
   @abstractmethod
   def credentials(self):
     pass
+  
 check.register_class(credentials_source)

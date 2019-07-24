@@ -44,5 +44,15 @@ class credentials(object):
 
   def to_dict(self):
     return copy.deepcopy(self.__dict__['_credentials'])
-      
+
+  def to_tuple(self, *keys):
+    return tuple([ getattr(self, key) for key in keys ])
+
+  @classmethod
+  def make_credentials(clazz, **kargs):
+    c = credentials()
+    for key, value in kargs.items():
+      setattr(c, key, value)
+    return c
+  
 check.register_class(credentials, include_seq = False)
