@@ -77,9 +77,11 @@ class ingest_entry(namedtuple('ingest_entry', 'name, version, description, data,
         result.append(tuple(value.value.value))
     return result
 
-  def resolve_method_values(self, system):
+  def resolve_method_values(self, system, global_variables):
+    check.check_dict(global_variables, allow_none = True)
     substitutions = self.resolve_variables(system).to_dict()
     substitutions.update(self.builtin_variables)
+    substitutions.update(global_variables or {})
     result = self.method.resolve_values(system)
     result.substitute_variables(substitutions, patterns = variable.BRACKET)
     dm = recipe_data_manager()
@@ -93,8 +95,8 @@ class ingest_entry(namedtuple('ingest_entry', 'name, version, description, data,
     dm.set_from_tuples(self.resolve_data(system))
     return dm.substitutions()
 
-  def download(self, system, cache_dir, dest_dir):
-    args = self.resolve_method_values(system).to_dict()
+  def download(self, system, global_variables, cache_dir, dest_dir):
+    args = self.resolve_method_values(system, global_variables).to_dict()
     args['cache_dir'] = cache_dir
     return self.method.download(args)
   
