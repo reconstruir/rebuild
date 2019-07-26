@@ -24,26 +24,16 @@ class test_reingest(script_unit_test):
 
     project_file_content = '''\
 !rebuild.ingest.v1!
-
-description
-  Third party libraries and tools needed by ego_automation
-
-#variables
-#  PYHOSTED_HOME_URL=https://files.pythonhosted.org/packages
-#  PYTHON_PACKAGES_TARGET_DIR=python/packages
-
 entry libfoo 1.2.3
 
   data
     all: checksum 1.2.3 {checksum}
-    #all: checksum 0.2.2 4a9100ab61047fd9bd395bcef3ce5403365cafd55c1e0d0299cde14958e47be9
 
   variables
     all: _home_url={url_base}/downloads
-    all: _upstream_name=foo
-    all: _upstream_filename=${{_upstream_name}}-${{VERSION}}.tar.gz
-    all: _filename=${{_upstream_name}}-${{VERSION}}.tar.gz
-    all: _ingested_filename=lib/${{_filename}}
+    all: _upstream_filename=foo-${{VERSION}}.tar.gz
+    all: _filename=foo-${{VERSION}}.tar.gz
+    all: _ingested_filename=lib/${{NAME}}-${{VERSION}}.tar.gz
     
   method http
     all: url=${{_home_url}}/${{_filename}}
@@ -87,7 +77,7 @@ fsconfig
     self.assertEqual( 0, rv.exit_code )
 
     self.assertEqual( [
-      'downloads/lib/foo-1.2.3.tar.gz',
+      'downloads/lib/libfoo-1.2.3.tar.gz',
     ], file_find.find(tmp_fs_dir) )
     
     tester.stop()
