@@ -1,0 +1,4 @@
+fsconfig
+  fs_type: fs_local
+  local_root_dir: /tmp/test
+  cache_dir: /tmp/test/cache
