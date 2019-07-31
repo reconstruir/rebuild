@@ -5,46 +5,13 @@ from collections import namedtuple
 from bes.common.check import check
 from bes.fs.file_util import file_util
 
-class pcloud_credentials(namedtuple('pcloud_credentials', 'email, password')):
-  
-  def __new__(clazz, email, password):
-    return clazz.__bases__[0].__new__(clazz, email, password)
+from rebuild.credentials.credentials import credentials
 
-  def is_valid(self):
-    return self.email and self.password
-
-  def validate_or_raise(self, error_func):
-    if self.is_valid():
-      return
-    if not self.email:
-      print('No pcloud email given.  Set PCLOUD_EMAIL or use the --pcloud-email flag')
-    if not self.password:
-      print('No pcloud password given.  Set PCLOUD_PASSWORD or use the --pcloud-password flag')
-    raise error_func()
+class pcloud_credentials(object):
   
-  def validate_or_bail(self):
-    self.validate_or_raise(lambda: SystemExit(1))
-  
-  @classmethod
-  def from_file(clazz, filename):
-    content = file_util.read(filename)
-    d = json.loads(content)
-    return clazz.parse_dict(d)
-  
-  @classmethod
-  def from_file(clazz, filename):
-    content = file_util.read(filename)
-    d = json.loads(content)
-    return clazz.parse_dict(d)
-
   @classmethod
   def from_environment(clazz):
-    credentials = os.environ.get('PCLOUD_CREDENTIALS', None)
-    if credentials:
-      return pcloud_credentials.from_file(credentials)
-    email = os.environ.get('PCLOUD_EMAIL', None)
-    password = os.environ.get('PCLOUD_PASSWORD', None)
-    return clazz(email, password)
+    return credentials.make_credentials(email = '${PCLOUD_EMAIL}', password = '${PCLOUD_PASSWORD}')
 
   @classmethod
   def from_command_line_args(clazz, email, password):
@@ -52,14 +19,14 @@ class pcloud_credentials(namedtuple('pcloud_credentials', 'email, password')):
       raise RuntimeError('email not given')
     if not password:
       raise RuntimeError('password not given')
-    return clazz(email, password)
+    return credentials.make_credentials(email = email, password = password)
 
   @classmethod
   def parse_dict(clazz, d):
     check.check_dict(d)
     assert 'email' in d
     assert 'password' in d
-    return clazz(d['email'], d['password'])
+    return credentials.make_credentials(email = d['email'], password = d['password'])
   
   @classmethod
   def add_command_line_args(clazz, parser):

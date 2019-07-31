@@ -17,13 +17,15 @@ from .pcloud_error import pcloud_error
 from .pcloud_metadata import pcloud_metadata
 from .pcloud_requests import pcloud_requests
 
+from rebuild.credentials.credentials import credentials
+
 class pcloud(object):
 
   API = 'https://api.pcloud.com'
   
   def __init__(self, credentials, root_dir):
     log.add_logging(self, 'pcloud')
-    check.check_pcloud_credentials(credentials)
+    check.check_credentials(credentials)
     check.check_string(root_dir)
     self.credentials = credentials
     self.root_dir = root_dir
@@ -366,6 +368,8 @@ class pcloud(object):
     if response.status_code != 200:
       raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
     payload = response.payload
+    if 'error' in payload:
+      raise pcloud_error(payload['result'], '')
     assert 'auth' in payload
     return payload['auth']
   

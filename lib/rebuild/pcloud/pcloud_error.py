@@ -3,6 +3,7 @@
 class pcloud_error(Exception):
 
   LOG_IN_REQUIRED = 1000
+  LOG_IN_FAILED = 2000
   PARENT_DIR_MISSING = 2002
   ALREADY_EXISTS = 2004
   HTTP_ERROR = 9999
@@ -14,7 +15,7 @@ class pcloud_error(Exception):
     1004: 'No fileid or path provided.',
     1006: 'Please provide flags.',
     1007: 'Invalid or closed file descriptor.',
-    2000: 'Log in failed.',
+    LOG_IN_FAILED: 'Log in failed.',
     2001: 'Invalid file/folder name.',
     2003: 'Access denied. You do not have permissions to preform this operation.',
     2005: 'Directory does not exist.',

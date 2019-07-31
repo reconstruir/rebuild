@@ -7,7 +7,7 @@ from bes.common.check import check
 from bes.compat.StringIO import StringIO
 from bes.fs.file_util import file_util
 from bes.fs.file_checksum import file_checksum_list
-from bes.text import text_table
+from bes.text.text_table import text_table
 
 from rebuild.storage.source_tool import source_tool
 from rebuild.storage.storage_db import storage_db
@@ -191,7 +191,6 @@ class pcloud_cli(object):
     args = self._parser.parse_args()
 
     credentials = pcloud_credentials.resolve_command_line(args)
-    credentials.validate_or_bail()
     self._pcloud = pcloud(credentials, '/')
     del credentials
       
@@ -288,7 +287,7 @@ class pcloud_cli(object):
       return
     if long_form:
       data = [ self.list_item_long(item, human_readable) for item in items ]
-      table = text_table(data = data, column_delimiter = '  ')
+      table = text_table(data = data)
       table.set_labels( ( 'SIZE', 'NAME', 'PCLOUD ID', 'CONTENT TYPE', 'CHECKSUM' ) )
       print(table)
     else:
