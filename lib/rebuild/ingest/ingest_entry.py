@@ -77,7 +77,7 @@ class ingest_entry(namedtuple('ingest_entry', 'name, version, description, data,
         result.append(tuple(value.value.value))
     return result
 
-  def resolve_method_values(self, system, global_variables):
+  def resolve_method_values(self, system, global_variables = None):
     check.check_dict(global_variables, allow_none = True)
     substitutions = self.resolve_variables(system).to_dict()
     substitutions.update(self.builtin_variables)
