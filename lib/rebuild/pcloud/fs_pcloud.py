@@ -72,7 +72,6 @@ class fs_pcloud(fs_base):
     'List entries in a directory.'
     remote_dir = file_util.ensure_lsep(remote_dir)
     self.log.log_d('list_dir(remote_dir={}, recursive={}'.format(remote_dir, recursive))
-    print('remote_dir={} before:'.format(remote_dir))
     entries = self._pcloud.list_folder(folder_path = remote_dir, recursive = recursive, checksums = False)
     children = fs_file_info_list([ self._convert_pcloud_entry_to_fs_tree(entry, depth = 0) for entry in entries ])
     return fs_file_info(remote_dir, fs_file_info.DIR, None, None, None, children)
@@ -119,7 +118,7 @@ class fs_pcloud(fs_base):
       checksum = None
       attributes = None
       size = None
-    return fs_file_info(remote_filename, ftype, size, checksum, attributes, children)
+    return fs_file_info(file_util.lstrip_sep(remote_filename), ftype, size, checksum, attributes, children)
 
   #@abstractmethod
   def remove_file(self, filename):
