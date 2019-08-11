@@ -1,0 +1,6 @@
+fsconfig
+  fs_type: fs_git_repo
+  address: git@gitlab.com:rebuilder/test_lfs.git
+  config_dir: /tmp/git
+  use_lfs: True
+  load_code: from bes.fs.fs.fs_git_repo import fs_git_repo

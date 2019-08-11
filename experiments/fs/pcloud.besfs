@@ -3,5 +3,4 @@ fsconfig
   pcloud_email: ${PCLOUD_EMAIL}
   pcloud_password: ${PCLOUD_PASSWORD}
   root_dir: /
-#  cache_dir: /tmp/test/cache
   load_code: from rebuild.pcloud.fs_pcloud import fs_pcloud
