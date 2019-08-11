@@ -43,10 +43,10 @@ class ingest_cli_command(object):
       clazz.log.debug('run: method={} entry={}:{}'.format(entry.method.descriptor.method(), entry.name, entry.version))
       for key, value in values.items():
         clazz.log.debug('run: {}: {}'.format(key, value))
-      ingested_filename = values['ingested_filename']
-      filename = entry.download(system, global_variables, cache_dir, tmp_dir)
-      clazz.log.debug('run: uploading {} to {}'.format(filename, ingested_filename))
-      fs.upload_file(ingested_filename, filename)
+      remote_filename = values['ingested_filename']
+      local_filename = entry.download(system, global_variables, cache_dir, tmp_dir)
+      clazz.log.debug('run: uploading {} to {}'.format(local_filename, remote_filename))
+      fs.upload_file(local_filename, remote_filename)
       
     return 0
 
