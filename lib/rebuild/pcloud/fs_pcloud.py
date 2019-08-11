@@ -70,29 +70,57 @@ class fs_pcloud(fs_base):
   #@abstractmethod
   def list_dir(self, remote_dir, recursive):
     'List entries in a directory.'
+    remote_dir = file_util.ensure_lsep(remote_dir)
     self.log.log_d('list_dir(remote_dir={}, recursive={}'.format(remote_dir, recursive))
-    x = self._pcloud.list_folder(self, folder_path = remote_dir, recursive = recursive, checksums = False)
-    import pprint
-    print('X: {}'.format(pprint.pformat(x)))
-    assert False
-  
+    print('remote_dir={} before:'.format(remote_dir))
+    entries = self._pcloud.list_folder(folder_path = remote_dir, recursive = recursive, checksums = False)
+    children = fs_file_info_list([ self._convert_pcloud_entry_to_fs_tree(entry, depth = 0) for entry in entries ])
+    return fs_file_info(remote_dir, fs_file_info.DIR, None, None, None, children)
+
+  def _convert_pcloud_entry_to_fs_tree(self, entry, depth = 0):
+    indent = ' ' * depth
+    is_file = not entry.is_folder
+    remote_filename = entry.path
+    if is_file:
+      children = fs_file_info_list()
+    else:
+      children = fs_file_info_list([ self._convert_pcloud_entry_to_fs_tree(n, depth + 2) for n in entry.contents ])
+    return self._make_entry(remote_filename, entry, children)
+    
   #@abstractmethod
   def has_file(self, filename):
     'Return True if filename exists in the filesystem and is a FILE.'
     assert False
   
   #@abstractmethod
-  def file_info(self, filename):
-    'Get info for a single file..'
-    print('filename: {}'.format(filename))
-    x = self._pcloud.list_folder(folder_path = filename)
-    #x = self._pcloud.file_open(self, flags, file_path = None, file_id = None, folder_id = None, filename = None):
-    x = self._pcloud.list_folder(folder_path = filename)
-    import pprint
-    print(pprint.pformat(x))
-    assert False
-    return self._make_entry(filename, local_filename, fs_file_info_list())
-  
+  def file_info(self, remote_filename):
+    'Get info for a single file.'
+    remote_filename = file_util.ensure_lsep(remote_filename)
+    if remote_filename == '/':
+      return fs_file_info(remote_filename, fs_file_info.DIR, None, None, None, fs_file_info_list())
+    parent = path.dirname(remote_filename)
+    basename = path.basename(remote_filename)
+    entries = self._pcloud.list_folder(folder_path = parent)
+    for entry in entries:
+      if entry.name == basename:
+        return self._make_entry(remote_filename, entry, fs_file_info_list())
+    raise fs_error('file not found: {}'.format(remote_filename))
+
+  def _make_entry(self, remote_filename, entry, children):
+    if entry.is_folder:
+      ftype = fs_file_info.DIR
+    else:
+      ftype = fs_file_info.FILE
+    if ftype == fs_file_info.FILE:
+      checksum = str(entry.content_hash)
+      attributes = {}
+      size = entry.size
+    else:
+      checksum = None
+      attributes = None
+      size = None
+    return fs_file_info(remote_filename, ftype, size, checksum, attributes, children)
+
   #@abstractmethod
   def remove_file(self, filename):
     'Remove filename.'
