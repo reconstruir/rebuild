@@ -83,7 +83,7 @@ class fs_pcloud(fs_base):
     if is_file:
       children = fs_file_info_list()
     else:
-      children = fs_file_info_list([ self._convert_pcloud_entry_to_fs_tree(n, depth + 2) for n in entry.contents ])
+      children = fs_file_info_list([ self._convert_pcloud_entry_to_fs_tree(n, depth + 2) for n in entry.contents or [] ])
     return self._make_entry(remote_filename, entry, children)
     
   #@abstractmethod
