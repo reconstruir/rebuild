@@ -4,7 +4,7 @@ import datetime, json, os.path as path, shutil, time
 from collections import namedtuple
 
 from bes.system.execute import execute
-from bes.system.log import log
+from bes.system.log import logger
 from bes.system.os_env import os_env
 from bes.common.check import check
 from bes.fs.file_path import file_path
@@ -32,6 +32,8 @@ class artifactory_requests(object):
 
   DEFAULT_NUM_TRIES = 5
   
+  log = logger('artifactory_requests')
+
   @classmethod
   def get_headers(clazz, address, credentials):
     check.check_storage_address(address)
@@ -45,9 +47,9 @@ class artifactory_requests(object):
     check.check_credentials(credentials)
     import requests
     auth = ( credentials.username, credentials.password )
-    clazz.log_d('get_headers_for_url: url=%s' % (url))
+    clazz.log.log_d('get_headers_for_url: url=%s' % (url))
     response = requests.head(url, auth = auth)
-    clazz.log_d('get_headers_for_url: status_code=%s; headers=%s' % (response.status_code, response.headers))
+    clazz.log.log_d('get_headers_for_url: status_code=%s; headers=%s' % (response.status_code, response.headers))
     if response.status_code != 200:
       return None
     return response.headers
@@ -62,9 +64,9 @@ class artifactory_requests(object):
   def get_checksums_for_url(clazz, url, credentials):
     check.check_string(url)
     check.check_credentials(credentials)
-    clazz.log_d('get_checksums_for_url: url=%s' % (url))
+    clazz.log.log_d('get_checksums_for_url: url=%s' % (url))
     headers = clazz.get_headers_for_url(url, credentials)
-    clazz.log_d('get_checksums_for_url: headers=%s' % (headers))
+    clazz.log.log_d('get_checksums_for_url: headers=%s' % (headers))
     if not headers:
       return None
     return clazz._checksums_from_headers(headers)
@@ -101,7 +103,7 @@ class artifactory_requests(object):
     tmp = temp_file.make_temp_file(suffix = '-' + path.basename(target), delete = not debug)
     auth = ( credentials.username, credentials.password )
     response = requests.get(url, auth = auth, stream = True)
-    clazz.log_d('download_to_file: target=%s; url=%s; tmp=%s' % (target, url, tmp))
+    clazz.log.log_d('download_to_file: target=%s; url=%s; tmp=%s' % (target, url, tmp))
     if response.status_code != 200:
       return False
     with open(tmp, 'wb') as fout:
@@ -123,9 +125,9 @@ class artifactory_requests(object):
     check.check_storage_address(address)
     check.check_credentials(credentials)
     url = artifactory_address.make_api_url(address, endpoint = 'storage', file_path = address.repo_filename, params = 'list&deep=1&listFolders=0')
-    clazz.log_d('list_files:       address=%s' % (str(address)))
-    clazz.log_d('list_files:           url=%s' % (url))
-    clazz.log_d('list_files: repo_filename=%s' % (address.repo_filename))
+    clazz.log.log_d('list_files:       address=%s' % (str(address)))
+    clazz.log.log_d('list_files:           url=%s' % (url))
+    clazz.log.log_d('list_files: repo_filename=%s' % (address.repo_filename))
     auth = ( credentials.username, credentials.password )
     import requests
     response = requests.get(url, auth = auth)
@@ -158,7 +160,7 @@ class artifactory_requests(object):
     check.check_credentials(credentials)
     check.check_int(num_tries, allow_none = True)
 
-    clazz.log_d('upload: address=%s; filename=%s' % (address, filename))
+    clazz.log.log_d('upload: address=%s; filename=%s' % (address, filename))
     return clazz.upload_url(address.url, filename, credentials, num_tries = num_tries)
 
   @classmethod
@@ -167,27 +169,27 @@ class artifactory_requests(object):
     check.check_credentials(credentials)
     num_tries = num_tries or clazz.DEFAULT_NUM_TRIES
     
-    clazz.log_d('upload_url: url={}; filename={}; num_tries={}'.format(url, filename, num_tries))
+    clazz.log.log_d('upload_url: url={}; filename={}; num_tries={}'.format(url, filename, num_tries))
 
     if num_tries < 1 or num_tries > 10:
       raise ValueError('num_tries should be between 1 and 10')
 
     last_ex = None
     for i in range(1, num_tries + 1):
-      clazz.log_d('upload_url: attempt {} of {} for {}'.format(i, num_tries, url))
+      clazz.log.log_d('upload_url: attempt {} of {} for {}'.format(i, num_tries, url))
       try:
         download_url = clazz._do_upload_url(url, filename, credentials)
-        clazz.log_d('upload_url: SUCCESS: attempt {} of {} for {} download_url={}'.format(i, num_tries, url, download_url))
+        clazz.log.log_d('upload_url: SUCCESS: attempt {} of {} for {} download_url={}'.format(i, num_tries, url, download_url))
         return download_url
       except artifactory_error as ex:
-        clazz.log_e('upload_url: FAILED: attempt {} of {} for {}'.format(i, num_tries, url))
+        clazz.log.log_e('upload_url: FAILED: attempt {} of {} for {}'.format(i, num_tries, url))
         last_ex = ex
         
     raise last_ex
     
   @classmethod
   def _do_upload_url(clazz, url, filename, credentials):
-    clazz.log_d('_do_upload_url: url=%s; filename=%s' % (url, filename))
+    clazz.log.log_d('_do_upload_url: url=%s; filename=%s' % (url, filename))
     import requests
     headers = clazz.checksum_headers_for_file(filename)
 
@@ -196,7 +198,7 @@ class artifactory_requests(object):
     if old_checksums:
       new_sha256 = headers[clazz._HEADER_CHECKSUM_SHA256]
       if old_checksums.sha256 == new_sha256:
-        clazz.log_i('_do_upload_url: url exists with same checksum.  doing nothing: {}'.format(url))
+        clazz.log.log_i('_do_upload_url: url exists with same checksum.  doing nothing: {}'.format(url))
         return url
       msg = 'Trying to re-upload artifact with different checksum:\nfilename={}\nurl={}'.format(filename, url)
       raise artifactory_error(msg, None, None)
@@ -207,7 +209,7 @@ class artifactory_requests(object):
                               auth = ( credentials.username, credentials.password ),
                               data = fin,
                               headers = headers)
-      clazz.log_d('_do_upload_url: response status_code=%d' % (response.status_code))
+      clazz.log.log_d('_do_upload_url: response status_code=%d' % (response.status_code))
       if response.status_code != 201:
         msg = 'Failed to upload: {} (status_code {} content {})'.format(url, response.status_code, response.content)
         raise artifactory_error(msg, response.status_code, response.content)
@@ -220,10 +222,10 @@ class artifactory_requests(object):
   def delete_url(clazz, url, raise_error, credentials):
     check.check_string(url)
     check.check_credentials(credentials)
-    clazz.log_d('delete_url: url=%s' % (url))
+    clazz.log.log_d('delete_url: url=%s' % (url))
     import requests
     response = requests.delete(url, auth = (credentials.username, credentials.password))
-    clazz.log_d('delete: response status_code=%d' % (response.status_code))
+    clazz.log.log_d('delete: response status_code=%d' % (response.status_code))
     success = response.status_code == 204
     if not success and raise_error:
       msg = 'Failed to delete: {} (status_code {})'.format(url, response.status_code)
@@ -246,17 +248,17 @@ class artifactory_requests(object):
 
     import requests
     url = artifactory_address.make_api_url(address, endpoint = 'metadata', file_path = address.repo_filename)
-    clazz.log_d('set_properties: address=%s; url=%s' % (address, url))
+    clazz.log.log_d('set_properties: address=%s; url=%s' % (address, url))
     
     # In order to patch properties artifactory expects dict with 'props'
     json_data = { 'props': properties }
     
     auth = ( credentials.username, credentials.password )
-    clazz.log_d('set_properties: url={}; credentials={}'.format(url, credentials))
+    clazz.log.log_d('set_properties: url={}; credentials={}'.format(url, credentials))
     response = requests.patch(url, json = json_data, auth = auth)
-    clazz.log_d('set_properties: response: %s' % (str(response)))
+    clazz.log.log_d('set_properties: response: %s' % (str(response)))
     if response.status_code != 204:
-      clazz.log_e('set_properties: failed to set properties: %s' % (url))
+      clazz.log.log_e('set_properties: failed to set properties: %s' % (url))
       return False
     return True
 
@@ -264,7 +266,7 @@ class artifactory_requests(object):
   def list_artifacts(clazz, address, credentials):
     'List artifacts in an artifactory directory.'
     check.check_storage_address(address)
-    clazz.log_d('list_artifacts: address=%s' % (str(address)))
+    clazz.log.log_d('list_artifacts: address=%s' % (str(address)))
     # an artifactory AQL query to find all the artifacts in a repo
     template = '''
 items.find({{
@@ -274,16 +276,16 @@ items.find({{
 '''
     match_prefix = file_util.remove_head(address.repo_filename, address.repo)
     aql = template.format(repo = address.repo,  match_prefix = match_prefix)
-    clazz.log_d('list_artifacts: address={}'.format(address))
-    clazz.log_d('list_artifacts: match_prefix={}'.format(match_prefix))
-    clazz.log_d('list_artifacts: aql=%s' % (aql), multi_line = True)
+    clazz.log.log_d('list_artifacts: address={}'.format(address))
+    clazz.log.log_d('list_artifacts: match_prefix={}'.format(match_prefix))
+    clazz.log.log_d('list_artifacts: aql=%s' % (aql), multi_line = True)
 
     aql_url = artifactory_address.make_search_aql_url(address)
-    clazz.log_d('list_artifacts: aql_url=%s' % (aql_url))
+    clazz.log.log_d('list_artifacts: aql_url=%s' % (aql_url))
     auth = ( credentials.username, credentials.password )
     import requests
     response = requests.post(aql_url, data = aql, auth = auth)
-    clazz.log_d('list_artifacts: response=%s; status_code=%d' % (str(response), response.status_code))
+    clazz.log.log_d('list_artifacts: response=%s; status_code=%d' % (str(response), response.status_code))
     if response.status_code != 200:
       msg = 'failed to list_artifacts for: {} (status_code {})'.format(aql_url, response.status_code)
       raise artifactory_error(msg, response.status_code, response.content)
@@ -301,7 +303,7 @@ items.find({{
         md = clazz._parse_artifact_properties(filename, item_properties)
         result.append(md)
       else:
-        clazz.log_e('artifact missing properties: %s - %s - %s' % (address, item_path, item_name))
+        clazz.log.log_e('artifact missing properties: %s - %s - %s' % (address, item_path, item_name))
     return result
   
   @classmethod
@@ -426,5 +428,3 @@ items.find({{
       msg = 'malformed response for api_url: {} - {}'.format(api_url, str(data))
       raise artifactory_error(msg, response.status_code, response.content)
     return properties
-  
-log.add_logging(artifactory_requests, 'artifactory_requests')
