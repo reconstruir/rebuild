@@ -44,8 +44,7 @@ entry libfoo 1.2.3
     fs_config_file_content = '''\
 fsconfig
   fs_type: fs_local
-  where: {tmp_dir}/downloads
-  cache_dir: {tmp_dir}/cache
+  local_root_dir: {tmp_dir}/downloads
 '''
     tmp_dir = self.make_temp_dir()
     tester = file_web_server_tester(root_dir = tmp_dir)
@@ -77,6 +76,7 @@ fsconfig
     self.assertEqual( 0, rv.exit_code )
 
     self.assertEqual( [
+      'downloads/.besfs/checksum.db/.bes_file_metadata.db',
       'downloads/lib/libfoo-1.2.3.tar.gz',
     ], file_find.find(tmp_fs_dir) )
     
