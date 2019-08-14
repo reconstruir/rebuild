@@ -87,9 +87,13 @@ class fs_pcloud(fs_base):
     return self._make_entry(remote_filename, entry, children)
     
   #@abstractmethod
-  def has_file(self, filename):
+  def has_file(self, remote_filename):
     'Return True if filename exists in the filesystem and is a FILE.'
-    assert False
+    try:
+      self.file_info(remote_filename)
+      return True
+    except fs_error as ex:
+      return False
   
   #@abstractmethod
   def file_info(self, remote_filename):
