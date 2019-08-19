@@ -55,13 +55,12 @@ class fs_artifactory(fs_base):
   @classmethod
   #@abstractmethod
   def create(clazz, **values):
-    'Create an fs instance.'
-    username = values['artifactory_username']
-    password = values['artifactory_password']
-    cred = credentials.make_credentials(username = username, password = password)
-    address = values['artifactory_address']
-    cache_dir = values['artifactory_cache_dir']
-    return fs_artifactory(address, cred, cache_dir = cache_dir)
+    'Create an fs_artifactory instance.'
+    cred = credentials.make_credentials(username = values['artifactory_username'],
+                                        password = values['artifactory_password'])
+    return fs_artifactory(values['artifactory_address'],
+                          cred,
+                          cache_dir = values['artifactory_cache_dir'])
     
   @classmethod
   #@abstractmethod
@@ -74,26 +73,22 @@ class fs_artifactory(fs_base):
     'List entries in a directory.'
     remote_dir = file_util.ensure_lsep(remote_dir)
 
-    url = '{}/api/storage{}?list&deep=1&listFolders=0'.format(self._address, remote_dir)
+    url = '{}/api/storage{}?list&deep=100&depth=1&listFolders=1'.format(self._address, remote_dir)
 
     print('url: {}'.format(url))
     
     auth = ( self._credentials.username, self._credentials.password )
     response = requests.get(url, auth = auth)
-    data = response.json()
-    import pprint
-    print('data: {}'.format(pprint.pformat(data)))
-#    print('   data: {}'.format(data))
-#    remote_dir = file_util.ensure_lsep(remote_dir)
-#    self.log.log_d('list_dir(remote_dir={}, recursive={}'.format(remote_dir, recursive))
-#    entries = self._artifactory.list_folder(folder_path = remote_dir, recursive = recursive, checksums = False)
-#    children = fs_file_info_list([ self._convert_artifactory_entry_to_fs_tree(entry, depth = 0) for entry in entries ])
-#    return fs_file_info(remote_dir, fs_file_info.DIR, None, None, None, children)
+    response_data = response.json()
+    entries = response_data['files']
+    children = fs_file_info_list([ self._convert_artifactory_entry_to_fs_tree(entry, depth = 0) for entry in entries ])
+    return fs_file_info(remote_dir, fs_file_info.DIR, None, None, None, children)
 
   def _convert_artifactory_entry_to_fs_tree(self, entry, depth = 0):
+    print('CONVERTING: {}'.format(entry))
     indent = ' ' * depth
-    is_file = 'children' in entry
-    remote_filename = entry.path
+    is_file = not entry['folder']
+    remote_filename = entry['uri']
     if is_file:
       children = fs_file_info_list()
     else:
@@ -117,9 +112,11 @@ class fs_artifactory(fs_base):
     if remote_filename == '/':
       return fs_file_info(remote_filename, fs_file_info.DIR, None, None, None, fs_file_info_list())
     
-    url = '{}/api/storage/{}'.format(self._address, remote_filename)
+    url = '{}/api/storage{}'.format(self._address, remote_filename)
+    print('url: {}'.format(url))
     auth = ( self._credentials.username, self._credentials.password )
     response = requests.get(url, auth = auth)
+    print('response: {}'.format(response))
     if response.status_code != 200:
       raise fs_error('file not found: {}'.format(remote_filename))
       
@@ -146,9 +143,9 @@ class fs_artifactory(fs_base):
     else:
       ftype = fs_file_info.FILE
     if ftype == fs_file_info.FILE:
-      checksum = str(entry.content_hash)
+      checksum = str(entry['sha2'])
       attributes = {}
-      size = entry.size
+      size = entry['size']
     else:
       checksum = None
       attributes = None
