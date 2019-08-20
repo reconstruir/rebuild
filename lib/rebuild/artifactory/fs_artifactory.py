@@ -1,6 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from os import path
+import json
 
 import requests
 
@@ -11,6 +12,7 @@ from bes.fs.file_checksum import file_checksum
 from bes.fs.file_checksum_db import file_checksum_db
 from bes.fs.file_find import file_find
 from bes.fs.file_metadata import file_metadata
+from bes.fs.file_path import file_path
 from bes.fs.file_util import file_util
 from bes.system.log import logger
 from bes.factory.factory_field import factory_field
@@ -70,6 +72,10 @@ class fs_artifactory(fs_base):
 
   #@abstractmethod
   def list_dir(self, remote_dir, recursive):
+    return self.list_dir_new(remote_dir, recursive)
+  
+  #@abstractmethod
+  def list_dir_old(self, remote_dir, recursive):
     'List entries in a directory.'
     remote_dir = file_util.ensure_lsep(remote_dir)
 
@@ -84,16 +90,108 @@ class fs_artifactory(fs_base):
     children = fs_file_info_list([ self._convert_artifactory_entry_to_fs_tree(entry, depth = 0) for entry in entries ])
     return fs_file_info(remote_dir, fs_file_info.DIR, None, None, None, children)
 
-  def _convert_artifactory_entry_to_fs_tree(self, entry, depth = 0):
-    print('CONVERTING: {}'.format(entry))
+  #@abstractmethod
+  def list_dir_new(self, remote_dir, recursive):
+    'List entries in a directory.'
+    remote_dir = file_util.ensure_lsep(remote_dir)
+    remote_dir_no_leading_sep = file_util.lstrip_sep(remote_dir)
+    artifactory_repo = remote_dir.split('/')[1]
+    match_prefix = '/'.join(remote_dir.split('/')[2:])
+
+    decomposed_path = file_path.decompose(remote_dir)
+    
+    #print('         address: {}'.format(self._address))
+    #print('      remote_dir: {}'.format(remote_dir))
+    #print(' decomposed_path: {}'.format(decomposed_path))
+    #print('artifactory_repo: {}'.format(artifactory_repo))
+    #print('    match_prefix: {}'.format(match_prefix))
+
+    aql_url = '{address}/api/search/aql'.format(address = self._address)
+    data = {
+      'repo': artifactory_repo,
+      "path" : {
+        '$match': '{}*'.format(match_prefix),
+      },
+      'type': 'any',
+    }
+    if not recursive:
+      data['depth'] = '2'
+    data_json = json.dumps(data)
+    aql_template = 'items.find({data_json}).include("*", "property.*")'
+    aql = aql_template.format(data_json = data_json)
+    
+    #print('    aql:\n---------------\n{}\n-------------------------\n'.format(aql))
+    
+    auth = ( self._credentials.username, self._credentials.password )
+    response = requests.post(aql_url, data = aql, auth = auth)
+    response_data = response.json()
+    response_results = response_data.get('results', None)
+    assert response_results
+
+    #import pprint
+    #print(pprint.pformat(response_results))
+    #assert False
+    
+    files = []
+    dirs = []
+    for entry in response_results:
+      remote_filename = '/'.join([ entry['repo'], entry['path'], entry['name'] ])
+      parts = remote_filename.split('/')
+      entry['_remote_filename'] = remote_filename
+      entry['_parts'] = parts
+      if entry['type'] == 'folder':
+        dirs.append(entry)
+      else:
+        files.append(entry)
+
+    dirs = sorted(dirs, key = lambda entry: len(entry['_parts']))
+    files = sorted(files, key = lambda entry: entry['_remote_filename'])
+
+    entries = dirs + files
+    
+    result = node('/')
+    setattr(result, '_remote_filename', '/')
+    setattr(result, '_is_file', False)
+    root_entry = {
+      'type': 'folder',
+      '_remote_filename': '/',
+      '_parts': [],
+    }
+    setattr(result, '_entry', root_entry)
+
+    for p in decomposed_path:
+      remote_filename = file_util.lstrip_sep(p)
+      parts = remote_filename.split('/')
+      new_node = result.ensure_path(parts)
+      entry = {
+        'type': 'folder',
+        '_remote_filename': remote_filename,
+        '_parts': parts,
+      }
+      setattr(new_node, '_entry', entry)
+    
+    for entry in entries:
+      remote_filename = entry['_remote_filename']
+      parts = remote_filename.split('/')
+      new_node = result.ensure_path(parts)
+      setattr(new_node, '_entry', entry)
+
+    starting_node = result.find_child(lambda child: getattr(child, '_entry')['_remote_filename'] == file_util.lstrip_sep(remote_dir))
+    assert starting_node
+    fs_tree = self._convert_node_to_fs_tree(starting_node, depth = 0)
+    return fs_tree
+
+  def _convert_node_to_fs_tree(self, n, depth = 0):
     indent = ' ' * depth
-    is_file = not entry['folder']
-    remote_filename = entry['uri']
+    assert hasattr(n, '_entry')
+    entry = getattr(n, '_entry')
+    is_file = entry['type'] == 'file'
     if is_file:
       children = fs_file_info_list()
     else:
-      children = fs_file_info_list([ self._convert_artifactory_entry_to_fs_tree(n, depth + 2) for n in entry.children or [] ])
-    return self._make_entry(remote_filename, entry, children)
+      children = fs_file_info_list([ self._convert_node_to_fs_tree(child, depth + 2) for child in n.children ])
+    entry = self._make_info(entry, children)
+    return entry
     
   #@abstractmethod
   def has_file(self, remote_filename):
@@ -116,7 +214,7 @@ class fs_artifactory(fs_base):
     print('url: {}'.format(url))
     auth = ( self._credentials.username, self._credentials.password )
     response = requests.get(url, auth = auth)
-    print('response: {}'.format(response))
+    #print('response: {}'.format(response))
     if response.status_code != 200:
       raise fs_error('file not found: {}'.format(remote_filename))
       
@@ -137,13 +235,17 @@ class fs_artifactory(fs_base):
       
     return fs_file_info(file_util.lstrip_sep(remote_filename), ftype, size, checksum, attributes, fs_file_info_list())
 
-  def _make_entry(self, remote_filename, entry, children):
-    if 'children' in entry:
-      ftype = fs_file_info.DIR
-    else:
+  def _make_info(self, entry, children):
+    is_file = entry['type'] != 'folder'
+    remote_filename = entry['_remote_filename']
+    
+    if is_file:
       ftype = fs_file_info.FILE
+    else:
+      ftype = fs_file_info.DIR
+      
     if ftype == fs_file_info.FILE:
-      checksum = str(entry['sha2'])
+      checksum = str(entry['sha256'])
       attributes = {}
       size = entry['size']
     else:
