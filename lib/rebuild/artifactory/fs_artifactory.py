@@ -75,50 +75,12 @@ class fs_artifactory(fs_base):
   #@abstractmethod
   def list_dir(self, remote_dir, recursive):
     'List entries in a directory.'
-    remote_dir = file_util.ensure_lsep(remote_dir)
-    remote_dir_no_leading_sep = file_util.lstrip_sep(remote_dir)
-    artifactory_repo = remote_dir.split('/')[1]
-    match_prefix = '/'.join(remote_dir.split('/')[2:])
-
-    decomposed_path = file_path.decompose(remote_dir)
-    
-    #print('         address: {}'.format(self._address))
-    #print('      remote_dir: {}'.format(remote_dir))
-#    print(' decomposed_path: {}'.format(decomposed_path))
-#    print(' decomposed_path len: {}'.format(len(decomposed_path)))
-    #print('artifactory_repo: {}'.format(artifactory_repo))
-    #print('    match_prefix: {}'.format(match_prefix))
-
-    aql_url = '{address}/api/search/aql'.format(address = self._address)
-    data = {
-      'repo': artifactory_repo,
-      "path" : {
-        '$match': '{}*'.format(match_prefix),
-      },
-      'type': 'any',
-    }
-    if not recursive:
-      data['depth'] = str(len(decomposed_path) + 1)
-    data_json = json.dumps(data)
-    aql_template = 'items.find({data_json}).include("*", "property.*")'
-    aql = aql_template.format(data_json = data_json)
-    
-    #print('    aql:\n---------------\n{}\n-------------------------\n'.format(aql))
-    
-    auth = ( self._credentials.username, self._credentials.password )
-    response = requests.post(aql_url, data = aql, auth = auth)
-    response_data = response.json()
-#    print(response_data)
-    response_results = response_data.get('results', None)
-    assert response_results
-
-    #import pprint
-    #print(pprint.pformat(response_results))
-    #assert False
+    rd = self._parse_remote_filename(remote_dir)
+    aql_response = self._aql_query_dir(rd, recursive)
     
     files = []
     dirs = []
-    for entry in response_results:
+    for entry in aql_response:
       remote_filename = '/'.join([ entry['repo'], entry['path'], entry['name'] ])
       parts = remote_filename.split('/')
       entry['_remote_filename'] = remote_filename
@@ -143,7 +105,7 @@ class fs_artifactory(fs_base):
     }
     setattr(result, '_entry', root_entry)
 
-    for p in decomposed_path:
+    for p in rd.decomposed_path:
       remote_filename = file_util.lstrip_sep(p)
       parts = remote_filename.split('/')
       new_node = result.ensure_path(parts)
@@ -160,7 +122,7 @@ class fs_artifactory(fs_base):
       new_node = result.ensure_path(parts)
       setattr(new_node, '_entry', entry)
 
-    starting_node = result.find_child(lambda child: getattr(child, '_entry')['_remote_filename'] == remote_dir_no_leading_sep)
+    starting_node = result.find_child(lambda child: getattr(child, '_entry')['_remote_filename'] == rd.remote_filename_no_sep)
     assert starting_node
     fs_tree = self._convert_node_to_fs_tree(starting_node, depth = 0)
     return fs_tree
@@ -205,6 +167,30 @@ class fs_artifactory(fs_base):
       attributes = None
       size = None
     return fs_file_info(file_util.lstrip_sep(remote_filename), ftype, size, checksum, attributes, fs_file_info_list())
+
+  #@abstractmethod
+  def _aql_query_dir(self, rd, recursive):
+    aql_url = '{address}/api/search/aql'.format(address = self._address)
+    data = {
+      'repo': rd.repo,
+      "path" : {
+        '$match': '{}*'.format(rd.prefix),
+      },
+      'type': 'any',
+    }
+    if not recursive:
+      data['depth'] = str(len(rd.decomposed_path) + 1)
+    
+    data_json = json.dumps(data)
+    aql_template = 'items.find({data_json}).include("*", "property.*")'
+    aql = aql_template.format(data_json = data_json)
+    auth = ( self._credentials.username, self._credentials.password )
+    response = requests.post(aql_url, data = aql, auth = auth)
+    response_data = response.json()
+    results = response_data.get('results', None)
+    if not results:
+      raise fs_error('file not found: {}'.format(rd.remote_filename))
+    return results
 
   #@abstractmethod
   def _aql_query_file(self, rd):
