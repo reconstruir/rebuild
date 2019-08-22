@@ -26,8 +26,6 @@ from bes.fs.fs.fs_error import fs_error
 
 from rebuild.credentials.credentials import credentials
 
-#from .artifactory import artifactory
-
 class fs_artifactory(fs_base):
   'artifactory filesystem'
 
@@ -40,7 +38,6 @@ class fs_artifactory(fs_base):
     self._address = address
     self._credentials = credentials
     self._cache_dir = cache_dir or path.expanduser('~/.besfs/fs_artifactory/cache')
-    #self._artifactory = artifactory(credentials, root_dir or '/')
 
   def __str__(self):
     return 'fs_artifactory({}@{})'.format(self._credentials.username, self._address)
@@ -93,28 +90,17 @@ class fs_artifactory(fs_base):
     dirs = sorted(dirs, key = lambda entry: len(entry['_parts']))
     files = sorted(files, key = lambda entry: entry['_remote_filename'])
 
-    entries = dirs + files
-    
     result = node('/')
     setattr(result, '_remote_filename', '/')
     setattr(result, '_is_file', False)
-    root_entry = {
-      'type': 'folder',
-      '_remote_filename': '/',
-      '_parts': [],
-    }
-    setattr(result, '_entry', root_entry)
+    setattr(result, '_entry', self._make_entry('folder', '/', []))
 
+    entries = dirs + files
     for p in rd.decomposed_path:
       remote_filename = file_util.lstrip_sep(p)
       parts = remote_filename.split('/')
       new_node = result.ensure_path(parts)
-      entry = {
-        'type': 'folder',
-        '_remote_filename': remote_filename,
-        '_parts': parts,
-      }
-      setattr(new_node, '_entry', entry)
+      setattr(new_node, '_entry', self._make_entry('folder', remote_filename, parts))
     
     for entry in entries:
       remote_filename = entry['_remote_filename']
@@ -127,6 +113,14 @@ class fs_artifactory(fs_base):
     fs_tree = self._convert_node_to_fs_tree(starting_node, depth = 0)
     return fs_tree
 
+  @classmethod
+  def _make_entry(clazz, etype, remote_filename, parts):
+    return {
+      'type': etype,
+      '_remote_filename': remote_filename,
+      '_parts': parts,
+    }
+  
   def _convert_node_to_fs_tree(self, n, depth = 0):
     indent = ' ' * depth
     assert hasattr(n, '_entry')
