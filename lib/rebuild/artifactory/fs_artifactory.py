@@ -216,8 +216,9 @@ class fs_artifactory(fs_base):
     url = '{}/api/storage{}'.format(self._address, rd.remote_filename_sep)
     auth = ( self._credentials.username, self._credentials.password )
     response = requests.get(url, auth = auth)
+    print('response: {}'.format(response.content))
     if response.status_code != 200:
-      raise fs_error('file not found: {}'.format(remote_filename))
+      raise fs_error('file not found: {}'.format(rd.remote_filename))
     response_data = response.json()
     return response_data
   
@@ -282,6 +283,52 @@ class fs_artifactory(fs_base):
   def upload_file(self, filename, local_filename):
     'Upload filename from local_filename.'
     assert False
+####    with open(local_filename, 'rb') as fin:
+####      response = requests.put(url,
+####                              auth = ( credentials.username, credentials.password ),
+####                              data = fin,
+####                              headers = headers)
+####      clazz.log.log_d('_do_upload_url: response status_code=%d' % (response.status_code))
+####      if response.status_code != 201:
+####        msg = 'Failed to upload: {} (status_code {} content {})'.format(url, response.status_code, response.content)
+####        raise artifactory_error(msg, response.status_code, response.content)
+####      data = response.json()
+####      assert 'downloadUri' in data
+####      return data['downloadUri']
+####
+####    
+####    '''
+####  @classmethod
+####  def _do_upload_url(clazz, url, filename, credentials):
+####    clazz.log.log_d('_do_upload_url: url=%s; filename=%s' % (url, filename))
+####    import requests
+####    headers = clazz.checksum_headers_for_file(filename)
+####
+####    '''
+####    old_checksums = clazz.get_checksums_for_url(url, credentials)
+####    if old_checksums:
+####      new_sha256 = headers[clazz._HEADER_CHECKSUM_SHA256]
+####      if old_checksums.sha256 == new_sha256:
+####        clazz.log.log_i('_do_upload_url: url exists with same checksum.  doing nothing: {}'.format(url))
+####        return url
+####      msg = 'Trying to re-upload artifact with different checksum:\nfilename={}\nurl={}'.format(filename, url)
+####      raise artifactory_error(msg, None, None)
+####'''
+####    
+####    with open(filename, 'rb') as fin:
+####      response = requests.put(url,
+####                              auth = ( credentials.username, credentials.password ),
+####                              data = fin,
+####                              headers = headers)
+####      clazz.log.log_d('_do_upload_url: response status_code=%d' % (response.status_code))
+####      if response.status_code != 201:
+####        msg = 'Failed to upload: {} (status_code {} content {})'.format(url, response.status_code, response.content)
+####        raise artifactory_error(msg, response.status_code, response.content)
+####      data = response.json()
+####      assert 'downloadUri' in data
+####      return data['downloadUri']
+####    assert False
+####'''
 
   #@abstractmethod
   def download_file(self, filename, local_filename):
@@ -293,14 +340,13 @@ class fs_artifactory(fs_base):
     'Set file attirbutes.'
     assert False
 
-  _parsed_remote_filename = namedtuple('_parsed_remote_filename', 'remote_filename, decomposed_path, remote_filename_sep, remote_filename_no_sep, repo, prefix')
-  @classmethod
-  def _parse_remote_filename(clazz, remote_filename):
+  _parsed_remote_filename = namedtuple('_parsed_remote_filename', 'remote_filename, decomposed_path, remote_filename_sep, remote_filename_no_sep, repo, prefix, url')
+  def _parse_remote_filename(self, remote_filename):
     'Parse a remote_filename and return the artifactory specific parts such as repo and prefix.'
     remote_filename_sep = file_util.ensure_lsep(remote_filename)
     remote_filename_no_sep = file_util.lstrip_sep(remote_filename)
     repo = remote_filename.split('/')[0]
     prefix = '/'.join(remote_filename_sep.split('/')[2:])
     decomposed_path = file_path.decompose(remote_filename_sep)
-    return clazz._parsed_remote_filename(remote_filename, decomposed_path, remote_filename_sep,
-                                         remote_filename_no_sep, repo, prefix)
+    return self._parsed_remote_filename(remote_filename, decomposed_path, remote_filename_sep,
+                                        remote_filename_no_sep, repo, prefix, 'foo')
