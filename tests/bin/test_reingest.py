@@ -43,7 +43,7 @@ entry libfoo 1.2.3
 
     fs_config_file_content = '''\
 fsconfig
-  fs_type: fs_local
+  fs_type: vfs_local
   local_root_dir: {tmp_dir}/downloads
 '''
     tmp_dir = self.make_temp_dir()

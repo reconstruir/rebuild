@@ -8,7 +8,7 @@ from bes.git.git_archive_cache import git_archive_cache
 from bes.system.log import logger
 
 from bes.fs.fs.fs_registry import fs_registry
-from bes.fs.fs.fs_local import fs_local
+from bes.fs.fs.vfs_local import vfs_local
 from bes.fs.temp_file import temp_file
 
 from rebuild.ingest.ingest_file_parser import ingest_file_parser
