@@ -25,7 +25,7 @@ class credentials_source_env(credentials_source):
 
   #@abstractmethod
   def credentials(self):
-    c = credentials()
+    c = credentials('<env>')
     for key, value in self._values.items():
       setattr(c, key, value)
     return c

@@ -25,10 +25,7 @@ class credentials_source_aws(credentials_source):
     d = self._read_file(self._filename)
     if not d:
       return None
-    c = credentials()
-    for key, value in d.items():
-      setattr(c, key, value)
-    return c
+    return credentials(self._filename, **d)
   
   @classmethod
   def _read_file(clazz, filename):

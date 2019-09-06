@@ -13,7 +13,7 @@ from bes.fs.file_util import file_util
 from bes.system.log import logger
 from bes.factory.factory_field import factory_field
 
-from bes.fs.fs.fs_base import fs_base
+from bes.fs.fs.vfs_base import vfs_base
 from bes.fs.fs.fs_file_info import fs_file_info
 from bes.fs.fs.fs_file_info_list import fs_file_info_list
 from bes.fs.fs.fs_error import fs_error
@@ -22,7 +22,7 @@ from rebuild.credentials.credentials import credentials
 
 from .pcloud import pcloud
 
-class fs_pcloud(fs_base):
+class fs_pcloud(vfs_base):
   'pcloud filesystem'
 
   log = logger('fs')

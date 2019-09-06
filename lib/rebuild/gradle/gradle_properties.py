@@ -33,7 +33,7 @@ class gradle_properties(object):
     password = values.get(password_key, None)
     if not password:
       return None
-    c = credentials(username = username, password = password)
+    c = credentials(self._filename, username = username, password = password)
     return c
   
   @classmethod
