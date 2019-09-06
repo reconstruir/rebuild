@@ -1,6 +1,6 @@
 fsconfig
-  fs_type: fs_pcloud
+  fs_type: vfs_pcloud
   pcloud_email: ${PCLOUD_EMAIL}
   pcloud_password: ${PCLOUD_PASSWORD}
   root_dir: /
-  load_code: from rebuild.pcloud.fs_pcloud import fs_pcloud
+  load_code: from rebuild.pcloud.vfs_pcloud import vfs_pcloud

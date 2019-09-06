@@ -21,7 +21,7 @@ class ingest_cli_args(object):
     p = subparser.add_parser('run', help = 'Run ingestion for a ingestion project.')
     p.add_argument('project_file', action = 'store', default = None, type = str,
                    help = 'The ingest project file. [ None ]')
-    p.add_argument('fs_config', action = 'store', default = None, type = str,
+    p.add_argument('vfs_config', action = 'store', default = None, type = str,
                    help = 'The storage config file. [ None ]')
     p.add_argument('--system', action = 'store', default = default_system, type = str,
                    choices = tuple(build_system.SYSTEMS),
@@ -39,5 +39,5 @@ class ingest_cli_args(object):
 #    p.add_argument('--tries', action = 'store', default = 1, type = int, dest = 'num_tries',
 #                   help = 'The number of tries to publish. [ 1 ]')
     
-  def _command_ingest_run(self, project_file, fs_config, system, cache_dir, dry_run, verbose):
-    return ingest_cli_command.run(project_file, fs_config, system, cache_dir, dry_run, verbose)
+  def _command_ingest_run(self, project_file, vfs_config, system, cache_dir, dry_run, verbose):
+    return ingest_cli_command.run(project_file, vfs_config, system, cache_dir, dry_run, verbose)

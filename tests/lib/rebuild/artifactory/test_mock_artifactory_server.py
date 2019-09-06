@@ -16,7 +16,7 @@ from rebuild.credentials.credentials import credentials
 
 class test_mock_artifactory_server(unit_test):
 
-  _TEST_CRED = credentials(username = '', password = '')
+  _TEST_CRED = credentials('<unittest>', username = '', password = '')
   
   def test_download_url_to_file(self):
     content = [

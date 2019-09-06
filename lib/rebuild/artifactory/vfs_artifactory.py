@@ -19,14 +19,14 @@ from bes.fs.file_util import file_util
 from bes.system.log import logger
 from bes.factory.factory_field import factory_field
 
-from bes.fs.fs.vfs_base import vfs_base
-from bes.fs.fs.fs_file_info import fs_file_info
-from bes.fs.fs.fs_file_info_list import fs_file_info_list
-from bes.fs.fs.fs_error import fs_error
+from bes.vfs.vfs_base import vfs_base
+from bes.vfs.vfs_file_info import vfs_file_info
+from bes.vfs.vfs_file_info_list import vfs_file_info_list
+from bes.vfs.vfs_error import vfs_error
 
 from rebuild.credentials.credentials import credentials
 
-class fs_artifactory(vfs_base):
+class vfs_artifactory(vfs_base):
   'artifactory filesystem'
 
   log = logger('fs')
@@ -40,10 +40,10 @@ class fs_artifactory(vfs_base):
     self._config_source = config_source
     self._address = address
     self._credentials = credentials
-    self._cache_dir = cache_dir or path.expanduser('~/.besfs/fs_artifactory/cache')
+    self._cache_dir = cache_dir or path.expanduser('~/.besfs/vfs_artifactory/cache')
 
   def __str__(self):
-    return 'fs_artifactory({}@{})'.format(str(self._credentials), self._address)
+    return 'vfs_artifactory({}@{})'.format(str(self._credentials), self._address)
 
   @classmethod
   #@abstractmethod
@@ -59,11 +59,11 @@ class fs_artifactory(vfs_base):
   @classmethod
   #@abstractmethod
   def create(clazz, config_source, **values):
-    'Create an fs_artifactory instance.'
+    'Create an vfs_artifactory instance.'
     cred = credentials(config_source,
                        username = values['artifactory_username'],
                        password = values['artifactory_password'])
-    return fs_artifactory(config_source,
+    return vfs_artifactory(config_source,
                           values['artifactory_address'],
                           cred,
                           cache_dir = values['artifactory_cache_dir'])
@@ -72,7 +72,7 @@ class fs_artifactory(vfs_base):
   #@abstractmethod
   def name(clazz):
     'The name if this fs.'
-    return 'fs_artifactory'
+    return 'vfs_artifactory'
 
   #@abstractmethod
   def list_dir(self, remote_dir, recursive):
@@ -135,9 +135,9 @@ class fs_artifactory(vfs_base):
     entry = getattr(n, '_entry')
     is_file = entry['type'] == 'file'
     if is_file:
-      children = fs_file_info_list()
+      children = vfs_file_info_list()
     else:
-      children = fs_file_info_list([ self._convert_node_to_fs_tree(child, depth + 2) for child in n.children ])
+      children = vfs_file_info_list([ self._convert_node_to_fs_tree(child, depth + 2) for child in n.children ])
     entry = self._make_info(entry, children)
     return entry
     
@@ -147,7 +147,7 @@ class fs_artifactory(vfs_base):
     try:
       self.file_info(remote_filename)
       return True
-    except fs_error as ex:
+    except vfs_error as ex:
       return False
 
   #@abstractmethod
@@ -156,10 +156,10 @@ class fs_artifactory(vfs_base):
     rd = self._parse_remote_filename(remote_filename)
     storage_response = self._storage_query(rd)
     if 'children' in storage_response:
-      ftype = fs_file_info.DIR
+      ftype = vfs_file_info.DIR
     else:
-      ftype = fs_file_info.FILE
-    if ftype == fs_file_info.FILE:
+      ftype = vfs_file_info.FILE
+    if ftype == vfs_file_info.FILE:
       file_data = self._aql_query_file(rd)
       attributes = self._parse_artifactory_properties(file_data.get('properties', None))
       checksum = file_data['sha256']
@@ -168,7 +168,7 @@ class fs_artifactory(vfs_base):
       checksum = None
       attributes = None
       size = None
-    return fs_file_info(file_util.lstrip_sep(remote_filename), ftype, size, checksum, attributes, fs_file_info_list())
+    return vfs_file_info(file_util.lstrip_sep(remote_filename), ftype, size, checksum, attributes, vfs_file_info_list())
 
   #@abstractmethod
   def _aql_query_dir(self, rd, recursive):
@@ -191,7 +191,7 @@ class fs_artifactory(vfs_base):
     response_data = response.json()
     results = response_data.get('results', None)
     if not results:
-      raise fs_error('file not found: {}'.format(rd.remote_filename))
+      raise vfs_error('file not found: {}'.format(rd.remote_filename))
     return results
 
   #@abstractmethod
@@ -215,7 +215,7 @@ class fs_artifactory(vfs_base):
     response_data = response.json()
     results = response_data.get('results', None)
     if not results:
-      raise fs_error('file not found: {}'.format(rd.remote_filename))
+      raise vfs_error('file not found: {}'.format(rd.remote_filename))
     assert len(results) == 1
     return results[0]
 
@@ -225,7 +225,7 @@ class fs_artifactory(vfs_base):
     auth = ( self._credentials.username, self._credentials.password )
     response = requests.get(url, auth = auth)
     if response.status_code != 200:
-      raise fs_error('file not found: {}'.format(rd.remote_filename))
+      raise vfs_error('file not found: {}'.format(rd.remote_filename))
     response_data = response.json()
     return response_data
   
@@ -236,7 +236,7 @@ class fs_artifactory(vfs_base):
     auth = ( self._credentials.username, self._credentials.password )
     response = requests.get(url, auth = auth)
     if response.status_code != 200:
-      raise fs_error('file not found: {}'.format(remote_filename))
+      raise vfs_error('file not found: {}'.format(remote_filename))
     data = response.json()
     return data
 
@@ -245,11 +245,11 @@ class fs_artifactory(vfs_base):
     remote_filename = entry['_remote_filename']
     
     if is_file:
-      ftype = fs_file_info.FILE
+      ftype = vfs_file_info.FILE
     else:
-      ftype = fs_file_info.DIR
+      ftype = vfs_file_info.DIR
       
-    if ftype == fs_file_info.FILE:
+    if ftype == vfs_file_info.FILE:
       checksum = str(entry['sha256'])
       attributes = self._parse_artifactory_properties(entry.get('properties', None))
       size = entry['size']
@@ -257,7 +257,7 @@ class fs_artifactory(vfs_base):
       checksum = None
       attributes = None
       size = None
-    return fs_file_info(file_util.lstrip_sep(remote_filename), ftype, size, checksum, attributes, children)
+    return vfs_file_info(file_util.lstrip_sep(remote_filename), ftype, size, checksum, attributes, children)
 
   _PROP_KEY_BLACKLIST = [
     'trash.',

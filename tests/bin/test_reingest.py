@@ -41,7 +41,7 @@ entry libfoo 1.2.3
     all: ingested_filename=${{_ingested_filename}}
 '''
 
-    fs_config_file_content = '''\
+    vfs_config_file_content = '''\
 fsconfig
   fs_type: vfs_local
   local_root_dir: {tmp_dir}/downloads
@@ -59,15 +59,15 @@ fsconfig
                                                          checksum = tester.file_checksum('downloads/foo-1.2.3.tar.gz'))
     tmp_project_file = temp_file.make_temp_file(content = project_file_formatted)
     tmp_fs_dir = self.make_temp_dir(suffix = '.fs')
-    fs_config_file_content_formatted = fs_config_file_content.format(tmp_dir = tmp_fs_dir)
-    tmp_fs_config_file = temp_file.make_temp_file(content = fs_config_file_content_formatted)
+    vfs_config_file_content_formatted = vfs_config_file_content.format(tmp_dir = tmp_fs_dir)
+    tmp_vfs_config_file = temp_file.make_temp_file(content = vfs_config_file_content_formatted)
     tmp_cache_dir = self.make_temp_dir(suffix = '.cache')
 
     args = [
       'run',
       '--cache-dir', tmp_cache_dir,
       tmp_project_file,
-      tmp_fs_config_file,
+      tmp_vfs_config_file,
     ]
     
     rv = self.run_script(args)
