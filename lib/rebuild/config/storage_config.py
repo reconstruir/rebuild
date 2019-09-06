@@ -59,7 +59,7 @@ class storage_config(namedtuple('storage_config', 'name, provider, location, rep
     return self._upload
   
   @classmethod
-  def create_from_config(clazz, section):
+  def create_from_config(clazz, source, section):
     check.check_config_section(section)
     name = section.find_by_key('name')
     provider = section.find_by_key('provider')
@@ -70,10 +70,10 @@ class storage_config(namedtuple('storage_config', 'name, provider, location, rep
     download_password = section.find_by_key('download.password', raise_error = False) or ''
     upload_username = section.find_by_key('upload.username', raise_error = False) or ''
     upload_password = section.find_by_key('upload.password', raise_error = False) or ''
-    download = credentials()
+    download = credentials(source)
     download.username = download_username
     download.password = download_password
-    upload = credentials()
+    upload = credentials(source)
     upload.username = upload_username
     upload.password = upload_password
     return storage_config(name, provider, location, repo, root_dir, download, upload)

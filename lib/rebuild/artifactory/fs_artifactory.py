@@ -31,16 +31,19 @@ class fs_artifactory(fs_base):
 
   log = logger('fs')
   
-  def __init__(self, address, credentials, cache_dir = None):
+  def __init__(self, config_source, address, credentials, cache_dir = None):
+    check.check_string(config_source)
     check.check_string(address)
     check.check_credentials(credentials)
     check.check_string(cache_dir, allow_none = True)
+    
+    self._config_source = config_source
     self._address = address
     self._credentials = credentials
     self._cache_dir = cache_dir or path.expanduser('~/.besfs/fs_artifactory/cache')
 
   def __str__(self):
-    return 'fs_artifactory({}@{})'.format(self._credentials.username, self._address)
+    return 'fs_artifactory({}@{})'.format(str(self._credentials), self._address)
 
   @classmethod
   #@abstractmethod
@@ -55,11 +58,13 @@ class fs_artifactory(fs_base):
   
   @classmethod
   #@abstractmethod
-  def create(clazz, **values):
+  def create(clazz, config_source, **values):
     'Create an fs_artifactory instance.'
-    cred = credentials.make_credentials(username = values['artifactory_username'],
-                                        password = values['artifactory_password'])
-    return fs_artifactory(values['artifactory_address'],
+    cred = credentials(config_source,
+                       username = values['artifactory_username'],
+                       password = values['artifactory_password'])
+    return fs_artifactory(config_source,
+                          values['artifactory_address'],
                           cred,
                           cache_dir = values['artifactory_cache_dir'])
     
@@ -108,6 +113,9 @@ class fs_artifactory(fs_base):
       new_node = result.ensure_path(parts)
       setattr(new_node, '_entry', entry)
 
+    print('result:\n{}'.format(str(result)))
+    assert False
+      
     starting_node = result.find_child(lambda child: getattr(child, '_entry')['_remote_filename'] == rd.remote_filename_no_sep)
     assert starting_node
     fs_tree = self._convert_node_to_fs_tree(starting_node, depth = 0)
@@ -216,7 +224,6 @@ class fs_artifactory(fs_base):
     url = '{}/api/storage{}'.format(self._address, rd.remote_filename_sep)
     auth = ( self._credentials.username, self._credentials.password )
     response = requests.get(url, auth = auth)
-    print('response: {}'.format(response.content))
     if response.status_code != 200:
       raise fs_error('file not found: {}'.format(rd.remote_filename))
     response_data = response.json()

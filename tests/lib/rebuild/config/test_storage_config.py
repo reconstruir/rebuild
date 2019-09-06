@@ -12,14 +12,14 @@ from rebuild.credentials.credentials import credentials
 class test_storage_config(unit_test):
     
   def test_fullpath(self):
-    cred = credentials(username = 'fred', password = 'flintpass')
+    cred = credentials('<unittest>', username = 'fred', password = 'flintpass')
     self.assertEqual( '/myloc/myrepo/myroot', SC('foo', 'local', '/myloc', 'myrepo', 'myroot', cred, cred).full_path )
     self.assertEqual( '/myloc/myroot', SC('foo', 'local', '/myloc', None, 'myroot', cred, cred).full_path )
     self.assertEqual( '/myloc/myrepo', SC('foo', 'local', '/myloc', 'myrepo', None, cred, cred).full_path )
     
   def test_env_vars(self):
-    dcred = credentials(username = '${MY_DOWNLOAD_USERNAME}', password = '${MY_DOWNLOAD_PASSWORD}')
-    ucred = credentials(username = '${MY_UPLOAD_USERNAME}', password = '${MY_UPLOAD_PASSWORD}')
+    dcred = credentials('<unittest>', username = '${MY_DOWNLOAD_USERNAME}', password = '${MY_DOWNLOAD_PASSWORD}')
+    ucred = credentials('<unittest>', username = '${MY_UPLOAD_USERNAME}', password = '${MY_UPLOAD_PASSWORD}')
     with env_override( {
         'MY_DOWNLOAD_USERNAME': 'fred',
         'MY_DOWNLOAD_PASSWORD': 'flintpass',
@@ -40,7 +40,7 @@ class test_storage_config(unit_test):
       self.assertEqual( '/myloc/myrepo', SC('foo', '${MY_PROVIDER}', '${MY_LOCATION}', '${MY_REPO}', None, dcred, ucred).full_path )
 
   def test_expanduser(self):
-    cred = credentials(username = 'fred', password = 'flintpass')
+    cred = credentials('<unittest>', username = 'fred', password = 'flintpass')
     self.assertEqual( path.expanduser('~/myloc/myrepo/myroot'), SC('foo', 'local', '~/myloc', 'myrepo', 'myroot', cred, cred).full_path )
         
 if __name__ == '__main__':

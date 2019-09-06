@@ -10,8 +10,9 @@ from bes.compat.StringIO import StringIO
 
 class credentials(object):
 
-  def __init__(self, **kargs):
+  def __init__(self, config_source, **kargs):
     self.__dict__['_credentials'] = {}
+    self.__dict__['_config_source'] = config_source
     self.set_attrs(kargs)
     
   def __str__(self):
@@ -29,7 +30,10 @@ class credentials(object):
     if not key in self.__dict__['_credentials']:
       raise KeyError('no such credential: {}'.format(key))
     value = self.__dict__['_credentials'][key]
-    return env_var_property.resolve_value(value)
+    try:
+      return env_var_property.resolve_value(value)
+    except ValueError as ex:
+      raise ValueError('{}: {}'.format(self.__dict__['_config_source'], str(ex)))
 
   def __setattr__(self, key, value):
     self.__dict__['_credentials'][key] = value
@@ -48,11 +52,4 @@ class credentials(object):
   def to_tuple(self, *keys):
     return tuple([ getattr(self, key) for key in keys ])
 
-  @classmethod
-  def make_credentials(clazz, **kargs):
-    c = credentials()
-    for key, value in kargs.items():
-      setattr(c, key, value)
-    return c
-  
 check.register_class(credentials, include_seq = False)

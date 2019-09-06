@@ -27,10 +27,13 @@ class fs_pcloud(fs_base):
 
   log = logger('fs')
   
-  def __init__(self, credentials, root_dir = None, cache_dir = None):
+  def __init__(self, config_source, credentials, root_dir = None, cache_dir = None):
+    check.check_string(config_source)
     check.check_credentials(credentials)
     check.check_string(root_dir, allow_none = True)
     check.check_string(cache_dir, allow_none = True)
+
+    self._config_source = config_source
     self._cache_dir = cache_dir or path.expanduser('~/.bes/fs_pcloud/cache')
     self._pcloud = pcloud(credentials, root_dir or '/')
     self._credentials = credentials
@@ -52,14 +55,14 @@ class fs_pcloud(fs_base):
   
   @classmethod
   #@abstractmethod
-  def create(clazz, **values):
+  def create(clazz, config_source, **values):
     'Create an fs instance.'
     pcloud_email = values['pcloud_email']
     pcloud_password = values['pcloud_password']
-    cred = credentials.make_credentials(email = pcloud_email, password = pcloud_password)
+    cred = credentials(config_source, email = pcloud_email, password = pcloud_password)
     root_dir = values['root_dir']
     cache_dir = values['cache_dir']
-    return fs_pcloud(cred, root_dir = root_dir, cache_dir = cache_dir)
+    return fs_pcloud(config_source, cred, root_dir = root_dir, cache_dir = cache_dir)
     
   @classmethod
   #@abstractmethod
@@ -127,7 +130,7 @@ class fs_pcloud(fs_base):
   #@abstractmethod
   def remove_file(self, filename):
     'Remove filename.'
-    assert False
+    self._pcloud.delete_file(file_path = filename)
     
   #@abstractmethod
   def upload_file(self, filename, local_filename):

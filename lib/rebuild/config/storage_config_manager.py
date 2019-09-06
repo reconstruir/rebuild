@@ -29,7 +29,7 @@ class storage_config_manager(object):
       raise TypeError('Unknown config type: %s\nShould be string or node: %s - %s' % (source, str(config), type(config)))
     sections = c.find_sections('storage')
     for section in sections:
-      sc = storage_config.create_from_config(section)
+      sc = storage_config.create_from_config(source, section)
       if sc.name in self._configs:
         raise self.error('storage with name \"%s\" already exists.', section.origin)
       self._configs[sc.name] = sc
