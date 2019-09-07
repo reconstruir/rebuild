@@ -49,8 +49,8 @@ class vfs_pcloud(vfs_base):
     return [
       factory_field('pcloud_email', False, check.is_string),
       factory_field('pcloud_password', False, check.is_string),
-      factory_field('cache_dir', True, check.is_string),
-      factory_field('root_dir', True, check.is_string),
+      factory_field('pcloud_cache_dir', True, check.is_string),
+      factory_field('pcloud_root_dir', True, check.is_string),
     ]
   
   @classmethod
@@ -60,8 +60,8 @@ class vfs_pcloud(vfs_base):
     pcloud_email = values['pcloud_email']
     pcloud_password = values['pcloud_password']
     cred = credentials(config_source, email = pcloud_email, password = pcloud_password)
-    root_dir = values['root_dir']
-    cache_dir = values['cache_dir']
+    root_dir = values['pcloud_root_dir']
+    cache_dir = values['pcloud_cache_dir']
     return vfs_pcloud(config_source, cred, root_dir = root_dir, cache_dir = cache_dir)
     
   @classmethod
