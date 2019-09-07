@@ -3,7 +3,7 @@
 from collections import namedtuple
 
 from os import path
-import json
+import json, pprint
 
 import requests
 
@@ -79,7 +79,7 @@ class vfs_artifactory(vfs_base):
     'List entries in a directory.'
     rd = self._parse_remote_filename(remote_dir)
     aql_response = self._aql_query_dir(rd, recursive)
-    
+
     files = []
     dirs = []
     for entry in aql_response:
@@ -113,9 +113,6 @@ class vfs_artifactory(vfs_base):
       new_node = result.ensure_path(parts)
       setattr(new_node, '_entry', entry)
 
-    print('result:\n{}'.format(str(result)))
-#    assert False
-      
     starting_node = result.find_child(lambda child: getattr(child, '_entry')['_remote_filename'] == rd.remote_filename_no_sep)
     assert starting_node
     fs_tree = self._convert_node_to_fs_tree(starting_node, depth = 0)
@@ -181,14 +178,16 @@ class vfs_artifactory(vfs_base):
       'type': 'any',
     }
     if not recursive:
-      data['depth'] = str(len(rd.decomposed_path) + 1)
+      data['depth'] = str(len(rd.decomposed_path))
     
     data_json = json.dumps(data)
     aql_template = 'items.find({data_json}).include("*", "property.*")'
     aql = aql_template.format(data_json = data_json)
+    self.log.log_d('_aql_query_dir: aql={}'.format(aql))
     auth = ( self._credentials.username, self._credentials.password )
     response = requests.post(aql_url, data = aql, auth = auth)
     response_data = response.json()
+    self.log.log_d('_aql_query_dir: response_data={}'.format(pprint.pformat(response_data)))
     results = response_data.get('results', None)
     if not results:
       raise vfs_error('file not found: {}'.format(rd.remote_filename))
