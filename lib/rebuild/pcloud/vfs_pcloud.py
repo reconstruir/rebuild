@@ -15,7 +15,7 @@ from bes.factory.factory_field import factory_field
 
 from bes.vfs.vfs_base import vfs_base
 from bes.vfs.vfs_file_info import vfs_file_info
-from bes.vfs.vfs_file_info_list import vfs_file_info_list
+from bes.vfs.vfs_file_info import vfs_file_info_list
 from bes.vfs.vfs_error import vfs_error
 
 from rebuild.credentials.credentials import credentials
@@ -133,8 +133,11 @@ class vfs_pcloud(vfs_base):
     self._pcloud.delete_file(file_path = filename)
     
   #@abstractmethod
-  def upload_file(self, filename, local_filename):
+  def upload_file(self, local_filename, remote_filename):
     'Upload filename from local_filename.'
+    #folder_path = path.dirname(remote_filename)
+    #self._pcloud.upload_file(local_filename, remote_filename, folder_path = None, folder_id = None):
+    
     assert False
 
   #@abstractmethod
