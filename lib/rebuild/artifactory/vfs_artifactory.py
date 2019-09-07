@@ -114,7 +114,7 @@ class vfs_artifactory(vfs_base):
       setattr(new_node, '_entry', entry)
 
     print('result:\n{}'.format(str(result)))
-    assert False
+#    assert False
       
     starting_node = result.find_child(lambda child: getattr(child, '_entry')['_remote_filename'] == rd.remote_filename_no_sep)
     assert starting_node
