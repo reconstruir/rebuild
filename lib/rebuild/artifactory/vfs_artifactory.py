@@ -15,7 +15,6 @@ from bes.fs.file_checksum_db import file_checksum_db
 from bes.fs.file_find import file_find
 from bes.fs.file_metadata import file_metadata
 from bes.fs.file_path import file_path
-from bes.fs.file_util import file_util
 from bes.system.log import logger
 from bes.factory.factory_field import factory_field
 
@@ -23,6 +22,7 @@ from bes.vfs.vfs_base import vfs_base
 from bes.vfs.vfs_file_info import vfs_file_info
 from bes.vfs.vfs_file_info import vfs_file_info_list
 from bes.vfs.vfs_error import vfs_error
+from bes.vfs.vfs_path import vfs_path
 
 from rebuild.credentials.credentials import credentials
 
@@ -102,7 +102,7 @@ class vfs_artifactory(vfs_base):
 
     entries = dirs + files
     for p in rd.decomposed_path:
-      remote_filename = file_util.lstrip_sep(p)
+      remote_filename = vfs_path.lstrip_sep(p)
       parts = remote_filename.split('/')
       new_node = result.ensure_path(parts)
       setattr(new_node, '_entry', self._make_entry('folder', remote_filename, parts))
@@ -165,7 +165,7 @@ class vfs_artifactory(vfs_base):
       checksum = None
       attributes = None
       size = None
-    return vfs_file_info(file_util.lstrip_sep(remote_filename), ftype, size, checksum, attributes, vfs_file_info_list())
+    return vfs_file_info(vfs_path.lstrip_sep(remote_filename), ftype, size, checksum, attributes, vfs_file_info_list())
 
   #@abstractmethod
   def _aql_query_dir(self, rd, recursive):
@@ -256,7 +256,7 @@ class vfs_artifactory(vfs_base):
       checksum = None
       attributes = None
       size = None
-    return vfs_file_info(file_util.lstrip_sep(remote_filename), ftype, size, checksum, attributes, children)
+    return vfs_file_info(vfs_path.lstrip_sep(remote_filename), ftype, size, checksum, attributes, children)
 
   _PROP_KEY_BLACKLIST = [
     'trash.',
@@ -337,7 +337,7 @@ class vfs_artifactory(vfs_base):
 ####'''
 
   #@abstractmethod
-  def download_file(self, filename, local_filename):
+  def download_to_file(self, remote_filename, local_filename):
     'Download filename to local_filename.'
     assert False
     
@@ -349,8 +349,8 @@ class vfs_artifactory(vfs_base):
   _parsed_remote_filename = namedtuple('_parsed_remote_filename', 'remote_filename, decomposed_path, remote_filename_sep, remote_filename_no_sep, repo, prefix, url')
   def _parse_remote_filename(self, remote_filename):
     'Parse a remote_filename and return the artifactory specific parts such as repo and prefix.'
-    remote_filename_sep = file_util.ensure_lsep(remote_filename)
-    remote_filename_no_sep = file_util.lstrip_sep(remote_filename)
+    remote_filename_sep = vfs_path.ensure_lsep(remote_filename)
+    remote_filename_no_sep = vfs_path.lstrip_sep(remote_filename)
     repo = remote_filename.split('/')[0]
     prefix = '/'.join(remote_filename_sep.split('/')[2:])
     decomposed_path = file_path.decompose(remote_filename_sep)
