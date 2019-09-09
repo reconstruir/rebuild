@@ -165,7 +165,7 @@ class vfs_artifactory(vfs_base):
       checksum = None
       attributes = None
       size = None
-    return vfs_file_info(vfs_path.lstrip_sep(remote_filename), ftype, size, checksum, attributes, vfs_file_info_list())
+    return vfs_file_info(vfs_path.lstrip_sep(remote_filename), ftype, size, checksum, attributes)
 
   #@abstractmethod
   def _aql_query_dir(self, rd, recursive):
