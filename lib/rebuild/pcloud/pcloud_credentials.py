@@ -11,7 +11,7 @@ class pcloud_credentials(object):
   
   @classmethod
   def from_environment(clazz):
-    return credentials.make_credentials(email = '${PCLOUD_EMAIL}', password = '${PCLOUD_PASSWORD}')
+    return credentials('<env>', email = '${PCLOUD_EMAIL}', password = '${PCLOUD_PASSWORD}')
 
   @classmethod
   def from_command_line_args(clazz, email, password):
@@ -19,14 +19,14 @@ class pcloud_credentials(object):
       raise RuntimeError('email not given')
     if not password:
       raise RuntimeError('password not given')
-    return credentials.make_credentials(email = email, password = password)
+    return credentials('<cli>', email = email, password = password)
 
   @classmethod
   def parse_dict(clazz, d):
     check.check_dict(d)
     assert 'email' in d
     assert 'password' in d
-    return credentials.make_credentials(email = d['email'], password = d['password'])
+    return credentials('<dict>', email = d['email'], password = d['password'])
   
   @classmethod
   def add_command_line_args(clazz, parser):
