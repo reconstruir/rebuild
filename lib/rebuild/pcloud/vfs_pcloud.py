@@ -79,7 +79,13 @@ class vfs_pcloud(vfs_base):
     self._metadata_db_update_local()
     entries = self._pcloud.list_folder(folder_path = remote_dir, recursive = recursive, checksums = False)
     children = vfs_file_info_list([ self._convert_pcloud_entry_to_fs_tree(remote_dir, entry, depth = 0) for entry in entries ])
-    return vfs_file_info(remote_dir, vfs_file_info.DIR, None, None, None, children)
+    return vfs_file_info(vfs_path.dirname(remote_dir),
+                         vfs_path.basename(remote_dir),
+                         vfs_file_info.DIR,
+                         None,
+                         None,
+                         None,
+                         children)
 
   def _convert_pcloud_entry_to_fs_tree(self, remote_dir, entry, depth = 0):
     indent = ' ' * depth
@@ -131,7 +137,13 @@ class vfs_pcloud(vfs_base):
       checksum = None
       attributes = None
       size = None
-    return vfs_file_info(vfs_path.lstrip_sep(remote_filename), ftype, size, checksum, attributes, children)
+    return vfs_file_info(vfs_path.dirname(remote_filename),
+                         vfs_path.basename(remote_filename),
+                         ftype,
+                         size,
+                         checksum,
+                         attributes,
+                         children)
 
   #@abstractmethod
   def remove_file(self, remote_filename):

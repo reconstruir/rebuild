@@ -150,6 +150,7 @@ class vfs_artifactory(vfs_base):
   #@abstractmethod
   def file_info(self, remote_filename):
     'Get info for a single file.'
+    print('remote_filename: {}'.format(remote_filename))
     rd = self._parse_remote_filename(remote_filename)
     storage_response = self._storage_query(rd)
     if 'children' in storage_response:
@@ -165,7 +166,12 @@ class vfs_artifactory(vfs_base):
       checksum = None
       attributes = None
       size = None
-    return vfs_file_info(vfs_path.lstrip_sep(remote_filename), ftype, size, checksum, attributes)
+    return vfs_file_info(vfs_path.dirname(remote_filename),
+                         vfs_path.dirname(remote_filename),
+                         ftype,
+                         size,
+                         checksum,
+                         attributes)
 
   #@abstractmethod
   def _aql_query_dir(self, rd, recursive):
@@ -339,6 +345,11 @@ class vfs_artifactory(vfs_base):
   #@abstractmethod
   def download_to_file(self, remote_filename, local_filename):
     'Download filename to local_filename.'
+    assert False
+    
+  #@abstractmethod
+  def download_to_bytes(self, remote_filename):
+    'Download filename to bytes.'
     assert False
     
   #@abstractmethod
