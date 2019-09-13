@@ -14,7 +14,7 @@ from bes.factory.factory_field import factory_field
 from bes.key_value.key_value_list import key_value_list
 
 from bes.vfs.vfs_base import vfs_base
-from bes.vfs.vfs_path import vfs_path
+from bes.vfs.vfs_path_util import vfs_path_util
 from bes.vfs.vfs_file_info import vfs_file_info
 from bes.vfs.vfs_file_info import vfs_file_info_list
 from bes.vfs.vfs_error import vfs_error
@@ -74,13 +74,13 @@ class vfs_pcloud(vfs_base):
   #@abstractmethod
   def list_dir(self, remote_dir, recursive):
     'List entries in a directory.'
-    remote_dir = vfs_path.normalize(remote_dir)
+    remote_dir = vfs_path_util.normalize(remote_dir)
     self.log.log_d('list_dir(remote_dir={}, recursive={}'.format(remote_dir, recursive))
     self._metadata_db_update_local()
     entries = self._pcloud.list_folder(folder_path = remote_dir, recursive = recursive, checksums = False)
     children = vfs_file_info_list([ self._convert_pcloud_entry_to_fs_tree(remote_dir, entry, depth = 0) for entry in entries ])
-    return vfs_file_info(vfs_path.dirname(remote_dir),
-                         vfs_path.basename(remote_dir),
+    return vfs_file_info(vfs_path_util.dirname(remote_dir),
+                         vfs_path_util.basename(remote_dir),
                          vfs_file_info.DIR,
                          None,
                          None,
@@ -100,7 +100,7 @@ class vfs_pcloud(vfs_base):
   #@abstractmethod
   def has_file(self, remote_filename):
     'Return True if filename exists in the filesystem and is a FILE.'
-    remote_filename = vfs_path.normalize(remote_filename)
+    remote_filename = vfs_path_util.normalize(remote_filename)
     try:
       self.file_info(remote_filename)
       return True
@@ -110,7 +110,7 @@ class vfs_pcloud(vfs_base):
   #@abstractmethod
   def file_info(self, remote_filename):
     'Get info for a single file.'
-    remote_filename = vfs_path.normalize(remote_filename)
+    remote_filename = vfs_path_util.normalize(remote_filename)
     if remote_filename == '/':
       return vfs_file_info(remote_filename, vfs_file_info.DIR)
     self._metadata_db_update_local()
@@ -119,17 +119,26 @@ class vfs_pcloud(vfs_base):
     entries = self._pcloud.list_folder(folder_path = parent)
     for entry in entries:
       if entry.name == basename:
-        return self._make_entry('fixme', remote_filename, entry, vfs_file_info_list())
+        return self._make_entry(vfs_path_util.dirname(remote_filename),
+                                vfs_path_util.basename(remote_filename),
+                                entry,
+                                vfs_file_info_list())
     raise vfs_error('file not found: {}'.format(remote_filename))
 
   def _make_entry(self, remote_dir, remote_filename, entry, children):
-    remote_filename = vfs_path.normalize(remote_filename)
+    print('X      remote_dir: {}'.format(remote_dir))
+    print('X remote_filename: {}'.format(remote_filename))
+
+    print('1 remote_filename: {}'.format(remote_filename))
+    remote_filename = vfs_path_util.normalize(remote_filename)
+    print('2 remote_filename: {}'.format(remote_filename))
     if entry.is_folder:
       ftype = vfs_file_info.DIR
     else:
       ftype = vfs_file_info.FILE
     if ftype == vfs_file_info.FILE:
-      entry_path = vfs_path.normalize(vfs_path.join(remote_dir, vfs_path.lstrip_sep(remote_filename)))
+      entry_path = vfs_path_util.normalize(vfs_path_util.join(remote_dir, vfs_path_util.lstrip_sep(remote_filename)))
+      print('entry_path: {}'.format(entry_path))
       checksum = self._metadata_db.get_value('checksums', entry_path, 'checksum.sha256')
       attributes = self._metadata_db.get_values('attributes', entry_path).to_dict()
       size = entry.size
@@ -137,8 +146,11 @@ class vfs_pcloud(vfs_base):
       checksum = None
       attributes = None
       size = None
-    return vfs_file_info(vfs_path.dirname(remote_filename),
-                         vfs_path.basename(remote_filename),
+    print('3 remote_filename: {}'.format(remote_filename))
+    print('          dirname: {}'.format(vfs_path_util.dirname(remote_filename)))
+    print('         basename: {}'.format(vfs_path_util.basename(remote_filename)))
+    return vfs_file_info(vfs_path_util.dirname(remote_filename),
+                         vfs_path_util.basename(remote_filename),
                          ftype,
                          size,
                          checksum,
@@ -148,14 +160,14 @@ class vfs_pcloud(vfs_base):
   #@abstractmethod
   def remove_file(self, remote_filename):
     'Remove filename.'
-    remote_filename = vfs_path.normalize(remote_filename)
+    remote_filename = vfs_path_util.normalize(remote_filename)
     self._pcloud.delete_file(file_path = remote_filename)
     
   #@abstractmethod
   def upload_file(self, local_filename, remote_filename):
     'Upload filename from local_filename.'
-    remote_filename = vfs_path.normalize(remote_filename)
-    sp = vfs_path.split_basename(remote_filename)
+    remote_filename = vfs_path_util.normalize(remote_filename)
+    sp = vfs_path_util.split_basename(remote_filename)
     self._metadata_db_update_local()
     checksum = file_util.checksum('sha256', local_filename)
     self._metadata_db.set_value('checksums', remote_filename, 'checksum.sha256', checksum)
@@ -165,19 +177,19 @@ class vfs_pcloud(vfs_base):
   #@abstractmethod
   def download_to_file(self, remote_filename, local_filename):
     'Download filename to local_filename.'
-    remote_filename = vfs_path.normalize(remote_filename)
+    remote_filename = vfs_path_util.normalize(remote_filename)
     self._pcloud.download_to_file(local_filename, file_path = remote_filename)
     
   #@abstractmethod
   def download_to_bytes(self, remote_filename):
     'Download filename to local_filename.'
-    remote_filename = vfs_path.normalize(remote_filename)
+    remote_filename = vfs_path_util.normalize(remote_filename)
     return self._pcloud.download_to_bytes(file_path = remote_filename)
     
   #@abstractmethod
   def set_file_attributes(self, remote_filename, attributes):
     'Set file attirbutes.'
-    remote_filename = vfs_path.normalize(remote_filename)
+    remote_filename = vfs_path_util.normalize(remote_filename)
     self._metadata_db_update_local()
     self._metadata_db.replace_values('attributes', remote_filename,
                                      key_value_list.from_dict(attributes))
@@ -211,7 +223,7 @@ class vfs_pcloud(vfs_base):
     if remote_checksum == local_checksum:
       self.log.log_d('_metadata_db_update_remote: remote db up to date.')
     self.log.log_d('_metadata_db_update_remote: updating remote db because checksum is different.')
-    sp = vfs_path.split_basename(self._METADATA_REMOTE_FILENAME)
+    sp = vfs_path_util.split_basename(self._METADATA_REMOTE_FILENAME)
     self._pcloud.upload_file(self._db_metadata_filename, sp.basename, folder_path = sp.dirname)
 
   def _metadata_remote_checksum(self):

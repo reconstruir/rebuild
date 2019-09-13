@@ -22,7 +22,7 @@ from bes.vfs.vfs_base import vfs_base
 from bes.vfs.vfs_file_info import vfs_file_info
 from bes.vfs.vfs_file_info import vfs_file_info_list
 from bes.vfs.vfs_error import vfs_error
-from bes.vfs.vfs_path import vfs_path
+from bes.vfs.vfs_path_util import vfs_path_util
 
 from rebuild.credentials.credentials import credentials
 
@@ -102,7 +102,7 @@ class vfs_artifactory(vfs_base):
 
     entries = dirs + files
     for p in rd.decomposed_path:
-      remote_filename = vfs_path.lstrip_sep(p)
+      remote_filename = vfs_path_util.lstrip_sep(p)
       parts = remote_filename.split('/')
       new_node = result.ensure_path(parts)
       setattr(new_node, '_entry', self._make_entry('folder', remote_filename, parts))
@@ -152,6 +152,7 @@ class vfs_artifactory(vfs_base):
     'Get info for a single file.'
     print('remote_filename: {}'.format(remote_filename))
     rd = self._parse_remote_filename(remote_filename)
+    print('rd: {}'.format(rd))
     storage_response = self._storage_query(rd)
     if 'children' in storage_response:
       ftype = vfs_file_info.DIR
@@ -166,8 +167,8 @@ class vfs_artifactory(vfs_base):
       checksum = None
       attributes = None
       size = None
-    return vfs_file_info(vfs_path.dirname(remote_filename),
-                         vfs_path.dirname(remote_filename),
+    return vfs_file_info(vfs_path_util.dirname(remote_filename),
+                         vfs_path_util.dirname(remote_filename),
                          ftype,
                          size,
                          checksum,
@@ -262,7 +263,7 @@ class vfs_artifactory(vfs_base):
       checksum = None
       attributes = None
       size = None
-    return vfs_file_info(vfs_path.lstrip_sep(remote_filename), ftype, size, checksum, attributes, children)
+    return vfs_file_info(vfs_path_util.lstrip_sep(remote_filename), ftype, size, checksum, attributes, children)
 
   _PROP_KEY_BLACKLIST = [
     'trash.',
@@ -360,8 +361,8 @@ class vfs_artifactory(vfs_base):
   _parsed_remote_filename = namedtuple('_parsed_remote_filename', 'remote_filename, decomposed_path, remote_filename_sep, remote_filename_no_sep, repo, prefix, url')
   def _parse_remote_filename(self, remote_filename):
     'Parse a remote_filename and return the artifactory specific parts such as repo and prefix.'
-    remote_filename_sep = vfs_path.ensure_lsep(remote_filename)
-    remote_filename_no_sep = vfs_path.lstrip_sep(remote_filename)
+    remote_filename_sep = vfs_path_util.ensure_lsep(remote_filename)
+    remote_filename_no_sep = vfs_path_util.lstrip_sep(remote_filename)
     repo = remote_filename.split('/')[0]
     prefix = '/'.join(remote_filename_sep.split('/')[2:])
     decomposed_path = file_path.decompose(remote_filename_sep)
