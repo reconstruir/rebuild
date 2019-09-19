@@ -5,7 +5,7 @@ from collections import namedtuple
 from bes.common.check import check
 from bes.text.string_list import string_list
 
-class pcloud_metadata(namedtuple('pcloud_metadata', 'name, path, pcloud_id, is_folder, size, category, content_type, content_hash, contents, checksum')):
+class pcloud_metadata(namedtuple('pcloud_metadata', 'name, path, pcloud_id, is_folder, size, category, content_type, content_hash, contents, checksum, created, modified')):
   '''
   Class representation for pcloud metadata
   https://docs.pcloud.com/structures/metadata.html
@@ -24,7 +24,7 @@ class pcloud_metadata(namedtuple('pcloud_metadata', 'name, path, pcloud_id, is_f
   CATEGORY_NAMES = sorted(CATEGORIES.values())
   
   def __new__(clazz, name, d_path, pcloud_id, is_folder, size, category, content_type,
-              content_hash, contents, checksum):
+              content_hash, contents, checksum, created, modified):
     if is_folder:
       if category is not None:
         raise ValueError('Invalid category for folder: %s' % (str(category)))
@@ -42,7 +42,9 @@ class pcloud_metadata(namedtuple('pcloud_metadata', 'name, path, pcloud_id, is_f
                                       content_type,
                                       content_hash,
                                       contents,
-                                      checksum)
+                                      checksum,
+                                      created,
+                                      modified)
   @classmethod
   def parse_category(clazz, category):
     if check.is_int(category):
@@ -66,6 +68,8 @@ class pcloud_metadata(namedtuple('pcloud_metadata', 'name, path, pcloud_id, is_f
     else:
       d_path = name
     is_folder = bool(d['isfolder'])
+    created = d['created']
+    modified = d['modified']
     if is_folder:
       size = None
       category = None
@@ -86,17 +90,17 @@ class pcloud_metadata(namedtuple('pcloud_metadata', 'name, path, pcloud_id, is_f
       assert 'fileid' in d
       pcloud_id = d['fileid']
     return pcloud_metadata(name, d_path,  pcloud_id, is_folder, size, category, content_type,
-                           content_hash, contents, None)
+                           content_hash, contents, None, created, modified)
   
   def mutate_checksum(self, checksum):
     return self.__class__(self.name, self.path, self.pcloud_id, self.is_folder, self.size, self.category,
                           self.content_type, self.content_hash, self.contents,
-                          checksum)
+                          checksum, self.created, self.modified)
   
   def mutate_contents(self, contents):
     return self.__class__(self.name, self.path, self.pcloud_id, self.is_folder, self.size, self.category,
                           self.content_type, self.content_hash, contents,
-                          self.checksum)
+                          self.checksum, self.created, self.modified)
   def list_files(self, recursive = False):
     result = string_list()
     self._collect_files(self, result)

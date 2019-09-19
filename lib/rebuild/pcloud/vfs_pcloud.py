@@ -1,6 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from os import path
+from datetime import datetime
 
 from bes.common.check import check
 from bes.common.node import node
@@ -80,13 +81,7 @@ class vfs_pcloud(vfs_base):
     self._metadata_db_update_local()
     entries = self._pcloud.list_folder(folder_path = remote_dir, recursive = recursive, checksums = False)
     children = vfs_file_info_list([ self._convert_pcloud_entry_to_fs_tree(remote_dir, entry, depth = 0) for entry in entries ])
-    return vfs_file_info(vfs_path_util.dirname(remote_dir),
-                         vfs_path_util.basename(remote_dir),
-                         vfs_file_info.DIR,
-                         None,
-                         None,
-                         None,
-                         children)
+    return children
 
   def _convert_pcloud_entry_to_fs_tree(self, remote_dir, entry, depth = 0):
     indent = ' ' * depth
@@ -118,8 +113,11 @@ class vfs_pcloud(vfs_base):
     parent = path.dirname(remote_filename)
     basename = path.basename(remote_filename)
     entries = self._pcloud.list_folder(folder_path = parent)
+    
     for entry in entries:
       if entry.name == basename:
+        import pprint
+        print('entry: {}'.format(pprint.pformat(entry)))
         return self._make_entry(vfs_path_util.dirname(remote_filename),
                                 vfs_path_util.basename(remote_filename),
                                 entry,
@@ -127,19 +125,18 @@ class vfs_pcloud(vfs_base):
     raise vfs_error('file not found: {}'.format(remote_filename))
 
   def _make_entry(self, remote_dir, remote_filename, entry, children):
-    print('X      remote_dir: {}'.format(remote_dir))
-    print('X remote_filename: {}'.format(remote_filename))
-
-    print('1 remote_filename: {}'.format(remote_filename))
+    #print('X      remote_dir: {}'.format(remote_dir))
+    #print('X remote_filename: {}'.format(remote_filename))
+    #print('1 remote_filename: {}'.format(remote_filename))
     remote_filename = vfs_path_util.normalize(remote_filename)
-    print('2 remote_filename: {}'.format(remote_filename))
+    #print('2 remote_filename: {}'.format(remote_filename))
     if entry.is_folder:
       ftype = vfs_file_info.DIR
     else:
       ftype = vfs_file_info.FILE
     if ftype == vfs_file_info.FILE:
       entry_path = vfs_path_util.normalize(vfs_path_util.join(remote_dir, vfs_path_util.lstrip_sep(remote_filename)))
-      print('entry_path: {}'.format(entry_path))
+      #print('entry_path: {}'.format(entry_path))
       checksum = self._metadata_db.get_value('checksums', entry_path, 'checksum.sha256')
       attributes = self._metadata_db.get_values('attributes', entry_path).to_dict()
       size = entry.size
@@ -147,12 +144,14 @@ class vfs_pcloud(vfs_base):
       checksum = None
       attributes = None
       size = None
-    print('3 remote_filename: {}'.format(remote_filename))
-    print('          dirname: {}'.format(vfs_path_util.dirname(remote_filename)))
-    print('         basename: {}'.format(vfs_path_util.basename(remote_filename)))
+    modification_date = datetime.strptime(entry.modified, '%a, %d %b %Y %H:%M:%S +0000')
+    #print('3 remote_filename: {}'.format(remote_filename))
+    #print('          dirname: {}'.format(vfs_path_util.dirname(remote_filename)))
+    #print('         basename: {}'.format(vfs_path_util.basename(remote_filename)))
     return vfs_file_info(vfs_path_util.dirname(remote_filename),
                          vfs_path_util.basename(remote_filename),
                          ftype,
+                         modification_date,
                          size,
                          checksum,
                          attributes,
