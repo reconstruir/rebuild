@@ -71,9 +71,9 @@ class pcloud(object):
     if response.status_code != 200:
       raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
     payload = response.payload
-    import pprint
-    print('payload: {}'.format(pprint.pformat(payload)))
-    import pprint
+    #import pprint
+    #print('payload: {}'.format(pprint.pformat(payload)))
+    #import pprint
     assert 'result' in response.payload
     if payload['result'] != 0:
       raise pcloud_error(payload['result'], what)
