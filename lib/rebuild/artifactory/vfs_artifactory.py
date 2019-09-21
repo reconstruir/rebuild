@@ -2,6 +2,8 @@
 
 from collections import namedtuple
 
+from datetime import datetime
+
 from os import path
 import json, pprint
 
@@ -150,10 +152,10 @@ class vfs_artifactory(vfs_base):
   #@abstractmethod
   def file_info(self, remote_filename):
     'Get info for a single file.'
-    print('remote_filename: {}'.format(remote_filename))
     rd = self._parse_remote_filename(remote_filename)
-    print('rd: {}'.format(rd))
     storage_response = self._storage_query(rd)
+    last_modified = storage_response['lastModified']
+    modification_date = datetime.strptime(last_modified, "%Y-%m-%dT%H:%M:%S.%fZ")
     if 'children' in storage_response:
       ftype = vfs_file_info.DIR
     else:
@@ -168,8 +170,9 @@ class vfs_artifactory(vfs_base):
       attributes = None
       size = None
     return vfs_file_info(vfs_path_util.dirname(remote_filename),
-                         vfs_path_util.dirname(remote_filename),
+                         vfs_path_util.basename(remote_filename),
                          ftype,
+                         modification_date,
                          size,
                          checksum,
                          attributes)
@@ -254,7 +257,6 @@ class vfs_artifactory(vfs_base):
       ftype = vfs_file_info.FILE
     else:
       ftype = vfs_file_info.DIR
-      
     if ftype == vfs_file_info.FILE:
       checksum = str(entry['sha256'])
       attributes = self._parse_artifactory_properties(entry.get('properties', None))
@@ -263,7 +265,20 @@ class vfs_artifactory(vfs_base):
       checksum = None
       attributes = None
       size = None
-    return vfs_file_info(vfs_path_util.lstrip_sep(remote_filename), ftype, size, checksum, attributes, children)
+    if not 'modified' in entry:
+      print('BAD ENTRY: {}'.format(pprint.pformat(entry)))
+      modification_date = datetime.now()
+    else:
+      modified = entry['modified']
+      modification_date = datetime.strptime(modified, "%Y-%m-%dT%H:%M:%S.%fZ")
+    return vfs_file_info(vfs_path_util.dirname(remote_filename),
+                         vfs_path_util.basename(remote_filename),
+                         ftype,
+                         modification_date,
+                         size,
+                         checksum,
+                         attributes,
+                         children)
 
   _PROP_KEY_BLACKLIST = [
     'trash.',
@@ -363,7 +378,7 @@ class vfs_artifactory(vfs_base):
     'Parse a remote_filename and return the artifactory specific parts such as repo and prefix.'
     remote_filename_sep = vfs_path_util.ensure_lsep(remote_filename)
     remote_filename_no_sep = vfs_path_util.lstrip_sep(remote_filename)
-    repo = remote_filename.split('/')[0]
+    repo = remote_filename_no_sep.split('/')[0]
     prefix = '/'.join(remote_filename_sep.split('/')[2:])
     decomposed_path = file_path.decompose(remote_filename_sep)
     return self._parsed_remote_filename(remote_filename, decomposed_path, remote_filename_sep,

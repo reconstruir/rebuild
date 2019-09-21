@@ -116,8 +116,6 @@ class vfs_pcloud(vfs_base):
     
     for entry in entries:
       if entry.name == basename:
-        import pprint
-        print('entry: {}'.format(pprint.pformat(entry)))
         return self._make_entry(vfs_path_util.dirname(remote_filename),
                                 vfs_path_util.basename(remote_filename),
                                 entry,
