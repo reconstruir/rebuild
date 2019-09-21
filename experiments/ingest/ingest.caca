@@ -1,0 +1,118 @@
+!rebuild.ingest!
+
+description
+  My awesome ingested things
+
+variables
+  PYHOSTED_HOME_URL=https://files.pythonhosted.org/packages
+  PYTHON_PACKAGES_TARGET_DIR=python/packages
+
+entry libyaml 0.1.7
+
+  data
+    all: checksum 0.1.7 8088e457264a98ba451a90b8661fcb4f9d6f478f7265d48322a196cec2480729
+    all: checksum 0.2.2 4a9100ab61047fd9bd395bcef3ce5403365cafd55c1e0d0299cde14958e47be9
+
+  variables
+    all: _home_url=http://pyyaml.org/download/libyaml
+    all: _upstream_name=yaml
+    all: _upstream_filename=${_upstream_name}-${VERSION}.tar.gz
+    all: _filename=${NAME}-${VERSION}.tar.gz
+    all: _ingested_filename=lib/${_filename}
+    
+  download
+    all: ${_home_url}/${_filename} ingested_filename=${_ingested_filename} checksum=@{DATA:checksum:${VERSION}}
+
+entry google-api-python-client 1.7.8
+
+  data
+    all:  checksum 1.7.8 06907006ed5ce831018f03af3852d739c0b2489cdacfda6971bcc2075c762858
+    all: path_hash 1.7.8 7a/84/ffde3c95d4162cdc8bae710fecc6873cccb05ac33afc3b2c925c74cc0150
+
+  variables
+    all: _home_url=http://pyyaml.org/download/libyaml
+    all: _filename=${NAME}-${VERSION}.tar.gz
+    all: _url=${PYHOSTED_HOME_URL}/@{DATA:path_hash:${VERSION}}/${_filename}
+    all: _ingested_filename=${PYTHON_PACKAGES_TARGET_DIR}/${_filename}
+    
+  download
+    all: ${_url} ingested_filename=${_ingested_filename} checksum=@{DATA:checksum:${VERSION}}
+
+entry dohq_artifactory 0.1.17
+
+  variables
+    all: _address=https://github.com/devopshq/artifactory.git
+    all: _filename=${NAME}-${VERSION}.tar.gz
+    all: _ingested_filename=${PYTHON_PACKAGES_TARGET_DIR}/${_filename}
+    
+  method git
+    all: address=${_address}
+    all: revision=${VERSION}
+    all: ingested_filename=${_ingested_filename}
+
+entry java_jdk8 8u201
+
+  data:
+    linux: checksum  8u191  53c29507e2405a7ffdbba627e6d64856089b094867479edc5ede4105c1da0d65
+    linux: checksum  8u201  cb700cc0ac3ddc728a567c350881ce7e25118eaf7ca97ca9705d4580c506e370
+    linux: checksum  8u202  9a5c32411a6a06e22b69c495b7975034409fa1652d03aeb8eb5b6f59fd4594e0
+    macos: checksum  8u191  5e33a6bfc1c413d647f1ac37eb0d1eb9ca3ee6e4600898eab81338e8f5d10e13
+    macos: checksum  8u201  5b52df4b3efd51480c40ad5abfa18a075365afbb2040bbc5e9f2db568435a6e2
+    macos: checksum  8u202  b41367948cf99ca0b8d1571f116b7e3e322dd1ebdfd4d390e959164d75b97c20
+    all:   path_hash 8u202  -b08/1961070e4c9b4e26a04e7f5a083f551e
+    all:   path_hash 8u201  -b09/42970487e3af4f5aa5bca3f542482c60
+    all:   path_hash 8u191  -b12/2787e4a523244c269598db4e85c51e0c
+
+  variables
+    all:   _home_url=https://download.oracle.com/otn-pub/java/jdk
+    linux: _system=linux-x64
+    macos: _system=macosx-x64
+    linux: _extension=.tar.gz
+    macos: _extension=.dmg
+    all:   _filename=jdk-${VERSION}-${_system}${_extension}
+    all:   _url=${_home_url}/${VERSION}@{DATA:path_hash:${VERSION}}/${_filename}
+    all:   _ingested_filename=java/${_filename}
+    all:   _cookies="oraclelicense=accept-securebackup-cookie"
+
+  download
+    all: ${_url} checksum=@{DATA:checksum:${VERSION}} ingested_filename=${_ingested_filename} cookies=${_cookies}
+
+entry java_jdk11 11.0.2
+
+  data:
+    linux: checksum  11.0.2 7b4fd8ffcf53e9ff699d964a80e4abf9706b5bdb5644a765c2b96f99e3a2cdc8
+    macos: checksum  11.0.2 9c380fc8885dbf0d3b6c1eb37bf10852686215b7ee1f1fe8c873cd95bb92e053 # tar.gz
+    all:   path_hash 11.0.1 +13/90cf5d8f270a4347a95050320eef3fb7
+    all:   path_hash 11.0.2 +9/f51449fcd52f4d52b93a989c5c56ed3c
+    
+  variables
+    all:   _home_url=https://download.oracle.com/otn-pub/java/jdk
+    linux: _system=linux-x64
+    macos: _system=osx-x64
+    all:   _filename=jdk-${VERSION}_${_system}_bin.tar.gz
+    all:   _url=${_home_url}/${VERSION}@{DATA:path_hash:${VERSION}}/${_filename}
+    all:   _ingested_filename=java/${_filename}
+    all:   _cookies="oraclelicense=accept-securebackup-cookie"
+
+  download
+    all: ${_url} checksum=@{DATA:checksum:${VERSION}} ingested_filename=${_ingested_filename} cookies=${_cookies}
+
+entry jfrog-cli 1.22.1
+
+  data:
+    linux: checksum 1.22.1 9b794dced5bb7f72aeebec32adc947d10529b551507ce16b5216239506dd8f76
+    macos: checksum 1.22.1 d6e2bb893b39c6a67fb2ee9de2df47adcd890aadbf7ed66040a6028b4d2351cf
+
+  variables
+    all:   _home_url=https://api.bintray.com/content/jfrog/jfrog-cli-go
+    linux: _system=linux-amd64
+    macos: _system=mac-386
+    all:   _exe=jfrog-cli-${_system}
+    all:   _url="${_home_url}/${${VERSION}}/${_exe}/jfrog?bt_package=${_exe}"
+    all:   _ingested_filename=jfrog/jfrog-cli-${${VERSION}}-${_system}.tar.gz
+
+  method download
+    all: url=${_url}
+    all: arcname=bin/jfrog
+    all: checksum=@{DATA:checksum:${_version}}
+    all: ingested_filename=${_ingested_filename}
