@@ -65,14 +65,14 @@ class pcloud(object):
     if folder_id:
       what = folder_id
       params.update({ 'folderid': folder_id })
-    self.log_d('list_folder: params=%s' % (params))
+    self.log_e('list_folder: params=%s' % (params))
     response = pcloud_requests.get('listfolder', params)
     self.log_d('list_folder: response=%s' % (str(response)))
     if response.status_code != 200:
       raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
     payload = response.payload
-    #import pprint
-    #print('payload: {}'.format(pprint.pformat(payload)))
+    import pprint
+    print('payload: {}'.format(pprint.pformat(payload)))
     #import pprint
     assert 'result' in response.payload
     if payload['result'] != 0:
@@ -85,6 +85,41 @@ class pcloud(object):
     if checksums:
       result = self._get_checksums(result)
     return result
+
+  def folder_info(self, folder_path = None, folder_id = None):
+    self.log_d('folder_info: folder_path=%s; folder_id=%s' % (folder_path, folder_id))
+    if not folder_path and not folder_id:
+      raise ValueError('Etiher folder_path or folder_id should be given.')
+    elif folder_path and folder_id:
+      raise ValueError('Only one of folder_path or folder_id should be given.')
+    params = {
+      'auth': self.auth_token,
+    }
+    what = ''
+    if folder_path:
+      what = folder_path
+      params.update({ 'path': folder_path })
+    if folder_id:
+      what = folder_id
+      params.update({ 'folderid': folder_id })
+    params.update({ 'nofiles': 1 })
+    self.log_e('folder_info: params=%s' % (params))
+    response = pcloud_requests.get('listfolder', params)
+    self.log_d('folder_info: response=%s' % (str(response)))
+    if response.status_code != 200:
+      raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
+    payload = response.payload
+    import pprint
+#    print('payload: {}'.format(pprint.pformat(payload)))
+    #import pprint
+    assert 'result' in response.payload
+    if payload['result'] != 0:
+      raise pcloud_error(payload['result'], what)
+    assert 'metadata' in payload
+    folder_metadata = payload['metadata']
+    if 'contents' in folder_metadata:
+      del folder_metadata['contents']
+    return pcloud_metadata.parse_dict(folder_metadata)
 
   def quick_list_folder(self, folder_path, relative = True, recursive = False):
     items = self.list_folder(folder_path = folder_path, recursive = recursive)

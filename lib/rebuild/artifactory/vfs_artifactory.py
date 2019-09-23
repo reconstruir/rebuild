@@ -77,7 +77,7 @@ class vfs_artifactory(vfs_base):
     return 'vfs_artifactory'
 
   #@abstractmethod
-  def list_dir(self, remote_dir, recursive):
+  def list_dir(self, remote_dir, recursive, options):
     'List entries in a directory.'
     rd = self._parse_remote_filename(remote_dir)
     aql_response = self._aql_query_dir(rd, recursive)
@@ -150,7 +150,7 @@ class vfs_artifactory(vfs_base):
       return False
 
   #@abstractmethod
-  def file_info(self, remote_filename):
+  def file_info(self, remote_filename, options):
     'Get info for a single file.'
     rd = self._parse_remote_filename(remote_filename)
     storage_response = self._storage_query(rd)

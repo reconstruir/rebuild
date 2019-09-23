@@ -74,7 +74,7 @@ class vfs_pcloud(vfs_base):
     return 'vfs_pcloud'
 
   #@abstractmethod
-  def list_dir(self, remote_dir, recursive):
+  def list_dir(self, remote_dir, recursive, options):
     'List entries in a directory.'
     remote_dir = vfs_path_util.normalize(remote_dir)
     self.log.log_d('list_dir(remote_dir={}, recursive={}'.format(remote_dir, recursive))
@@ -104,11 +104,16 @@ class vfs_pcloud(vfs_base):
       return False
   
   #@abstractmethod
-  def file_info(self, remote_filename):
+  def file_info(self, remote_filename, options):
     'Get info for a single file.'
     remote_filename = vfs_path_util.normalize(remote_filename)
-    if remote_filename == '/':
-      return vfs_file_info(remote_filename, vfs_file_info.DIR)
+    if remote_filename == '':
+      entry = self._pcloud.folder_info(folder_path = '/')
+      return self._make_entry(vfs_path_util.dirname(remote_filename),
+                              vfs_path_util.basename(remote_filename),
+                              entry,
+                              vfs_file_info_list(),
+                              options)
     self._metadata_db_update_local()
     parent = path.dirname(remote_filename)
     basename = path.basename(remote_filename)
@@ -119,10 +124,11 @@ class vfs_pcloud(vfs_base):
         return self._make_entry(vfs_path_util.dirname(remote_filename),
                                 vfs_path_util.basename(remote_filename),
                                 entry,
-                                vfs_file_info_list())
+                                vfs_file_info_list(),
+                                options)
     raise vfs_error('file not found: {}'.format(remote_filename))
 
-  def _make_entry(self, remote_dir, remote_filename, entry, children):
+  def _make_entry(self, remote_dir, remote_filename, entry, children, options):
     #print('X      remote_dir: {}'.format(remote_dir))
     #print('X remote_filename: {}'.format(remote_filename))
     #print('1 remote_filename: {}'.format(remote_filename))
@@ -146,8 +152,7 @@ class vfs_pcloud(vfs_base):
     #print('3 remote_filename: {}'.format(remote_filename))
     #print('          dirname: {}'.format(vfs_path_util.dirname(remote_filename)))
     #print('         basename: {}'.format(vfs_path_util.basename(remote_filename)))
-    return vfs_file_info(vfs_path_util.dirname(remote_filename),
-                         vfs_path_util.basename(remote_filename),
+    return vfs_file_info(remote_filename,
                          ftype,
                          modification_date,
                          size,
