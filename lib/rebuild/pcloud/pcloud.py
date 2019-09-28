@@ -1,10 +1,11 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import hashlib, os.path as path
+import hashlib, os.path as path, pprint
+
 from io import BytesIO
 from collections import namedtuple
 
-from bes.system.log import log
+from bes.system.log import logger
 from bes.common.check import check
 from bes.common.node import node
 from bes.property.cached_property import cached_property
@@ -22,9 +23,10 @@ from rebuild.credentials.credentials import credentials
 class pcloud(object):
 
   API = 'https://api.pcloud.com'
+
+  log = logger('pcloud')
   
   def __init__(self, credentials, root_dir):
-    log.add_logging(self, 'pcloud')
     check.check_credentials(credentials)
     check.check_string(root_dir)
     self.credentials = credentials
@@ -49,7 +51,7 @@ class pcloud(object):
     return auth_token
   
   def list_folder(self, folder_path = None, folder_id = None, recursive = False, checksums = False):
-    self.log_d('list_folder: folder_path=%s; folder_id=%s; recursive=%s; checksums=%s' % (folder_path, folder_id, recursive, checksums))
+    self.log.log_d('list_folder: folder_path=%s; folder_id=%s; recursive=%s; checksums=%s' % (folder_path, folder_id, recursive, checksums))
     if not folder_path and not folder_id:
       raise ValueError('Etiher folder_path or folder_id should be given.')
     elif folder_path and folder_id:
@@ -65,9 +67,9 @@ class pcloud(object):
     if folder_id:
       what = folder_id
       params.update({ 'folderid': folder_id })
-    self.log_e('list_folder: params=%s' % (params))
+    self.log.log_e('list_folder: params=%s' % (params))
     response = pcloud_requests.get('listfolder', params)
-    self.log_d('list_folder: response=%s' % (str(response)))
+    self.log.log_d('list_folder: response=%s' % (str(response)))
     if response.status_code != 200:
       raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
     payload = response.payload
@@ -87,7 +89,7 @@ class pcloud(object):
     return result
 
   def folder_info(self, folder_path = None, folder_id = None):
-    self.log_d('folder_info: folder_path=%s; folder_id=%s' % (folder_path, folder_id))
+    self.log.log_d('folder_info: folder_path=%s; folder_id=%s' % (folder_path, folder_id))
     if not folder_path and not folder_id:
       raise ValueError('Etiher folder_path or folder_id should be given.')
     elif folder_path and folder_id:
@@ -103,15 +105,13 @@ class pcloud(object):
       what = folder_id
       params.update({ 'folderid': folder_id })
     params.update({ 'nofiles': 1 })
-    self.log_e('folder_info: params=%s' % (params))
+    self.log.log_e('folder_info: params=%s' % (params))
     response = pcloud_requests.get('listfolder', params)
-    self.log_d('folder_info: response=%s' % (str(response)))
+    self.log.log_d('folder_info: response=%s' % (str(response)))
     if response.status_code != 200:
       raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
     payload = response.payload
-    import pprint
-#    print('payload: {}'.format(pprint.pformat(payload)))
-    #import pprint
+    self.log.log_d('folder_info: payload={}'.format(pprint.pformat(payload)))
     assert 'result' in response.payload
     if payload['result'] != 0:
       raise pcloud_error(payload['result'], what)
@@ -278,7 +278,7 @@ class pcloud(object):
     try:
       checksum = self.checksum_file(file_path = file_path, file_id = file_id)
     except pcloud_error as ex:
-      self.log_d('caught exception trying to checksum: %s' % (str(ex)))
+      self.log.log_d('caught exception trying to checksum: %s' % (str(ex)))
       if ex.code in [ pcloud_error.FILE_NOT_FOUND, pcloud_error.PARENT_DIR_MISSING ]:
         checksum = None
       else:
