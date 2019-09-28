@@ -169,8 +169,7 @@ class vfs_artifactory(vfs_base):
       checksum = None
       attributes = None
       size = None
-    return vfs_file_info(vfs_path_util.dirname(remote_filename),
-                         vfs_path_util.basename(remote_filename),
+    return vfs_file_info(remote_filename,
                          ftype,
                          modification_date,
                          size,
@@ -271,8 +270,7 @@ class vfs_artifactory(vfs_base):
     else:
       modified = entry['modified']
       modification_date = datetime.strptime(modified, "%Y-%m-%dT%H:%M:%S.%fZ")
-    return vfs_file_info(vfs_path_util.dirname(remote_filename),
-                         vfs_path_util.basename(remote_filename),
+    return vfs_file_info(remote_filename,
                          ftype,
                          modification_date,
                          size,
