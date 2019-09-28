@@ -43,7 +43,7 @@ entry libfoo 1.2.3
 
     vfs_config_file_content = '''\
 fsconfig
-  fs_type: vfs_local
+  vfs_type: local
   local_root_dir: {tmp_dir}/downloads
 '''
     tmp_dir = self.make_temp_dir()
@@ -76,7 +76,7 @@ fsconfig
     self.assertEqual( 0, rv.exit_code )
 
     self.assertEqual( [
-      'downloads/.besfs/checksum.db/.bes_file_metadata.db',
+      'downloads/.bes_vfs/checksum.db/.bes_file_metadata.db',
       'downloads/lib/libfoo-1.2.3.tar.gz',
     ], file_find.find(tmp_fs_dir) )
     
