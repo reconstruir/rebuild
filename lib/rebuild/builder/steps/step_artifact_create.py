@@ -100,13 +100,14 @@ class step_artifact_create_test_package(step):
       self.log_d(message)
       return step_result(False, message)
 
+    tester_env = dict_util.combine(package_test_env.to_dict(), env.variable_manager.variables)
     for test in tests:
       check.check_value_file(test)
       config = package_tester.test_config(script,
                                           staged_tarball,
                                           env.requirements_artifact_manager,
                                           env.tools_manager,
-                                          dict_util.combine(package_test_env.to_dict(), env.variable_manager.variables))
+                                          tester_env)
       tester = package_tester(config, test.filename)
       result =  tester.run()
       if not result.success:

@@ -9,20 +9,26 @@ from bes.common.json_util import json_util
 from bes.common.string_util import string_util
 from bes.common.type_checked_list import type_checked_list
 from bes.common.variable import variable
+from bes.debug.debug_timer import debug_timer
+from bes.dependency import dependency_provider
 from bes.fs.file_checksum import file_checksum_list
 from bes.fs.file_util import file_util
 from bes.system.log import log
-from bes.debug.debug_timer import debug_timer
+from bes.system.python import python
+
 from rebuild.base.build_blurb import build_blurb
-from bes.dependency import dependency_provider
+from rebuild.package.package_manager import package_manager
+from rebuild.recipe.recipe_data_manager import recipe_data_manager
+from rebuild.recipe.value.value_file import value_file
 from rebuild.step.step_description import step_description
 from rebuild.step.step_manager import step_manager
-from rebuild.package.package_manager import package_manager
-from rebuild.recipe.value.value_file import value_file
-from rebuild.recipe.recipe_data_manager import recipe_data_manager
 
 class builder_script(object):
 
+  # which version of python to use for all builder related subprocess calls
+  _PYTHON_VERSION = '2.7'
+  #_PYTHON_VERSION = '3'
+  
   def __init__(self, recipe, build_target, env):
     log.add_logging(self, 'rebuild')
     build_blurb.add_blurb(self, 'rebuild')
@@ -60,7 +66,8 @@ class builder_script(object):
                                                 env.requirements_artifact_manager)
     self.recipe_data_manager = recipe_data_manager()
     self.recipe_data_manager.set_from_tuples(self.recipe.resolve_data(self.build_target.system))
-      
+
+    python_exe = 'python{}'.format(self._PYTHON_VERSION)
     self.substitutions = {
       'REBUILD_WORKING_DIR': self.working_dir,
       'REBUILD_BUILD_DIR': self.build_dir,
@@ -84,6 +91,8 @@ class builder_script(object):
       'REBUILD_STAGE_BIN_DIR':  self.staged_files_bin_dir,
       'REBUILD_TEMP_DIR': self.temp_dir,
       'REBUILD_TEST_DIR': self.test_dir,
+      'REBUILD_PYTHON': python_exe,
+      'REBUILD_PYTHON_VERSION': python.exe_version(python_exe),
     }
     for kv in self.recipe.resolve_variables(self.build_target.system):
       if kv.key in self.substitutions:
@@ -102,6 +111,10 @@ class builder_script(object):
     self._save_env_checksum_if_changed()
     self._add_steps()
 
+  def substitute(self, d):
+    'Substitute variables in dict d with self.substitutions.'
+    return variable.substitute(d, self.substitutions, patterns = variable.BRACKET)
+    
   def _save_env_checksum(self):
     content = self._env_checksum_content()
     file_util.save(self._env_checksum_filename, content = content)
