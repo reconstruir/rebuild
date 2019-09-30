@@ -4,7 +4,7 @@ import subprocess, sys
 
 def main():
 
-  tfoo_rv = subprocess.check_output(['tfoo.py', 'a', 'b', 'c']).strip()
+  tfoo_rv = subprocess.check_output(['tfoo.py', 'a', 'b', 'c']).decode('utf-8').strip()
   sys.stdout.write(tfoo_rv)
   sys.stdout.write(' # ')
   

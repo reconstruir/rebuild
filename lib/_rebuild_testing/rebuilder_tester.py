@@ -157,8 +157,7 @@ class rebuilder_tester(object):
   def run_script(self, args, cwd = None, env = None):
     rv = self.run_script_raw(args, cwd = cwd, env = env)
     if isinstance(rv.stdout, bytes):
-#      stdout = codecs.decode(rv.stdout, 'utf-8')
-      stdout = rv.stdout
+      stdout = rv.stdout.decode('utf-8')
     else:
       stdout = rv.stdout
     if rv.exit_code != 0:

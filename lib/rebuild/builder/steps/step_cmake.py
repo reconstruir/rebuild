@@ -47,6 +47,10 @@ class step_cmake_make(step_make):
   def __init__(self):
     super(step_cmake_make, self).__init__()
 
+  @classmethod
+  def define_args(clazz):
+    return ''
+    
   def extra_make_flags(self):
     return [ 'VERBOSE=1' ]
 
@@ -56,6 +60,10 @@ class step_cmake_install(step):
   def __init__(self):
     super(step_cmake_install, self).__init__()
 
+  @classmethod
+  def define_args(clazz):
+    return ''
+    
   #@abstractmethod
   def execute(self, script, env, values, inputs):
     cmd = 'make install prefix=${REBUILD_STAGE_PREFIX_DIR}'

@@ -65,6 +65,12 @@ class value_source_dir(value_base):
   def resolve(clazz, values, class_name):
     # FIXME
     return values[-1]
+
+  @classmethod
+  #@abstractmethod
+  def _parse_plain_string(clazz, origin, s):
+    'Parse just a string.'
+    assert False
   
   def tarball(self):
     assert self._tarball

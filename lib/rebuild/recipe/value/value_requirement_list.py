@@ -71,5 +71,11 @@ class value_requirement_list(value_base):
       result.extend(value.value)
     result.remove_dups()
     return result
-  
+
+  @classmethod
+  #@abstractmethod
+  def _parse_plain_string(clazz, origin, s):
+    'Parse just a string.'
+    assert False
+    
 check.register_class(value_requirement_list, include_seq = False)

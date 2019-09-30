@@ -48,6 +48,10 @@ class step_perl_module_post_install_cleanup(step):
   def __init__(self):
     super(step_perl_module_post_install_cleanup, self).__init__()
 
+  @classmethod
+  def define_args(clazz):
+    return ''
+    
   #@abstractmethod
   def execute(self, script, env, values, inputs):
     bt = script.build_target
