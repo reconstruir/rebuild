@@ -7,8 +7,8 @@ from bes.common.check import check
 from bes.common.string_util import string_util
 from bes.version.software_version import software_version
 
-from .ingest_latest import ingest_latest
-from .ingest_release import ingest_release
+from .ingest_third_party_info import ingest_third_party_info
+from .ingest_third_party_release import ingest_third_party_release
 
 class ingest_pypi(object):
 
@@ -21,7 +21,7 @@ class ingest_pypi(object):
     license = info['license']
     description = info['summary']
     releases = clazz._parse_releases(data['releases'])
-    return ingest_latest(name, license, description, releases)
+    return ingest_third_party_info(name, license, description, releases)
   
   @classmethod
   def _parse_release_entry(clazz, version, entry):
@@ -31,7 +31,7 @@ class ingest_pypi(object):
       return None
     checksum = entry['digests']['sha256']
     url = entry['url']
-    return ingest_release(version, checksum ,url)
+    return ingest_third_party_release(version, checksum ,url)
   
   @classmethod
   def _parse_release(clazz, version, entries):

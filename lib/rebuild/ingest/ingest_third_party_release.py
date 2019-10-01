@@ -4,7 +4,7 @@ from collections import namedtuple
 
 from bes.common.check import check
 
-class ingest_release(namedtuple('ingest_release', 'version, checksum, url')):
+class ingest_third_party_release(namedtuple('ingest_third_party_release', 'version, checksum, url')):
 
   def __new__(clazz, version, checksum, url):
     check.check_string(version)
@@ -12,5 +12,5 @@ class ingest_release(namedtuple('ingest_release', 'version, checksum, url')):
     check.check_string(url)
     return clazz.__bases__[0].__new__(clazz, version, checksum, url)
 
-check.register_class(ingest_release)
+check.register_class(ingest_third_party_release)
   
