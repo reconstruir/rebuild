@@ -6,6 +6,7 @@ from collections import namedtuple
 
 from bes.common.check import check
 from bes.common.node import node
+from bes.common.tuple_util import tuple_util
 from bes.compat.StringIO import StringIO
 from bes.fs.file_util import file_util
 from bes.key_value.key_value_list import key_value_list
@@ -147,5 +148,8 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
     buf.write(str(self))
     buf.write('\n')
     file_util.save(filename, buf.getvalue())
+
+  def clone(self, mutations = None):
+    return tuple_util.clone(self, mutations = mutations)
   
 check.register_class(recipe, include_seq = False)
