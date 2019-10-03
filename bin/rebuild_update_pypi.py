@@ -27,6 +27,11 @@ class update_cli(object):
                               action = 'store_true',
                               default = False,
                               help = 'Verbose debug spew [ False ]')
+    self._parser.add_argument('--update',
+                              '-u',
+                              action = 'store_true',
+                              default = False,
+                              help = 'Update the recipe version to the latest release [ False ]')
     
   @classmethod
   def run(clazz):
@@ -34,10 +39,10 @@ class update_cli(object):
 
   def main(self):
     args = self._parser.parse_args()
-    self._process_file(args.recipe_filename)
+    self._process_file(args.recipe_filename, args.update)
     return 0
 
-  def _process_file(self, filename):
+  def _process_file(self, filename, update):
     if not path.isfile(filename):
       raise IOError('Not a file: %s' % (filename))
     env = testing_recipe_load_env()
@@ -53,7 +58,7 @@ class update_cli(object):
       new_version = pypi_data.latest_release.version
       
       if old_version == new_version:
-        print('{}: already at latest version "{}"'.format(new_version))
+        print('{}: already at latest version "{}"'.format(filename, new_version))
       else:
         print('         name: {}'.format(recipe.descriptor.name))
         print('upstream_name: {}'.format(upstream_name))
@@ -62,20 +67,36 @@ class update_cli(object):
 
         old_release = pypi_data.find_by_version(old_version)
         new_release = pypi_data.latest_release
-        
-        dm = recipe_data_manager.from_masked_value_list(recipe.data)
-        dm.append(recipe_data_entry('all', 'checksum', new_version, new_release.checksum))
-        dm.append(recipe_data_entry('all', 'path_hash', new_version, new_release.path_hash))
-        dm.append(recipe_data_entry('all', 'checksum', old_version, old_release.checksum))
-        dm.append(recipe_data_entry('all', 'path_hash', old_version, old_release.path_hash))
-        dm.remove_dups()
-        dm.sort_by_version()
-        recipe.data.assign(masked_value_list([ recipe_data_manager.parse_entry_text(str(x)) for x in dm ]))
+
+        new_data = self.make_new_data(recipe.data, old_release, new_release)
+
+        mutations = {
+          'data': self.make_new_data(recipe.data, old_release, new_release),
+        }
+        if update:
+          mutations['descriptor'] = self.make_new_descriptor(recipe.descriptor, new_version)
+          
+        new_recipe = recipe.clone(mutations = mutations)
         
         file_util.backup(filename)
-        recipe.save_to_file(filename)
+
+        new_recipe.save_to_file(filename)
         
     return 0
-      
+
+  def make_new_descriptor(clazz, descriptor, new_upstream_version):
+    new_version = descriptor.version.clone({ 'upstream_version': new_upstream_version })
+    return descriptor.clone({ 'version': new_version })
+
+  def make_new_data(clazz, data, old_release, new_release):
+    dm = recipe_data_manager.from_masked_value_list(data)
+    dm.append(recipe_data_entry('all', 'checksum', new_release.version, new_release.checksum))
+    dm.append(recipe_data_entry('all', 'path_hash', new_release.version, new_release.path_hash))
+    dm.append(recipe_data_entry('all', 'checksum', old_release.version, old_release.checksum))
+    dm.append(recipe_data_entry('all', 'path_hash', old_release.version, old_release.path_hash))
+    dm.remove_dups()
+    dm.sort_by_version()
+    return masked_value_list([ recipe_data_manager.parse_entry_text(str(x)) for x in dm ])
+  
 if __name__ == '__main__':
   update_cli.run()
