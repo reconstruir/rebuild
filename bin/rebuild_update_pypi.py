@@ -4,9 +4,9 @@
 import argparse, os.path as path
 import pprint
 
-
 from bes.fs.file_replace import file_replace
 from bes.fs.temp_file import temp_file
+from bes.fs.file_util import file_util
 from bes.git.git_repo import git_repo
 
 from rebuild.builder.builder_recipe_loader import builder_recipe_loader
@@ -44,12 +44,14 @@ class update_cli(object):
     recipes = builder_recipe_loader.load(env, filename)
     for recipe in recipes:
       system = 'linux' # doesnt matter just needs to be a valid system
-      v = recipe.resolve_variables('linux').to_dict()
-      #print(pprint.pformat(v))
-      upstream_name = v['_upstream_name']
-      data = ingest_pypi.project_info(upstream_name)
+      vars_kvl = recipe.resolve_variables('linux')
+      vars_dict = vars_kvl.to_dict()
+      #print(vars_kvl.to_string(value_delimiter = '\n'))
+      upstream_name = vars_dict['_upstream_name']
+      pypi_data = ingest_pypi.project_info(upstream_name)
       old_version = recipe.descriptor.version.upstream_version
-      new_version = data.latest_release.version
+      new_version = pypi_data.latest_release.version
+      
       if old_version == new_version:
         print('{}: already at latest version "{}"'.format(new_version))
       else:
@@ -57,36 +59,22 @@ class update_cli(object):
         print('upstream_name: {}'.format(upstream_name))
         print('  old_version: {}'.format(old_version))
         print('  new_version: {}'.format(new_version))
-        print(' new_checksum: {}'.format(data.latest_release.checksum))
 
+        old_release = pypi_data.find_by_version(old_version)
+        new_release = pypi_data.latest_release
+        
         dm = recipe_data_manager.from_masked_value_list(recipe.data)
-        dm.append(recipe_data_entry('all', 'checksum', new_version, data.latest_release.checksum))
-        dm.append(recipe_data_entry('all', 'path_hash', new_version, data.latest_release.path_hash))
+        dm.append(recipe_data_entry('all', 'checksum', new_version, new_release.checksum))
+        dm.append(recipe_data_entry('all', 'path_hash', new_version, new_release.path_hash))
+        dm.append(recipe_data_entry('all', 'checksum', old_version, old_release.checksum))
+        dm.append(recipe_data_entry('all', 'path_hash', old_version, old_release.path_hash))
+        dm.remove_dups()
         dm.sort_by_version()
         recipe.data.assign(masked_value_list([ recipe_data_manager.parse_entry_text(str(x)) for x in dm ]))
-        file_util.backup(filename)
-        file_util.save(filename, str(recipe))
         
-#          print('X: mask={} value={} - {}'.format(x.mask, x.value, type(x.value.value)))
-#        for x in recipe.data:
-#          print('X: mask={} value={} - {}'.format(x.mask, x.value, type(x.value.value)))
-      
-#      print(data.latest_release)
-      #_upstream_name
-#      print(recipe)
-#      values = recipe.steps[0].resolve_values({}, env)
-#      tarball_address = values.get('tarball_address')
-#      if tarball_address:
-#        tarball_address_address = tarball_address.address
-#        old_revision = tarball_address.revision
-#        gr = git_repo(temp_file.make_temp_dir(), address = tarball_address_address)
-#        gr.clone()
-#        new_revision = gr.last_commit_hash(short_hash = True)
-#        if old_revision == new_revision:
-#          return 0
-#        replacements = { old_revision: new_revision }
-#        print('%s: update %s -> %s' % (filename, old_revision, new_revision))
-#        file_replace.replace(filename, replacements, backup = False, word_boundary = True)
+        file_util.backup(filename)
+        recipe.save_to_file(filename)
+        
     return 0
       
 if __name__ == '__main__':

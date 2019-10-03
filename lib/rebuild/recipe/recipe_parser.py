@@ -45,8 +45,6 @@ from .value.value_hook import value_hook
 
 class recipe_parser(object):
 
-  MAGIC = '!rebuild.recipe!'
-
   def __init__(self, filename, text, starting_line_number = 0):
     self.text = text
     self.filename = filename
@@ -58,9 +56,9 @@ class recipe_parser(object):
     
   def parse(self, variable_manager):
     check.check_variable_manager(variable_manager)
-    if not self.text.startswith(self.MAGIC):
+    if not self.text.startswith(recipe.MAGIC):
       first_line = self.text.split('\n')[0]
-      self._error('text should start with recipe magic \"%s\" instead of \"%s\"' % (self.MAGIC, first_line))
+      self._error('text should start with recipe magic \"%s\" instead of \"%s\"' % (recipe.MAGIC, first_line))
     try:
       tree = tree_text_parser.parse(self.text, strip_comments = True)
     except Exception as ex:
@@ -71,11 +69,11 @@ class recipe_parser(object):
     recipes = []
     if not root.children:
       self._error('invalid recipe', root)
-    if root.children[0].data.text != self.MAGIC:
+    if root.children[0].data.text != recipe.MAGIC:
       self._error('invalid magic', root)
     for pkg_node in root.children[1:]:
-      recipe = self._parse_package(pkg_node, variable_manager)
-      recipes.append(recipe)
+      recipe_obj = self._parse_package(pkg_node, variable_manager)
+      recipes.append(recipe_obj)
     return recipes
   
   def _parse_package(self, node, variable_manager):

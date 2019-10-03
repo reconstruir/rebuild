@@ -89,4 +89,11 @@ class masked_value_list(object):
       keys.add(v.value.key)
     return keys
   
+  def clear(self):
+    self._values = []
+
+  def assign(self, values):
+    check.check_masked_value_list(values)
+    self._values = values[:]
+
 check.register_class(masked_value_list, include_seq = False)

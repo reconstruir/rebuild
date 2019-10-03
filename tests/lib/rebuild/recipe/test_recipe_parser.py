@@ -73,6 +73,7 @@ package ${_NAME} ${_VERSION} ${_REVISION}
   def test_step_value_bool_no_mask(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   steps
     step_takes_bool
       bool_value: True
@@ -86,6 +87,7 @@ package foo 1.2.3 4
   def test_step_value_bool_empty_value(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   steps
     step_takes_bool
       bool_value:
@@ -99,6 +101,7 @@ package foo 1.2.3 4
   def test_step_value_bool_with_mask(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   steps
     step_takes_bool
       bool_value
@@ -113,6 +116,7 @@ package foo 1.2.3 4
   def test_step_value_key_values(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   steps
     step_takes_key_values
       key_values_value: a=5 b=6 c="x y"
@@ -127,6 +131,7 @@ package foo 1.2.3 4
   def test_step_value_key_values_with_mask(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   steps
     step_takes_key_values
       key_values_value
@@ -142,6 +147,7 @@ package foo 1.2.3 4
   def test_step_value_string(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   steps
     step_takes_string
       string_value: my string with spaces
@@ -154,6 +160,7 @@ package foo 1.2.3 4
   def test_step_value_string_with_quotes(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   steps
     step_takes_string
       string_value: my string with "a quote"
@@ -166,6 +173,7 @@ package foo 1.2.3 4
   def test_step_value_string_with_comments(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   steps
     step_takes_string
       string_value: my string # comment
@@ -178,6 +186,7 @@ package foo 1.2.3 4
   def test_step_value_string_listx(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   steps
     step_takes_string_list
       string_list_value: a b "x y"
@@ -192,6 +201,7 @@ package foo 1.2.3 4
   def test_step_value_string_list_with_mask(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   steps
     step_takes_string_list
       string_list_value
@@ -207,6 +217,7 @@ package foo 1.2.3 4
   def test_step_value_string_list_with_comment(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   steps
     step_takes_string_list
       string_list_value: a b "x y" # comment
@@ -219,6 +230,7 @@ package foo 1.2.3 4
   def test_step_value_string_list_with_quoted_hash(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   steps
     step_takes_string_list
       string_list_value: a b "x # y"
@@ -231,6 +243,7 @@ package foo 1.2.3 4
   def test_step_value_key_values_multi_line(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   steps
     step_takes_key_values
       key_values_value
@@ -248,6 +261,7 @@ package foo 1.2.3 4
   def test_step_value_key_values_many_masks(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   steps
     step_takes_key_values
       key_values_value
@@ -273,6 +287,7 @@ step_takes_key_values
   def test_takes_all(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   steps
     step_takes_all
       bool_value:
@@ -308,6 +323,7 @@ step_takes_all
   def test_compound_step(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   steps
     step_compound
       bool_value:
@@ -343,6 +359,7 @@ step_compound
   def test_multiple_steps(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   steps
     step_takes_bool
       bool_value:
@@ -384,6 +401,7 @@ step_takes_key_values
 #comment
 
 package foo 1.2.3 4
+
   enabled=$system is MACOS
 
   properties
@@ -420,6 +438,7 @@ package foo 1.2.3 4
     r = self._parse(text)
     expected='''\
 package foo 1.2.3 4
+
   enabled=$system is MACOS
 
   properties
@@ -454,6 +473,7 @@ package foo 1.2.3 4
   def test_requirements_with_variables(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   requirements
     all: cheese >= ${_CHEESE_VERSION}
     linux: wine >= 2.0
@@ -466,7 +486,6 @@ package foo 1.2.3 4
     r = self._parse(text, variables = '_CHEESE_VERSION=1.2')
     expected='''\
 package foo 1.2.3 4
-  enabled=True
 
   requirements
     all: cheese >= 1.2
@@ -482,6 +501,7 @@ package foo 1.2.3 4
   def test_step_inline_python_code(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   steps
     test_inline_step1
       bool_value: True
@@ -521,6 +541,7 @@ package foo 1.2.3 4
   def test_step_value_hook(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   steps
     step_takes_hook
       hook_value
@@ -547,6 +568,7 @@ package foo 1.2.3 4
   def test_step_value_hook_with_mask(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   steps
     step_takes_hook
       hook_value
@@ -688,6 +710,7 @@ package foo 1.2.3 4 # comment
   def test_step_empty_value(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   steps
     step_takes_bool
 '''
@@ -713,6 +736,7 @@ package foo 1.2.3 4
   def test_step_value_commented_out(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   steps
     step_takes_file_list
       file_list_value
@@ -732,6 +756,7 @@ package foo 1.2.3 4
 
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   steps
     step_takes_file_list
       file_list_value
@@ -751,6 +776,7 @@ package foo 1.2.3 4
   def test_step_value_file_list_empty(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   steps
     step_takes_file_list
       file_list_value
@@ -767,6 +793,7 @@ package foo 1.2.3 4
   def test_variables(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   variables
     all: FOO=hi BAR=666
     linux: AUTHOR=linus
@@ -784,14 +811,15 @@ package foo 1.2.3 4
   def test_data(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3
-  variables:
-    all: _version=${REBUILD_PACKAGE_UPSTREAM_VERSION}
 
   data
     linux: foo 1.2.3 forlinux1
     linux: bar 1.2.3 forlinux2
     macos: foo 1.2.3 formacos1
     macos: bar 1.2.3 formacos2
+
+  variables:
+    all: _version=${REBUILD_PACKAGE_UPSTREAM_VERSION}
 
   steps
     step_takes_string
@@ -816,6 +844,7 @@ class test_recipe_step_values(unit_test):
   def xtest_step_value_string_list(self):
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
+
   steps
     step_takes_string_list
       string_list_value: a b "x y"

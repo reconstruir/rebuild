@@ -12,6 +12,8 @@ from rebuild.base.build_system import build_system
 from .recipe_data_descriptor import recipe_data_descriptor
 from .recipe_parser_util import recipe_parser_util
 from .recipe_error import recipe_error
+from .recipe_data_entry import recipe_data_entry
+from .recipe_data_entry import recipe_data_entry_list
 
 from .value.masked_value_list import masked_value_list
 from .value.value_factory import value_factory
@@ -77,12 +79,24 @@ class recipe_data_manager(object):
       raise recipe_error.make_error('should start with \"data\"', filename, pkg_node = node)
     result = []
     for child in node.children:
-      parts = string_list.parse(child.data.text)
-      mask = clazz._yank_valid_mask(parts)
-      value = masked_value(mask, value_string_list(origin = origin, value = parts), origin = origin)
+      value = clazz.parse_entry_text(child.data.text, origin = origin)
       result.append(value)
-      clazz._LOG.log_d('mask=%s; parts=%s; value=%s' % (mask, parts, value.value))
     return masked_value_list(result)
+        
+  @classmethod
+  def parse_entry_text(clazz, text, origin = None):
+    parts = string_list.parse(text)
+    mask = clazz._yank_valid_mask(parts)
+    return masked_value(mask, value_string_list(origin = origin, value = parts), origin = origin)
+        
+  @classmethod
+  def from_masked_value_list(clazz, vl):
+    check.check_masked_value_list(vl)
+    result = []
+    for v in vl:
+      entry = recipe_data_entry.parse(str(v))
+      result.append(entry)
+    return recipe_data_entry_list(result)
         
   @classmethod
   def _yank_valid_mask(clazz, parts):

@@ -22,6 +22,14 @@ class recipe_util(object):
     return clazz.masked_value_list_to_node(label, variables)
 
   @classmethod
+  def lines_to_node(clazz, label, lines):
+    check.check_string(lines)
+    result = node(label)
+    for line in text_line_parser.parse_lines(lines, strip_comments = False, strip_text = True, remove_empties = True):
+      result.add_child(line)
+    return result
+  
+  @classmethod
   def masked_value_list_to_node(clazz, name, mvl):
     check.check_masked_value_list(mvl)
     result = node(name)

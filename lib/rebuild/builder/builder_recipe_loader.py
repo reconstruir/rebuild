@@ -70,7 +70,7 @@ class builder_recipe_loader(object):
   @classmethod
   def _recipe_version(clazz, filename):
     with open(filename, 'r') as fin:
-      magic = fin.read(len(recipe_parser.MAGIC))
-      if magic == recipe_parser.MAGIC:
+      magic = fin.read(len(recipe.MAGIC))
+      if magic == recipe.MAGIC:
         return 2
     return 1

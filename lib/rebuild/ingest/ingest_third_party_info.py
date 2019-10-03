@@ -19,5 +19,11 @@ class ingest_third_party_info(namedtuple('ingest_third_party_info', 'name, licen
   @cached_property
   def latest_release(self):
     return self.releases[-1]
+
+  def find_by_version(self, version):
+    l = filter(lambda entry: entry.version == version, self.releases)
+    if len(l) != 1:
+      raise ValueError('Multiple releases with version "{}" found'.format(version))
+    return l[0]
   
 check.register_class(ingest_third_party_info, include_seq = False)

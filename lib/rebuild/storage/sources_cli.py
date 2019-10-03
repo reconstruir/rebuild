@@ -6,14 +6,12 @@ from collections import namedtuple
 from bes.system.log import log
 from bes.archive.archiver import archiver
 from bes.common.check import check
-from bes.common.node import node
 from bes.compat.StringIO import StringIO
 from bes.fs.file_find import file_find
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
-from bes.common import node
-from bes.text import text_table
-from bes.url import url_util
+from bes.text.text_table import text_table
+from bes.url.url_util import url_util
 
 from bes.archive.archiver import archiver
 from bes.archive.archive_extension import archive_extension

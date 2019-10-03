@@ -1,18 +1,25 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import re
+
 from collections import namedtuple
+
 from bes.common.check import check
 from bes.common.node import node
+from bes.compat.StringIO import StringIO
+from bes.fs.file_util import file_util
 from bes.key_value.key_value_list import key_value_list
 
 from .recipe_error import recipe_error
 from .recipe_util import recipe_util
+from .recipe_data_manager import recipe_data_manager
 
 class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties, requirements, descriptor, instructions, steps, python_code, variables, data')):
 
   CHECK_UNKNOWN_PROPERTIES = True
   FORMAT_VERSION = 2
+
+  MAGIC = '!rebuild.recipe!'
   
   def __new__(clazz, format_version, filename, enabled, properties, requirements,
               descriptor, instructions, steps, python_code, variables, data):
@@ -38,17 +45,20 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
   def _to_node(self):
     'A convenient way to make a recipe string is to build a graph first.'
     root = node('package %s %s %s' % (self.descriptor.name, self.descriptor.version.upstream_version, self.descriptor.version.revision))
+    root.add_child('')
     if self.python_code:
       root.children.append(recipe_util.python_code_to_node(self.python_code))
       root.add_child('')
-    if self.enabled != '':
-      root.add_child('enabled=%s' % (self.enabled.expression))
+    if self.enabled:
+      if self.enabled.expression.lower() not in [ '', 'true' ]:
+        root.add_child('enabled=%s' % (self.enabled.expression))
+        root.add_child('')
+    if self.data:
+      x = recipe_data_manager.from_masked_value_list(self.data)
+      root.children.append(recipe_util.lines_to_node('data', str(x)))
       root.add_child('')
     if self.variables:
       root.children.append(recipe_util.variables_to_node('variables', self.variables))
-      root.add_child('')
-    if self.data:
-      root.children.append(recipe_util.variables_to_node('data', self.data))
       root.add_child('')
     if self.properties:
       root.children.append(self._properties_to_node(self.properties))
@@ -104,6 +114,7 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
           value_node = step_node.add_child(value.key)
           for masked_value in value.values:
             masked_value_node = value_node.add_child(masked_value.to_string(quote = False))
+        step_node.add_child('')
       result.add_child('')
     return result
 
@@ -127,5 +138,14 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
       if value.mask_matches(system):
         result.append(tuple(value.value.value))
     return result
+
+  def save_to_file(self, filename):
+    buf = StringIO()
+    buf.write(self.MAGIC)
+    buf.write('\n')
+    buf.write('\n')
+    buf.write(str(self))
+    buf.write('\n')
+    file_util.save(filename, buf.getvalue())
   
 check.register_class(recipe, include_seq = False)
