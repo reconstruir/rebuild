@@ -1155,3 +1155,6 @@ this masked values list sequence:
 doesnt work because the all: BAR=default at the end clobbers the previous platform specific one.  resolution needs to take this into account
 
 if the tarball for a recipe changes for example from zip to tar.gz dependencies get screwed probably cause of the cached targets/sources
+
+export compilation flags get messed up by rebuild_update_pypi.py
+rebuild_update_pypi.py recipes/python/packages/python_cryptography/rebuild.recipe
