@@ -50,15 +50,12 @@ class package_manifest(namedtuple('package_manifest', 'files, env_files, content
     }
     return d
 
-  C = 1
-  
   @classmethod
   def determine_files(clazz, stage_dir):
     '''Return the list of files to package.
     Maybe could do some filtering here.
     Using find on unix because its faster that bes.fs.file_find.'
     '''
-    clazz.C += 1
     if host.is_unix():
       return clazz._determine_files_unix(stage_dir)
     elif host.is_windows():
