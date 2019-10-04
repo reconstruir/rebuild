@@ -4,6 +4,7 @@
 import argparse, os.path as path
 import pprint
 
+from bes.archive.archive_extension import archive_extension
 from bes.fs.file_util import file_util
 from bes.fs.file_replace import file_replace
 from bes.key_value.key_value_list import key_value_list
@@ -64,17 +65,23 @@ class update_cli(object):
     old_version = recipe.descriptor.version.upstream_version
     new_version = pypi_data.latest_release.version
       
+    old_release = pypi_data.find_by_version(old_version)
+    new_release = pypi_data.latest_release
+
+    if update:
+      extension = archive_extension.extension_for_filename(path.basename(new_release.url))
+    else:
+      extension = archive_extension.extension_for_filename(path.basename(old_release.url))
+      
     print('         name: {}'.format(recipe.descriptor.name))
     print('upstream_name: {}'.format(upstream_name))
     print('  old_version: {}'.format(old_version))
     print('  new_version: {}'.format(new_version))
-
-    old_release = pypi_data.find_by_version(old_version)
-    new_release = pypi_data.latest_release
-
+    print('    extension: {}'.format(extension))
+    
     mutations = {
       'data': self._make_new_data(recipe.data, old_release, new_release),
-      'variables': self._make_new_variables(recipe.variables, upstream_name),
+      'variables': self._make_new_variables(recipe.variables, upstream_name, extension),
     }
     if update:
       mutations['descriptor'] = self._make_new_descriptor(recipe.descriptor, new_version)
@@ -102,13 +109,13 @@ class update_cli(object):
     dm.sort_by_version()
     return masked_value_list([ recipe_data_manager.parse_entry_text(str(x)) for x in dm ])
 
-  def _make_new_variables(clazz, variables, upstream_name):
+  def _make_new_variables(clazz, variables, upstream_name, extension):
     result = masked_value_list()
 
     texts = [
       '_version=${REBUILD_PACKAGE_UPSTREAM_VERSION}',
       '_upstream_name={}'.format(upstream_name),
-      '_filename=${_upstream_name}-${_version}.tar.gz',
+      '_filename=${{_upstream_name}}-${{_version}}.{}'.format(extension),
       '_url=https://files.pythonhosted.org/packages/@{DATA:path_hash:${_version}}/${_filename}',
       '_ingested_filename=python/packages/${_filename}',
     ]

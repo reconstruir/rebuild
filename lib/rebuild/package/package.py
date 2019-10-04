@@ -288,7 +288,8 @@ unset REBUILD_STUFF_DIR
     manifest = temp_file.make_temp_file(content = '\n'.join(files_to_package))
     if timer:
       timer.start('create_package - creating tarball %s' % (tarball_filename))
-    clazz._create_tarball(tarball_filename, stage_dir, files_to_package)
+    clazz._prepare_stage_dir(stage_dir, files_to_package)
+    clazz._create_tarball(tarball_filename, stage_dir)
     if timer:
       timer.stop()
 
@@ -317,10 +318,18 @@ unset REBUILD_STUFF_DIR
     return True
 
   @classmethod
-  def _create_tarball(clazz, filename, stage_dir, files):
+  def _prepare_stage_dir(clazz, stage_dir, files_to_package):
+    'NOT SURE WHY THIS IS NEEDED. Prepare the stage dir for packaging.  Remove invalid files that should not be packaged.'
+    return
+    all_files = set(file_find.find(stage_dir, relative = True, file_type = file_find.FILE | file_find.LINK | file_find.DEVICE))
+    files_to_package = set(files_to_package)
+    to_remove = all_files - files_to_package
+    file_util.remove(to_remove)
+  
+  @classmethod
+  def _create_tarball(clazz, filename, stage_dir):
     'Create the tarball.'
-    #clazz._create_tarball_deterministic(filename, stage_dir, files)
-    archiver.create(filename, stage_dir, include = files, extension = 'tar.gz')
+    archiver.create(filename, stage_dir, extension = 'tar.gz')
     
   @classmethod
   def _create_tarball_deterministic(clazz, filename, stage_dir, files):

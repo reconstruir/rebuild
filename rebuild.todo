@@ -1153,3 +1153,5 @@ this masked values list sequence:
     all: BAR=default
 
 doesnt work because the all: BAR=default at the end clobbers the previous platform specific one.  resolution needs to take this into account
+
+if the tarball for a recipe changes for example from zip to tar.gz dependencies get screwed probably cause of the cached targets/sources
