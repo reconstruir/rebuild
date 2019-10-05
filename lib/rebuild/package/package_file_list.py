@@ -63,6 +63,12 @@ class package_file_list(type_checked_list):
   def filenames(self):
     return [ c.filename for c in self ]
 
+  def checksums(self):
+    result = {}
+    for entry in self:
+      result[entry.filename] = entry.checksum
+    return result
+  
   def files_with_hardcoded_paths(self):
     return [ c.filename for c in self if c.has_hardcoded_path ]
 

@@ -77,6 +77,10 @@ class package(object):
   def files(self):
     return self.metadata.manifest.files.filenames()
 
+  @cached_property
+  def checksums(self):
+    return self.metadata.manifest.files.checksums()
+
   def extract(self, root_dir, stuff_dir_basename, env_dir_basename):
     tmp_dir = temp_file.make_temp_dir(prefix = 'package.extract.', suffix = '.dir', dir = root_dir)
     dst_stuff_dir = path.join(root_dir, stuff_dir_basename)
@@ -319,7 +323,8 @@ unset REBUILD_STUFF_DIR
 
   @classmethod
   def _prepare_stage_dir(clazz, stage_dir, files_to_package):
-    'NOT SURE WHY THIS IS NEEDED. Prepare the stage dir for packaging.  Remove invalid files that should not be packaged.'
+    'Prepare the stage dir for packaging.  Remove some stuff that should not be in the package.'
+    file_util.remove(path.join(stage_dir, 'files/lib/python/__pycache__/site.cpython-37.pyc'))
     return
     all_files = set(file_find.find(stage_dir, relative = True, file_type = file_find.FILE | file_find.LINK | file_find.DEVICE))
     files_to_package = set(files_to_package)

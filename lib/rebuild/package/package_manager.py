@@ -182,7 +182,7 @@ class package_manager(object):
     if missing_requirements:
       raise PackageMissingRequirementsError('package %s missing requirements: %s' % (pkg.package_descriptor.name, ', '.join(missing_requirements)))
       
-    conflicts = self._find_conflicts(pkg.files)
+    conflicts = self._find_conflicting_files(pkg.files, pkg.checksums)
     if conflicts:
       conflict_packages = self.db.packages_with_files(conflicts)
       conflict_packages_str = ' '.join(conflict_packages)
@@ -225,11 +225,16 @@ class package_manager(object):
   def is_installed(self, pkg_name):
     return self.db.find_package(pkg_name) != None
 
-  def _find_conflicts(self, files):
+  def _find_conflicting_files(self, files, checksums):
+    'Find conflicting files.  If a file with the same name has the same checksum we tolerate it.'
     conflicts = []
     for f in files:
-      if path.isfile(path.join(self._installation_dir, f)):
-        conflicts.append(f)
+      existing_file_path = path.join(self._installation_dir, f)
+      if path.isfile(existing_file_path):
+        existing_file_checksum = file_util.checksum('sha256', existing_file_path)
+        new_file_checksum = checksums[f]
+        if existing_file_checksum != new_file_checksum:
+          conflicts.append(f)
     return sorted(conflicts)
 
   def _missing_requirements(self, pkg, build_target, hardness):
