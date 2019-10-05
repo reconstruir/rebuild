@@ -61,10 +61,10 @@ class update_cli(object):
     env = testing_recipe_load_env()
     recipes = builder_recipe_loader.load(env, filename)
     for recipe in recipes:
-      self._process_recipe(recipe, filename, update)
+      self._process_recipe(recipe, filename, update, backup)
     return 0
 
-  def _process_recipe(self, recipe, filename, update):
+  def _process_recipe(self, recipe, filename, update, backup):
     system = 'linux' # doesnt matter just needs to be a valid system
     vars_kvl = recipe.resolve_variables('linux')
     vars_dict = vars_kvl.to_dict()
