@@ -25,12 +25,20 @@ class update_cli(object):
   
   def __init__(self):
     self._parser = argparse.ArgumentParser()
-    self._parser.add_argument('recipe_filename', action = 'store', help = 'The recipe to update.')
+    self._parser.add_argument('filenames',
+                              action = 'store',
+                              nargs = '+',
+                              help = 'The recipe to update.')
     self._parser.add_argument('--verbose',
                               '-v',
                               action = 'store_true',
                               default = False,
                               help = 'Verbose debug spew [ False ]')
+    self._parser.add_argument('--backup',
+                              '-b',
+                              action = 'store_true',
+                              default = False,
+                              help = 'Make a backup of old recipes [ False ]')
     self._parser.add_argument('--update',
                               '-u',
                               action = 'store_true',
@@ -43,10 +51,11 @@ class update_cli(object):
 
   def main(self):
     args = self._parser.parse_args()
-    self._process_file(args.recipe_filename, args.update)
+    for filename in args.filenames:
+      self._process_file(filename, args.update, args.backup)
     return 0
 
-  def _process_file(self, filename, update):
+  def _process_file(self, filename, update, backup):
     if not path.isfile(filename):
       raise IOError('Not a file: %s' % (filename))
     env = testing_recipe_load_env()
@@ -87,8 +96,9 @@ class update_cli(object):
       mutations['descriptor'] = self._make_new_descriptor(recipe.descriptor, new_version)
           
     new_recipe = recipe.clone(mutations = mutations)
-        
-    file_util.backup(filename)
+
+    if backup:
+      file_util.backup(filename)
     new_recipe.save_to_file(filename)
     replacements = {
       'all: ${_url}/${_filename} ingested_filename=${_ingested_filename} checksum=${_checksum}': 'all: ${_url} ingested_filename=${_ingested_filename} checksum=@{DATA:checksum:${_version}}',
