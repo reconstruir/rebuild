@@ -25,10 +25,6 @@ from rebuild.step.step_manager import step_manager
 
 class builder_script(object):
 
-  # which version of python to use for all builder related subprocess calls
-  _PYTHON_VERSION = '2.7'
-  #_PYTHON_VERSION = '3.7'
-  
   def __init__(self, recipe, build_target, env):
     log.add_logging(self, 'rebuild')
     build_blurb.add_blurb(self, 'rebuild')
@@ -67,7 +63,7 @@ class builder_script(object):
     self.recipe_data_manager = recipe_data_manager()
     self.recipe_data_manager.set_from_tuples(self.recipe.resolve_data(self.build_target.system))
 
-    python_exe = 'python{}'.format(self._PYTHON_VERSION)
+    python_exe = 'python{}'.format(self.env.config.python_version)
     self.substitutions = {
       'REBUILD_WORKING_DIR': self.working_dir,
       'REBUILD_BUILD_DIR': self.build_dir,

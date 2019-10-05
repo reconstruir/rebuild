@@ -15,6 +15,8 @@ from bes.key_value.key_value_list import key_value_list
 class builder_config(object):
 
   DEFAULT_THIRD_PARTY_PREFIX = 'rebbe_'
+  DEFAULT_PYTHON_VERSION = '2.7'
+  #DEFAULT_PYTHON_VERSION = '3.7'
   
   def __init__(self):
     self._build_root = None
@@ -50,6 +52,7 @@ class builder_config(object):
     self.host_project_file_variables = key_value_list()
     self.cli_variables = None
     self.properties_file = None
+    self.python_version = self.DEFAULT_PYTHON_VERSION
     
   def builds_dir(self, build_target):
     return path.join(self.build_root, 'builds', build_target.build_path)

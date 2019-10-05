@@ -34,6 +34,8 @@ class builder_cli(build_target_cli):
     self.parser.add_argument('-f', '--project-file', action = 'store', type = str, default = 'rebuild.reproject')
     self.parser.add_argument('-o', '--override-projects', action = 'store', type = str, default = None, help = 'Override projects with the content of the given project file [ None ]')
     self.parser.add_argument('-n', '--no-checksums', action = 'store_true')
+    self.parser.add_argument('-p', '--python-version', action = 'store',
+                             default = builder_config.DEFAULT_PYTHON_VERSION)
     self.parser.add_argument('--print-step-values', action = 'store_true')
     self.parser.add_argument('--print-sources', action = 'store_true')
     self.parser.add_argument('--print-variables', action = 'store_true')
@@ -203,6 +205,7 @@ class builder_cli(build_target_cli):
     config.cli_variables = args.var
     config.ignore_install_file_errors = args.ignore_install_file_errors
     config.properties_file = args.properties_file
+    config.python_version = args.python_version
 
     env = builder_env(config, available_packages, checksum_getter, pfm)
     
