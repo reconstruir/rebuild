@@ -109,7 +109,7 @@ class package_tester(object):
     # FIXME: move this to context
     context.env['PYTHONPATH'] = context.package_manager.python_lib_dir
     # Run the test
-    cmd = 'python2.7 %s' % (context.test_source_with_replacements)
+    cmd = '{} {}'.format(config.script.substitutions['REBUILD_PYTHON'], context.test_source_with_replacements)
     rv = clazz._execute_text(cmd, context)
     if rv.exit_code != 0:
       return step_result(rv.exit_code == 0, rv.stdout)
