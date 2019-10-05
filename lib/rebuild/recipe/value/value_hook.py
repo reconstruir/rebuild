@@ -7,6 +7,7 @@ from bes.compat.StringIO import StringIO
 from bes.common.check import check
 from bes.common.string_util import string_util
 from bes.common.type_checked_list import type_checked_list
+from bes.text.text_line_parser import text_line_parser
 
 from bes.dependency import dependency_provider
 
@@ -40,7 +41,12 @@ class value_hook(value_base):
 
   #@abstractmethod
   def value_to_string(self, quote, include_properties = True):
-    return str(self.value)
+    #print('value: {} - {}'.format(self.value, type(self.value)))
+    class_name = str(self.value)
+    hook_code = getattr(self.value, '_hook_code')
+    p = text_line_parser(hook_code)
+    p.prepend('          ')
+    return str(class_name + '\n' + str(p))
 
   @classmethod
   #@abstractmethod
@@ -88,6 +94,7 @@ class value_hook(value_base):
         value_parsing.raise_error(child_origin, 'Hook class not found: %s' % (hook_class_name))
       hook_class = exec_locals[hook_class_name]
       hook = hook_class()
+      setattr(hook, '_hook_code', hook_code)
       child_masked_value = masked_value(child_pv.mask, value_hook(origin = origin, value = hook))
       result.append(child_masked_value)
     return result
