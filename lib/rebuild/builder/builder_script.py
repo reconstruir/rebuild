@@ -27,7 +27,7 @@ class builder_script(object):
 
   # which version of python to use for all builder related subprocess calls
   _PYTHON_VERSION = '2.7'
-  #_PYTHON_VERSION = '3'
+  #_PYTHON_VERSION = '3.7'
   
   def __init__(self, recipe, build_target, env):
     log.add_logging(self, 'rebuild')
