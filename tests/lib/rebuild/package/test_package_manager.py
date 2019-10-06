@@ -135,7 +135,7 @@ fake_package libfoo 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     ]
     self.assertEqual( expected_libs, libs )
 
-  def test_install_tarball_conflicts(self):
+  def test_install_tarball_conflicts_same_checksum(self):
     foo_recipe = '''
 fake_package foo 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
@@ -159,9 +159,37 @@ fake_package bar 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     foo_tarball = FPUT.create_one_package(foo_recipe, mutations)
     bar_tarball = FPUT.create_one_package(bar_recipe, mutations)
     pm.install_tarball(foo_tarball.filename, foo_tarball.metadata, ['BUILD', 'RUN'])
+    pm.install_tarball(bar_tarball.filename, bar_tarball.metadata, ['BUILD', 'RUN'])
+    self.assertEqual( [ 'bar-1.0.0', 'foo-1.0.0' ], pm.list_all_names(include_version = True) )
+
+  def test_install_tarball_conflicts_different_checksum(self):
+    foo_recipe = '''
+fake_package foo 1.0.0 0 0 linux release x86_64 ubuntu 18 none
+  files
+    foo/cellulose.txt
+      cellulose1
+    foo/inulin.txt
+      inulin
+'''
+
+    bar_recipe = '''
+fake_package bar 1.0.0 0 0 linux release x86_64 ubuntu 18 none
+  files
+    foo/cellulose.txt
+      cellulose2
+    foo/inulin.txt
+      inulin
+'''
+
+    pm = self._make_empty_pm()
+    mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version_major': '18' }
+    foo_tarball = FPUT.create_one_package(foo_recipe, mutations)
+    bar_tarball = FPUT.create_one_package(bar_recipe, mutations)
+    pm.install_tarball(foo_tarball.filename, foo_tarball.metadata, ['BUILD', 'RUN'])
     with self.assertRaises(PackageFilesConflictError) as context:
       pm.install_tarball(bar_tarball.filename, bar_tarball.metadata, ['BUILD', 'RUN'])
-
+    self.assertEqual( [ 'foo-1.0.0' ], pm.list_all_names(include_version = True) )
+      
   def test_install_tarball_already_installed(self):
     pm = self._make_empty_pm()
     mutations = { 'system': 'linux', 'distro': 'ubuntu', 'distro_version_major': '18' }

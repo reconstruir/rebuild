@@ -455,16 +455,20 @@ package foo 1.2.3 4
     step_apple
       apple_bool_value: True
 
+
     step_kiwi
       kiwi_key_values_value
         all: CFLAGS="$REBUILD_REQUIREMENTS_CFLAGS ${REBUILD_COMPILE_CFLAGS}" LDFLAGS=$REBUILD_REQUIREMENTS_LDFLAGS
+
       kiwi_string_list_value
         all: --enable-static --disable-shared
         linux: --with-pic
 
+
     step_pear
       pear_key_values_value
         all: a=5 b=6 c="x y"
+
       pear_string_list_value
         all: --foo --bar --baz="x y z"'''
     actual = r[0].to_string(indent = 2)
