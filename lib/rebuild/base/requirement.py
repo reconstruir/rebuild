@@ -10,9 +10,9 @@ from .build_system import build_system
 from .build_version import build_version
 from .requirement_hardness import requirement_hardness
 
-class requirement(namedtuple('requirement', 'name, operator, version, system_mask, hardness')):
+class requirement(namedtuple('requirement', 'name, operator, version, system_mask, hardness, expression')):
 
-  def __new__(clazz, name, operator, version, system_mask = None, hardness = None):
+  def __new__(clazz, name, operator, version, system_mask = None, hardness = None, expression = None):
     check.check_string(name)
     check.check_string(operator, allow_none = True)
     if check.is_build_version(version):
@@ -22,7 +22,8 @@ class requirement(namedtuple('requirement', 'name, operator, version, system_mas
     if hardness:
       hardness = requirement_hardness(hardness)
     check.check_requirement_hardness(hardness, allow_none = True)
-    return clazz.__bases__[0].__new__(clazz, name, operator, version, system_mask, hardness)
+    check.check_string(expression, allow_none = True)
+    return clazz.__bases__[0].__new__(clazz, name, operator, version, system_mask, hardness, expression)
 
   def __str__(self):
     buf = StringIO()
