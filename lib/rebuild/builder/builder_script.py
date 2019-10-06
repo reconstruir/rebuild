@@ -14,7 +14,6 @@ from bes.dependency import dependency_provider
 from bes.fs.file_checksum import file_checksum_list
 from bes.fs.file_util import file_util
 from bes.system.log import log
-from bes.system.python import python
 
 from rebuild.base.build_blurb import build_blurb
 from rebuild.package.package_manager import package_manager
@@ -63,7 +62,6 @@ class builder_script(object):
     self.recipe_data_manager = recipe_data_manager()
     self.recipe_data_manager.set_from_tuples(self.recipe.resolve_data(self.build_target.system))
 
-    python_exe = 'python{}'.format(self.env.config.python_version)
     self.substitutions = {
       'REBUILD_WORKING_DIR': self.working_dir,
       'REBUILD_BUILD_DIR': self.build_dir,
@@ -87,8 +85,6 @@ class builder_script(object):
       'REBUILD_STAGE_BIN_DIR':  self.staged_files_bin_dir,
       'REBUILD_TEMP_DIR': self.temp_dir,
       'REBUILD_TEST_DIR': self.test_dir,
-      'REBUILD_PYTHON': python_exe,
-      'REBUILD_PYTHON_VERSION': python.exe_version(python_exe),
     }
     for kv in self.recipe.resolve_variables(self.build_target.system):
       if kv.key in self.substitutions:

@@ -8,6 +8,7 @@ from bes.git.git_util import git_util
 from bes.git.git_archive_cache import git_archive_cache
 from bes.properties_file.properties_file import properties_file
 from bes.url.http_download_cache import http_download_cache
+from bes.system.python import python
 
 from rebuild.tools_manager.tools_manager import tools_manager
 from rebuild.checksum.checksum_manager import checksum_manager
@@ -56,12 +57,14 @@ class builder_env(object):
                                        self.config.host_build_target,
                                        self.requirements_artifact_manager)
     self.properties = properties_file.read(config.properties_file)
+    self.global_variables = self._make_global_variables()
     self.variable_manager = variable_manager()
     self.variable_manager.add_variables(config.project_file_variables)
     self.variable_manager.add_variables(self.properties)
       
     for key, value in config.cli_variables:
       self.variable_manager.add_variable(key, value)
+    self.variable_manager.add_variables(self.global_variables)
       
     self.recipe_load_env = recipe_load_env(self)
     self.script_manager = builder_script_manager(filenames, self.config.build_target, self)
@@ -124,5 +127,12 @@ class builder_env(object):
   def print_properties(self):
     for key, value in sorted(self.properties.items()):
       print('%s: %s' % (key, value))
+  
+  def _make_global_variables(self):
+    python_exe = 'python{}'.format(self.config.python_version)
+    return {
+      'REBUILD_PYTHON': python_exe,
+      'REBUILD_PYTHON_VERSION': python.exe_version(python_exe),
+    }
   
 check.register_class(builder_env, include_seq = False)

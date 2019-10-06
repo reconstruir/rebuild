@@ -12,7 +12,6 @@ class requirement_parser(object):
 
   @classmethod
   def parse(clazz, text, default_system_mask = None):
-
     text = comments.strip_line(text, allow_quoted = False)
     
     STATE_NAME = 'name'
@@ -29,6 +28,7 @@ class requirement_parser(object):
         self.operator = None
         self.system_mask = None
         self.version = None
+        self.expression = None
 
       @classmethod
       def make_requirement(clazz, state_data):
@@ -36,7 +36,12 @@ class requirement_parser(object):
           system_mask = state_data.system_mask
         else:
           system_mask = default_system_mask
-        return requirement(state_data.name, state_data.operator, state_data.version, system_mask, state_data.hardness)
+        return requirement(state_data.name,
+                           state_data.operator,
+                           state_data.version,
+                           system_mask,
+                           state_data.hardness,
+                           state_data.expression)
       
     state_data = state_data_t()
 
@@ -51,8 +56,10 @@ class requirement_parser(object):
           if state_data.name:
             yield state_data_t.make_requirement(state_data)
             state_data = state_data_t()
+          system_mask, expression = clazz._parse_expression(token.system_mask)
           state_data.name = token.text
-          state_data.system_mask = token.system_mask
+          state_data.expression = expression
+          state_data.system_mask = system_mask
         elif token.type == clazz._TOKEN_OPERATOR:
           state_data.operator = token.text
           state = STATE_OPERATOR
@@ -142,3 +149,17 @@ class requirement_parser(object):
   @classmethod
   def _word_is_hardness(clazz, word):
     return requirement_hardness.is_valid(word.upper())
+
+  @classmethod
+  def _parse_expression(clazz, s):
+    if not s:
+      return None, None
+    first_parentesis = s.find('(')
+    if first_parentesis < 0:
+      return s, None
+    second_parentesis = s.find(')', first_parentesis + 1)
+    if second_parentesis < 0:
+      raise ValueError('Invalid expression: {}'.format(s))
+    expression = s[first_parentesis + 1 : second_parentesis]
+    text = s[0:first_parentesis]
+    return text, expression
