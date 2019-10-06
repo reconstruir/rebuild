@@ -1,10 +1,12 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+from collections import namedtuple
+
 from bes.common.check import check
 from bes.common.object_util import object_util
 from bes.common.tuple_util import tuple_util
-from collections import namedtuple
 from bes.compat.StringIO import StringIO
+from bes.property.cached_property import cached_property
 
 from .build_system import build_system
 from .build_version import build_version
@@ -83,5 +85,11 @@ class requirement(namedtuple('requirement', 'name, operator, version, system_mas
 
   def clone(self, mutations = None):
     return tuple_util.clone(self, mutations = mutations)
-  
+
+  @cached_property
+  def evaluated_expression(self):
+    if not self.expression:
+      return True
+    return eval(self.expression)
+
 check.register_class(requirement)

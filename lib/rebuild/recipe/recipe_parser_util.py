@@ -120,5 +120,6 @@ class recipe_parser_util(object):
           ex = ValueError('duplicate or inconsistent requirement: {}'.format(req))
           setattr(ex, 'child', child)
           raise ex
-      result.extend(reqs)
+        if req.evaluated_expression:
+          result.append(req)
     return result
