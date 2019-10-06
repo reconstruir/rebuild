@@ -1157,4 +1157,10 @@ doesnt work because the all: BAR=default at the end clobbers the previous platfo
 if the tarball for a recipe changes for example from zip to tar.gz dependencies get screwed probably cause of the cached targets/sources
 
 export compilation flags get messed up by rebuild_update_pypi.py
+
 rebuild_update_pypi.py recipes/python/packages/python_cryptography/rebuild.recipe
+
+the code in value_hook.py to save and use the hook_code is really hacky.  better would be to always store the
+source and then just compile it as needed
+
+need unit tests for packages with conficlting files but same checksum
