@@ -1163,4 +1163,6 @@ rebuild_update_pypi.py recipes/python/packages/python_cryptography/rebuild.recip
 the code in value_hook.py to save and use the hook_code is really hacky.  better would be to always store the
 source and then just compile it as needed
 
-need unit tests for packages with conficlting files but same checksum
+need unit tests for packages with conflicting files but same checksum
+
+need unit tests for requirement expressions
