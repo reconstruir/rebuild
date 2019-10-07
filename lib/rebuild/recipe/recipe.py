@@ -151,5 +151,10 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
 
   def clone(self, mutations = None):
     return tuple_util.clone(self, mutations = mutations)
+
+  @classmethod
+  def is_recipe(clazz, filename):
+    'Return True if filename is a valid recipe.'
+    return recipe_util.file_starts_with_magic(filename, clazz.MAGIC)
   
 check.register_class(recipe, include_seq = False)
