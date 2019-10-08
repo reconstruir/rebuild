@@ -51,6 +51,10 @@ class requirement(namedtuple('requirement', 'name, operator, version, system_mas
       buf.write(self.system_mask)
     else:
       buf.write('all')
+    if self.expression:
+      buf.write('(')
+      buf.write(self.expression)
+      buf.write(')')
     buf.write(': ')
     buf.write(str(req_no_system_mask))
     return buf.getvalue()
