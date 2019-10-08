@@ -21,6 +21,9 @@ class test_requirement(unit_test):
   def test_to_string_colon_format_with_hardness(self):
     self.assertEqual( 'all: RUN foo >= 1.2.3', R('foo', '>=', '1.2.3', None, 'RUN').to_string_colon_format() )
     self.assertEqual( 'linux: TOOL foo >= 1.2.3', R('foo', '>=', '1.2.3', 'linux', 'TOOL').to_string_colon_format() )
+    
+  def test_to_string_colon_format_with_expression(self):
+    self.assertEqual( 'all(${FOO} < 99): RUN foo >= 1.2.3', R('foo', '>=', '1.2.3', None, 'RUN', '${FOO} < 99').to_string_colon_format() )
 
   def test___str__with_hardness(self):
     self.assertEqual( 'RUN foo(linux) >= 1.2.3', str(R('foo', '>=', '1.2.3', 'linux', 'RUN')) )
