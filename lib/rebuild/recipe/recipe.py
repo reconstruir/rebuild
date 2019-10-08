@@ -37,6 +37,22 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
                                       instructions, steps, python_code, variables,
                                       data)
 
+  @property
+  def name(self):
+    return self.descriptor.name
+
+  @property
+  def version(self):
+    return self.descriptor.version
+  
+  @property
+  def upstream_version(self):
+    return self.version.upstream_version
+  
+  @property
+  def revision(self):
+    return self.version.revision
+  
   def __str__(self):
     return self.to_string()
 
@@ -76,7 +92,7 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
     for key in sorted([ key for key in properties.keys()]):
       clazz._property_to_node(properties_node, key, properties)
     return properties_node
-  
+
   @classmethod
   def _property_to_node(clazz, properties_node, key, properties):
     assert isinstance(properties_node, node)
