@@ -143,13 +143,6 @@ class step(with_metaclass(step_register_meta, object)):
     staged_files_env = os_env.make_shell_env(script.staged_files_dir)
     os_env.update(env, staged_files_env)
     
-#<<<<<<< HEAD
-#=======
-#    env['REBUILD_PYTHON_VERSION'] = '3.7'
-#    #env['PYTHON'] = '/usr/local/bin/python3' # python%s' % (env['REBUILD_PYTHON_VERSION'])
-#    env['PYTHON'] = 'python%s' % (env['REBUILD_PYTHON_VERSION'])
-#    
-#>>>>>>> start using python3
     tc = toolchain.get_toolchain(script.build_target)
     compiler_flags = tc.compiler_flags()
     env['REBUILD_COMPILE_CFLAGS'] = ' '.join(compiler_flags.get('CFLAGS', []))
