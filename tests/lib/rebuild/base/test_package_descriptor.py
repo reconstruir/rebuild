@@ -96,13 +96,13 @@ class test_package_descriptor(unit_test):
     self.assertEqual( 'foo-1.2.3-1', str(PD('foo', '1.2.3-1')) )
 
   def test_str_with_requirements(self):
-    self.assertEqual( 'foo-1.2.3-1(d1 >= 1.2.3-1 d2 >= 6.6.6-1)', str(PD('foo', '1.2.3-1', requirements = self.TEST_REQUIREMENTS)) )
+    self.assertEqual( 'foo-1.2.3-1(all: d1 >= 1.2.3-1 all: d2 >= 6.6.6-1)', str(PD('foo', '1.2.3-1', requirements = self.TEST_REQUIREMENTS)) )
 
   def test_str_with_properties(self):
     self.assertEqual( 'foo-1.2.3-1(a=5; b=66)', str(PD('foo', '1.2.3-1', properties = self.TEST_PROPS)) )
 
   def test_str_with_requirements_and_properties(self):
-    self.assertEqual( 'foo-1.2.3-1(d1 >= 1.2.3-1 d2 >= 6.6.6-1; a=5; b=66)', str(PD('foo', '1.2.3-1', requirements = self.TEST_REQUIREMENTS, properties = self.TEST_PROPS)) )
+    self.assertEqual( 'foo-1.2.3-1(all: d1 >= 1.2.3-1 all: d2 >= 6.6.6-1; a=5; b=66)', str(PD('foo', '1.2.3-1', requirements = self.TEST_REQUIREMENTS, properties = self.TEST_PROPS)) )
 
   def test_parse_requirements(self):
     self.maxDiff = None

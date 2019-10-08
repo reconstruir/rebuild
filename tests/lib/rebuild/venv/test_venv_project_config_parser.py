@@ -87,23 +87,23 @@ projects
     p = self._parse(text)
     self.assertEqual( 1, len(p.projects) )
     self.assertEqual( [
-      ( 'forall1', '==', '1.1.1', None, None, None ),
+      ( 'forall1', '==', '1.1.1', 'all', None, None ),
       ( 'forall2', '>=', '1.2', 'all', None, None ),
       ( 'forlinux1', '>=', '2.2', 'linux', None, None ),
-      ( 'forall3', '>=', '5.5', None, None, None ),
+      ( 'forall3', '>=', '5.5', 'all', None, None ),
     ], p.projects[0].resolve_packages('linux') )
 
     self.assertEqual( [
-      ( 'forall1', '==', '1.1.1', None, None, None ),
+      ( 'forall1', '==', '1.1.1', 'all', None, None ),
       ( 'forall2', '>=', '1.2', 'all', None, None ),
       ( 'formacos1', '>=', '3.3', 'macos', None, None ),
-      ( 'forall3', '>=', '5.5', None, None, None ),
+      ( 'forall3', '>=', '5.5', 'all', None, None ),
     ], p.projects[0].resolve_packages('macos') )
 
     self.assertEqual( [
-      ( 'forall1', '==', '1.1.1', None, None, None ),
+      ( 'forall1', '==', '1.1.1', 'all', None, None ),
       ( 'forall2', '>=', '1.2', 'all', None, None ),
-      ( 'forall3', '>=', '5.5', None, None, None ),
+      ( 'forall3', '>=', '5.5', 'all', None, None ),
     ], p.projects[0].resolve_packages('android') )
 
   def test_packages_dups(self):
@@ -246,16 +246,16 @@ projects
     p = self._parse(text)
     self.assertEqual( 1, len(p.projects) )
     self.assertEqual( [
-      ( 'guava', '==', '6.0.0', None, None, None ),
-      ( 'kiwi', '==', '1.0.0', None, None, None ),
-      ( 'orange', '==', '3.0.0', None, None, None ),
+      ( 'guava', '==', '6.0.0', 'all', None, None ),
+      ( 'kiwi', '==', '1.0.0', 'all', None, None ),
+      ( 'orange', '==', '3.0.0', 'all', None, None ),
       ( 'lemon', '==', '2.0.0', 'linux', None, None ),
     ], p.projects[0].resolve_packages('linux') )
     return
     self.assertEqual( [
-      ( 'guava', '==', '6.0.0', None, None, None ),
-      ( 'kiwi', '==', '9.0.0', None, None, None ),
-      ( 'orange', '==', '7.0.0', None, None, None ),
+      ( 'guava', '==', '6.0.0', 'all', None, None ),
+      ( 'kiwi', '==', '9.0.0', 'all', None, None ),
+      ( 'orange', '==', '7.0.0', 'all', None, None ),
       ( 'plum', '==', '5.0.0', 'macos', None, None ),
     ], p.projects[0].resolve_packages('macos') )
     
@@ -278,12 +278,12 @@ projects
       p = self._parse(text)
       self.assertEqual( 1, len(p.projects) )
       self.assertEqual( [
-        ( 'guava', '==', '6.6.6', None, None, None ),
-        ( 'kiwi', '==', '7.7.7', None, None, None ),
+        ( 'guava', '==', '6.6.6', 'all', None, None ),
+        ( 'kiwi', '==', '7.7.7', 'all', None, None ),
       ], p.projects[0].resolve_packages('linux') )
       self.assertEqual( [
-        ( 'guava', '==', '6.6.6', None, None, None ),
-        ( 'kiwi', '==', '7.7.7', None, None, None ),
+        ( 'guava', '==', '6.6.6', 'all', None, None ),
+        ( 'kiwi', '==', '7.7.7', 'all', None, None ),
       ], p.projects[0].resolve_packages('macos') )
     finally:
       del os.environ['GUAVA_VERSION']
@@ -305,12 +305,12 @@ projects
     p = self._parse(text, variables = 'GUAVA_VERSION=9.9.9 KIWI_VERSION=7.7.7')
     self.assertEqual( 1, len(p.projects) )
     self.assertEqual( [
-      ( 'guava', '==', '9.9.9', None, None, None ),
-      ( 'kiwi', '==', '7.7.7', None, None, None ),
+      ( 'guava', '==', '9.9.9', 'all', None, None ),
+      ( 'kiwi', '==', '7.7.7', 'all', None, None ),
     ], p.projects[0].resolve_packages('linux') )
     self.assertEqual( [
-      ( 'guava', '==', '9.9.9', None, None, None ),
-      ( 'kiwi', '==', '7.7.7', None, None, None ),
+      ( 'guava', '==', '9.9.9', 'all', None, None ),
+      ( 'kiwi', '==', '7.7.7', 'all', None, None ),
     ], p.projects[0].resolve_packages('macos') )
     
   def test_use_variable_manager_overrides_project_variables(self):
@@ -329,12 +329,12 @@ projects
     p = self._parse(text, variables = 'GUAVA_VERSION=9.9.9 KIWI_VERSION=7.7.7')
     self.assertEqual( 1, len(p.projects) )
     self.assertEqual( [
-      ( 'guava', '==', '9.9.9', None, None, None ),
-      ( 'kiwi', '==', '7.7.7', None, None, None ),
+      ( 'guava', '==', '9.9.9', 'all', None, None ),
+      ( 'kiwi', '==', '7.7.7', 'all', None, None ),
     ], p.projects[0].resolve_packages('linux') )
     self.assertEqual( [
-      ( 'guava', '==', '9.9.9', None, None, None ),
-      ( 'kiwi', '==', '7.7.7', None, None, None ),
+      ( 'guava', '==', '9.9.9', 'all', None, None ),
+      ( 'kiwi', '==', '7.7.7', 'all', None, None ),
     ], p.projects[0].resolve_packages('macos') )
     
   def _filename_for_parser(self):

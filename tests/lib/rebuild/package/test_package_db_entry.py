@@ -73,8 +73,8 @@ class test_package_db_entry(unit_test):
     "p2": 6
   }, 
   "requirements": [
-    "foo >= 1.2.3-1", 
-    "bar >= 6.6.6-1"
+    "all: foo >= 1.2.3-1", 
+    "all: bar >= 6.6.6-1"
   ], 
   "revision": 2, 
   "version": "6.7.8"
@@ -140,7 +140,7 @@ class test_package_db_entry(unit_test):
       },
       'name': 'kiwi', 
       'properties': { 'p1': 'v1',  'p2': 6 }, 
-      'requirements': [ 'foo >= 1.2.3-1',  'bar >= 6.6.6-1' ], 
+      'requirements': [ 'all: foo >= 1.2.3-1',  'all: bar >= 6.6.6-1' ], 
       'revision': 2, 
       'version': '6.7.8',
     }

@@ -7,27 +7,20 @@ from rebuild.base.requirement import requirement as R
 class test_requirement(unit_test):
 
   def test___str__(self):
-    self.assertEqual( 'foo >= 1.2.3', str(R('foo', '>=', '1.2.3')) )
-    self.assertEqual( 'orange >= 6.6.6', str(R('orange', '>=', '6.6.6')) )
+    self.assertEqual( 'all: foo >= 1.2.3', str(R('foo', '>=', '1.2.3')) )
+    self.assertEqual( 'all: orange >= 6.6.6', str(R('orange', '>=', '6.6.6')) )
 
   def test___str__with_system(self):
-    self.assertEqual( 'foo(linux) >= 1.2.3', str(R('foo', '>=', '1.2.3', 'linux')) )
-    self.assertEqual( 'orange >= 6.6.6', str(R('orange', '>=', '6.6.6', 'all')) )
+    self.assertEqual( 'linux: foo >= 1.2.3', str(R('foo', '>=', '1.2.3', 'linux')) )
+    self.assertEqual( 'all: orange >= 6.6.6', str(R('orange', '>=', '6.6.6', 'all')) )
 
-  def test_to_string_colon_format(self):
-    self.assertEqual( 'all: foo >= 1.2.3', R('foo', '>=', '1.2.3', None).to_string_colon_format() )
-    self.assertEqual( 'linux: foo >= 1.2.3', R('foo', '>=', '1.2.3', 'linux').to_string_colon_format() )
-
-  def test_to_string_colon_format_with_hardness(self):
-    self.assertEqual( 'all: RUN foo >= 1.2.3', R('foo', '>=', '1.2.3', None, 'RUN').to_string_colon_format() )
-    self.assertEqual( 'linux: TOOL foo >= 1.2.3', R('foo', '>=', '1.2.3', 'linux', 'TOOL').to_string_colon_format() )
+  def test___str___with_hardness(self):
+    self.assertEqual( 'all: RUN foo >= 1.2.3', str(R('foo', '>=', '1.2.3', None, 'RUN')) )
+    self.assertEqual( 'linux: TOOL foo >= 1.2.3', str(R('foo', '>=', '1.2.3', 'linux', 'TOOL')) )
+    self.assertEqual( 'linux: RUN foo >= 1.2.3', str(R('foo', '>=', '1.2.3', 'linux', 'RUN')) )
     
-  def test_to_string_colon_format_with_expression(self):
-    self.assertEqual( 'all(${FOO} < 99): RUN foo >= 1.2.3', R('foo', '>=', '1.2.3', None, 'RUN', '${FOO} < 99').to_string_colon_format() )
-
-  def test___str__with_hardness(self):
-    self.assertEqual( 'RUN foo(linux) >= 1.2.3', str(R('foo', '>=', '1.2.3', 'linux', 'RUN')) )
-    #self.assertEqual( 'orange >= 6.6.6', str(R('orange', '>=', '6.6.6', 'all', 'RUN')) )
+  def test___str___with_expression(self):
+    self.assertEqual( 'all(${FOO} < 99): RUN foo >= 1.2.3', str(R('foo', '>=', '1.2.3', None, 'RUN', '${FOO} < 99')) )
     
   def test_clone_replace_hardness(self):
     r1 = R('foo', '>=', '1.2.3', 'linux', 'RUN')

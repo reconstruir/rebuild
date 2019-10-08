@@ -11,41 +11,41 @@ class test_requirement_list(unit_test):
     text = 'foo >= 1.2.3 orange >= 6.6.6 bar baz bar orange >= 6.6.6'
     requirements = RL.parse(text)
     self.assertEqual( [
-      ( 'foo', '>=', '1.2.3', None, None, None ),
-      ( 'orange', '>=', '6.6.6', None, None, None ),
-      ( 'bar', None, None, None, None, None ),
-      ( 'baz', None, None, None, None, None ),
+      ( 'foo', '>=', '1.2.3', 'all', None, None ),
+      ( 'orange', '>=', '6.6.6', 'all', None, None ),
+      ( 'bar', None, None, 'all', None, None ),
+      ( 'baz', None, None, 'all', None, None ),
     ], requirements )
     self.assertEqual( [
-      ( 'foo', '>=', '1.2.3', None, None, None ),
-      ( 'orange', '>=', '6.6.6', None, None, None ),
-      ( 'bar', None, None, None, None, None ),
-      ( 'baz', None, None, None, None, None ),
+      ( 'foo', '>=', '1.2.3', 'all', None, None ),
+      ( 'orange', '>=', '6.6.6', 'all', None, None ),
+      ( 'bar', None, None, 'all', None, None ),
+      ( 'baz', None, None, 'all', None, None ),
     ], requirements )
 
   def test_parse_string_seq_list(self):
     text = [ 'foo >= 1.2.3', 'orange >= 6.6.6', 'bar', 'baz', 'bar', 'orange >= 6.6.6' ]
     requirements = RL.parse(text)
     self.assertEqual( [
-      ( 'foo', '>=', '1.2.3', None, None, None ),
-      ( 'orange', '>=', '6.6.6', None, None, None ),
-      ( 'bar', None, None, None, None, None ),
-      ( 'baz', None, None, None, None, None ),
+      ( 'foo', '>=', '1.2.3', 'all', None, None ),
+      ( 'orange', '>=', '6.6.6', 'all', None, None ),
+      ( 'bar', None, None, 'all', None, None ),
+      ( 'baz', None, None, 'all', None, None ),
     ], requirements )
     self.assertEqual( [
-      ( 'foo', '>=', '1.2.3', None, None, None ),
-      ( 'orange', '>=', '6.6.6', None, None, None ),
-      ( 'bar', None, None, None, None, None ),
-      ( 'baz', None, None, None, None, None ),
+      ( 'foo', '>=', '1.2.3', 'all', None, None ),
+      ( 'orange', '>=', '6.6.6', 'all', None, None ),
+      ( 'bar', None, None, 'all', None, None ),
+      ( 'baz', None, None, 'all', None, None ),
     ], requirements )
     
   def test_to_string(self):
     reqs = RL([ R('foo', '>=', '1.2.3'), R('orange', '>=', '6.6.6'), R('bar', None, None), R('baz', None, None) ])
-    self.assertEqual( 'foo >= 1.2.3 orange >= 6.6.6 bar baz', str(reqs) )
+    self.assertEqual( 'all: foo >= 1.2.3 all: orange >= 6.6.6 all: bar all: baz', str(reqs) )
 
   def test_to_string_with_system(self):
     reqs = RL([ R('foo', '>=', '1.2.3', 'macos'), R('orange', '>=', '6.6.6', 'all'), R('bar', None, None, 'desktop'), R('baz', None, None, 'linux') ])
-    self.assertEqual( 'foo(macos) >= 1.2.3 orange >= 6.6.6 bar(desktop) baz(linux)', str(reqs) )
+    self.assertEqual( 'macos: foo >= 1.2.3 all: orange >= 6.6.6 desktop: bar linux: baz', str(reqs) )
 
   def test_resolve_requirements(self):
     text = 'apple(linux) >= 1.2.3 kiwi orange(macos) == 6.6.6 pear(ios) lychee(all) corn(desktop) tomato(linux|macos) <= 9.8.7'
@@ -53,14 +53,14 @@ class test_requirement_list(unit_test):
 
     self.assertEqual( [
       ( 'apple', '>=', '1.2.3', 'linux', None, None ),
-      ( 'kiwi', None, None, None, None, None ),
+      ( 'kiwi', None, None, 'all', None, None ),
       ( 'lychee', None, None, 'all', None, None ),
       ( 'corn', None, None, 'desktop', None, None ),
       ( 'tomato', '<=', '9.8.7', 'linux|macos', None, None ),
     ], reqs.resolve('linux') )
 
     self.assertEqual( [
-      ( 'kiwi', None, None, None, None, None ),
+      ( 'kiwi', None, None, 'all', None, None ),
       ( 'orange', '==', '6.6.6', 'macos', None, None ),
       ( 'lychee', None, None, 'all', None, None ),
       ( 'corn', None, None, 'desktop', None, None ),
@@ -68,13 +68,13 @@ class test_requirement_list(unit_test):
     ], reqs.resolve('macos') )
 
     self.assertEqual( [
-      ( 'kiwi', None, None, None, None, None ),
+      ( 'kiwi', None, None, 'all', None, None ),
       ( 'pear', None, None, 'ios', None, None ),
       ( 'lychee', None, None, 'all', None, None ),
     ], reqs.resolve('ios') )
 
     self.assertEqual( [
-      ( 'kiwi', None, None, None, None, None ),
+      ( 'kiwi', None, None, 'all', None, None ),
       ( 'lychee', None, None, 'all', None, None ),
     ], reqs.resolve('android') )
 
@@ -82,15 +82,15 @@ class test_requirement_list(unit_test):
     text = 'a >= 1.2 RUN b >= 2.3 TOOL c >= 3.4 BUILD d >= 5.6 e >= 6.7'
     r = RL.parse(text)
     self.assertEqual( [
-      ( 'a', '>=', '1.2', None, None, None ),
-      ( 'b', '>=', '2.3', None, 'RUN', None ),
-      ( 'e', '>=', '6.7', None, None, None ),
+      ( 'a', '>=', '1.2', 'all', None, None ),
+      ( 'b', '>=', '2.3', 'all', 'RUN', None ),
+      ( 'e', '>=', '6.7', 'all', None, None ),
     ], r.filter_by_hardness('RUN') )
     self.assertEqual( [
-      ( 'c', '>=', '3.4', None, 'TOOL', None ),
+      ( 'c', '>=', '3.4', 'all', 'TOOL', None ),
     ], r.filter_by_hardness('TOOL') )
     self.assertEqual( [
-      ( 'd', '>=', '5.6', None, 'BUILD', None ),
+      ( 'd', '>=', '5.6', 'all', 'BUILD', None ),
     ], r.filter_by_hardness('BUILD') )
 
   def test_filter_by_system(self):

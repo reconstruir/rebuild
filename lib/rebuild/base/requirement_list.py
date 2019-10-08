@@ -22,14 +22,14 @@ class requirement_list(type_checked_list):
       return requirement(*entry)
     return entry
   
-  def to_string(self, delimiter = ' '):
+  def to_string(self, delimiter = ' ', include_system_mask = True):
     buf = StringIO()
     first = True
     for req in iter(self):
       if not first:
         buf.write(delimiter)
       first = False
-      buf.write(str(req))
+      buf.write(req.to_string(include_system_mask = include_system_mask))
     return buf.getvalue()
 
   def __hash__(self):
@@ -40,6 +40,7 @@ class requirement_list(type_checked_list):
 
   @classmethod
   def parse(clazz, text, default_system_mask = None):
+    default_system_mask = default_system_mask or 'all'
     if check.is_string_seq(text):
       text = ' '.join(text)
     check.check_string(text)

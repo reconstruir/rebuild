@@ -67,5 +67,5 @@ class recipe_util(object):
   def requirements_to_node(clazz, label, requirements):
     result = node(label)
     for req in requirements:
-      result.add_child(req.to_string_colon_format())
+      result.add_child(str(req))
     return result

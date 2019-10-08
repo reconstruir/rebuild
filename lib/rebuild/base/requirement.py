@@ -27,38 +27,50 @@ class requirement(namedtuple('requirement', 'name, operator, version, system_mas
     check.check_string(expression, allow_none = True)
     return clazz.__bases__[0].__new__(clazz, name, operator, version, system_mask, hardness, expression)
 
+  @cached_property
+  def original_name(self):
+    if hasattr(self, '_original_name'):
+      return getattr(self, '_original_name')
+    return self.name
+  
+  @cached_property
+  def original_version(self):
+    if hasattr(self, '_original_version'):
+      return getattr(self, '_original_version')
+    return self.version
+
+  @cached_property
+  def original_expression(self):
+    if hasattr(self, '_original_expression'):
+      return getattr(self, '_original_expression')
+    return self.expression
+  
   def __str__(self):
+    return self.to_string(include_system_mask = True)
+    
+  def to_string(self, include_system_mask = True):
     buf = StringIO()
+    if include_system_mask:
+      if self.system_mask:
+        buf.write(self.system_mask)
+      else:
+        buf.write('all')
+      if self.original_expression:
+        buf.write('(')
+        buf.write(self.original_expression)
+        buf.write(')')
+      buf.write(': ')
     if self.hardness:
       buf.write(str(self.hardness))
       buf.write(' ')
-    buf.write(self.name)
-    if self.system_mask and self.system_mask != 'all':
-      buf.write('(')
-      buf.write(self.system_mask)
-      buf.write(')')
+    buf.write(self.original_name)
     if self.operator:
       buf.write(' ')
       buf.write(self.operator)
       buf.write(' ')
-      buf.write(self.version)
+      buf.write(self.original_version)
     return buf.getvalue()
-
-  def to_string_colon_format(self):
-    req_no_system_mask = self.clone_replace_system_mask(None)
-    buf = StringIO()
-    if self.system_mask:
-      buf.write(self.system_mask)
-    else:
-      buf.write('all')
-    if self.expression:
-      buf.write('(')
-      buf.write(self.expression)
-      buf.write(')')
-    buf.write(': ')
-    buf.write(str(req_no_system_mask))
-    return buf.getvalue()
-
+  
   def clone_replace_hardness(self, hardness):
     l = list(self)
     l[4] = hardness
@@ -89,11 +101,5 @@ class requirement(namedtuple('requirement', 'name, operator, version, system_mas
 
   def clone(self, mutations = None):
     return tuple_util.clone(self, mutations = mutations)
-
-  @cached_property
-  def evaluated_expression(self):
-    if not self.expression:
-      return True
-    return eval(self.expression)
 
 check.register_class(requirement)

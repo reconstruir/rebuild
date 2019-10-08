@@ -125,7 +125,7 @@ class pkg_config_file(object):
   def __dedup_requirements(clazz, value):
     reqs = requirement_list.parse(value)
     reqs.remove_dups()
-    return reqs.to_string()
+    return reqs.to_string(include_system_mask = False)
 
   def __parse_requirements(self):
     buf = StringIO()

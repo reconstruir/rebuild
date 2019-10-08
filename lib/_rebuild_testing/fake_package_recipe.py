@@ -73,7 +73,7 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
   def _requirements_to_node(clazz, label, requirements):
     result = node(label)
     for req in requirements:
-      result.add_child(req.to_string_colon_format())
+      result.add_child(str(req))
     return result
   
   @classmethod

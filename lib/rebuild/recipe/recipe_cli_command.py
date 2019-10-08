@@ -40,7 +40,7 @@ class recipe_cli_command(object):
       else:
         new_requirements.append(req)
     if new_requirements != recipe.requirements:
-      print('    FIX: {}: name={} old={} new={}'.format(recipe.filename, recipe.name, recipe.requirements, new_requirements))
+      #print('    FIX: {}: name={} old={} new={}'.format(recipe.filename, recipe.name, recipe.requirements, new_requirements))
       new_recipe = recipe.clone(mutations = { 'requirements': new_requirements })
       file_util.backup(new_recipe.filename)
       new_recipe.save_to_file(new_recipe.filename)

@@ -95,7 +95,7 @@ class package_descriptor(namedtuple('package_descriptor', 'name, version, requir
     return {
       'name': self.name,
       'version': str(self.version),
-      'requirements': [ req.to_string_colon_format() for req in self.requirements ],
+      'requirements': [ str(req) for req in self.requirements ],
       'properties': self.properties,
     }
 

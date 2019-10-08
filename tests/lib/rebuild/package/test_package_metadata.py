@@ -86,8 +86,8 @@ class test_package_metadata(unit_test):
     "p2": 6
   }, 
   "requirements": [
-    "foo >= 1.2.3-1", 
-    "bar >= 6.6.6-1"
+    "all: foo >= 1.2.3-1", 
+    "all: bar >= 6.6.6-1"
   ], 
   "revision": 2, 
   "system": "macos", 

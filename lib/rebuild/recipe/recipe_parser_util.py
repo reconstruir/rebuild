@@ -1,6 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.common.check import check
+from bes.common.variable import variable
 from bes.key_value.key_value import key_value
 from bes.text.comments import comments
 from bes.text.line_break import line_break
@@ -113,13 +114,46 @@ class recipe_parser_util(object):
     result = requirement_list()
     for child in node.children:
       req_text = child.get_text(child.NODE_FLAT)
-      req_text = variable_manager.substitute(req_text)
       reqs = requirement_list.parse(req_text)
       for req in reqs:
         if result.has_requirement(req.name, req.hardness):
           ex = ValueError('duplicate or inconsistent requirement: {}'.format(req))
           setattr(ex, 'child', child)
           raise ex
-        if req.evaluated_expression:
-          result.append(req)
+        if clazz._requirement_evaluate_expression(req, variable_manager):
+          substituted_req = clazz._requirement_substitute(req, variable_manager)
+          #print('CACA: req={} substituted_req={}'.format(req, substituted_req))
+          if req.name:
+            setattr(substituted_req, '_orignal_name', req.name)
+          if req.version:
+            setattr(substituted_req, '_orignal_version', req.version)
+          if req.expression:
+            setattr(substituted_req, '_orignal_expression', req.expression)
+          result.append(substituted_req)
     return result
+
+  @classmethod
+  def _requirement_substitute(clazz, req, variable_manager):
+    name = variable_manager.substitute(req.name)
+    if req.version:
+      version = variable_manager.substitute(req.version)
+    else:
+      version = None
+    if req.expression:
+      expression = variable_manager.substitute(req.expression)
+    else:
+      expression = None
+    return req.clone(mutations = {
+      'name': name,
+      'version': version,
+      'expression': expression,
+    })
+
+  @classmethod
+  def _requirement_evaluate_expression(clazz, req, variable_manager):
+    if not req.expression:
+      return True
+    substituted_expression = variable_manager.substitute(req.expression)
+    if variable.has_rogue_dollar_signs(substituted_expression):
+      raise ValueError('Rogue dollar sign: {}'.format(substituted_expression))
+    return eval(substituted_expression)

@@ -44,6 +44,10 @@ class update_cli(object):
                               action = 'store_true',
                               default = False,
                               help = 'Update the recipe version to the latest release [ False ]')
+    self._parser.add_argument('--print-versions',
+                              action = 'store_true',
+                              default = False,
+                              help = 'Only print the available versions. [ False ]')
     
   @classmethod
   def run(clazz):
@@ -52,19 +56,19 @@ class update_cli(object):
   def main(self):
     args = self._parser.parse_args()
     for filename in args.filenames:
-      self._process_file(filename, args.update, args.backup)
+      self._process_file(filename, args.update, args.backup, args.print_versions)
     return 0
 
-  def _process_file(self, filename, update, backup):
+  def _process_file(self, filename, update, backup, print_versions):
     if not path.isfile(filename):
       raise IOError('Not a file: %s' % (filename))
     env = testing_recipe_load_env()
     recipes = builder_recipe_loader.load(env, filename)
     for recipe in recipes:
-      self._process_recipe(recipe, filename, update, backup)
+      self._process_recipe(recipe, filename, update, backup, print_versions)
     return 0
 
-  def _process_recipe(self, recipe, filename, update, backup):
+  def _process_recipe(self, recipe, filename, update, backup, print_versions):
     system = 'linux' # doesnt matter just needs to be a valid system
     vars_kvl = recipe.resolve_variables('linux')
     vars_dict = vars_kvl.to_dict()
@@ -77,6 +81,11 @@ class update_cli(object):
     old_release = pypi_data.find_by_version(old_version)
     new_release = pypi_data.latest_release
 
+    if print_versions:
+      for x in pypi_data.releases:
+        print(x)
+        return
+    
     if update:
       extension = archive_extension.extension_for_filename(path.basename(new_release.url))
     else:
