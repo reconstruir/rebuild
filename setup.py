@@ -25,5 +25,6 @@ setup(
     'bin/rebuild_update_tarball_address.py',
     'bin/rebuilder.py',
     'bin/revenv.py',
+    'bin/retool.py',
   ],
 )
