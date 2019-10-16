@@ -156,10 +156,7 @@ class rebuilder_tester(object):
 
   def run_script(self, args, cwd = None, env = None):
     rv = self.run_script_raw(args, cwd = cwd, env = env)
-    if isinstance(rv.stdout, bytes):
-      stdout = rv.stdout.decode('utf-8')
-    else:
-      stdout = rv.stdout
+    stdout = rv.stdout.decode('utf-8')
     if rv.exit_code != 0:
       print(rv.stdout)
     return self.exec_result(rv.exit_code, stdout)
