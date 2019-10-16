@@ -9,9 +9,9 @@ class archive_cli_command(object):
   @classmethod
   def create_git(clazz, root_dir, prefix, revision, output_filename, archive_format):
     r = git_repo(root_dir)
-    r.archive_foo(prefix, revision, output_filename,
-                  archive_format = archive_format,
-                  short_hash = True)
+    r.archive_to_file(prefix, revision, output_filename,
+                      archive_format = archive_format,
+                      short_hash = True)
     return 0
 
   @classmethod
