@@ -60,7 +60,7 @@ class storage_config(namedtuple('storage_config', 'name, provider, location, rep
   
   @classmethod
   def create_from_config(clazz, source, section):
-    check.check_config_section(section)
+    check.check_simple_config_section(section)
     name = section.find_by_key('name')
     provider = section.find_by_key('provider')
     location = section.find_by_key('location', raise_error = False)
