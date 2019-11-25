@@ -13,6 +13,7 @@ from bes.fs.file_metadata import file_metadata
 from bes.system.log import logger
 from bes.factory.factory_field import factory_field
 from bes.key_value.key_value_list import key_value_list
+from bes.fs.checksum_set import checksum_set
 
 from bes.vfs.vfs_base import vfs_base
 from bes.vfs.vfs_path_util import vfs_path_util
@@ -106,46 +107,57 @@ class vfs_pcloud(vfs_base):
   #@abstractmethod
   def file_info(self, remote_filename, options):
     'Get info for a single file.'
+    check.check_string(remote_filename)
+    check.check_vfs_file_info_options(options, allow_none = True)
+
     remote_filename = vfs_path_util.normalize(remote_filename)
-    if remote_filename == '':
-      entry = self._pcloud.folder_info(folder_path = '/')
-      return self._make_entry(vfs_path_util.dirname(remote_filename),
-                              vfs_path_util.basename(remote_filename),
-                              entry,
-                              vfs_file_info_list(),
-                              options)
+
+    self.log.log_d('file_info(remote_filename="{}", options={}'.format(remote_filename, options))
+    
+    if remote_filename == '/':
+      return self._file_info_root(options)
+    
     self._metadata_db_update_local()
-    parent = path.dirname(remote_filename)
-    basename = path.basename(remote_filename)
+    
+    parent = vfs_path_util.dirname(remote_filename) or '/'
+    basename = vfs_path_util.basename(remote_filename)
+
+    self.log.log_d('file_info() parent="{}" basename="{}"'.format(parent, basename))
+    
     entries = self._pcloud.list_folder(folder_path = parent)
+
+    self.log.log_d('file_info() entries={}'.format(pprint.pformat(entries)))
     
     for entry in entries:
       if entry.name == basename:
-        return self._make_entry(vfs_path_util.dirname(remote_filename),
-                                vfs_path_util.basename(remote_filename),
+        return self._make_entry(remote_filename,
                                 entry,
                                 vfs_file_info_list(),
                                 options)
     raise vfs_error('file not found: {}'.format(remote_filename))
 
-  def _make_entry(self, remote_dir, remote_filename, entry, children, options):
+  def _file_info_root(self, options):
+    entry = self._pcloud.folder_info(folder_path = '/')
+    return self._make_entry('/', entry, vfs_file_info_list(), options)
+
+  def _make_entry(self, remote_filename, entry, children, options):
     #print('X      remote_dir: {}'.format(remote_dir))
     #print('X remote_filename: {}'.format(remote_filename))
     #print('1 remote_filename: {}'.format(remote_filename))
-    remote_filename = vfs_path_util.normalize(remote_filename)
+    #remote_filename = vfs_path_util.normalize(remote_filename)
     #print('2 remote_filename: {}'.format(remote_filename))
     if entry.is_folder:
       ftype = vfs_file_info.DIR
     else:
       ftype = vfs_file_info.FILE
     if ftype == vfs_file_info.FILE:
-      entry_path = vfs_path_util.normalize(vfs_path_util.join(remote_dir, vfs_path_util.lstrip_sep(remote_filename)))
+      entry_path = remote_filename #vfs_path_util.normalize(vfs_path_util.join(remote_dir, vfs_path_util.lstrip_sep(remote_filename)))
       #print('entry_path: {}'.format(entry_path))
-      checksum = self._metadata_db.get_value('checksums', entry_path, 'checksum.sha256')
+      chk = checksum_set(checksum(checksum.SHA256, self._metadata_db.get_value('checksums', entry_path, 'checksum.sha256')))
       attributes = self._metadata_db.get_values('attributes', entry_path).to_dict()
       size = entry.size
     else:
-      checksum = None
+      chk = None
       attributes = None
       size = None
     modification_date = datetime.strptime(entry.modified, '%a, %d %b %Y %H:%M:%S +0000')
@@ -156,7 +168,7 @@ class vfs_pcloud(vfs_base):
                          ftype,
                          modification_date,
                          size,
-                         checksum,
+                         chk,
                          attributes,
                          children)
 
