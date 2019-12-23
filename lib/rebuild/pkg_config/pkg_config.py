@@ -31,16 +31,26 @@ class pkg_config(object):
   @classmethod
   def pkg_config_exe(clazz):
     if not hasattr(clazz, '_pkg_config_exe'):
-      exe = file_path.which('pkgconf', raise_error = False)
+      exe = clazz._find_exe()
       if not exe:
-        exe = file_path.which('pkg-config', raise_error = False)
-      if not exe:
-        for p in os_env_var('PATH').path:
-          clazz._LOG.log_e('PATH: %s' % (p))
         raise RuntimeError('no pkgconf or pkg-config found in $PATH')
       setattr(clazz, '_pkg_config_exe', exe)
     return getattr(clazz, '_pkg_config_exe')
-    
+
+  _POSSIBLE_EXE = [
+    'pkgconf',
+    'pkg-config',
+    'pykg-config.py',
+  ]
+  
+  @classmethod
+  def _find_exe(clazz):
+    for possible_exe in clazz._POSSIBLE_EXE:
+      exe = file_path.which(possible_exe, raise_error = False)
+      if exe:
+        return exe
+    return None
+  
   @classmethod
   def list_all(clazz, PKG_CONFIG_PATH = []):
     rv = clazz._call_pkg_config('--list-all',
@@ -123,14 +133,18 @@ class pkg_config(object):
   @classmethod
   def _call_pkg_config(clazz, args, PKG_CONFIG_LIBDIR = [], PKG_CONFIG_PATH = []):
     check.check_string_seq(PKG_CONFIG_PATH)
+    exe = clazz.pkg_config_exe()
     cmd = [ clazz.pkg_config_exe() ] + object_util.listify(args)
     env = {
       'PKG_CONFIG_DEBUG_SPEW': '1',
       'PKG_CONFIG_LIBDIR': ':'.join(PKG_CONFIG_LIBDIR),
       'PKG_CONFIG_PATH': ':'.join(PKG_CONFIG_PATH),
     }
-    for p in PKG_CONFIG_PATH:
-      file_util.mkdir(p)
+    if exe.endswith('.py'):
+      p = path.normpath(path.join(path.dirname(exe), path.pardir))
+      python_lib_dir = path.join(p, 'lib', 'python')
+      if path.isdir(python_lib_dir):
+        env['PYTHONPATH'] = python_lib_dir
     #build_blurb.blurb_verbose('pkg_config', '_call_pkg_config() cmd=%s' % (str(cmd)))
     #print('pkg_config', '_call_pkg_config() cmd=%s; env=%s' % (str(cmd), str(env)))
     #print('pkg_config', '_call_pkg_config() cmd=%s' % (str(cmd)))

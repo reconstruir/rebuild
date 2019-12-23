@@ -1166,3 +1166,8 @@ source and then just compile it as needed
 need unit tests for packages with conflicting files but same checksum
 
 need unit tests for requirement expressions
+
+
+2019 dec
+- add a version to the recipe magic
+- rename recipes to be name.rebuild
