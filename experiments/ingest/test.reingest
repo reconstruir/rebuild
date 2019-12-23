@@ -32,13 +32,12 @@ entry google-api-python-client 1.7.8
     all: path_hash 1.7.8 7a/84/ffde3c95d4162cdc8bae710fecc6873cccb05ac33afc3b2c925c74cc0150
 
   variables
-    all: _home_url=http://pyyaml.org/download/libyaml
     all: _filename=${NAME}-${VERSION}.tar.gz
-    all: _url=${PYHOSTED_HOME_URL}/@{DATA:path_hash:${VERSION}}/${_filename}
-    all: _ingested_filename=${PYTHON_PACKAGES_TARGET_DIR}/${_filename}
     
-  download
-    all: ${_url} ingested_filename=${_ingested_filename} checksum=@{DATA:checksum:${VERSION}}
+  method http
+    all: url=${PYHOSTED_HOME_URL}/@{DATA:path_hash:${VERSION}}/${_filename}
+    all: checksum=@{DATA:checksum:${VERSION}}
+    all: ingested_filename=${PYTHON_PACKAGES_TARGET_DIR}/${_filename}
 
 entry dohq_artifactory 0.1.17
 
@@ -72,12 +71,12 @@ entry java_jdk8 8u201
     linux: _extension=.tar.gz
     macos: _extension=.dmg
     all:   _filename=jdk-${VERSION}-${_system}${_extension}
-    all:   _url=${_home_url}/${VERSION}@{DATA:path_hash:${VERSION}}/${_filename}
-    all:   _ingested_filename=java/${_filename}
-    all:   _cookies="oraclelicense=accept-securebackup-cookie"
 
-  download
-    all: ${_url} checksum=@{DATA:checksum:${VERSION}} ingested_filename=${_ingested_filename} cookies=${_cookies}
+  method http
+    all: url=${_home_url}/${VERSION}@{DATA:path_hash:${VERSION}}/${_filename}
+    all: checksum=@{DATA:checksum:${VERSION}}
+    all: ingested_filename=java/${_filename}
+    all: cookies="oraclelicense=accept-securebackup-cookie"
 
 entry java_jdk11 11.0.2
 
@@ -96,8 +95,11 @@ entry java_jdk11 11.0.2
     all:   _ingested_filename=java/${_filename}
     all:   _cookies="oraclelicense=accept-securebackup-cookie"
 
-  download
-    all: ${_url} checksum=@{DATA:checksum:${VERSION}} ingested_filename=${_ingested_filename} cookies=${_cookies}
+  method http
+    all: url=${_home_url}/${VERSION}@{DATA:path_hash:${VERSION}}/${_filename}
+    all: checksum=@{DATA:checksum:${VERSION}}
+    all: ingested_filename=java/${_filename}
+    all: cookies="oraclelicense=accept-securebackup-cookie"
 
 entry jfrog-cli 1.22.1
 
@@ -113,7 +115,7 @@ entry jfrog-cli 1.22.1
     all:   _url="${_home_url}/${${VERSION}}/${_exe}/jfrog?bt_package=${_exe}"
     all:   _ingested_filename=jfrog/jfrog-cli-${${VERSION}}-${_system}.tar.gz
 
-  method download
+  method http
     all: url=${_url}
     all: arcname=bin/jfrog
     all: checksum=@{DATA:checksum:${_version}}
