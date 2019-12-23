@@ -1,4 +1,4 @@
-!rebuild.ingest!
+!rebuild.ingest.v1!
 
 description
   My awesome ingested things
@@ -7,7 +7,7 @@ variables
   PYHOSTED_HOME_URL=https://files.pythonhosted.org/packages
   PYTHON_PACKAGES_TARGET_DIR=python/packages
 
-entry libyaml 0.1.7
+entry libyaml 0.2.2
 
   data
     all: checksum 0.1.7 8088e457264a98ba451a90b8661fcb4f9d6f478f7265d48322a196cec2480729
@@ -17,11 +17,13 @@ entry libyaml 0.1.7
     all: _home_url=http://pyyaml.org/download/libyaml
     all: _upstream_name=yaml
     all: _upstream_filename=${_upstream_name}-${VERSION}.tar.gz
-    all: _filename=${NAME}-${VERSION}.tar.gz
+    all: _filename=${_upstream_name}-${VERSION}.tar.gz
     all: _ingested_filename=lib/${_filename}
     
-  download
-    all: ${_home_url}/${_filename} ingested_filename=${_ingested_filename} checksum=@{DATA:checksum:${VERSION}}
+  method http
+    all: url=${_home_url}/${_filename}
+    all: checksum=@{DATA:checksum:${VERSION}}
+    all: ingested_filename=${_ingested_filename}
 
 entry google-api-python-client 1.7.8
 

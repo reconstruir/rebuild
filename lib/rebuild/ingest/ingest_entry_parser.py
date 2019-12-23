@@ -54,6 +54,8 @@ class ingest_entry_parser(object):
         variables.extend(recipe_parser_util.parse_masked_variables(child, self.filename))
       elif text.startswith('method'):
         method = self._parse_method(child, error_func)
+      else:
+        error_func('invalid entry section: {}'.format(text), child)
 
     return ingest_entry(name, version, description, data, variables, method)
 
