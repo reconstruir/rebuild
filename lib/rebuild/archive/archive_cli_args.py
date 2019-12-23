@@ -67,6 +67,13 @@ class archive_cli_args(object):
     p.add_argument('-o', '--output-filename', action = 'store', default = None,
                    help = 'The output filename [ None ]')
     
+    # cat
+    p = subparser.add_parser('cat', help = 'Cat a member file.')
+    p.add_argument('archive_filename', action = 'store', default = None,
+                   help = 'The archive [ None ]')
+    p.add_argument('filename', action = 'store', default = None,
+                   help = 'The filename to extract [ None ]')
+    
     # combine
     p = subparser.add_parser('combine', help = 'Combine archives.')
     p.add_argument('dest_archive', action = 'store', default = None,
@@ -99,6 +106,9 @@ class archive_cli_args(object):
     if not output_filename:
       output_filename = path.join(os.getcwd(), path.basename(filename))
     return archive_cli_command.extract_file(archive_filename, filename, output_filename)
+
+  def _command_archive_cat(self, archive_filename, filename):
+    return archive_cli_command.cat(archive_filename, filename)
 
   def _command_archive_combine(self, dest_archive, archives, check_content, base_dir, exclude):
     return archive_cli_command.combine(dest_archive, archives, check_content, base_dir, exclude)

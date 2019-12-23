@@ -44,6 +44,12 @@ class archive_cli_command(object):
     return 0
 
   @classmethod
+  def cat(clazz, archive, filename):
+    s = archiver.extract_member_to_string(archive, filename)
+    print(s)
+    return 0
+
+  @classmethod
   def combine(clazz, dest_archive, archives, check_content, base_dir, exclude):
     archive_util.combine(archives, dest_archive,
                          check_content = check_content,
