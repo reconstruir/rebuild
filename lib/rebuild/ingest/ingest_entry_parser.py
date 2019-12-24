@@ -43,11 +43,11 @@ class ingest_entry_parser(object):
       text = child.data.text
       if text.startswith('description'):
         description = recipe_parser_util.parse_description(child, error_func)
-      if text.startswith('data'):
+      elif text.startswith('data'):
         if not data:
           data = masked_value_list()
         next_data = recipe_data_manager.parse_node(child, self.filename)
-        data.extend(recipe_data_manager.parse_node(child, self.filename))
+        data.extend(next_data)
       elif text.startswith('variables'):
         if not variables:
           variables = masked_value_list()
@@ -57,7 +57,9 @@ class ingest_entry_parser(object):
       else:
         error_func('invalid entry section: {}'.format(text), child)
 
-    return ingest_entry(name, version, description, data, variables, method)
+    result = ingest_entry(name, version, description, data, variables, method)
+    #result.origin = value_origin(self.filename, entry_node.data.line_number, entry_node.data.text)
+    return result
 
   def _parse_header(self, node, error_func):
     parts = string_util.split_by_white_space(node.data.text, strip = True)
