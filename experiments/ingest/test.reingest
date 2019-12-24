@@ -112,11 +112,11 @@ entry jfrog-cli 1.22.1
     linux: _system=linux-amd64
     macos: _system=mac-386
     all:   _exe=jfrog-cli-${_system}
-    all:   _url="${_home_url}/${${VERSION}}/${_exe}/jfrog?bt_package=${_exe}"
-    all:   _ingested_filename=jfrog/jfrog-cli-${${VERSION}}-${_system}.tar.gz
+    all:   _url="${_home_url}/${VERSION}/${_exe}/jfrog?bt_package=${_exe}"
+    all:   _ingested_filename=jfrog/jfrog-cli-${VERSION}-${_system}.tar.gz
 
   method http
     all: url=${_url}
     all: arcname=bin/jfrog
-    all: checksum=@{DATA:checksum:${_version}}
+    all: checksum=@{DATA:checksum:${VERSION}}
     all: ingested_filename=${_ingested_filename}
