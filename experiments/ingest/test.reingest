@@ -87,16 +87,12 @@ xentry java_jdk11 11.0.2
     all:   path_hash 11.0.2 +9/f51449fcd52f4d52b93a989c5c56ed3c
     
   variables
-    all:   _home_url=https://download.oracle.com/otn-pub/java/jdk
     linux: _system=linux-x64
     macos: _system=osx-x64
     all:   _filename=jdk-${VERSION}_${_system}_bin.tar.gz
-    all:   _url=${_home_url}/${VERSION}@{DATA:path_hash:${VERSION}}/${_filename}
-    all:   _ingested_filename=java/${_filename}
-    all:   _cookies="oraclelicense=accept-securebackup-cookie"
 
   method http
-    all: url=${_home_url}/${VERSION}@{DATA:path_hash:${VERSION}}/${_filename}
+    all: url=https://download.oracle.com/otn-pub/java/jdk/${VERSION}@{DATA:path_hash:${VERSION}}/${_filename}
     all: checksum=@{DATA:checksum:${VERSION}}
     all: ingested_filename=java/${_filename}
     all: cookies="oraclelicense=accept-securebackup-cookie"
@@ -108,15 +104,12 @@ entry jfrog-cli 1.22.1
     macos: checksum 1.22.1 d6e2bb893b39c6a67fb2ee9de2df47adcd890aadbf7ed66040a6028b4d2351cf
 
   variables
-    all:   _home_url=https://api.bintray.com/content/jfrog/jfrog-cli-go
     linux: _system=linux-amd64
     macos: _system=mac-386
     all:   _exe=jfrog-cli-${_system}
-    all:   _url="${_home_url}/${VERSION}/${_exe}/jfrog?bt_package=${_exe}"
-    all:   _ingested_filename=jfrog/jfrog-cli-${VERSION}-${_system}.tar.gz
 
   method http
-    all: url=${_url}
+    all: url="https://api.bintray.com/content/jfrog/jfrog-cli-go/${VERSION}/${_exe}/jfrog?bt_package=${_exe}"
     all: arcname=bin/jfrog
     all: checksum=@{DATA:checksum:${VERSION}}
-    all: ingested_filename=${_ingested_filename}
+    all: ingested_filename=jfrog/jfrog-cli-${VERSION}-${_system}.tar.gz

@@ -9,6 +9,7 @@ from bes.common.check import check
 from bes.common.node import node
 from bes.key_value.key_value_list import key_value_list
 from bes.system.log import log
+from bes.fs.file_find import file_find
 
 from rebuild.recipe.recipe_error import recipe_error
 from rebuild.recipe.recipe_util import recipe_util
@@ -56,12 +57,6 @@ class ingest_file(namedtuple('ingest_file', 'format_version, filename, descripti
     buf.write('\n')
     return buf.getvalue()
   
-
-#  def resolve_recipes(self, system):
-#    if not self.recipes:
-#      return string_list()
-#    return sorted(self.recipes.resolve(system, 'string_list'))
-  
   @classmethod
   def is_ingest_file(clazz, filename):
     'Return True if filename is a valid rebuild.ingest file.'
@@ -75,4 +70,23 @@ class ingest_file(namedtuple('ingest_file', 'format_version, filename, descripti
       result.add_child(kv.to_string(quote_value = True))
     return result
   
+  @classmethod
+  def find_ingest_files(clazz, args):
+    '''
+    Find ingest files.  args can be a combination of files and directories.
+    Files are explicitly interpretted as ingest files.  
+    Directories are recursively searched for files that end in .reingest
+    '''
+    check.check_string_seq(args)
+
+  @classmethod
+  def _find_ingest_files_in_dir(clazz, d):
+    '''
+    Find ingest files.  args can be a combination of files and directories.
+    Files are explicitly interpretted as ingest files.  
+    Directories are recursively searched for files that end in .reingest
+    '''
+    check.check_string_seq(args)
+    
+    
 check.register_class(ingest_file, include_seq = False)
