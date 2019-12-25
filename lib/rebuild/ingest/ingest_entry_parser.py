@@ -14,7 +14,6 @@ from rebuild.recipe.value.value_key_values import value_key_values
 from rebuild.recipe.value.value_parsing import value_parsing
 from bes.key_value.key_value_list import key_value_list
 
-from .ingest_download import ingest_download
 from .ingest_entry import ingest_entry
 
 from .ingest_method_descriptor_http import ingest_method_descriptor_http
