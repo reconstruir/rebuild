@@ -109,7 +109,7 @@ entry jfrog-cli 1.22.1
     all:   _exe=jfrog-cli-${_system}
 
   method http
-    all: url="https://api.bintray.com/content/jfrog/jfrog-cli-go/${VERSION}/${_exe}/jfrog?bt_package=${_exe}"
+    all: url=https://api.bintray.com/content/jfrog/jfrog-cli-go/${VERSION}/${_exe}/jfrog?bt_package\\=${_exe}
     all: arcname=bin/jfrog
     all: checksum=@{DATA:checksum:${VERSION}}
     all: ingested_filename=jfrog/jfrog-cli-${VERSION}-${_system}.tar.gz
