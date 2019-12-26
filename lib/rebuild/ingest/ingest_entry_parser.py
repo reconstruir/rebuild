@@ -14,7 +14,6 @@ from rebuild.recipe.value.value_key_values import value_key_values
 from rebuild.recipe.value.value_parsing import value_parsing
 from bes.key_value.key_value_list import key_value_list
 
-from .ingest_download import ingest_download
 from .ingest_entry import ingest_entry
 
 from .ingest_method_descriptor_http import ingest_method_descriptor_http
@@ -43,19 +42,23 @@ class ingest_entry_parser(object):
       text = child.data.text
       if text.startswith('description'):
         description = recipe_parser_util.parse_description(child, error_func)
-      if text.startswith('data'):
+      elif text.startswith('data'):
         if not data:
           data = masked_value_list()
         next_data = recipe_data_manager.parse_node(child, self.filename)
-        data.extend(recipe_data_manager.parse_node(child, self.filename))
+        data.extend(next_data)
       elif text.startswith('variables'):
         if not variables:
           variables = masked_value_list()
         variables.extend(recipe_parser_util.parse_masked_variables(child, self.filename))
       elif text.startswith('method'):
         method = self._parse_method(child, error_func)
+      else:
+        error_func('invalid entry section: {}'.format(text), child)
 
-    return ingest_entry(name, version, description, data, variables, method)
+    result = ingest_entry(name, version, description, data, variables, method)
+    #result.origin = value_origin(self.filename, entry_node.data.line_number, entry_node.data.text)
+    return result
 
   def _parse_header(self, node, error_func):
     parts = string_util.split_by_white_space(node.data.text, strip = True)

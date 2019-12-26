@@ -1,0 +1,4 @@
+fsconfig
+  vfs_type: local
+  local_root_dir: ${HOME}/ingest_test
+  vfs_class_path: bes.vfs.vfs_local

@@ -3,6 +3,8 @@
 from collections import namedtuple
 
 from datetime import datetime
+from bes.fs.checksum import checksum
+from bes.fs.checksum_set import checksum_set
 
 from os import path
 import json, pprint
@@ -57,7 +59,7 @@ class vfs_artifactory(vfs_base):
       factory_field('artifactory_address', False, check.is_string),
       factory_field('artifactory_cache_dir', True, check.is_string),
     ]
-  
+
   @classmethod
   #@abstractmethod
   def create(clazz, config_source, **values):
@@ -257,11 +259,11 @@ class vfs_artifactory(vfs_base):
     else:
       ftype = vfs_file_info.DIR
     if ftype == vfs_file_info.FILE:
-      checksum = str(entry['sha256'])
+      chk = checksum_set(checksum(checksum.SHA256, str(entry['sha256'])))
       attributes = self._parse_artifactory_properties(entry.get('properties', None))
       size = entry['size']
     else:
-      checksum = None
+      chk = None
       attributes = None
       size = None
     if not 'modified' in entry:
@@ -274,7 +276,7 @@ class vfs_artifactory(vfs_base):
                          ftype,
                          modification_date,
                          size,
-                         checksum,
+                         chk,
                          attributes,
                          children)
 

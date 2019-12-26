@@ -67,7 +67,7 @@ class pcloud(object):
     if folder_id:
       what = folder_id
       params.update({ 'folderid': folder_id })
-    self.log.log_e('list_folder: params=%s' % (params))
+    self.log.log_d('list_folder: params=%s' % (params))
     response = pcloud_requests.get('listfolder', params)
     self.log.log_d('list_folder: response=%s' % (str(response)))
     if response.status_code != 200:
@@ -105,7 +105,7 @@ class pcloud(object):
       what = folder_id
       params.update({ 'folderid': folder_id })
     params.update({ 'nofiles': 1 })
-    self.log.log_e('folder_info: params=%s' % (params))
+    self.log.log_d('folder_info: params=%s' % (params))
     response = pcloud_requests.get('listfolder', params)
     self.log.log_d('folder_info: response=%s' % (str(response)))
     if response.status_code != 200:

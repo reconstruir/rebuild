@@ -1,44 +1,36 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from os import path
+#from os import path
 
 from bes.common.check import check
-from bes.url.http_download_cache import http_download_cache
-from bes.git.git_archive_cache import git_archive_cache
-from bes.system.log import logger
-
-from bes.vfs.vfs_registry import vfs_registry
-from bes.vfs.vfs_local import vfs_local
+from bes.property.cached_property import cached_property
 from bes.fs.temp_file import temp_file
 
-from rebuild.ingest.ingest_file_parser import ingest_file_parser
+#from bes.url.http_download_cache import http_download_cache
+#from bes.git.git_archive_cache import git_archive_cache
+#from bes.system.log import logger
 
-class ingest_cli_command(object):
-  'Implementations of the vault cli commands.'
+#from bes.vfs.vfs_registry import vfs_registry
+#from bes.vfs.vfs_local import vfs_local
 
-  log = logger('ingest')
+#from rebuild.ingest.ingest_file_parser import ingest_file_parser
+
+class ingester(object):
+  'Main class that drives ingestion.'
+
+  log = logger('ingester')
   
-  @classmethod
-  def run(clazz, project_file, vfs_config_file, system, cache_dir, entry_name, dry_run, verbose):
-    'Run the ingestion process.'
-    check.check_string(project_file)
-    check.check_string(vfs_config_file)
-    check.check_string(system)
-    check.check_string(entry_name, allow_none = True)
-    check.check_bool(dry_run)
-    check.check_bool(verbose)
-    clazz.log.debug('run: project_file={} vfs_config_file={}'.format(project_file, vfs_config_file))
+  def __init__(clazz, project):
+    check.check_ingest_file(project)
 
-    project = ingest_file_parser.parse_file(project_file)
-    clazz.log.debug('run: project variables={}'.format(project.variables))
+    self._project = project
+#    self._fs = fs
+    self._global_variables = self._project.variables.to_dict()
     
-    fs = vfs_registry.load_from_config_file(vfs_config_file)
-    clazz.log.debug('run: fs={}'.format(fs))
+    clazz.log.debug('ingester: project={}'.format(project, fs, cache_dir))
 
-    tmp_dir = temp_file.make_temp_dir()
-
-    global_variables = project.variables.to_dict()
-
+  def run_all(self, entry_name):
+    tmp_dir = self._tmp_dir
     if entry_name:
       for entry in project.entries:
         if entry.name == entry_name:
@@ -51,8 +43,26 @@ class ingest_cli_command(object):
       
     return 0
 
-  @classmethod
-  def _ingest_one_entry(clazz, entry, system, global_variables, cache_dir, tmp_dir, fs, dry_run, verbose):
+  def run_one(self, entry_name):
+    check.check_string(entry_name)
+    tmp_dir = self._tmp_dir
+    if entry_name:
+      for entry in project.entries:
+        if entry.name == entry_name:
+          clazz._ingest_one_entry(entry, system, global_variables, cache_dir, tmp_dir, fs, dry_run, verbose)
+          return 0
+      
+    
+    for entry in project.entries:
+      clazz._ingest_one_entry(entry, system, global_variables, cache_dir, tmp_dir, fs, dry_run, verbose)
+      
+    return 0
+  
+  @cached_property
+  def _tmp_dir(self):
+    return temp_file.make_temp_dir()
+  
+  def _ingest_one_entry(self, entry, system, global_variables, cache_dir, tmp_dir, fs, dry_run, verbose):
     clazz.log.debug('_ingest_one_entry: entry={} fs={}'.format(entry.name, fs))
 
     values = entry.resolve_method_values(system, global_variables).to_dict()

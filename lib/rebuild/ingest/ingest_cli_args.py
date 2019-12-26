@@ -32,6 +32,8 @@ class ingest_cli_args(object):
                    help = 'Do not ingest anything just print what would happen. [ False ]')
     p.add_argument('--verbose', action = 'store_true', default = False,
                    help = 'Print verbose information about what is happening. [ False ]')
+    p.add_argument('--entry', action = 'store', default = None, type = str, dest = 'entry_name',
+                   help = 'Run ingestion just for the given entry. [ None ]')
 #    p.add_argument('--username', action = 'store', default = None, type = str,
 #                   help = 'The artifatory username. [ None ]')
 #    p.add_argument('--password', action = 'store', default = None, type = str,
@@ -39,5 +41,5 @@ class ingest_cli_args(object):
 #    p.add_argument('--tries', action = 'store', default = 1, type = int, dest = 'num_tries',
 #                   help = 'The number of tries to publish. [ 1 ]')
     
-  def _command_ingest_run(self, project_file, vfs_config, system, cache_dir, dry_run, verbose):
-    return ingest_cli_command.run(project_file, vfs_config, system, cache_dir, dry_run, verbose)
+  def _command_ingest_run(self, project_file, vfs_config, system, cache_dir, entry_name, dry_run, verbose):
+    return ingest_cli_command.run(project_file, vfs_config, system, cache_dir, entry_name, dry_run, verbose)

@@ -99,5 +99,13 @@ class ingest_entry(namedtuple('ingest_entry', 'name, version, description, data,
     args = self.resolve_method_values(system, global_variables).to_dict()
     args['cache_dir'] = cache_dir
     return self.method.download(args)
+
+  @property
+  def origin(self):
+    return value_origin.get_origin(self)
+
+  @origin.setter
+  def origin(self, origin):
+    value_origin.set_origin(self, origin)
   
 check.register_class(ingest_entry, include_seq = False)

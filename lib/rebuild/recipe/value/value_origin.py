@@ -21,4 +21,16 @@ class value_origin(namedtuple('value_origin', 'filename, line_number, text, reci
   def __repr__(self):
     return str(self)
 
+  @classmethod
+  def get_origin(clazz, obj):
+    origin = getattr(obj, '_origin', None)
+    if not origin:
+      raise ValueError('origin not set: {}'.format(str(obj)))
+    return origin
+
+  @classmethod
+  def set_origin(clazz, obj, origin):
+    check.check_value_origin(origin)
+    setattr(obj, '_origin', origin)
+  
 check.register_class(value_origin)
