@@ -19,11 +19,12 @@ class ingest_cli_command(object):
   log = logger('ingest')
   
   @classmethod
-  def run(clazz, project_file, vfs_config_file, system, cache_dir, dry_run, verbose):
+  def run(clazz, project_file, vfs_config_file, system, cache_dir, entry_name, dry_run, verbose):
     'Run the ingestion process.'
     check.check_string(project_file)
     check.check_string(vfs_config_file)
     check.check_string(system)
+    check.check_string(entry_name, allow_none = True)
     check.check_bool(dry_run)
     check.check_bool(verbose)
     clazz.log.debug('run: project_file={} vfs_config_file={}'.format(project_file, vfs_config_file))
@@ -37,19 +38,32 @@ class ingest_cli_command(object):
     tmp_dir = temp_file.make_temp_dir()
 
     global_variables = project.variables.to_dict()
+
+    if entry_name:
+      for entry in project.entries:
+        if entry.name == entry_name:
+          clazz._ingest_one_entry(entry, system, global_variables, cache_dir, tmp_dir, fs, dry_run, verbose)
+          return 0
+      
     
     for entry in project.entries:
-      values = entry.resolve_method_values(system, global_variables).to_dict()
-      clazz.log.debug('run: method={} entry={}:{}'.format(entry.method.descriptor.method(), entry.name, entry.version))
-      for key, value in values.items():
-        clazz.log.debug('run: {}: {}'.format(key, value))
-      remote_filename = values['ingested_filename']
-      local_filename = entry.download(system, global_variables, cache_dir, tmp_dir)
-      clazz.log.debug('run: uploading {} to {}'.format(local_filename, remote_filename))
-      fs.upload_file(local_filename, remote_filename)
+      clazz._ingest_one_entry(entry, system, global_variables, cache_dir, tmp_dir, fs, dry_run, verbose)
       
     return 0
 
+  @classmethod
+  def _ingest_one_entry(clazz, entry, system, global_variables, cache_dir, tmp_dir, fs, dry_run, verbose):
+    clazz.log.debug('_ingest_one_entry: entry={} fs={}'.format(entry.name, fs))
+
+    values = entry.resolve_method_values(system, global_variables).to_dict()
+    clazz.log.debug('run: method={} entry={}:{}'.format(entry.method.descriptor.method(), entry.name, entry.version))
+    for key, value in values.items():
+      clazz.log.debug('run: {}: {}'.format(key, value))
+    remote_filename = values['ingested_filename']
+    local_filename = entry.download(system, global_variables, cache_dir, tmp_dir)
+    clazz.log.debug('run: uploading {} to {}'.format(local_filename, remote_filename))
+    fs.upload_file(local_filename, remote_filename)
+  
   @classmethod
   def _make_http_cache(clazz):
     cache_dir = path.expanduser('~/.egoist/ingest/downloads/http')
