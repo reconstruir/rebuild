@@ -28,7 +28,16 @@ class test_ingest_project(unit_test):
       'libkiwi',
       'liborange',
     ], [ entry.name for entry in project.entries ] )
-    self.assertEqual( 'libbrie', project.find_entry('libbrie').name )
+    self.assertTrue( project.has_entry('libbrie') )
+    self.assertFalse( project.has_entry('notthere') )
+    
+    e = project.find_entry('libbrie')
+    self.assertEqual( 'libbrie', e.name )
+    self.assertEqual( path.join(tmp_dir, 'cheese/soft/brie.reingest'), e.filename )
+
+    self.assertEqual( path.join(tmp_dir, 'cheese/hard/cheddar.reingest'), project.find_entry('libcheddar').filename )
+    self.assertEqual( path.join(tmp_dir, 'fruit/kiwi.reingest'), project.find_entry('libkiwi').filename )
+    self.assertEqual( path.join(tmp_dir, 'fruit/orange.reingest'), project.find_entry('liborange').filename )
     
   def _make_temp_content(self):
     content_kiwi = '''!rebuild.ingest.v1!

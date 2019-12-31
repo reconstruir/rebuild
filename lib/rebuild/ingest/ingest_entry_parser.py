@@ -58,6 +58,7 @@ class ingest_entry_parser(object):
 
     result = ingest_entry(name, version, description, data, variables, method)
     result.origin = value_origin(self.filename, entry_node.data.line_number, entry_node.data.text)
+    result.filename = self.filename
     return result
 
   def _parse_header(self, node, error_func):

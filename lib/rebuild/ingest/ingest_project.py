@@ -52,13 +52,21 @@ class ingest_project(object):
 
   @property
   def entries(self):
-    if self._entries is None:
-      raise RuntimeError('Need to call load() before using entries.')
+    self._check_loaded()
     return sorted(self._entries.values())
   
   def find_entry(self, entry_name):
-    if self._entries is None:
-      raise RuntimeError('Need to call load() before using entries.')
+    self._check_loaded()
+    if not self.has_entry(entry_name):
+      raise KeyError('Entry not found: {}'.format(entry_name))
     return self._entries[entry_name]
+  
+  def has_entry(self, entry_name):
+    self._check_loaded()
+    return entry_name in self._entries
+  
+  def _check_loaded(self):
+    if self._entries is None:
+      raise RuntimeError('Need to call load() first.')
   
 check.register_class(ingest_project, include_seq = False)

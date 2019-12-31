@@ -108,5 +108,17 @@ class ingest_entry(namedtuple('ingest_entry', 'name, version, description, data,
   @origin.setter
   def origin(self, origin):
     value_origin.set_origin(self, origin)
-  
+
+  @property
+  def filename(self):
+    filename = getattr(self, '_filename', None)
+    if not filename:
+      raise ValueError('filename not set: {}'.format(str(self)))
+    return filename
+
+  @filename.setter
+  def filename(self, filename):
+    check.check_string(filename)
+    setattr(self, '_filename', filename)
+    
 check.register_class(ingest_entry, include_seq = False)
