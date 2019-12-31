@@ -28,6 +28,7 @@ class test_ingest_project(unit_test):
       'libkiwi',
       'liborange',
     ], [ entry.name for entry in project.entries ] )
+    self.assertEqual( 'libbrie', project.find_entry('libbrie').name )
     
   def _make_temp_content(self):
     content_kiwi = '''!rebuild.ingest.v1!

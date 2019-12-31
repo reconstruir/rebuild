@@ -56,4 +56,9 @@ class ingest_project(object):
       raise RuntimeError('Need to call load() before using entries.')
     return sorted(self._entries.values())
   
+  def find_entry(self, entry_name):
+    if self._entries is None:
+      raise RuntimeError('Need to call load() before using entries.')
+    return self._entries[entry_name]
+  
 check.register_class(ingest_project, include_seq = False)
