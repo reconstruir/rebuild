@@ -12,7 +12,7 @@ from bes.fs.file_resolve import file_resolve
 #from rebuild.recipe.recipe_error import recipe_error
 #from rebuild.recipe.recipe_util import recipe_util
 
-from .ingest_file import ingest_file
+from .ingest_file_parser import ingest_file_parser
 
 class ingest_project(object):
 
@@ -20,9 +20,26 @@ class ingest_project(object):
   
   def __init__(self, base_dir, args = []):
     self._resolved_files = file_resolve.resolve_mixed(base_dir, args, patterns = [ '*.reingest' ])
+    self._loaded_files = None
     
   def load(self):
-    pass
+    if self._loaded_files is not None:
+      raise RuntimeError('can only load once.')
+    self._loaded_files = {}
+    for rf in self._resolved_files:
+      pf = ingest_file_parser.parse_file(rf.filename_abs)
+      assert rf.filename not in self._loaded_files
+      self._loaded_files[rf.filename] = pf
+    self._entries = {}
+    for filename, pf in self._loaded_files.items():
+      for entry in pf.entries:
+        if entry.name in self._entries:
+          raise RuntimeError('duplicate entry "{}" found:\n{}\n{}'.format(entry.name,
+                                                                          self._entries[entry.name].origin,
+                                                                          entry.origin))
+        self._entries[entry.name] = entry
+    for name, entry in self._entries.items():
+      print('{}: {}'.format(name, entry.origin))
 
   @property
   def files(self):

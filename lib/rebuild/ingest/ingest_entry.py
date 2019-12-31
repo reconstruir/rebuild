@@ -18,6 +18,7 @@ from rebuild.recipe.recipe_parser_util import recipe_parser_util
 from rebuild.recipe.recipe_util import recipe_util
 from rebuild.recipe.value.masked_value import masked_value
 from rebuild.recipe.value.masked_value_list import masked_value_list
+from rebuild.recipe.value.value_origin import value_origin
 from rebuild.recipe.recipe_data_manager import recipe_data_manager
 
 from .ingest_method import ingest_method
