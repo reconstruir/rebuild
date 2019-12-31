@@ -55,6 +55,11 @@ class ingest_project(object):
     self._check_loaded()
     return sorted(self._entries.values())
   
+  @property
+  def entry_names(self):
+    self._check_loaded()
+    return sorted([ key for key in self._entries.keys() ])
+  
   def find_entry(self, entry_name):
     self._check_loaded()
     if not self.has_entry(entry_name):

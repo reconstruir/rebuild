@@ -3,73 +3,45 @@
 from os import path
 
 from bes.common.check import check
-from bes.url.http_download_cache import http_download_cache
-from bes.git.git_archive_cache import git_archive_cache
 from bes.system.log import logger
 
 from bes.vfs.vfs_registry import vfs_registry
-from bes.vfs.vfs_local import vfs_local
-from bes.fs.temp_file import temp_file
 
-from rebuild.ingest.ingest_file_parser import ingest_file_parser
+from .ingest_cli_options import ingest_cli_options
+from .ingest_runner import ingest_runner
 
 class ingest_cli_command(object):
-  'Implementations of the vault cli commands.'
+  'Ingest cli command handlers.'
 
   log = logger('ingest')
   
   @classmethod
-  def run(clazz, project_file, vfs_config_file, system, cache_dir, entry_name, dry_run, verbose):
+  def run(clazz, vfs_config_file, project_dir, args, entry_name, options):
     'Run the ingestion process.'
-    check.check_string(project_file)
     check.check_string(vfs_config_file)
-    check.check_string(system)
+    check.check_string(project_dir)
+    check.check_string_seq(args)
     check.check_string(entry_name, allow_none = True)
-    check.check_bool(dry_run)
-    check.check_bool(verbose)
-    clazz.log.debug('run: project_file={} vfs_config_file={}'.format(project_file, vfs_config_file))
+    check.check_ingest_cli_options(options)
 
-    project = ingest_file_parser.parse_file(project_file)
-    clazz.log.debug('run: project variables={}'.format(project.variables))
-    
+    clazz.log.debug('run: vfs_config_file={}'.format(vfs_config_file))
+    clazz.log.debug('run: project_dir={}'.format(project_dir))
+    clazz.log.debug('run: args={}'.format(args))
+    clazz.log.debug('run: options={}'.format(options))
+
     fs = vfs_registry.load_from_config_file(vfs_config_file)
     clazz.log.debug('run: fs={}'.format(fs))
 
-    tmp_dir = temp_file.make_temp_dir()
-
-    global_variables = project.variables.to_dict()
-
-    if entry_name:
-      for entry in project.entries:
-        if entry.name == entry_name:
-          clazz._ingest_one_entry(entry, system, global_variables, cache_dir, tmp_dir, fs, dry_run, verbose)
-          return 0
-      
+    runner = ingest_runner(fs, project_dir, args = args)
+    project = runner.project
     
-    for entry in project.entries:
-      clazz._ingest_one_entry(entry, system, global_variables, cache_dir, tmp_dir, fs, dry_run, verbose)
-      
+    runner.load()
+    
+    if entry_name:
+      runner.check_has_entry(entry_name)
+      runner.ingest_one(entry_name, options)
+      return 0
+
+    runner.ingest_all(options)
+    
     return 0
-
-  @classmethod
-  def _ingest_one_entry(clazz, entry, system, global_variables, cache_dir, tmp_dir, fs, dry_run, verbose):
-    clazz.log.debug('_ingest_one_entry: entry={} fs={}'.format(entry.name, fs))
-
-    values = entry.resolve_method_values(system, global_variables).to_dict()
-    clazz.log.debug('run: method={} entry={}:{}'.format(entry.method.descriptor.method(), entry.name, entry.version))
-    for key, value in values.items():
-      clazz.log.debug('run: {}: {}'.format(key, value))
-    remote_filename = values['ingested_filename']
-    local_filename = entry.download(system, global_variables, cache_dir, tmp_dir)
-    clazz.log.debug('run: uploading {} to {}'.format(local_filename, remote_filename))
-    fs.upload_file(local_filename, remote_filename)
-  
-  @classmethod
-  def _make_http_cache(clazz):
-    cache_dir = path.expanduser('~/.egoist/ingest/downloads/http')
-    return http_download_cache(cache_dir)
-
-  @classmethod
-  def _make_git_cache(clazz):
-    cache_dir = path.expanduser('~/.egoist/ingest/downloads/git')
-    return git_archive_cache(cache_dir)
