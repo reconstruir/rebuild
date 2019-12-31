@@ -21,10 +21,11 @@ class ingest_project(object):
   def __init__(self, base_dir, args = []):
     self._resolved_files = file_resolve.resolve_mixed(base_dir, args, patterns = [ '*.reingest' ])
     self._loaded_files = None
+    self._entries = None
     
   def load(self):
     if self._loaded_files is not None:
-      raise RuntimeError('can only load once.')
+      raise RuntimeError('Can only load once.')
     self._loaded_files = {}
     for rf in self._resolved_files:
       pf = ingest_file_parser.parse_file(rf.filename_abs)
@@ -38,8 +39,8 @@ class ingest_project(object):
                                                                           self._entries[entry.name].origin,
                                                                           entry.origin))
         self._entries[entry.name] = entry
-    for name, entry in self._entries.items():
-      print('{}: {}'.format(name, entry.origin))
+#    for name, entry in self._entries.items():
+#      print('{}: {}'.format(name, entry.origin))
 
   @property
   def files(self):
@@ -48,5 +49,11 @@ class ingest_project(object):
   @property
   def files_abs(self):
     return [ rf.filename_abs for rf in self._resolved_files ]
-      
+
+  @property
+  def entries(self):
+    if self._entries is None:
+      raise RuntimeError('Need to call load() before using entries.')
+    return sorted(self._entries.values())
+  
 check.register_class(ingest_project, include_seq = False)

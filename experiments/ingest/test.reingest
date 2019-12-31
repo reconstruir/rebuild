@@ -78,7 +78,7 @@ xentry java_jdk8 8u201
     all: ingested_filename=java/${_filename}
     all: cookies="oraclelicense=accept-securebackup-cookie"
 
-xentry java_jdk11 11.0.2
+entry java_jdk11 11.0.2
 
   data:
     linux: checksum  11.0.2 7b4fd8ffcf53e9ff699d964a80e4abf9706b5bdb5644a765c2b96f99e3a2cdc8

@@ -20,8 +20,14 @@ class test_ingest_project(unit_test):
 
   def test_load(self):
     tmp_dir = self._make_temp_content()
-    p = ingest_project(tmp_dir)
-    p.load()
+    project = ingest_project(tmp_dir)
+    project.load()
+    self.assertEqual( [
+      'libbrie',
+      'libcheddar',
+      'libkiwi',
+      'liborange',
+    ], [ entry.name for entry in project.entries ] )
     
   def _make_temp_content(self):
     content_kiwi = '''!rebuild.ingest.v1!
