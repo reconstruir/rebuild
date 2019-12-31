@@ -67,8 +67,11 @@ class ingest_file_parser(object):
         entry = ingest_entry_parser(self.filename, vm).parse(child, self._error)
         entries.append(entry)
         
-    return ingest_file(ingest_file.FORMAT_VERSION, self.filename,
-                       description, variables, entries)
+    result = ingest_file(ingest_file.FORMAT_VERSION, self.filename,
+                         description, variables, entries)
+    for entry in entries:
+      entry.ingest_file = result
+    return result
 
   def _parse_variables(self, node, filename):
     #self.log_d('_parse_variables: filename=%s\nnode=%s' % (self.filename, str(node)))
