@@ -14,6 +14,7 @@ from bes.url.http_download_cache import http_download_cache
 
 from .ingest_method_descriptor_base import ingest_method_descriptor_base
 from .ingest_method_field import ingest_method_field
+from .ingest_error import ingest_error
 
 class ingest_method_descriptor_http(ingest_method_descriptor_base):
 
@@ -43,7 +44,12 @@ class ingest_method_descriptor_http(ingest_method_descriptor_base):
     cookies = key_value_list.parse(cookies_str).to_dict()
     cache_dir = self._check_download_field(args, 'cache_dir')
     cache = http_download_cache(cache_dir)
-    local_download = cache.get_url(url, checksum = checksum, cookies = cookies)
+    try:
+      local_download = cache.get_url(url, checksum = checksum, cookies = cookies)
+    except Exception as ex:
+      msg = 'Failed to download "{}" - {}'.format(url, str(ex))
+      raise ingest_error(msg)
+      
     self.log.log_d('ingest_method_descriptor_http: local_download={}'.format(local_download))
     self.log.log_d('ingest_method_descriptor_http: arcname={}'.format(arcname))
     if arcname:
