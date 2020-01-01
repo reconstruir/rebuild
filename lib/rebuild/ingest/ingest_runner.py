@@ -55,11 +55,15 @@ class ingest_runner(object):
     self.log.debug('run: uploading {} to {}'.format(local_filename, remote_filename))
     self._fs.upload_file(local_filename, remote_filename)
 
+  def ingest_some(self, entry_names, options):
+    check.check_ingest_cli_options(options)
+    for entry_name in entry_names:
+      self.ingest_one(entry_name, options)
+
   def ingest_all(self, options):
     check.check_ingest_cli_options(options)
-    for entry_name in self.project.entry_names:
-      self.ingest_one(entry_name, options)
-    
+    self.ingest_some(self.project.entry_names, options)
+      
   @cached_property
   def _tmp_dir(self):
     return temp_file.make_temp_dir()

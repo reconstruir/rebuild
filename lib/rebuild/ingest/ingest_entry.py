@@ -99,6 +99,7 @@ class ingest_entry(namedtuple('ingest_entry', 'name, version, description, data,
   def download(self, system, global_variables, cache_dir, dest_dir):
     args = self.resolve_method_values(system, global_variables).to_dict()
     args['cache_dir'] = cache_dir
+    print('args={}'.format(args))
     return self.method.download(args)
 
   @property

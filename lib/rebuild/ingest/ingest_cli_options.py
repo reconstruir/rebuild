@@ -15,12 +15,16 @@ class ingest_cli_options(object):
     self.dry_run = False
     self.systems = self.DEFAULT_SYSTEMS
     self.cache_dir = self.DEFAULT_CACHE_DIR
+    self.exclude = None
+    self.include = None
     for key, value in kargs.items():
       setattr(self, key, value)
     check.check_bool(self.verbose)
     check.check_bool(self.dry_run)
     check.check_string_seq(self.systems)
     check.check_string(self.cache_dir)
+    check.check_string_seq(self.exclude, allow_none = True)
+    check.check_string_seq(self.include, allow_none = True)
 
   def __str__(self):
     return str(self.__dict__)

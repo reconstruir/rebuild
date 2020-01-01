@@ -16,12 +16,11 @@ class ingest_cli_command(object):
   log = logger('ingest')
   
   @classmethod
-  def run(clazz, vfs_config_file, project_dir, args, entry_name, options):
+  def run(clazz, vfs_config_file, project_dir, args, options):
     'Run the ingestion process.'
     check.check_string(vfs_config_file)
     check.check_string(project_dir)
     check.check_string_seq(args)
-    check.check_string(entry_name, allow_none = True)
     check.check_ingest_cli_options(options)
 
     clazz.log.debug('run: vfs_config_file={}'.format(vfs_config_file))
@@ -36,12 +35,22 @@ class ingest_cli_command(object):
     project = runner.project
     
     runner.load()
-    
-    if entry_name:
-      runner.check_has_entry(entry_name)
-      runner.ingest_one(entry_name, options)
-      return 0
 
+    if options.include:
+      for entry_name in options.include:
+        runner.check_has_entry(entry_name)
+      for entry_name in options.include:
+        runner.ingest_one(entry_name, options)
+      return 0
+    
+    if options.exclude:
+      for entry_name in options.exclude:
+        runner.check_has_entry(entry_name)
+      entry_names = runner.project.entry_names
+      entry_names = [ n for n in entry_names if n not in options.exclude ]
+      runner.ingest_some(entry_names, options)
+      return 0
+        
     runner.ingest_all(options)
     
     return 0

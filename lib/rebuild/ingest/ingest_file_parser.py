@@ -86,5 +86,5 @@ class ingest_file_parser(object):
 
   @classmethod
   def parse_file(clazz, filename):
-    content = file_util.read(filename)
+    content = file_util.read(filename, codec = 'utf8')
     return ingest_file_parser(filename, content).parse()

@@ -29,8 +29,10 @@ class ingest_cli_args(object):
                    help = 'Do not ingest anything just print what would happen. [ False ]')
     p.add_argument('--verbose', action = 'store_true', default = False,
                    help = 'Print verbose information about what is happening. [ False ]')
-    p.add_argument('--entry', action = 'store', default = None, type = str, dest = 'entry_name',
+    p.add_argument('--include', action = 'append', default = [], type = str,
                    help = 'Run ingestion just for the given entry. [ None ]')
+    p.add_argument('--exclude', action = 'append', default = [], type = str,
+                   help = 'Skip the given entry. [ None ]')
     p.add_argument('vfs_config', action = 'store', default = None, type = str,
                    help = 'The storage config file. [ None ]')
     p.add_argument('project_dir', action = 'store', default = None, type = str,
@@ -44,9 +46,12 @@ class ingest_cli_args(object):
 #    p.add_argument('--tries', action = 'store', default = 1, type = int, dest = 'num_tries',
 #                   help = 'The number of tries to publish. [ 1 ]')
     
-  def _command_ingest_run(self, vfs_config, project_dir, args, systems, cache_dir, entry_name, dry_run, verbose):
+  def _command_ingest_run(self, vfs_config, project_dir, args, systems, cache_dir,
+                          include, exclude, dry_run, verbose):
     options = ingest_cli_options(dry_run = dry_run,
                                  verbose = verbose,
                                  systems = systems,
-                                 cache_dir = cache_dir)
-    return ingest_cli_command.run(vfs_config, project_dir, args, entry_name, options)
+                                 cache_dir = cache_dir,
+                                 exclude = exclude,
+                                 include = include)
+    return ingest_cli_command.run(vfs_config, project_dir, args, options)
