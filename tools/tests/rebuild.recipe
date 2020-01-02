@@ -1,0 +1,29 @@
+!rebuild.recipe!
+
+package python_flask 1.1.1 0
+
+  data
+    all: checksum  1.1.1 13f9f196f330c7c2c5d7a5cf91af894110ca0215ac051b5844701f2bfd934d52
+    all: path_hash 1.1.1 2e/80/3726a729de758513fd3dbc64e93098eb009c49305a97c6751de55b20b694
+
+  variables
+    all: _version=${REBUILD_PACKAGE_UPSTREAM_VERSION}
+    all: _upstream_name=Flask
+    all: _filename=${_upstream_name}-${_version}.tar.gz
+    all: _url=https://files.pythonhosted.org/packages/@{DATA:path_hash:${_version}}/${_filename}
+    all: _ingested_filename=python/packages/${_filename}
+
+  requirements
+    all: TOOL python_setuptools >= 41.2.0
+    all: RUN python_werkzeug >= 0.16.0
+    all: RUN python_jinja2 >= 2.10.3
+    all: RUN python_itsdangerous >= 1.1.0
+    all: RUN python_click >= 7.0
+
+  steps
+    step_python_egg
+      upstream_source
+        all: ${_url} checksum=@{DATA:checksum:${_version}} ingested_filename=${_ingested_filename}
+
+      tarball
+        all: ${_ingested_filename} dest=${REBUILD_BUILD_DIR}

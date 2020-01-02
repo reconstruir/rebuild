@@ -24,6 +24,9 @@ from rebuild.recipe.value.masked_value import masked_value
 from rebuild.recipe.value.masked_value_list import masked_value_list
 from rebuild.recipe.value.value_key_values import value_key_values
 
+from rebuild.recipe.value.value_source_tarball import value_source_tarball
+from rebuild.recipe.value.value_git_address import value_git_address
+
 class ingest_recipe_converter(object):
 
   def __init__(self):
@@ -32,67 +35,61 @@ class ingest_recipe_converter(object):
 
   def main(self):
     args = self.parser.parse_args()
-    print('where: {}'.format(args.where))
 
     files = file_resolve.resolve_dir(args.where, patterns = [ '*.recipe' ])
     for rf in files:
-      self._process_file(rf.filename_abs, True, True)
+      self._process_file(rf.filename_abs)
     
     return 0
 
-  def _process_file(self, filename, update, backup):
+  def _process_file(self, filename):
     if not path.isfile(filename):
       raise IOError('Not a file: %s' % (filename))
     env = testing_recipe_load_env()
     env.variable_manager.add_variable('REBUILD_PYTHON_VERSION', '2.7')
-    print('loading {}'.format(filename))
     recipes = builder_recipe_loader.load(env, filename)
-#    for recipe in recipes:
-#      self._process_recipe(recipe, filename, update, backup)
+    for recipe in recipes:
+      self._process_recipe(recipe, filename)
     return 0
 
-  def _process_recipe(self, recipe, filename, update, backup):
-    print(recipe)
-    return
-    system = 'linux' # doesnt matter just needs to be a valid system
-    vars_kvl = recipe.resolve_variables('linux')
-    vars_dict = vars_kvl.to_dict()
-    #print(vars_kvl.to_string(value_delimiter = '\n'))
-    upstream_name = vars_dict['_upstream_name']
-    pypi_data = ingest_pypi.project_info(upstream_name)
-    old_version = recipe.descriptor.version.upstream_version
-    new_version = pypi_data.latest_release.version
-      
-    old_release = pypi_data.find_by_version(old_version)
-    new_release = pypi_data.latest_release
+  def _process_recipe(self, recipe, filename):
+    if False:
+      upstream_source = self._find_recipe_upstream_source(recipe)
+      if upstream_source:
+        print('{}: upstream_source: {}'.format(filename, upstream_source))
+        return
+    if True:
+      tarball_address = self._find_recipe_tarball_address(recipe)
+      if tarball_address:
+        print('{}: tarball_address: {}'.format(filename, tarball_address))
+        return
 
-    if update:
-      extension = archive_extension.extension_for_filename(path.basename(new_release.url))
-    else:
-      extension = archive_extension.extension_for_filename(path.basename(old_release.url))
-      
-    print('         name: {}'.format(recipe.descriptor.name))
-    print('upstream_name: {}'.format(upstream_name))
-    print('  old_version: {}'.format(old_version))
-    print('  new_version: {}'.format(new_version))
-    print('    extension: {}'.format(extension))
-    
-    mutations = {
-      'data': self._make_new_data(recipe.data, old_release, new_release),
-      'variables': self._make_new_variables(recipe.variables, upstream_name, extension),
-    }
-    if update:
-      mutations['descriptor'] = self._make_new_descriptor(recipe.descriptor, new_version)
-          
-    new_recipe = recipe.clone(mutations = mutations)
+  @classmethod
+  def _find_recipe_upstream_source(clazz, recipe):
+    values = recipe.find_step_values('*', 'upstream_source')
+    if not values:
+      return None
+    for v in values:
+      if isinstance(v.value, value_source_tarball):
+        result = { 'url': v.value.value }
+        result.update(v.value.properties.to_dict())
+        return result
+    return None
 
-    if backup:
-      file_util.backup(filename)
-    new_recipe.save_to_file(filename)
-    replacements = {
-      'all: ${_url}/${_filename} ingested_filename=${_ingested_filename} checksum=${_checksum}': 'all: ${_url} ingested_filename=${_ingested_filename} checksum=@{DATA:checksum:${_version}}',
-    }
-    file_replace.replace(filename, replacements, backup = False)
+  @classmethod
+  def _find_recipe_tarball_address(clazz, recipe):
+    values = recipe.find_step_values('*', 'tarball_address')
+    if not values:
+      return None
+    for v in values:
+      if isinstance(v.value, value_git_address):
+        result = {
+          'address': v.value.value.address,
+          'revision': v.value.value.revision,
+        }
+        result.update(v.value.properties.to_dict())
+        return result
+    return None
   
   @classmethod
   def run(clazz):
