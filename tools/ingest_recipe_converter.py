@@ -2,7 +2,10 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import argparse, os.path as path
+from collections import namedtuple
+
 from bes.fs.file_resolve import file_resolve
+
 
 import argparse, os.path as path
 import pprint
@@ -53,16 +56,11 @@ class ingest_recipe_converter(object):
     return 0
 
   def _process_recipe(self, recipe, filename):
-    if False:
-      upstream_source = self._find_recipe_upstream_source(recipe)
-      if upstream_source:
-        print('{}: upstream_source: {}'.format(filename, upstream_source))
-        return
-    if True:
-      tarball_address = self._find_recipe_tarball_address(recipe)
-      if tarball_address:
-        print('{}: tarball_address: {}'.format(filename, tarball_address))
-        return
+    ingest_info = self._find_recipe_ingest_info(recipe)
+    if ingest_info:
+      print('{}: method={} values={}'.format(filename, ingest_info.method, ingest_info.values))
+    else:
+      print('{}: NOT'.format(filename))
 
   @classmethod
   def _find_recipe_upstream_source(clazz, recipe):
@@ -89,6 +87,18 @@ class ingest_recipe_converter(object):
         }
         result.update(v.value.properties.to_dict())
         return result
+    return None
+
+  _found_ingest_info = namedtuple('_found_ingest_info', 'method, data, variables, values')
+
+  @classmethod
+  def _find_recipe_ingest_info(clazz, recipe):
+    upstream_source = clazz._find_recipe_upstream_source(recipe)
+    if upstream_source:
+      return clazz._found_ingest_info('http', recipe.data, recipe.variables, upstream_source)
+    tarball_address = clazz._find_recipe_tarball_address(recipe)
+    if tarball_address:
+      return clazz._found_ingest_info('git', recipe.data, recipe.variables, tarball_address)
     return None
   
   @classmethod
