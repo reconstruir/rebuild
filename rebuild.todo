@@ -1173,3 +1173,4 @@ need unit tests for requirement expressions
 - rename recipes to be name.rebuild
 - keyvalue parse should be enhanced to work with escaped = signs for this case:
   all: url="https://api.bintray.com/content/jfrog/jfrog-cli-go/${VERSION}/${_exe}/jfrog?bt_package=${_exe}"
+- s/ingest_method_descriptor{method}/ingest_method_descriptor{name}/
