@@ -6,6 +6,8 @@ from collections import namedtuple
 
 from bes.fs.file_resolve import file_resolve
 from bes.fs.file_util import file_util
+from bes.fs.file_replace import file_replace
+from bes.key_value.key_value_list import key_value_list
 
 from rebuild.builder.builder_recipe_loader import builder_recipe_loader
 
@@ -19,6 +21,9 @@ from rebuild.ingest.ingest_file import ingest_file
 from rebuild.recipe.recipe_load_env import testing_recipe_load_env
 from rebuild.recipe.value.value_git_address import value_git_address
 from rebuild.recipe.value.value_source_tarball import value_source_tarball
+from rebuild.recipe.value.masked_value_list import masked_value_list
+from rebuild.recipe.value.masked_value import masked_value
+from rebuild.recipe.value.value_key_values import value_key_values
 
 class ingest_recipe_converter(object):
 
@@ -32,6 +37,10 @@ class ingest_recipe_converter(object):
   def main(self):
     args = self.parser.parse_args()
 
+    self.replacements = {
+      'REBUILD_PACKAGE_UPSTREAM_VERSION': 'VERSION',
+    }
+    
     files = file_resolve.resolve_dir(args.source, patterns = [ '*.recipe' ])
     for rf in files:
       self._process_file(rf.filename_abs,
@@ -45,11 +54,16 @@ class ingest_recipe_converter(object):
       raise IOError('Not a file: %s' % (filename))
     env = testing_recipe_load_env()
     env.variable_manager.add_variable('REBUILD_PYTHON_VERSION', '2.7')
+    env.variable_manager.add_variable('BES_VERSION', '0.0.0')
+    env.variable_manager.add_variable('REBUILD_VERSION', '0.0.0')
+    env.variable_manager.add_variable('REBUILD_PACKAGE_UPSTREAM_VERSION', '${VERSION}')
     recipes = builder_recipe_loader.load(env, filename)
     entries = ingest_entry_list()
     for recipe in recipes:
       entry = self._rebuild_recipe_to_ingest_recipe(recipe, filename)
-      assert entry
+      if not entry:
+        print('FAILED: {}'.format(filename))
+        return 0
       entries.append(entry)
     assert entries
     basename = '{}.reingest'.format(entries[0].name)
@@ -61,7 +75,11 @@ class ingest_recipe_converter(object):
                                    None,
                                    entries)
     file_util.save(dest_filename, content = str(dest_ingest_file)) 
-    print('DONE {}'.format(dest_filename))
+    print(' DONE: {}'.format(dest_filename))
+    file_replace.replace(dest_filename,
+                         self.replacements,
+                         backup = False,
+                         word_boundary = False)
     return 0
 
   def _rebuild_recipe_to_ingest_recipe(self, recipe, filename):
@@ -84,7 +102,36 @@ class ingest_recipe_converter(object):
 
   @classmethod
   def _make_ingest_method(clazz, ingest_info):
-    return ingest_method(ingest_info.method_descriptor, ingest_info.variables)
+    values = masked_value_list()
+    if ingest_info.method_descriptor.method() == 'http':
+      url = ingest_info.values['url']
+      url_kv = key_value_list.parse('url={}'.format(url))
+      checksum = ingest_info.values['checksum']
+      checksum_kv = key_value_list.parse('checksum={}'.format(checksum))
+      ingested_filename = ingest_info.values['ingested_filename']
+      ingested_filename_kv = key_value_list.parse('ingested_filename={}'.format(ingested_filename))
+      values.append(masked_value('all',
+                                 value_key_values(origin = None, value = url_kv), origin = None))
+      values.append(masked_value('all',
+                                 value_key_values(origin = None, value = checksum_kv), origin = None))
+      values.append(masked_value('all',
+                                 value_key_values(origin = None, value = ingested_filename_kv), origin = None))
+      
+    elif ingest_info.method_descriptor.method() == 'git':
+      address = ingest_info.values['address']
+      address_kv = key_value_list.parse('address={}'.format(address))
+      revision = ingest_info.values['revision']
+      revision_kv = key_value_list.parse('revision={}'.format(revision))
+      ingested_filename = 'fixme/${NAME}-${VERSION}.tar.gz'
+      ingested_filename_kv = key_value_list.parse('ingested_filename={}'.format(ingested_filename))
+      values.append(masked_value('all',
+                                 value_key_values(origin = None, value = address_kv), origin = None))
+      values.append(masked_value('all',
+                                 value_key_values(origin = None, value = revision_kv), origin = None))
+      values.append(masked_value('all',
+                                 value_key_values(origin = None, value = ingested_filename_kv), origin = None))
+    
+    return ingest_method(ingest_info.method_descriptor, values)
     
   @classmethod
   def _find_recipe_upstream_source(clazz, recipe):
