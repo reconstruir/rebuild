@@ -1,5 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
+from os import path
+
 from bes.git.git_repo import git_repo
 from bes.archive.archiver import archiver
 from bes.archive.archive_util import archive_util
@@ -20,10 +22,21 @@ class archive_cli_command(object):
     return 0
 
   @classmethod
-  def contents(clazz, archive):
-    for member in archiver.members(archive):
-      print(member)
+  def contents(clazz, archives):
+    if len(archives) == 1:
+      clazz._do_contents_one_archive(archives[0], False)
+    else:
+      for archive in archives:
+        clazz._do_contents_one_archive(archive, True)
     return 0
+
+  @classmethod
+  def _do_contents_one_archive(clazz, archive, print_archive):
+    for member in archiver.members(archive):
+      if print_archive:
+        print('{}:{}'.format(path.basename(archive), member))
+      else:
+        print(member)
   
   @classmethod
   def duplicates(clazz, archives, check_content):

@@ -40,8 +40,8 @@ class archive_cli_args(object):
     
     # contents
     p = subparser.add_parser('contents', help = 'Show the contents of an archive.')
-    p.add_argument('archive_filename', action = 'store', default = None,
-                   help = 'The archive filename [ None ]')
+    p.add_argument('archives', action = 'store', default = [], nargs = '+',
+                   help = 'Archives to check for duplicates [ ]')
     
     # duplicates
     p = subparser.add_parser('duplicates', help = 'Show duplicates between archives contents.')
@@ -96,8 +96,8 @@ class archive_cli_args(object):
   def _command_archive_duplicates(self, archives, check_content):
     return archive_cli_command.duplicates(archives, check_content)
 
-  def _command_archive_contents(self, archive_filename):
-    return archive_cli_command.contents(archive_filename)
+  def _command_archive_contents(self, archives):
+    return archive_cli_command.contents(archives)
 
   def _command_archive_extract(self, archives, dest_dir):
     return archive_cli_command.extract(archives, dest_dir)
