@@ -174,7 +174,7 @@ class step(with_metaclass(step_register_meta, object)):
     build_blurb.blurb_verbose('rebuild', 'call_shell(cmd=%s, shell_env=%s)' % (command, shell_env))
 
     env = clazz.create_command_env(script)
-
+    env['PYTHONDONTWRITEBYTECODE'] = '1'
     env.update(shell_env)
 
     #clazz.env_dump(env, script.descriptor.name, 'PRE ENVIRONMENT')
