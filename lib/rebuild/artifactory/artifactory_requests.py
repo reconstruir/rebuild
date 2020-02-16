@@ -182,7 +182,7 @@ class artifactory_requests(object):
         clazz.log.log_d('upload_url: SUCCESS: attempt {} of {} for {} download_url={}'.format(i, num_tries, url, download_url))
         return download_url
       except artifactory_error as ex:
-        clazz.log.log_e('upload_url: FAILED: attempt {} of {} for {}'.format(i, num_tries, url))
+        clazz.log.log_e('upload_url: FAILED: attempt {} of {} for {} - {}'.format(i, num_tries, url, str(ex)))
         last_ex = ex
         
     raise last_ex

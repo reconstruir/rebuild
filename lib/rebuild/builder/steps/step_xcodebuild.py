@@ -44,7 +44,7 @@ class step_xcodebuild_build(step):
     else:
       assert isinstance(xcode_flags, list)
 
-    dervied_data_path = path.join(script.build_dir, 'derived_data')
+    derived_data_path = path.join(script.build_dir, 'derived_data')
 
     project_path = path.join(script.source_unpacked_dir, project)
 
@@ -52,7 +52,7 @@ class step_xcodebuild_build(step):
       'xcodebuild',
       '-configuration', configuration,
       '-scheme', scheme,
-      '-derivedDataPath', dervied_data_path,
+      '-derivedDataPath', derived_data_path,
       '-project', project_path,
     ]
     if env.config.verbose:

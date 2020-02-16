@@ -18,6 +18,7 @@ from rebuild.recipe.recipe_parser_util import recipe_parser_util
 from rebuild.recipe.recipe_util import recipe_util
 from rebuild.recipe.value.masked_value import masked_value
 from rebuild.recipe.value.masked_value_list import masked_value_list
+from rebuild.recipe.value.value_origin import value_origin
 from rebuild.recipe.recipe_data_manager import recipe_data_manager
 
 from .ingest_method import ingest_method
@@ -107,5 +108,16 @@ class ingest_entry(namedtuple('ingest_entry', 'name, version, description, data,
   @origin.setter
   def origin(self, origin):
     value_origin.set_origin(self, origin)
-  
+
+  @property
+  def ingest_file(self):
+    ingest_file = getattr(self, '_ingest_file', None)
+    if not ingest_file:
+      raise ValueError('ingest_file not set: {}'.format(str(self)))
+    return ingest_file
+
+  @ingest_file.setter
+  def ingest_file(self, ingest_file):
+    setattr(self, '_ingest_file', ingest_file)
+    
 check.register_class(ingest_entry, include_seq = False)
