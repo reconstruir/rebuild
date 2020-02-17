@@ -86,7 +86,32 @@ class archive_cli_args(object):
                    help = 'Use the base dir for dest_archive. [ False ]')
     p.add_argument('--exclude', action = 'append', default = [],
                    help = 'Exclude the given member from both the content check and dest_archive. [ ]')
+
+    # diff
+    p = subparser.add_parser('diff', help = 'Diff contente of 2 archives.')
+    p.add_argument('archive1', action = 'store', default = None,
+                   help = 'The first archive [ ]')
+    p.add_argument('archive2', action = 'store', default = None,
+                   help = 'The second archive [ ]')
+
+    # diff_manifest
+    p = subparser.add_parser('diff_manifest', help = 'Diff the manifest of 2 archives.')
+    p.add_argument('archive1', action = 'store', default = None,
+                   help = 'The first archive [ ]')
+    p.add_argument('archive2', action = 'store', default = None,
+                   help = 'The second archive [ ]')
     
+    # search
+    p = subparser.add_parser('search', help = 'Search for text in the archives contents.')
+    p.add_argument('archive', action = 'store', default = None,
+                   help = 'The archive [ ]')
+    p.add_argument('text', action = 'store', default = None,
+                   help = 'The text to search for [ ]')
+    p.add_argument('-i', '--ignore-case', action = 'store_true', default = False,
+                   help = 'Ignore case. [ ]')
+    p.add_argument('-w', '--whole-word', action = 'store_true', default = False,
+                   help = 'Only match whole words. [ ]')
+
   def _command_archive_create_git(self, root_dir, prefix, revision, output_filename, archive_format):
     return archive_cli_command.create_git(root_dir, prefix, revision, output_filename, archive_format)
 
@@ -112,3 +137,12 @@ class archive_cli_args(object):
 
   def _command_archive_combine(self, dest_archive, archives, check_content, base_dir, exclude):
     return archive_cli_command.combine(dest_archive, archives, check_content, base_dir, exclude)
+  
+  def _command_archive_diff(self, archive1, archive2):
+    return archive_cli_command.diff(archive1, archive2)
+
+  def _command_archive_diff_manifest(self, archive1, archive2):
+    return archive_cli_command.diff_manifest(archive1, archive2)
+  
+  def _command_archive_search(self, archive, text, ignore_case, whole_word):
+    return archive_cli_command.search(archive, text, ignore_case, whole_word)
