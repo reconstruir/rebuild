@@ -107,10 +107,10 @@ storage
   location: kiwi://mykiwi.com/mystuff
   repo: myrepo
   root_dir: myrootdir
-  download.username: fred
-  download.password: flintpass
-  upload.username: admin
-  upload.password: sekret
+  download_username: fred
+  download_password: flintpass
+  upload_username: admin
+  upload_password: sekret
 '''
     scm = storage_config_manager(config_text, '<test>')
     config = scm.get('test')

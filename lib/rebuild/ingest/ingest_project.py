@@ -20,6 +20,7 @@ class ingest_project(object):
   
   def __init__(self, base_dir, args = []):
     self._resolved_files = file_resolve.resolve_mixed(base_dir, args, patterns = [ '*.reingest' ])
+    self.log.log_d('resolved_files={}'.format(self._resolved_files))
     self._loaded_files = None
     self._entries = None
     

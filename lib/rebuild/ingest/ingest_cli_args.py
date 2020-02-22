@@ -52,6 +52,6 @@ class ingest_cli_args(object):
                                  verbose = verbose,
                                  systems = systems,
                                  cache_dir = cache_dir,
-                                 exclude = exclude,
-                                 include = include)
+                                 exclude = exclude or None,
+                                 include = include or None)
     return ingest_cli_command.run(vfs_config, project_dir, args, options)

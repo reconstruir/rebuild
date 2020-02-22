@@ -43,25 +43,28 @@ class ingest_runner(object):
     tmp_dir = self._tmp_dir
     system = options.systems[0]
 
-    self.log.debug('_ingest_one_entry: entry={} fs={} system={}'.format(entry.name, self._fs, system))
+    self.log.log_d('_ingest_one_entry: entry={} fs={} system={}'.format(entry.name, self._fs, system))
     
     global_variables = entry.ingest_file.variables.to_dict()
     values = entry.resolve_method_values(system, global_variables).to_dict()
-    self.log.debug('run: method={} entry={}:{}'.format(entry.method.descriptor.method(), entry.name, entry.version))
+    self.log.log_d('ingest_one: method={} entry={}:{}'.format(entry.method.descriptor.method(), entry.name, entry.version))
     for key, value in values.items():
-      self.log.debug('run: {}: {}'.format(key, value))
+      self.log.log_d('ingest_one: {}: {}'.format(key, value))
     remote_filename = values['ingested_filename']
     local_filename = entry.download(system, global_variables, options.cache_dir, tmp_dir)
-    self.log.debug('run: uploading {} to {}'.format(local_filename, remote_filename))
+    self.log.log_d('ingest_one: uploading {} to {}'.format(local_filename, remote_filename))
     self._fs.upload_file(local_filename, remote_filename)
 
   def ingest_some(self, entry_names, options):
     check.check_ingest_cli_options(options)
     for entry_name in entry_names:
+      self.log.log_d('ingest_some: entry_name={}'.format(entry_name))
       self.ingest_one(entry_name, options)
 
   def ingest_all(self, options):
     check.check_ingest_cli_options(options)
+
+    self.log.log_d('ingest_all: entry_names={}'.format(self.project.entry_names))
     self.ingest_some(self.project.entry_names, options)
       
   @cached_property

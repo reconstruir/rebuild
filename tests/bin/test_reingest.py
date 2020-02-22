@@ -45,6 +45,7 @@ entry libfoo 1.2.3
     vfs_config_file_content = '''\
 fsconfig
   vfs_type: local
+  vfs_class_path: bes.vfs.vfs_local
   local_root_dir: {tmp_dir}/downloads
 '''
     tmp_dir = self.make_temp_dir()
@@ -58,17 +59,19 @@ fsconfig
 
     project_file_formatted = project_file_content.format(url_base = tester.make_url(),
                                                          checksum = tester.file_checksum('downloads/foo-1.2.3.tar.gz'))
-    tmp_project_file = temp_file.make_temp_file(content = project_file_formatted)
-    tmp_fs_dir = self.make_temp_dir(suffix = '.fs')
-    vfs_config_file_content_formatted = vfs_config_file_content.format(tmp_dir = tmp_fs_dir)
-    tmp_vfs_config_file = temp_file.make_temp_file(content = vfs_config_file_content_formatted)
-    tmp_cache_dir = self.make_temp_dir(suffix = '.cache')
+    tmp_project_dir = temp_file.make_temp_dir(suffix = '.project.dir')
+    tmp_project_filename = file_util.save(path.join(tmp_project_dir, 'test.reingest'),
+                                          content = project_file_formatted)
+    tmp_fs_local_root_dir = self.make_temp_dir(suffix = '.fs.local.root.dir')
+    vfs_config_file_content_formatted = vfs_config_file_content.format(tmp_dir = tmp_fs_local_root_dir)
+    tmp_vfs_config_file = temp_file.make_temp_file(content = vfs_config_file_content_formatted, suffix = '.config.fs')
+    tmp_cache_dir = self.make_temp_dir(suffix = '.cache.dir')
 
     args = [
       'run',
       '--cache-dir', tmp_cache_dir,
-      tmp_project_file,
       tmp_vfs_config_file,
+      tmp_project_dir,
     ]
     
     rv = self.run_script(args)
@@ -78,7 +81,7 @@ fsconfig
 
     self.assertEqual( [
       'downloads/lib/libfoo-1.2.3.tar.gz',
-    ], file_find.find(tmp_fs_dir) )
+    ], file_find.find(tmp_fs_local_root_dir) )
 
     tester.stop()
   
@@ -105,6 +108,7 @@ entry foo 1.2.3
     vfs_config_file_content = '''\
 fsconfig
   vfs_type: local
+  vfs_class_path: bes.vfs.vfs_local
   local_root_dir: {tmp_dir}/stuff
 '''
     file_content = '''\
@@ -121,17 +125,19 @@ print('foo')
 
     project_file_formatted = project_file_content.format(url_base = tester.make_url(),
                                                          checksum = tester.file_checksum(filename))
-    tmp_project_file = temp_file.make_temp_file(content = project_file_formatted)
-    tmp_fs_dir = self.make_temp_dir(suffix = '.fs')
-    vfs_config_file_content_formatted = vfs_config_file_content.format(tmp_dir = tmp_fs_dir)
-    tmp_vfs_config_file = temp_file.make_temp_file(content = vfs_config_file_content_formatted)
-    tmp_cache_dir = self.make_temp_dir(suffix = '.cache')
+    tmp_project_dir = temp_file.make_temp_dir(suffix = '.project.dir')
+    tmp_project_filename = file_util.save(path.join(tmp_project_dir, 'test.reingest'),
+                                          content = project_file_formatted)
+    tmp_fs_local_root_dir = self.make_temp_dir(suffix = '.fs.local.root.dir')
+    vfs_config_file_content_formatted = vfs_config_file_content.format(tmp_dir = tmp_fs_local_root_dir)
+    tmp_vfs_config_file = temp_file.make_temp_file(content = vfs_config_file_content_formatted, suffix = '.config.fs')
+    tmp_cache_dir = self.make_temp_dir(suffix = '.cache.dir')
 
     args = [
       'run',
       '--cache-dir', tmp_cache_dir,
-      tmp_project_file,
       tmp_vfs_config_file,
+      tmp_project_dir,
     ]
     
     rv = self.run_script(args)
@@ -141,9 +147,9 @@ print('foo')
 
     self.assertEqual( [
       'stuff/something/foo-1.2.3.tar.gz',
-    ], file_find.find(tmp_fs_dir) )
+    ], file_find.find(tmp_fs_local_root_dir) )
 
-    tmp_archive = path.join(tmp_fs_dir, 'stuff/something/foo-1.2.3.tar.gz')
+    tmp_archive = path.join(tmp_fs_local_root_dir, 'stuff/something/foo-1.2.3.tar.gz')
     
     self.assertEqual( [
       'bin/foo.py',

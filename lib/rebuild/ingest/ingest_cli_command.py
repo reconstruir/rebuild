@@ -23,13 +23,13 @@ class ingest_cli_command(object):
     check.check_string_seq(args)
     check.check_ingest_cli_options(options)
 
-    clazz.log.debug('run: vfs_config_file={}'.format(vfs_config_file))
-    clazz.log.debug('run: project_dir={}'.format(project_dir))
-    clazz.log.debug('run: args={}'.format(args))
-    clazz.log.debug('run: options={}'.format(options))
+    clazz.log.log_d('ingest_cli_command run: vfs_config_file={}'.format(vfs_config_file))
+    clazz.log.log_d('ingest_cli_command run: project_dir={}'.format(project_dir))
+    clazz.log.log_d('ingest_cli_command run: args={}'.format(args))
+    clazz.log.log_d('ingest_cli_command run: options={}'.format(options))
 
     fs = vfs_registry.load_from_config_file(vfs_config_file)
-    clazz.log.debug('run: fs={}'.format(fs))
+    clazz.log.log_d('ingest_cli_command run: fs={}'.format(fs))
 
     runner = ingest_runner(fs, project_dir, args = args)
     project = runner.project
@@ -50,7 +50,11 @@ class ingest_cli_command(object):
       entry_names = [ n for n in entry_names if n not in options.exclude ]
       runner.ingest_some(entry_names, options)
       return 0
-        
+
+    clazz.log.log_d('ingest_cli_command run: calling ingest_all()')
+
     runner.ingest_all(options)
+
+    clazz.log.log_d('ingest_cli_command run: ingest_all() returns')
     
     return 0
