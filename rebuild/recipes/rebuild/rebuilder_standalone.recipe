@@ -1,9 +1,9 @@
 !rebuild.recipe!
 
-package rebuilder_standalone ${EGO_REBUILD_VERSION}
+package rebuilder_standalone ${REBUILD_VERSION}
 
   requirements
-    all: BUILD rebuild == ${EGO_REBUILD_VERSION}
+    all: BUILD rebuild == ${REBUILD_VERSION}
     all: TOOL python_setuptools >= 19.4
     all: BUILD python_pyinstaller >= 3.4-1
 

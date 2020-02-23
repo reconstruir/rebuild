@@ -22,10 +22,10 @@ storage
   location:
   repo: foo
   root_dir: bar
-  download.username: fred
-  download.password: flintpass
-  upload.username: fred
-  upload.password: flintpass
+  download_username: fred
+  download_password: flintpass
+  upload_username: fred
+  upload_password: flintpass
 
 storage
   name: test_artifactory
@@ -33,10 +33,10 @@ storage
   location: https://mycorp.jfrog.io/mycorp
   repo: foo
   root_dir: bar
-  download.username: fred
-  download.password: flintpass
-  upload.username: admin
-  upload.password: sekret
+  download_username: fred
+  download_password: flintpass
+  upload_username: admin
+  upload_password: sekret
 '''
     c = SCM(text, '<test>')
     t = c.get('test_local')

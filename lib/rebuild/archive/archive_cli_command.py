@@ -58,9 +58,15 @@ class archive_cli_command(object):
 
   @classmethod
   def cat(clazz, archive, filename):
-    s = archiver.extract_member_to_string(archive, filename)
+    s = archiver.extract_member_to_string(archive, filename, codec = 'utf-8')
     print(s)
     return 0
+
+  @classmethod
+  def search(clazz, archive, what, ignore_case, whole_word):
+    rv = archive_util.search(archive, what, ignore_case = ignore_case, whole_word = whole_word)
+    print(rv.stdout)
+    return rv.exit_code
 
   @classmethod
   def combine(clazz, dest_archive, archives, check_content, base_dir, exclude):
@@ -69,3 +75,15 @@ class archive_cli_command(object):
                          base_dir = base_dir,
                          exclude = exclude)
     return 0
+
+  @classmethod
+  def diff(clazz, archive1, archive2):
+    rv = archive_util.diff_contents(archive1, archive2)
+    print(rv.stdout)
+    return rv.exit_code
+  
+  @classmethod
+  def diff_manifest(clazz, archive1, archive2):
+    rv = archive_util.diff_manifest(archive1, archive2)
+    print(rv.stdout)
+    return rv.exit_code

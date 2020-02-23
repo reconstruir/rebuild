@@ -172,5 +172,13 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
   def is_recipe(clazz, filename):
     'Return True if filename is a valid recipe.'
     return recipe_util.file_starts_with_magic(filename, clazz.MAGIC)
+
+  def find_step_values(self, step_name, value_name):
+    for step in self.steps:
+      if step_name in [ step.name, '*' ]:
+        for value in step.values:
+          if value.key == value_name:
+            return value.values
+    return None
   
 check.register_class(recipe, include_seq = False)

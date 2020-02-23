@@ -66,10 +66,10 @@ class storage_config(namedtuple('storage_config', 'name, provider, location, rep
     location = section.find_by_key('location', raise_error = False)
     repo = section.find_by_key('repo', raise_error = False)
     root_dir = section.find_by_key('root_dir', raise_error = False)
-    download_username = section.find_by_key('download.username', raise_error = False) or ''
-    download_password = section.find_by_key('download.password', raise_error = False) or ''
-    upload_username = section.find_by_key('upload.username', raise_error = False) or ''
-    upload_password = section.find_by_key('upload.password', raise_error = False) or ''
+    download_username = section.find_by_key('download_username', raise_error = False) or ''
+    download_password = section.find_by_key('download_password', raise_error = False) or ''
+    upload_username = section.find_by_key('upload_username', raise_error = False) or ''
+    upload_password = section.find_by_key('upload_password', raise_error = False) or ''
     download = credentials(source)
     download.username = download_username
     download.password = download_password

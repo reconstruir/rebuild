@@ -70,23 +70,4 @@ class ingest_file(namedtuple('ingest_file', 'format_version, filename, descripti
       result.add_child(kv.to_string(quote_value = True))
     return result
   
-  @classmethod
-  def find_ingest_files(clazz, args):
-    '''
-    Find ingest files.  args can be a combination of files and directories.
-    Files are explicitly interpretted as ingest files.  
-    Directories are recursively searched for files that end in .reingest
-    '''
-    check.check_string_seq(args)
-
-  @classmethod
-  def _find_ingest_files_in_dir(clazz, d):
-    '''
-    Find ingest files.  args can be a combination of files and directories.
-    Files are explicitly interpretted as ingest files.  
-    Directories are recursively searched for files that end in .reingest
-    '''
-    check.check_string_seq(args)
-    
-    
 check.register_class(ingest_file, include_seq = False)

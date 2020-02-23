@@ -25,7 +25,10 @@ class credentials(object):
       buf.write('{}=**********'.format(key))
     return buf.getvalue()
     return '{}:{}'.format(self.username, '**********')
-    
+
+  def __repr__(self):
+    return str(self)
+  
   def __getattr__(self, key):
     if not key in self.__dict__['_credentials']:
       raise KeyError('no such credential: {}'.format(key))

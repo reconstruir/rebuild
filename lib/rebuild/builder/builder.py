@@ -199,8 +199,7 @@ class builder(object):
 
     tools_reqs = script.resolve_deps(['TOOL'], False).to_requirement_list()
     tools_resolve_rv = other_am.poto_resolve_deps(tools_reqs, build_target, ['TOOL'], False)
-    print('tools_resolve_rv: {}'.format(tools_resolve_rv))
-    for next_pkg_desc in tools_resolve_rv.resolved:
+    for next_pkg_desc in tools_resolve_rv.resolved or []:
       env.build_artifact_manager.import_artifact(env.external_artifact_manager,
                                                  next_pkg_desc,
                                                  build_target,
@@ -208,7 +207,7 @@ class builder(object):
 
     reqs = script.resolve_deps(['BUILD', 'RUN'], True).to_requirement_list()
     reqs_resolve_rv = other_am.poto_resolve_deps(reqs, build_target, ['BUILD', 'RUN'], True)
-    for next_pkg_desc in reqs_resolve_rv.resolved:
+    for next_pkg_desc in reqs_resolve_rv.resolved or []:
       env.build_artifact_manager.import_artifact(env.external_artifact_manager,
                                                  next_pkg_desc,
                                                  build_target,
