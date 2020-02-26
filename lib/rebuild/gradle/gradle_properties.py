@@ -46,7 +46,7 @@ class gradle_properties(object):
   @classmethod
   def read_default_file(clazz):
     'Read ~/.gradle/gradle.properties'
-    return clazz.read(clazz.DEFAULT_FILENAME)
+    return clazz.read_file(clazz.DEFAULT_FILENAME)
 
   @classmethod
   def default_file_exists(clazz):
