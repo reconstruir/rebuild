@@ -30,20 +30,21 @@ class update_cli(object):
                               nargs = '+',
                               help = 'The recipe to update.')
     self._parser.add_argument('--verbose',
-                              '-v',
                               action = 'store_true',
                               default = False,
                               help = 'Verbose debug spew [ False ]')
     self._parser.add_argument('--backup',
-                              '-b',
                               action = 'store_true',
                               default = False,
                               help = 'Make a backup of old recipes [ False ]')
     self._parser.add_argument('--update',
-                              '-u',
                               action = 'store_true',
                               default = False,
                               help = 'Update the recipe version to the latest release [ False ]')
+    self._parser.add_argument('--version',
+                              action = 'store',
+                              default = None,
+                              help = 'The version to update to [ latest ]')
     
   @classmethod
   def run(clazz):
@@ -52,30 +53,36 @@ class update_cli(object):
   def main(self):
     args = self._parser.parse_args()
     for filename in args.filenames:
-      self._process_file(filename, args.update, args.backup)
+      self._process_file(filename, args.update, args.backup, args.version)
     return 0
 
-  def _process_file(self, filename, update, backup):
+  def _process_file(self, filename, update, backup, version):
     if not path.isfile(filename):
       raise IOError('Not a file: %s' % (filename))
     env = testing_recipe_load_env()
     recipes = builder_recipe_loader.load(env, filename)
     for recipe in recipes:
-      self._process_recipe(recipe, filename, update, backup)
+      self._process_recipe(recipe, filename, update, backup, version)
     return 0
 
-  def _process_recipe(self, recipe, filename, update, backup):
+  def _process_recipe(self, recipe, filename, update, backup, version):
     system = 'linux' # doesnt matter just needs to be a valid system
     vars_kvl = recipe.resolve_variables('linux')
     vars_dict = vars_kvl.to_dict()
     #print(vars_kvl.to_string(value_delimiter = '\n'))
     upstream_name = vars_dict['_upstream_name']
     pypi_data = ingest_pypi.project_info(upstream_name)
+
+    if version:
+      release = pypi_data.find_by_version(version)
+    else:
+      release = pypi_data.latest_release
+      
     old_version = recipe.descriptor.version.upstream_version
-    new_version = pypi_data.latest_release.version
+    new_version = release.version
       
     old_release = pypi_data.find_by_version(old_version)
-    new_release = pypi_data.latest_release
+    new_release = release
 
     if update:
       extension = archive_extension.extension_for_filename(path.basename(new_release.url))
