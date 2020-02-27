@@ -59,7 +59,7 @@ class build_version(namedtuple('build_version', 'upstream_version, revision, epo
   
   @classmethod
   def _upstream_char_is_valid(clazz, c):
-    return c.isalnum() or c in [ '.', '+', '~' ]
+    return c.isalnum() or c in [ '.', '+', '~', '_' ]
     
   @classmethod
   def epoch_is_valid(clazz, epoch):
