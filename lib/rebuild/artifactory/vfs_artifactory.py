@@ -107,13 +107,21 @@ class vfs_artifactory(vfs_base):
     entries = dirs + files
     for p in rd.decomposed_path:
       remote_filename = vfs_path_util.lstrip_sep(p)
+      # TODO: fix in vfs_path_util.lstrip_sep to correct do '/folder/folder_1/'; right now its do ['foder', 'foder_1', '']
       parts = remote_filename.split('/')
+      parts = [p for p in parts if p]
       new_node = result.ensure_path(parts)
       setattr(new_node, '_entry', self._make_entry('folder', remote_filename, parts))
-    
+
     for entry in entries:
       remote_filename = entry['_remote_filename']
       parts = remote_filename.split('/')
+      parts = [p for p in parts if p]
+      for i in range(1, len(parts)):
+        mid_path = parts[:i]
+        folder_node = result.ensure_path(mid_path)
+        if not hasattr(folder_node, '_entry'):
+          setattr(folder_node, '_entry', self._make_entry('folder', '/'.join(mid_path), mid_path))
       new_node = result.ensure_path(parts)
       setattr(new_node, '_entry', entry)
 
@@ -146,7 +154,7 @@ class vfs_artifactory(vfs_base):
   def has_file(self, remote_filename):
     'Return True if filename exists in the filesystem and is a FILE.'
     try:
-      self.file_info(remote_filename)
+      self.file_info(remote_filename, None)
       return True
     except vfs_error as ex:
       return False
