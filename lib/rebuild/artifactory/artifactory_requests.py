@@ -266,7 +266,11 @@ class artifactory_requests(object):
   def list_artifacts(clazz, address, credentials):
     'List artifacts in an artifactory directory.'
     check.check_storage_address(address)
-    clazz.log.log_d('list_artifacts: address=%s' % (str(address)))
+    clazz.log.log_d('list_artifacts: address={} credentials={}'.format(address, credentials))
+    import os
+    for k, v in sorted(dict(os.environ).items()):
+      print('ENV: {}={}'.format(k, v))
+
     # an artifactory AQL query to find all the artifacts in a repo
     template = '''
 items.find({{
