@@ -7,7 +7,7 @@ from bes.fs.file_find import file_find
 from bes.fs.temp_file import temp_file
 from bes.archive.archiver import archiver
 from bes.common.string_util import string_util
-from bes.git.git_util import git_util
+from bes.git.git_address_util import git_address_util
 from collections import namedtuple
 from rebuild.base.build_arch import build_arch
 from rebuild.base.build_level import build_level
@@ -123,8 +123,8 @@ class rebuilder_tester(object):
         tmp_dir + path.sep: '',
         long_form: '$BUILD_PATH',
         short_form: '$BUILD_PATH',
-        git_util.sanitize_address(os.getcwd()): '$WORK_DIR',
-        git_util.sanitize_address(path.expanduser('~')): '$HOME',
+        git_address_util.sanitize_for_local_path(os.getcwd()): '$WORK_DIR',
+        git_address_util.sanitize_for_local_path(path.expanduser('~')): '$HOME',
         '-'.join(sorted(config.build_target.arch)): '$ARCH',
       }
       new_filename = string_util.replace(checksum.filename, replacements, word_boundary = False)

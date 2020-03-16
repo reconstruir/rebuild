@@ -4,7 +4,7 @@ import os.path as path
 from bes.common.check import check
 from bes.system.execute import execute
 from bes.fs.file_util import file_util
-from bes.git.git_util import git_util
+from bes.git.git_address_util import git_address_util
 
 class source_dir_zipball_cache(object):
 
@@ -33,6 +33,6 @@ class source_dir_zipball_cache(object):
     dirname = path.dirname(d)
     basename = path.basename(d)
     filename = '%s.zip' % (basename)
-    return path.join(self.root_dir, git_util.sanitize_address(dirname), filename)
+    return path.join(self.root_dir, git_address_util.sanitize_for_local_path(dirname), filename)
   
 check.register_class(source_dir_zipball_cache, include_seq = False)
