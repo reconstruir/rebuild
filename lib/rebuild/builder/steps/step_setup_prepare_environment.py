@@ -20,6 +20,9 @@ class step_setup_prepare_environment(step):
     
   #@abstractmethod
   def execute(self, script, env, values, inputs):
+    self.message('CACA: PATH={}'.format(os_env_var('PATH').value))
+    self.message('CACA: PYTHONPATH={}'.format(os_env_var('PYTHONPATH').value))
+
     if os_env_var('REBUILD_DONT_CLEAN_ENV').is_set:
       self.blurb('REBUILD_DONT_CLEAN_ENV is set: not cleaning the environment.')
       return step_result(True, None)
