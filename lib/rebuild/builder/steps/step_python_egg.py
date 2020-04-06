@@ -54,7 +54,11 @@ class step_python_egg_build(step):
                        timestamp = time_util.timestamp(timezone = True))
       v2.save_file(filename)
     flags = ' '.join(shell_flags)
+    from bes.system.which import which
+    p = which.which('python2.7')
+    print('CACA: p={}'.format(p))
     cmd = '${REBUILD_PYTHON} %s bdist_egg --plat-name=${REBUILD_PYTHON_PLATFORM_NAME} %s' % (setup_script, flags)
+    #cmd = '/ego/usr/bin/python2.7 %s bdist_egg --plat-name=${REBUILD_PYTHON_PLATFORM_NAME} %s' % (setup_script, flags)
     return self.call_shell(cmd, script, env, shell_env = shell_env, execution_dir = setup_dir)
 
 class step_python_egg_install(step):
