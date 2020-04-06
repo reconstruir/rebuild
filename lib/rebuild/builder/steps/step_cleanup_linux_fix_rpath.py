@@ -3,6 +3,7 @@
 import os.path as path
 from bes.system.execute import execute
 from bes.system.which import which
+from bes.system.log import log
 from rebuild.step.step import step
 from rebuild.binary_format.binary_detector import binary_detector
 from rebuild.toolchain.library import library
@@ -25,7 +26,7 @@ class step_cleanup_linux_fix_rpath(step):
   def execute(self, script, env, values, inputs):
     if not self. _PATCHELF_EXE:
       if not self. _PATCHELF_EXE:
-        print('WARNING: patchelf not found.  executables will be bad!')
+        log.console('WARNING: patchelf not found.  executables will be bad!')
       return self.result(True, None)
     if not script.build_target.is_linux():
       return self.result(True, None)
