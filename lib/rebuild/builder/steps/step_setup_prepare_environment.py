@@ -20,7 +20,10 @@ class step_setup_prepare_environment(step):
     
   #@abstractmethod
   def execute(self, script, env, values, inputs):
-    # We want a clean environment for tools to work
+    if os_env_var('REBUILD_DONT_CLEAN_ENV').is_set:
+      self.blurb('REBUILD_DONT_CLEAN_ENV is set: not cleaning the environment.')
+      return step_result(True, None)
+    # We want a clean environment to avoid side effects or using non "official" tools
     unixpath_save = self._path_save('BESTEST_UNIXPATH')
     pythonpath_save = self._path_save('BESTEST_PYTHONPATH')
     os_env.path_reset()
