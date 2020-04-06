@@ -2,6 +2,7 @@
 
 import os.path as path
 from bes.system.execute import execute
+from bes.system.which import which
 from rebuild.step.step import step
 from rebuild.binary_format.binary_detector import binary_detector
 from rebuild.toolchain.library import library
@@ -9,6 +10,8 @@ from rebuild.toolchain.library import library
 class step_cleanup_linux_fix_rpath(step):
   'Check the rpath of binaries is relative to the executable_path.'
 
+  _PATCHELF_EXE = which.which('patchelf')
+  
   def __init__(self):
     super(step_cleanup_linux_fix_rpath, self).__init__()
 
@@ -20,6 +23,10 @@ class step_cleanup_linux_fix_rpath(step):
   
   #@abstractmethod
   def execute(self, script, env, values, inputs):
+    if not self. _PATCHELF_EXE:
+      if not self. _PATCHELF_EXE:
+        print('WARNING: patchelf not found.  executables will be bad!')
+      return self.result(True, None)
     if not script.build_target.is_linux():
       return self.result(True, None)
     if not path.isdir(script.staged_files_dir):
@@ -29,6 +36,6 @@ class step_cleanup_linux_fix_rpath(step):
     for b in binaries:
       if not library.is_library(b):
         self.blurb('Setting rpath %s for %s' % (rpath, path.relpath(b)))
-        cmd = 'patchelf --set-rpath %s %s' % (rpath, b)
+        cmd = '{} --set-rpath {} {}'.format(self. _PATCHELF_EXE, rpath, b)
         execute.execute(cmd)
     return self.result(True, None)
