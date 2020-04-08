@@ -3,19 +3,21 @@
 import os, os.path as path
 from collections import namedtuple
 
-from rebuild.step.step_result import step_result
-from rebuild.base.build_blurb import build_blurb
-from rebuild.base.build_target import build_target
-from rebuild.toolchain.toolchain import toolchain
-from bes.dependency.dependency_resolver import dependency_resolver
 from bes.common.algorithm import algorithm
 from bes.common.variable import variable
-from bes.system.execute import execute
-from bes.system.os_env import os_env
+from bes.debug.debug_timer import debug_timer
+from bes.dependency.dependency_resolver import dependency_resolver
 from bes.fs.file_replace import file_replace
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
-from bes.debug.debug_timer import debug_timer
+from bes.system.env_var import os_env_var
+from bes.system.execute import execute
+from bes.system.os_env import os_env
+
+from rebuild.base.build_blurb import build_blurb
+from rebuild.base.build_target import build_target
+from rebuild.step.step_result import step_result
+from rebuild.toolchain.toolchain import toolchain
 
 from .package import package
 from .package_manager import package_manager
@@ -171,7 +173,11 @@ class package_tester(object):
 
     saved_env = os_env.clone_current_env()
 
-    shell_env = os_env.make_clean_env()
+    if os_env_var('REBUILD_DONT_CLEAN_ENV').is_set:
+      shell_env = os_env.clone_current_env()
+    else:
+      shell_env = os_env.make_clean_env()
+    
     shell_env = config.tools_manager.transform_env(shell_env, resolved_tool_reqs)
     shell_env = pm.transform_env(shell_env, all_packages_names)
     
