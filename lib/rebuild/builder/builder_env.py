@@ -9,6 +9,7 @@ from bes.git.git_archive_cache import git_archive_cache
 from bes.properties_file.properties_file import properties_file
 from bes.url.http_download_cache import http_download_cache
 from bes.system.python import python
+from bes.system.which import which
 
 from rebuild.tools_manager.tools_manager import tools_manager
 from rebuild.checksum.checksum_manager import checksum_manager
@@ -130,9 +131,13 @@ class builder_env(object):
   
   def _make_global_variables(self):
     python_exe = 'python{}'.format(self.config.python_version)
+    python_exe_abs = which.which(python_exe)
+    if not python_exe_abs:
+      raise RuntimeError('No python exe found for python version: "{}"'.format(self.config.python_version))
+      
     return {
-      'REBUILD_PYTHON': python_exe,
-      'REBUILD_PYTHON_VERSION': python.exe_version(python_exe),
+      'REBUILD_PYTHON': python_exe_abs,
+      'REBUILD_PYTHON_VERSION': python.exe_version(python_exe_abs),
     }
   
 check.register_class(builder_env, include_seq = False)
