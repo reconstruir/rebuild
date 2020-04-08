@@ -136,10 +136,10 @@ class test_requirement_parser(unit_test):
     self.assertTrue( isinstance(r[1][4], requirement_hardness) )
 
   def test_expression(self):
-    text = 'all(${REBUILD_PYTHON} < 3): foo >= 1.2.3'
+    text = 'all(${KIWI_VERSION} < 666): foo >= 1.2.3'
     requirements = self._parse(text)
     self.assertEqual( [
-      ( 'foo', '>=', '1.2.3', 'all', None, '${REBUILD_PYTHON} < 3' ),
+      ( 'foo', '>=', '1.2.3', 'all', None, '${KIWI_VERSION} < 666' ),
     ], requirements )
     
 if __name__ == '__main__':
