@@ -24,15 +24,16 @@ class step_cleanup_linux_fix_rpath(step):
   
   #@abstractmethod
   def execute(self, script, env, values, inputs):
-    if not self. _PATCHELF_EXE:
-      if not self. _PATCHELF_EXE:
-        log.console('WARNING: patchelf not found.  executables will be bad!')
-      return self.result(True, None)
     if not script.build_target.is_linux():
       return self.result(True, None)
     if not path.isdir(script.staged_files_dir):
       return self.result(True, None)
     binaries = binary_detector.find_strippable_binaries(script.staged_files_dir, format_name = 'elf')
+    if not binaries:
+      return self.result(True, None)
+    if not self._PATCHELF_EXE:
+      log.console('WARNING: patchelf not found.  executables will be bad!')
+      return self.result(True, None)
     rpath = values.get('rpath')
     for b in binaries:
       if not library.is_library(b):
