@@ -17,16 +17,17 @@ from bes.fs.file_find import file_find
 from bes.fs.file_replace import file_replace
 from bes.fs.file_search import file_search
 from bes.fs.file_util import file_util
+from bes.fs.tar_util import tar_util
 from bes.fs.temp_file import temp_file
 from bes.match.matcher_filename import matcher_filename, matcher_multiple_filename
 from bes.property.cached_property import cached_property
 from bes.python.setup_tools import setup_tools
 from bes.system.execute import execute
 from bes.system.log import log
+
 from rebuild.base.build_blurb import build_blurb
 from rebuild.base.build_target import build_target
 from rebuild.base.package_descriptor import package_descriptor
-
 from rebuild.binary_format.binary_detector import binary_detector
 
 from .package_metadata import package_metadata
@@ -87,9 +88,7 @@ class package(object):
     dst_env_dir = path.join(root_dir, env_dir_basename)
     file_util.mkdir(dst_stuff_dir)
     file_util.mkdir(dst_env_dir)
-    # tar cmd is 10x faster than archiver.  need to fix archiver
-    tar_cmd = [ 'tar', 'xf', self.tarball, '-C', tmp_dir ]
-    execute.execute(tar_cmd)
+    tar_util.extract(self.tarball, tmp_dir)
     src_stuff_dir = path.join(tmp_dir, self.FILES_DIR)
     src_env_dir = path.join(tmp_dir, self.ENV_DIR)
     if path.isdir(src_stuff_dir):
@@ -102,7 +101,7 @@ class package(object):
     self._replace_variables_env_files(self.metadata.manifest.env_files.files_with_hardcoded_paths(),
                                   dst_env_dir, dst_stuff_dir)
     file_util.remove(tmp_dir)
-      
+
   def _update_python_config_files(self, stuff_dir):
     python_lib_dir = path.join(stuff_dir, 'lib/python')
     setup_tools.update_egg_directory(python_lib_dir)
@@ -343,7 +342,6 @@ unset REBUILD_STUFF_DIR
     research.  The dilemma is that tarball checksums are different 
     depending on the creation checksums of the contents.
     '''
-    from bes.fs.tar_util import tar_util
     file_util.mkdir(path.dirname(filename))
     manifest = temp_file.make_temp_file(content = '\n'.join(files))
     tar_util.create_deterministic_tarball_with_manifest(filename,
