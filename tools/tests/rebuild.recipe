@@ -14,7 +14,6 @@ package python_flask 1.1.1 0
     all: _ingested_filename=python/packages/${_filename}
 
   requirements
-    all: TOOL python_setuptools >= 41.2.0
     all: RUN python_werkzeug >= 0.16.0
     all: RUN python_jinja2 >= 2.10.3
     all: RUN python_itsdangerous >= 1.1.0
