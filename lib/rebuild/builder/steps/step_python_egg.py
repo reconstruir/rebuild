@@ -87,7 +87,7 @@ class step_python_egg_install(step):
     egg = path.join(dist_dir, eggs[0])
     mkdir_cmd = 'mkdir -p ${REBUILD_STAGE_PYTHON_LIB_DIR}'
     easy_install_cmd_parts = [
-      'easy_install-${REBUILD_PYTHON_VERSION}',
+      '${REBUILD_EASY_INSTALL}',
       '--install-dir=${REBUILD_STAGE_PYTHON_LIB_DIR}',
       '--prefix=${REBUILD_STAGE_PREFIX_DIR}',
       '--no-deps',

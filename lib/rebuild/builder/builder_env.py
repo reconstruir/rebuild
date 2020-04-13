@@ -134,9 +134,15 @@ class builder_env(object):
     python_exe_abs = which.which(python_exe)
     if not python_exe_abs:
       raise RuntimeError('No python exe found for python version: "{}"'.format(self.config.python_version))
-      
+
+    easy_install_exe = 'easy_install-{}'.format(self.config.python_version)
+    easy_install_exe_abs = which.which(easy_install_exe)
+    if not easy_install_exe_abs:
+      raise RuntimeError('No easy_install exe found for python version: "{}"'.format(self.config.python_version))
+    
     return {
       'REBUILD_PYTHON': python_exe_abs,
+      'REBUILD_EASY_INSTALL': easy_install_exe_abs,
       'REBUILD_PYTHON_VERSION': python.exe_version(python_exe_abs),
     }
   
