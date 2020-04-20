@@ -28,6 +28,9 @@ class value_source_tarball(value_base):
   #@abstractmethod
   def sources(self, recipe_env, variables):
     'Return a list of sources this value provides or None.'
+    if self.value.startswith('@'):
+      print('WARNING: we have a problematic source: {} - {}'.format(self.value, self))
+      return []
     return [ recipe_env.storage.find_tarball(self.value) ]
 
   #@abstractmethod
