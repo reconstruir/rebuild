@@ -103,8 +103,6 @@ class archive_cli_command(object):
         print('{}: different'.format(rv.filename))
         clazz._print_diff_output(rv.execute_result)
         result = 1
-#      else:
-#        print('{}: same'.format(rv.filename))
     return result
 
   @classmethod
