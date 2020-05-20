@@ -1,12 +1,18 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from os import path
+import os
 
 from bes.git.git_repo import git_repo
 from bes.archive.archiver import archiver
 from bes.archive.archive_util import archive_util
 
 class archive_cli_command(object):
+
+  @classmethod
+  def handle_command(clazz, command, **kargs):
+    func = getattr(clazz, command)
+    return func(**kargs)
   
   @classmethod
   def create_git(clazz, root_dir, prefix, revision, output_filename, archive_format):
@@ -53,6 +59,8 @@ class archive_cli_command(object):
 
   @classmethod
   def extract_file(clazz, archive, filename, output_filename):
+    if not output_filename:
+      output_filename = path.join(os.getcwd(), path.basename(filename))
     archiver.extract_member_to_file(archive, filename, output_filename)
     return 0
 
@@ -79,11 +87,28 @@ class archive_cli_command(object):
   @classmethod
   def diff(clazz, archive1, archive2):
     rv = archive_util.diff_contents(archive1, archive2)
-    print(rv.stdout)
-    return rv.exit_code
+    return clazz._print_diff_output(rv)
   
   @classmethod
   def diff_manifest(clazz, archive1, archive2):
     rv = archive_util.diff_manifest(archive1, archive2)
-    print(rv.stdout)
+    return clazz._print_diff_output(rv)
+
+  @classmethod
+  def diff_dir(clazz, dir1, dir2):
+    rvs = archive_util.diff_dir(dir1, dir2)
+    result = 0
+    for rv in rvs:
+      if rv.execute_result.exit_code != 0:
+        print('{}: different'.format(rv.filename))
+        clazz._print_diff_output(rv.execute_result)
+        result = 1
+#      else:
+#        print('{}: same'.format(rv.filename))
+    return result
+
+  @classmethod
+  def _print_diff_output(clazz, rv):
+    if rv.stdout.strip():
+      print(rv.stdout)
     return rv.exit_code

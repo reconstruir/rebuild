@@ -1,12 +1,5 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from os import path
-import os
-
-from bes.common.check import check
-
-from .archive_cli_command import archive_cli_command
-
 class archive_cli_args(object):
 
   def __init__(self):
@@ -14,6 +7,7 @@ class archive_cli_args(object):
   
   def archive_add_args(self, subparser):
 
+    import os
     default_root = os.getcwd()
     default_format = 'zip'
     
@@ -88,7 +82,7 @@ class archive_cli_args(object):
                    help = 'Exclude the given member from both the content check and dest_archive. [ ]')
 
     # diff
-    p = subparser.add_parser('diff', help = 'Diff contente of 2 archives.')
+    p = subparser.add_parser('diff', help = 'Diff content of 2 archives.')
     p.add_argument('archive1', action = 'store', default = None,
                    help = 'The first archive [ ]')
     p.add_argument('archive2', action = 'store', default = None,
@@ -100,6 +94,14 @@ class archive_cli_args(object):
                    help = 'The first archive [ ]')
     p.add_argument('archive2', action = 'store', default = None,
                    help = 'The second archive [ ]')
+
+    # diff_dir
+    p = subparser.add_parser('diff_dir', help = 'Diff content of a dir of archives.')
+    p.add_argument('dir1', action = 'store', default = None,
+                   help = 'The first dir [ ]')
+    p.add_argument('dir2', action = 'store', default = None,
+                   help = 'The second dir [ ]')
+
     
     # search
     p = subparser.add_parser('search', help = 'Search for text in the archives contents.')
@@ -112,37 +114,6 @@ class archive_cli_args(object):
     p.add_argument('-w', '--whole-word', action = 'store_true', default = False,
                    help = 'Only match whole words. [ ]')
 
-  def _command_archive_create_git(self, root_dir, prefix, revision, output_filename, archive_format):
-    return archive_cli_command.create_git(root_dir, prefix, revision, output_filename, archive_format)
-
-  def _command_archive_remove_members(self, archive_filename, members):
-    return archive_cli_command.remove_members(archive_filename, members)
-  
-  def _command_archive_duplicates(self, archives, check_content):
-    return archive_cli_command.duplicates(archives, check_content)
-
-  def _command_archive_contents(self, archives):
-    return archive_cli_command.contents(archives)
-
-  def _command_archive_extract(self, archives, dest_dir):
-    return archive_cli_command.extract(archives, dest_dir)
-
-  def _command_archive_extract_file(self, archive_filename, filename, output_filename):
-    if not output_filename:
-      output_filename = path.join(os.getcwd(), path.basename(filename))
-    return archive_cli_command.extract_file(archive_filename, filename, output_filename)
-
-  def _command_archive_cat(self, archive_filename, filename):
-    return archive_cli_command.cat(archive_filename, filename)
-
-  def _command_archive_combine(self, dest_archive, archives, check_content, base_dir, exclude):
-    return archive_cli_command.combine(dest_archive, archives, check_content, base_dir, exclude)
-  
-  def _command_archive_diff(self, archive1, archive2):
-    return archive_cli_command.diff(archive1, archive2)
-
-  def _command_archive_diff_manifest(self, archive1, archive2):
-    return archive_cli_command.diff_manifest(archive1, archive2)
-  
-  def _command_archive_search(self, archive, text, ignore_case, whole_word):
-    return archive_cli_command.search(archive, text, ignore_case, whole_word)
+  def _command_archive(self, command, *args, **kargs):
+    from .archive_cli_command import archive_cli_command
+    return archive_cli_command.handle_command(command, **kargs)
