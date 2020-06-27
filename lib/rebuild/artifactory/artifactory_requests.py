@@ -102,8 +102,10 @@ class artifactory_requests(object):
     import requests
     tmp = temp_file.make_temp_file(suffix = '-' + path.basename(target), delete = not debug)
     auth = ( credentials.username, credentials.password )
+    clazz.log.log_d('download_to_file: url={} auth={} tmp={}'.format(url, auth, tmp))
     response = requests.get(url, auth = auth, stream = True)
-    clazz.log.log_d('download_to_file: target=%s; url=%s; tmp=%s' % (target, url, tmp))
+    clazz.log.log_d('download_to_file: response={} headers={}'.format(response,
+                                                                      response.headers))
     if response.status_code != 200:
       return False
     with open(tmp, 'wb') as fout:
@@ -113,6 +115,8 @@ class artifactory_requests(object):
         checksums = clazz.get_checksums_for_url(url, credentials)
         expected_checksum = checksums.sha256
         actual_checksum = file_util.checksum('sha256', tmp)
+        clazz.log.log_d('download_to_file: expected_checksum={} actual_checksum={}'.format(expected_checksum,
+                                                                                           actual_checksum))
         if expected_checksum != actual_checksum:
           msg = 'Checksum for download does not match expected: {}'.format(url)
           raise artifactory_error(msg, None, None)
