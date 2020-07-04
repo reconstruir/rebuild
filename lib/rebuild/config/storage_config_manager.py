@@ -27,7 +27,7 @@ class storage_config_manager(object):
       c = simple_config.from_node(config, source = source)
     else:
       raise TypeError('Unknown config type: %s\nShould be string or node: %s - %s' % (source, str(config), type(config)))
-    sections = c.find_sections('storage')
+    sections = c.find_all_sections('storage')
     for section in sections:
       sc = storage_config.create_from_config(source, section)
       if sc.name in self._configs:
