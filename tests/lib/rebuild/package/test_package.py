@@ -13,7 +13,7 @@ from rebuild.base.requirement import requirement
 from rebuild.base.requirement_list import requirement_list
 from rebuild.package.package import package
 from rebuild.package.package_metadata import package_metadata
-from _rebuild_testing.fake_package_unit_test import fake_package_unit_test
+from rebuild._testing.fake_package_unit_test import fake_package_unit_test
 
 class test_package(unit_test):
 

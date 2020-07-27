@@ -13,7 +13,7 @@ from rebuild.base.build_target import build_target
 from rebuild.toolchain.toolchain_testing import toolchain_testing
 from bes.testing.unit_test_skip import skip_if
 
-from _rebuild_testing.rebuilder_tester import rebuilder_tester
+from rebuild._testing.rebuilder_tester import rebuilder_tester
 
 class test_rebuilder_script(script_unit_test):
 

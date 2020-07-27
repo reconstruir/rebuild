@@ -27,10 +27,10 @@ from rebuild.package.package_manager import PackageMissingRequirementsError
 from rebuild.package.package_manager import package_manager
 from rebuild.pkg_config.pkg_config import pkg_config
 
-from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT
-from _rebuild_testing.fake_package_recipes import fake_package_recipes as RECIPES
-from _rebuild_testing.artifact_manager_tester import artifact_manager_tester as AMT
-from _rebuild_testing.artifact_manager_helper import artifact_manager_helper
+from rebuild._testing.fake_package_unit_test import fake_package_unit_test as FPUT
+from rebuild._testing.fake_package_recipes import fake_package_recipes as RECIPES
+from rebuild._testing.artifact_manager_tester import artifact_manager_tester as AMT
+from rebuild._testing.artifact_manager_helper import artifact_manager_helper
 
 from rebuild.base.build_system import build_system
 from bes.testing.unit_test_skip import skip_if

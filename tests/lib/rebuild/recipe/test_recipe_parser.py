@@ -19,7 +19,7 @@ from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
 from test_steps import *
 
-from _rebuild_testing.recipe_parser_testing import recipe_parser_testing
+from rebuild._testing.recipe_parser_testing import recipe_parser_testing
 
 class test_recipe_parser(unit_test):
 

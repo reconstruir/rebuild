@@ -11,9 +11,9 @@ from rebuild.base.build_target import build_target as BT
 from rebuild.base.package_descriptor import package_descriptor as PD
 from rebuild.base.requirement_list import requirement_list as RL
 from rebuild.package.db_error import *
-from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT
-from _rebuild_testing.fake_package_recipes import fake_package_recipes as RECIPES
-from _rebuild_testing.artifact_manager_tester import artifact_manager_tester as AMT
+from rebuild._testing.fake_package_unit_test import fake_package_unit_test as FPUT
+from rebuild._testing.fake_package_recipes import fake_package_recipes as RECIPES
+from rebuild._testing.artifact_manager_tester import artifact_manager_tester as AMT
 
 class test_artifact_manager_local(unit_test):
 

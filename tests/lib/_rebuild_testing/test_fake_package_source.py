@@ -5,7 +5,7 @@ from bes.testing.unit_test import unit_test
 
 from bes.fs.temp_file import temp_file, temp_item
 
-from _rebuild_testing.fake_package_source import fake_package_source as S
+from rebuild._testing.fake_package_source import fake_package_source as S
 
 class test_fake_package_source(unit_test):
 

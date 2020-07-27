@@ -19,7 +19,7 @@ from rebuild.base.build_blurb import build_blurb
 from .project_file import project_file
 from .project_file_parser import project_file_parser
 
-#from ._rebuild_testing import artifact_manager_helper
+#from rebuild._testing import artifact_manager_helper
 
 class _project_entry(namedtuple('_project_entry', 'name, filename, checksum, project_file')):
 

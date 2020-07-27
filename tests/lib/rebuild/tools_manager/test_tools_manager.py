@@ -15,11 +15,11 @@ from rebuild.base.build_target import build_target
 from rebuild.base.package_descriptor import package_descriptor as PD
 from rebuild.base.package_descriptor_list import package_descriptor_list as PDL
 from rebuild.tools_manager.tools_manager import tools_manager as TM
-from _rebuild_testing.fake_package_unit_test import fake_package_unit_test as FPUT
-from _rebuild_testing.fake_package_recipes import fake_package_recipes as RECIPES
-from _rebuild_testing.artifact_manager_tester import artifact_manager_tester as AMT
+from rebuild._testing.fake_package_unit_test import fake_package_unit_test as FPUT
+from rebuild._testing.fake_package_recipes import fake_package_recipes as RECIPES
+from rebuild._testing.artifact_manager_tester import artifact_manager_tester as AMT
 
-from _rebuild_testing.rebuilder_tester import rebuilder_tester
+from rebuild._testing.rebuilder_tester import rebuilder_tester
 
 from bes.testing.unit_test_skip import skip_if
 

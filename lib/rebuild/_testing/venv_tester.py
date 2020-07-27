@@ -10,7 +10,7 @@ from rebuild.venv.venv_config import venv_config
 from rebuild.venv.venv_manager import venv_manager
 from rebuild.recipe.variable_manager import variable_manager
 
-from _rebuild_testing.artifact_manager_tester import artifact_manager_tester
+from rebuild._testing.artifact_manager_tester import artifact_manager_tester
 
 class venv_tester(object):
 
