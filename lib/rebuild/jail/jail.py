@@ -7,7 +7,7 @@ from bes.common.string_list_util import string_list_util
 from bes.system.execute import execute
 from bes.fs.dir_util import dir_util
 from bes.fs.file_util import file_util
-from rebuild.native_package_manager.native_package_manager import native_package_manager as npm
+from rebuild.native_package.native_package import native_package as npm
 from bes.match import matcher_util
 from rebuild.toolchain.library import library
 

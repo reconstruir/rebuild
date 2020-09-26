@@ -6,7 +6,7 @@ from bes.system.which import which
 from bes.system.command_line import command_line
 from bes.system.execute import execute
 
-from rebuild.native_package_manager.native_package_manager_error import native_package_manager_error
+from rebuild.native_package.native_package_error import native_package_error
 
 class pkgutil(object):
   'Class to deal with the pkgutil executable.'
@@ -15,7 +15,7 @@ class pkgutil(object):
   def call_pkgutil(clazz, args, cwd = None):
     exe = which.which('pkgutil')
     if not exe:
-      raise native_package_manager_error('pkgutil not found')
+      raise native_package_error('pkgutil not found')
     cmd = [ exe ] + command_line.parse_args(args)
     env = os_env.clone_current_env(d = {})
     rv = execute.execute(cmd,
@@ -26,5 +26,5 @@ class pkgutil(object):
     if rv.exit_code != 0:
       cmd_flag = ' '.join(cmd)
       msg = 'pkgutil command failed: {}\n{}'.format(cmd_flag, rv.stdout)
-      raise native_package_manager_error(msg)
+      raise native_package_error(msg)
     return rv

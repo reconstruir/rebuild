@@ -1,13 +1,13 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from .native_package_manager_base import native_package_manager_base
+from .native_package_base import native_package_base
 from bes.common.string_util import string_util
 from bes.common.string_list_util import string_list_util
 from bes.system.execute import execute
 
 # FIXME: this is ubuntu only
-class native_package_manager_linux(native_package_manager_base):
+class native_package_linux(native_package_base):
 
   @classmethod
   def installed_packages(clazz):
@@ -57,7 +57,7 @@ class native_package_manager_linux(native_package_manager_base):
 
   @classmethod
   def is_installed(clazz, package_name):
-    'Return True if native_package_manager is installed.'
+    'Return True if native_package is installed.'
     cmd = 'dpkg -l %s' % (package_name)
     rv = clazz._call_dpkg(cmd)
     return rv.exit_code == 0

@@ -6,15 +6,15 @@ from bes.common.algorithm import algorithm
 from bes.common.string_list_util import string_list_util
 from bes.system.execute import execute
 
-from .native_package_manager_base import native_package_manager_base
-from .native_package_manager_error import native_package_manager_error
+from .native_package_base import native_package_base
+from .native_package_error import native_package_error
 
 from .detail.pkgutil import pkgutil
 
-class native_package_manager_macos(native_package_manager_base):
+class native_package_macos(native_package_base):
 
   def __init__(self):
-    super(native_package_manager_macos, self).__init__()
+    super(native_package_macos, self).__init__()
   
   #@abstractmethod
   def installed_packages(self):
@@ -46,7 +46,7 @@ class native_package_manager_macos(native_package_manager_base):
     cmd = 'pkgutil --files %s %s' % (package_name, flags)
     rv = clazz._call_pkgutil(cmd)
     if rv.exit_code != 0:
-      raise native_package_manager_error('Failed to execute: %s' % (cmd))
+      raise native_package_error('Failed to execute: %s' % (cmd))
     files = sorted(algorithm.unique(rv.stdout.strip().split('\n')))
     files = string_list_util.remove_if(files, clazz._CONTENTS_BLACKLIST)
     info = clazz.package_info(package_name)
@@ -56,10 +56,10 @@ class native_package_manager_macos(native_package_manager_base):
 
   #@abstractmethod
   def is_installed(self, package_name):
-    'Return True if native_package_manager is installed.'
+    'Return True if native_package is installed.'
     try:
       self.package_info(package_name)
-    except native_package_manager_error as ex:
+    except native_package_error as ex:
       return False
     return True
 
@@ -69,7 +69,7 @@ class native_package_manager_macos(native_package_manager_base):
     cmd = 'pkgutil --file-info-plist %s' % (filename)
     rv = self._call_pkgutil(cmd)
     if rv.exit_code != 0:
-      raise native_package_manager_error('Failed to get owner for package: %s' % (package_name))
+      raise native_package_error('Failed to get owner for package: %s' % (package_name))
     pi = plistlib_loads(rv.stdout.encode('utf-8')).get('path-info', None)
     if not pi:
       return None
@@ -81,7 +81,7 @@ class native_package_manager_macos(native_package_manager_base):
     cmd = 'pkgutil --pkg-info-plist %s' % (package_name)
     rv = self._call_pkgutil(cmd)
     if rv.exit_code != 0:
-      raise native_package_manager_error('Failed to get info for package: "{}"'.format(package_name))
+      raise native_package_error('Failed to get info for package: "{}"'.format(package_name))
     pi = plistlib_loads(rv.stdout.encode('utf-8'))
     return {
       'package_id': pi['pkgid'],
@@ -99,4 +99,4 @@ class native_package_manager_macos(native_package_manager_base):
   def remove(self, package_name):
     'Remove a package.'
     if not self.is_installed(package_name):
-      raise native_package_manager_error('package not installed: "{}"'.format(package_name))
+      raise native_package_error('package not installed: "{}"'.format(package_name))

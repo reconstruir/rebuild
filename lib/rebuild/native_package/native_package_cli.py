@@ -11,21 +11,21 @@ from bes.cli.argparser_handler import argparser_handler
 import bes
 import rebuild
 
-from rebuild.native_package_manager.native_package_manager_cli_args import native_package_manager_cli_args
+from rebuild.native_package.native_package_cli_args import native_package_cli_args
 
-class native_package_manager_cli(native_package_manager_cli_args):
+class native_package_cli(native_package_cli_args):
 
   def __init__(self):
     self.parser = argparse.ArgumentParser()
     commands_subparser = self.parser.add_subparsers(help = 'commands', dest = 'command')
-    self.native_package_manager_add_args(commands_subparser)
+    self.native_package_add_args(commands_subparser)
     
     # version
     version_parser = commands_subparser.add_parser('version', help = 'Version a build to a build list.')
     version_cli.arg_sub_parser_add_arguments(version_parser)
 
   def main(self):
-    return argparser_handler.main('native_package_manager', self.parser, self, command_group = 'native_package_manager')
+    return argparser_handler.main('native_package', self.parser, self, command_group = 'native_package')
 
   def _command_version(self, print_all, brief):
     version_cli.print_everything('ego_automation', dependencies = [ 'rebuild', 'bes' ],
@@ -34,4 +34,4 @@ class native_package_manager_cli(native_package_manager_cli_args):
 
   @classmethod
   def run(clazz):
-    raise SystemExit(native_package_manager_cli().main())
+    raise SystemExit(native_package_cli().main())

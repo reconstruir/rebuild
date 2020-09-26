@@ -1,11 +1,11 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-class native_package_manager_cli_args(object):
+class native_package_cli_args(object):
 
   def __init__(self):
     pass
   
-  def native_package_manager_add_args(self, subparser):
+  def native_package_add_args(self, subparser):
 
     # list
     p = subparser.add_parser('list', help = 'List installed packages.')
@@ -28,6 +28,6 @@ class native_package_manager_cli_args(object):
     p = subparser.add_parser('owner', help = 'Print the package the owns the given file.')
     p.add_argument('filename', action = 'store', help = 'The filename')
     
-  def _command_native_package_manager(self, command, *args, **kargs):
-    from .native_package_manager_cli_command import native_package_manager_cli_command
-    return native_package_manager_cli_command.handle_command(command, **kargs)
+  def _command_native_package(self, command, *args, **kargs):
+    from .native_package_cli_command import native_package_cli_command
+    return native_package_cli_command.handle_command(command, **kargs)

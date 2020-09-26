@@ -5,13 +5,13 @@ from bes.common.check import check
 
 from bes.system.host import host
 if host.SYSTEM == 'macos':
-  from .native_package_manager_macos import native_package_manager_macos as native_package_manager
+  from .native_package_macos import native_package_macos as native_package
 elif host.SYSTEM == 'linux':
-  from .native_package_manager_linux import native_package_manager_linux as native_package_manager
+  from .native_package_linux import native_package_linux as native_package
 else:
   raise RuntimeError('System not supported yet: "{}"'.format(host.SYSTEM))
 
-check.register_class(native_package_manager,
-                     name = 'native_package_manager',
+check.register_class(native_package,
+                     name = 'native_package',
                      include_seq = False)
-#native_package_manager = impl_import.load(__name__, 'native_package_manager', globals())
+#native_package = impl_import.load(__name__, 'native_package', globals())
