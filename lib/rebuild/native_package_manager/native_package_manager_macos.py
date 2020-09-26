@@ -23,30 +23,30 @@ class native_package_manager_macos(native_package_manager_base):
   @classmethod
   def package_manifest(clazz, package_name):
     'Return a list of installed files for the given package.'
-    return clazz.__package_manifest(package_name, '--only-files')
+    return clazz._package_manifest(package_name, '--only-files')
 
   @classmethod
   def package_dirs(clazz, package_name):
     'Return a list of installed files for the given package.'
-    return clazz.__package_manifest(package_name, '--only-dirs')
+    return clazz._package_manifest(package_name, '--only-dirs')
 
   @classmethod
   def package_contents(clazz, package_name):
     'Return a list of contents for the given package.'
-    return clazz.__package_manifest(package_name, '')
+    return clazz._package_manifest(package_name, '')
 
-  __CONTENTS_BLACKLIST = [
+  _CONTENTS_BLACKLIST = [
     '.vol',
   ]
 
   @classmethod
-  def __package_manifest(clazz, package_name, flags):
+  def _package_manifest(clazz, package_name, flags):
     cmd = 'pkgutil --files %s %s' % (package_name, flags)
     rv = clazz._call_pkgutil(cmd)
     if rv.exit_code != 0:
       raise RuntimeError('Failed to execute: %s' % (cmd))
     files = sorted(algorithm.unique(rv.stdout.strip().split('\n')))
-    files = string_list_util.remove_if(files, clazz.__CONTENTS_BLACKLIST)
+    files = string_list_util.remove_if(files, clazz._CONTENTS_BLACKLIST)
     info = clazz.package_info(package_name)
     package_home = info['volume'] + info['install_location']
     package_home = package_home.replace('//', '/')
