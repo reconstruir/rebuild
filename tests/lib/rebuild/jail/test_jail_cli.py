@@ -7,7 +7,7 @@ from bes.testing.unit_test import unit_test
 from bes.fs.file_find import file_find
 from bes.fs.temp_file import temp_file
 from bes.system.os_env import os_env
-from rebuild.native_package.native_package import native_package as npm
+from rebuild.native_package.native_package import native_package
 from bes.testing.unit_test_skip import skip_if
 from bes.system.host import host
 
@@ -24,10 +24,10 @@ class test_jail_cli(unit_test):
 #com.apple.pkg.MobileDevice
 #com.apple.pkg.MobileDeviceDevelopment
 
-  __PACKAGE_ID = 'com.apple.pkg.MobileDevice'
+  _PACKAGE_ID = 'com.apple.pkg.MobileDevice'
 
   @skip_if(not host.is_macos(), 'not macos')
-  @skip_if(not npm.is_installed(__PACKAGE_ID), 'not installed: %s' % (__PACKAGE_ID))
+  @skip_if(not native_package().is_installed(_PACKAGE_ID), 'not installed: %s' % (_PACKAGE_ID))
   def test_create_from_packages(self):
     tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
     jail_config_content = '''
@@ -36,7 +36,7 @@ description: test
 packages:
   %s
 [%s]
-''' % (self.__PACKAGE_ID, self.__PACKAGE_ID)
+''' % (self._PACKAGE_ID, self._PACKAGE_ID)
     tmp_jail_config = temp_file.make_temp_file(content = jail_config_content)
     cmd = [
       self.__BES_JAIL_PY,
@@ -48,7 +48,7 @@ packages:
     print(rv.stdout)
     self.assertEqual( 0, rv.exit_code )
 
-    expected_files = npm.package_contents(self.__PACKAGE_ID)
+    expected_files = npm.package_contents(self._PACKAGE_ID)
     actual_files = file_find.find(tmp_dir, file_type = file_find.ANY, relative = True)
     actual_files = [ path.join('/', f) for f in actual_files ]
     self.assertEqual( expected_files, actual_files )

@@ -11,21 +11,25 @@ class test_native_package(unit_test):
 
   @skip_if(not host.is_macos(), 'not macos')
   def test_is_installed_macos(self):
-    self.assertFalse( native_package.is_installed('bash') )
-    self.assertTrue( native_package.is_installed('com.apple.pkg.Core') )
+    np = native_package()
+    self.assertFalse( np.is_installed('bash') )
+    self.assertTrue( np.is_installed('com.apple.pkg.Core') )
   
   @skip_if(not host.is_linux(), 'not linux')
   def test_is_installed_linux(self):
-    self.assertTrue( native_package.is_installed('bash') )
-    self.assertFalse( native_package.is_installed('com.apple.pkg.Core') )
+    np = native_package()
+    self.assertTrue( np.is_installed('bash') )
+    self.assertFalse( np.is_installed('com.apple.pkg.Core') )
   
   @skip_if(not host.is_linux(), 'not linux')
   def test_owner(self):
-    self.assertEqual( 'coreutils', native_package.owner('/bin/ls') )
-    self.assertEqual( 'bash', native_package.owner('/bin/bash') )
+    np = native_package()
+    self.assertEqual( 'coreutils', np.owner('/bin/ls') )
+    self.assertEqual( 'bash', np.owner('/bin/bash') )
   
   def test_installed_packages(self):
-    self.assertTrue( len(native_package.installed_packages()) > 0 )
+    np = native_package()
+    self.assertTrue( len(np.installed_packages()) > 0 )
   
 if __name__ == '__main__':
   unit_test.main()

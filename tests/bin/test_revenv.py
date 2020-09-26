@@ -5,7 +5,7 @@ import os.path as path
 
 from collections import namedtuple
 
-from bes.testing.script_unit_test import script_unit_test
+from bes.testing.program_unit_test import program_unit_test
 from bes.system.os_env import os_env
 from bes.system.execute import execute
 from bes.fs.file_util import file_util
@@ -14,7 +14,7 @@ from rebuild._testing.fake_package_unit_test import fake_package_unit_test as FP
 from rebuild._testing.fake_package_recipes import fake_package_recipes as RECIPES
 from rebuild.base.build_target import build_target as BT
 
-class test_revenv(script_unit_test):
+class test_revenv(program_unit_test):
 
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/remanager'
   __script__ = __file__, '../../bin/revenv.py'
@@ -425,4 +425,4 @@ AFLATOXIN_VERSION: 1.0.11
     return [ x.strip() for x in s.split('\n') if x.strip() ]
   
 if __name__ == '__main__':
-  script_unit_test.main()
+  program_unit_test.main()

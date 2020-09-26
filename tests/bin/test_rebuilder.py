@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.testing.script_unit_test import script_unit_test
+from bes.testing.program_unit_test import program_unit_test
 from bes.fs.file_replace import file_replace
 from bes.fs.file_util import file_util
 from bes.fs.file_copy import file_copy
@@ -15,7 +15,7 @@ from bes.testing.unit_test_skip import skip_if
 
 from rebuild._testing.rebuilder_tester import rebuilder_tester
 
-class test_rebuilder_script(script_unit_test):
+class test_rebuilder_script(program_unit_test):
 
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/rebuilder'
   __script__ = __file__, '../../bin/rebuilder.py'
@@ -379,4 +379,4 @@ print("hook1 hook2")
     return rt.run(config, *args)
   
 if __name__ == '__main__':
-  script_unit_test.main()
+  program_unit_test.main()

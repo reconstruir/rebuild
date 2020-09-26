@@ -9,11 +9,11 @@ from bes.system.execute import execute
 from bes.archive.archiver import archiver
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
-from bes.testing.script_unit_test import script_unit_test
+from bes.testing.program_unit_test import program_unit_test
 from bes.testing.unit_test_skip import raise_skip
 from bes.web.file_web_server_tester import file_web_server_tester
 
-class test_reingest(script_unit_test):
+class test_reingest(program_unit_test):
 
   __script__ = __file__, '../../bin/reingest.py'
 
@@ -162,4 +162,4 @@ print('foo')
     tester.stop()
   
 if __name__ == '__main__':
-  script_unit_test.main()
+  program_unit_test.main()

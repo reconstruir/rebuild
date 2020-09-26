@@ -9,9 +9,9 @@ from bes.git.git_temp_repo import git_temp_repo
 from bes.archive.archiver import archiver
 from bes.git.git_unit_test import git_temp_home_func
 
-from bes.testing.script_unit_test import script_unit_test
+from bes.testing.program_unit_test import program_unit_test
 
-class test_retool_archive(script_unit_test):
+class test_retool_archive(program_unit_test):
 
   __script__ = __file__, '../../bin/retool.py'
 
@@ -90,4 +90,4 @@ class test_retool_archive(script_unit_test):
     ], archiver.members(tmp_archive) )
     
 if __name__ == '__main__':
-  script_unit_test.main()
+  program_unit_test.main()

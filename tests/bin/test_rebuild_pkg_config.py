@@ -2,11 +2,11 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.testing.script_unit_test import script_unit_test
+from bes.testing.program_unit_test import program_unit_test
 from bes.common.string_util import string_util
 from bes.system.os_env import os_env
 
-class test_rebuild_pkg_config(script_unit_test):
+class test_rebuild_pkg_config(program_unit_test):
 
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/pkg_config/real_examples'
   __script__ = __file__, '../../bin/rebuild_pkg_config.py'
@@ -64,4 +64,4 @@ class test_rebuild_pkg_config(script_unit_test):
     self.assertEquals( expected_versions, rv.output.strip().split('\n') )
 
 if __name__ == '__main__':
-  script_unit_test.main()
+  program_unit_test.main()
