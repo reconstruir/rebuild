@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-#-*- coding:utf-8 -*-
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from abc import abstractmethod, ABCMeta
 from collections import namedtuple
@@ -9,12 +8,13 @@ class native_package_manager_base(with_metaclass(ABCMeta, object)):
 
   def __init__(self):
     pass
-  
+
   @abstractmethod
   def installed_packages(self, interface):
     'Return a list of packages on this computer.'
     pass
 
+  #@abstractmethod
   @abstractmethod
   def package_manifest(self, package_name):
     'Return a list of installed files for the given package.'
@@ -45,3 +45,7 @@ class native_package_manager_base(with_metaclass(ABCMeta, object)):
     'Return info structure about the package.'
     pass
   
+  @abstractmethod
+  def remove(self, package_name):
+    'Remove a package.'
+    pass

@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-#-*- coding:utf-8 -*-
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
 from .native_package_manager_base import native_package_manager_base
@@ -7,6 +6,7 @@ from bes.common.string_util import string_util
 from bes.common.string_list_util import string_list_util
 from bes.system.execute import execute
 
+# FIXME: this is ubuntu only
 class native_package_manager_linux(native_package_manager_base):
 
   @classmethod
@@ -21,7 +21,7 @@ class native_package_manager_linux(native_package_manager_base):
     lines = [ string_util.split_by_white_space(l)[1] for l in lines ]
     return sorted(lines)
 
-  __CONTENTS_BLACKLIST = [
+  _CONTENTS_BLACKLIST = [
     '/.',
   ]
 
@@ -33,7 +33,7 @@ class native_package_manager_linux(native_package_manager_base):
     if rv.exit_code != 0:
       raise RuntimeError('Failed to execute: %s' % (cmd))
     contents = rv.stdout.strip().split('\n')
-    contents = string_list_util.remove_if(contents, clazz.__CONTENTS_BLACKLIST)
+    contents = string_list_util.remove_if(contents, clazz._CONTENTS_BLACKLIST)
     return sorted(contents)
 
   @classmethod
@@ -52,8 +52,7 @@ class native_package_manager_linux(native_package_manager_base):
 
   @classmethod
   def package_info(clazz, package_name):
-    'Return a list of installed pacakge.'
-    'apt-cache show bash'
+    'Return platform specific information about a package.'
     assert False
 
   @classmethod
