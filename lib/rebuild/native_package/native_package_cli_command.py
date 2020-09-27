@@ -45,22 +45,28 @@ class native_package_cli_command(object):
     return 0
 
   @classmethod
-  def contents(clazz, np, package_name, levels, files_only, dirs_only):
+  def files(clazz, np, package_name, levels):
     check.check_native_package(np)
     check.check_string(package_name)
 
-    if files_only and dirs_only:
-      raise native_package_error('Only one of --files or --dirs can be given.')
-    if files_only:
-      files = np.package_manifest(package_name)
-    elif dirs_only:
-      files = np.package_dirs(package_name)
-    else:
-      files = np.package_contents(package_name)
-    if levels is not None:
+    files = np.package_files(package_name)
+    if levels:
       files = [ clazz._level_path(p, levels) for p in files ]
       files = algorithm.unique(files)
     for f in files:
+      print(f)
+    return 0
+
+  @classmethod
+  def dirs(clazz, np, package_name, levels):
+    check.check_native_package(np)
+    check.check_string(package_name)
+
+    dirs = np.package_dirs(package_name)
+    if levels:
+      dirs = [ clazz._level_path(p, levels) for p in dirs ]
+      dirs = algorithm.unique(dirs)
+    for f in dirs:
       print(f)
     return 0
   
@@ -78,9 +84,10 @@ class native_package_cli_command(object):
     return 0
   
   @classmethod
-  def remove(clazz, np, package_name):
+  def remove(clazz, np, package_name, force_package_root):
     check.check_native_package(np)
     check.check_string(package_name)
+    check.check_bool(force_package_root)
 
-    np.remove(package_name)
+    np.remove(package_name, force_package_root)
     return 0

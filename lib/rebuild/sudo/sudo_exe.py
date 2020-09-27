@@ -6,21 +6,19 @@ from bes.system.which import which
 from bes.system.command_line import command_line
 from bes.system.execute import execute
 
-from rebuild.sudo.sudo_exe import sudo_exe
-from rebuild.native_package.native_package_error import native_package_error
+from .sudo_error import sudo_error
 
-class pkgutil(object):
-  'Class to deal with the pkgutil executable.'
+class sudo_exe(object):
+  'Class to deal with the sudo_exe executable.'
   
   @classmethod
-  def call_pkgutil(clazz, args, cwd = None, msg = None, use_sudo = False):
-    exe = which.which('pkgutil')
+  def call_sudo(clazz, args, cwd = None, msg = None, prompt = None):
+    exe = which.which('sudo')
     if not exe:
-      raise native_package_error('pkgutil not found')
-    cmd = []
-    if use_sudo:
-      cmd.append('sudo')
-    cmd.append(exe)
+      raise sudo_error('sudo not found')
+    cmd = [ exe ]
+    if prompt:
+      cmd.extend( ['--prompt', prompt] )
     cmd.extend(command_line.parse_args(args))
     env = os_env.clone_current_env(d = {})
     rv = execute.execute(cmd,
@@ -31,6 +29,10 @@ class pkgutil(object):
     if rv.exit_code != 0:
       if not msg:
         cmd_flag = ' '.join(cmd)
-        msg = 'pkgutil command failed: {}\n{}'.format(cmd_flag, rv.stdout)
-      raise native_package_error(msg)
+        msg = 'sudo_exe command failed: {}\n{}'.format(cmd_flag, rv.stdout)
+      raise sudo_error(msg)
     return rv
+
+  @classmethod
+  def validate(clazz, cwd = None, msg = None, prompt = 'sudo password: '):
+    clazz.call_sudo('--validate', cwd = cwd, msg = msg, prompt = prompt)

@@ -18,16 +18,18 @@ class native_package_cli_args(object):
     p = subparser.add_parser('info', help = 'Print platform specific info about package')
     p.add_argument('package_name', action = 'store', help = 'The package name')
 
-    # contents
-    p = subparser.add_parser('contents', help = 'Print package contents')
+    # files
+    p = subparser.add_parser('files', help = 'Print package files')
     p.add_argument('package_name', action = 'store', help = 'The package name')
     p.add_argument('--levels', '-l', action = 'store', type = int,
                    default = None, help = 'Show only top level directories [ None ]')
-    p.add_argument('--files', dest = 'files_only', action = 'store_true',
-                   default = False, help = 'Show only files (no dirs) [ False ]')
-    p.add_argument('--dirs', dest = 'dirs_only', action = 'store_true',
-                   default = False, help = 'Show only dirs (no files) [ False ]')
 
+    # dirs
+    p = subparser.add_parser('dirs', help = 'Print package dirs')
+    p.add_argument('package_name', action = 'store', help = 'The package name')
+    p.add_argument('--levels', '-l', action = 'store', type = int,
+                   default = None, help = 'Show only top level directories [ None ]')
+    
     # owner
     p = subparser.add_parser('owner', help = 'Print the package the owns the given file.')
     p.add_argument('filename', action = 'store', help = 'The filename')
@@ -35,6 +37,8 @@ class native_package_cli_args(object):
     # remove
     p = subparser.add_parser('remove', help = 'remove a package')
     p.add_argument('package_name', action = 'store', help = 'The package name')
+    p.add_argument('--force-package-root', action = 'store_true',
+                   default = False, help = 'Force removal of the package root directory even if not empty [ False ]')
     
   def _command_native_package(self, command, *args, **kargs):
     from .native_package_cli_command import native_package_cli_command

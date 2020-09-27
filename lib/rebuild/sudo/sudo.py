@@ -1,34 +1,31 @@
-#!/usr/bin/env python
-#-*- coding:utf-8 -*-
+#-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import getpass, os.path as path, subprocess
-from bes.common.json_util import json_util
-from bes.system.execute import execute
 
-#from mac_address import mac_address
-#import re
+from bes.common.json_util import json_util
+
+from .sudo_exe import sudo_exe
 
 class sudo(object):
-  'Lookup mac address by alias.'
+  'Class to deal with sudo.'
 
-  __INFO_FILE_PATH = path.expanduser('~/bes/sudo/info.json')
-  __VERSION = '1'
+  _INFO_FILE_PATH = path.expanduser('~/bes/sudo/info.json')
+  _VERSION = '1'
   
   @classmethod
   def ensure_can_call_program(clazz, user, program, info_file_path = None):
     'Ensure that sudo can be used for program by user without a password.'
     if not path.isabs(program):
       raise RuntimeError('path is not an absolute path: %s' % (program))
-    info = clazz.__info_load(clazz.__INFO_FILE_PATH)
+    info = clazz._info_load(clazz._INFO_FILE_PATH)
     key = '%s_%s' % (user, program)
     print("info: ", info)
     if key in info:
       return True
-    print("CACA:")
     return False
 
   @classmethod
-  def __info_load(clazz, filename):
+  def _info_load(clazz, filename):
     'Load info.'
     try:
       return json_util.read_file(filename) or {}
@@ -36,35 +33,16 @@ class sudo(object):
       return {}
 
   @classmethod
-  def __info_save(clazz, filename, info):
+  def _info_save(clazz, filename, info):
     'Save info.'
     return json_util.save_file(filename, info, indent = 2)
 
   @classmethod
-  def __make_sudo_line(clazz, user, program, version):
+  def _make_sudo_line(clazz, user, program, version):
     'Make one line of sudo config.'
-    return '%s ALL = (root) NOPASSWD: %s # bes_sudo:v%d' % (user, program, clazz.__VERSION)
+    return '%s ALL = (root) NOPASSWD: %s # bes_sudo:v%d' % (user, program, clazz._VERSION)
 
   @classmethod
-  def sudo_subprocess(clazz, cmd, prompt = 'sudo password: '):
-    'Make one line of sudo config.'
-
-    cmd = execute.listify_command(cmd)
-
-    if '-S' in cmd:
-      password = getpass.getpass(prompt = prompt)
-      input_data = password + '\n'
-    else:
-      input_data = None
-      
-    process = subprocess.Popen(cmd,
-                               stdout = subprocess.PIPE,
-                               stdin = subprocess.PIPE,
-                               stderr = subprocess.PIPE,
-                               universal_newlines = True)
-    output = process.communicate(input_data)
-    stdout_data = output[0]
-    stderr_data = output[1]
-    exit_code = process.wait()
-
-    return execute.Result(stdout_data, stderr_data, exit_code)
+  def call_sudo(clazz, args, cwd = None, msg = None, prompt = 'sudo password: '):
+    'Call sudo.'
+    return sudo_exe.call_sudo(args, cwd = cwd, msg = msg, prompt = prompt)

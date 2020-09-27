@@ -1,10 +1,17 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.compat.plistlib import plistlib_loads
+import os
+
 from bes.common.algorithm import algorithm
+from bes.common.check import check
 from bes.common.string_list_util import string_list_util
+from bes.compat.plistlib import plistlib_loads
+from bes.fs.dir_util import dir_util
+from bes.fs.file_path import file_path
 from bes.system.execute import execute
+
+from rebuild.sudo.sudo_exe import sudo_exe
 
 from .native_package_base import native_package_base
 from .native_package_error import native_package_error
@@ -25,7 +32,7 @@ class native_package_macos(native_package_base):
     return native_package_util.parse_lines(rv.stdout, sort = True, unique = True)
 
   #@abstractmethod
-  def package_manifest(self, package_name):
+  def package_files(self, package_name):
     'Return a list of installed files for the given package.'
     return self._package_manifest(package_name, '--only-files')
 
@@ -33,11 +40,6 @@ class native_package_macos(native_package_base):
   def package_dirs(self, package_name):
     'Return a list of installed files for the given package.'
     return self._package_manifest(package_name, '--only-dirs')
-
-  #@abstractmethod
-  def package_contents(self, package_name):
-    'Return a list of contents for the given package.'
-    return self._package_manifest(package_name, None)
 
   _CONTENTS_BLACKLIST = [
     '.vol',
@@ -55,18 +57,6 @@ class native_package_macos(native_package_base):
     package_home = package_home.replace('//', '/')
     return [ path.join(package_home, f) for f in files ]
 
-  def _package_manifest(clazz, package_name, flags):
-    args = '--files {}'.format(package_name)
-    if flags:
-      args = args + ' ' + flags
-    rv = pkgutil.call_pkgutil(args)
-    files = native_package_util.parse_lines(rv.stdout, sort = True, unique = True)
-    files = string_list_util.remove_if(files, clazz._CONTENTS_BLACKLIST)
-    info = clazz.package_info(package_name)
-    package_home = info['volume'] + info['install_location']
-    package_home = package_home.replace('//', '/')
-    return [ path.join(package_home, f) for f in files ]
-  
   #@abstractmethod
   def is_installed(self, package_name):
     'Return True if native_package is installed.'
@@ -102,7 +92,38 @@ class native_package_macos(native_package_base):
     }
 
   #@abstractmethod
-  def remove(self, package_name):
+  def remove(self, package_name, force_package_root):
     'Remove a package.'
+    check.check_string(package_name)
+    check.check_bool(force_package_root)
+    
     if not self.is_installed(package_name):
       raise native_package_error('package not installed: "{}"'.format(package_name))
+    files = self.package_files(package_name)
+    dirs = self.package_dirs(package_name)
+    
+    sudo_exe.validate(prompt = 'need sudo password to remove package:')
+    for filename in files:
+      if path.exists(filename):
+        args = [ 'rm', '-f', filename ]
+        sudo_exe.call_sudo(args)
+
+    sorted_dirs = sorted(dirs, key = lambda d: d.count(os.sep), reverse = True)
+    for dirname in sorted_dirs:
+      if path.exists(dirname):
+        if dir_util.is_empty(dirname):
+          args = [ 'rmdir', dirname ]
+          sudo_exe.call_sudo(args)
+        else:
+          print('warning: not empty: {}'.format(dirname))
+    
+    if force_package_root:
+      root_dir = file_path.common_ancestor(dirs)
+      if root_dir and path.isdir(root_dir):
+        if root_dir in [ '/', '/Applications', '/Library', '/bin', '/usr/bin', '/usr/local', '/opt' ]:
+          raise native_package_error('Trying to delete a system directory: "{}"'.format(root_dir))
+        args = [ 'rm', '-r', '-f', root_dir ]
+        sudo_exe.call_sudo(args)
+
+    args = [ '--forget', package_name ]
+    pkgutil.call_pkgutil(args, use_sudo = True)

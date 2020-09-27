@@ -14,20 +14,14 @@ class native_package_base(with_metaclass(ABCMeta, object)):
     'Return a list of packages on this computer.'
     pass
 
-  #@abstractmethod
   @abstractmethod
-  def package_manifest(self, package_name):
-    'Return a list of installed files for the given package.'
+  def package_files(self, package_name):
+    'Return a list of files installed for package.'
     pass
 
   @abstractmethod
   def package_dirs(self, package_name):
-    'Return a list of installed dirs for the given package.'
-    pass
-
-  @abstractmethod
-  def package_contents(self, package_name): #, files = True, dirs = True):
-    'Return a list of contents for the given package.'
+    'Return a list of dirs installed for package.'
     pass
 
   @abstractmethod
@@ -46,6 +40,6 @@ class native_package_base(with_metaclass(ABCMeta, object)):
     pass
   
   @abstractmethod
-  def remove(self, package_name):
+  def remove(self, package_name, force_package_root):
     'Remove a package.'
     pass
