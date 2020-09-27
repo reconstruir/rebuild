@@ -26,7 +26,7 @@ class native_package_base(with_metaclass(ABCMeta, object)):
     pass
 
   @abstractmethod
-  def package_contents(self, package_name):
+  def package_contents(self, package_name): #, files = True, dirs = True):
     'Return a list of contents for the given package.'
     pass
 

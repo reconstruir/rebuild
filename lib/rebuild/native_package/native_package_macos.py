@@ -37,7 +37,7 @@ class native_package_macos(native_package_base):
   #@abstractmethod
   def package_contents(self, package_name):
     'Return a list of contents for the given package.'
-    return self._package_manifest(package_name)
+    return self._package_manifest(package_name, None)
 
   _CONTENTS_BLACKLIST = [
     '.vol',
