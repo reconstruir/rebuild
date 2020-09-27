@@ -12,7 +12,7 @@ class pkgutil(object):
   'Class to deal with the pkgutil executable.'
   
   @classmethod
-  def call_pkgutil(clazz, args, cwd = None):
+  def call_pkgutil(clazz, args, cwd = None, msg = None):
     exe = which.which('pkgutil')
     if not exe:
       raise native_package_error('pkgutil not found')
@@ -24,7 +24,8 @@ class pkgutil(object):
                          stderr_to_stdout = True,
                          raise_error = False)
     if rv.exit_code != 0:
-      cmd_flag = ' '.join(cmd)
-      msg = 'pkgutil command failed: {}\n{}'.format(cmd_flag, rv.stdout)
+      if not msg:
+        cmd_flag = ' '.join(cmd)
+        msg = 'pkgutil command failed: {}\n{}'.format(cmd_flag, rv.stdout)
       raise native_package_error(msg)
     return rv

@@ -8,6 +8,7 @@ from bes.system.execute import execute
 
 from .native_package_base import native_package_base
 from .native_package_error import native_package_error
+from .native_package_util import native_package_util
 
 from .detail.pkgutil import pkgutil
 
@@ -21,7 +22,7 @@ class native_package_macos(native_package_base):
     'Return a list of installed pacakge.'
     cmd = 'pkgutil --packages'
     rv = pkgutil.call_pkgutil('--packages')
-    return sorted(algorithm.unique(rv.stdout.strip().split('\n')))
+    return native_package_util.parse_lines(rv.stdout, sort = True, unique = True)
 
   #@abstractmethod
   def package_manifest(self, package_name):
@@ -36,24 +37,36 @@ class native_package_macos(native_package_base):
   #@abstractmethod
   def package_contents(self, package_name):
     'Return a list of contents for the given package.'
-    return self._package_manifest(package_name, '')
+    return self._package_manifest(package_name)
 
   _CONTENTS_BLACKLIST = [
     '.vol',
   ]
 
   def _package_manifest(clazz, package_name, flags):
-    cmd = 'pkgutil --files %s %s' % (package_name, flags)
-    rv = clazz._call_pkgutil(cmd)
-    if rv.exit_code != 0:
-      raise native_package_error('Failed to execute: %s' % (cmd))
-    files = sorted(algorithm.unique(rv.stdout.strip().split('\n')))
+    args = '--files {}'.format(package_name)
+    if flags:
+      args = args + ' ' + flags
+    rv = pkgutil.call_pkgutil(args)
+    files = native_package_util.parse_lines(rv.stdout, sort = True, unique = True)
     files = string_list_util.remove_if(files, clazz._CONTENTS_BLACKLIST)
     info = clazz.package_info(package_name)
     package_home = info['volume'] + info['install_location']
     package_home = package_home.replace('//', '/')
     return [ path.join(package_home, f) for f in files ]
 
+  def _package_manifest(clazz, package_name, flags):
+    args = '--files {}'.format(package_name)
+    if flags:
+      args = args + ' ' + flags
+    rv = pkgutil.call_pkgutil(args)
+    files = native_package_util.parse_lines(rv.stdout, sort = True, unique = True)
+    files = string_list_util.remove_if(files, clazz._CONTENTS_BLACKLIST)
+    info = clazz.package_info(package_name)
+    package_home = info['volume'] + info['install_location']
+    package_home = package_home.replace('//', '/')
+    return [ path.join(package_home, f) for f in files ]
+  
   #@abstractmethod
   def is_installed(self, package_name):
     'Return True if native_package is installed.'
@@ -66,10 +79,9 @@ class native_package_macos(native_package_base):
   #@abstractmethod
   def owner(self, filename):
     'Return the package that owns filename.'
-    cmd = 'pkgutil --file-info-plist %s' % (filename)
-    rv = self._call_pkgutil(cmd)
-    if rv.exit_code != 0:
-      raise native_package_error('Failed to get owner for package: %s' % (package_name))
+    args = '--file-info-plist {}'.format(filename)
+    msg = 'Failed to get owner for filename: "{}"'.format(filename)
+    rv = pkgutil.call_pkgutil(args, msg = msg)
     pi = plistlib_loads(rv.stdout.encode('utf-8')).get('path-info', None)
     if not pi:
       return None
@@ -78,10 +90,9 @@ class native_package_macos(native_package_base):
   #@abstractmethod
   def package_info(self, package_name):
     'Return platform specific information about a package.'
-    cmd = 'pkgutil --pkg-info-plist %s' % (package_name)
-    rv = self._call_pkgutil(cmd)
-    if rv.exit_code != 0:
-      raise native_package_error('Failed to get info for package: "{}"'.format(package_name))
+    args = '--pkg-info-plist {}'.format(package_name)
+    msg = 'Failed to get info for package: "{}"'.format(package_name)
+    rv = pkgutil.call_pkgutil(args, msg = msg)
     pi = plistlib_loads(rv.stdout.encode('utf-8'))
     return {
       'package_id': pi['pkgid'],
@@ -89,11 +100,6 @@ class native_package_macos(native_package_base):
       'volume': pi['volume'],
       'version': pi['pkg-version'],
     }
-
-  @classmethod
-  def _call_pkgutil(clazz, cmd):
-    'Return the output of pkgutil as lines.'
-    return execute.execute(cmd, raise_error = False)
 
   #@abstractmethod
   def remove(self, package_name):

@@ -10,12 +10,15 @@ class native_package_cli_args(object):
     # list
     p = subparser.add_parser('list', help = 'List installed packages.')
 
+    # installed
     p = subparser.add_parser('installed', help = 'Check if pacakge_name is installed')
     p.add_argument('package_name', action = 'store', help = 'The package name')
 
+    # info
     p = subparser.add_parser('info', help = 'Print platform specific info about package')
     p.add_argument('package_name', action = 'store', help = 'The package name')
 
+    # contents
     p = subparser.add_parser('contents', help = 'Print package contents')
     p.add_argument('package_name', action = 'store', help = 'The package name')
     p.add_argument('--levels', '-l', action = 'store', type = int,
@@ -25,8 +28,13 @@ class native_package_cli_args(object):
     p.add_argument('--dirs', dest = 'dirs_only', action = 'store_true',
                    default = False, help = 'Show only dirs (no files) [ False ]')
 
+    # owner
     p = subparser.add_parser('owner', help = 'Print the package the owns the given file.')
     p.add_argument('filename', action = 'store', help = 'The filename')
+
+    # remove
+    p = subparser.add_parser('remove', help = 'remove a package')
+    p.add_argument('package_name', action = 'store', help = 'The package name')
     
   def _command_native_package(self, command, *args, **kargs):
     from .native_package_cli_command import native_package_cli_command
