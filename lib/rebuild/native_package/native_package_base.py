@@ -43,3 +43,9 @@ class native_package_base(with_metaclass(ABCMeta, object)):
   def remove(self, package_name, force_package_root):
     'Remove a package.'
     pass
+
+  @abstractmethod
+  def install(self, package_filename):
+    'Install a package.'
+    pass
+  

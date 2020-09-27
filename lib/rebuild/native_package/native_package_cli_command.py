@@ -4,6 +4,7 @@ import os, pprint
 
 from bes.common.algorithm import algorithm
 from bes.common.check import check
+from bes.fs.file_path import file_path
 
 from .native_package_error import native_package_error
 from .native_package import native_package
@@ -58,7 +59,7 @@ class native_package_cli_command(object):
     return 0
 
   @classmethod
-  def dirs(clazz, np, package_name, levels):
+  def dirs(clazz, np, package_name, levels, root_dir):
     check.check_native_package(np)
     check.check_string(package_name)
 
@@ -66,8 +67,13 @@ class native_package_cli_command(object):
     if levels:
       dirs = [ clazz._level_path(p, levels) for p in dirs ]
       dirs = algorithm.unique(dirs)
-    for f in dirs:
-      print(f)
+    if root_dir:
+      ancestor = file_path.common_ancestor(dirs)
+      if ancestor:
+        print(ancestor)
+    else:
+      for f in dirs:
+        print(f)
     return 0
   
   @classmethod
@@ -91,3 +97,12 @@ class native_package_cli_command(object):
 
     np.remove(package_name, force_package_root)
     return 0
+
+  @classmethod
+  def install(clazz, np, package_filename):
+    check.check_native_package(np)
+    check.check_string(package_filename)
+
+    np.install(package_filename)
+    return 0
+  

@@ -8,6 +8,7 @@ from bes.common.check import check
 from bes.common.string_list_util import string_list_util
 from bes.compat.plistlib import plistlib_loads
 from bes.fs.dir_util import dir_util
+from bes.fs.file_mime import file_mime
 from bes.fs.file_path import file_path
 from bes.system.execute import execute
 
@@ -127,3 +128,20 @@ class native_package_macos(native_package_base):
 
     args = [ '--forget', package_name ]
     pkgutil.call_pkgutil(args, use_sudo = True)
+
+  #@abstractmethod
+  def install(self, package_filename):
+    'Install a package.'
+    check.check_string(package_filename)
+
+    if not path.isfile(package_filename):
+      raise native_package_error('Package file not found: "{}"'.format(package_filename))
+
+    mime_type = file_mime.mime_type(package_filename).mime_type
+    if mime_type != 'application/x-xar':
+      raise native_package_error('Invalid package file: "{}"'.format(package_filename))
+
+    package_filename = path.abspath(package_filename)
+    
+    args = [ 'installer', '-verboseR', '-pkg', package_filename, '-target', '/' ]
+    sudo_exe.call_sudo(args)

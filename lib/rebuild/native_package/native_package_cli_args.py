@@ -29,16 +29,22 @@ class native_package_cli_args(object):
     p.add_argument('package_name', action = 'store', help = 'The package name')
     p.add_argument('--levels', '-l', action = 'store', type = int,
                    default = None, help = 'Show only top level directories [ None ]')
+    p.add_argument('--root-dir', action = 'store_true', 
+                   default = False, help = 'Show only the root dir [ None ]')
     
     # owner
     p = subparser.add_parser('owner', help = 'Print the package the owns the given file.')
     p.add_argument('filename', action = 'store', help = 'The filename')
 
     # remove
-    p = subparser.add_parser('remove', help = 'remove a package')
+    p = subparser.add_parser('remove', help = 'Remove a package')
     p.add_argument('package_name', action = 'store', help = 'The package name')
     p.add_argument('--force-package-root', action = 'store_true',
                    default = False, help = 'Force removal of the package root directory even if not empty [ False ]')
+
+    # install
+    p = subparser.add_parser('install', help = 'Install a package')
+    p.add_argument('package_filename', action = 'store', help = 'The package file')
     
   def _command_native_package(self, command, *args, **kargs):
     from .native_package_cli_command import native_package_cli_command
