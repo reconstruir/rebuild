@@ -115,8 +115,6 @@ class native_package_macos(native_package_base):
         if dir_util.is_empty(dirname):
           args = [ 'rmdir', dirname ]
           sudo_exe.call_sudo(args)
-        else:
-          print('warning: not empty: {}'.format(dirname))
     
     if force_package_root:
       root_dir = file_path.common_ancestor(dirs)

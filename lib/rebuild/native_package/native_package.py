@@ -9,7 +9,7 @@ if host.SYSTEM == 'macos':
 elif host.SYSTEM == 'linux':
   from .native_package_linux import native_package_linux as native_package
 else:
-  raise RuntimeError('System not supported yet: "{}"'.format(host.SYSTEM))
+  host.raise_unsupported_system()
 
 check.register_class(native_package,
                      name = 'native_package',
