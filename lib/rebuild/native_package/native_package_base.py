@@ -2,12 +2,17 @@
 
 from abc import abstractmethod, ABCMeta
 from collections import namedtuple
+
+from bes.common.check import check
+from bes.script.blurber import blurber
 from bes.system.compat import with_metaclass
 
 class native_package_base(with_metaclass(ABCMeta, object)):
 
-  def __init__(self):
-    pass
+  def __init__(self, blurber):
+    check.check_blurber(blurber)
+    
+    self._blurber = blurber
 
   @abstractmethod
   def installed_packages(self):
@@ -51,4 +56,15 @@ class native_package_base(with_metaclass(ABCMeta, object)):
 
   def has_package(self, package_name):
     'Return True if package_name is installed.'
+    check.check_string(package_name)
+
     return package_name in self.installed_packages()
+
+  def has_any_package(self, package_names):
+    'Return True if any of package_names is installed.'
+    check.check_string_seq(package_names)
+    
+    for package_name in package_names:
+      if self.has_package(package_name):
+        return True
+    return False

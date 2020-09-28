@@ -22,8 +22,8 @@ from .detail.pkgutil import pkgutil
 
 class native_package_macos(native_package_base):
 
-  def __init__(self):
-    super(native_package_macos, self).__init__()
+  def __init__(self, blurber):
+    super(native_package_macos, self).__init__(blurber)
   
   #@abstractmethod
   def installed_packages(self):
@@ -103,7 +103,7 @@ class native_package_macos(native_package_base):
     files = self.package_files(package_name)
     dirs = self.package_dirs(package_name)
     
-    sudo_exe.validate(prompt = 'need sudo password to remove package:')
+    sudo_exe.validate(prompt = 'sudo password for remove:')
     for filename in files:
       if path.exists(filename):
         args = [ 'rm', '-f', filename ]

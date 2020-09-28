@@ -1,10 +1,12 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-import os, pprint
+import copy, os, pprint
 
+from bes.common.Script import Script
 from bes.common.algorithm import algorithm
 from bes.common.check import check
 from bes.fs.file_path import file_path
+from bes.script.blurber import blurber
 
 from .native_package_error import native_package_error
 from .native_package import native_package
@@ -14,8 +16,12 @@ class native_package_cli_command(object):
 
   @classmethod
   def handle_command(clazz, command, **kargs):
+    kargs = copy.deepcopy(kargs)
     func = getattr(native_package_cli_command, command)
-    np = native_package()
+    bl = blurber(Script.name())
+    verbose = kargs.pop('verbose')
+    bl.set_verbose(verbose)
+    np = native_package(bl)
     return func(np, **kargs)
   
   @classmethod
