@@ -127,14 +127,14 @@ class requirement_parser(object):
   def _parse_name_and_system_mask(clazz, s):
     system_mask = clazz._name_get_system_mask(s)
     if system_mask:
-      name = re.sub('\((.+)\)', '', s)
+      name = re.sub(r'\((.+)\)', '', s)
     else:
       name = s
     return name, system_mask
 
   @classmethod
   def _name_get_system_mask(clazz, name):
-    parts = re.findall('\w+\((.+)\)', name)
+    parts = re.findall(r'\w+\((.+)\)', name)
     if len(parts) == 1:
       return parts[0]
     return None
