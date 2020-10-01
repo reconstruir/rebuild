@@ -25,7 +25,7 @@ class test_jail_cli(unit_test):
 #com.apple.pkg.MobileDeviceDevelopment
 
   _PACKAGE_ID = 'com.apple.pkg.MobileDevice'
-
+  
   @skip_if(not host.is_macos(), 'not macos')
   @skip_if(not native_package().is_installed(_PACKAGE_ID), 'not installed: %s' % (_PACKAGE_ID))
   def test_create_from_packages(self):

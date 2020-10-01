@@ -9,6 +9,9 @@ from bes.system.execute import execute
 # FIXME: this is ubuntu only
 class native_package_linux(native_package_base):
 
+  def __init__(self, blurber = None):
+    super(native_package_linux, self).__init__(blurber)
+  
   @classmethod
   def installed_packages(clazz):
     'Return a list of installed pacakge.'

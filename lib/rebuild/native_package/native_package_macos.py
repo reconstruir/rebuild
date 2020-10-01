@@ -22,7 +22,7 @@ from .detail.pkgutil import pkgutil
 
 class native_package_macos(native_package_base):
 
-  def __init__(self, blurber):
+  def __init__(self, blurber = None):
     super(native_package_macos, self).__init__(blurber)
   
   #@abstractmethod
