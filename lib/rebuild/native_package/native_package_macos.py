@@ -12,7 +12,7 @@ from bes.fs.file_mime import file_mime
 from bes.fs.file_path import file_path
 from bes.system.execute import execute
 
-from rebuild.sudo.sudo_exe import sudo_exe
+from bes.unix.sudo.sudo_exe import sudo_exe
 
 from .native_package_base import native_package_base
 from .native_package_error import native_package_error

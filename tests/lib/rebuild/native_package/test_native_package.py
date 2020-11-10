@@ -18,7 +18,7 @@ class test_native_package(unit_test):
   @skip_if(not host.is_macos(), 'not macos')
   def test_package_manifest_macos(self):
     np = native_package()
-    manifest = np.package_manifest(self._MACOS_EXAMPLE_PKG)
+    manifest = np.package_files(self._MACOS_EXAMPLE_PKG)
     self.assertTrue( '/bin/bash' in manifest )
     self.assertTrue( '/usr/bin/awk' in manifest )
 
@@ -45,7 +45,7 @@ class test_native_package(unit_test):
   @skip_if(not host.is_macos(), 'not macos')
   def test_owner_macos(self):
     np = native_package()
-    self.assertEqual( self._MACOS_EXAMPLE_PKG, np.owner('/bin/bash') )
+    self.assertTrue( np.owner('/bin/bash').startswith('com.apple.pkg.') )
     
   @skip_if(not host.is_linux(), 'not linux')
   def test_owner_linux(self):
