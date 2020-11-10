@@ -86,7 +86,7 @@ class test_package_manager(unit_test):
     pm.install_tarball(water_tarball.filename, water_tarball.metadata, ['BUILD', 'RUN'])
     
   def test_install_tarball_pkg_config(self):
-    recipe = '''
+    recipe = r'''
 fake_package libfoo 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     lib/pkgconfig/libfoo.pc
@@ -136,7 +136,7 @@ fake_package libfoo 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     self.assertEqual( expected_libs, libs )
 
   def test_install_tarball_conflicts_same_checksum(self):
-    foo_recipe = '''
+    foo_recipe = r'''
 fake_package foo 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     foo/cellulose.txt
@@ -145,7 +145,7 @@ fake_package foo 1.0.0 0 0 linux release x86_64 ubuntu 18 none
       inulin
 '''
 
-    bar_recipe = '''
+    bar_recipe = r'''
 fake_package bar 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     foo/cellulose.txt
@@ -163,7 +163,7 @@ fake_package bar 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     self.assertEqual( [ 'bar-1.0.0', 'foo-1.0.0' ], pm.list_all_names(include_version = True) )
 
   def test_install_tarball_conflicts_different_checksum(self):
-    foo_recipe = '''
+    foo_recipe = r'''
 fake_package foo 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     foo/cellulose.txt
@@ -172,7 +172,7 @@ fake_package foo 1.0.0 0 0 linux release x86_64 ubuntu 18 none
       inulin
 '''
 
-    bar_recipe = '''
+    bar_recipe = r'''
 fake_package bar 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     foo/cellulose.txt
@@ -208,16 +208,16 @@ fake_package bar 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     self.assertEqual( 'package apple missing requirements: fiber, fructose, water', context.exception.message )
 
   def test_install_tarball_with_manual_requirements(self):
-    foo_recipe = '''
+    foo_recipe = r'''
 fake_package foo 1.0.0 0 0 linux release x86_64 ubuntu 18 none
 '''
-    bar_recipe = '''
+    bar_recipe = r'''
 fake_package bar 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   requirements
     foo >= 1.0.0
 '''
 
-    baz_recipe = '''
+    baz_recipe = r'''
 fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   requirements
     bar >= 1.0.0
@@ -408,7 +408,7 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     }, env2 )
 
   def test_transform_env_append(self):
-    code = '''
+    code = r'''
       bes_env_path_append PATH /zzzz/bin
       bes_env_path_append PYTHONPATH /zzzz/lib/python
 '''
@@ -427,7 +427,7 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     self.assert_dict_as_text_equal( expected, env2 )
 
   def test_transform_env_prepend(self):
-    code = '''
+    code = r'''
       bes_env_path_prepend PATH /zzzz/bin
       bes_env_path_prepend PYTHONPATH /zzzz/lib/python
 #      bes_env_path_prepend LD_LIBRARY_PATH /zzzz/lib
@@ -448,12 +448,12 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     self.assert_dict_as_text_equal( expected, env2 )
 
   def test_transform_env_unset(self):
-    code1 = '''
+    code1 = r'''
       export FOO=foo
       export BAR=bar
       export BAZ=baz
 '''
-    code2 = '''
+    code2 = r'''
       unset BAR
 '''
     pm = self._make_two_env_files_pm(code1, code2)
@@ -470,7 +470,7 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     self.assert_dict_as_text_equal( expected, env2 )
 
   def test_installed_files(self):
-    recipe = '''
+    recipe = r'''
 fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/apple.sh
@@ -504,7 +504,7 @@ fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     self.assertEqual( expected, file_find.find(pm.root_dir, relative = True) )
 
   def test_installed_files_only_files(self):
-    recipe = '''
+    recipe = r'''
 fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/apple.sh
@@ -527,7 +527,7 @@ fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     self.assertEqual( expected, file_find.find(pm.root_dir, relative = True) )
 
   def test_installed_files_only_env_files(self):
-    recipe = '''
+    recipe = r'''
 fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   env_files
     foo.sh
@@ -568,7 +568,7 @@ fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     check.check_build_target(bt)
     pm.install_package(desc, bt, [ 'RUN' ])
     
-  ONE_ENV_FILE_RECIPE = '''
+  ONE_ENV_FILE_RECIPE = r'''
 fake_package one_env_file 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   env_files
     file1.sh
@@ -577,7 +577,7 @@ fake_package one_env_file 1.0.0 0 0 linux release x86_64 ubuntu 18 none
       \#@REBUILD_TAIL@
   '''
 
-  TWO_ENV_FILES_RECIPE = '''
+  TWO_ENV_FILES_RECIPE = r'''
 fake_package two_env_files 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/cut.sh
@@ -594,7 +594,8 @@ fake_package two_env_files 1.0.0 0 0 linux release x86_64 ubuntu 18 none
       \#@REBUILD_TAIL@
   '''
   
-  VEGGIES = '''fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
+  VEGGIES = r'''\
+fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/cut.sh
       \#!/bin/bash
@@ -665,7 +666,7 @@ fake_package unset 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     same and contents changed and same_version is given
     '''
 
-    recipe1 = '''\
+    recipe1 = r'''\
 fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/cabbage.sh
@@ -673,7 +674,7 @@ fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
       echo cabbage1 ; exit 0
 '''
 
-    recipe2 = '''\
+    recipe2 = r'''\
 fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/cabbage.sh
@@ -707,7 +708,7 @@ fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     same and env_files contents changed and same_version is given
     '''
 
-    recipe1 = '''\
+    recipe1 = r'''\
 fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/unsetcut.sh
@@ -720,7 +721,7 @@ fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
       \#@REBUILD_TAIL@
 '''
 
-    recipe2 = '''\
+    recipe2 = r'''\
 fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/unsetcut.sh
@@ -761,7 +762,7 @@ fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     have the variables ${REBUILD_PACKAGE_PREFIX} in them.
     '''
 
-    recipe = '''\
+    recipe = r'''\
 fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/cabbage.sh
@@ -787,7 +788,7 @@ fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     but it needs to work nontheless)
     '''
 
-    recipe = '''\
+    recipe = r'''\
 fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   env_files
     foo.sh
@@ -811,7 +812,7 @@ fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     self.assertEqual( '$ROOT_DIR/stuff/bar', env2['BAR'] )
     
   def test_install_tarball_no_distro(self):
-    recipes = '''
+    recipes = r'''
 fake_package foo 1.0.0 0 0 linux release x86_64 any any none
 
 fake_package bar 1.0.0 0 0 linux release x86_64 ubuntu 18 none

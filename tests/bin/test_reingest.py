@@ -15,7 +15,7 @@ from bes.web.file_web_server_tester import file_web_server_tester
 
 class test_reingest(program_unit_test):
 
-  __script__ = __file__, '../../bin/reingest.py'
+  _PROGRAM = program_unit_test.resolve_program(__file__, '..', '..', 'bin', 'reingest.py')
 
   @classmethod
   def setUpClass(clazz):
@@ -74,7 +74,7 @@ fsconfig
       tmp_project_dir,
     ]
     
-    rv = self.run_script(args)
+    rv = self.run_program(self._PROGRAM, args)
     if self.DEBUG:
       print(rv.output)
     self.assertEqual( 0, rv.exit_code )
@@ -140,7 +140,7 @@ print('foo')
       tmp_project_dir,
     ]
     
-    rv = self.run_script(args)
+    rv = self.run_program(self._PROGRAM, args)
     if self.DEBUG:
       print(rv.output)
     self.assertEqual( 0, rv.exit_code )

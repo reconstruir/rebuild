@@ -13,7 +13,7 @@ from bes.testing.program_unit_test import program_unit_test
 
 class test_retool_archive(program_unit_test):
 
-  __script__ = __file__, '../../bin/retool.py'
+  _PROGRAM = program_unit_test.resolve_program(__file__, '..', '..', 'bin', 'retool.py')
 
   @git_temp_home_func()
   def test_create_git_zip(self):
@@ -38,7 +38,7 @@ class test_retool_archive(program_unit_test):
       commit,
       tmp_archive,
     ]
-    rv = self.run_script(args)
+    rv = self.run_program(self._PROGRAM, args)
     self.assertEqual( 0, rv.exit_code )
     self.assertEqual( 'zip', archiver.format_name(tmp_archive) )
     self.assertEqual( [
@@ -75,7 +75,7 @@ class test_retool_archive(program_unit_test):
       commit,
       tmp_archive,
     ]
-    rv = self.run_script(args)
+    rv = self.run_program(self._PROGRAM, args)
     self.assertEqual( 0, rv.exit_code )
     self.assertEqual( 'tgz', archiver.format_name(tmp_archive) )
     self.assertEqual( [

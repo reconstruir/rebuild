@@ -30,7 +30,7 @@ class test_fake_package_recipe_parser(unit_test):
         { 'prop1': '5', 'prop2': 'hi' },
         {}
       )
-    content = '''
+    content = r'''
 fake_package foo 1.2.3 0 0 linux release x86_64 ubuntu 18 none
   
   files
