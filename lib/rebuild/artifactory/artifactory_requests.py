@@ -195,7 +195,9 @@ class artifactory_requests(object):
   def _do_upload_url(clazz, url, filename, credentials):
     clazz.log.log_d('_do_upload_url: url=%s; filename=%s' % (url, filename))
     import requests
+    clazz.log.log_d('_do_upload_url: imported requests')
     headers = clazz.checksum_headers_for_file(filename)
+    clazz.log.log_d('_do_upload_url: headers={}'.format(headers))
 
     '''
     old_checksums = clazz.get_checksums_for_url(url, credentials)
@@ -209,10 +211,15 @@ class artifactory_requests(object):
 '''
     
     with open(filename, 'rb') as fin:
-      response = requests.put(url,
-                              auth = ( credentials.username, credentials.password ),
-                              data = fin,
-                              headers = headers)
+      clazz.log.log_d('_do_upload_url: calling put')
+      try:
+        response = requests.put(url,
+                                auth = ( credentials.username, credentials.password ),
+                                data = fin,
+                                headers = headers)
+      except Exception as ex:
+        clazz.log.log_e('_do_upload_url: caught: {}'.format(str(ex)))
+        raise
       clazz.log.log_d('_do_upload_url: response status_code=%d' % (response.status_code))
       if response.status_code != 201:
         msg = 'Failed to upload: {} (status_code {} content {})'.format(url, response.status_code, response.content)
