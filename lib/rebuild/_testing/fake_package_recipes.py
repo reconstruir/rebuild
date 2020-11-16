@@ -19,7 +19,7 @@ fake_package apple 1.2.4 1 0 linux release x86_64 ubuntu 18 none
     fruit >= 1.0.0
 '''
   
-  FOODS = '''
+  FOODS = r'''
 fake_package water 1.0.0 0 0 linux release x86_64 ubuntu 18 none
 
 fake_package water 1.0.0 1 0 linux release x86_64 ubuntu 18 none
@@ -84,7 +84,7 @@ fake_package knife 1.0.0 0 0 linux release x86_64 ubuntu 18 none
       echo cut ; exit 0
 '''
   
-  KNIFE = '''
+  KNIFE = r'''
 fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/cut.sh

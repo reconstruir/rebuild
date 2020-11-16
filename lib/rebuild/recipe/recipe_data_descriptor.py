@@ -11,8 +11,8 @@ from .value.value_origin import value_origin
 
 class recipe_data_descriptor(namedtuple('recipe_data_descriptor', 'name, version, origin')):
 
-  RE_PATTERN = '@\{DATA:(.+?):(.+?)\}'
-  RE_PATTERN_EXACT = '^{pattern}$'.format(pattern = RE_PATTERN)
+  RE_PATTERN = r'@\{DATA:(.+?):(.+?)\}'
+  RE_PATTERN_EXACT = r'^{pattern}$'.format(pattern = RE_PATTERN)
   
   def __new__(clazz, name, version, origin = None):
     check.check_string(name)
