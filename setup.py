@@ -21,7 +21,6 @@ setup(
     'bin/rebuild_ldd.py',
     'bin/rebuild_macho.py',
     'bin/rebuild_native_package.py',
-    'bin/rebuild_sudo_editor.py',
     'bin/rebuild_update_tarball_address.py',
     'bin/rebuilder.py',
     'bin/revenv.py',

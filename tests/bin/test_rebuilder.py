@@ -18,7 +18,7 @@ from rebuild._testing.rebuilder_tester import rebuilder_tester
 class test_rebuilder_script(program_unit_test):
 
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/rebuilder'
-  __script__ = __file__, '../../bin/rebuilder.py'
+  _PROGRAM = program_unit_test.resolve_program(__file__, '..', '..', 'bin', 'rebuilder.py')
   
   HOST_BUILD_TARGET = build_target.make_host_build_target(level = 'release')
   IOS_BUILD_TARGET = build_target('ios', None, '9', '', 'arm64', 'release')
@@ -333,7 +333,7 @@ print("hook1 hook2")
     file_replace.replace(recipe_filename, replacements, backup = False)
 
     tmp_sources_dir = self._make_temp_dir('tmp_sources_dir')
-    rt = rebuilder_tester(self._resolve_script(), project_dir_tmp, tmp_sources_dir, 'release', debug = self.DEBUG)
+    rt = rebuilder_tester(self._PROGRAM, project_dir_tmp, tmp_sources_dir, 'release', debug = self.DEBUG)
     ingest_only_config = rebuilder_tester.config(no_network = False)
     ingest_only_test = rt.run(ingest_only_config, '--ingest', '--ingest-only', 'fructose')
     self.assertEqual( 0, ingest_only_test.result.exit_code )
@@ -341,7 +341,7 @@ print("hook1 hook2")
     self.assertEqual( [ 'rebuild_stuff/sources/fructose/fructose-3.4.5.tar.gz' ], ingest_only_test.source_dir_droppings )
 
     tmp_sources_dir = self._make_temp_dir('tmp_sources_dir')
-    rt = rebuilder_tester(self._resolve_script(), project_dir_tmp, tmp_sources_dir, 'release', debug = self.DEBUG)
+    rt = rebuilder_tester(self._PROGRAM, project_dir_tmp, tmp_sources_dir, 'release', debug = self.DEBUG)
     ingest_config = rebuilder_tester.config(no_network = False)
     ingest_test = rt.run(ingest_config, '--ingest', 'fructose')
     self.assertEqual( 0, ingest_test.result.exit_code )
@@ -371,12 +371,12 @@ print("hook1 hook2")
     ], test.artifacts_members['foo-1.0.0.tar.gz'])
     
   def _run_test(self, config, data_dir, cwd_subdir, *args):
-    rt = rebuilder_tester(self._resolve_script(),
+    rt = rebuilder_tester(self._PROGRAM,
                           path.join(data_dir, cwd_subdir),
                           path.normpath(path.join(data_dir, '../sources')),
                           'release',
                           debug = self.DEBUG)
     return rt.run(config, *args)
-  
+
 if __name__ == '__main__':
   program_unit_test.main()

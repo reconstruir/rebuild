@@ -6,7 +6,7 @@ from bes.system.which import which
 from bes.system.command_line import command_line
 from bes.system.execute import execute
 
-from rebuild.sudo.sudo_exe import sudo_exe
+from bes.unix.sudo.sudo_exe import sudo_exe
 from rebuild.native_package.native_package_error import native_package_error
 
 class pkgutil(object):

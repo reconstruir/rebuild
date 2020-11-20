@@ -9,7 +9,7 @@ from bes.system.os_env import os_env
 class test_rebuild_pkg_config(program_unit_test):
 
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/pkg_config/real_examples'
-  __script__ = __file__, '../../bin/rebuild_pkg_config.py'
+  _PROGRAM = program_unit_test.resolve_program(__file__, '..', '..', 'bin', 'rebuild_pkg_config.py')
 
   ALL_MODULES = [
     'exiv2', 'freetype2', 'gdal', 'gio-2.0', 'gio-unix-2.0', 'glib-2.0',
@@ -37,7 +37,7 @@ class test_rebuild_pkg_config(program_unit_test):
     cmd = [
       '--list-all',
     ]
-    rv = self.run_script(cmd, env = self.clean_env)
+    rv = self.run_program(self._PROGRAM, cmd, env = self.clean_env)
     self.assertEquals( 0, rv.exit_code )
     self.assertEquals( self.ALL_MODULES, self._parse_list_all_output(rv.output) )
 
@@ -51,7 +51,7 @@ class test_rebuild_pkg_config(program_unit_test):
     cmd = [
       '--modversion',
     ] + self.ALL_MODULES
-    rv = self.run_script(cmd, env = self.clean_env)
+    rv = self.run_program(self._PROGRAM, cmd, env = self.clean_env)
     expected_versions = [
       '0.24', '18.0.12', '2.0.0', '2.44.1', '2.44.1', '2.44.1', '2.44.1', '2.44.1',
       '2.44.1', '2.44.1', '2.44.1', '2.2.0', '6.9.2', '6.9.2', '6.9.2', '6.9.2',

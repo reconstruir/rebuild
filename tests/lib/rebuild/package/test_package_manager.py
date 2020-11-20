@@ -594,7 +594,8 @@ fake_package two_env_files 1.0.0 0 0 linux release x86_64 ubuntu 18 none
       \#@REBUILD_TAIL@
   '''
   
-  VEGGIES = r'''fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
+  VEGGIES = r'''\
+fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/cut.sh
       \#!/bin/bash

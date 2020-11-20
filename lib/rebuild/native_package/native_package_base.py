@@ -9,10 +9,10 @@ from bes.system.compat import with_metaclass
 
 class native_package_base(with_metaclass(ABCMeta, object)):
 
-  def __init__(self, blurber):
-    check.check_blurber(blurber)
-    
-    self._blurber = blurber
+  def __init__(self, bl):
+    bl = bl or blurber()
+    check.check_blurber(bl)
+    self._blurber = bl
 
   @abstractmethod
   def installed_packages(self):

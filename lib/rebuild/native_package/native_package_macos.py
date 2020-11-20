@@ -12,7 +12,7 @@ from bes.fs.file_mime import file_mime
 from bes.fs.file_path import file_path
 from bes.system.execute import execute
 
-from rebuild.sudo.sudo_exe import sudo_exe
+from bes.unix.sudo.sudo_exe import sudo_exe
 
 from .native_package_base import native_package_base
 from .native_package_error import native_package_error
@@ -22,7 +22,7 @@ from .detail.pkgutil import pkgutil
 
 class native_package_macos(native_package_base):
 
-  def __init__(self, blurber):
+  def __init__(self, blurber = None):
     super(native_package_macos, self).__init__(blurber)
   
   #@abstractmethod
