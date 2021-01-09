@@ -28,7 +28,7 @@ from bes.vfs.vfs_file_info import vfs_file_info_list
 from bes.vfs.vfs_error import vfs_error
 from bes.vfs.vfs_path_util import vfs_path_util
 
-from rebuild.credentials.credentials import credentials
+from bes.credentials.credentials import credentials
 
 class vfs_artifactory(vfs_base):
   'artifactory filesystem'

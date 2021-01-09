@@ -7,7 +7,7 @@ from bes.testing.unit_test import unit_test
 from bes.system.env_override import env_override
 
 from rebuild.config.storage_config import storage_config as SC
-from rebuild.credentials.credentials import credentials
+from bes.credentials.credentials import credentials
 
 class test_storage_config(unit_test):
     

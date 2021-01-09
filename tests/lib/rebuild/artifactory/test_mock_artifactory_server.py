@@ -12,7 +12,7 @@ from bes.testing.unit_test import unit_test
 
 from rebuild.artifactory.mock_artifactory_tester import mock_artifactory_tester as MAT
 from rebuild.artifactory.artifactory_requests import artifactory_requests as AR
-from rebuild.credentials.credentials import credentials
+from bes.credentials.credentials import credentials
 
 class test_mock_artifactory_server(unit_test):
 

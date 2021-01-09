@@ -5,7 +5,7 @@ from collections import namedtuple
 from bes.common.check import check
 from bes.fs.file_util import file_util
 
-from rebuild.credentials.credentials import credentials
+from bes.credentials.credentials import credentials
 
 class pcloud_credentials(object):
   
