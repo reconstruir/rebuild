@@ -8,7 +8,7 @@ from bes.property.cached_property import cached_property
 from bes.property.env_var_property import env_var_property
 from bes.system.log import logger
 
-from rebuild.credentials.credentials import credentials
+from bes.credentials.credentials import credentials
 
 class storage_config(namedtuple('storage_config', 'name, provider, location, repo, root_dir, download, upload')):
 
