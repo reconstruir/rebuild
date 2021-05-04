@@ -20,7 +20,6 @@ setup(
     'bin/rebuild_jail.py',
     'bin/rebuild_ldd.py',
     'bin/rebuild_macho.py',
-    'bin/rebuild_native_package.py',
     'bin/rebuild_update_tarball_address.py',
     'bin/rebuilder.py',
     'bin/revenv.py',
