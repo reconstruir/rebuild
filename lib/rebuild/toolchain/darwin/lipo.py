@@ -9,8 +9,8 @@ from bes.system.execute import execute
 class lipo(object):
 
   LIPO_EXE = 'lipo'
-  FAT_EXPRESSION = 'Architectures in the fat file: .+ are: (.*)\w*'
-  THIN_EXPRESSION = 'Non-fat file: .+ is architecture: (.*)'
+  FAT_EXPRESSION = r'Architectures in the fat file: .+ are: (.*)\w*'
+  THIN_EXPRESSION = r'Non-fat file: .+ is architecture: (.*)'
   POSSIBLE_ARCHS = [ 'arm64', 'armv7', 'i386', 'x86_64' ]
 
   @classmethod

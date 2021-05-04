@@ -35,7 +35,7 @@ class test_fake_package_recipe(unit_test):
           { 'prop1': 5, 'prop2': 'hi' },
           {}
     )
-    expected = '''fake_package
+    expected = r'''fake_package
   metadata
     name foo
     version 1.2.3
@@ -59,7 +59,7 @@ class test_fake_package_recipe(unit_test):
     self.assertMultiLineEqual( expected, str(r) )
 
   def test_create_package(self):
-    recipe = '''
+    recipe = r'''
 fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/cut.sh

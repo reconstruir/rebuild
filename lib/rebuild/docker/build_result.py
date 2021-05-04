@@ -19,14 +19,14 @@ class build_result(object):
 
   @classmethod
   def _extract_image_id(clazz, text):
-    f = re.findall('Successfully\sbuilt\s([0-9a-fA-F]+)', text)
+    f = re.findall(r'Successfully\sbuilt\s([0-9a-fA-F]+)', text)
     if f and len(f) == 1:
       return f[0]
     return None
   
   @classmethod
   def _extract_tag(clazz, text):
-    f = re.findall('Successfully\stagged\s(.*)', text)
+    f = re.findall(r'Successfully\stagged\s(.*)', text)
     if f and len(f) == 1:
       return f[0]
     return None

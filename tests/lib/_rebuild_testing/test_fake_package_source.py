@@ -13,8 +13,8 @@ class test_fake_package_source(unit_test):
   #DEBUG = True
 
   def test___str__(self):
-    s = S('foo.c', '''\#include <stdio.h>\nint main(int argc, char* argv[]) {\n  printf("foo.c\\n");\n  return 0;\n}\n''')
-    expected = '''foo.c
+    s = S('foo.c', r'''\#include <stdio.h>\nint main(int argc, char* argv[]) {\n  printf("foo.c\\n");\n  return 0;\n}\n''')
+    expected = r'''foo.c
   \#include <stdio.h>
   int main(int argc, char* argv[]) {
     printf("foo.c\\n");

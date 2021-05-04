@@ -165,7 +165,7 @@ class test_tools_manager(unit_test):
       'wood-1.0.0/setup.sh',
       ], file_find.find(tm.root_dir) )
     
-  RECIPES = '''
+  RECIPES = r'''
 fake_package wood 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/wood.py
