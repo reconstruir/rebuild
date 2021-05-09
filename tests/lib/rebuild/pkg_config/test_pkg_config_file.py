@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.testing.unit_test import unit_test
 import copy, glob, os.path as path
-from bes.fs.temp_file import temp_file
+
+from bes.testing.unit_test import unit_test
+from bes.fs.file_util import file_util
+
 from rebuild.pkg_config.pkg_config_file import pkg_config_file
 from rebuild.pkg_config.entry import entry
 
@@ -59,7 +61,7 @@ Cflags: -I${includedir}
 '''
 
   def test_parse_filename(self):
-    filename = temp_file.make_temp_file(content = self.FOO_PC)
+    filename = self.make_temp_file(content = self.FOO_PC)
     cf = pkg_config_file()
     cf.parse_file(filename)
     self.assertEqual( self.FOO_EXPECTED_VARIABLES, cf.variables )
@@ -73,21 +75,20 @@ Cflags: -I${includedir}
 
   def test_parse_many_examples(self):
     examples = glob.glob(path.join(self.data_dir(), '*.pc'))
-    print('data_dir: %s' % (self.data_dir()))
     self.assertTrue( len(examples) > 0 )
     for example in examples:
       cf = pkg_config_file()
       cf.parse_file(example)
 
-  def xxxx_set_variable(self):
-    cf = pkg_config_file()
-    cf.parse_string(self.FOO_PC)
-    cf.set_variable('prefix', '/something/else')
-    expected_variables = copy.deepcopy(self.FOO_EXPECTED_VARIABLES)
-    self.assertEqual( 'prefix', expected_variables[0].name )
-    expected_variables[0].value = '/something/else'
-    self.assertEqual( expected_variables, cf.variables )
-    self.assertEqual( self.FOO_EXPECTED_EXPORTS, cf.exports )
+####  def test_set_variable(self):
+####    cf = pkg_config_file()
+####    cf.parse_string(self.FOO_PC)
+####    cf.set_variable('prefix', '/something/else')
+####    expected_variables = copy.deepcopy(self.FOO_EXPECTED_VARIABLES)
+####    self.assertEqual( 'prefix', expected_variables[0].name )
+####    expected_variables[0].value = '/something/else'
+####    self.assertEqual( expected_variables, cf.variables )
+####    self.assertEqual( self.FOO_EXPECTED_EXPORTS, cf.exports )
 
   def test_deep_copy(self):
     cf = pkg_config_file()
@@ -129,29 +130,28 @@ Cflags: -I${includedir}
     self.assertEqual( expected_variables, cf.variables )
     self.assertEqual( expected_exports, cf.exports )
 
-  def xxxx_replace(self):
-    self.maxDiff = None
-    replacements = { 'NAME': 'foobar', 'DESCRIPTION': 'something nice', 'VERSION': '6.6.6' }
-    cf = pkg_config_file()
-    cf.parse_string(self.TEMPLATE_PC)
-    cf.replace(replacements)
-    expected_exports = [
-      entry(entry.EXPORT, 'Name', 'foobar'),
-      entry(entry.EXPORT, 'Description', 'something nice'),
-      entry(entry.EXPORT, 'Version', '6.6.6'),
-      entry(entry.EXPORT, 'Requires', ''),
-      entry(entry.EXPORT, 'Libs', '-L${libdir} -L${sharedlibdir} -lfoo'),
-      entry(entry.EXPORT, 'Cflags', '-I${includedir}'),
-    ]
-    self.assertEqual( expected_exports, cf.exports )
+####  def test_replace(self):
+####    self.maxDiff = None
+####    replacements = { 'NAME': 'foobar', 'DESCRIPTION': 'something nice', 'VERSION': '6.6.6' }
+####    cf = pkg_config_file()
+####    cf.parse_string(self.TEMPLATE_PC)
+####    cf.replace(replacements)
+####    expected_exports = [
+####      entry(entry.EXPORT, 'Name', 'foobar'),
+####      entry(entry.EXPORT, 'Description', 'something nice'),
+####      entry(entry.EXPORT, 'Version', '6.6.6'),
+####      entry(entry.EXPORT, 'Requires', ''),
+####      entry(entry.EXPORT, 'Libs', '-L${libdir} -L${sharedlibdir} -lfoo'),
+####      entry(entry.EXPORT, 'Cflags', '-I${includedir}'),
+####    ]
+####    self.assertEqual( expected_exports, cf.exports )
 
   def test_write_filename(self):
-    filename = temp_file.make_temp_file(content = self.FOO_PC)
+    filename = self.make_temp_file(content = self.FOO_PC)
     cf = pkg_config_file()
     cf.parse_file(filename)
-
-    new_filename = temp_file.make_temp_file()
-    cf.write_file(new_filename)
+    new_filename = self.make_temp_file()
+    cf.write_file(new_filename, backup = False)
 
     new_cf = pkg_config_file()
     new_cf.parse_file(new_filename)
@@ -163,8 +163,8 @@ Cflags: -I${includedir}
     for example in examples:
       cf = pkg_config_file()
       cf.parse_file(example)
-      new_filename = temp_file.make_temp_file()
-      cf.write_file(new_filename)
+      new_filename = self.make_temp_file()
+      cf.write_file(new_filename, backup = False)
 
       new_cf = pkg_config_file()
       new_cf.parse_file(new_filename)

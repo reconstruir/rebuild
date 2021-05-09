@@ -132,7 +132,7 @@ class test_library(unit_test):
   @skip_if(not host.is_macos(), 'not macos')
   def test_dependencies_macos(self):
     deps = library.dependencies('/bin/bash')
-    self.assertEquals( 2, len(deps) )
+    self.assertEqual( 2, len(deps) )
     self.assertTrue( path.basename(deps[0]).startswith('libSystem') )
     self.assertTrue( path.basename(deps[1]).startswith('libncurses') )
     
@@ -156,7 +156,7 @@ class test_library(unit_test):
         '/lib64/ld-linux-x86-64.so.2',
       ]
       
-    self.assertEquals( expected_deps, deps )
+    self.assertEqual( expected_deps, deps )
     
   def __is_library(self, filename):
     return library.is_library(self.data_path(filename, platform_specific = True))

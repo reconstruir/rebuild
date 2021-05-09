@@ -38,8 +38,8 @@ class test_rebuild_pkg_config(program_unit_test):
       '--list-all',
     ]
     rv = self.run_program(self._PROGRAM, cmd, env = self.clean_env)
-    self.assertEquals( 0, rv.exit_code )
-    self.assertEquals( self.ALL_MODULES, self._parse_list_all_output(rv.output) )
+    self.assertEqual( 0, rv.exit_code )
+    self.assertEqual( self.ALL_MODULES, self._parse_list_all_output(rv.output) )
 
   @classmethod
   def _parse_list_all_output(clazz, stdout):
@@ -60,8 +60,8 @@ class test_rebuild_pkg_config(program_unit_test):
       '4.0.4', '0.4.3', '2.9.2', '6.9.2', '6.9.2', '6.9.2', '6.9.2', '6.9.2', '6.9.2',
       '3.0.0', '2.2.0', '1.0.2d', '3.02.02', '6.9.2', '6.9.2', '1.2.8',
     ]
-    self.assertEquals( 0, rv.exit_code )
-    self.assertEquals( expected_versions, rv.output.strip().split('\n') )
+    self.assertEqual( 0, rv.exit_code )
+    self.assertEqual( expected_versions, rv.output.strip().split('\n') )
 
 if __name__ == '__main__':
   program_unit_test.main()

@@ -209,6 +209,7 @@ class test_rebuilder_script(program_unit_test):
     test = self._run_test(self.DEFAULT_CONFIG, tmp_dir, 'tarball_git_address', 'libsomething')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libsomething-1.0.0.tar.gz' ], test.artifacts )
+    file_util.remove(tmp_dir)
 
   def test_lib_libpotato_depends_on_libstarch(self):
     test = self._run_test(self.DEFAULT_CONFIG, self.data_dir(), 'basic', 'libpotato')

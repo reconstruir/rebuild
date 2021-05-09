@@ -60,7 +60,7 @@ class test_pkg_config_comparison(unit_test):
       '4.0.4', '0.4.3', '2.9.2', '6.9.2', '6.9.2', '6.9.2', '6.9.2', '6.9.2', '6.9.2',
       '3.0.0', '2.2.0', '1.0.2d', '3.02.02', '6.9.2', '6.9.2', '1.2.8',
     ]
-    self.assertEquals( expected_versions, mod_versions )
+    self.assertEqual( expected_versions, mod_versions )
     
   def xtest_dependencies(self):
     pc = caca_pkg_config(self.pc_path_deps)
