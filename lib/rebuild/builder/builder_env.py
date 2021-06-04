@@ -10,6 +10,7 @@ from bes.properties_file.properties_file import properties_file
 from bes.url.http_download_cache import http_download_cache
 from bes.system.python import python
 from bes.system.which import which
+from bes.python.python_exe import python_exe
 
 from rebuild.tools_manager.tools_manager import tools_manager
 from rebuild.checksum.checksum_manager import checksum_manager
@@ -143,7 +144,7 @@ class builder_env(object):
     return {
       'REBUILD_PYTHON': python_exe_abs,
       'REBUILD_EASY_INSTALL': easy_install_exe_abs,
-      'REBUILD_PYTHON_VERSION': python.exe_version(python_exe_abs),
+      'REBUILD_PYTHON_VERSION': python_exe.version(python_exe_abs),
     }
   
 check.register_class(builder_env, include_seq = False)
