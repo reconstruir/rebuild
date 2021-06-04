@@ -510,24 +510,46 @@ function bes_unsetup()
 
 function bes_setup_v2()
 {
+  function _bes_setup_v2_help()
+  {
+    cat << EOF
+Usage: bes_setup_v2 <options> root_dir
+
+  Where options is one or more of:
+
+    -h,--help     Show this help.
+    -o,--ouput    Output the resulting egoist path to the given filename. []
+    -p,--purpose  The purpose of the egosit [ general ]
+
+EOF
+  }
+
   _bes_trace_function $*
 
   local _root_dir
-  local _set_title
-  local _change_dir
-  local _set_path
-  local _set_pythonpath
-  local _virtual_env=
+  local _set_title=false
+  local _change_dir=false
+  local _set_path=false
+  local _set_pythonpath=false
+  local _venv_config=false
   local _positional_args=()
   local _key
   while [[ $# -gt 0 ]]; do
     _key="${1}"
     bes_debug_message "bes_setup_v2: checking key ${_key} ${2}"
     case ${_key} in
-      --virtual-env)
-        _virtual_env="${2}"
+      --venv-config)
+        _venv_config="${2}"
         shift # past argument
         shift # past value
+        ;;
+      --venv-activate)
+        _venv_activate=true
+        shift # past argument
+        ;;
+      --no-venv-activate|-nva)
+        _venv_activate=false
+        shift # past argument
         ;;
       --set-path)
         _set_path=true
@@ -541,9 +563,18 @@ function bes_setup_v2()
         _change_dir=true
         shift # past argument
         ;;
+      --no-change-dir|-ncd)
+        _change_dir=false
+        shift # past argument
+        ;;
       --set-title)
         _set_title=true
         shift # past argument
+        ;;
+      --help|-h)
+        _bes_setup_v2_help
+        shift # past argument
+        return 0
         ;;
       *)    # unknown option
         positional_args+=("${1}") # save it in an array for later
@@ -554,12 +585,16 @@ function bes_setup_v2()
   
   set -- "${positional_args[@]}" # restore positional parameters
 
-  if [[ $# != 1 ]]; then
-    printf "\nUsage: bes_setup <options> root_dir\n\n"
+  local _root_dir="${1}"
+  if [[ $# -ge 1 ]]; then
+    _root_dir="${1}"
+    shift
+  fi
+
+  if [[ ! $# -eq 0 ]]; then
+    printf "\nbes_setup_v2: unknown arguments: $*\n\n"
     return 1
   fi
-  local _root_dir="${1}"
-
   if [[ ${_set_path} == true ]]; then
     bes_env_path_prepend PATH "${_root_dir}/bin"
   fi
@@ -572,7 +607,15 @@ function bes_setup_v2()
   if [[ ${_set_title} == true ]]; then
     bes_tab_title $($_BES_BASENAME_EXE "${_root_dir}")
   fi
-
+  if [[ -n "${_venv_config}" ]]; then
+    if [[ ! -f "${_venv_config}" ]]; then
+      printf "\nbes_setup_v2: venv activate config not found: ${_venv_config}\n\n"
+      return 1
+    fi
+    if [[ ${_venv_activate} == true ]]; then
+      source "${_venv_config}"
+    fi
+  fi
   return 0
 }
 
