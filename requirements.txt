@@ -1,0 +1,3 @@
+appstoreconnect  # https://ponytech.net/projects/app-store-connect
+python-gitlab    # https://github.com/python-gitlab/python-gitlab.git
+requests         # https://github.com/kennethreitz/requests
