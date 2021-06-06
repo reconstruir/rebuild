@@ -372,12 +372,17 @@ print("hook1 hook2")
     ], test.artifacts_members['foo-1.0.0.tar.gz'])
     
   def _run_test(self, config, data_dir, cwd_subdir, *args):
+    working_dir = path.join(data_dir, cwd_subdir)
+    source_dir = path.normpath(path.join(data_dir, '../sources'))
     rt = rebuilder_tester(self._PROGRAM,
-                          path.join(data_dir, cwd_subdir),
-                          path.normpath(path.join(data_dir, '../sources')),
+                          working_dir,
+                          source_dir,
                           'release',
                           debug = self.DEBUG)
-    return rt.run(config, *args)
+    rv = rt.run(config, *args)
+    if not self.DEBUG:
+      file_util.remove(rv.tmp_dir)
+    return rv
 
 if __name__ == '__main__':
   program_unit_test.main()

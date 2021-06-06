@@ -4,13 +4,13 @@ class fake_package_recipes(object):
 
   WATER = r'fake_package water 1.0.0 0 0 linux release x86_64 ubuntu 18 none'
 
-  APPLE = r'''\
+  APPLE = r'''
 fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18 none
   requirements
     fruit >= 1.0.0
 '''
 
-  TWO_APPLES = r'''\
+  TWO_APPLES = r'''
 fake_package apple 1.2.3 1 0 linux release x86_64 ubuntu 18 none
   requirements
     fruit >= 1.0.0

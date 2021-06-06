@@ -87,7 +87,6 @@ class rebuilder_tester(object):
       sys.stdout.write(result.stdout)
       sys.stdout.write('\n')
       sys.stdout.flush()
-      
     return self.result(tmp_dir, command, result, artifacts_dir, artifacts, artifacts_members,
                        artifacts_contents, droppings, checksums, checksums_contents,
                        source_dir_droppings)

@@ -594,7 +594,7 @@ fake_package two_env_files 1.0.0 0 0 linux release x86_64 ubuntu 18 none
       \#@REBUILD_TAIL@
   '''
   
-  VEGGIES = r'''\
+  VEGGIES = r'''
 fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/cut.sh
@@ -666,7 +666,7 @@ fake_package unset 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     same and contents changed and same_version is given
     '''
 
-    recipe1 = r'''\
+    recipe1 = r'''
 fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/cabbage.sh
@@ -674,7 +674,7 @@ fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
       echo cabbage1 ; exit 0
 '''
 
-    recipe2 = r'''\
+    recipe2 = r'''
 fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/cabbage.sh
@@ -708,7 +708,7 @@ fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     same and env_files contents changed and same_version is given
     '''
 
-    recipe1 = r'''\
+    recipe1 = r'''
 fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/unsetcut.sh
@@ -721,7 +721,7 @@ fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
       \#@REBUILD_TAIL@
 '''
 
-    recipe2 = r'''\
+    recipe2 = r'''
 fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/unsetcut.sh
@@ -762,7 +762,7 @@ fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     have the variables ${REBUILD_PACKAGE_PREFIX} in them.
     '''
 
-    recipe = r'''\
+    recipe = r'''
 fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/cabbage.sh
@@ -788,7 +788,7 @@ fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     but it needs to work nontheless)
     '''
 
-    recipe = r'''\
+    recipe = r'''
 fake_package cabbage 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   env_files
     foo.sh
