@@ -113,7 +113,9 @@ fake_package kiwi 1.2.3 0 0 linux release x86_64 none none none
     dst_metadata = package(src.filename).metadata
     self.assertEqual( 'orange;1.2.3;0;0;linux;release;x86_64;fedora;29;', str(dst_metadata.artifact_descriptor))
 
-    self.assertTrue( path.exists(src.filename + '.bak') )
+    backup_filename = src.filename + '.bak'
+    self.assertTrue( path.exists(backup_filename) )
+    file_util.remove(backup_filename)
     
 if __name__ == '__main__':
   unit_test.main()
