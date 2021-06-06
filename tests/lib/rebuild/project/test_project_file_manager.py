@@ -27,9 +27,9 @@ class test_project_file_manager(unit_test):
 
     try:
       self.assertEqual( [
-        path.join(tmp_dir, self.p('fructose/fructose.reproject')),
-        path.join(tmp_dir, self.p('kiwi/kiwi.reproject')),
-        path.join(tmp_dir, self.p('orange/orange.reproject')),
+        path.join(tmp_dir, self.xp_filename('fructose/fructose.reproject')),
+        path.join(tmp_dir, self.xp_filename('kiwi/kiwi.reproject')),
+        path.join(tmp_dir, self.xp_filename('orange/orange.reproject')),
       ], PFM.find_env_project_files() )
     finally:
       os_env_var('REBUILD_RECIPE_PATH').unset

@@ -54,7 +54,7 @@ class fake_package_recipe_parser(object):
       tree = tree_text_parser.parse(text, strip_comments = True)
       tree.replace_text({ '@@@NL@@@': r'\\n' })
     except Exception as ex:
-      self._error('failed to parse: {}\n{}\n'.format(ex.message, self.text))
+      self._error('failed to parse: {}\n{}\n'.format(str(ex), self.text))
     return self._parse_tree(tree)
 
   def _parse_tree(self, root):
