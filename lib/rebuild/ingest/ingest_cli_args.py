@@ -5,7 +5,7 @@ from os import path
 
 from bes.common.check import check
 from bes.system.log import log
-from rebuild.base.build_system import build_system
+from bes.build.build_system import build_system
 
 from .ingest_cli_command import ingest_cli_command
 from .ingest_cli_options import ingest_cli_options

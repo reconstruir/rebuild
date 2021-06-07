@@ -12,7 +12,7 @@ from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
 from rebuild._testing.fake_package_unit_test import fake_package_unit_test as FPUT
 from rebuild._testing.fake_package_recipes import fake_package_recipes as RECIPES
-from rebuild.base.build_target import build_target as BT
+from bes.build.build_target import build_target as BT
 
 class test_revenv(program_unit_test):
 

@@ -5,9 +5,9 @@ from bes.common.check import check
 from bes.common.object_util import object_util
 from bes.system.execute import execute
 from bes.system.os_env import os_env
-from rebuild.base.build_level import build_level
-from rebuild.base.build_target import build_target
-from rebuild.base.package_descriptor_list import package_descriptor_list
+from bes.build.build_level import build_level
+from bes.build.build_target import build_target
+from bes.build.package_descriptor_list import package_descriptor_list
 from rebuild.venv.venv_manager import venv_manager
 from bes.debug.debug_timer import debug_timer
 

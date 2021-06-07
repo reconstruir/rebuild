@@ -3,8 +3,8 @@
 
 import os.path as path
 from bes.testing.unit_test import unit_test
-from rebuild.base.build_system import build_system
-from rebuild.base.build_target import build_target
+from bes.build.build_system import build_system
+from bes.build.build_target import build_target
 from rebuild.toolchain.compiler import compiler
 from rebuild.toolchain.toolchain import toolchain
 from rebuild.toolchain.toolchain_testing import toolchain_testing

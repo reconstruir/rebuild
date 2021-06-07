@@ -5,7 +5,7 @@ import os.path as path
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
 
-from rebuild.base.build_target import build_target
+from bes.build.build_target import build_target
 from rebuild.venv.venv_config import venv_config
 from rebuild.venv.venv_manager import venv_manager
 from rebuild.recipe.variable_manager import variable_manager

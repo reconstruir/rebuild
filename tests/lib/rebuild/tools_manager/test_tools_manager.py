@@ -10,10 +10,10 @@ from bes.fs.file_find import file_find
 from bes.fs.temp_file import temp_file
 from bes.system.execute import execute
 from bes.system.os_env import os_env
-from rebuild.base.build_system import build_system
-from rebuild.base.build_target import build_target
-from rebuild.base.package_descriptor import package_descriptor as PD
-from rebuild.base.package_descriptor_list import package_descriptor_list as PDL
+from bes.build.build_system import build_system
+from bes.build.build_target import build_target
+from bes.build.package_descriptor import package_descriptor as PD
+from bes.build.package_descriptor_list import package_descriptor_list as PDL
 from rebuild.tools_manager.tools_manager import tools_manager as TM
 from rebuild._testing.fake_package_unit_test import fake_package_unit_test as FPUT
 from rebuild._testing.fake_package_recipes import fake_package_recipes as RECIPES

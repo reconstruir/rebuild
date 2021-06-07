@@ -11,7 +11,7 @@ from bes.text.string_list import string_list
 from bes.text.tree_text_parser import tree_text_parser
 from bes.text.text_fit import text_fit
 
-from rebuild.base.build_system import build_system
+from bes.build.build_system import build_system
 from rebuild.recipe.recipe_error import recipe_error
 from rebuild.recipe.recipe_parser_util import recipe_parser_util
 from rebuild.recipe.value.masked_value import masked_value

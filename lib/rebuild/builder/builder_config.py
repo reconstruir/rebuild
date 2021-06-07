@@ -3,10 +3,10 @@
 
 import os.path as path
 from collections import namedtuple
-from rebuild.base.build_arch import build_arch
-from rebuild.base.build_level import build_level
-from rebuild.base.build_system import build_system
-from rebuild.base.build_target import build_target
+from bes.build.build_arch import build_arch
+from bes.build.build_level import build_level
+from bes.build.build_system import build_system
+from bes.build.build_target import build_target
 from bes.common.time_util import time_util
 from bes.debug.debug_timer import debug_timer
 from bes.system.log import log

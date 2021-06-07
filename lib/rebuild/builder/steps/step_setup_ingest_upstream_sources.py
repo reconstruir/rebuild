@@ -15,7 +15,7 @@ from bes.key_value.key_value_list import key_value_list
 
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result
-from rebuild.base.build_blurb import build_blurb
+from bes.build.build_blurb import build_blurb
 from rebuild.source_ingester.ingest_util import ingest_util
 
 class step_setup_ingest_upstream_sources(step):

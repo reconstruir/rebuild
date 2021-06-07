@@ -25,9 +25,9 @@ from bes.python.setup_tools import setup_tools
 from bes.system.execute import execute
 from bes.system.log import log
 
-from rebuild.base.build_blurb import build_blurb
-from rebuild.base.build_target import build_target
-from rebuild.base.package_descriptor import package_descriptor
+from bes.build.build_blurb import build_blurb
+from bes.build.build_target import build_target
+from bes.build.package_descriptor import package_descriptor
 from rebuild.binary_format.binary_detector import binary_detector
 
 from .package_metadata import package_metadata

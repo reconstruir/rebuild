@@ -6,7 +6,7 @@ from bes.text.comments import comments
 from bes.text.line_break import line_break
 from bes.system.log import logger
 
-from rebuild.base.requirement_list import requirement_list
+from bes.build.requirement_list import requirement_list
 
 from .value.masked_value import masked_value
 from .value.masked_value_list import masked_value_list

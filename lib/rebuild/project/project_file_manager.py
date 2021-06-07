@@ -14,7 +14,7 @@ from bes.fs.file_checksum_getter_raw import file_checksum_getter_raw
 from bes.dependency.dependency_resolver import dependency_resolver
 from bes.key_value.key_value_list import key_value_list
 
-from rebuild.base.build_blurb import build_blurb
+from bes.build.build_blurb import build_blurb
 
 from .project_file import project_file
 from .project_file_parser import project_file_parser

@@ -2,7 +2,7 @@
 
 import os.path as path
 from bes.common.check import check
-from rebuild.base.requirement_list import requirement_list
+from bes.build.requirement_list import requirement_list
 from .value_base import value_base
 from .value_type import value_type
 

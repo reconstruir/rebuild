@@ -7,7 +7,7 @@ from bes.common.string_util import string_util
 from bes.text.string_list import string_list
 from bes.system.log import logger
 
-from rebuild.base.build_system import build_system
+from bes.build.build_system import build_system
 
 from .recipe_data_descriptor import recipe_data_descriptor
 from .recipe_parser_util import recipe_parser_util

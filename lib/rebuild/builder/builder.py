@@ -10,8 +10,8 @@ from bes.fs.file_util import file_util
 from bes.dependency.dependency_resolver import dependency_resolver
 from collections import namedtuple
 from rebuild.step.step_aborted import step_aborted
-from rebuild.base.build_blurb import build_blurb
-from rebuild.base.package_descriptor_list import package_descriptor_list
+from bes.build.build_blurb import build_blurb
+from bes.build.package_descriptor_list import package_descriptor_list
 from rebuild.package.db_error import *
 
 from .builder_script import builder_script
@@ -189,7 +189,7 @@ class builder(object):
     return result
 
   def _import_script_artifacts(self, script, env):
-    from rebuild.base.artifact_descriptor import artifact_descriptor
+    from bes.build.artifact_descriptor import artifact_descriptor
 
     assert env.external_artifact_manager
     other_am = env.external_artifact_manager

@@ -3,11 +3,11 @@
 from rebuild.package.artifact_db import artifact_db as DB
 from rebuild.package.artifact_descriptor import artifact_descriptor as AD
 from rebuild.package.package_metadata import package_metadata as MD
-from rebuild.base.build_system import build_system
-from rebuild.base.build_target import build_target
-from rebuild.base.package_descriptor import package_descriptor
-from rebuild.base.requirement import requirement as R
-from rebuild.base.requirement_list import requirement_list as RL
+from bes.build.build_system import build_system
+from bes.build.build_target import build_target
+from bes.build.package_descriptor import package_descriptor
+from bes.build.requirement import requirement as R
+from bes.build.requirement_list import requirement_list as RL
 from bes.fs import file_checksum_list
 
 db = DB('art.db')

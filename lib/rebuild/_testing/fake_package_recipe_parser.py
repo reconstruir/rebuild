@@ -12,8 +12,8 @@ from bes.compat.StringIO import StringIO
 from bes.text.string_list import string_list
 from bes.text.tree_text_parser import tree_text_parser
 
-from rebuild.base.artifact_descriptor import artifact_descriptor
-from rebuild.base.requirement_list import requirement_list
+from bes.build.artifact_descriptor import artifact_descriptor
+from bes.build.requirement_list import requirement_list
 
 from .fake_package_recipe import fake_package_recipe
 from .fake_package_source import fake_package_source

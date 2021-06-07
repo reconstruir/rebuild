@@ -4,7 +4,7 @@
 from bes.testing.unit_test import unit_test
 from bes.text.tree_text_parser import tree_text_parser
 from rebuild.recipe.recipe_parser import recipe_parser as RP
-from rebuild.base.build_system import build_system
+from bes.build.build_system import build_system
 from rebuild.recipe.value.value_origin import value_origin as VO
 from rebuild.recipe.value.value_type import value_type as VT
 from rebuild.recipe.value.masked_value import masked_value as V

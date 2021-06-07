@@ -7,7 +7,7 @@ from bes.archive.archiver import archiver
 from rebuild.step.compound_step import compound_step
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result
-from rebuild.base.package_descriptor import package_descriptor
+from bes.build.package_descriptor import package_descriptor
 
 class _step_combine_packages_unpack(step):
   'Install package dependencies.'

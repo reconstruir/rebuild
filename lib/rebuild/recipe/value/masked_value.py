@@ -3,7 +3,7 @@
 from collections import namedtuple
 from bes.common.check import check
 from bes.compat.StringIO import StringIO
-from rebuild.base.build_system import build_system
+from bes.build.build_system import build_system
 
 from .value_parsing import value_parsing
 

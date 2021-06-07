@@ -5,7 +5,7 @@ from bes.testing.unit_test import unit_test
 import os.path as path
 from bes.system.host import host
 from rebuild.toolchain.ar_replacement import ar_replacement
-from rebuild.base.build_system import build_system
+from bes.build.build_system import build_system
 from bes.fs.dir_util import dir_util
 from bes.fs.temp_file import temp_file
 from bes.testing.unit_test_skip import skip_if

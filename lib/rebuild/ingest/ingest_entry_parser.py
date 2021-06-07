@@ -4,7 +4,7 @@ from bes.common.check import check
 from bes.common.string_util import string_util
 from bes.system.log import log
 
-from rebuild.base.build_system import build_system
+from bes.build.build_system import build_system
 from rebuild.recipe.recipe_data_manager import recipe_data_manager
 from rebuild.recipe.recipe_parser_util import recipe_parser_util
 from rebuild.recipe.value.masked_value import masked_value

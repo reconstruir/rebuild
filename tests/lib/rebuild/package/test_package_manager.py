@@ -15,9 +15,9 @@ from bes.system.execute import execute
 from bes.system.os_env import os_env
 from bes.testing.unit_test import unit_test
 
-from rebuild.base.build_target import build_target as BT
-from rebuild.base.package_descriptor import package_descriptor as PD
-from rebuild.base.package_descriptor_list import package_descriptor_list as PDL
+from bes.build.build_target import build_target as BT
+from bes.build.package_descriptor import package_descriptor as PD
+from bes.build.package_descriptor_list import package_descriptor_list as PDL
 from rebuild.package.artifact_manager_local import artifact_manager_local
 from rebuild.package.db_error import *
 from rebuild.package.package import package
@@ -32,7 +32,7 @@ from rebuild._testing.fake_package_recipes import fake_package_recipes as RECIPE
 from rebuild._testing.artifact_manager_tester import artifact_manager_tester as AMT
 from rebuild._testing.artifact_manager_helper import artifact_manager_helper
 
-from rebuild.base.build_system import build_system
+from bes.build.build_system import build_system
 from bes.testing.unit_test_skip import skip_if
 
 class test_package_manager(unit_test):

@@ -8,7 +8,7 @@ from bes.fs.file_util import file_util
 from bes.archive.archiver import archiver
 from rebuild.tools.archive_util import archive_util
 from rebuild.tools.patch import patch
-from rebuild.base.package_descriptor import package_descriptor
+from bes.build.package_descriptor import package_descriptor
 
 def main():
 
