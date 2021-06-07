@@ -2,7 +2,7 @@
 
 from bes.common.check import check
 from bes.common.type_checked_list import type_checked_list
-from rebuild.base.artifact_descriptor import artifact_descriptor
+from bes.build.artifact_descriptor import artifact_descriptor
 from .package_metadata import package_metadata
 
 class package_metadata_list(type_checked_list):

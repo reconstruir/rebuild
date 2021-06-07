@@ -19,13 +19,13 @@ from bes.system.os_env import os_env
 from bes.env.env_dir import env_dir
 from bes.env.shell_framework import shell_framework
 
-from rebuild.base.build_system import build_system
-from rebuild.base.requirement import requirement
-from rebuild.base.package_descriptor import package_descriptor
-from rebuild.base.package_descriptor_list import package_descriptor_list
+from bes.build.build_system import build_system
+from bes.build.requirement import requirement
+from bes.build.package_descriptor import package_descriptor
+from bes.build.package_descriptor_list import package_descriptor_list
 from rebuild.instruction.instruction_list import instruction_list
 from rebuild.pkg_config.pkg_config import pkg_config
-from rebuild.base.build_blurb import build_blurb
+from bes.build.build_blurb import build_blurb
 
 from .package import package
 from .package_db import package_db

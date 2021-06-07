@@ -3,7 +3,7 @@
 import argparse, os.path as path
 from bes.common import table
 from bes.text import text_table
-from rebuild.base.build_target_cli import build_target_cli
+from bes.build.build_target_cli import build_target_cli
 
 from .artifact_db import artifact_db
 

@@ -8,10 +8,10 @@ from bes.common.check import check
 from bes.system.log import log
 from bes.debug.debug_timer import debug_timer
 
-from rebuild.base.artifact_descriptor import artifact_descriptor
-from rebuild.base.build_blurb import build_blurb
-from rebuild.base.package_descriptor_list import package_descriptor_list
-from rebuild.base.requirement_manager import requirement_manager
+from bes.build.artifact_descriptor import artifact_descriptor
+from bes.build.build_blurb import build_blurb
+from bes.build.package_descriptor_list import package_descriptor_list
+from bes.build.requirement_manager import requirement_manager
 
 from .db_error import *
 from .artifact_manager_registry import artifact_manager_registry

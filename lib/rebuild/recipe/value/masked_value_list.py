@@ -4,7 +4,7 @@ from bes.common.algorithm import algorithm
 from bes.common.check import check
 from bes.common.type_checked_list import type_checked_list
 from bes.compat.StringIO import StringIO
-from rebuild.base.build_system import build_system
+from bes.build.build_system import build_system
 
 from .value_factory import value_factory
 

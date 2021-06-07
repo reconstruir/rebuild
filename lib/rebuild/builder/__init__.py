@@ -1,6 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from rebuild.base.build_target import build_target
+from bes.build.build_target import build_target
 
 from .builder import builder
 from .builder_cli import builder_cli

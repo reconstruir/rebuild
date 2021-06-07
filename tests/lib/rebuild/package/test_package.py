@@ -7,10 +7,10 @@ from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
 from bes.archive.archiver import archiver
 
-from rebuild.base.build_version import build_version
-from rebuild.base.package_descriptor import package_descriptor
-from rebuild.base.requirement import requirement
-from rebuild.base.requirement_list import requirement_list
+from bes.build.build_version import build_version
+from bes.build.package_descriptor import package_descriptor
+from bes.build.requirement import requirement
+from bes.build.requirement_list import requirement_list
 from rebuild.package.package import package
 from rebuild.package.package_metadata import package_metadata
 from rebuild._testing.fake_package_unit_test import fake_package_unit_test

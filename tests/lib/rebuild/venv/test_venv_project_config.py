@@ -12,7 +12,7 @@ from rebuild.recipe.value.value_string_list import value_string_list
 from bes.key_value.key_value_list import key_value_list
 from bes.text.string_list import string_list
 from bes.fs.temp_file import temp_file
-from rebuild.base.requirement_list import requirement_list
+from bes.build.requirement_list import requirement_list
 
 class test_venv_project_config(unit_test):
 

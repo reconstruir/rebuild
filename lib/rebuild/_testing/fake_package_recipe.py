@@ -9,8 +9,8 @@ from bes.text.white_space import white_space
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file, temp_item
 
-from rebuild.base.build_target import build_target
-from rebuild.base.package_descriptor import package_descriptor
+from bes.build.build_target import build_target
+from bes.build.package_descriptor import package_descriptor
 from rebuild.package.package import package
 from rebuild.toolchain.compiler import compiler
 

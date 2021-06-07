@@ -17,9 +17,9 @@ from bes.fs.file_path import file_path
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
 from bes.python.package import package
-from rebuild.base.build_arch import build_arch
-from rebuild.base.build_blurb import build_blurb
-from rebuild.base.build_system import build_system
+from bes.build.build_arch import build_arch
+from bes.build.build_blurb import build_blurb
+from bes.build.build_system import build_system
 
 class pkg_config(object):
 

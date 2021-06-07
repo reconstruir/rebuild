@@ -2,7 +2,7 @@
 
 import argparse, copy, os, os.path as path
 from bes.system.log import log
-from rebuild.base.build_blurb import build_blurb
+from bes.build.build_blurb import build_blurb
 from bes.version.version_cli import version_cli
 from bes.system.log import log
 from bes.common.check import check

@@ -9,7 +9,7 @@ from bes.fs.file_copy import file_copy
 from bes.fs.temp_file import temp_file
 from bes.git.git_temp_repo import git_temp_repo
 from bes.git.git_unit_test import git_temp_home_func
-from rebuild.base.build_target import build_target
+from bes.build.build_target import build_target
 from rebuild.toolchain.toolchain_testing import toolchain_testing
 from bes.testing.unit_test_skip import skip_if
 

@@ -7,7 +7,7 @@ from bes.fs.file_util import file_util
 from rebuild.builder.builder_recipe_loader import builder_recipe_loader
 from rebuild.recipe.recipe import recipe
 from rebuild.recipe.recipe_load_env import testing_recipe_load_env
-from rebuild.base.requirement_list import requirement_list
+from bes.build.requirement_list import requirement_list
 
 class recipe_cli_command(object):
   

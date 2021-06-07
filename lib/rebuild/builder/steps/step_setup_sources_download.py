@@ -13,7 +13,7 @@ from bes.fs.temp_file import temp_file
 
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result
-from rebuild.base.build_blurb import build_blurb
+from bes.build.build_blurb import build_blurb
 
 class step_setup_sources_download(step):
   'Prepare source tarballs..'

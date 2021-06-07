@@ -1,10 +1,10 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.system.host import host
-from rebuild.base.build_arch import build_arch
-from rebuild.base.build_level import build_level
-from rebuild.base.build_system import build_system
-from rebuild.base.build_target import build_target
+from bes.build.build_arch import build_arch
+from bes.build.build_level import build_level
+from bes.build.build_system import build_system
+from bes.build.build_target import build_target
 from .toolchain import toolchain
 
 class toolchain_testing(object):

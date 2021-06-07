@@ -6,12 +6,12 @@ from bes.fs import file_check
 from bes.common.check import check
 from bes.common.string_util import string_util
 from bes.sqlite.sqlite import sqlite
-from rebuild.base.artifact_descriptor import artifact_descriptor
-from rebuild.base.artifact_descriptor_list import artifact_descriptor_list
-from rebuild.base.build_target import build_target
-from rebuild.base.build_version import build_version
-from rebuild.base.package_descriptor import package_descriptor
-from rebuild.base.package_descriptor_list import package_descriptor_list
+from bes.build.artifact_descriptor import artifact_descriptor
+from bes.build.artifact_descriptor_list import artifact_descriptor_list
+from bes.build.build_target import build_target
+from bes.build.build_version import build_version
+from bes.build.package_descriptor import package_descriptor
+from bes.build.package_descriptor_list import package_descriptor_list
 
 from .db_error import *
 from .files_db import files_db

@@ -9,7 +9,7 @@ from bes.text.string_list import string_list
 from .storage_base import storage_base
 from .file_mapping import file_mapping
 
-from rebuild.base.build_blurb import build_blurb
+from bes.build.build_blurb import build_blurb
 from rebuild.pcloud.pcloud import pcloud
 from rebuild.pcloud.pcloud_credentials import pcloud_credentials
 from rebuild.pcloud.pcloud_error import pcloud_error

@@ -3,8 +3,8 @@
 
 from os import path
 from bes.testing.unit_test import unit_test
-from rebuild.base.artifact_descriptor import artifact_descriptor as AD
-from rebuild.base.requirement_list import requirement_list as RL
+from bes.build.artifact_descriptor import artifact_descriptor as AD
+from bes.build.requirement_list import requirement_list as RL
 
 from bes.fs.temp_file import temp_file, temp_item
 

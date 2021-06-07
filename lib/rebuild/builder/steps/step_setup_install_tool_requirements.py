@@ -5,7 +5,7 @@ import copy, os, os.path as path
 from bes.system.os_env import os_env
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result
-from rebuild.base.build_blurb import build_blurb
+from bes.build.build_blurb import build_blurb
 
 class step_setup_install_tool_requirements(step):
   'Install package dependencies.'

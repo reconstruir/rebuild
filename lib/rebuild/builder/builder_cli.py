@@ -5,12 +5,12 @@ import sys
 #sys.dont_write_bytecode = True
 import argparse, os, os.path as path
 
-from rebuild.base.build_arch import build_arch
-from rebuild.base.build_blurb import build_blurb
-from rebuild.base.build_level import build_level
-from rebuild.base.build_system import build_system
-from rebuild.base.build_target import build_target
-from rebuild.base.build_target_cli import build_target_cli
+from bes.build.build_arch import build_arch
+from bes.build.build_blurb import build_blurb
+from bes.build.build_level import build_level
+from bes.build.build_system import build_system
+from bes.build.build_target import build_target
+from bes.build.build_target_cli import build_target_cli
 from rebuild.project.project_file_parser import project_file_parser
 from rebuild.project.project_file import project_file
 

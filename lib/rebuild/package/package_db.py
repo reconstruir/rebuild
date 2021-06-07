@@ -3,9 +3,9 @@
 import json, os.path as path
 from bes.common.check import check
 from bes.sqlite.sqlite import sqlite
-from rebuild.base.build_version import build_version
-from rebuild.base.package_descriptor import package_descriptor
-from rebuild.base.package_descriptor_list import package_descriptor_list
+from bes.build.build_version import build_version
+from bes.build.package_descriptor import package_descriptor
+from bes.build.package_descriptor_list import package_descriptor_list
 
 from .db_error import *
 from .files_db import files_db

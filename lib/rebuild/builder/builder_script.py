@@ -15,7 +15,7 @@ from bes.fs.file_checksum import file_checksum_list
 from bes.fs.file_util import file_util
 from bes.system.log import log
 
-from rebuild.base.build_blurb import build_blurb
+from bes.build.build_blurb import build_blurb
 from rebuild.package.package_manager import package_manager
 from rebuild.recipe.recipe_data_manager import recipe_data_manager
 from rebuild.recipe.value.value_file import value_file
