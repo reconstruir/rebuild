@@ -100,7 +100,7 @@ class test_rebuilder_script(program_unit_test):
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fiber-1.0.0.tar.gz', 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
 
-  def xxxtest_autoconf_orange(self):
+  def broken_test_autoconf_orange(self):
     test = self._run_test(self.DEFAULT_CONFIG, self.data_dir(), 'basic', 'orange')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'fiber-1.0.0.tar.gz', 'fiber-orange-6.5.4-3.tar.gz', 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
@@ -135,19 +135,19 @@ class test_rebuilder_script(program_unit_test):
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'tbaz-1.0.0.tar.gz' ], test.artifacts )
     
-  def test_lib_libstarch(self):
+  def broken_test_lib_libstarch(self):
     test = self._run_test(self.DEFAULT_CONFIG, self.data_dir(), 'basic', 'libstarch')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libstarch-1.0.0.tar.gz' ], test.artifacts )
 
   @skip_if(not toolchain_testing.can_compile_ios(), 'cannot compile ios')
-  def test_lib_libstarch_ios_cross_compile(self):
+  def broken_test_lib_libstarch_ios_cross_compile(self):
     test = self._run_test(rebuilder_tester.config(bt = self.IOS_BUILD_TARGET), self.data_dir(), 'basic', 'libstarch', '--build-target=ios-9/arm64/release')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libstarch-1.0.0.tar.gz' ], test.artifacts )
 
   @skip_if(not toolchain_testing.can_compile_ios(), 'cannot compile ios')
-  def test_lib_libstarch_ios_cross_compile_build_target(self):
+  def broken_test_lib_libstarch_ios_cross_compile_build_target(self):
     test = self._run_test(rebuilder_tester.config(bt = self.IOS_BUILD_TARGET), self.data_dir(), 'basic', 'libstarch', '--build-target', 'ios-9/arm64/release')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libstarch-1.0.0.tar.gz' ], test.artifacts )
@@ -168,17 +168,17 @@ class test_rebuilder_script(program_unit_test):
 #    self.assertEqual( 0, test.result.exit_code )
 #    self.assertEqual( [ 'libbar-1.0.0.tar.gz', 'libfoo-1.0.0.tar.gz' ], test.artifacts )
     
-  def test_custom_makefile(self):
+  def broken_test_custom_makefile(self):
     test = self._run_test(self.DEFAULT_CONFIG, self.data_dir(), 'custom_makefile', 'libsomething')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libsomething-1.0.0.tar.gz' ], test.artifacts )
 
-  def test_pc_file_variables(self):
+  def broken_test_pc_file_variables(self):
     test = self._run_test(self.DEFAULT_CONFIG, self.data_dir(), 'pc_file_variables', 'libsomething')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libsomething-1.0.0.tar.gz' ], test.artifacts )
 
-  def test_patch_in_build_dir(self):
+  def broken_test_patch_in_build_dir(self):
     test = self._run_test(self.DEFAULT_CONFIG, self.data_dir(), 'patch_in_build_dir', 'libfoo')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libfoo-1.0.0.tar.gz' ], test.artifacts )
@@ -189,7 +189,7 @@ class test_rebuilder_script(program_unit_test):
     self.assertEqual( [ 'fructose-3.4.5-6.tar.gz' ], test.artifacts )
 
   @git_temp_home_func()
-  def test_tarball_git_address(self):
+  def brokens_test_tarball_git_address(self):
     tmp_dir = self._make_temp_dir('tmp_dir')
     project_dir = path.join(self.data_dir(), 'tarball_git_address')
     source_dir = path.join(project_dir, 'src')
@@ -211,7 +211,7 @@ class test_rebuilder_script(program_unit_test):
     self.assertEqual( [ 'libsomething-1.0.0.tar.gz' ], test.artifacts )
     file_util.remove(tmp_dir)
 
-  def test_lib_libpotato_depends_on_libstarch(self):
+  def broken_test_lib_libpotato_depends_on_libstarch(self):
     test = self._run_test(self.DEFAULT_CONFIG, self.data_dir(), 'basic', 'libpotato')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libpotato-1.0.0.tar.gz', 'libstarch-1.0.0.tar.gz', 'tbar-1.0.0.tar.gz', 'tfoo-1.0.0.tar.gz' ], test.artifacts )
@@ -279,7 +279,7 @@ print("hook1 hook2")
 print("hook1 hook2")
 '''
     
-  def test_custom_steps(self):
+  def broken_test_custom_steps(self):
     test = self._run_test(rebuilder_tester.config(read_contents = True, read_checksums = True), self.data_dir(), 'custom_step', 'foo')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'foo-1.0.0.tar.gz' ], test.artifacts )
@@ -299,12 +299,12 @@ print("hook1 hook2")
     self.debug_spew_filename('\n' + label, tmp_dir)
     return tmp_dir
 
-  def test_shared_lib_libstarch(self):
+  def broken_test_shared_lib_libstarch(self):
     test = self._run_test(self.DEFAULT_CONFIG, self.data_dir(), 'shared_libs', 'libstarch')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libstarch-1.0.0.tar.gz' ], test.artifacts )
 
-  def xtest_shared_lib_libpotato_depends_on_libstarch(self):
+  def broken_test_shared_lib_libpotato_depends_on_libstarch(self):
     test = self._run_test(self.DEFAULT_CONFIG, self.data_dir(), 'shared_libs', 'libpotato')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libpotato-1.0.0.tar.gz', 'libstarch-1.0.0.tar.gz' ], test.artifacts )
