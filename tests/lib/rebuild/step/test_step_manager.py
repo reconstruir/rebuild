@@ -4,7 +4,7 @@
 import copy, unittest
 from bes.common.check import check
 from bes.common.dict_util import dict_util
-from test_steps import *
+from _test_steps import *
 from rebuild.step.compound_step import compound_step
 from rebuild.step.step import step
 from rebuild.step.step_description import step_description

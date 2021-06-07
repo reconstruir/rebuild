@@ -13,9 +13,9 @@ from bes.testing.program_unit_test import program_unit_test
 from bes.testing.unit_test_skip import raise_skip
 from bes.web.file_web_server_tester import file_web_server_tester
 
-class test_reingest(program_unit_test):
+class test_reb_ingest(program_unit_test):
 
-  _PROGRAM = program_unit_test.resolve_program(__file__, '..', '..', 'bin', 'reingest.py')
+  _PROGRAM = program_unit_test.resolve_program(__file__, '..', '..', 'bin', 'reb.py')
 
   @classmethod
   def setUpClass(clazz):
@@ -68,6 +68,7 @@ fsconfig
     tmp_cache_dir = self.make_temp_dir(suffix = '.cache.dir')
 
     args = [
+      'ingest',
       'run',
       '--cache-dir', tmp_cache_dir,
       tmp_vfs_config_file,
@@ -134,6 +135,7 @@ print('foo')
     tmp_cache_dir = self.make_temp_dir(suffix = '.cache.dir')
 
     args = [
+      'ingest',
       'run',
       '--cache-dir', tmp_cache_dir,
       tmp_vfs_config_file,

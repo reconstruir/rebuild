@@ -14,10 +14,10 @@ class rebuild_cli(cli):
   #@abstractmethod
   def command_group_list(self):
     'Return a list of tool items for this cli.'
-    #from rebuild.gitlab.gitlab_cli_args import gitlab_cli_args
+    from rebuild.ingest.ingest_cli_args import ingest_cli_args
 
     return best_cli.COMMAND_GROUPS + [
-      #cli_command('gitlab', 'gitlab_add_args', 'Gitlab stuff', gitlab_cli_args),
+      cli_command('ingest', 'ingest_add_args', 'Ingest stuff', ingest_cli_args),
     ]
 
   from bes.cli.cli_version_cli_args import cli_version_cli_args

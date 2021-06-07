@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 #
 import unittest
-from test_steps import *
+from _test_steps import *
 from rebuild.step.compound_step import compound_step
 from bes.debug.debug_timer import debug_timer
 

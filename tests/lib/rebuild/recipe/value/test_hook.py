@@ -4,7 +4,7 @@
 
 import os.path as path
 from bes.testing.unit_test import unit_test
-from rebuild.step import hook
+from rebuild.recipe.value import hook
 
 class test_hook(unit_test):
 
