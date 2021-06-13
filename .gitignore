@@ -17,7 +17,6 @@ lib/bes.egg-info/
 # virtualenv
 .venv
 venv/
-ENV/
 
 # IDEA files
 .idea/
