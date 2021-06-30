@@ -4,7 +4,7 @@ set -e
 
 function main()
 {
-  source $(_this_dir_update_bes_shell)/../bes_shell/bes_all.sh
+  source $(_this_dir_update_bes_shell)/../bes_shell/bes_all.bash
 
   local _root_dir="$(pwd)"
   local _local_branch="master"
