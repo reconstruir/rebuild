@@ -6,7 +6,7 @@
 #  echo "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 #  return 0
 #}
-#source "$(_dominictarr_json_this_dir)/bes_shell.sh"
+#source "$(_dominictarr_json_this_dir)/bes_shell.bash"
 
 #
 # this code borrowed from here:
