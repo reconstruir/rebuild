@@ -1,6 +1,6 @@
 function _rebuild_venv_print_activate_script()
 {
-  source $(_rebuild_this_dir_venv_activate)/../bes_shell/bes_all.sh
+  source $(_rebuild_this_dir_venv_activate)/../bes_shell/bes_all.bash
   
   local _this_dir="$(_rebuild_this_dir_venv_activate)"
   local _root_dir="$(bes_abs_path ${_this_dir}/..)"
@@ -17,7 +17,7 @@ function _rebuild_venv_print_activate_script()
 
 function _rebuild_venv_print_pythonpath()
 {
-  source $(_rebuild_this_dir_venv_activate)/../bes_shell/bes_all.sh
+  source $(_rebuild_this_dir_venv_activate)/../bes_shell/bes_all.bash
 
   local _this_dir="$(_rebuild_this_dir_venv_activate)"
   local _root_dir="$(bes_abs_path ${_this_dir}/..)"
@@ -29,7 +29,7 @@ function _rebuild_venv_print_pythonpath()
 
 function _rebuild_venv_print_path()
 {
-  source $(_rebuild_this_dir_venv_activate)/../bes_shell/bes_all.sh
+  source $(_rebuild_this_dir_venv_activate)/../bes_shell/bes_all.bash
 
   local _this_dir="$(_rebuild_this_dir_venv_activate)"
   local _root_dir="$(bes_abs_path ${_this_dir}/..)"

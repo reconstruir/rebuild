@@ -4,7 +4,7 @@ set -e
 
 function main()
 {
-  source $(_this_dir_rebuild_venv_setup)/../bes_shell/bes_all.sh
+  source $(_this_dir_rebuild_venv_setup)/../bes_shell/bes_all.bash
 
   local _this_dir="$(_this_dir_rebuild_venv_setup)"
   local _root_dir="$(bes_abs_path ${_this_dir}/..)"
