@@ -6,7 +6,7 @@ _rebuild_dev_root()
   return 0
 }
 
-source "$(_rebuild_dev_root)/bes_shell/bes_shell.sh"
+source "$(_rebuild_dev_root)/bes_shell/bes_shell.bash"
 
 rebuild_dev()
 {

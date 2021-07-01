@@ -1076,7 +1076,7 @@ unit tests for checksums changing and not changing for example when a value_inst
 - cleanup project_file in general
 - check what in rebuild calls key_value_list.substitute_variables
 - add getter to package_file
-- version the pasted in bes_shell.sh files
+- version the pasted in bes_shell.bash files
 package_metadata.compare maybe use tuple() for p1 and p2
 s/test_remanager/test_revenv
 s/${BES_TEST_DATA_DIR}/remanager/${BES_TEST_DATA_DIR}/revenv

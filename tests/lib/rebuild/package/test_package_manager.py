@@ -497,7 +497,7 @@ fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18 none
       'db/packages.db',
       'env/bar.sh',
       'env/foo.sh',
-      'env/framework/bes_shell.sh',
+      'env/framework/bes_shell.bash',
       'stuff/bin/apple.sh',
       'stuff/bin/orange.sh',
     ]
@@ -520,7 +520,7 @@ fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     self.assertEqual( [ 'files-1.0.0' ], pm.list_all_names(include_version = True) )
     expected = [
       'db/packages.db',
-      'env/framework/bes_shell.sh',
+      'env/framework/bes_shell.bash',
       'stuff/bin/apple.sh',
       'stuff/bin/orange.sh',
     ]
@@ -547,7 +547,7 @@ fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18 none
       'db/packages.db',
       'env/bar.sh',
       'env/foo.sh',
-      'env/framework/bes_shell.sh',
+      'env/framework/bes_shell.bash',
     ]
     self.assertEqual( expected, file_find.find(pm.root_dir, relative = True) )
     
