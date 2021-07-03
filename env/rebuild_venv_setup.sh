@@ -14,8 +14,8 @@ function main()
   local _requirements_dev="${_root_dir}/requirements-dev.txt"
 
   PYTHONPATH=${_root_dir}/lib:${PYTHONPATH}
-  ${_rebuild} pip_project install_requirements --root-dir "${_projects_root_dir}" rebuild_venv "${_requirements}"
-  ${_rebuild} pip_project install_requirements --root-dir "${_projects_root_dir}" rebuild_venv "${_requirements_dev}"
+  ${_rebuild} pip_project install_requirements --root-dir "${_projects_root_dir}" rebuild "${_requirements}"
+  ${_rebuild} pip_project install_requirements --root-dir "${_projects_root_dir}" rebuild "${_requirements_dev}"
   
   return 0
 }

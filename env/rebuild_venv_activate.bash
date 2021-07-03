@@ -9,7 +9,7 @@ function _rebuild_venv_print_activate_script()
   local _requirements="${_root_dir}/requirements.txt"
 
   ${_this_dir}/rebuild_venv_setup.sh
-  local _activate_script=$(PYTHONPATH=${_root_dir}/lib:${PYTHONPATH} ${_rebuild} pip_project activate_script --root-dir "${_projects_root_dir}" rebuild_venv)
+  local _activate_script=$(PYTHONPATH=${_root_dir}/lib:${PYTHONPATH} ${_rebuild} pip_project activate_script --root-dir "${_projects_root_dir}" rebuild)
   echo "${_activate_script}"
   
   return 0
