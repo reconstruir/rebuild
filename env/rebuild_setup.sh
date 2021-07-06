@@ -36,7 +36,7 @@ rebuild_undev()
   source "$(_rebuild_dev_root)/bes_shell/bes_shell.bash"
   source "$(_rebuild_dev_root)/bes_shell/bes_dev.bash"
   bes_dev_unsetup "${_rebuild_root_dir}"
-  return 0
+  return $?
 }
 
 if [ -n "$_BES_TRACE" ]; then echo "rebuild_setup.sh end"; fi
