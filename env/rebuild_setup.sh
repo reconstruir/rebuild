@@ -6,13 +6,20 @@ _rebuild_dev_root()
   return 0
 }
 
-source "$(_rebuild_dev_root)/bes_shell/bes_shell.bash"
-
 rebuild_dev()
 {
-  local _root_dir="$(_rebuild_dev_root)"
-  local _virtual_env_setup="${_root_dir}/env/rebuild_venv_activate.bash"
-  bes_setup_v2 "${_root_dir}" \
+  local _rebuild_root_dir="$(_rebuild_dev_root)"
+  source "$(_rebuild_dev_root)/bes_shell/bes_shell.bash"
+  source "$(_rebuild_dev_root)/bes_shell/bes_dev.bash"
+  local _bes_root_dir="$(_bes_dev_root)"
+  bes_dev_setup "${_bes_root_dir}" \
+               --set-path \
+               --set-python-path \
+               --no-set-title \
+               --no-venv-activate \
+               --no-change-dir
+  local _virtual_env_setup="${_rebuild_root_dir}/env/rebuild_venv_activate.bash"
+  bes_dev_setup "${_rebuild_root_dir}" \
                --set-path \
                --set-python-path \
                --set-title \
@@ -20,13 +27,15 @@ rebuild_dev()
                --venv-activate \
                --change-dir \
                ${1+"$@"}
-  return 0
+  return $?
 }
 
 rebuild_undev()
 {
-  local _root_dir=$(_rebuild_dev_root)
-  bes_unsetup ${_root_dir}
+  local _rebuild_root_dir="$(_rebuild_dev_root)"
+  source "$(_rebuild_dev_root)/bes_shell/bes_shell.bash"
+  source "$(_rebuild_dev_root)/bes_shell/bes_dev.bash"
+  bes_dev_unsetup "${_rebuild_root_dir}"
   return 0
 }
 
