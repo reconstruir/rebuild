@@ -35,13 +35,13 @@ function _bes_which()
         return 1
         ;;
       *)    # unknown option
-        positional_args+=("${1}") # save it in an array for later
+        _positional_args+=("${1}") # save it in an array for later
         shift # past argument
         ;;
     esac
   done
 
-  set -- "${positional_args[@]}" # restore positional parameters
+  set -- "${_positional_args[@]}" # restore positional parameters
   
   if [[ $# < 1 ]]; then
     _bes_which_help
@@ -127,6 +127,7 @@ fi
 _BES_AWK_EXE=$(PATH=${_BES_BASIC_PATH} ${_BES_WHICH_EXE} awk)
 _BES_BASENAME_EXE=$(PATH=${_BES_BASIC_PATH} ${_BES_WHICH_EXE} basename)
 _BES_CAT_EXE=$(PATH=${_BES_BASIC_PATH} ${_BES_WHICH_EXE} cat)
+_BES_DIFF=$(PATH=${_BES_BASIC_PATH} ${_BES_WHICH_EXE} diff)
 _BES_DIRNAME_EXE=$(PATH=${_BES_BASIC_PATH} ${_BES_WHICH_EXE} dirname)
 _BES_GREP_EXE=$(PATH=${_BES_BASIC_PATH} ${_BES_WHICH_EXE} grep)
 _BES_MKDIR_EXE=$(PATH=${_BES_BASIC_PATH} ${_BES_WHICH_EXE} mkdir)

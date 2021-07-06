@@ -96,3 +96,36 @@ function bes_assert()
     echo "$_filename $_function: passed"
   fi
 }
+
+# Make a temp dir for testing
+function bes_testing_make_temp_dir()
+{
+  if [[ $# < 1 ]]; then
+    echo "Usage: bes_testing_make_temp_dir label"
+    return 1
+  fi
+  local _label="${1}"
+  local _pid=$$
+  local _basename="${_label}_${_pid}"
+  local _tmpdir="${TMPDIR}/${_basename}"
+  mkdir -p "${_tmpdir}"
+  echo "${_tmpdir}"
+  return 0
+}
+
+# Return 0 if the content of a file matches content
+function bes_testing_check_file()
+{
+  if [[ $# != 2 ]]; then
+    echo "Usage: bes_testing_check_file filename content"
+    return 1
+  fi
+  local _filename="${1}"
+  local _content="${2}"
+  echo "${_content}" | "${_BES_DIFF}" "${_filename}" - >& /dev/null
+  local _rv=$?
+  if [[ ${_rv} != 0 ]]; then
+    echo "${_content}" | "${_BES_DIFF}" "${_filename}" -
+  fi
+  return ${_rv}
+}

@@ -80,7 +80,7 @@ function bes_web_request()
         shift # past argument
         ;;
       *)    # unknown option
-        positional_args+=("${1}") # save it in an array for later
+        _positional_args+=("${1}") # save it in an array for later
         shift # past argument
         ;;
     esac
@@ -97,7 +97,7 @@ function bes_web_request()
   bes_debug_message "_response_data_file: ${_response_data_file}"
   bes_debug_message "  _enable_redirects: ${_enable_redirects}"
   
-  set -- "${positional_args[@]}" # restore positional parameters
+  set -- "${_positional_args[@]}" # restore positional parameters
 
   if [[ -n "${_username}" ]] && [[ -z "${_password}" ]]; then
     bes_message "bes_web_request: If username is given then password needs to be given too."
