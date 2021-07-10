@@ -14,6 +14,8 @@ source "${_BES_SHELL_THIS_DIR}/bes_system.bash"
 source "${_BES_SHELL_THIS_DIR}/bes_list.bash"
 source "${_BES_SHELL_THIS_DIR}/bes_path.bash"
 source "${_BES_SHELL_THIS_DIR}/bes_string.bash"
+source "${_BES_SHELL_THIS_DIR}/bes_file.bash"
+source "${_BES_SHELL_THIS_DIR}/bes_filename.bash"
 
 _bes_trace_file "begin"
 
@@ -307,106 +309,6 @@ function bes_abs_file()
   return 0
 }
 
-# return just the extension of a file
-function bes_file_extension()
-{
-  if [[ $# < 1 ]]; then
-    bes_message "usage: bes_file_extension filename"
-    return 1
-  fi
-  local _filename="${1}"
-  local _base=$($_BES_BASENAME_EXE -- "${_filename}")
-  local _ext="${_base##*.}"
-  echo "${_ext}"
-  return 0
-}
-
-# print the file size in bytes
-function bes_file_size()
-{
-  if [[ $# < 1 ]]; then
-    bes_message "usage: bes_file_size filename"
-    return 1
-  fi
-  local _filename="${1}"
-  local _file_size=$(wc -c < "${_filename}" | tr -d ' ')
-  echo "${_file_size}"
-  return 0
-}
-
-# return 0 if str is an integer
-function bes_str_is_integer()
-{
-  if [[ $# < 1 ]]; then
-    bes_message "usage: bes_str_is_integer str"
-    return 1
-  fi
-  local _str="${1}"
-  local _pattern='^[0-9]+$'
-  if [[ ${_str} =~ ${_pattern} ]]; then
-    return 0
-  fi
-  return 1
-}
-
-# return 0 if str starts with head
-function bes_str_starts_with()
-{
-  if [[ $# != 2 ]]; then
-    bes_message "usage: bes_str_starts_with str head"
-    return 1
-  fi
-  local _str="${1}"
-  local _head="${2}"
-  local _pattern="^${_head}.*$"
-  if [[ "${_str}" =~ ${_pattern} ]]; then
-    return 0
-  fi
-  return 1
-}
-
-# return 0 if str ends with tail
-function bes_str_ends_with()
-{
-  if [[ $# != 2 ]]; then
-    bes_message "usage: bes_str_ends_with str tail"
-    return 1
-  fi
-  local _str="${1}"
-  local _tail="${2}"
-  local _pattern="^.*${_tail}$"
-  if [[ "${_str}" =~ ${_pattern} ]]; then
-    return 0
-  fi
-  return 1
-}
-
-# Remove head from str
-function bes_str_remove_head()
-{
-  if [[ $# != 2 ]]; then
-    bes_message "usage: bes_str_remove_head str head"
-    return 1
-  fi
-  local _str="${1}"
-  local _head="${2}"
-  echo ${_str#${_head}}
-  return 0
-}
-
-# Remove tail from str
-function bes_str_remove_tail()
-{
-  if [[ $# != 2 ]]; then
-    bes_message "usage: bes_str_remove_tail str tail"
-    return 1
-  fi
-  local _str="${1}"
-  local _tail="${2}"
-  echo ${_str%${_tail}}
-  return 0
-}
-
 function bes_question_yes_no()
 {
   if [[ $# != 2 ]]; then
@@ -434,21 +336,6 @@ function bes_question_yes_no()
     esac
   done
   eval ${_var_name}=${_result}
-  return 0
-}
-
-function bes_file_check()
-{
-  if [[ $# != 1 ]]; then
-    bes_message "Usage: bes_file_check label"
-    return 1
-  fi
-  local _label=${FUNCNAME[1]}
-  local _filename="${1}"
-  if [[ ! -e "${_filename}" ]]; then
-    bes_message "${_label}: not found: ${_filename}"
-    exit 1
-  fi
   return 0
 }
 

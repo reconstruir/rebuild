@@ -109,7 +109,8 @@ function bes_testing_make_temp_dir()
   local _basename="${_label}_${_pid}"
   local _tmpdir="${TMPDIR}/${_basename}"
   mkdir -p "${_tmpdir}"
-  echo "${_tmpdir}"
+  local _normalized_tmpdir="$(command cd -P "${_tmpdir}" > /dev/null && command pwd -P )"
+  echo "${_normalized_tmpdir}"
   return 0
 }
 
