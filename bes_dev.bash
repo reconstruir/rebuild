@@ -1,36 +1,12 @@
 #-*- coding:utf-8; mode:shell-script; indent-tabs-mode: nil; sh-basic-offset: 2; tab-width: 2 -*-
 
-_bes_trace_file "begin"
+bes_log_trace_file path "begin"
 
 function bes_dev_set_tab_title()
 {
   echo -ne "\033]0;"$*"\007"
   local _prompt=$(echo -ne "\033]0;"$*"\007")
   export PROMPT_COMMAND='${_prompt}'
-}
-
-function bes_dev_setup_old()
-{
-  _bes_trace_function $*
-  if [[ $# < 1 ]]; then
-    printf "\nUsage: bes_dev_setup root_dir [go_there]\n\n"
-    return 1
-  fi
-  local _root_dir=$1
-  local _go_there=true
-  if [[ $# > 1 ]]; then
-    _go_there=$2
-  fi
-
-  bes_env_path_prepend PATH ${_root_dir}/bin
-  bes_env_path_prepend PYTHONPATH ${_root_dir}/lib
-
-  if $(bes_is_true $_go_there); then
-    cd $_root_dir
-    bes_dev_set_tab_title $($_BES_BASENAME_EXE $_root_dir)
-  fi
-  
-  return 0
 }
 
 function bes_dev_unsetup()
@@ -66,6 +42,12 @@ Usage: bes_dev_setup <options> root_dir
     --no-venv-activate,-nva
     --venv-config
     --venv-activate
+    --light                    Same as giving all these flags:
+                                 -set-path
+                                 -set-python-path
+                                 -no-set-title
+                                 -no-venv-activate
+                                 -no-change-dir
 EOF
   }
 
@@ -119,6 +101,14 @@ EOF
         _set_title=false
         shift # past argument
         ;;
+      --light|-l)
+        _set_path=true
+        _set_python_path=true
+        _set_title=false
+        _venv_activate=false
+        _change_dir=false
+        shift # past argument
+        ;;
       --help|-h)
         _bes_dev_setup_help
         shift # past argument
@@ -170,4 +160,4 @@ EOF
   return 0
 }
 
-_bes_trace_file "end"
+bes_log_trace_file path "end"

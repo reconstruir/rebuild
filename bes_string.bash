@@ -2,7 +2,7 @@
 
 # Functions to deal with strings
 
-_bes_trace_file "begin"
+bes_log_trace_file path "begin"
 
 # Strip whitespace from the head of a string
 # From https://stackoverflow.com/questions/369758/how-to-trim-whitespace-from-a-bash-variable
@@ -185,4 +185,19 @@ function bes_str_remove_tail()
   return 0
 }
 
-_bes_trace_file "end"
+# return 0 if str is an integer
+function bes_str_is_integer()
+{
+  if [[ $# < 1 ]]; then
+    bes_message "usage: bes_str_is_integer str"
+    return 1
+  fi
+  local _str="${1}"
+  local _pattern='^[0-9]+$'
+  if [[ ${_str} =~ ${_pattern} ]]; then
+    return 0
+  fi
+  return 1
+}
+
+bes_log_trace_file path "end"

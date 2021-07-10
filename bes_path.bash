@@ -59,6 +59,18 @@ function bes_path_strip_colon()
   return 0
 }
 
+# Strip rogue slashes from a path
+function bes_path_clean_rogue_slashes()
+{
+  if [[ $# != 1 ]]; then
+    echo "Usage: bes_path_clean_rogue_slashes path"
+    return 1
+  fi
+  local _path="${1}"
+  echo "${_path}" | sed 's#//*#/#g'
+  return 0
+}
+
 # remove duplicates from a path
 # from https://unix.stackexchange.com/questions/14895/duplicate-entries-in-path-a-problem
 function bes_path_dedup()
@@ -91,8 +103,11 @@ function bes_path_sanitize()
     echo "Usage: bes_path_sanitize path"
     return 1
   fi
-  local _path=$(bes_path_dedup "$1")
-  echo $(bes_path_strip_colon "${_path}")
+  local _path="${1}"
+  local _r1="$(bes_path_clean_rogue_slashes "${_path}")"
+  local _r2="$(bes_path_dedup "${_r1}")"
+  local _r3="$(bes_path_strip_colon "${_r2}")"
+  echo ${_r3}
   return 0
 }
 

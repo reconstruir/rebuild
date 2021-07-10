@@ -44,7 +44,7 @@ function _bes_git_add_lfs_file()
   local _filename="${2}"
   local _content="${3}"
   
-  local _ext=$(bes_file_extension "${_filename}")
+  local _ext=$(bes_filename_extension "${_filename}")
   ( cd ${_repo} && \
       ${BES_GIT_EXE:-git} lfs install && \
       echo "*.${_ext} filter=lfs diff=lfs merge=lfs -text" > .gitattributes && \
