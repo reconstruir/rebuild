@@ -2,6 +2,51 @@
 
 _bes_trace_file "begin"
 
+# Update a git subtree in a temporary cloned dir to prevent polluting the local
+# repo with the subtree remote including tags which confuses things. Foo.
+function bes_git_subtree_update_with_temp_repo()
+{
+  if [[ $# != 8 ]]; then
+    bes_message "usage: bes_git_subtree_update_with_temp_repo my_address local_branch address remote_branch revision src_dir dst_dir retry_with_delete"
+    return 2
+  fi
+  local _my_address="${1}"
+  local _local_branch=${2}
+  local _remote_address=${3}
+  local _remote_branch=${4}
+  local _remote_revision=${5}
+  local _src_dir="${6}"
+  local _dst_dir="${7}"
+  local _retry_with_delete=${8}
+  local _remote_name=$(basename ${_remote_address} | sed 's/.git//')
+  local _tmp_branch_name=tmp-split-branch-${_remote_name}
+  local _my_name=$(basename ${_my_address} | sed 's/.git//')
+
+  local _tmp_dir="${TMPDIR}/bes_git_subtree_update_tmp-${_my_name}-$$"
+  if ! git clone ${_my_address} "${_tmp_dir}"; then
+    bes_message "bes_git_subtree_update_with_temp_repo: Failed to clone ${_my_address}"
+    return 3
+  fi
+  cd ${_tmp_dir}
+  if ! bes_git_subtree_update \
+       ${_tmp_dir} \
+       ${_local_branch} \
+       ${_remote_address} \
+       ${_remote_branch} \
+       ${_remote_revision} \
+       ${_src_dir} \
+       ${_dst_dir} \
+       ${_retry_with_delete}; then
+    bes_message "bes_git_subtree_update_with_temp_repo: Failed to update in ${_tmp_dir}"
+    return 2
+  fi
+  if ! git push -u origin ${_local_branch}; then
+    bes_message "bes_git_subtree_update_with_temp_repo: Failed to push to ${_my_address}:${_local_branch}"
+    return 2
+  fi
+  return 0
+}
+
 function bes_git_subtree_update()
 {
   if [[ $# != 8 ]]; then
