@@ -42,7 +42,7 @@ Usage: bes_dev_setup <options> root_dir
     --no-venv-activate,-nva
     --venv-config
     --venv-activate
-    --light                    Same as giving all these flags:
+    --light,-l                 Same as giving all these flags:
                                  -set-path
                                  -set-python-path
                                  -no-set-title
