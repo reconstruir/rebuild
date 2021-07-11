@@ -6,7 +6,8 @@ function main()
 {
   source $(_this_dir_update_bes_shell)/../bes_shell/bes_all.bash
 
-  local _root_dir="$(pwd)"
+  local _here="$(pwd)"
+  local _my_address=$(git remote -v | awk '{ print $2; }'  | head -1)
   local _local_branch="master"
   local _address="git@gitlab.com:rebuilder/bes_shell.git"
   local _remote_branch="master"
@@ -15,8 +16,8 @@ function main()
   local _dst_dir="bes_shell"
   local _retry_with_delete="true"
 
-  bes_git_subtree_update \
-    ${_root_dir} \
+  bes_git_subtree_update_with_temp_repo \
+    ${_my_address} \
     ${_local_branch} \
     ${_address} \
     ${_remote_branch} \
@@ -24,6 +25,9 @@ function main()
     "${_src_dir}" \
     "${_dst_dir}" \
     ${_retry_with_delete}
+
+  cd ${_here}
+  git pull
   
   return 0
 }
