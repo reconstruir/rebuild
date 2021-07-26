@@ -67,7 +67,7 @@ function bes_path_clean_rogue_slashes()
     return 1
   fi
   local _path="${1}"
-  echo "${_path}" | sed 's#//*#/#g'
+  echo "${_path}" | ${_BES_SED} 's#//*#/#g'
   return 0
 }
 
@@ -298,8 +298,8 @@ function bes_env_path_print()
   bes_log_trace_function path $*
 
   local _var_name=$(bes_variable_map $1)
-  local _value=$(bes_var_get ${_var_name})
-  bes_path_print $_value
+  local _value="$(bes_var_get ${_var_name})"
+  bes_path_print "${_value}"
   return 0
 }
 
