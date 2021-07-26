@@ -12,12 +12,7 @@ rebuild_dev()
   source "$(_rebuild_dev_root)/bes_shell/bes_shell.bash"
   source "$(_rebuild_dev_root)/bes_shell/bes_dev.bash"
   local _bes_root_dir="$(_bes_dev_root)"
-  bes_dev_setup "${_bes_root_dir}" \
-               --set-path \
-               --set-python-path \
-               --no-set-title \
-               --no-venv-activate \
-               --no-change-dir
+  bes_dev_setup "${_bes_root_dir}" --light --set-path --set-python-path
   local _virtual_env_setup="${_rebuild_root_dir}/env/rebuild_venv_activate.bash"
   bes_dev_setup "${_rebuild_root_dir}" \
                --set-path \
