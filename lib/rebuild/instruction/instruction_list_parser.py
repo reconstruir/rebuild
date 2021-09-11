@@ -1,9 +1,10 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from .instruction import instruction
 from bes.text.string_list import string_list
 from bes.text.tree_text_parser import tree_text_parser
+from bes.text.string_lexer_options import string_lexer_options
+
+from .instruction import instruction
 
 class instruction_list_parser(object):
 
@@ -52,5 +53,5 @@ class instruction_list_parser(object):
     for child in node.children:
       texts.append(child.get_text(child.NODE_FLAT))
     value_text = ' '.join(texts)
-    value = string_list.parse(value_text, options = string_list.KEEP_QUOTES)
+    value = string_list.parse(value_text, options = string_lexer_options.KEEP_QUOTES)
     return { key: value }

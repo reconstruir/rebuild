@@ -11,6 +11,7 @@ from bes.key_value.key_value_parser import key_value_parser
 from bes.compat.StringIO import StringIO
 from bes.text.string_list import string_list
 from bes.text.tree_text_parser import tree_text_parser
+from bes.text.string_lexer_options import string_lexer_options
 
 from bes.build.artifact_descriptor import artifact_descriptor
 from bes.build.requirement_list import requirement_list
@@ -126,7 +127,7 @@ class fake_package_recipe_parser(object):
     for child in node.children:
       property_text = child.get_text(child.NODE_FLAT)
       try:
-        values = key_value_parser.parse_to_dict(property_text, options = key_value_parser.KEEP_QUOTES)
+        values = key_value_parser.parse_to_dict(property_text, options = string_lexer_options.KEEP_QUOTES)
         properties.update(values)
       except RuntimeError as ex:
         self._error('error parsing properties: %s' % (property_text), node)

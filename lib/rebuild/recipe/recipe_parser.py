@@ -11,6 +11,7 @@ from bes.system.log import log
 from bes.text.string_list import string_list
 from bes.text.tree_text_parser import tree_text_parser
 from bes.text.text_fit import text_fit
+from bes.text.string_lexer_options import string_lexer_options
 
 from bes.build.build_version import build_version
 from bes.build.package_descriptor import package_descriptor
@@ -155,7 +156,7 @@ class recipe_parser(object):
     for child in node.children:
       property_text = child.get_text(child.NODE_FLAT)
       try:
-        values = key_value_parser.parse_to_dict(property_text, options = key_value_parser.KEEP_QUOTES)
+        values = key_value_parser.parse_to_dict(property_text, options = string_lexer_options.KEEP_QUOTES)
         properties.update(values)
       except RuntimeError as ex:
         self._error('error parsing properties: %s' % (property_text), node)

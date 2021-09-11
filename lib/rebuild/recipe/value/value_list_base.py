@@ -4,6 +4,7 @@ from bes.common.check import check
 from bes.common.type_checked_list import type_checked_list
 from bes.compat.StringIO import StringIO
 from bes.text.string_list import string_list
+from bes.text.string_lexer_options import string_lexer_options
 
 from .value_base import value_base
 
@@ -43,7 +44,7 @@ class value_list_base(type_checked_list, value_base):
     if origin:
       check.check_value_origin(origin)
     check.check_node(node)
-    strings = string_list.parse(text, options = string_list.KEEP_QUOTES)
+    strings = string_list.parse(text, options = string_lexer_options.KEEP_QUOTES)
     string_values, properties_text = clazz._split_values_and_properties(strings)
     values = []
 

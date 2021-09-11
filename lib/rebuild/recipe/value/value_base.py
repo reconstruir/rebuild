@@ -9,6 +9,7 @@ from bes.system.compat import with_metaclass
 from bes.common.check import check
 from bes.common.variable import variable
 from bes.key_value.key_value_list import key_value_list
+from bes.text.string_lexer_options import string_lexer_options
 
 from .value_registry import value_registry
 from .value_parsing import value_parsing
@@ -49,7 +50,7 @@ class value_base(with_metaclass(value_register_meta, object)):
 
   @classmethod
   def parse_properties(clazz, text):
-    return key_value_list.parse(text, options = key_value_list.KEEP_QUOTES)
+    return key_value_list.parse(text, options = string_lexer_options.KEEP_QUOTES)
 
   def get_property(self, key, default_value = None):
     kv = self._properties.find_by_key_backwards(key)

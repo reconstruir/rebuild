@@ -3,6 +3,7 @@
 import os.path as path
 from bes.common.check import check
 from bes.text.string_list import string_list
+from bes.text.string_lexer_options import string_lexer_options
 
 from .value_base import value_base
 from .value_type import value_type
@@ -48,14 +49,14 @@ class value_string_list(value_base):
     if not text:
       values = string_list()
     else:
-      values = string_list.parse(text, options = string_list.KEEP_QUOTES)
+      values = string_list.parse(text, options = string_lexer_options.KEEP_QUOTES)
     return clazz(origin = origin, value = values)
 
   @classmethod
   #@abstractmethod
   def _parse_plain_string(clazz, origin, s):
     'Parse just a string.'
-    return string_list.parse(s, options = string_list.KEEP_QUOTES)
+    return string_list.parse(s, options = string_lexer_options.KEEP_QUOTES)
   
   @classmethod
   #@abstractmethod

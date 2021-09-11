@@ -3,6 +3,8 @@
 import os.path as path
 from bes.common.check import check
 from bes.key_value.key_value_list import key_value_list
+from bes.text.string_lexer_options import string_lexer_options
+
 from .value_base import value_base
 
 class value_key_values(value_base):
@@ -39,14 +41,14 @@ class value_key_values(value_base):
     if origin:
       check.check_value_origin(origin)
     check.check_node(node)
-    values = key_value_list.parse(value, options = key_value_list.KEEP_QUOTES)
+    values = key_value_list.parse(value, options = string_lexer_options.KEEP_QUOTES)
     return clazz(origin = origin, value = values)
 
   @classmethod
   #@abstractmethod
   def _parse_plain_string(clazz, origin, s):
     'Parse just a string.'
-    return key_value_list.parse(s, options = key_value_list.KEEP_QUOTES)
+    return key_value_list.parse(s, options = string_lexer_options.KEEP_QUOTES)
   
   @classmethod
   #@abstractmethod

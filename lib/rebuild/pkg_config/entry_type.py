@@ -1,10 +1,14 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.enum.enum import enum
+from enum import IntEnum
 
-class entry_type(enum):
+from bes.common.check import check
+
+class entry_type(IntEnum):
   BLANK = 1
   COMMENT = 2
   PROPERTY = 3
   VARIABLE = 4
+
+check.register_class(entry_type, include_seq = False)
+  

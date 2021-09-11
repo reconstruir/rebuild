@@ -9,10 +9,12 @@ from bes.common.dict_util import dict_util
 from bes.common.string_util import string_util
 from bes.common.type_checked_list import type_checked_list
 from bes.text.string_list import string_list_parser
+from bes.text.string_lexer_options import string_lexer_options
 from bes.compat.StringIO import StringIO
+from bes.dependency.dependency_resolver import dependency_resolver
+
 from .instruction_list_parser import instruction_list_parser
 from .instruction import instruction
-from bes.dependency.dependency_resolver import dependency_resolver
 
 class instruction_list(type_checked_list):
 
@@ -124,7 +126,7 @@ class instruction_list(type_checked_list):
   def _flatten_flags_list(clazz, l):
     result = []
     for x in l:
-      parsed = string_list_parser.parse(x, options = string_list_parser.KEEP_QUOTES)
+      parsed = string_list_parser.parse(x, options = string_lexer_options.KEEP_QUOTES)
       result.extend(parsed)
     return result
   

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 # FIXME: maintain integrity of original pc whitespace and comments
@@ -12,9 +11,11 @@ from bes.text.string_list_parser import string_list_parser
 from bes.key_value.key_value import key_value
 from bes.key_value.key_value_list import key_value_list
 from bes.fs.file_util import file_util
+from bes.text.string_lexer_options import string_lexer_options
 #from .entry import entry
 from bes.build.requirement import requirement
 from bes.build.requirement_list import requirement_list
+
 from .caca_entry import caca_entry
 
 from collections import namedtuple
@@ -182,7 +183,7 @@ class caca_pkg_config_file(namedtuple('caca_pkg_config_file', 'filename,entries,
   @property
   def cflags(self):
     cflags = self.get_property(self.PROPERTY_CFLAGS) or ''
-    return string_list_parser.parse_to_list(cflags, options = string_list_parser.KEEP_QUOTES)
+    return string_list_parser.parse_to_list(cflags, options = string_lexer_options.KEEP_QUOTES)
 
   @property
   def requires(self):
