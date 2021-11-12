@@ -1,12 +1,12 @@
 #-*- coding:utf-8; mode:shell-script; indent-tabs-mode: nil; sh-basic-offset: 2; tab-width: 2 -*-
 
-function _bes_shell_this_dir()
+function _bes_bash_this_dir()
 {
   echo "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
   return 0
 }
 
-_BES_SHELL_THIS_DIR="$(_bes_shell_this_dir)"
+_BES_BASH_THIS_DIR="$(_bes_bash_this_dir)"
 
 function _bes_trace() ( if [[ "$_BES_TRACE" == "1" ]]; then printf '_BES_TRACE: %s\n' "$*"; fi )
 function _bes_trace_function() ( _bes_trace "func: ${FUNCNAME[1]}($*)" )
@@ -22,7 +22,7 @@ function bes_import()
   fi
 
   local _filename="${1}"
-  local _this_dir="$(_bes_shell_this_dir)"
+  local _this_dir="$(_bes_bash_this_dir)"
   local _filename_abs="${_this_dir}/${_filename}"
 
   if _bes_import_filename_is_imported "${_filename_abs}"; then
@@ -146,7 +146,7 @@ function bes_script_name()
     return 0
   fi
   if [[ ${0} =~ .+bash$ ]]; then
-    echo "bes_shell"
+    echo "bes_bash"
     return 0
   fi
   echo $(basename "${0}")
@@ -1370,7 +1370,11 @@ function _bes_download_wget()
   fi
 
   # FIXME: need more error checking here
-  wget --quiet --user ${_auth_args} ${_url} -O ${_filename}
+  wget --quiet --hsts-file /dev/null ${_auth_args} ${_url} -O ${_filename}
+  local _rv=$?
+  if [[ ${_rv} != 0 ]]; then
+    return 1
+  fi
   if [[ -f ${_filename} ]]; then
     return 0
   fi
@@ -2176,7 +2180,7 @@ function bes_git_subtree_update_with_temp_repo()
   local _tmp_branch_name=tmp-split-branch-${_remote_name}
   local _my_name=$(basename ${_my_address} | sed 's/.git//')
 
-  local _tmp_dir="${TMPDIR}/bes_git_subtree_update_tmp-${_my_name}-$$"
+  local _tmp_dir="$(mktemp -d)/bes_git_subtree_update_tmp-${_my_name}-$$"
   if ! git clone ${_my_address} "${_tmp_dir}"; then
     bes_message "bes_git_subtree_update_with_temp_repo: Failed to clone ${_my_address}"
     return 3
@@ -2431,6 +2435,7 @@ bes_log_trace_file path "end"
 #-*- coding:utf-8; mode:shell-script; indent-tabs-mode: nil; sh-basic-offset: 2; tab-width: 2 -*-
 
 bes_import "bes_list.bash"
+bes_import "bes_string.bash"
 bes_import "bes_system.bash"
 
 bes_log_trace_file path "begin"
@@ -2578,7 +2583,7 @@ function bes_path_append()
   bes_log_trace_function path $*
 
   if [[ $# < 2 ]]; then
-    echo "Usage: bes_path_prepend path p1 p2 ... pN"
+    echo "Usage: bes_path_append path p1 p2 ... pN"
     return 1
   fi
   local _left
@@ -2884,6 +2889,19 @@ function bes_path_abs_file()
   return 0
 }
 
+# Split a path by path delimiter
+function bes_path_split()
+{
+  if [[ $# < 1 ]]; then
+    bes_message "usage: bes_path_split path"
+    return 1
+  fi
+  local _path="${1}"
+  bes_str_split "${_path}" :
+  local _rv=$?
+  return ${_rv}
+}
+
 bes_log_trace_file path "end"
 #-*- coding:utf-8; mode:shell-script; indent-tabs-mode: nil; sh-basic-offset: 2; tab-width: 2 -*-
 
@@ -2891,8 +2909,8 @@ bes_log_trace_file path "end"
 
 bes_import "bes_download.bash"
 bes_import "bes_path.bash"
-bes_import "bes_system.bash"
 bes_import "bes_string.bash"
+bes_import "bes_system.bash"
 
 _bes_trace_file "begin"
 
@@ -3194,6 +3212,169 @@ function bes_python_check_python_exe()
     bes_message "${_label}: not executable: ${_python_exe}"
     exit 1
   fi
+  return 0
+}
+
+# Find the default python preferring the latest 3.x
+function bes_python_find_default()
+{
+  local _possible_python
+  for _possible_version in 3.10 3.9 3.8 3.7 3 2.7; do
+    if bes_has_python ${_possible_version}; then
+      local _python_exe="$(${_BES_WHICH_EXE} python${_possible_version})"
+      echo ${_python_exe}
+      return 0
+    fi
+  done
+  echo ""
+  return 1
+}
+
+# Find python by version
+function bes_python_find()
+{
+  if [[ $# != 1 ]]; then
+    bes_message "Usage: bes_python_find version"
+    return 1
+  fi
+  local _version=${1}
+  local _exe=$(_bes_python_find_check_version ${_version})
+  local _rv=$?
+  echo ${_exe}
+  return ${_rv}
+}
+
+# Find python by version ($major.$minor)
+function _bes_python_find_by_major_minor_version()
+{
+  if [[ $# != 1 ]]; then
+    bes_message "Usage: _bes_python_find_by_major_minor_version version"
+    return 1
+  fi
+  local _version=${1}
+  local _searchPATH="$(_bes_python_exe_search_path)"
+  local _possible_python=python${_version}
+  local _python_exe
+  if _python_exe=$(PATH="${_searchPATH}" ${_BES_WHICH_EXE} ${_possible_python}); then
+    echo "${_python_exe}"
+    return 0
+  fi
+  echo ""
+  return 1
+}
+
+# Find python by checking the version of the possible python executables
+function _bes_python_find_check_version()
+{
+  if [[ $# != 1 ]]; then
+    bes_message "Usage: _bes_python_find_caca version"
+    return 1
+  fi
+  local _version=${1}
+  local _searchPATH="$(_bes_python_exe_search_path)"
+  declare -a _path
+  local _path_entry
+  IFS=':' read -ra _path <<< "${_searchPATH}"
+  for _path_entry in "${_path[@]}"; do
+    if [[ -d "${_path_entry}" ]]; then
+      local _exes=( $(_bes_python_possible_exes_in_dir "${_path_entry}") )
+      local _next_exe
+      for _next_exe in ${_exes[@]}; do
+        local _next_version=$(bes_python_exe_version "${_next_exe}")
+        if [[ ${_next_version} == ${_version} ]]; then
+          echo ${_next_exe}
+          return 0
+        fi
+      done
+    fi
+  done
+  echo ""
+  return 0
+}
+
+function _bes_python_possible_exes_in_dir()
+{
+  if [[ $# != 1 ]]; then
+    bes_message "Usage: _bes_python_possible_exes_in_dir dir"
+    return 1
+  fi
+  local _dir="${1}"
+  declare -a _exes
+  local _exes=()
+  local _possible_patterns=( python3.[0-9] python3.[0-9][0-9] python3 python2.[0-9] python2 python )
+  local _pattern
+  
+  for _pattern in ${_possible_patterns[*]}; do
+    local _next_exes
+    if _next_exes=$(cd "${_dir}" && "${_BES_LS}" -1 ${_pattern} 2> /dev/null); then
+      local _next_exe
+      for _next_exe in ${_next_exes}; do
+        _exes+=( "${_dir}/${_next_exe}" )
+      done
+    fi
+  done
+  echo ${_exes[@]}
+  return 0
+}
+
+function _bes_python_exe_search_path()
+{
+  local _possiblePATH=($(_bes_python_possible_bin_dirs))
+  local _searchPATH=$(bes_path_prepend "${PATH}" ${_possiblePATH[@]})
+  local _sanitizedPATH=$(bes_path_sanitize "${_searchPATH}")
+  echo "${_sanitizedPATH}"
+  return 0
+}
+
+function _bes_python_possible_bin_dirs()
+{
+  local _system=$(bes_system)
+  local _rv=1
+  local _dirs=()
+  case ${_system} in
+    linux)
+      _dirs=$(_bes_python_possible_bin_dirs_linux)
+      _rv=$?
+      ;;
+    macos)
+      _dirs=$(_bes_python_possible_bin_dirs_macos)
+      _rv=$?
+      ;;
+    windows)
+      _dirs=$(_bes_python_possible_bin_dirs_windows)
+      _rv=$?
+      ;;
+    *)
+      bes_message "Unsupported system: ${_system}"
+      ;;
+  esac
+  echo "${_dirs[@]}"
+  return ${_rv}
+}
+
+function _bes_python_possible_bin_dirs_linux()
+{
+  local _dirs=()
+  _dirs+=(/usr/bin /usr/local/bin /opt/local/bin)
+  echo ${_dirs[@]}
+  return 0
+}
+
+function _bes_python_possible_bin_dirs_macos()
+{
+  local _dirs=()
+  _dirs+=($(echo /usr/local/opt/python@3.*/bin))
+  _dirs+=(/opt/local/bin /usr/bin /usr/local/bin)
+  echo ${_dirs[@]}
+  return 0
+}
+
+function _bes_python_possible_bin_dirs_windows()
+{
+  local _dirs=()
+  _dirs+=(/opt/local/bin /usr/bin /usr/local/bin)
+  _dirs+=($(echo /usr/local/opt/python@3.*))
+  echo ${_dirs[@]}
   return 0
 }
 
@@ -3560,6 +3741,7 @@ if [[ -x /usr/bin/which ]]; then
 else
   _BES_WHICH_EXE=_bes_which
 fi
+_BES_WHICH_EXE=_bes_which
 
 # Use which to find the abs paths to a handful of executables used in this library.
 # The reason for using _BES_BASIC_PATH in this manner is that we want this library to
@@ -3569,12 +3751,15 @@ _BES_BASENAME_EXE=$(PATH=${_BES_BASIC_PATH} ${_BES_WHICH_EXE} basename)
 _BES_CAT_EXE=$(PATH=${_BES_BASIC_PATH} ${_BES_WHICH_EXE} cat)
 _BES_DIFF=$(PATH=${_BES_BASIC_PATH} ${_BES_WHICH_EXE} diff)
 _BES_DIRNAME_EXE=$(PATH=${_BES_BASIC_PATH} ${_BES_WHICH_EXE} dirname)
+_BES_EXPR=$(PATH=${_BES_BASIC_PATH} ${_BES_WHICH_EXE} expr)
 _BES_GREP_EXE=$(PATH=${_BES_BASIC_PATH} ${_BES_WHICH_EXE} grep)
 _BES_MKDIR_EXE=$(PATH=${_BES_BASIC_PATH} ${_BES_WHICH_EXE} mkdir)
 _BES_PWD_EXE=$(PATH=${_BES_BASIC_PATH} ${_BES_WHICH_EXE} pwd)
 _BES_SED=$(PATH=${_BES_BASIC_PATH} ${_BES_WHICH_EXE} sed)
 _BES_TR_EXE=$(PATH=${_BES_BASIC_PATH} ${_BES_WHICH_EXE} tr)
 _BES_UNAME=$(PATH=${_BES_BASIC_PATH} ${_BES_WHICH_EXE} uname)
+_BES_WC=$(PATH=${_BES_BASIC_PATH} ${_BES_WHICH_EXE} wc)
+_BES_LS=$(PATH=${_BES_BASIC_PATH} ${_BES_WHICH_EXE} ls)
 
 function bes_has_program()
 {
@@ -3687,6 +3872,10 @@ bes_log_trace_file system "end"
 
 bes_import "bes_system.bash"
 
+# The total number of tests and the current test index
+_BES_TESTS_NUM_TOTAL=0
+_BES_TESTS_INDEX=0
+
 # Print all the unit tests defined in this script environment (functions starting with test_)
 function bes_testing_print_unit_tests()
 {
@@ -3718,7 +3907,7 @@ function bes_testing_call_function()
 
 function _bes_testing_exit_code_filename()
 {
-  local _exit_code_filename="${TMPDIR}/_bes_testing_exit_code_$$"
+  local _exit_code_filename="/tmp/_bes_testing_exit_code_$$"
   echo "${_exit_code_filename}"
   return 0
 }
@@ -3734,7 +3923,6 @@ function _bes_testing_exit_code_set()
 {
   local _exit_code_filename="$(_bes_testing_exit_code_filename)"
   echo $1 > "${_exit_code_filename}"
-  echo set ${_exit_code_filename} to 1
   return 0
 }
 
@@ -3746,7 +3934,7 @@ function _bes_testing_exit_code_get()
     _exit_code=$(cat "${_exit_code_filename}")
   fi
   echo ${_exit_code}
-  return $(expr ${_exit_code})
+  return $(${_BES_EXPR} ${_exit_code})
 }
 
 # Run all the unit tests found in this script environment
@@ -3755,7 +3943,12 @@ function bes_testing_run_unit_tests()
   local _tests=$(bes_testing_print_unit_tests)
   local _test
   local _rv
+  local _index=$(${_BES_EXPR} 0)
+  local _num_total=$(${_BES_EXPR} $(echo ${_tests} | ${_BES_WC} -w))
+  _BES_TESTS_NUM_TOTAL=${_num_total}
   for _test in $_tests; do
+    _index=$(${_BES_EXPR} ${_index} + 1)
+    _BES_TESTS_INDEX=${_index}
     ${_test}
   done
   local _exit_code="$(_bes_testing_exit_code_get)"
@@ -3766,18 +3959,32 @@ function bes_testing_run_unit_tests()
 # Run that an expression argument is true and print that
 function bes_assert()
 {
+  function _bes_testing_make_counter()
+  {
+    local _num_total=${1}
+    local _index=${2}
+    local _num_digits=$(${_BES_EXPR} $(printf ${_num_total} | ${_BES_WC} -c))
+    local _format="%${_num_digits}d"
+    local _counter=$(printf "[${_format} of ${_format}]" ${_index} ${_num_total})
+    echo "${_counter}"
+    return 0
+  }
+  
   local _filename=$($_BES_BASENAME_EXE ${BASH_SOURCE[1]})
   local _line=${BASH_LINENO[0]}
   local _function=${FUNCNAME[1]}
+  local _counter="$(_bes_testing_make_counter ${_BES_TESTS_NUM_TOTAL} ${_BES_TESTS_INDEX})"
+  local _header_passed="${_filename} ${_counter} passed: ${_function}"
+  local _header_failed="${_filename} ${_counter} FAILED: ${_function}"
   eval "${1}"
   if [[ $? -ne 0 ]]; then
-    echo "failed: ${_function} $_filename:$_line: " ${1}
+    echo "${_header_failed}: ${_filename}:${_line}: ${1}"
     if [[ -n ${BES_UNIT_TEST_FAIL} ]]; then
         exit 1
     fi
     _bes_testing_exit_code_set 1
   else
-    echo "$_filename $_function: passed"
+    echo "${_header_passed}"
   fi
 }
 
@@ -3791,7 +3998,7 @@ function bes_testing_make_temp_dir()
   local _label="${1}"
   local _pid=$$
   local _basename="${_label}_${_pid}"
-  local _tmpdir="${TMPDIR}/${_basename}"
+  local _tmpdir="$(mktemp -d)/${_basename}"
   mkdir -p "${_tmpdir}"
   local _normalized_tmpdir="$(command cd -P "${_tmpdir}" > /dev/null && command pwd -P )"
   echo "${_normalized_tmpdir}"
