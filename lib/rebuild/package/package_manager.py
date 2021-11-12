@@ -4,28 +4,28 @@
 
 import copy, os.path as path, platform
 
-from bes.system.log import log
 from bes.archive.archive import archive
 from bes.archive.archiver import archiver
+from bes.build.build_blurb import build_blurb
+from bes.build.build_system import build_system
+from bes.build.package_descriptor import package_descriptor
+from bes.build.package_descriptor_list import package_descriptor_list
+from bes.build.requirement import requirement
 from bes.common.check import check
 from bes.common.dict_util import dict_util
 from bes.common.object_util import object_util
 from bes.common.string_util import string_util
 from bes.common.variable import variable
 from bes.dependency.dependency_resolver import dependency_resolver
+from bes.env.env_dir import env_dir
 from bes.fs.file_path import file_path
 from bes.fs.file_util import file_util
+from bes.shell_framework.shell_framework import shell_framework
+from bes.system.log import log
 from bes.system.os_env import os_env
-from bes.env.env_dir import env_dir
-from bes.env.shell_framework import shell_framework
 
-from bes.build.build_system import build_system
-from bes.build.requirement import requirement
-from bes.build.package_descriptor import package_descriptor
-from bes.build.package_descriptor_list import package_descriptor_list
 from rebuild.instruction.instruction_list import instruction_list
 from rebuild.pkg_config.pkg_config import pkg_config
-from bes.build.build_blurb import build_blurb
 
 from .package import package
 from .package_db import package_db
@@ -68,7 +68,7 @@ class package_manager(object):
     self._python_lib_dir = path.join(self._installation_dir, 'lib/python')
     self._share_dir = path.join(self._installation_dir, 'share')
     self._compile_instructions_dir = path.join(self._installation_dir, 'lib/rebuild_instructions')
-    self._shell_framework_dir = path.join(self._env_dir, 'framework')
+    self._shell_framework_dir = path.join(self._env_dir)
     self._shell_env = {
       os_env.LD_LIBRARY_PATH_VAR_NAME: self._lib_dir,
       'PATH': self._bin_dir,
@@ -203,7 +203,7 @@ class package_manager(object):
     self.db.add_package(entry)
 
   def ensure_shell_framework(self):
-    shell_framework.extract(self._shell_framework_dir)
+    shell_framework.ensure(self._shell_framework_dir, 'latest')
     
   def uninstall_package(self, pkg_desc):
     check.check_package_descriptor(pkg_desc)
@@ -343,6 +343,7 @@ class package_manager(object):
   
   def transform_env(self, env, package_names):
     check.check_string_seq(package_names)
+    
     env = env or { 'PATH': os_env.DEFAULT_SYSTEM_PATH }
     if not 'PATH' in env:
       env = copy.deepcopy(env)
@@ -354,6 +355,8 @@ class package_manager(object):
       return result
     if not path.isdir(self._env_dir):
       return result
+    print('CACA: self._env_dir={}'.format(self._env_dir))
+    print('CACA: files={}'.format(files))
     ed = env_dir(self._env_dir, files = files)
     result = ed.transform_env(result)
     # Remove any item where the key starts with _REBUILD to not leak impl detail vars

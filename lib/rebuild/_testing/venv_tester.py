@@ -39,7 +39,7 @@ config
   def _make_temp_dir(clazz, debug):
     tmp_dir = temp_file.make_temp_dir(delete = not debug)
     if debug:
-      print("tmp_dir: ", tmp_dir)
+      print('tmp_dir: {}'.format(tmp_dir))
     return tmp_dir
 
   @classmethod

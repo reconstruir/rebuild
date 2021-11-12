@@ -23,9 +23,6 @@ class test_venv_manager(unit_test):
 
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/remanager'
 
-  DEBUG = False
-#  DEBUG = True
-
   def test_packages_print_empty(self):
     config = '''{head}
 projects
@@ -286,7 +283,7 @@ projects
     packages
       cabbage == 1.0.0
 '''
-    test = venv_tester(config, recipes = recipes)
+    test = venv_tester(config, recipes = recipes, debug = self.DEBUG)
     rv = test.update_from_config('test')
     self.assertEqual( True, rv )
     self.assertEqual( [ 'cabbage-1.0.0' ], test.installed_packages('test', include_version = True) )

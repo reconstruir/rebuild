@@ -4,10 +4,10 @@ set -e
 
 function main()
 {
-  source $(_this_dir_rebuild_venv_setup)/../bes_shell/bes_all.bash
+  source $(_this_dir_rebuild_venv_setup)/../bes_bash/bes_bash.bash
 
   local _this_dir="$(_this_dir_rebuild_venv_setup)"
-  local _root_dir="$(bes_abs_path ${_this_dir}/..)"
+  local _root_dir="$(bes_path_abs_dir ${_this_dir}/..)"
   local _rebuild="${_root_dir}/bin/reb.py"
   local _projects_root_dir="${_root_dir}/VE"
   local _requirements="${_root_dir}/requirements.txt"

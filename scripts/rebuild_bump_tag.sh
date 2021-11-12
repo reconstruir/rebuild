@@ -5,7 +5,7 @@ set -e
 function main()
 {
   local _this_dir=$(_rebuild_release_bump_tag_this_dir)
-  source ${_this_dir}/../bes_shell/bes_all.bash
+  source ${_this_dir}/../bes_bash/bes_bash.bash
   local _rebuild=${_this_dir}/../bin/rebuild.py
   local _python=$(which python3)
 

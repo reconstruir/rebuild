@@ -112,7 +112,7 @@ _this_file="$( command readlink "$BASH_SOURCE" )" || _this_file="$BASH_SOURCE"
 _unresolved_root="${_this_file%/*}"
 REBUILD_ENV_DIR="$( command cd -P "$_unresolved_root" > /dev/null && command pwd -P )"
 REBUILD_STUFF_DIR="$( command cd -P "$REBUILD_ENV_DIR/../stuff" > /dev/null && command pwd -P )"
-REBUILD_SHELL_FRAMEWORK_DIR=$REBUILD_ENV_DIR/framework
+REBUILD_SHELL_FRAMEWORK_DIR=$REBUILD_ENV_DIR/bes_shell_framework
 export _REBUILD_DEV_ROOT=$REBUILD_SHELL_FRAMEWORK_DIR
 
 if [ -d $REBUILD_SHELL_FRAMEWORK_DIR ]; then

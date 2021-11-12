@@ -9,8 +9,7 @@ _rebuild_dev_root()
 rebuild_dev()
 {
   local _rebuild_root_dir="$(_rebuild_dev_root)"
-  source "$(_rebuild_dev_root)/bes_shell/bes_shell.bash"
-  source "$(_rebuild_dev_root)/bes_shell/bes_dev.bash"
+  source "$(_rebuild_dev_root)/bes_bash/bes_bash.bash"
   local _bes_root_dir="$(_bes_dev_root)"
   bes_dev_setup "${_bes_root_dir}" --light --set-path --set-python-path
   local _virtual_env_setup="${_rebuild_root_dir}/env/rebuild_venv_activate.bash"
@@ -28,8 +27,7 @@ rebuild_dev()
 rebuild_undev()
 {
   local _rebuild_root_dir="$(_rebuild_dev_root)"
-  source "$(_rebuild_dev_root)/bes_shell/bes_shell.bash"
-  source "$(_rebuild_dev_root)/bes_shell/bes_dev.bash"
+  source "$(_rebuild_dev_root)/bes_bash/bes_bash.bash"
   bes_dev_unsetup "${_rebuild_root_dir}"
   return $?
 }

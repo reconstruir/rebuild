@@ -38,8 +38,10 @@ class package_metadata(namedtuple('package_metadata', 'format_version, filename,
     check.check_tuple(arch)
     check.check_string(distro, allow_none = True)
     distro = distro or ''
-    check.check_string(distro_version_major)
-    check.check_string(distro_version_minor)
+    check.check_string(distro_version_major, allow_none = True)
+    distro_version_major = distro_version_major or ''
+    check.check_string(distro_version_minor, allow_none = True)
+    distro_version_minor = distro_version_minor or ''
     if check.is_string(requirements):
       requirements = requirement_list.parse(requirements)
     requirements = requirements or requirement_list()
