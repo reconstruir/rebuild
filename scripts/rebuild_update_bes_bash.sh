@@ -9,7 +9,7 @@ function main()
   local _here="$(pwd)"
   local _my_address=$(git remote -v | awk '{ print $2; }'  | head -1)
   local _local_branch="master"
-  local _address="git@gitlab.com:rebuilder/bes_shell.git"
+  local _address="https://github.com/reconstruir/bes_bash.git"
   local _remote_branch="master"
   local _revision="@latest@"
   local _src_dir="bash/bes_bash_one_file"
