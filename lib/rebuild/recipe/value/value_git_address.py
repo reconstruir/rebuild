@@ -1,14 +1,16 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.system.log import logger
+
 from bes.common.check import check
 from bes.common.string_util import string_util
 from bes.common.time_util import time_util
 from bes.compat.StringIO import StringIO
-from bes.git.git_address import git_address
 from bes.git.git import git
+from bes.git.git_address import git_address
 from bes.key_value.key_value import key_value
+from bes.system.log import logger
+from bes.text.text_replace import text_replace
 
 from .value_base import value_base
 
@@ -60,7 +62,7 @@ class value_git_address(value_base):
       raise ValueError('%s: expected address and revision instead of: %s' % (origin, text))
     address = parts[0]
     revision = parts[1]
-    rest = string_util.replace(text, { address: '', revision: '' })
+    rest = text_replace.replace(text, { address: '', revision: '' }, word_boundary = True)
     properties = clazz.parse_properties(rest)
     address = path.expanduser(address)
     return clazz(origin = origin, value = git_address(address, revision), properties = properties)

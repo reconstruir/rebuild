@@ -3,9 +3,9 @@
 import re
 
 from bes.common.check import check
-from bes.common.string_util import string_util
 from bes.text.string_list import string_list
 from bes.system.log import logger
+from bes.text.text_replace import text_replace
 
 from bes.build.build_system import build_system
 
@@ -118,7 +118,7 @@ class recipe_data_manager(object):
       if not value:
         raise ValueError('No data found for: {}'.format(desc))
       replacements[str(desc)] = value
-    return string_util.replace(text, replacements, word_boundary = False)
+    return text_replace.replace(text, replacements, word_boundary = False)
   
   def dump(self):
     import pprint

@@ -1,54 +1,31 @@
-function _rebuild_venv_print_activate_script()
+function _rebuild_venv_activate_main()
 {
-  source $(_rebuild_this_dir_venv_activate)/../bes_bash/bes_bash.bash
-  
-  local _this_dir="$(_rebuild_this_dir_venv_activate)"
-  local _root_dir="$(bes_path_abs_dir ${_this_dir}/..)"
-  local _rebuild="${_root_dir}/bin/reb.py"
-  local _projects_root_dir="${_root_dir}/VE"
-  local _requirements="${_root_dir}/requirements.txt"
+  source $(_rebuild_venv_activate_this_dir)/../bes_bash/bes_bash.bash
 
-  ${_this_dir}/rebuild_venv_setup.sh
-  local _activate_script=$(PYTHONPATH=${_root_dir}/lib:${PYTHONPATH} ${_rebuild} pip_project activate_script --root-dir "${_projects_root_dir}" rebuild)
-  echo "${_activate_script}"
+  local _this_dir="$(_rebuild_venv_activate_this_dir)"
+  local _root_dir="$(bes_path_abs_dir ${_this_dir}/..)"
+  local _bes_root_dir=$(_bes_dev_root)
+  local _requirements=(
+    "${_bes_root_dir}/bes_requirements.txt"
+    "${_bes_root_dir}/bes_requirements_dev.txt"
+    "${_root_dir}/rebuild_requirements.txt"
+    "${_root_dir}/rebuild_requirements_dev.txt"
+  )
+
+  if bes_pip_project_requirements_are_stale "${_root_dir}/VE/rebuild" ${_requirements[@]}; then
+    ${_this_dir}/rebuild_venv_setup.sh ${_requirements[@]}
+  fi
   
+  echo "${_root_dir}/VE/rebuild/bin/activate"
   return 0
 }
 
-function _rebuild_venv_print_pythonpath()
-{
-  source $(_rebuild_this_dir_venv_activate)/../bes_bash/bes_bash.bash
-
-  local _this_dir="$(_rebuild_this_dir_venv_activate)"
-  local _root_dir="$(bes_path_abs_dir ${_this_dir}/..)"
-  local _lib_dir="$(bes_path_abs_dir ${_root_dir}/lib)"
-  echo export PYTHONPATH="${PYTHONPATH}:/${_lib_dir}"
-  
-  return 0
-}
-
-function _rebuild_venv_print_path()
-{
-  source $(_rebuild_this_dir_venv_activate)/../bes_bash/bes_bash.bash
-
-  local _this_dir="$(_rebuild_this_dir_venv_activate)"
-  local _root_dir="$(bes_path_abs_dir ${_this_dir}/..)"
-  local _bin_dir="$(bes_path_abs_dir ${_root_dir}/bin)"
-  echo export PATH="${_bin_dir}:${PATH}"
-  
-  return 0
-}
-
-function _rebuild_this_dir_venv_activate()
+function _rebuild_venv_activate_this_dir()
 {
   echo "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
   return 0
 }
-source $(_rebuild_venv_print_activate_script ${1+"$@"})
-eval $(_rebuild_venv_print_pythonpath)
-# FIXME: this breaks when there are spaces in path
-#eval $(_rebuild_venv_print_path)
-unset -f _rebuild_venv_print_activate_script
-unset -f _rebuild_venv_print_pythonpath
-unset -f _rebuild_venv_print_path
-unset -f _rebuild_this_dir_venv_activate
+
+source $(_rebuild_venv_activate_main ${1+"$@"})
+unset -f _rebuild_venv_activate_main
+unset -f _rebuild_venv_activate_this_dir

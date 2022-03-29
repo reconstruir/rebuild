@@ -1,18 +1,18 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import codecs, os, os.path as path, subprocess, sys
-from bes.fs.file_checksum import file_checksum
-from bes.fs.file_checksum import file_checksum_list
-from bes.fs.file_find import file_find
-from bes.fs.temp_file import temp_file
 from bes.archive.archiver import archiver
-from bes.common.string_util import string_util
-from bes.git.git_address_util import git_address_util
-from collections import namedtuple
 from bes.build.build_arch import build_arch
 from bes.build.build_level import build_level
 from bes.build.build_system import build_system
 from bes.build.build_target import build_target
+from bes.fs.file_checksum import file_checksum
+from bes.fs.file_checksum import file_checksum_list
+from bes.fs.file_find import file_find
+from bes.fs.temp_file import temp_file
+from bes.git.git_address_util import git_address_util
+from bes.text.text_replace import text_replace
+from collections import namedtuple
 
 class rebuilder_tester(object):
 
@@ -126,7 +126,7 @@ class rebuilder_tester(object):
         git_address_util.sanitize_for_local_path(path.expanduser('~')): '$HOME',
         '-'.join(sorted(config.build_target.arch)): '$ARCH',
       }
-      new_filename = string_util.replace(checksum.filename, replacements, word_boundary = False)
+      new_filename = text_replace.replace(checksum.filename, replacements, word_boundary = False)
       i = new_filename.rfind('$BUILD_PATH')
       if i > 0:
         new_filename = new_filename[i:]

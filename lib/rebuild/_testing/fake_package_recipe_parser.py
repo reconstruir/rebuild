@@ -1,20 +1,21 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_item
-from bes.common.check import check
-from bes.common.string_util import string_util
-from bes.key_value.key_value import key_value
-from bes.key_value.key_value_list import key_value_list
-from bes.key_value.key_value_parser import key_value_parser
-from bes.compat.StringIO import StringIO
-from bes.text.string_list import string_list
-from bes.text.tree_text_parser import tree_text_parser
-from bes.text.string_lexer_options import string_lexer_options
 
 from bes.build.artifact_descriptor import artifact_descriptor
 from bes.build.requirement_list import requirement_list
+from bes.common.check import check
+from bes.common.string_util import string_util
+from bes.compat.StringIO import StringIO
+from bes.fs.file_util import file_util
+from bes.fs.temp_file import temp_item
+from bes.key_value.key_value import key_value
+from bes.key_value.key_value_list import key_value_list
+from bes.key_value.key_value_parser import key_value_parser
+from bes.text.string_lexer_options import string_lexer_options
+from bes.text.string_list import string_list
+from bes.text.text_replace import text_replace
+from bes.text.tree_text_parser import tree_text_parser
 
 from .fake_package_recipe import fake_package_recipe
 from .fake_package_source import fake_package_source
@@ -51,7 +52,7 @@ class fake_package_recipe_parser(object):
   def parse(self):
     try:
       # Need to hack newlines before and after because the parse will strip them
-      text = string_util.replace(self.text, { '\\n': '@@@NL@@@' })
+      text = text_replace.replace(self.text, { '\\n': '@@@NL@@@' }, word_boundary = True)
       tree = tree_text_parser.parse(text, strip_comments = True)
       tree.replace_text({ '@@@NL@@@': r'\\n' })
     except Exception as ex:

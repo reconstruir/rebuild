@@ -3,18 +3,18 @@
 # FIXME: maintain integrity of original pc whitespace and comments
 
 #import copy, glob, os.path as path
-from bes.common.check import check
-from bes.common.variable import variable
-from bes.common.string_util import string_util
-from bes.text.text_line_parser import text_line_parser
-from bes.text.string_list_parser import string_list_parser
-from bes.key_value.key_value import key_value
-from bes.key_value.key_value_list import key_value_list
-from bes.fs.file_util import file_util
-from bes.text.string_lexer_options import string_lexer_options
-#from .entry import entry
 from bes.build.requirement import requirement
 from bes.build.requirement_list import requirement_list
+from bes.common.check import check
+from bes.common.string_util import string_util
+from bes.common.variable import variable
+from bes.fs.file_util import file_util
+from bes.key_value.key_value import key_value
+from bes.key_value.key_value_list import key_value_list
+from bes.text.string_lexer_options import string_lexer_options
+from bes.text.string_list_parser import string_list_parser
+from bes.text.text_line_parser import text_line_parser
+from bes.text.text_replace import text_replace
 
 from .caca_entry import caca_entry
 
@@ -222,4 +222,4 @@ Cflags: @CFLAGS@
       '@LIBS@': libs,
       '@CFLAGS@': cflags,
     }
-    return string_util.replace(clazz.PC_FILE_TEMPLATE, replacements)
+    return text_replace.replace(clazz.PC_FILE_TEMPLATE, replacements, word_boundary = True)

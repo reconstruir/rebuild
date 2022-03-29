@@ -85,7 +85,7 @@ class patch(object):
   @classmethod
   def patch_is_compressed(clazz, patch):
     'Return True if the patch is compressed with gzip.'
-    ft = file_mime.mime_type(patch).mime_type
+    ft = file_mime.mime_type(patch)
     return ft.find('gzip') >= 0
 
   @classmethod

@@ -3,10 +3,10 @@
 import copy, os.path as path
 from collections import namedtuple
 
+from bes.build.build_blurb import build_blurb
 from bes.common.algorithm import algorithm
 from bes.common.check import check
 from bes.common.json_util import json_util
-from bes.common.string_util import string_util
 from bes.common.type_checked_list import type_checked_list
 from bes.common.variable import variable
 from bes.debug.debug_timer import debug_timer
@@ -14,8 +14,8 @@ from bes.dependency import dependency_provider
 from bes.fs.file_checksum import file_checksum_list
 from bes.fs.file_util import file_util
 from bes.system.log import log
+from bes.text.text_replace import text_replace
 
-from bes.build.build_blurb import build_blurb
 from rebuild.package.package_manager import package_manager
 from rebuild.recipe.recipe_data_manager import recipe_data_manager
 from rebuild.recipe.value.value_file import value_file
@@ -264,10 +264,10 @@ class builder_script(object):
       'stage_dir': self.stage_dir,
     }
     formatted_message = message.format(**format_vars)
-    replacemetns = {
+    replacements = {
       self.working_dir: self._shorten_path(self.working_dir),
     }
-    return string_util.replace(formatted_message, replacemetns)
+    return text_replace.replace(formatted_message, replacements, word_boundary = True)
 
   def has_staged_files_dir(self):
     return path.isdir(self.staged_files_dir)

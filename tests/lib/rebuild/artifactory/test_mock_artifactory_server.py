@@ -33,12 +33,12 @@ class test_mock_artifactory_server(unit_test):
 
     tmp = self.make_temp_file(suffix = '.txt')
     AR.download_url_to_file(tmp, url, self._TEST_CRED)
-    self.assertEqual( 'text/plain', file_mime.mime_type(tmp).mime_type )
+    self.assertEqual( 'text/plain', file_mime.mime_type(tmp) )
     self.assertEqual( 'this is foo.txt\n', file_util.read(tmp, codec = 'utf8') )
 
     url = test.make_url('subdir/subberdir/baz.txt')
     AR.download_url_to_file(tmp, url, self._TEST_CRED)
-    self.assertEqual( 'text/plain', file_mime.mime_type(tmp).mime_type )
+    self.assertEqual( 'text/plain', file_mime.mime_type(tmp) )
     self.assertEqual( 'this is baz.txt\n', file_util.read(tmp, codec = 'utf8') )
 
     test.stop()

@@ -8,6 +8,7 @@ from bes.compat.StringIO import StringIO
 from bes.archive.archiver import archiver
 from bes.fs.file_util import file_util
 from bes.fs.tar_util import tar_util
+from bes.text.text_replace import text_replace
 
 from .value_base import value_base
 
@@ -51,7 +52,7 @@ class value_source_dir(value_base):
     if len(parts) < 1:
       raise ValueError('%s: expected filename instead of: %s' % (origin, text))
     value = parts[0]
-    rest = string_util.replace(text, { value: '' })
+    rest = text_replace.replace(text, { value: '' }, word_boundary = True)
     properties = clazz.parse_properties(rest)
     return clazz(origin = origin, value = value, properties = properties)
   
