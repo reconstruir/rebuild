@@ -522,6 +522,7 @@ _bes_import_filename_set_imported "bes_git_subtree.bash"
 _bes_import_filename_set_imported "bes_json.bash"
 _bes_import_filename_set_imported "bes_list.bash"
 _bes_import_filename_set_imported "bes_path.bash"
+_bes_import_filename_set_imported "bes_pip_project.bash"
 _bes_import_filename_set_imported "bes_python.bash"
 _bes_import_filename_set_imported "bes_question.bash"
 _bes_import_filename_set_imported "bes_string.bash"
@@ -866,6 +867,26 @@ function _bes_checksum_text_linux()
   esac
   echo ${_result}
   return 0
+}
+
+function bes_checksum_check_file()
+{
+  # Return True (0) if filename matches the checksum written in checksum_filename"
+  if [[ $# != 2 ]]; then
+    echo "Usage: bes_checksum_check_file filename checksum_filename"
+    return 1
+  fi
+  local _filename="${1}"
+  local _checksum_filename="${2}"
+  if [[ ! -f "${_checksum_filename}" ]]; then
+    return 1
+  fi
+  local _old_checksum=$(cat "${_checksum_filename}")
+  local _new_checksum=$(bes_checksum_file "sha256" "${_filename}")
+  if [[ ${_old_checksum} == ${_new_checksum} ]]; then
+    return 0
+  fi
+  return 1
 }
 
 bes_log_trace_file checksum "end"
@@ -2903,6 +2924,32 @@ function bes_path_split()
 }
 
 bes_log_trace_file path "end"
+#-*- coding:utf-8; mode:shell-script; indent-tabs-mode: nil; sh-basic-offset: 2; tab-width: 2 -*-
+
+bes_log_trace_file pip_project "begin"
+
+bes_import "bes_checksum.bash"
+
+function bes_pip_project_requirements_are_stale()
+{
+  if [[ $# < 2 ]]; then
+    echo "Usage: bes_pip_project_requirements_are_stale project_root_dir reqs_file1 .. reqs_fileN"
+    return 1
+  fi
+  local _project_root_dir="${1}"
+  shift
+  local _requirements_filename
+  for _requirements_filename in $@; do
+    local _basename=$(basename "${_requirements_filename}")
+    local _checksum_filename="${_project_root_dir}/.requirements_checksums/${_basename}"
+    if ! bes_checksum_check_file "${_requirements_filename}" "${_checksum_filename}"; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+bes_log_trace_file pip_project "end"
 #-*- coding:utf-8; mode:shell-script; indent-tabs-mode: nil; sh-basic-offset: 2; tab-width: 2 -*-
 
 # Functions to deal with python

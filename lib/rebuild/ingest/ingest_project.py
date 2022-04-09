@@ -2,15 +2,9 @@
 
 import os.path as path
 
-#from bes.compat.StringIO import StringIO
 from bes.common.check import check
-#from bes.common.node import node
-#from bes.key_value.key_value_list import key_value_list
 from bes.system.log import logger
-#from bes.fs.file_resolver import file_resolver
-
-#from rebuild.recipe.recipe_error import recipe_error
-#from rebuild.recipe.recipe_util import recipe_util
+from bes.fs.file_resolve import file_resolve
 
 from .ingest_file_parser import ingest_file_parser
 
