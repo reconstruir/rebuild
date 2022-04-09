@@ -4,7 +4,9 @@ import os.path as path
 
 from bes.common.check import check
 from bes.system.log import logger
-from bes.fs.file_resolve import file_resolve
+
+from bes.fs.file_resolver import file_resolver
+from bes.fs.file_resolver_options import file_resolver_options
 
 from .ingest_file_parser import ingest_file_parser
 
@@ -13,7 +15,11 @@ class ingest_project(object):
   log = logger('ingest_project')
   
   def __init__(self, base_dir, args = []):
-    self._resolved_files = file_resolve.resolve_mixed(base_dir, args, patterns = [ '*.reingest' ])
+    options = file_resolver_options(recursive = True,
+                                    match_patterns = [ '*.reingest' ],
+                                    match_basename = True)
+    self._resolved_files = file_resolver.resolve_files([ base_dir ] + args, options = options)
+
     self.log.log_d('resolved_files={}'.format(self._resolved_files))
     self._loaded_files = None
     self._entries = None

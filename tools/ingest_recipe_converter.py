@@ -4,7 +4,8 @@
 import argparse, os.path as path
 from collections import namedtuple
 
-from bes.fs.file_resolve import file_resolve
+from bes.fs.file_resolver import file_resolver
+from bes.fs.file_resolver_options import file_resolver_options
 from bes.fs.file_util import file_util
 from bes.fs.file_replace import file_replace
 from bes.key_value.key_value_list import key_value_list
@@ -40,8 +41,11 @@ class ingest_recipe_converter(object):
     self.replacements = {
       'REBUILD_PACKAGE_UPSTREAM_VERSION': 'VERSION',
     }
-    
-    files = file_resolve.resolve_dir(args.source, patterns = [ '*.recipe' ])
+
+    options = file_resolver_options(recursive = True,
+                                    match_patterns = [ '*.recipe' ],
+                                    match_basename = True)
+    files = file_resolver.resolve_files([ args.source ] + args, options = options)
     for rf in files:
       self._process_file(rf.filename_abs,
                          args.source,
