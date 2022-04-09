@@ -8,7 +8,7 @@ from rebuild.toolchain.ar_replacement import ar_replacement
 from bes.build.build_system import build_system
 from bes.fs.dir_util import dir_util
 from bes.fs.temp_file import temp_file
-from bes.testing.unit_test_skip import skip_if
+from bes.testing.unit_test_function_skip import unit_test_function_skip
 
 class test_ar_replacement(unit_test):
 
@@ -47,7 +47,7 @@ class test_ar_replacement(unit_test):
     actual_files = self._filter_contents(actual_files)
     self.assertEqual( expected_files, actual_files )
 
-  @skip_if(not host.is_macos(), 'Not osx')
+  @unit_test_function_skip.skip_if(not host.is_macos(), 'Not osx')
   def test_extract_fat(self):
     expected_files = [
       'arm64_fat_cherry.o',

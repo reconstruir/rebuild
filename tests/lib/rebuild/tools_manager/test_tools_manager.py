@@ -7,7 +7,6 @@ from bes.common.dict_util import dict_util
 from bes.common.string_util import string_util
 from bes.property.cached_property import cached_property
 from bes.fs.file_find import file_find
-from bes.fs.temp_file import temp_file
 from bes.system.execute import execute
 from bes.system.os_env import os_env
 from bes.build.build_system import build_system
@@ -21,7 +20,7 @@ from rebuild._testing.artifact_manager_tester import artifact_manager_tester as 
 
 from rebuild._testing.rebuilder_tester import rebuilder_tester
 
-from bes.testing.unit_test_skip import skip_if
+from bes.testing.unit_test_function_skip import unit_test_function_skip
 
 class test_tools_manager(unit_test):
 
@@ -36,7 +35,7 @@ class test_tools_manager(unit_test):
   def _make_test_tm(self):
     amt = AMT(recipes = RECIPES.KNIFE, debug = self.DEBUG)
     amt.publish('knife;6.6.6;0;0;linux;release;x86_64;ubuntu;18;')
-    root_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
+    root_dir = self.make_temp_dir()
     tools_dir = path.join(root_dir, 'tools')
     if self.DEBUG:
       print('\ntools_manager dir:\n%s' % (tools_dir))
@@ -99,7 +98,7 @@ class test_tools_manager(unit_test):
     self.assertEqual( 0, rv.exit_code )
     self.assertEqual( '22', rv.stdout.strip() )
     
-  @skip_if(not build_system.HOST == build_system.MACOS, 'FIXME: broken on linux')
+  @unit_test_function_skip.skip_if(not build_system.HOST == build_system.MACOS, 'FIXME: broken on linux')
   def test_transform_env(self):
     tm, am, amt = self._make_test_tm()
     amt.add_recipes(self.RECIPES)

@@ -9,13 +9,13 @@ from rebuild.step.compound_step import compound_step
 from rebuild.step.step import step
 from rebuild.step.step_description import step_description
 from rebuild.step.step_manager import step_manager
-from bes.testing.unit_test_skip import raise_skip
+from bes.testing.unit_test_class_skip import unit_test_class_skip
 
 class test_step_manager(unittest.TestCase):
 
   @classmethod
   def setUpClass(clazz):
-    raise_skip('test_step_manager unit tests broken')
+    unit_test_class_skip.raise_skip('test_step_manager unit tests broken')
 
   def _make_step(self, name, fake_success = True, fake_message = ''):
     return sample_step_fake_success(name, fake_success, fake_message)

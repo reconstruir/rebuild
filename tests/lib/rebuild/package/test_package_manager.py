@@ -33,7 +33,7 @@ from rebuild._testing.artifact_manager_tester import artifact_manager_tester as 
 from rebuild._testing.artifact_manager_helper import artifact_manager_helper
 
 from bes.build.build_system import build_system
-from bes.testing.unit_test_skip import skip_if
+from bes.testing.unit_test_function_skip import unit_test_function_skip
 
 class test_package_manager(unit_test):
 
@@ -394,7 +394,7 @@ fake_package baz 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     env2 = pm.transform_env(env1, [ 'cabbage' ])
     self.assert_dict_as_text_equal( env1_save, env1 )
   
-  @skip_if(not build_system.HOST == build_system.MACOS, 'FIXME: broken on linux')
+  @unit_test_function_skip.skip_if(not build_system.HOST == build_system.MACOS, 'FIXME: broken on linux')
   def test_transform_env_defaults(self):
     'Check the defaults of transform_env() when the input env is empty.'
     pm, cabbage = self._make_cabbage_pm()

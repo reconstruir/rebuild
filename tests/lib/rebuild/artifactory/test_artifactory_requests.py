@@ -4,9 +4,8 @@
 import os
 from bes.common import dict_util
 from bes.testing.unit_test import unit_test
-from bes.testing.unit_test_skip import skip_if
+from bes.testing.unit_test_function_skip import unit_test_function_skip
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
 from rebuild.artifactory.artifactory_requests import artifactory_requests as AR
 
 class test_artifactory_requests(unit_test):
@@ -24,7 +23,7 @@ class test_artifactory_requests(unit_test):
     _reason = ''
   _enabled = unit_test.BES_DONET and _have_credentials
 
-  @skip_if(not _enabled, _reason)
+  @unit_test_function_skip.skip_if(not _enabled, _reason)
   def test_fetch_heders(self):
     url = 'https://withme.jfrog.io/withme/ego-dev-env-tools/dev-env/sources/r/rsa-3.4.2.tar.gz'
     headers = AR.fetch_headers(url, self._download_username, self._download_password)
@@ -36,16 +35,16 @@ class test_artifactory_requests(unit_test):
       'X-Artifactory-Id': 'aolshared4b-withme',
     }, dict_util.filter_with_keys(headers, [ 'X-Checksum-Sha1', 'X-Checksum-Md5', 'X-Artifactory-Filename', 'X-Artifactory-Id', 'X-Checksum-Sha256' ]) )
 
-  @skip_if(not _enabled, _reason)
+  @unit_test_function_skip.skip_if(not _enabled, _reason)
   def test_fetch_checksums(self):
     url = 'https://withme.jfrog.io/withme/ego-dev-env-tools/dev-env/sources/r/rsa-3.4.2.tar.gz'
     checksums = AR.fetch_checksums(url, self._download_username, self._download_password)
     self.assertEqual( ( 'b315f47882c24030ee6b5aad628cccdb', '5e01533d344df8e55c090f0fce9c5f9383bf9e9c', '25df4e10c263fb88b5ace923dd84bf9aa7f5019687b5e55382ffcdb8bede9db5' ), checksums )
 
-  @skip_if(not _enabled, _reason)
+  @unit_test_function_skip.skip_if(not _enabled, _reason)
   def test_download_to_file(self):
     url = 'https://withme.jfrog.io/withme/ego-dev-env-tools/dev-env/sources/r/rsa-3.4.2.tar.gz'
-    tmp = temp_file.make_temp_file()
+    tmp = self.make_temp_file()
     rv = AR.download_to_file(tmp, url, self._download_username, self._download_password)
     self.assertTrue( '25df4e10c263fb88b5ace923dd84bf9aa7f5019687b5e55382ffcdb8bede9db5', file_util.checksum('sha256', tmp) )
 

@@ -7,8 +7,8 @@ from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
 from rebuild.toolchain.darwin.lipo import lipo
 from bes.system.host import host
-from bes.testing.unit_test_skip import raise_skip_if_not_platform
 from bes.testing.unit_test import unit_test
+from bes.testing.unit_test_class_skip import unit_test_class_skip
 
 class test_lipo(unit_test):
 
@@ -16,7 +16,7 @@ class test_lipo(unit_test):
 
   @classmethod
   def setUpClass(clazz):
-    raise_skip_if_not_platform(host.MACOS)
+    unit_test_class_skip.raise_skip_if_not_platform(host.MACOS)
     
   def test_archs_fat(self):
     actual_archs = self._archs('fat_fruits.a')

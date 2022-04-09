@@ -11,7 +11,8 @@ from bes.git.git_temp_repo import git_temp_repo
 from bes.git.git_unit_test import git_temp_home_func
 from bes.build.build_target import build_target
 from rebuild.toolchain.toolchain_testing import toolchain_testing
-from bes.testing.unit_test_skip import skip_if
+
+from bes.testing.unit_test_function_skip import unit_test_function_skip
 
 from rebuild._testing.rebuilder_tester import rebuilder_tester
 
@@ -140,19 +141,19 @@ class test_rebuilder_script(program_unit_test):
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libstarch-1.0.0.tar.gz' ], test.artifacts )
 
-  @skip_if(not toolchain_testing.can_compile_ios(), 'cannot compile ios')
+  @unit_test_function_skip.skip_if(not toolchain_testing.can_compile_ios(), 'cannot compile ios')
   def broken_test_lib_libstarch_ios_cross_compile(self):
     test = self._run_test(rebuilder_tester.config(bt = self.IOS_BUILD_TARGET), self.data_dir(), 'basic', 'libstarch', '--build-target=ios-9/arm64/release')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libstarch-1.0.0.tar.gz' ], test.artifacts )
 
-  @skip_if(not toolchain_testing.can_compile_ios(), 'cannot compile ios')
+  @unit_test_function_skip.skip_if(not toolchain_testing.can_compile_ios(), 'cannot compile ios')
   def broken_test_lib_libstarch_ios_cross_compile_build_target(self):
     test = self._run_test(rebuilder_tester.config(bt = self.IOS_BUILD_TARGET), self.data_dir(), 'basic', 'libstarch', '--build-target', 'ios-9/arm64/release')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libstarch-1.0.0.tar.gz' ], test.artifacts )
 
-  @skip_if(not toolchain_testing.can_compile_android(), 'cannot compile android')
+  @unit_test_function_skip.skip_if(not toolchain_testing.can_compile_android(), 'cannot compile android')
   def test_lib_libstarch_android_cross_compile(self):
     test = self._run_test(rebuilder_tester.config(bt = self.ANDROID_BUILD_TARGET), self.data_dir(), 'basic', 'libstarch', '-s', 'android')
     self.assertEqual( 0, test.result.exit_code )
