@@ -2,7 +2,7 @@
 
 import re
 
-from bes.common.check import check
+from bes.system.check import check
 from bes.text.string_list import string_list
 from bes.system.log import logger
 from bes.text.text_replace import text_replace

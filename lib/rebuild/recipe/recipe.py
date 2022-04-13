@@ -4,7 +4,7 @@ import re
 
 from collections import namedtuple
 
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.node import node
 from bes.common.tuple_util import tuple_util
 from bes.compat.StringIO import StringIO

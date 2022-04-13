@@ -1,7 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.object_util import object_util
 from bes.fs.file_checksum import file_checksum_list
 from bes.fs.file_util import file_util

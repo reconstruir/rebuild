@@ -2,7 +2,7 @@
 
 import os.path as path
 
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.string_util import string_util
 from bes.common.time_util import time_util
 from bes.compat.StringIO import StringIO

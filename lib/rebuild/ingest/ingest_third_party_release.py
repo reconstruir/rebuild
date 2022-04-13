@@ -2,7 +2,7 @@
 
 from collections import namedtuple
 
-from bes.common.check import check
+from bes.system.check import check
 
 class ingest_third_party_release(namedtuple('ingest_third_party_release', 'version, checksum, url')):
 

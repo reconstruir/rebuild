@@ -5,7 +5,7 @@ from rebuild.step.step_result import step_result
 
 from rebuild.recipe.recipe_parser_util import recipe_parser_util
 
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.object_util import object_util
 from bes.common.variable import variable
 from bes.fs.file_find import file_find

@@ -2,7 +2,7 @@
 
 import json, os.path as path, hashlib
 from collections import namedtuple
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.json_util import json_util
 from bes.common.object_util import object_util
 from bes.common.type_checked_list import type_checked_list

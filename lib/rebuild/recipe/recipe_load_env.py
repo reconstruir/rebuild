@@ -2,7 +2,7 @@
 
 from abc import abstractmethod, ABCMeta
 
-from bes.common.check import check
+from bes.system.check import check
 from bes.system.compat import with_metaclass
 from bes.build.build_target import build_target as BT
 

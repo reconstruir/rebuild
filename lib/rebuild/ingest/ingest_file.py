@@ -5,7 +5,7 @@ from collections import namedtuple
 import os.path as path
 
 from bes.compat.StringIO import StringIO
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.node import node
 from bes.key_value.key_value_list import key_value_list
 from bes.system.log import log

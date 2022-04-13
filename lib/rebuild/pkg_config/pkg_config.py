@@ -4,7 +4,7 @@
 import pkgutil
 import os, os.path as path
 from bes.common.algorithm import algorithm
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.object_util import object_util
 from bes.common.string_util import string_util
 from bes.system.execute import execute

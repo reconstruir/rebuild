@@ -2,7 +2,7 @@
 
 import json
 from collections import namedtuple
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.json_util import json_util
 from bes.common.string_util import string_util
 from bes.common.tuple_util import tuple_util

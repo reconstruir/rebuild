@@ -4,7 +4,7 @@ import os.path as path
 from collections import namedtuple
 
 from bes.common.algorithm import algorithm
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.string_util import string_util
 from bes.compat.StringIO import StringIO
 from bes.dependency import dependency_provider

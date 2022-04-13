@@ -1,7 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common.check import check
+from bes.system.check import check
 from rebuild.step.compound_step import compound_step
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result

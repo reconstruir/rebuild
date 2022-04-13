@@ -3,7 +3,7 @@
 import re
 
 from collections import namedtuple
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.string_util import string_util
 
 from .recipe_error import recipe_error

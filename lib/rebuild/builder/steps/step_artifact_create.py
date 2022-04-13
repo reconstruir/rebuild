@@ -2,7 +2,7 @@
 
 import os, os.path as path
 
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.dict_util import dict_util
 from bes.archive.archiver import archiver
 from bes.key_value.key_value_list import key_value_list

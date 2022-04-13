@@ -1,7 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.string_util import string_util
 from bes.system.log import log
 from bes.build.build_blurb import build_blurb

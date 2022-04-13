@@ -2,7 +2,7 @@
 
 import json, os.path as path
 from collections import namedtuple
-from bes.common.check import check
+from bes.system.check import check
 from bes.fs.file_check import file_check
 from bes.fs.file_util import file_util
 

@@ -3,7 +3,7 @@
 import os.path as path
 from bes.system.log import log
 from bes.fs.file_util import file_util
-from bes.common.check import check
+from bes.system.check import check
 from bes.text.string_list import string_list
 
 from .storage_base import storage_base

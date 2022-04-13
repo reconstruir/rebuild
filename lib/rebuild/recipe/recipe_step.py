@@ -2,7 +2,7 @@
 
 from collections import namedtuple
 from bes.compat.StringIO import StringIO
-from bes.common.check import check
+from bes.system.check import check
 from bes.key_value.key_value_list import key_value_list
 from bes.text.tree_text_parser import tree_text_parser
 

@@ -4,7 +4,7 @@ import os.path as path
 
 from bes.build.artifact_descriptor import artifact_descriptor
 from bes.build.requirement_list import requirement_list
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.string_util import string_util
 from bes.compat.StringIO import StringIO
 from bes.fs.file_util import file_util

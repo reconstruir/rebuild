@@ -6,7 +6,7 @@ from abc import abstractmethod, ABCMeta
 
 from bes.system.log import log
 from bes.system.compat import with_metaclass
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.variable import variable
 from bes.key_value.key_value_list import key_value_list
 from bes.text.string_lexer_options import string_lexer_options

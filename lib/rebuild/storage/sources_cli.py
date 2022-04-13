@@ -5,7 +5,7 @@ from collections import namedtuple
 
 from bes.system.log import log
 from bes.archive.archiver import archiver
-from bes.common.check import check
+from bes.system.check import check
 from bes.compat.StringIO import StringIO
 from bes.fs.file_find import file_find
 from bes.fs.file_util import file_util

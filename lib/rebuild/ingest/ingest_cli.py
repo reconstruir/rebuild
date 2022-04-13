@@ -4,7 +4,7 @@ import argparse, os
 from os import path
 
 from bes.system.log import log
-from bes.common.check import check
+from bes.system.check import check
 from bes.version.version_cli import version_cli
 from bes.cli.argparser_handler import argparser_handler
 

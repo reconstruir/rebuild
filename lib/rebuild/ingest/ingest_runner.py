@@ -2,7 +2,7 @@
 
 #from os import path
 
-from bes.common.check import check
+from bes.system.check import check
 from bes.property.cached_property import cached_property
 from bes.fs.temp_file import temp_file
 from bes.system.log import logger

@@ -2,7 +2,7 @@
 
 from os import path
 
-from bes.common.check import check
+from bes.system.check import check
 from bes.system.log import logger
 
 from bes.vfs.vfs_registry import vfs_registry

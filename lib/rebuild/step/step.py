@@ -5,7 +5,7 @@ import copy, inspect, os, os.path as path, sys
 from abc import abstractmethod, ABCMeta
 from collections import namedtuple
 
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.dict_util import dict_util
 from bes.common.object_util import object_util
 from bes.common.string_util import string_util

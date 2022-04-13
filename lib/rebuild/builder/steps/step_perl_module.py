@@ -8,7 +8,7 @@ from rebuild.step.step_result import step_result
 from bes.build.build_system import build_system
 from bes.python.setup_tools import setup_tools
 from bes.system.execute import execute
-from bes.common.check import check
+from bes.system.check import check
 
 class step_perl_module_setup(step):
   'Setup a perl module for compilation.'

@@ -2,7 +2,7 @@
 
 import os.path as path
 from bes.common.bool_util import bool_util
-from bes.common.check import check
+from bes.system.check import check
 
 from .value_base import value_base
 from .value_type import value_type

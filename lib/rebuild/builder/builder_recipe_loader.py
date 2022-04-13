@@ -3,7 +3,7 @@
 import copy, os.path as path
 from collections import namedtuple
 
-from bes.common.check import check
+from bes.system.check import check
 from bes.fs.file_util import file_util
 
 from rebuild.recipe.recipe import recipe

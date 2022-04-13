@@ -2,7 +2,7 @@
 
 from enum import IntEnum
 
-from bes.common.check import check
+from bes.system.check import check
 
 class entry_type(IntEnum):
   BLANK = 1

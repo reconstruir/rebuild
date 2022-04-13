@@ -6,7 +6,7 @@ from io import BytesIO
 from collections import namedtuple
 
 from bes.system.log import logger
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.node import node
 from bes.property.cached_property import cached_property
 from bes.fs.file_path import file_path

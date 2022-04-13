@@ -2,7 +2,7 @@
 
 from os import path
 from collections import namedtuple
-from bes.common.check import check
+from bes.system.check import check
 
 class value_origin(namedtuple('value_origin', 'filename, line_number, text, recipe_text')):
   'Class to keep track of the origin of a value.  Mostly useful for error reporting.'

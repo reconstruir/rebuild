@@ -1,7 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import json
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.json_util import json_util
 from bes.common.string_util import string_util
 from bes.build.requirement_list import requirement_list

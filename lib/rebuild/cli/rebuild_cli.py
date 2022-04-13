@@ -4,7 +4,7 @@ from bes.cli.cli import cli
 from bes.cli.cli_command import cli_command
 from bes.best_cli.best_cli import best_cli
   
-from bes.common.check import check
+from bes.system.check import check
 
 class rebuild_cli(cli):
   

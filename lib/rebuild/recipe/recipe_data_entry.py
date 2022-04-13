@@ -3,7 +3,7 @@
 from collections import namedtuple
 
 from bes.compat.StringIO import StringIO
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.string_util import string_util
 from bes.common.type_checked_list import type_checked_list
 from bes.version.software_version import software_version

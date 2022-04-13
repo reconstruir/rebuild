@@ -3,7 +3,7 @@
 import argparse, os, os.path as path
 from collections import namedtuple
 
-from bes.common.check import check
+from bes.system.check import check
 from bes.compat.StringIO import StringIO
 from bes.fs.file_util import file_util
 from bes.fs.file_checksum import file_checksum_list

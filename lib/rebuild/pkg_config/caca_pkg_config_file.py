@@ -5,7 +5,7 @@
 #import copy, glob, os.path as path
 from bes.build.requirement import requirement
 from bes.build.requirement_list import requirement_list
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.string_util import string_util
 from bes.common.variable import variable
 from bes.fs.file_util import file_util

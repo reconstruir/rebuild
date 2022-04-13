@@ -1,6 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.common.check import check
+from bes.system.check import check
 from bes.key_value.key_value import key_value
 from bes.text.comments import comments
 from bes.text.line_break import line_break

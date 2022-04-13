@@ -1,7 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from collections import namedtuple
-from bes.common.check import check
+from bes.system.check import check
 from bes.fs.file_util import file_util
 
 class storage_db_entry(namedtuple('storage_db_entry', 'filename, mtime, checksum')):

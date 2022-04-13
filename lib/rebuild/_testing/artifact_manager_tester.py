@@ -2,7 +2,7 @@
 
 from os import path
 
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.object_util import object_util
 from bes.common.string_util import string_util
 from bes.fs.temp_file import temp_file

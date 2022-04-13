@@ -4,7 +4,7 @@ import os.path as path
 from abc import ABCMeta, abstractmethod
 from bes.system.compat import with_metaclass
 from bes.compat.StringIO import StringIO
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.string_util import string_util
 from bes.common.type_checked_list import type_checked_list
 from bes.text.text_line_parser import text_line_parser

@@ -2,7 +2,7 @@
 
 from collections import namedtuple
 
-from bes.common.check import check
+from bes.system.check import check
 
 class package_install_options(namedtuple('package_install_options', 'allow_downgrade, allow_same_version')):
 

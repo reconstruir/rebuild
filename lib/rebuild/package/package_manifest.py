@@ -2,7 +2,7 @@
 
 from collections import namedtuple
 
-from bes.common.check import check
+from bes.system.check import check
 from bes.fs.dir_util import dir_util
 from bes.fs.file_find import file_find
 from bes.system.execute import execute

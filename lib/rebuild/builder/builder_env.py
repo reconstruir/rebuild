@@ -3,7 +3,7 @@
 import os.path as path
 
 from bes.fs.file_trash import file_trash
-from bes.common.check import check
+from bes.system.check import check
 from bes.git.git_util import git_util
 from bes.git.git_archive_cache import git_archive_cache
 from bes.properties_file.properties_file import properties_file

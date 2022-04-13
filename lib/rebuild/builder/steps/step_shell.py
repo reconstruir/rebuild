@@ -3,7 +3,7 @@
 
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result
-from bes.common.check import check
+from bes.system.check import check
 
 class step_shell(step):
   'A build step that is a shell command.'

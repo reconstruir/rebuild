@@ -1,7 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy, os.path as path, os
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.object_util import object_util
 from bes.system.execute import execute
 from bes.system.os_env import os_env

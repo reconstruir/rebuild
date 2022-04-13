@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path, pprint
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.dict_util import dict_util
 from bes.build.build_blurb import build_blurb
 from bes.build.package_descriptor import package_descriptor

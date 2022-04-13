@@ -3,7 +3,7 @@
 from collections import namedtuple
 
 from os import path
-from bes.common.check import check
+from bes.system.check import check
 from bes.text.text_line_parser import text_line_parser
 
 class value_error(Exception):

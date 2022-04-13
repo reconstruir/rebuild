@@ -2,7 +2,7 @@
 
 import re
 from collections import namedtuple
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.node import node
 from bes.key_value.key_value_list import key_value_list
 from bes.text.string_list import string_list

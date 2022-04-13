@@ -5,7 +5,7 @@ from bes.system.log import log
 from bes.build.build_blurb import build_blurb
 from bes.version.version_cli import version_cli
 from bes.system.log import log
-from bes.common.check import check
+from bes.system.check import check
 from bes.cli.argparser_handler import argparser_handler
 
 from rebuild.recipe.recipe_cli_args import recipe_cli_args

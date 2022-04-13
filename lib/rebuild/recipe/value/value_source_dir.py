@@ -2,7 +2,7 @@
 
 import os.path as path
 from bes.system.execute import execute
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.string_util import string_util
 from bes.compat.StringIO import StringIO
 from bes.archive.archiver import archiver

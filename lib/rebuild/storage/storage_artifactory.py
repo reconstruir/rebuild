@@ -6,7 +6,7 @@ from bes.system.execute import execute
 from bes.system.log import log
 from bes.system.os_env import os_env
 from bes.fs.file_util import file_util
-from bes.common.check import check
+from bes.system.check import check
 from bes.text.string_list import string_list
 from bes.compat.url_compat import urljoin
 

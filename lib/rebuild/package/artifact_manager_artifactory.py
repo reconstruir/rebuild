@@ -4,7 +4,7 @@ from os import path
 
 from abc import abstractmethod, ABCMeta
 from bes.system.compat import with_metaclass
-from bes.common.check import check
+from bes.system.check import check
 from bes.system.log import log
 from bes.debug.debug_timer import debug_timer
 from bes.fs.file_util import file_util

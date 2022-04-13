@@ -3,7 +3,7 @@
 from os import path
 import os
 
-from bes.common.check import check
+from bes.system.check import check
 
 from .recipe_cli_command import recipe_cli_command
 from rebuild.builder.builder_config import builder_config

@@ -3,7 +3,7 @@
 
 import os.path as path
 from bes.common.algorithm import algorithm
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.object_util import object_util
 from bes.fs.dir_util import dir_util
 from bes.fs.file_util import file_util

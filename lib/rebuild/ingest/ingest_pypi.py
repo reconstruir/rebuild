@@ -3,7 +3,7 @@
 import requests
 import pprint
 
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.string_util import string_util
 from bes.version.software_version import software_version
 

@@ -1,7 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from collections import namedtuple
-from bes.common.check import check
+from bes.system.check import check
 from bes.compat.StringIO import StringIO
 from bes.build.build_system import build_system
 

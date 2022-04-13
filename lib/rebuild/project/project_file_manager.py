@@ -3,7 +3,7 @@
 from os import path
 from collections import namedtuple
 from bes.common.algorithm import algorithm
-from bes.common.check import check
+from bes.system.check import check
 
 from bes.system.log import log
 from bes.system.env_var import os_env_var

@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy, unittest
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.dict_util import dict_util
 from _test_steps import *
 from rebuild.step.compound_step import compound_step

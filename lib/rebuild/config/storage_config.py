@@ -3,7 +3,7 @@
 from os import path
 from collections import namedtuple
 
-from bes.common.check import check
+from bes.system.check import check
 from bes.property.cached_property import cached_property
 from bes.property.env_var_property import env_var_property
 from bes.system.log import logger

@@ -3,7 +3,7 @@
 from os import path
 from datetime import datetime
 
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.node import node
 from bes.fs.file_attributes import file_attributes
 from bes.fs.file_checksum import file_checksum

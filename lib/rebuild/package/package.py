@@ -6,7 +6,7 @@ from collections import namedtuple
 
 from bes.archive.archive import archive
 from bes.archive.archiver import archiver
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.dict_util import dict_util
 from bes.common.json_util import json_util
 from bes.common.string_util import string_util

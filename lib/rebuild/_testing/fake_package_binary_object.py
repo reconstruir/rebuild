@@ -2,7 +2,7 @@
 
 from os import path
 from collections import namedtuple
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.node import node
 from bes.text.white_space import white_space
 from bes.fs.file_util import file_util

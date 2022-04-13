@@ -2,7 +2,7 @@
 
 import os.path as path
 
-from bes.common.check import check
+from bes.system.check import check
 from bes.system.log import logger
 
 from bes.fs.file_resolver import file_resolver

@@ -4,7 +4,7 @@
 import copy, re, glob, os.path as path
 from bes.fs.file_util import file_util
 from bes.common.algorithm import algorithm
-from bes.common.check import check
+from bes.system.check import check
 from bes.common.dict_util import dict_util
 from bes.common.string_util import string_util
 from bes.common.type_checked_list import type_checked_list
