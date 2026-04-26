@@ -3,7 +3,7 @@
 
 import os.path as path
 
-from bes.fs.dir_util import dir_util
+from bes.files.bf_dir import bf_dir
 from bes.fs.file_util import file_util
 from rebuild.toolchain.library import library
 from rebuild.toolchain.darwin.lipo import lipo

@@ -3,7 +3,7 @@
 from collections import namedtuple
 
 from bes.system.check import check
-from bes.fs.dir_util import dir_util
+from bes.files.bf_dir import bf_dir
 from bes.fs.file_find import file_find
 from bes.system.execute import execute
 from bes.system.host import host
@@ -65,7 +65,7 @@ class package_manifest(namedtuple('package_manifest', 'files, env_files, content
 
   @classmethod
   def _determine_files_unix(clazz, stage_dir):
-    stuff = dir_util.list(stage_dir, relative = True)
+    stuff = bf_dir.list(stage_dir, relative = True)
     rv = execute.execute([ 'find' ] + stuff + ['-type', 'f' ], cwd = stage_dir)
     files = text_line_parser.parse_lines(rv.stdout, strip_text = True, remove_empties = True)
     rv = execute.execute([ 'find' ] + stuff + ['-type', 'l' ], cwd = stage_dir)

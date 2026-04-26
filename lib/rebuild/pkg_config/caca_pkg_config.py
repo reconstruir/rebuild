@@ -5,7 +5,7 @@ import os.path as path
 from bes.common.algorithm import algorithm
 from bes.system.check import check
 from bes.common.object_util import object_util
-from bes.fs.dir_util import dir_util
+from bes.files.bf_dir import bf_dir
 from bes.fs.file_util import file_util
 from bes.dependency.dependency_resolver import dependency_resolver
 from .caca_pkg_config_file import caca_pkg_config_file
@@ -24,7 +24,7 @@ class caca_pkg_config(object):
     'Scan a directory for .pc files.'
     if not path.isdir(d):
       return []
-    return [ f for f in dir_util.list(d) if caca_pkg_config_file.is_pc_file(f) ]
+    return [ f for f in bf_dir.list(d) if caca_pkg_config_file.is_pc_file(f) ]
 
   @classmethod
   def _scan_path(clazz, pc_path):

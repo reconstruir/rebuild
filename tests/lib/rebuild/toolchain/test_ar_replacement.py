@@ -6,7 +6,7 @@ import os.path as path
 from bes.system.host import host
 from rebuild.toolchain.ar_replacement import ar_replacement
 from bes.build.build_system import build_system
-from bes.fs.dir_util import dir_util
+from bes.files.bf_dir import bf_dir
 from bes.fs.temp_file import temp_file
 from bes.testing.unit_test_function_skip import unit_test_function_skip
 
@@ -43,7 +43,7 @@ class test_ar_replacement(unit_test):
     ]
     tmp_dir = temp_file.make_temp_dir()
     ar_replacement.extract(self._test_file('thin_fruits_x86_64.a'), tmp_dir)
-    actual_files = dir_util.list(tmp_dir, relative = True)
+    actual_files = bf_dir.list(tmp_dir, relative = True)
     actual_files = self._filter_contents(actual_files)
     self.assertEqual( expected_files, actual_files )
 
@@ -61,7 +61,7 @@ class test_ar_replacement(unit_test):
     ]
     tmp_dir = temp_file.make_temp_dir()
     ar_replacement.extract(self._test_file('fat_fruits.a'), tmp_dir)
-    actual_files = dir_util.list(tmp_dir, relative = True)
+    actual_files = bf_dir.list(tmp_dir, relative = True)
     actual_files = self._filter_contents(actual_files)
     self.assertEqual( expected_files, actual_files )
 

@@ -7,7 +7,7 @@ from bes.common.algorithm import algorithm
 from bes.common.object_util import object_util
 from bes.common.string_util import string_util
 from bes.system.execute import execute
-from bes.fs.dir_util import dir_util
+from bes.files.bf_dir import bf_dir
 from bes.fs.file_find import file_find
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
@@ -60,7 +60,7 @@ class archive_util(object):
   @classmethod
   def patch_make(clazz, working_dir):
     'Create a patch out of 2 directories one ending in .orig.'
-    dirs = dir_util.list(working_dir, relative = True)
+    dirs = bf_dir.list(working_dir, relative = True)
     if len(dirs) != 2:
       raise RuntimeError('Found more than 2 directories in %s' % (working_dir))
 

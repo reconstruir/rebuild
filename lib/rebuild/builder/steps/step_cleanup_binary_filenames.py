@@ -3,7 +3,7 @@
 
 import os.path as path
 
-from bes.fs.dir_util import dir_util
+from bes.files.bf_dir import bf_dir
 from bes.files.bf_symlink import bf_symlink
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result
@@ -27,7 +27,7 @@ class step_cleanup_binary_filenames(step):
     if values.get('skip_binary_third_party_prefix'):
       return step_result(True, None)
       
-    binaries = dir_util.list(script.staged_files_bin_dir)
+    binaries = bf_dir.list(script.staged_files_bin_dir)
     for b in binaries:
       link_src = path.basename(b)
       if not link_src.startswith(env.config.third_party_prefix):

@@ -5,7 +5,7 @@ from bes.common.algorithm import algorithm
 from bes.system.check import check
 from bes.common.dict_util import dict_util
 from bes.common.object_util import object_util
-from bes.fs.dir_util import dir_util
+from bes.files.bf_dir import bf_dir
 from bes.fs.file_util import file_util
 from bes.dependency.dependency_resolver import dependency_resolver
 from collections import namedtuple
@@ -83,7 +83,7 @@ class builder(object):
       builds_dir = self._env.config.builds_dir(script.build_target)
       if path.isdir(builds_dir):
         patterns = '*%s-*' % (package_name)
-        tmp_dirs = dir_util.list(builds_dir, patterns = patterns)
+        tmp_dirs = bf_dir.list_dirs(builds_dir, patterns = patterns)
         for tmp_dir in tmp_dirs:
           self.blurb('wiping temporary build directory: %s' % (path.relpath(tmp_dir)))
         file_util.remove(tmp_dirs)
@@ -103,7 +103,7 @@ class builder(object):
       builds_dir = self._env.config.builds_dir(script.build_target)
       to_remove = []
       if path.isdir(builds_dir):
-        tmp_dirs = dir_util.older_dirs(dir_util.list(builds_dir), hours = 24)
+        tmp_dirs = bf_dir.older_dirs(bf_dir.list_dirs(builds_dir), hours = 24)
         for tmp_dir in tmp_dirs:
           self._env.trash.trash(tmp_dir)
 #          self.blurb('wiping expired tmp build directory: %s' % (path.relpath(tmp_dir)))
@@ -175,7 +175,7 @@ class builder(object):
     needs_rebuilding, reason = self._needs_rebuilding(script, env)
     if not needs_rebuilding:
       # If the working directory is empty, it means no work happened and its useless
-      if path.exists(script.working_dir) and dir_util.is_empty(script.working_dir):
+      if path.exists(script.working_dir) and bf_dir.is_empty(script.working_dir):
         file_util.remove(script.working_dir)
       script.timer_stop()
       return self._run_result(self.SCRIPT_CURRENT, None, reason)

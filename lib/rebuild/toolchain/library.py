@@ -3,7 +3,7 @@
 
 import os, os.path as path, re
 from bes.system import impl_import
-from bes.fs.dir_util import dir_util
+from bes.files.bf_dir import bf_dir
 from bes.fs.file_util import file_util
 from bes.fs.file_path import file_path
 
@@ -66,7 +66,7 @@ class library(_library_super_class):
   @classmethod
   def list_libraries(clazz, d, relative = True):
     'List all libraries in a directory.  Does not rescurse into subdirs.  Resulting paths are absolute.'
-    files = dir_util.list(d, relative = False)
+    files = bf_dir.list(d, relative = False)
     libs = [ f for f in files if clazz.is_library(f) ]
     if relative:
       libs = [ file_util.remove_head(f, d) for f in libs ]

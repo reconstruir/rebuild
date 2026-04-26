@@ -6,7 +6,7 @@ from bes.system.execute import execute
 from bes.system.host import host
 from collections import namedtuple
 from rebuild.toolchain.darwin.lipo import lipo
-from bes.fs.dir_util import dir_util
+from bes.files.bf_dir import bf_dir
 from bes.fs.file_util import file_util
 from bes.fs.temp_file import temp_file
 
@@ -95,7 +95,7 @@ class ar_replacement(object):
     for arch, lib in thin_libs:
       objects_dir = lib + '.objdir'
       clazz._extract_with_ar(lib, objects_dir, tools)
-      files = dir_util.list(objects_dir, relative = True)
+      files = bf_dir.list(objects_dir, relative = True)
       for f in files:
         src = path.join(objects_dir, f)
         dst_basename = arch + '_' + f
