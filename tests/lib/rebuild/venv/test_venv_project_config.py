@@ -11,7 +11,7 @@ from rebuild.recipe.value.value_origin import value_origin
 from rebuild.recipe.value.value_string_list import value_string_list
 from bes.key_value.key_value_list import key_value_list
 from bes.text.string_list import string_list
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.build.requirement_list import requirement_list
 
 class test_venv_project_config(unit_test):
@@ -86,7 +86,7 @@ project foo
   recipes
     foo/foo.recipe
 '''
-    tmp = temp_file.make_temp_file(content = text)
+    tmp = bf_temp_file.make_temp_file(content = text)
     self.assertTrue( VC.is_venv_config(tmp) )
     
   def test_is_venv_config_invalid(self):
@@ -99,7 +99,7 @@ packages: a b c
 description: bar is good
 packages: d e f
 '''
-    tmp = temp_file.make_temp_file(content = text)
+    tmp = bf_temp_file.make_temp_file(content = text)
     self.assertFalse( VC.is_venv_config(tmp) )
     
 if __name__ == '__main__':

@@ -3,7 +3,7 @@
 
 from bes.testing.unit_test import unit_test
 from bes.fs.testing.temp_content import temp_content
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.git.git_repo import git_repo
 from bes.git.git_unit_test import git_temp_home_func
 from rebuild.storage.storage_git_repo import storage_git_repo
@@ -19,7 +19,7 @@ class test_storage_git_repo(unit_test):
       'file a/alpha-1.2.3.tar.gz "${tarball}" 644',
       'file a/alpha-1.2.4.tar.gz "${tarball}" 644',
     ], delete = not self.DEBUG)
-    tmp_repo_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
+    tmp_repo_dir = bf_temp_file.make_temp_dir(delete = not self.DEBUG)
     if self.DEBUG:
       print('tmp_source_repo: %s' % (tmp_source_repo.root))
       print('       tmp_repo_dir: %s' % (tmp_repo_dir))

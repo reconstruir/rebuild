@@ -3,7 +3,7 @@
 import os.path as path
 
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 
 from bes.system.check import check
 from bes.common.json_util import json_util
@@ -50,7 +50,7 @@ class storage_db_file(storage_db_base):
 
   @classmethod
   def make_temp_db(clazz, db_content, delete = True):
-    root = temp_file.make_temp_dir(delete = delete)
+    root = bf_temp_file.make_temp_dir(delete = delete)
     db_filename = path.join(root, clazz.DB_FILENAME)
     file_util.save(db_filename, content = db_content)
     return clazz(root)

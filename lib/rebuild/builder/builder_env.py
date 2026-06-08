@@ -7,7 +7,9 @@ from bes.system.check import check
 from bes.git.git_util import git_util
 from bes.git.git_archive_cache import git_archive_cache
 from bes.properties_file.properties_file import properties_file
-from bes.url.http_download_cache import http_download_cache
+from bnet.http.http_session import http_session
+from bnet.http.http_session_options import http_session_options
+from bnet.http.http_session_type import http_session_type
 from bes.system.python import python
 from bes.system.which import which
 from bes.python.python_exe import python_exe
@@ -50,7 +52,11 @@ class builder_env(object):
     self.blurb('external_artifacts_storage: %s' % (self.external_artifacts_storage))
     self.checksum_manager = self._make_checksum_manager(config.build_root)
     self.git_downloads_manager = git_archive_cache(path.join(config.build_root, 'downloads', 'git'))
-    self.http_downloads_manager = http_download_cache(path.join(config.build_root, 'downloads', 'http'))
+    _http_cache_dir = path.join(config.build_root, 'downloads', 'http')
+    self.http_downloads_manager = http_session(http_session_options(
+      session_type = http_session_type.REQUESTS_CACHED,
+      cache_db = path.join(_http_cache_dir, 'http_cache.sqlite'),
+    ))
     self.source_dir_zipballs = source_dir_zipball_cache(path.join(config.build_root, 'downloads', 'source_dir_zipball'))
     self.reload_build_artifact_manager()
     self.external_artifact_manager = self._make_external_artifact_manager(self.external_artifacts_storage)

@@ -3,7 +3,7 @@
 #
 from bes.testing.unit_test import unit_test
 import copy, glob, os.path as path, unittest
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.key_value.key_value_list import key_value_list
 from rebuild.pkg_config.caca_pkg_config_file import caca_pkg_config_file
 #from rebuild.pkg_config.entry import entry
@@ -65,7 +65,7 @@ Cflags: -I${includedir}
     self.assertEqual( self.FOO_EXPECTED_PROPERTIES, cf.properties )
     
   def test_parse_file(self):
-    tmp = temp_file.make_temp_file(content = self.FOO_PC)
+    tmp = bf_temp_file.make_temp_file(content = self.FOO_PC)
     cf = caca_pkg_config_file.parse_file(tmp)
     self.assertEqual( self.FOO_EXPECTED_VARIABLES, cf.variables )
     self.assertEqual( self.FOO_EXPECTED_PROPERTIES, cf.properties )
@@ -143,11 +143,11 @@ Cflags: -I${includedir}
     self.assertEqual( expected_properties, cf.properties )
 
   def xtest_write_filename(self):
-    filename = temp_file.make_temp_file(content = self.FOO_PC)
+    filename = bf_temp_file.make_temp_file(content = self.FOO_PC)
     cf = caca_pkg_config_file()
     cf.parse_file(filename)
 
-    new_filename = temp_file.make_temp_file()
+    new_filename = bf_temp_file.make_temp_file()
     cf.write_file(new_filename)
 
     new_cf = caca_pkg_config_file()
@@ -160,7 +160,7 @@ Cflags: -I${includedir}
     for example in examples:
       cf = caca_pkg_config_file()
       cf.parse_file(example)
-      new_filename = temp_file.make_temp_file()
+      new_filename = bf_temp_file.make_temp_file()
       cf.write_file(new_filename)
 
       new_cf = caca_pkg_config_file()

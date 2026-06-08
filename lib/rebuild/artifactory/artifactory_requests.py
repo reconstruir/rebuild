@@ -9,7 +9,7 @@ from bes.system.os_env import os_env
 from bes.system.check import check
 from bes.fs.file_path import file_path
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 
 from bes.build.requirement_list import requirement_list
 from rebuild.package.package_manifest import package_manifest
@@ -100,7 +100,7 @@ class artifactory_requests(object):
     check.check_bool(checksum)
 
     import requests
-    tmp = temp_file.make_temp_file(suffix = '-' + path.basename(target), delete = not debug)
+    tmp = bf_temp_file.make_temp_file(suffix = '-' + path.basename(target), delete = not debug)
     auth = ( credentials.username, credentials.password )
     clazz.log.log_d('download_to_file: url={} auth={} tmp={}'.format(url, auth, tmp))
     response = requests.get(url, auth = auth, stream = True)

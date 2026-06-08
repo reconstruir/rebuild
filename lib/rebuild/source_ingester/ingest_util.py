@@ -7,12 +7,12 @@ from collections import namedtuple
 from bes.system.check import check
 from bes.archive.archiver import archiver
 from bes.archive.archive_extension import archive_extension
+from bes.files.bf_temp_file import bf_temp_file
+from bes.files.checksum.bf_checksum import bf_checksum
 from bes.fs.file_util import file_util
 from bes.fs.tar_util import tar_util
-from bes.fs.temp_file import temp_file
 from bes.system.execute import execute
 from bes.system.log import log
-from bes.url import url_util
 
 from rebuild.binary_format.binary_detector import binary_detector
 
@@ -28,7 +28,7 @@ class ingest_util(object):
       file_util.remove(tmp)
       raise RuntimeError('not an executable: %s' % (url))
     os.chmod(tmp, 0o755)
-    empty_dir = temp_file.make_temp_dir()
+    empty_dir = bf_temp_file.make_temp_dir()
     archiver.create(filename, empty_dir, extra_items = [ archiver.item(tmp, binary_arc_name) ] )
     file_util.remove(tmp)
     
@@ -38,7 +38,7 @@ class ingest_util(object):
     filename = filename or url_util.url_path_baename(url)
     if not archive_extension.is_valid_filename(filename):
       raise RuntimeError('filename should be a valid archive name.')
-    tmp_dir = temp_file.make_temp_dir()
+    tmp_dir = bf_temp_file.make_temp_dir()
     tmp = path.join(tmp_dir, filename)
     url_util.download_to_file(url, tmp)
     if not archiver.is_valid(tmp):
@@ -56,12 +56,12 @@ class ingest_util(object):
       raise RuntimeError('not a valid archive filename: %s' % (archive_filename))
     if not file_util.is_basename(archive_filename):
       raise RuntimeError('archive_filename should be a filename not a path: %s' % (archive_filename))
-    tar_dir = temp_file.make_temp_dir(delete = not debug)
+    tar_dir = bf_temp_file.make_temp_dir(delete = not debug)
     arcname = arcname or path.join('bin', path.basename(executable_filename))
     dst_file = path.join(tar_dir, arcname)
     file_util.copy(executable_filename, dst_file)
     os.chmod(dst_file, 0o755)
-    tmp_dir = temp_file.make_temp_dir(delete = not debug)
+    tmp_dir = bf_temp_file.make_temp_dir(delete = not debug)
     tmp_archive_filename = path.join(tmp_dir, archive_filename)
     tar_util.create_deterministic_tarball(tmp_archive_filename, tar_dir, arcname, '2018-12-08')
     file_util.remove(tar_dir)
@@ -73,7 +73,7 @@ class ingest_util(object):
     Fix the mode, atime and mtime of an executable so when it is included in a tarball
     the checksum will be deterministic.
     '''
-    tmp_dir = temp_file.make_temp_dir(delete = not debug)
+    tmp_dir = bf_temp_file.make_temp_dir(delete = not debug)
     tmp_executable_filename = path.join(tmp_dir, path.basename(executable_filename))
     file_util.copy(executable_filename, tmp_executable_filename)
     os.chmod(tmp_executable_filename, 0o755)
@@ -83,7 +83,7 @@ class ingest_util(object):
   _ingest_result = namedtuple('_ingest_result', 'success, reason')
   
   @classmethod
-  def ingest_url(clazz, url, ingested_filename, arcname, checksum, storage, http_cache,
+  def ingest_url(clazz, url, ingested_filename, arcname, checksum, storage, http_session,
                  cookies = None, dry_run = False, debug = False):
     check.check_string(url)
     check.check_string(ingested_filename)
@@ -92,12 +92,14 @@ class ingest_util(object):
     if checksum:
       check.check_string(checksum)
     clazz.log_d('ingest_url: url=%s; arcname=%s; cookies=%s' % (url, arcname, cookies))
-    local_filename = http_cache.get_url(url, checksum, cookies = cookies, debug = debug)
+    local_filename = bf_temp_file.make_temp_file()
+    try:
+      http_session.download(url, local_filename, cookies = cookies or None)
+    except Exception as ex:
+      return clazz._ingest_result(False, 'failed: could not download: %s - %s' % (url, str(ex)))
     clazz.log_d('ingest_url: downloaded remote url %s => %s' % (url, local_filename))
-    if not local_filename:
-      return clazz._ingest_result(False, 'failed: could not download: %s' % (url))
     if checksum:
-      local_checksum = file_util.checksum('sha256', local_filename)
+      local_checksum = bf_checksum.checksum(local_filename, 'sha256')
       if local_checksum != checksum:
         return clazz._ingest_result(False, 'failed: url checksum does not match: %s' % (url))
     properties = { 'rebuild.ingestion_url': url }
@@ -179,7 +181,7 @@ remote_checksum: %s''' % (local_filename, local_checksum, remote_checksum)
   def _download_to_tmp_file(clazz, url, cookies, debug = False):
     'Download url to tmp file.'
     import requests
-    tmp = temp_file.make_temp_file(delete = not debug)
+    tmp = bf_temp_file.make_temp_file(delete = not debug)
     clazz.log_d('_download_to_tmp_file: url=%s; tmp=%s' % (url, tmp))
     response = requests.get(url, stream = True, cookies = cookies or None)
     clazz.log_d('_download_to_tmp_file: status_code=%d' % (response.status_code))

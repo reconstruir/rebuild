@@ -10,7 +10,7 @@ from rebuild.toolchain.toolchain import toolchain
 from rebuild.toolchain.toolchain_testing import toolchain_testing
 from bes.system.host import host
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.common.object_util import object_util
 from bes.common.variable import variable
 from bes.testing.unit_test_skip import skip_if
@@ -49,7 +49,7 @@ def _make_temp_source(tmp_dir, filename, content):
 def _make_compiler(system, arch):
   return compiler(build_target(system, '', '', arch, 'release'))
 
-tmp_dir = temp_file.make_temp_dir()
+tmp_dir = bf_temp_file.make_temp_dir()
 src = _make_temp_source(tmp_dir, 'test.c', CC_SOURCE)
 cc = _make_compiler(build_system.ANDROID, 'armv7')
 targets = cc.compile_c(src)

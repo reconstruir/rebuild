@@ -4,7 +4,7 @@ import os.path as path
 
 from bes.system.check import check
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 
 from .storage_db_base import storage_db_base
 from .storage_db_dict import storage_db_dict
@@ -28,7 +28,7 @@ class storage_db_pcloud(storage_db_base):
   def save(self):
     'Save the db from its source.'
     db_json = self._dict_db.to_json()
-    tmp_dir = temp_file.make_temp_dir()
+    tmp_dir = bf_temp_file.make_temp_dir()
     tmp_db_filename = path.join(tmp_dir, self.DB_FILENAME)
     file_util.save(tmp_db_filename, content = db_json)
     self._pcloud.upload_file(tmp_db_filename,

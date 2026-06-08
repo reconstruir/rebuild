@@ -4,7 +4,7 @@
 
 import os.path as path
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from rebuild.toolchain.darwin.lipo import lipo
 from bes.system.host import host
 from bes.testing.unit_test import unit_test
@@ -43,7 +43,7 @@ class test_lipo(unit_test):
       self._archive_is_fat('notalib.txt')
 
   def test_fat_to_thin(self):
-    tmp_dir = temp_file.make_temp_dir()
+    tmp_dir = bf_temp_file.make_temp_dir()
     fat_archive = self._test_file('fat_fruits.a')
 
     for arch in lipo.POSSIBLE_ARCHS:
@@ -55,7 +55,7 @@ class test_lipo(unit_test):
       self.assertEqual( [ arch ], self._archs(thin_archive) )
     
   def test_thin_to_fat(self):
-    tmp_dir = temp_file.make_temp_dir()
+    tmp_dir = bf_temp_file.make_temp_dir()
     thin_archives = [ self._test_file('lib%s.a' % (arch)) for arch in lipo.POSSIBLE_ARCHS]
     fat_archive = path.join(tmp_dir, 'tmp_fat_fruits.a')
     thin_checksums_before = [ file_util.checksum('sha256', thin_archive) for thin_archive in thin_archives ]

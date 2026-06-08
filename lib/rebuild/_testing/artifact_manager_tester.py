@@ -5,7 +5,7 @@ from os import path
 from bes.system.check import check
 from bes.common.object_util import object_util
 from bes.common.string_util import string_util
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.text.text_line_parser import text_line_parser
 
 from rebuild.package.artifact_manager_local import artifact_manager_local
@@ -17,7 +17,7 @@ from .artifact_manager_helper import artifact_manager_helper
 class artifact_manager_tester(object):
 
   def __init__(self, root_dir = None, debug = False, recipes = None, filename = None):
-    root_dir = root_dir or temp_file.make_temp_dir(suffix = '.artifacts', delete = not debug)
+    root_dir = root_dir or bf_temp_file.make_temp_dir(suffix = '.artifacts', delete = not debug)
     self._debug = debug
     self.am = artifact_manager_helper.make_local_artifact_manager(root_dir)
     self._recipes = {}
@@ -48,7 +48,7 @@ class artifact_manager_tester(object):
     recipe = self._recipes[key]
     if mutations:
       recipe = recipe.clone(mutations)
-    tmp_file = temp_file.make_temp_file()
+    tmp_file = bf_temp_file.make_temp_file()
     return recipe.create_package(tmp_file, debug = self._debug)
 
   def publish(self, adescs, mutations = {}):

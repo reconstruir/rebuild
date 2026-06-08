@@ -8,7 +8,7 @@ from bes.system.check import check
 from bes.common.string_util import string_util
 from bes.compat.StringIO import StringIO
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_item
+from bes.files.bf_temp_file import bf_temp_item
 from bes.key_value.key_value import key_value
 from bes.key_value.key_value_list import key_value_list
 from bes.key_value.key_value_parser import key_value_parser
@@ -121,7 +121,7 @@ class fake_package_recipe_parser(object):
       mode = 0o755
     else:
       mode = 0o644
-    return temp_item(filename, content, mode)
+    return bf_temp_item(filename, content, mode)
 
   def _parse_properties(self, node):
     properties = {}

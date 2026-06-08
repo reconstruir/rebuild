@@ -4,7 +4,7 @@
 from bes.testing.unit_test import unit_test
 import os.path as path
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from rebuild.tools.patch import patch
 
 class test_patch(unit_test):
@@ -16,7 +16,7 @@ class test_patch(unit_test):
     src = self.data_path('src.txt')
     dst = self.data_path('dst.txt')
 
-    tmp_dir = temp_file.make_temp_dir()
+    tmp_dir = bf_temp_file.make_temp_dir()
     tmp_src = path.join(tmp_dir, 'src.txt')
     backup_src = tmp_src + '.orig'
 
@@ -33,7 +33,7 @@ class test_patch(unit_test):
     src = self.data_path('src.txt')
     dst = self.data_path('dst.txt')
 
-    tmp_dir = temp_file.make_temp_dir()
+    tmp_dir = bf_temp_file.make_temp_dir()
     tmp_src = path.join(tmp_dir, 'src.txt')
     backup_src = tmp_src + '.orig'
 

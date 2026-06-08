@@ -3,7 +3,7 @@
 
 from bes.common.dict_util import dict_util
 from bes.common.tuple_util import tuple_util
-from bes.fs.file_mime import file_mime
+from bes.files.mime.bf_mime import bf_mime
 from bes.fs.file_util import file_util
 from bes.key_value.key_value import key_value
 from bes.key_value.key_value_list import key_value_list
@@ -33,12 +33,12 @@ class test_mock_artifactory_server(unit_test):
 
     tmp = self.make_temp_file(suffix = '.txt')
     AR.download_url_to_file(tmp, url, self._TEST_CRED)
-    self.assertEqual( 'text/plain', file_mime.mime_type(tmp) )
+    self.assertEqual( 'text/plain', bf_mime.mime_type(tmp) )
     self.assertEqual( 'this is foo.txt\n', file_util.read(tmp, codec = 'utf8') )
 
     url = test.make_url('subdir/subberdir/baz.txt')
     AR.download_url_to_file(tmp, url, self._TEST_CRED)
-    self.assertEqual( 'text/plain', file_mime.mime_type(tmp) )
+    self.assertEqual( 'text/plain', bf_mime.mime_type(tmp) )
     self.assertEqual( 'this is baz.txt\n', file_util.read(tmp, codec = 'utf8') )
 
     test.stop()

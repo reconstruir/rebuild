@@ -3,7 +3,7 @@
 
 from bes.testing.unit_test import unit_test
 
-from bes.fs.temp_file import temp_file, temp_item
+from bes.files.bf_temp_file import bf_temp_file, bf_temp_item
 
 from rebuild._testing.fake_package_source import fake_package_source as S
 

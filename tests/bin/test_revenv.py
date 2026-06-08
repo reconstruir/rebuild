@@ -9,7 +9,7 @@ from bes.testing.program_unit_test import program_unit_test
 from bes.system.os_env import os_env
 from bes.system.execute import execute
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from rebuild._testing.fake_package_unit_test import fake_package_unit_test as FPUT
 from rebuild._testing.fake_package_recipes import fake_package_recipes as RECIPES
 from bes.build.build_target import build_target as BT
@@ -352,7 +352,7 @@ projects
     properties_content = '''\
 AFLATOXIN_VERSION: 1.0.11
 '''
-    tmp_props = temp_file.make_temp_file(content = properties_content)
+    tmp_props = bf_temp_file.make_temp_file(content = properties_content)
     
     args = self._make_packages_cmd('update', test.tmp_dir, 'test', '--properties-file', tmp_props)
     rv = self.run_program(self._PROGRAM, args)
@@ -370,7 +370,7 @@ AFLATOXIN_VERSION: 1.0.11
     
   @classmethod
   def _make_temp_dir(clazz):
-    tmp_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
+    tmp_dir = bf_temp_file.make_temp_dir(delete = not clazz.DEBUG)
     if clazz.DEBUG:
       print("tmp_dir: ", tmp_dir)
     return tmp_dir

@@ -2,7 +2,7 @@
 
 from collections import namedtuple
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.web.file_web_server import file_web_server
 from bes.web.web_server_controller import web_server_controller
 from rebuild.artifactory.mock_artifactory_server import mock_artifactory_server
@@ -25,7 +25,7 @@ class mock_artifactory_tester(namedtuple('mock_artifactory_tester', 'server, roo
     if items:
       tmp_dir = clazz._make_temp_content(items)
     else:
-      tmp_dir = temp_file.make_temp_dir()
+      tmp_dir = bf_temp_file.make_temp_dir()
     server.start(root_dir = tmp_dir, artifactory_id = artifactory_id, users = users)
     port = server.address[1]
     return clazz.__bases__[0].__new__(clazz, server, tmp_dir, port)
@@ -35,7 +35,7 @@ class mock_artifactory_tester(namedtuple('mock_artifactory_tester', 'server, roo
 
   @classmethod
   def _make_temp_content(clazz, items):
-    tmp_dir = temp_file.make_temp_dir()
+    tmp_dir = bf_temp_file.make_temp_dir()
     temp_content.write_items(items, tmp_dir)
     return tmp_dir
 
@@ -51,7 +51,7 @@ class mock_artifactory_tester(namedtuple('mock_artifactory_tester', 'server, roo
 
   def upload(self, address, content):
     check.check_storage_address(address)
-    tmp_upload = temp_file.make_temp_file(content = content)
+    tmp_upload = bf_temp_file.make_temp_file(content = content)
     artifactory_requests.upload(address, tmp_upload, '', '')
 
   def fail_next_request(self, status_code):

@@ -11,7 +11,7 @@ from bes.common.node import node
 from bes.property.cached_property import cached_property
 from bes.fs.file_path import file_path
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.text.string_list import string_list
 
 from .pcloud_error import pcloud_error
@@ -332,7 +332,7 @@ class pcloud(object):
 
     if cloud_filename != path.basename(local_path):
       old_local_path = local_path
-      tmp_dir = temp_file.make_temp_dir()
+      tmp_dir = bf_temp_file.make_temp_dir()
       local_path = path.join(tmp_dir, cloud_filename)
       file_util.copy(old_local_path, local_path, use_hard_link = True)
     else:
@@ -368,7 +368,7 @@ class pcloud(object):
   def download_to_file(self, target, file_path = None, file_id = None):
     'Download file to target.'
     links = self.getfilelink(file_path = file_path, file_id = file_id)
-    tmp = temp_file.make_temp_file(suffix = '.download')
+    tmp = bf_temp_file.make_temp_file(suffix = '.download')
     with open(tmp, 'wb') as fout:
       response = pcloud_requests.download_to_stream(links, fout)
       if response.status_code != 200:

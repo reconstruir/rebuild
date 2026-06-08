@@ -4,7 +4,7 @@
 import os.path as path
 
 from bes.testing.unit_test import unit_test
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 
 from rebuild.config.storage_config_manager import storage_config_manager
 from rebuild.storage.storage_factory import storage_factory
@@ -124,7 +124,7 @@ storage
     self.assertEqual( 'admin', config.upload.username )
     self.assertEqual( 'sekret', config.upload.password )
 
-    local_storage_dir = temp_file.make_temp_dir()
+    local_storage_dir = bf_temp_file.make_temp_dir()
     factory_config = storage_factory.config(local_storage_dir, 'mysubrepo', False, config)
     storage = storage_factory.create(factory_config)
     self.assertTrue( isinstance(storage, storage_kiwi) )

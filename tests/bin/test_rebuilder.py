@@ -6,7 +6,7 @@ from bes.testing.program_unit_test import program_unit_test
 from bes.fs.file_replace import file_replace
 from bes.fs.file_util import file_util
 from bes.fs.file_copy import file_copy
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.git.git_temp_repo import git_temp_repo
 from bes.git.git_unit_test import git_temp_home_func
 from bes.build.build_target import build_target
@@ -222,7 +222,7 @@ class test_rebuilder_script(program_unit_test):
     from rebuild.config.storage_config_manager import storage_config_manager
     location = path.join(self.data_dir(), 'extra_tarballs/source')
     content = storage_config_manager.make_local_config_content('unit_test', location, 'rebuild_stuff', None)
-    tmp_config = temp_file.make_temp_file(content = content, delete = not self.DEBUG)
+    tmp_config = bf_temp_file.make_temp_file(content = content, delete = not self.DEBUG)
     test = self._run_test(self.DEFAULT_CONFIG, self.data_dir(),
                           'extra_tarballs', 'foo',
                           '--storage-config', tmp_config,
@@ -296,7 +296,7 @@ print("hook1 hook2")
     ], test.artifacts_members['foo-1.0.0.tar.gz'])
 
   def _make_temp_dir(self, label):
-    tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
+    tmp_dir = bf_temp_file.make_temp_dir(delete = not self.DEBUG)
     self.debug_spew_filename('\n' + label, tmp_dir)
     return tmp_dir
 

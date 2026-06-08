@@ -9,7 +9,7 @@ from bes.build.build_target import build_target
 from bes.fs.file_checksum import file_checksum
 from bes.fs.file_checksum import file_checksum_list
 from bes.fs.file_find import file_find
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.git.git_address_util import git_address_util
 from bes.text.text_replace import text_replace
 from collections import namedtuple
@@ -32,7 +32,7 @@ class rebuilder_tester(object):
     self._debug = debug
 
   def _make_temp_dir(self):
-    tmp_dir = temp_file.make_temp_dir(delete = not self._debug)
+    tmp_dir = bf_temp_file.make_temp_dir(delete = not self._debug)
     if self._debug:
       print("tmp_dir: ", tmp_dir)
     return tmp_dir
@@ -42,7 +42,7 @@ class rebuilder_tester(object):
       from rebuild.config.storage_config_manager import storage_config_manager
       location = self._source_dir
       content = storage_config_manager.make_local_config_content('unit_test', location, 'rebuild_stuff', None)
-      tmp_config = temp_file.make_temp_file(content = content, delete = not self._debug)
+      tmp_config = bf_temp_file.make_temp_file(content = content, delete = not self._debug)
       cmd = [
         '--storage-config', tmp_config,
         '--sources-config-name', 'unit_test',

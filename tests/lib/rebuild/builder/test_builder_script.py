@@ -3,7 +3,7 @@
 
 from bes.testing.unit_test import unit_test
 import os.path as path
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.build.build_target import build_target
 from bes.build.package_descriptor import package_descriptor
 from bes.build.requirement import requirement
@@ -64,7 +64,7 @@ class test_builder_script(unit_test):
   def _load_builder_script(self, filename):
     bt = build_target()
     config = builder_config()
-    config.build_root = temp_file.make_temp_dir()
+    config.build_root = bf_temp_file.make_temp_dir()
     config.no_network = True
     config.no_checksums = True
     config.source_dir = path.dirname(filename)

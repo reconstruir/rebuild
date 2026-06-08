@@ -4,7 +4,7 @@
 from bes.testing.unit_test import unit_test
 from bes.common.string_util import string_util
 from bes.fs.testing.temp_content import temp_content
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.archive.archive_extension import archive_extension
 from bes.archive.temp_archive import temp_archive
 from rebuild.storage.storage_factory import storage_factory
@@ -59,7 +59,7 @@ class test_storage_local(unit_test):
       'file rebuild_stuff/sources/a/alpha-1.2.4.tar.gz "${tarball}" 644',
     ], delete = not self.DEBUG)
 
-    tmp_cache_dir = temp_file.make_temp_dir(suffix = '.local_cache_dir', delete = not self.DEBUG)
+    tmp_cache_dir = bf_temp_file.make_temp_dir(suffix = '.local_cache_dir', delete = not self.DEBUG)
 
     if self.DEBUG:
       print('tmp_dir: %s' % (tmp_dir))
@@ -115,7 +115,7 @@ fake_package milk 1.0.11 0 0 macos release x86_64 none 10 none
     t.publish(water_recipes)
     t.publish(milk_recipes)
 
-    tmp_cache_dir = temp_file.make_temp_dir(suffix = '.local_cache_dir', delete = not self.DEBUG)
+    tmp_cache_dir = bf_temp_file.make_temp_dir(suffix = '.local_cache_dir', delete = not self.DEBUG)
     tmp_dir = t.am.root_dir
     if self.DEBUG:
       print('tmp_dir: %s' % (tmp_dir))

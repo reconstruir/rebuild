@@ -4,7 +4,7 @@
 import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs.file_find import file_find
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.build.artifact_descriptor import artifact_descriptor as AD
 from bes.build.artifact_descriptor_list import artifact_descriptor_list as ADL
 from bes.build.build_target import build_target as BT

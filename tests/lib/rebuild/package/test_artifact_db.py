@@ -3,7 +3,7 @@
 
 import os.path as path
 from bes.testing.unit_test import unit_test
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.build.artifact_descriptor import artifact_descriptor as AD
 from bes.build.build_level import build_level
 from bes.build.build_system import build_system
@@ -48,7 +48,7 @@ class test_artifact_db(unit_test):
   MACOS_BT = BT('macos', '', '10', '13', ( 'x86_64', ), 'release')
   
   def _make_tmp_db_path(self):
-    tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
+    tmp_dir = bf_temp_file.make_temp_dir(delete = not self.DEBUG)
     f = path.join(tmp_dir, 'db.sqlite')
     if self.DEBUG:
       self.spew('_make_tmp_db_path() => %s' % (f))

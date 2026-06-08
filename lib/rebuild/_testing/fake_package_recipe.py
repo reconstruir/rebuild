@@ -7,7 +7,7 @@ from bes.common.node import node
 from bes.common.tuple_util import tuple_util
 from bes.text.white_space import white_space
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file, temp_item
+from bes.files.bf_temp_file import bf_temp_file, bf_temp_item
 
 from bes.build.build_target import build_target
 from bes.build.package_descriptor import package_descriptor
@@ -91,7 +91,7 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
     properties_node.children.append(node('%s=%s' % (key, value)))
 
   def create_package(self, filename, debug = False):
-    tmp_dir = temp_file.make_temp_dir(delete = not debug)
+    tmp_dir = bf_temp_file.make_temp_dir(delete = not debug)
     if debug:
       print('tmp_dir: %s' % (tmp_dir))
     stage_dir = path.join(tmp_dir, 'stage')
@@ -99,8 +99,8 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
     env_files_dir = path.join(stage_dir, 'env')
     file_util.mkdir(files_dir)
     file_util.mkdir(env_files_dir)
-    temp_file.write_temp_files(files_dir, self.files)
-    temp_file.write_temp_files(env_files_dir, self.env_files)
+    bf_temp_file.write_temp_files(files_dir, self.files)
+    bf_temp_file.write_temp_files(env_files_dir, self.env_files)
 
     tmp_compiler_dir = path.join(tmp_dir, 'objects')
 

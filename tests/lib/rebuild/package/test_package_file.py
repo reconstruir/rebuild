@@ -4,7 +4,7 @@
 import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 
 from rebuild.package.package_file import package_file as FC
 from rebuild.package.package_file_list import package_file_list as FCL

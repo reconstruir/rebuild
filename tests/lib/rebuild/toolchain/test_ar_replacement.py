@@ -7,7 +7,7 @@ from bes.system.host import host
 from rebuild.toolchain.ar_replacement import ar_replacement
 from bes.build.build_system import build_system
 from bes.files.bf_dir import bf_dir
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.testing.unit_test_function_skip import unit_test_function_skip
 
 class test_ar_replacement(unit_test):
@@ -41,7 +41,7 @@ class test_ar_replacement(unit_test):
       'thin_cherry.o',
       'thin_kiwi.o',
     ]
-    tmp_dir = temp_file.make_temp_dir()
+    tmp_dir = bf_temp_file.make_temp_dir()
     ar_replacement.extract(self._test_file('thin_fruits_x86_64.a'), tmp_dir)
     actual_files = bf_dir.list(tmp_dir, relative = True)
     actual_files = self._filter_contents(actual_files)
@@ -59,7 +59,7 @@ class test_ar_replacement(unit_test):
       'x86_64_fat_cherry.o',
       'x86_64_fat_kiwi.o',
     ]
-    tmp_dir = temp_file.make_temp_dir()
+    tmp_dir = bf_temp_file.make_temp_dir()
     ar_replacement.extract(self._test_file('fat_fruits.a'), tmp_dir)
     actual_files = bf_dir.list(tmp_dir, relative = True)
     actual_files = self._filter_contents(actual_files)
@@ -70,7 +70,7 @@ class test_ar_replacement(unit_test):
       'thin_cherry.o',
       'thin_kiwi.o',
     ]
-    tmp_dir = temp_file.make_temp_dir()
+    tmp_dir = bf_temp_file.make_temp_dir()
     tmp_archive = path.join(tmp_dir, 'thin_fruits.a')
     objects = [ self._test_file(o) for o in expected_objects ]
     ar_replacement.replace(tmp_archive, objects)
@@ -83,7 +83,7 @@ class test_ar_replacement(unit_test):
       'fat_cherry.o',
       'fat_kiwi.o',
     ]
-    tmp_dir = temp_file.make_temp_dir()
+    tmp_dir = bf_temp_file.make_temp_dir()
     tmp_archive = path.join(tmp_dir, 'fat_fruits.a')
     objects = [ self._test_file(o) for o in expected_objects ]
     ar_replacement.replace(tmp_archive, objects)
@@ -96,7 +96,7 @@ class test_ar_replacement(unit_test):
       'thin_cherry.o',
       'thin_kiwi.o',
     ]
-    tmp_dir = temp_file.make_temp_dir()
+    tmp_dir = bf_temp_file.make_temp_dir()
     tmp_archive = path.join(tmp_dir, 'thin_fruits.a')
     objects = [ self._test_file(o) for o in expected_objects ]
     ar_replacement.replace(tmp_archive, objects)

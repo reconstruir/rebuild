@@ -8,7 +8,7 @@ from bes.archive.archiver import archiver
 from bes.key_value.key_value_parser import key_value_parser
 from bes.system.host import host
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.version.version_cli import version_cli
 from bes.properties_file.properties_file import properties_file
 

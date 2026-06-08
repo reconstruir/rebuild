@@ -3,7 +3,7 @@
 
 import os.path as path
 from bes.testing.unit_test import unit_test
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.build.build_system import build_system
 from bes.build.package_descriptor import package_descriptor as PD
 from bes.build.requirement_list import requirement_list as RL
@@ -18,7 +18,7 @@ class test_package_db(unit_test):
   DEBUG = unit_test.DEBUG
   
   def _make_tmp_db_path(self):
-    tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
+    tmp_dir = bf_temp_file.make_temp_dir(delete = not self.DEBUG)
     f = path.join(tmp_dir, 'db.sqlite')
     if self.DEBUG:
       self.spew('_make_tmp_db_path() => %s' % (f))

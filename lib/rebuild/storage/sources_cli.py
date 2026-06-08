@@ -9,7 +9,7 @@ from bes.system.check import check
 from bes.compat.StringIO import StringIO
 from bes.fs.file_find import file_find
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.text.text_table import text_table
 from bes.url.url_util import url_util
 

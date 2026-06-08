@@ -8,7 +8,7 @@ from collections import namedtuple
 from rebuild.toolchain.darwin.lipo import lipo
 from bes.files.bf_dir import bf_dir
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 
 class ar_replacement(object):
   'A replacement for the ar with fat support.'
@@ -60,7 +60,7 @@ class ar_replacement(object):
   @classmethod
   def _contents_darwin_fat(clazz, archive, tools):
     'Return the archive contents for a fat archive on darwin.'
-    tmp_dir = temp_file.make_temp_dir()
+    tmp_dir = bf_temp_file.make_temp_dir()
     thin_libs = clazz._fat_to_thin(archive, tmp_dir, tools)
     expected_contents = None
     for arch, lib in thin_libs:
@@ -88,7 +88,7 @@ class ar_replacement(object):
   @classmethod
   def _extract_darwin_fat(clazz, archive, dest_dir, tools):
     'Extract fat archive.'
-    tmp_dir = temp_file.make_temp_dir()
+    tmp_dir = bf_temp_file.make_temp_dir()
     thin_libs = clazz._fat_to_thin(archive, tmp_dir, tools)
     expected_contents = None
     file_util.mkdir(dest_dir)

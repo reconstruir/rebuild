@@ -10,7 +10,7 @@ from rebuild.package.package import package
 from bes.build.artifact_descriptor import artifact_descriptor as AD
 from bes.build.requirement_list import requirement_list as RL
 
-from bes.fs.temp_file import temp_file, temp_item
+from bes.files.bf_temp_file import bf_temp_file, bf_temp_item
 
 from rebuild._testing.fake_package_recipe import fake_package_recipe as R
 from rebuild._testing.fake_package_recipe_parser import fake_package_recipe_parser as P
@@ -24,12 +24,12 @@ class test_fake_package_recipe(unit_test):
   def test___str__(self):
     r = R(AD('foo', '1.2.3', 0, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18', ''),
           [
-            temp_item('bin/foo.sh', '#!/bin/bash\necho foo\nexit 0\n', 0o755),
-            temp_item('bin/bar.sh', '#!/bin/bash\necho bar\nexit 1\n', 0o755),
+            bf_temp_item('bin/foo.sh', '#!/bin/bash\necho foo\nexit 0\n', 0o755),
+            bf_temp_item('bin/bar.sh', '#!/bin/bash\necho bar\nexit 1\n', 0o755),
           ],
           [
-            temp_item('foo_env.sh', '#@REBUILD_HEAD@\nexport FOO_ENV=foo\n', 0o644),
-            temp_item('bar_env.sh', '#@REBUILD_HEAD@\nexport BAR_ENV=bar\n', 0o644),
+            bf_temp_item('foo_env.sh', '#@REBUILD_HEAD@\nexport FOO_ENV=foo\n', 0o644),
+            bf_temp_item('bar_env.sh', '#@REBUILD_HEAD@\nexport BAR_ENV=bar\n', 0o644),
           ],
           RL.parse('apple >= 1.2.3 orange >= 6.6.6'),
           { 'prop1': 5, 'prop2': 'hi' },
@@ -139,7 +139,7 @@ fake_package knife 6.6.6 0 0 linux release x86_64 ubuntu 18 none
 
 '''
 
-    tmp = temp_file.make_temp_file(suffix = '.tar.gz', delete = not self.DEBUG)
+    tmp = bf_temp_file.make_temp_file(suffix = '.tar.gz', delete = not self.DEBUG)
     filename, metadata = self._parse(recipe)[0].create_package(tmp, debug = self.DEBUG)
     if self.DEBUG:
       print('tmp:\n%s' % (tmp))

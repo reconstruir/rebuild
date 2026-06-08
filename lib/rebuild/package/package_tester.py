@@ -9,7 +9,7 @@ from bes.debug.debug_timer import debug_timer
 from bes.dependency.dependency_resolver import dependency_resolver
 from bes.fs.file_replace import file_replace
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.system.env_var import os_env_var
 from bes.system.execute import execute
 from bes.system.os_env import os_env

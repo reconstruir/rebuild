@@ -6,9 +6,9 @@ import os, os.path as path, re, subprocess, sys
 from bes.fs.compressed_file import compressed_file
 from bes.fs.file_find import file_find
 from bes.fs.file_util import file_util
-from bes.fs.file_mime import file_mime
+from bes.files.mime.bf_mime import bf_mime
 from bes.fs.file_path import file_path
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.common.algorithm import algorithm
 from bes.common.object_util import object_util
 
@@ -85,7 +85,7 @@ class patch(object):
   @classmethod
   def patch_is_compressed(clazz, patch):
     'Return True if the patch is compressed with gzip.'
-    ft = file_mime.mime_type(patch)
+    ft = bf_mime.mime_type(patch)
     return ft.find('gzip') >= 0
 
   @classmethod
@@ -108,7 +108,7 @@ class patch(object):
     # If the patch is compressed, uncompress it to a temp file.
     # Not sure why gzip.open() does not work in this case; i tried.
     if clazz.patch_is_compressed(patch):
-      uncompressed_patch = temp_file.make_temp_file(prefix = 'patch_', suffix = '.patch')
+      uncompressed_patch = bf_temp_file.make_temp_file(prefix = 'patch_', suffix = '.patch')
       compressed_file.uncompress(patch, uncompressed_patch)
       patch = uncompressed_patch
 

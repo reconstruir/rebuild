@@ -10,7 +10,7 @@ from rebuild.recipe.value.value_origin import value_origin
 from rebuild.recipe.value.value_string_list import value_string_list
 from bes.key_value.key_value_list import key_value_list
 from bes.text.string_list import string_list
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 
 class test_project_file(unit_test):
 
@@ -104,7 +104,7 @@ project foo
   recipes
     foo/foo.recipe
 '''
-    tmp = temp_file.make_temp_file(content = text)
+    tmp = bf_temp_file.make_temp_file(content = text)
     self.assertTrue( PF.is_project_file(tmp) )
     
   def test_is_project_file_invalid(self):
@@ -117,7 +117,7 @@ project foo
   recipes
     foo/foo.recipe
 '''
-    tmp = temp_file.make_temp_file(content = text)
+    tmp = bf_temp_file.make_temp_file(content = text)
     self.assertFalse( PF.is_project_file(tmp) )
     
 if __name__ == '__main__':

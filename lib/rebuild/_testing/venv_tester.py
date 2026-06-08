@@ -3,7 +3,7 @@
 import os.path as path
 
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 
 from bes.build.build_target import build_target
 from rebuild.venv.venv_config import venv_config
@@ -37,7 +37,7 @@ config
   
   @classmethod
   def _make_temp_dir(clazz, debug):
-    tmp_dir = temp_file.make_temp_dir(delete = not debug)
+    tmp_dir = bf_temp_file.make_temp_dir(delete = not debug)
     if debug:
       print('tmp_dir: {}'.format(tmp_dir))
     return tmp_dir

@@ -3,7 +3,7 @@
 import os.path as path
 from collections import namedtuple
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.archive.archiver import archiver
 from .lipo import lipo
 
@@ -46,7 +46,7 @@ class fat_archive(object):
 
   @classmethod
   def thin_to_fat(clazz, thin_packages_filenames, fat_package_filename, lipo_exe = None):
-    tmp_extract_dir = temp_file.make_temp_dir()
+    tmp_extract_dir = bf_temp_file.make_temp_dir()
     thin_packages = clazz.__load_thin_packages(thin_packages_filenames, tmp_extract_dir, lipo_exe = lipo_exe)
 
     # Check that the non object files in all thin packages are the same
@@ -64,7 +64,7 @@ class fat_archive(object):
           files[obj.member] = []
         files[obj.member].append(obj)
 
-    tmp_repack_dir = temp_file.make_temp_dir()
+    tmp_repack_dir = bf_temp_file.make_temp_dir()
         
     for arcname, thin_objects in files.items():
       fat_object_filename = path.join(tmp_repack_dir, arcname)

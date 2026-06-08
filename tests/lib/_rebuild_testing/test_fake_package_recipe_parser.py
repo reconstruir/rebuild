@@ -6,7 +6,7 @@ from bes.testing.unit_test import unit_test
 from bes.build.artifact_descriptor import artifact_descriptor as AD
 from bes.build.requirement_list import requirement_list as RL
 
-from bes.fs.temp_file import temp_file, temp_item
+from bes.files.bf_temp_file import bf_temp_file, bf_temp_item
 
 from rebuild._testing.fake_package_recipe_parser import fake_package_recipe as R, fake_package_recipe_parser as P
 
@@ -16,12 +16,12 @@ class test_fake_package_recipe_parser(unit_test):
     recipe = \
       R(AD('foo', '1.2.3', 0, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18', ''),
         [
-          temp_item('bin/tfoo.py', '#!/usr/bin/env python\nprint(\'foo\')\nraise SystemExit(0)\n', 0o755),
-          temp_item('bin/tbar.py', '#!/usr/bin/env python\nprint(\'bar\')\nraise SystemExit(0)\n', 0o755),
+          bf_temp_item('bin/tfoo.py', '#!/usr/bin/env python\nprint(\'foo\')\nraise SystemExit(0)\n', 0o755),
+          bf_temp_item('bin/tbar.py', '#!/usr/bin/env python\nprint(\'bar\')\nraise SystemExit(0)\n', 0o755),
         ],
         [
-          temp_item('tfoo_env.sh', 'export TFOO_ENV1=tfoo_env1\n', 0o755),
-          temp_item('tbar_env.sh', 'export TBAR_ENV1=tbar_env1\n', 0o755),
+          bf_temp_item('tfoo_env.sh', 'export TFOO_ENV1=tfoo_env1\n', 0o755),
+          bf_temp_item('tbar_env.sh', 'export TBAR_ENV1=tbar_env1\n', 0o755),
         ],
         RL.parse('apple >= 1.2.3 orange >= 6.6.6'),
         { 'prop1': '5', 'prop2': 'hi' },
@@ -67,12 +67,12 @@ fake_package foo 1.2.3 0 0 linux release x86_64 ubuntu 18 none
     recipe = \
       R(AD('foo', '1.2.3', 0, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18', ''),
         [
-          temp_item('bin/tfoo.py', '#!/usr/bin/env python\nprint(\'foo\')\nraise SystemExit(0)\n', 0o755),
-          temp_item('bin/tbar.py', '#!/usr/bin/env python\nprint(\'bar\')\nraise SystemExit(0)\n', 0o755),
+          bf_temp_item('bin/tfoo.py', '#!/usr/bin/env python\nprint(\'foo\')\nraise SystemExit(0)\n', 0o755),
+          bf_temp_item('bin/tbar.py', '#!/usr/bin/env python\nprint(\'bar\')\nraise SystemExit(0)\n', 0o755),
         ],
         [
-          temp_item('tfoo_env.sh', 'export TFOO_ENV1=tfoo_env1\n', 0o755),
-          temp_item('tbar_env.sh', 'export TBAR_ENV1=tbar_env1\n', 0o755),
+          bf_temp_item('tfoo_env.sh', 'export TFOO_ENV1=tfoo_env1\n', 0o755),
+          bf_temp_item('tbar_env.sh', 'export TBAR_ENV1=tbar_env1\n', 0o755),
         ],
         RL.parse('apple >= 1.2.3 orange >= 6.6.6'),
         { 'prop1': '5', 'prop2': 'hi' },

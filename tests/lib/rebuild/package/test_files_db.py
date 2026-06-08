@@ -3,7 +3,7 @@
 
 import os.path as path
 from bes.testing.unit_test import unit_test
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.sqlite.sqlite import sqlite
 from rebuild.package.files_db import files_db as DB
 from rebuild.package.package_file_list import package_file_list
@@ -38,7 +38,7 @@ class test_files_db(unit_test):
     self.assertFalse( db.has_table('foo') )
                       
   def _make_tmp_db_path(self):
-    tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
+    tmp_dir = bf_temp_file.make_temp_dir(delete = not self.DEBUG)
     f = path.join(tmp_dir, 'db.sqlite')
     if self.DEBUG:
       self.spew('_make_tmp_db_path() => %s' % (f))

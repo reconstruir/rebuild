@@ -9,7 +9,7 @@ from bes.testing.unit_test import unit_test
 from bes.system.os_env import os_env
 from bes.system.execute import execute
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 
 from bes.build.build_target import build_target as BT
 from rebuild.venv.venv_config import venv_config

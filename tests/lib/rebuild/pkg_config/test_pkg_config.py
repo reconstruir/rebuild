@@ -3,7 +3,7 @@
 #
 import os.path as path, unittest
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from rebuild.pkg_config.pkg_config import pkg_config
 
 class test_pkg_config(unittest.TestCase):
@@ -54,7 +54,7 @@ Cflags: -I${includedir} -DFOO
 '''
 
   def __write_example_modules(self):
-    tmp_dir = temp_file.make_temp_dir()
+    tmp_dir = bf_temp_file.make_temp_dir()
     file_util.save(path.join(tmp_dir, 'foo.pc'), self.FOO_PC)
     file_util.save(path.join(tmp_dir, 'bar.pc'), self.BAR_PC)
     file_util.save(path.join(tmp_dir, 'foo_dup.pc'), self.FOO_DUP_PC)

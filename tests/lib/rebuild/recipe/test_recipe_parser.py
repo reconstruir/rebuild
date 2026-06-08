@@ -16,7 +16,7 @@ from bes.build.build_target import build_target
 from bes.key_value.key_value import key_value as KV
 from bes.key_value.key_value_list import key_value_list as KVL
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from test_steps import *
 
 from rebuild._testing.recipe_parser_testing import recipe_parser_testing

@@ -10,7 +10,7 @@ from rebuild.toolchain.toolchain import toolchain
 from rebuild.toolchain.toolchain_testing import toolchain_testing
 from bes.system.host import host
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.common.object_util import object_util
 from bes.common.variable import variable
 from bes.testing.unit_test_function_skip import unit_test_function_skip
@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
     
   @classmethod
   def _make_temp_dir(clazz):
-    tmp_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
+    tmp_dir = bf_temp_file.make_temp_dir(delete = not clazz.DEBUG)
     if clazz.DEBUG:
       print('tmp_dir: %s' % (tmp_dir))
     return tmp_dir

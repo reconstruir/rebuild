@@ -3,7 +3,7 @@
 #
 
 import os.path as path
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.archive.archiver import archiver
 from bes.archive.archive_extension import archive_extension
 from bes.archive.temp_archive import temp_archive
@@ -42,12 +42,12 @@ class test_darwin_package_util(unit_test):
       x86_64_archive,
       armv7_archive,
     ]
-    tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
+    tmp_dir = bf_temp_file.make_temp_dir(delete = not self.DEBUG)
     fat_package = path.join(tmp_dir, 'fat.tgz')
     fat_archive.thin_to_fat(thin_packages, fat_package)
     self.assertTrue( archiver.is_valid(fat_package) )
 
-    tmp_extract_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
+    tmp_extract_dir = bf_temp_file.make_temp_dir(delete = not self.DEBUG)
     archiver.extract(fat_package, tmp_extract_dir)
 
     fat_library = path.join(tmp_extract_dir, 'lib/libsomething.a')
@@ -79,7 +79,7 @@ class test_darwin_package_util(unit_test):
       x86_64_archive,
       armv7_archive,
     ]
-    tmp_dir = temp_file.make_temp_dir(delete = not self.DEBUG)
+    tmp_dir = bf_temp_file.make_temp_dir(delete = not self.DEBUG)
     fat_package = path.join(tmp_dir, 'fat.tgz')
 
     with self.assertRaises(RuntimeError) as context:

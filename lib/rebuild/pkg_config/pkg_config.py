@@ -15,7 +15,7 @@ from bes.fs.file_find import file_find
 from bes.fs.file_match import file_match
 from bes.fs.file_path import file_path
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.python.package import package
 from bes.build.build_arch import build_arch
 from bes.build.build_blurb import build_blurb

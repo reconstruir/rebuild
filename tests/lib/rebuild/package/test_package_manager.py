@@ -10,7 +10,7 @@ from bes.common.dict_util import dict_util
 from bes.common.object_util import object_util
 from bes.fs.file_find import file_find
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.system.execute import execute
 from bes.system.os_env import os_env
 from bes.testing.unit_test import unit_test
@@ -54,7 +54,7 @@ class test_package_manager(unit_test):
 
   @classmethod
   def _make_test_pm_with_am(clazz):
-    root_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
+    root_dir = bf_temp_file.make_temp_dir(delete = not clazz.DEBUG)
     pm_dir = path.join(root_dir, 'package_manager')
     if clazz.DEBUG:
       print("\nroot_dir:\n", root_dir)
@@ -63,7 +63,7 @@ class test_package_manager(unit_test):
 
   @classmethod
   def _make_empty_pm(clazz):
-    root_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
+    root_dir = bf_temp_file.make_temp_dir(delete = not clazz.DEBUG)
     pm_dir = path.join(root_dir, 'package_manager')
     am_dir = path.join(root_dir, 'artifact_manager')
     if clazz.DEBUG:
@@ -73,7 +73,7 @@ class test_package_manager(unit_test):
 
   @classmethod
   def _make_caca_test_pm(clazz, am):
-    root_dir = temp_file.make_temp_dir(delete = not clazz.DEBUG)
+    root_dir = bf_temp_file.make_temp_dir(delete = not clazz.DEBUG)
     pm_dir = path.join(root_dir, 'package_manager')
     if clazz.DEBUG:
       print("\nroot_dir:\n", root_dir)

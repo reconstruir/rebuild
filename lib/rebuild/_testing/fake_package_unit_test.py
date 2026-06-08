@@ -2,7 +2,7 @@
 
 from os import path
 from bes.system.log import log
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.system.check import check
 
 from .fake_package_recipe_parser import fake_package_recipe_parser
@@ -16,7 +16,7 @@ class fake_package_unit_test(object):
   @classmethod
   def create_one_package(clazz, recipe, metadata_mutations = {}, debug = False):
     recipe = clazz._parse_one_recipe(recipe, metadata_mutations)
-    tmp_file = temp_file.make_temp_file(delete = not debug)
+    tmp_file = bf_temp_file.make_temp_file(delete = not debug)
     if debug:
       print('tmp_file: %s' % (tmp_file))
     return recipe.create_package(tmp_file, debug = debug)
@@ -26,7 +26,7 @@ class fake_package_unit_test(object):
     recipes = clazz._parse_many_recipes(recipe, metadata_mutations)
     result = []
     for r in recipes:
-      tmp_file = temp_file.make_temp_file(delete = not debug)
+      tmp_file = bf_temp_file.make_temp_file(delete = not debug)
       if debug:
         print('tmp_file: %s' % (tmp_file))
       result.append(r.create_package(tmp_file, debug = debug))
@@ -53,7 +53,7 @@ class fake_package_unit_test(object):
 
   @classmethod
   def make_artifact_manager(clazz, debug = False, recipes = None, mutations = None):
-    root_dir = temp_file.make_temp_dir(delete = not debug)
+    root_dir = bf_temp_file.make_temp_dir(delete = not debug)
     if debug:
       print("root_dir:\n%s\n" % (root_dir))
     am = artifact_manager_helper.make_local_artifact_manager(root_dir)

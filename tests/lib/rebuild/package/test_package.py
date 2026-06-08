@@ -4,7 +4,7 @@
 from os import path
 from bes.testing.unit_test import unit_test
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.archive.archiver import archiver
 
 from bes.build.build_version import build_version
@@ -73,7 +73,7 @@ fake_package orange 6.5.4 3 0 linux release x86_64 ubuntu 18 none
   def test_is_package(self):
     tmp_tarball = fake_package_unit_test.create_one_package(self._WATER)
     self.assertTrue( package.is_package(tmp_tarball.filename) )
-    self.assertFalse( package.is_package(temp_file.make_temp_file(content = 'notpackage')) )
+    self.assertFalse( package.is_package(bf_temp_file.make_temp_file(content = 'notpackage')) )
 
   def test_linux_no_distro(self):
     recipe = '''
@@ -94,7 +94,7 @@ fake_package kiwi 1.2.3 0 0 linux release x86_64 none none none
     src = fake_package_unit_test.create_one_package(recipe)
     self.assertEqual( 'orange;1.2.3;0;0;linux;release;x86_64;ubuntu;18;', str(src.metadata.artifact_descriptor))
 
-    tmp_dst_filename = temp_file.make_temp_file()
+    tmp_dst_filename = bf_temp_file.make_temp_file()
 
     mutations = { 'distro': 'fedora', 'distro_version_major': '29', 'distro_version_minor': '' }
 

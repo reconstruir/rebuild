@@ -4,7 +4,7 @@
 import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.fs.file_util import file_util
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 
 from rebuild.venv.venv_shell_script import venv_shell_script
 
@@ -14,7 +14,7 @@ class test_venv_shell_script(unit_test):
     template = '#!/bin/bash\necho @FOO@ @BAR@'
     basename = 'foo.sh'
     script = venv_shell_script(template, basename)
-    tmp_root_dir = temp_file.make_temp_dir()
+    tmp_root_dir = bf_temp_file.make_temp_dir()
     variables = {
       '@FOO@': 'foo',
       '@BAR@': 'bar',
@@ -31,7 +31,7 @@ class test_venv_shell_script(unit_test):
     template = 'something @FOO@ and @BAR@'
     basename = 'foo.sh'
     script = venv_shell_script(template, basename)
-    tmp_root_dir = temp_file.make_temp_dir()
+    tmp_root_dir = bf_temp_file.make_temp_dir()
     variables = {
       '@FOO@': 'foo',
       '@BAR@': 'bar',

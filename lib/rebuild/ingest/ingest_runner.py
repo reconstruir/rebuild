@@ -1,10 +1,8 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-#from os import path
-
 from bes.system.check import check
 from bes.property.cached_property import cached_property
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.system.log import logger
 
 from .ingest_project import ingest_project
@@ -69,14 +67,5 @@ class ingest_runner(object):
       
   @cached_property
   def _tmp_dir(self):
-    return temp_file.make_temp_dir()
+    return bf_temp_file.make_temp_dir()
   
-#  @classmethod
-#  def _make_http_cache(clazz):
-#    cache_dir = path.expanduser('~/.egoist/ingest/downloads/http')
-#    return http_download_cache(cache_dir)
-#
-#  @classmethod
-#  def _make_git_cache(clazz):
-#    cache_dir = path.expanduser('~/.egoist/ingest/downloads/git')
-#    return git_archive_cache(cache_dir)

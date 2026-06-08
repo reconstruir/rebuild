@@ -8,7 +8,7 @@ from bes.build.package_descriptor import package_descriptor
 from bes.build.requirement import requirement as R
 from bes.build.requirement_list import requirement_list as RL
 from bes.fs.file_checksum import file_checksum_list
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.debug.debug_timer import debug_timer
 
 db = DB('foo.sqlite')

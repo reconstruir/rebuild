@@ -18,7 +18,7 @@ from bes.fs.file_replace import file_replace
 from bes.fs.file_search import file_search
 from bes.fs.file_util import file_util
 from bes.fs.tar_util import tar_util
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 from bes.match.matcher_filename import matcher_filename, matcher_multiple_filename
 from bes.property.cached_property import cached_property
 from bes.python.setup_tools import setup_tools
@@ -83,7 +83,7 @@ class package(object):
     return self.metadata.manifest.files.checksums()
 
   def extract(self, root_dir, stuff_dir_basename, env_dir_basename):
-    tmp_dir = temp_file.make_temp_dir(prefix = 'package.extract.', suffix = '.dir', dir = root_dir)
+    tmp_dir = bf_temp_file.make_temp_dir(prefix = 'package.extract.', suffix = '.dir', dir = root_dir)
     dst_stuff_dir = path.join(root_dir, stuff_dir_basename)
     dst_env_dir = path.join(root_dir, env_dir_basename)
     file_util.mkdir(dst_stuff_dir)
@@ -288,7 +288,7 @@ unset REBUILD_STUFF_DIR
     if timer:
       timer.stop()
     file_util.mkdir(path.dirname(tarball_filename))
-    manifest = temp_file.make_temp_file(content = '\n'.join(files_to_package))
+    manifest = bf_temp_file.make_temp_file(content = '\n'.join(files_to_package))
     if timer:
       timer.start('create_package - creating tarball %s' % (tarball_filename))
     clazz._prepare_stage_dir(stage_dir, files_to_package)
@@ -299,7 +299,7 @@ unset REBUILD_STUFF_DIR
   @classmethod
   def mutate_metadata(clazz, src, dst, mutations = None, backup = True, fail_on_binaries = True):
     'Mutate the metadata of a package and save a new one.  src and dst can be the same.'
-    tmp_dir = temp_file.make_temp_dir(prefix = 'package.mutate_metadata.', suffix = '.dir')
+    tmp_dir = bf_temp_file.make_temp_dir(prefix = 'package.mutate_metadata.', suffix = '.dir')
     archiver.extract_all(src, tmp_dir)
     if fail_on_binaries:
       files = file_find.find(tmp_dir, relative = False)
@@ -313,7 +313,7 @@ unset REBUILD_STUFF_DIR
     dst_metadata = src_metadata.clone(mutations = mutations)
     dst_metadata_json = dst_metadata.to_json()
     file_util.save(src_metadata_filename, content = dst_metadata_json)
-    tmp_dst_archive = temp_file.make_temp_file(suffix = '.tar.gz')
+    tmp_dst_archive = bf_temp_file.make_temp_file(suffix = '.tar.gz')
     archiver.create(tmp_dst_archive, tmp_dir)
     if src == dst and backup:
       file_util.backup(src)
@@ -343,7 +343,7 @@ unset REBUILD_STUFF_DIR
     depending on the creation checksums of the contents.
     '''
     file_util.mkdir(path.dirname(filename))
-    manifest = temp_file.make_temp_file(content = '\n'.join(files))
+    manifest = bf_temp_file.make_temp_file(content = '\n'.join(files))
     tar_util.create_deterministic_tarball_with_manifest(filename,
                                                         stage_dir,
                                                         manifest,

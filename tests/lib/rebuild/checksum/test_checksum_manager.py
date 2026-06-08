@@ -3,7 +3,7 @@
 
 from bes.testing.unit_test import unit_test
 from rebuild.checksum.checksum_manager import checksum_manager
-from bes.fs.temp_file import temp_file
+from bes.files.bf_temp_file import bf_temp_file
 
 class test_checksum_manager(unit_test):
 
@@ -21,7 +21,7 @@ class test_checksum_manager(unit_test):
     
   @classmethod
   def _make_temp_checksum_manager(self):
-    tmp_checksum_dir = temp_file.make_temp_dir()
+    tmp_checksum_dir = bf_temp_file.make_temp_dir()
     m = checksum_manager(tmp_checksum_dir)
     return m
 
