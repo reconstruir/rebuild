@@ -38,7 +38,7 @@ class vfs_pcloud(vfs_base):
     check.check_string(cache_dir, allow_none = True)
 
     self._config_source = config_source
-    self._cache_dir = cache_dir or path.expanduser('~/.bes_vfs/vfs_pcloud')
+    self._cache_dir = cache_dir or path.expanduser('~/.bat/vfs/modules/pcloud')
     self._db_dir = path.join(self._cache_dir, 'db')
     self._db_metadata_filename = path.join(self._db_dir, 'metadata.db')
     self._db_checksum_filename = path.join(self._db_dir, 'checksum.db')
@@ -210,7 +210,7 @@ class vfs_pcloud(vfs_base):
                                      key_value_list.from_dict(attributes))
     self._metadata_db_update_remote()
 
-  _METADATA_REMOTE_FILENAME = '/.bes_vfs/metadata.db'
+  _METADATA_REMOTE_FILENAME = '/.bat_vfs/metadata.db'
 
   @property
   def _metadata_db(self):
