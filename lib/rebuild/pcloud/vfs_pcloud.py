@@ -15,12 +15,12 @@ from bes.factory.factory_field import factory_field
 from bes.key_value.key_value_list import key_value_list
 from bes.fs.checksum_set import checksum_set
 
-from bes.vfs.vfs_base import vfs_base
-from bes.vfs.vfs_path_util import vfs_path_util
-from bes.vfs.vfs_file_info import vfs_file_info
-from bes.vfs.vfs_file_info import vfs_file_info_list
-from bes.vfs.vfs_error import vfs_error
-from bes.vfs.vfs_path import vfs_path
+from bat.vfs.vfs_base import vfs_base
+from bat.vfs.vfs_path_util import vfs_path_util
+from bat.vfs.vfs_file_info import vfs_file_info
+from bat.vfs.vfs_file_info import vfs_file_info_list
+from bat.vfs.vfs_error import vfs_error
+from bat.vfs.vfs_path import vfs_path
 
 from bes.credentials.credentials import credentials
 

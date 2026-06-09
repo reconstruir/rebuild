@@ -22,11 +22,11 @@ from bes.fs.file_path import file_path
 from bes.system.log import logger
 from bes.factory.factory_field import factory_field
 
-from bes.vfs.vfs_base import vfs_base
-from bes.vfs.vfs_file_info import vfs_file_info
-from bes.vfs.vfs_file_info import vfs_file_info_list
-from bes.vfs.vfs_error import vfs_error
-from bes.vfs.vfs_path_util import vfs_path_util
+from bat.vfs.vfs_base import vfs_base
+from bat.vfs.vfs_file_info import vfs_file_info
+from bat.vfs.vfs_file_info import vfs_file_info_list
+from bat.vfs.vfs_error import vfs_error
+from bat.vfs.vfs_path_util import vfs_path_util
 
 from bes.credentials.credentials import credentials
 

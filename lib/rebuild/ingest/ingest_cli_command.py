@@ -5,7 +5,7 @@ from os import path
 from bes.system.check import check
 from bes.system.log import logger
 
-from bes.vfs.vfs_registry import vfs_registry
+from bat.vfs.vfs_registry import vfs_registry
 
 from .ingest_cli_options import ingest_cli_options
 from .ingest_runner import ingest_runner
