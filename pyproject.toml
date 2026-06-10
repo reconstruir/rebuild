@@ -1,0 +1,27 @@
+[project]
+name = "rebuild"
+version = "0.1.0"
+description = "rebuild is good"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "appstoreconnect>=0.10.1",
+    "bcrypt>=4.3.0",
+    "cryptography>=46.0.3",
+    "hvac>=2.3.0",
+    "openssh-wrapper>=0.4",
+    "opn-api>=0.4.0",
+    "paramiko>=4.0.0",
+    "proxmoxer>=2.2.0",
+    "pygithub>=1.54.1",
+    "python-gitlab>=6.5.0",
+    "requests>=2.32.5",
+    "ruamel-yaml>=0.17.10",
+]
+
+[dependency-groups]
+dev = [
+    "pyinstaller>=6.16.0",
+    "pytest>=8.4.2",
+    "pytest-testmon>=2.1.3",
+]
