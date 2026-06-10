@@ -20,7 +20,7 @@ from bes.dependency.dependency_resolver import dependency_resolver
 from bes.env.env_dir import env_dir
 from bes.fs.file_path import file_path
 from bes.fs.file_util import file_util
-from bes.shell_framework.shell_framework import shell_framework
+from bat.shell_framework.shell_framework import shell_framework
 from bes.system.log import log
 from bes.system.os_env import os_env
 
