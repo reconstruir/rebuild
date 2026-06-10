@@ -3,7 +3,7 @@
 
 import argparse, os.path as path
 from rebuild.builder.builder_recipe_loader import builder_recipe_loader
-from bes.git.git_repo import git_repo
+from bat.git.git_repo import git_repo
 from bes.fs.file_replace import file_replace
 from bes.files.bf_temp_file import bf_temp_file
 from rebuild.recipe.recipe_load_env import testing_recipe_load_env

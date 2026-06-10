@@ -306,7 +306,7 @@ def _command_find(root_dir, name, version):
   return 0
 
 def _command_download(name, url, tag):
-  from bes.git.git import git
+  from bat.git.git import git
   from bes.common.time_util import time_util
   import urlparse
   parts = urlparse.urlparse(url)

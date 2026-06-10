@@ -6,8 +6,8 @@ from bes.system.check import check
 from bes.common.string_util import string_util
 from bes.common.time_util import time_util
 from bes.compat.StringIO import StringIO
-from bes.git.git import git
-from bes.git.git_address import git_address
+from bat.git.git import git
+from bat.git.git_address import git_address
 from bes.key_value.key_value import key_value
 from bes.system.log import logger
 from bes.text.text_replace import text_replace

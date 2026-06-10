@@ -10,7 +10,7 @@ from bes.fs.file_checksum import file_checksum
 from bes.fs.file_checksum import file_checksum_list
 from bes.fs.file_find import file_find
 from bes.files.bf_temp_file import bf_temp_file
-from bes.git.git_address_util import git_address_util
+from bat.git.git_address_util import git_address_util
 from bes.text.text_replace import text_replace
 from collections import namedtuple
 
