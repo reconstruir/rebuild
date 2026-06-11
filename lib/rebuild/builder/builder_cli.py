@@ -264,8 +264,8 @@ class builder_cli(build_target_cli):
 
   @classmethod
   def _make_checksum_getter(clazz, checksum_cache):
-    from bes.fs.file_checksum_getter_db import file_checksum_getter_db
-    from bes.fs.file_checksum_getter_raw import file_checksum_getter_raw
+    from bes.files.bf_checksum_getter_db import file_checksum_getter_db
+    from bes.files.bf_checksum_getter_raw import file_checksum_getter_raw
     if checksum_cache:
       cache_filename = path.expanduser(checksum_cache)
       return file_checksum_getter_db(cache_filename)

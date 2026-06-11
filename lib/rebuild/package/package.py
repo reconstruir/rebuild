@@ -11,7 +11,7 @@ from bes.common.dict_util import dict_util
 from bes.common.json_util import json_util
 from bes.common.string_util import string_util
 from bes.debug.debug_timer import debug_timer
-from bes.fs.file_check import file_check
+from bes.files.bf_check import bf_check
 from bes.fs.file_copy import file_copy
 from bes.fs.file_find import file_find
 from bes.fs.file_replace import file_replace
@@ -43,7 +43,7 @@ class package(object):
 
   def __init__(self, tarball):
     log.add_logging(self, 'package')
-    file_check.check_file(tarball)
+    bf_check.check_file(tarball)
     assert archiver.is_valid(tarball)
     self.tarball = tarball
 

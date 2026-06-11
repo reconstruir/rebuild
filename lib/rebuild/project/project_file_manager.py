@@ -10,7 +10,7 @@ from bes.system.env_var import os_env_var
 from bes.fs.file_find import file_find
 from bes.fs.file_path import file_path
 from bes.files.bf_file_ops import bf_file_ops
-from bes.fs.file_checksum_getter_raw import file_checksum_getter_raw
+from bes.files.bf_checksum_getter_raw import file_checksum_getter_raw
 from bes.dependency.dependency_resolver import dependency_resolver
 from bes.key_value.key_value_list import key_value_list
 

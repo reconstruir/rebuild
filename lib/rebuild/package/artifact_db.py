@@ -2,7 +2,7 @@
 
 import json, os.path as path
 from bes.system.log import log
-from bes.fs import file_check
+from bes.fs import bf_check
 from bes.system.check import check
 from bes.common.string_util import string_util
 from bes.sqlite.sqlite import sqlite
