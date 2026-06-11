@@ -10,7 +10,7 @@ from bes.system.check import check
 from bes.common.node import node
 from bes.property.cached_property import cached_property
 from bes.fs.file_path import file_path
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 from bes.text.string_list import string_list
 
@@ -334,7 +334,7 @@ class pcloud(object):
       old_local_path = local_path
       tmp_dir = bf_temp_file.make_temp_dir()
       local_path = path.join(tmp_dir, cloud_filename)
-      file_util.copy(old_local_path, local_path, use_hard_link = True)
+      bf_file_ops.copy(old_local_path, local_path, use_hard_link = True)
     else:
       tmp_dir = None
     files = { cloud_filename: open(local_path, 'rb') }
@@ -355,7 +355,7 @@ class pcloud(object):
       response  = requests.post(url, data = params, files = files)
     finally:
       if tmp_dir:
-        file_util.remove(tmp_dir)
+        bf_file_ops.remove(tmp_dir)
     if response.status_code != 200:
       raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
     payload = response.json()
@@ -374,7 +374,7 @@ class pcloud(object):
       if response.status_code != 200:
         raise pcloud_error(error.HTTP_ERROR, str(response.status_code))
       fout.close()
-      file_util.copy(tmp, target)
+      bf_file_ops.copy(tmp, target)
 
   def download_to_bytes(self, file_path = None, file_id = None):
     'Download file to target.'

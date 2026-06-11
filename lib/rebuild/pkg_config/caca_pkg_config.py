@@ -6,7 +6,7 @@ from bes.common.algorithm import algorithm
 from bes.system.check import check
 from bes.common.object_util import object_util
 from bes.files.bf_dir import bf_dir
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.dependency.dependency_resolver import dependency_resolver
 from .caca_pkg_config_file import caca_pkg_config_file
 from collections import namedtuple
@@ -33,7 +33,7 @@ class caca_pkg_config(object):
     for d in pc_path:
       files = clazz._scan_dir(d)
       for filename in files:
-        name = file_util.remove_extension(path.basename(filename))
+        name = bf_file_ops.remove_extension(path.basename(filename))
         pc_file = caca_pkg_config_file.parse_file(filename)
         if name in result:
           raise RuntimeError('Duplicate pc file: %s' % (filename))

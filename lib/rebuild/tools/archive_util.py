@@ -9,7 +9,7 @@ from bes.common.string_util import string_util
 from bes.system.execute import execute
 from bes.files.bf_dir import bf_dir
 from bes.fs.file_find import file_find
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 from bes.archive.archiver import archiver
 
@@ -24,7 +24,7 @@ class archive_util(object):
     if not path.exists(confiugure_path):
       raise RuntimeError('No configure script found in %s' % (tarball))
     result = execute.execute('./configure --help', cwd = tmp_dir, shell = True, raise_error = False).stdout
-    file_util.remove(tmp_dir)
+    bf_file_ops.remove(tmp_dir)
     return result
 
   _requirements = namedtuple('_requirements', 'filename, member, content')
@@ -67,7 +67,7 @@ class archive_util(object):
     if not dirs[1].endswith(clazz.ORIGINAL_DIR_TAIL):
       raise RuntimeError('Dir 2 should end in .orig instead it is %s' % (dir2))
 
-    base_dir = file_util.remove_tail(dirs[1], clazz.ORIGINAL_DIR_TAIL)
+    base_dir = bf_file_ops.remove_tail(dirs[1], clazz.ORIGINAL_DIR_TAIL)
     if string_util.remove_tail(dirs[1], clazz.ORIGINAL_DIR_TAIL) != dirs[0]:
       raise RuntimeError('Dir 1 and 2 dont have the same name: %s %s' % (dirs[1], dirs[0]))
     cmd = 'diff -ur %s %s --exclude="*~" --exclude=".#*" --exclude="#*"' % (dirs[1], dirs[0])
@@ -80,7 +80,7 @@ class archive_util(object):
     tmp_dir = bf_temp_file.make_temp_dir()
     archiver.extract(tarball, tmp_dir, strip_common_ancestor = True)
     result = execute.execute('ag %s .' % (pattern), cwd = tmp_dir, shell = True, raise_error = False).stdout
-    file_util.remove(tmp_dir)
+    bf_file_ops.remove(tmp_dir)
     return result
 
   @classmethod

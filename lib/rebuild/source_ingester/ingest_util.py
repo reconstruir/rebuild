@@ -9,7 +9,7 @@ from bes.archive.archiver import archiver
 from bes.archive.archive_extension import archive_extension
 from bes.files.bf_temp_file import bf_temp_file
 from bes.files.checksum.bf_checksum import bf_checksum
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.fs.tar_util import tar_util
 from bes.system.execute import execute
 from bes.system.log import log
@@ -25,12 +25,12 @@ class ingest_util(object):
       raise RuntimeError('filename should be an archive: %s' % (filename))
     tmp = url_util.download_to_temp_file(url)
     if not binary_detector.is_executable(tmp):
-      file_util.remove(tmp)
+      bf_file_ops.remove(tmp)
       raise RuntimeError('not an executable: %s' % (url))
     os.chmod(tmp, 0o755)
     empty_dir = bf_temp_file.make_temp_dir()
     archiver.create(filename, empty_dir, extra_items = [ archiver.item(tmp, binary_arc_name) ] )
-    file_util.remove(tmp)
+    bf_file_ops.remove(tmp)
     
   @classmethod
   def download_archive(clazz, url, filename = None):
@@ -42,10 +42,10 @@ class ingest_util(object):
     tmp = path.join(tmp_dir, filename)
     url_util.download_to_file(url, tmp)
     if not archiver.is_valid(tmp):
-      file_util.remove(tmp)
+      bf_file_ops.remove(tmp)
       raise RuntimeError('not a valid archive: %s' % (url))
     os.chmod(tmp, 0o644)
-    file_util.rename(tmp, filename)
+    bf_file_ops.rename(tmp, filename)
 
   @classmethod
   def archive_binary(clazz, executable_filename, archive_filename, arcname, debug = False):
@@ -54,17 +54,17 @@ class ingest_util(object):
       raise RuntimeError('not an executable: %s' % (executable_filename))
     if not archive_extension.is_valid_filename(archive_filename):
       raise RuntimeError('not a valid archive filename: %s' % (archive_filename))
-    if not file_util.is_basename(archive_filename):
+    if not bf_file_ops.is_basename(archive_filename):
       raise RuntimeError('archive_filename should be a filename not a path: %s' % (archive_filename))
     tar_dir = bf_temp_file.make_temp_dir(delete = not debug)
     arcname = arcname or path.join('bin', path.basename(executable_filename))
     dst_file = path.join(tar_dir, arcname)
-    file_util.copy(executable_filename, dst_file)
+    bf_file_ops.copy(executable_filename, dst_file)
     os.chmod(dst_file, 0o755)
     tmp_dir = bf_temp_file.make_temp_dir(delete = not debug)
     tmp_archive_filename = path.join(tmp_dir, archive_filename)
     tar_util.create_deterministic_tarball(tmp_archive_filename, tar_dir, arcname, '2018-12-08')
-    file_util.remove(tar_dir)
+    bf_file_ops.remove(tar_dir)
     return tmp_archive_filename
 
   @classmethod
@@ -75,7 +75,7 @@ class ingest_util(object):
     '''
     tmp_dir = bf_temp_file.make_temp_dir(delete = not debug)
     tmp_executable_filename = path.join(tmp_dir, path.basename(executable_filename))
-    file_util.copy(executable_filename, tmp_executable_filename)
+    bf_file_ops.copy(executable_filename, tmp_executable_filename)
     os.chmod(tmp_executable_filename, 0o755)
     os.utime(tmp_executable_filename, ( 1544487203, 1544486779 )) # a random date on 12/2018
     return tmp_executable_filename
@@ -132,7 +132,7 @@ class ingest_util(object):
     tmp_files_to_cleanup = []
     def _cleanup_tmp_files():
       if not debug:
-        file_util.remove(tmp_files_to_cleanup)
+        bf_file_ops.remove(tmp_files_to_cleanup)
 
     # if local_filename is an executable, archive into a tarball first
     if is_exe:
@@ -145,7 +145,7 @@ class ingest_util(object):
       tmp_files_to_cleanup.append(local_filename)
 
     remote_checksum = storage.remote_checksum(ingested_filename)
-    local_checksum = file_util.checksum('sha256', local_filename)
+    local_checksum = bf_file_ops.checksum('sha256', local_filename)
     clazz.log_d('ingest_file: ingested_filename=%s; remote_checksum=%s; local_checksum=%s' % (ingested_filename, remote_checksum, local_checksum))
     if remote_checksum == local_checksum:
       _cleanup_tmp_files()

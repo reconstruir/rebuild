@@ -2,7 +2,7 @@
 
 from bes.system.host import host
 from bes.common.string_util import string_util
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 import os.path as path
 
 DEBUG = False
@@ -74,7 +74,7 @@ def main():
   return 0
 
 def _object_from_source(source, object_extension, label):
-  name = file_util.remove_extension(source)
+  name = bf_file_ops.remove_extension(source)
   if label:
     return '${SYSTEM}/%s_%s.%s' % (label, name, object_extension)
   else:
@@ -82,7 +82,7 @@ def _object_from_source(source, object_extension, label):
 
 def _make_junk(name, content):
   obj = _resolve_filename(_object_from_source(name, 'txt', None))
-  file_util.save(obj, content = content, mode = 0644)
+  bf_file_ops.save(obj, content = content, mode = 0644)
 
 def _make_lib(compiler, library, sources, label, archs, shared):
   objects = [ _object_from_source(s, 'o', label) for s in sources ]
@@ -109,14 +109,14 @@ def _make_object(compiler, source, label, archs):
 
 def _compile(compiler, target, source, cflags):
   target = _resolve_filename(target)
-  file_util.mkdir(path.dirname(target))
+  bf_file_ops.mkdir(path.dirname(target))
   cmd = [ compiler ] + CFLAGS + cflags + [ '-c', '-o', target, source ] 
   _shell_cmd(cmd)
 
 def _make_macos_lib(target, objects, shared):
   target = _resolve_filename(target)
   objects = _resolve_filenames(objects)
-  file_util.mkdir(path.dirname(target))
+  bf_file_ops.mkdir(path.dirname(target))
   if shared:
     shared_flag = '-dynamic'
   else:
@@ -128,7 +128,7 @@ def _make_macos_lib(target, objects, shared):
 def _make_linux_static_lib(target, objects):
   target = _resolve_filename(target)
   objects = _resolve_filenames(objects)
-  file_util.mkdir(path.dirname(target))
+  bf_file_ops.mkdir(path.dirname(target))
   cmd = [ 'ar', 'r', target ] + objects
   _shell_cmd(cmd)
 
@@ -150,7 +150,7 @@ def _make_arch_flags(archs):
 def _make_linux_shared_lib(target, objects):
   target = _resolve_filename(target)
   objects = _resolve_filenames(objects)
-  file_util.mkdir(path.dirname(target))
+  bf_file_ops.mkdir(path.dirname(target))
   cmd = [ COMPILER, '-shared', '-o', target ] + objects
   _shell_cmd(cmd)
 
@@ -163,7 +163,7 @@ def _make_shared_lib(target, objects):
 def _link_exe(target, objects, arch_flags):
   target = _resolve_filename(target)
   objects = _resolve_filenames(objects)
-  file_util.mkdir(path.dirname(target))
+  bf_file_ops.mkdir(path.dirname(target))
   cmd = [ COMPILER, '-o', target ] + arch_flags + objects
   _shell_cmd(cmd)
 

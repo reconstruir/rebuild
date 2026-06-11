@@ -4,7 +4,7 @@
 import os, os.path as path
 from collections import namedtuple
 
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 
 class install(object):
 
@@ -12,8 +12,8 @@ class install(object):
   
   @classmethod
   def install(clazz, filename, dest_dir, mode = 0o755):
-    file_util.mkdir(dest_dir)
-    file_util.copy(filename, dest_dir)
+    bf_file_ops.mkdir(dest_dir)
+    bf_file_ops.copy(filename, dest_dir)
     os.chmod(path.join(dest_dir, filename), mode)
 
   @classmethod

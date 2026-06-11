@@ -1,7 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy, os.path as path
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.text.text_replace import text_replace
 
 class venv_shell_script(object):
@@ -22,7 +22,7 @@ class venv_shell_script(object):
     if self._content_changed(filename, content):
       if only_if_not_there and path.isfile(filename):
         return False
-      file_util.save(filename, content = content, mode = self.mode)
+      bf_file_ops.save(filename, content = content, mode = self.mode)
       return True
     return False
 
@@ -35,4 +35,4 @@ class venv_shell_script(object):
   def _content_changed(clazz, filename, content):
     if not path.isfile(filename):
       return True
-    return file_util.read(filename) != content
+    return bf_file_ops.read(filename) != content

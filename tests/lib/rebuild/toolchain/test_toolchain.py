@@ -9,7 +9,7 @@ from rebuild.toolchain.compiler import compiler
 from rebuild.toolchain.toolchain import toolchain
 from rebuild.toolchain.toolchain_testing import toolchain_testing
 from bes.system.host import host
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 from bes.common.object_util import object_util
 from bes.common.variable import variable
@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
 
   @classmethod
   def _make_temp_source(clazz, tmp_dir, filename, content):
-    return file_util.save(path.join(tmp_dir, filename), content = content)
+    return bf_file_ops.save(path.join(tmp_dir, filename), content = content)
 
   @classmethod
   def _make_compiler(clazz, system, arch):

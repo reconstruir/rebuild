@@ -5,7 +5,7 @@ import os.path as path, pprint
 from bes.system.execute import execute
 from bes.system.log import log
 from bes.system.os_env import os_env
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.system.check import check
 from bes.text.string_list import string_list
 from bes.compat.url_compat import urljoin
@@ -32,7 +32,7 @@ class storage_artifactory(storage_base):
     self._address = self.make_address()
     self._local_root_dir = config.local_cache_dir
     self._no_network = config.no_network
-    file_util.mkdir(self._local_root_dir)
+    bf_file_ops.mkdir(self._local_root_dir)
     self._cached_available_filename = path.join(self._local_root_dir, self._CACHED_AVAILABLE_FILENAME)
     self.reload_available()
     
@@ -48,7 +48,7 @@ class storage_artifactory(storage_base):
   
   def _load_available_remote(self):
     files = string_list(self.list_all_files())
-    file_util.save(self._cached_available_filename, content = files.to_json())
+    bf_file_ops.save(self._cached_available_filename, content = files.to_json())
     return files
 
   def _load_available_local(self):
@@ -57,7 +57,7 @@ class storage_artifactory(storage_base):
       return string_list()
     try:
       self.blurb('artifactory: using cached available files db: %s' % (path.relpath(self._cached_available_filename)))
-      return string_list.from_json(file_util.read(self._cached_available_filename))
+      return string_list.from_json(bf_file_ops.read(self._cached_available_filename))
     except Exception as ex:
       self.blurb('artifactory: ignoring corrupt cached available files db: %s' % (self._cached_available_filename))
       return string_list()
@@ -83,7 +83,7 @@ class storage_artifactory(storage_base):
   def ensure_source(self, filename):
     #assert filename.startswith(self._local_root_dir)
     if filename.startswith(self._local_root_dir):
-      filename = file_util.remove_head(filename, self._local_root_dir)
+      filename = bf_file_ops.remove_head(filename, self._local_root_dir)
     downloaded_filename = self._downloaded_filename(filename)
     if path.exists(downloaded_filename):
       return True

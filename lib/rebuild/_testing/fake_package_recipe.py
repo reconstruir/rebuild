@@ -6,7 +6,7 @@ from bes.system.check import check
 from bes.common.node import node
 from bes.common.tuple_util import tuple_util
 from bes.text.white_space import white_space
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file, bf_temp_item
 
 from bes.build.build_target import build_target
@@ -97,8 +97,8 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
     stage_dir = path.join(tmp_dir, 'stage')
     files_dir = path.join(stage_dir, 'files')
     env_files_dir = path.join(stage_dir, 'env')
-    file_util.mkdir(files_dir)
-    file_util.mkdir(env_files_dir)
+    bf_file_ops.mkdir(files_dir)
+    bf_file_ops.mkdir(env_files_dir)
     bf_temp_file.write_temp_files(files_dir, self.files)
     bf_temp_file.write_temp_files(env_files_dir, self.env_files)
 
@@ -120,9 +120,9 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
       targets = cc.compile_c([ source.path for source in sources ], cflags = cflags)
       lib_filename = path.join(tmp_compiler_dir, static_c_lib.filename, path.basename(static_c_lib.filename))
       lib = cc.make_static_lib(lib_filename, [ target.object for target in targets ])
-      file_util.copy(lib, path.join(files_dir, static_c_lib.filename))
+      bf_file_ops.copy(lib, path.join(files_dir, static_c_lib.filename))
       for header in headers:
-        file_util.copy(header.path, path.join(files_dir, header.filename))
+        bf_file_ops.copy(header.path, path.join(files_dir, header.filename))
       
     shared_c_libs = self.objects.get('shared_c_libs', [])
     for shared_c_lib in shared_c_libs:
@@ -135,9 +135,9 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
       targets = cc.compile_c([ source.path for source in sources ], cflags = cflags)
       lib_filename = path.join(tmp_compiler_dir, shared_c_lib.filename, path.basename(shared_c_lib.filename))
       lib = cc.make_shared_lib(lib_filename, [ target.object for target in targets ])
-      file_util.copy(lib, path.join(files_dir, shared_c_lib.filename))
+      bf_file_ops.copy(lib, path.join(files_dir, shared_c_lib.filename))
       for header in headers:
-        file_util.copy(header.path, path.join(files_dir, header.filename))
+        bf_file_ops.copy(header.path, path.join(files_dir, header.filename))
       
     c_programs = self.objects.get('c_programs', [])
     for c_program in c_programs:
@@ -152,7 +152,7 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
       targets = cc.compile_c([ source.path for source in sources ], cflags = cflags)
       exe_filename = path.join(tmp_compiler_dir, c_program.filename, path.basename(c_program.filename))
       exe = cc.link_exe(exe_filename, [ target.object for target in targets ], ldflags = ldflags)
-      file_util.copy(exe, path.join(files_dir, c_program.filename))
+      bf_file_ops.copy(exe, path.join(files_dir, c_program.filename))
       
     pkg_desc = package_descriptor(self.metadata.name,
                                   self.metadata.build_version,

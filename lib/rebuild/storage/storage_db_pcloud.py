@@ -3,7 +3,7 @@
 import os.path as path
 
 from bes.system.check import check
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 
 from .storage_db_base import storage_db_base
@@ -30,7 +30,7 @@ class storage_db_pcloud(storage_db_base):
     db_json = self._dict_db.to_json()
     tmp_dir = bf_temp_file.make_temp_dir()
     tmp_db_filename = path.join(tmp_dir, self.DB_FILENAME)
-    file_util.save(tmp_db_filename, content = db_json)
+    bf_file_ops.save(tmp_db_filename, content = db_json)
     self._pcloud.upload_file(tmp_db_filename,
                              path.basename(self._remote_db_path),
                              folder_path = path.dirname(self._remote_db_path))

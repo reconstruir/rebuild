@@ -5,7 +5,7 @@ from collections import namedtuple
 import os.path as path
 from bes.system.check import check
 from bes.key_value.key_value_list import key_value_list
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.system.log import log
 from bes.text.tree_text_parser import tree_text_parser
 
@@ -86,5 +86,5 @@ class ingest_file_parser(object):
 
   @classmethod
   def parse_file(clazz, filename):
-    content = file_util.read(filename, codec = 'utf8')
+    content = bf_file_ops.read(filename, codec = 'utf8')
     return ingest_file_parser(filename, content).parse()

@@ -2,7 +2,7 @@
 
 import os.path as path
 
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 
 from bes.build.build_target import build_target
@@ -46,7 +46,7 @@ config
   def _write_config_file(clazz, filename, config, artifact_manager):
     storage_content = clazz._STORAGE_CONFIG_TEMPLATE.format(artifacts_dir = artifact_manager._root_dir)
     content = config.format(head = storage_content)
-    file_util.save(filename, content = content)
+    bf_file_ops.save(filename, content = content)
   
   def installed_packages(self, project_name, include_version = False):
     return self.manager.installed_packages_names(project_name, self.build_target, include_version = include_version)

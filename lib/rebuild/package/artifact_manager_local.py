@@ -5,7 +5,7 @@ from bes.system.check import check
 from bes.common.string_util import string_util
 from bes.system.log import log
 from bes.build.build_blurb import build_blurb
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from .artifact_manager_base import artifact_manager_base
 from .artifact_db import artifact_db
 from .db_error import *
@@ -20,7 +20,7 @@ class artifact_manager_local(artifact_manager_base):
     super(artifact_manager_local, self).__init__()
     check.check_artifact_manager_factory_config(config)
     self._root_dir = config.storage_config.full_path
-    file_util.mkdir(self._root_dir)
+    bf_file_ops.mkdir(self._root_dir)
     self._db_filename = path.join(self._root_dir, 'artifacts.db')
     self.log_d('_db_filename=%s' % (self._db_filename))
     self._db = artifact_db(self._db_filename)
@@ -58,7 +58,7 @@ class artifact_manager_local(artifact_manager_base):
     check.check_package_metadata(metadata)
     pkg_desc = metadata.package_descriptor
     artifact_path_rel, artifact_path_abs = self._artifact_paths(pkg_desc, metadata.build_target)
-    file_util.copy(tarball, artifact_path_abs, use_hard_link = True)
+    bf_file_ops.copy(tarball, artifact_path_abs, use_hard_link = True)
     self._reset_requirement_managers()
     pkg_metadata = metadata.mutate_filename(artifact_path_rel)
     should_replace = allow_replace and self._db.has_artifact(pkg_metadata.artifact_descriptor)
@@ -76,7 +76,7 @@ class artifact_manager_local(artifact_manager_base):
     md = self.find_by_artifact_descriptor(adesc, False)
     if not md:
       raise NotInstalledError('package \"%s\" not found' % (str(adesc)))
-    file_util.remove(md.filename)
+    bf_file_ops.remove(md.filename)
     self._db.remove_artifact(adesc)
   
   #@abstractmethod

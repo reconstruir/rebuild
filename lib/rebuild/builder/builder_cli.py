@@ -19,7 +19,7 @@ from rebuild.project.project_file_manager import project_file_manager
 # needed so that artifact_manager_artifactory ends up in the standalone package
 from rebuild.package.artifact_manager_artifactory import artifact_manager_artifactory
 
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 
 from .builder import builder
 from .builder_config import builder_config
@@ -146,7 +146,7 @@ class builder_cli(build_target_cli):
     
     if args.filter:
       if path.isfile(args.filter[0]):
-        target_packages_filter = file_util.read(args.filter[0]).split('\n')
+        target_packages_filter = bf_file_ops.read(args.filter[0]).split('\n')
       else:
         target_packages_filter = args.filter[0].split(',')
       target_packages_filter = [ p for p in target_packages_filter if p ]

@@ -5,7 +5,7 @@ import os, os.path as path, re, subprocess, sys
 
 from bes.fs.compressed_file import compressed_file
 from bes.fs.file_find import file_find
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.files.mime.bf_mime import bf_mime
 from bes.fs.file_path import file_path
 from bes.files.bf_temp_file import bf_temp_file
@@ -53,7 +53,7 @@ class patch(object):
       return None
     if affected == target:
       return 0
-    head = file_util.remove_tail(affected, target)
+    head = bf_file_ops.remove_tail(affected, target)
     return head.count(os.sep) + 1
       
   PATCH_FILENAME_EXPRESSION = re.compile(r'^\+\+\+\s+(\S*)\b.*$')
@@ -80,7 +80,7 @@ class patch(object):
     'Return the content of a patch.  Patch can be compressed.'
     if clazz.patch_is_compressed(patch):
       return compressed_file.read(patch)
-    return file_util.read(patch, codec = 'utf-8')
+    return bf_file_ops.read(patch, codec = 'utf-8')
 
   @classmethod
   def patch_is_compressed(clazz, patch):

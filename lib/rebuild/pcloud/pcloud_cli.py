@@ -5,7 +5,7 @@ from collections import namedtuple
 
 from bes.system.check import check
 from bes.compat.StringIO import StringIO
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.fs.file_checksum import file_checksum_list
 from bes.text.text_table import text_table
 
@@ -249,7 +249,7 @@ class pcloud_cli(object):
         content_type = item.content_type
       if item.size:
         if human_readable:
-          size = file_util.sizeof_fmt(item.size)
+          size = bf_file_ops.sizeof_fmt(item.size)
         else:
           size = item.size
       else:
@@ -361,7 +361,7 @@ class pcloud_cli(object):
     remote_db_content = self._pcloud.download_to_bytes(file_path = remote_db_path)
     remote_db = storage_db.make_temp_db(remote_db_content)
     print('done fetching remote db: %s' % (remote_folder))
-    file_util.save('/tmp/caca.json', content = remote_db_content)
+    bf_file_ops.save('/tmp/caca.json', content = remote_db_content)
     print('temp: %s' % (remote_db.db_filename))
     #print(remote_db_json)
 
@@ -401,8 +401,8 @@ class pcloud_cli(object):
     result = {}
     for next_path in paths:
       ps = '/'.join([ x.name for x in next_path.path ])
-      ps = file_util.remove_head(ps, folder)
-      ps = file_util.remove_head(ps, folder)
+      ps = bf_file_ops.remove_head(ps, folder)
+      ps = bf_file_ops.remove_head(ps, folder)
       result[ps] = next_path.node.data.checksum
     return result
   

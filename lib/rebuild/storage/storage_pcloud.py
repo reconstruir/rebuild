@@ -2,7 +2,7 @@
 
 import os.path as path
 from bes.system.log import log
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.system.check import check
 from bes.text.string_list import string_list
 
@@ -28,7 +28,7 @@ class storage_pcloud(storage_base):
     self._remote_root_dir = path.join(config.download_credentials.root_dir, config.repo)
     self._local_root_dir = config.local_cache_dir
     self._no_network = config.no_network
-    file_util.mkdir(self._local_root_dir)
+    bf_file_ops.mkdir(self._local_root_dir)
     pcloud_cred = pcloud_credentials(config.download_credentials.credentials.username,
                                      config.download_credentials.credentials.password)
     self._pcloud = pcloud(pcloud_cred, self._remote_root_dir)
@@ -48,7 +48,7 @@ class storage_pcloud(storage_base):
   def _load_available_remote(self):
     try:
       files = self._pcloud.quick_list_folder(self._remote_root_dir, recursive = True, relative = True)
-      file_util.save(self._cached_available_filename, content = files.to_json())
+      bf_file_ops.save(self._cached_available_filename, content = files.to_json())
       return files
     except pcloud_error as ex:
       self.blurb('pcloud: failed to fetch available files from: %s' % (self._remote_root_dir))
@@ -60,14 +60,14 @@ class storage_pcloud(storage_base):
       return string_list()
     try:
       self.blurb('pcloud: using cached available files db: %s' % (path.relpath(self._cached_available_filename)))
-      return string_list.from_json(file_util.read(self._cached_available_filename))
+      return string_list.from_json(bf_file_ops.read(self._cached_available_filename))
     except Exception as ex:
       self.blurb('pcloud: ignoring corrupt cached available files db: %s' % (self._cached_available_filename))
       return string_list()
     
   def _download_file(self, filename):
     downloaded_filename = self._downloaded_filename(filename)
-    file_util.ensure_file_dir(downloaded_filename)
+    bf_file_ops.ensure_file_dir(downloaded_filename)
     remote_path = path.join(self._remote_root_dir, filename)
     self._pcloud.download_to_file(downloaded_filename, file_path = remote_path)
 
@@ -83,7 +83,7 @@ class storage_pcloud(storage_base):
   #@abstractmethod
   def ensure_source(self, filename):
     if filename.startswith(self._local_root_dir):
-      filename = file_util.remove_head(filename, self._local_root_dir)
+      filename = bf_file_ops.remove_head(filename, self._local_root_dir)
     downloaded_filename = self._downloaded_filename(filename)
     if path.exists(downloaded_filename):
       return True
@@ -104,7 +104,7 @@ class storage_pcloud(storage_base):
   #@abstractmethod
   def upload(self, local_filename, remote_filename, local_checksum):
     cloud_filename = path.basename(remote_filename)
-    folder_path = file_util.ensure_lsep(path.dirname(remote_filename))
+    folder_path = bf_file_ops.ensure_lsep(path.dirname(remote_filename))
     root_dir = self._config.download_credentials.root_dir
     repo = self._config.repo
     self.log_d('upload: root_dir=%s; repo=%s' % (root_dir, repo))

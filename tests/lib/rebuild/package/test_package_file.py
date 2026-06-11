@@ -3,7 +3,7 @@
 
 import os.path as path
 from bes.testing.unit_test import unit_test
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 
 from rebuild.package.package_file import package_file as FC

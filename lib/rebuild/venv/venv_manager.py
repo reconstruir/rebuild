@@ -4,7 +4,7 @@ import os.path as path
 from bes.system.check import check
 from bes.shell_framework.shell_framework import shell_framework
 from bes.fs.file_path import file_path
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.system.log import log
 from bes.system.os_env import os_env
 from bes.build.build_blurb import build_blurb
@@ -341,4 +341,4 @@ exec ${1+"$@"}
     project_root_dir = self._project_root_dir(project_name, build_target)
     self.blurb('wiping root dir: %s' % (project_root_dir))
     self.log_i('%s - wiping: %s' % (project_name, project_root_dir))
-    file_util.remove(project_root_dir)
+    bf_file_ops.remove(project_root_dir)

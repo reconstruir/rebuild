@@ -4,7 +4,7 @@
 import os, os.path as path
 
 from bes.common.variable import variable
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result
 

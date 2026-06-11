@@ -16,7 +16,7 @@ from bes.fs.file_copy import file_copy
 from bes.fs.file_find import file_find
 from bes.fs.file_replace import file_replace
 from bes.fs.file_search import file_search
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.fs.tar_util import tar_util
 from bes.files.bf_temp_file import bf_temp_file
 from bes.match.matcher_filename import matcher_filename, matcher_multiple_filename
@@ -86,8 +86,8 @@ class package(object):
     tmp_dir = bf_temp_file.make_temp_dir(prefix = 'package.extract.', suffix = '.dir', dir = root_dir)
     dst_stuff_dir = path.join(root_dir, stuff_dir_basename)
     dst_env_dir = path.join(root_dir, env_dir_basename)
-    file_util.mkdir(dst_stuff_dir)
-    file_util.mkdir(dst_env_dir)
+    bf_file_ops.mkdir(dst_stuff_dir)
+    bf_file_ops.mkdir(dst_env_dir)
     tar_util.extract(self.tarball, tmp_dir)
     src_stuff_dir = path.join(tmp_dir, self.FILES_DIR)
     src_env_dir = path.join(tmp_dir, self.ENV_DIR)
@@ -100,7 +100,7 @@ class package(object):
       file_copy.move_files(src_env_dir, dst_env_dir)
     self._replace_variables_env_files(self.metadata.manifest.env_files.files_with_hardcoded_paths(),
                                   dst_env_dir, dst_stuff_dir)
-    file_util.remove(tmp_dir)
+    bf_file_ops.remove(tmp_dir)
 
   def _update_python_config_files(self, stuff_dir):
     python_lib_dir = path.join(stuff_dir, 'lib/python')
@@ -259,7 +259,7 @@ unset REBUILD_STUFF_DIR
                                 properties,
                                 pkg_files)
     metadata_filename = path.join(stage_dir, clazz.METADATA_FILENAME)
-    file_util.save(metadata_filename, content = metadata.to_json())
+    bf_file_ops.save(metadata_filename, content = metadata.to_json())
     clazz._create_package(tarball_path, stage_dir, timer)
     return clazz._create_package_result(tarball_path, metadata)
 
@@ -287,7 +287,7 @@ unset REBUILD_STUFF_DIR
     files_to_package = package_manifest.determine_files(stage_dir)
     if timer:
       timer.stop()
-    file_util.mkdir(path.dirname(tarball_filename))
+    bf_file_ops.mkdir(path.dirname(tarball_filename))
     manifest = bf_temp_file.make_temp_file(content = '\n'.join(files_to_package))
     if timer:
       timer.start('create_package - creating tarball %s' % (tarball_filename))
@@ -307,28 +307,28 @@ unset REBUILD_STUFF_DIR
       if len(binary_files) > 0:
         return False
     src_metadata_filename = path.join(tmp_dir, clazz.METADATA_FILENAME)
-    src_metadata_json = file_util.read(src_metadata_filename)
+    src_metadata_json = bf_file_ops.read(src_metadata_filename)
     src_metadata = package_metadata.parse_json(src_metadata_json)
 
     dst_metadata = src_metadata.clone(mutations = mutations)
     dst_metadata_json = dst_metadata.to_json()
-    file_util.save(src_metadata_filename, content = dst_metadata_json)
+    bf_file_ops.save(src_metadata_filename, content = dst_metadata_json)
     tmp_dst_archive = bf_temp_file.make_temp_file(suffix = '.tar.gz')
     archiver.create(tmp_dst_archive, tmp_dir)
     if src == dst and backup:
-      file_util.backup(src)
-    file_util.rename(tmp_dst_archive, dst)
+      bf_file_ops.backup(src)
+    bf_file_ops.rename(tmp_dst_archive, dst)
     return True
 
   @classmethod
   def _prepare_stage_dir(clazz, stage_dir, files_to_package):
     'Prepare the stage dir for packaging.  Remove some stuff that should not be in the package.'
-    file_util.remove(path.join(stage_dir, 'files/lib/python/__pycache__/site.cpython-37.pyc'))
+    bf_file_ops.remove(path.join(stage_dir, 'files/lib/python/__pycache__/site.cpython-37.pyc'))
     return
     all_files = set(file_find.find(stage_dir, relative = True, file_type = file_find.FILE | file_find.LINK | file_find.DEVICE))
     files_to_package = set(files_to_package)
     to_remove = all_files - files_to_package
-    file_util.remove(to_remove)
+    bf_file_ops.remove(to_remove)
   
   @classmethod
   def _create_tarball(clazz, filename, stage_dir):
@@ -342,7 +342,7 @@ unset REBUILD_STUFF_DIR
     research.  The dilemma is that tarball checksums are different 
     depending on the creation checksums of the contents.
     '''
-    file_util.mkdir(path.dirname(filename))
+    bf_file_ops.mkdir(path.dirname(filename))
     manifest = bf_temp_file.make_temp_file(content = '\n'.join(files))
     tar_util.create_deterministic_tarball_with_manifest(filename,
                                                         stage_dir,

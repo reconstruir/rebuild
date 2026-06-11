@@ -2,7 +2,7 @@
 
 import os.path as path
 from bes.system.check import check
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from rebuild.step.compound_step import compound_step
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result
@@ -60,7 +60,7 @@ class step_docker_build(step):
       if info.image_id:
         filename = '%s.image' % (script.descriptor.name)
         p = path.join(script.staged_files_dir, 'share', 'docker_rebuild', filename)
-        file_util.save(p, content = info.image_id)
+        bf_file_ops.save(p, content = info.image_id)
     return result
     # save_logs = [ 'config.log', 'config.status' ])
 

@@ -5,7 +5,7 @@ from bes.system.check import check
 from bes.system.log import log
 from bes.fs.file_attributes import file_attributes
 from bes.fs.file_find import file_find
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.archive.archiver import archiver
 
 from .storage_base import storage_base 
@@ -27,8 +27,8 @@ class storage_local(storage_base):
     else:
       self._where = self._config.storage_config.full_path
     self._local_root_dir = config.local_cache_dir
-    file_util.mkdir(self._where)
-    file_util.mkdir(self._local_root_dir)
+    bf_file_ops.mkdir(self._where)
+    bf_file_ops.mkdir(self._local_root_dir)
     self.log_d('__init__: _where=%s; _local_root_dir%s' % (self._where, self._local_root_dir))
 
   def make_address(self, filename = None):
@@ -64,20 +64,20 @@ class storage_local(storage_base):
       return
     #print('CACA: ensure_source(%s)' % (caca_filename))
     if caca_filename.startswith(self._local_root_dir):
-      filename = file_util.remove_head(caca_filename, self._local_root_dir)
+      filename = bf_file_ops.remove_head(caca_filename, self._local_root_dir)
       filename_local = caca_filename
     else:
       filename = caca_filename
       filename_local = self._local_path(caca_filename)
       
     #assert local_filename.startswith(self._local_root_dir)
-    #filename = file_util.remove_head(local_filename, self._local_root_dir)
+    #filename = bf_file_ops.remove_head(local_filename, self._local_root_dir)
     remote_path = self._remote_path(filename)
     self.log_d('ensure_source: filename_local=%s; remote_path=%s; filename=%s' % (filename_local, remote_path, filename))
     #print('CACA: ensure_source: filename_local=%s; remote_path=%s; filename=%s' % (filename_local, remote_path, filename))
     if path.isfile(filename_local):
       return
-    file_util.copy(remote_path, filename_local, use_hard_link = True)
+    bf_file_ops.copy(remote_path, filename_local, use_hard_link = True)
   
   #@abstractmethod
   def search(self, name):
@@ -91,7 +91,7 @@ class storage_local(storage_base):
   #@abstractmethod
   def upload(self, local_filename, remote_filename, local_checksum):
     remote_path = self._remote_path(remote_filename)
-    file_util.copy(local_filename, remote_path, use_hard_link = True)
+    bf_file_ops.copy(local_filename, remote_path, use_hard_link = True)
     return True
 
   #@abstractmethod
@@ -111,7 +111,7 @@ class storage_local(storage_base):
   def remote_checksum(self, remote_filename):
     remote_path = self._remote_path(remote_filename)
     if path.isfile(remote_path):
-      return file_util.checksum('sha256', remote_path)
+      return bf_file_ops.checksum('sha256', remote_path)
     return None
   
   #@abstractmethod

@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result
 
@@ -20,5 +20,5 @@ class step_cleanup_gnu_info(step):
   #@abstractmethod
   def execute(self, script, env, values, inputs):
     info_dir = path.join(script.staged_files_dir, 'share/info')
-    file_util.remove(info_dir)
+    bf_file_ops.remove(info_dir)
     return step_result(True, None)

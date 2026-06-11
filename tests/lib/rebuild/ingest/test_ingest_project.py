@@ -4,7 +4,7 @@
 import os.path as path
 from bes.testing.unit_test import unit_test
 from rebuild.ingest.ingest_project import ingest_project
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 
 class test_ingest_project(unit_test):
 
@@ -121,10 +121,10 @@ entry libbrie 6.6.6
 '''
     
     tmp_dir = self.make_temp_dir()
-    file_util.save(path.join(tmp_dir, 'fruit', 'kiwi.reingest'), content = content_kiwi)
-    file_util.save(path.join(tmp_dir, 'fruit', 'orange.reingest'), content = content_orange)
-    file_util.save(path.join(tmp_dir, 'cheese', 'hard', 'cheddar.reingest'), content = content_cheddar)
-    file_util.save(path.join(tmp_dir, 'cheese', 'soft', 'brie.reingest'), content = content_brie)
+    bf_file_ops.save(path.join(tmp_dir, 'fruit', 'kiwi.reingest'), content = content_kiwi)
+    bf_file_ops.save(path.join(tmp_dir, 'fruit', 'orange.reingest'), content = content_orange)
+    bf_file_ops.save(path.join(tmp_dir, 'cheese', 'hard', 'cheddar.reingest'), content = content_cheddar)
+    bf_file_ops.save(path.join(tmp_dir, 'cheese', 'soft', 'brie.reingest'), content = content_brie)
     return tmp_dir
     
 if __name__ == '__main__':

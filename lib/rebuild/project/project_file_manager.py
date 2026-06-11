@@ -9,7 +9,7 @@ from bes.system.log import log
 from bes.system.env_var import os_env_var
 from bes.fs.file_find import file_find
 from bes.fs.file_path import file_path
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.fs.file_checksum_getter_raw import file_checksum_getter_raw
 from bes.dependency.dependency_resolver import dependency_resolver
 from bes.key_value.key_value_list import key_value_list
@@ -59,7 +59,7 @@ class project_file_manager(object):
 #      raise RuntimeError('Already loaded: %s' % (filename))
     if not project_file.is_project_file(filename):
       raise RuntimeError('Not a project file: %s' % (filename))
-    text = file_util.read(filename, codec = 'utf8')
+    text = bf_file_ops.read(filename, codec = 'utf8')
     checksum = self._checksum_getter.checksum('sha256', filename)
     parser = project_file_parser(filename, text)
     project_files = parser.parse()
@@ -178,7 +178,7 @@ class project_file_manager(object):
   def override_projects(self, override_filename):
     if not override_filename:
       return
-    text = file_util.read(override_filename)
+    text = bf_file_ops.read(override_filename)
     parser = project_file_parser(override_filename, text)
     override_project_files = parser.parse()
     for override_pf in override_project_files:

@@ -2,7 +2,7 @@
 
 import os.path as path
 
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 
 from bes.system.check import check
@@ -27,7 +27,7 @@ class storage_db_file(storage_db_base):
     # Check for new or modified files
     for filename in current_filenames:
       filepath = path.join(self._root_dir, filename)
-      mtime = file_util.mtime(filepath)
+      mtime = bf_file_ops.mtime(filepath)
       add_entry = False
       if filename in db:
         # If filename is already in db, then check if the mtime change.  If so, redo the checksum
@@ -36,7 +36,7 @@ class storage_db_file(storage_db_base):
       else:
         add_entry = True
       if add_entry:
-        db[filename] = storage_db_entry(filename, mtime, file_util.checksum('sha1', filepath))
+        db[filename] = storage_db_entry(filename, mtime, bf_file_ops.checksum('sha1', filepath))
     # Check for any files that were removed locally
     for entry in db.entries():
       if entry.filename not in current_filenames:
@@ -52,7 +52,7 @@ class storage_db_file(storage_db_base):
   def make_temp_db(clazz, db_content, delete = True):
     root = bf_temp_file.make_temp_dir(delete = delete)
     db_filename = path.join(root, clazz.DB_FILENAME)
-    file_util.save(db_filename, content = db_content)
+    bf_file_ops.save(db_filename, content = db_content)
     return clazz(root)
 
 #check.register_class(storage_db_file)

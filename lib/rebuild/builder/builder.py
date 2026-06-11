@@ -6,7 +6,7 @@ from bes.system.check import check
 from bes.common.dict_util import dict_util
 from bes.common.object_util import object_util
 from bes.files.bf_dir import bf_dir
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.dependency.dependency_resolver import dependency_resolver
 from collections import namedtuple
 from rebuild.step.step_aborted import step_aborted
@@ -86,14 +86,14 @@ class builder(object):
         tmp_dirs = bf_dir.list_dirs(builds_dir, patterns = patterns)
         for tmp_dir in tmp_dirs:
           self.blurb('wiping temporary build directory: %s' % (path.relpath(tmp_dir)))
-        file_util.remove(tmp_dirs)
+        bf_file_ops.remove(tmp_dirs)
 
   def scratch_existing_data(self):
     dirs_to_scratch = [ 'artifacts', 'builds', 'checksums', 'tools' ]
     dirs = [ path.join(self._env.config.build_root, d) for d in dirs_to_scratch ]
     self.blurb('scratching existing data: %s' % (' '.join([ path.relpath(d) for d in dirs ])))
     for d in dirs:
-      file_util.remove(d)
+      bf_file_ops.remove(d)
     # Since we just killed the directory where the artifacts db lives we need to reload it
     self._env.reload_build_artifact_manager()
     
@@ -111,7 +111,7 @@ class builder(object):
 
       def remove_tmp_dirs_thread(dirs):
         for d in dirs:
-          file_util.remove(d)
+          bf_file_ops.remove(d)
 
       t = threading.Thread(target = remove_tmp_dirs_thread, args = (to_remove, ))
       t.start()
@@ -176,7 +176,7 @@ class builder(object):
     if not needs_rebuilding:
       # If the working directory is empty, it means no work happened and its useless
       if path.exists(script.working_dir) and bf_dir.is_empty(script.working_dir):
-        file_util.remove(script.working_dir)
+        bf_file_ops.remove(script.working_dir)
       script.timer_stop()
       return self._run_result(self.SCRIPT_CURRENT, None, reason)
     build_blurb.blurb('rebuild', '%s - building because %s' % (script.descriptor.name, reason))
@@ -323,7 +323,7 @@ class builder(object):
     failed_packages = []
     for name in  packages_to_build:
       script = scripts[name]
-      filename = file_util.remove_head(script.filename, os.getcwd())
+      filename = bf_file_ops.remove_head(script.filename, os.getcwd())
       if not script.enabled and not self._env.config.disabled:
         self.blurb('disabled: %s' % (filename))
         continue

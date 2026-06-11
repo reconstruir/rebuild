@@ -6,7 +6,7 @@ from bes.system.check import check
 from bes.common.dict_util import dict_util
 from bes.archive.archiver import archiver
 from bes.key_value.key_value_list import key_value_list
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from rebuild.step.compound_step import compound_step
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result

@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import copy, re, glob, os.path as path
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.common.algorithm import algorithm
 from bes.system.check import check
 from bes.common.dict_util import dict_util
@@ -65,7 +65,7 @@ class instruction_list(type_checked_list):
       filepath = path.join(where, filename)
       if path.exists(filepath):
         return False, 'Instruction already exists: %s' % (filepath)
-      file_util.save(filepath, content = str(inst), mode = 0o644)
+      bf_file_ops.save(filepath, content = str(inst), mode = 0o644)
     return True, None
 
   @classmethod
@@ -85,7 +85,7 @@ class instruction_list(type_checked_list):
 
   @classmethod
   def load_file(clazz, filename):
-    return clazz.parse(file_util.read(filename, codec = 'utf-8'))
+    return clazz.parse(bf_file_ops.read(filename, codec = 'utf-8'))
 
   def dependencies(self, target):
     check.check_string(target)

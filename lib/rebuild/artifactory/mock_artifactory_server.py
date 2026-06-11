@@ -4,7 +4,7 @@ import json, os, os.path as path
 from bes.web.web_server import web_server
 from bes.system.log import log
 from bes.fs.file_find import file_find
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.compat import url_compat
 
 from .artifactory_requests import artifactory_requests
@@ -70,7 +70,7 @@ class mock_artifactory_server(web_server):
     if not path.isfile(path_info.rooted_filename):
       return self.response_error(start_response, 404)
     mime_type = self.mime_type(path_info.rooted_filename)
-    content = file_util.read(path_info.rooted_filename)
+    content = bf_file_ops.read(path_info.rooted_filename)
     headers = [
       ( 'Content-Type', str(mime_type) ),
       ( 'Content-Length', str(len(content)) ),
@@ -86,7 +86,7 @@ class mock_artifactory_server(web_server):
     mime_type = self.mime_type(path_info.rooted_filename)
     headers = [
       ( 'Content-Type', str(mime_type) ),
-      ( 'Content-Length', str(file_util.size(path_info.rooted_filename)) ),
+      ( 'Content-Length', str(bf_file_ops.size(path_info.rooted_filename)) ),
       ( 'X-Artifactory-Filename', path.basename(path_info.path_info) ),
       ( 'X-Artifactory-Id', self._artifactory_id ),
     ]
@@ -97,13 +97,13 @@ class mock_artifactory_server(web_server):
     'https://www.jfrog.com/confluence/display/RTF/Artifactory+REST+API#ArtifactoryRESTAPI-DeployArtifact'
     content_length = int(environ['CONTENT_LENGTH'])
 #    filename = environ['PATH_INFO']
-#    filename = file_util.lstrip_sep(filename)
+#    filename = bf_file_ops.lstrip_sep(filename)
 #    file_path = path.join(self._root_dir, filename)
     fin = environ['wsgi.input']
     chunk_size = 1024
     n = int(content_length / chunk_size)
     r = int(content_length % chunk_size)
-    file_util.ensure_file_dir(path_info.rooted_filename)
+    bf_file_ops.ensure_file_dir(path_info.rooted_filename)
     with open(path_info.rooted_filename, 'wb') as fout:
       for i in range(0, n):
         chunk = fin.read(chunk_size)
@@ -134,7 +134,7 @@ class mock_artifactory_server(web_server):
     assert False
 
   def _api_storage(self, environ, path_info, start_response):
-    xpath = file_util.remove_head(path_info.path_info, '/api/storage')
+    xpath = bf_file_ops.remove_head(path_info.path_info, '/api/storage')
     fpath = path.join(self._root_dir, xpath)
     files = file_find.find(fpath, relative = True)
     for f in files:

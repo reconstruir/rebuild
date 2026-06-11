@@ -5,7 +5,7 @@ from collections import namedtuple
 
 from bes.system.log import log
 from bes.key_value.key_value_parser import key_value_parser
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 from bes.build.build_blurb import build_blurb
 from bes.build.build_level import build_level
@@ -82,7 +82,7 @@ class package_tester_cli(build_target_cli):
       tmp_dir = tmp_dir
     else:
       tmp_dir = bf_temp_file.make_temp_dir(delete = False)
-    file_util.mkdir(tmp_dir)
+    bf_file_ops.mkdir(tmp_dir)
 
     if not path.isdir(artifacts_dir):
       raise RuntimeError('Not an artifacts directory: %s' % (artifacts_dir))

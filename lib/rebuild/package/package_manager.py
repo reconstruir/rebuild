@@ -19,7 +19,7 @@ from bes.common.variable import variable
 from bes.dependency.dependency_resolver import dependency_resolver
 from bes.env.env_dir import env_dir
 from bes.fs.file_path import file_path
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bat.shell_framework.shell_framework import shell_framework
 from bes.system.log import log
 from bes.system.os_env import os_env
@@ -213,7 +213,7 @@ class package_manager(object):
       raise NotInstalledError('package %s not found' % (pkg_desc.name))
     paths = [ path.join(self._installation_dir, f) for f in pkg.manifest.files.filenames() ]
     paths.extend([ path.join(self._env_dir, f) for f in pkg.manifest.env_files.filenames() ])
-    file_util.remove(paths)
+    bf_file_ops.remove(paths)
     self.db.remove_package(pkg_desc.name)
 
   def list_all_names(self, include_version = False):
@@ -231,7 +231,7 @@ class package_manager(object):
     for f in files:
       existing_file_path = path.join(self._installation_dir, f)
       if path.isfile(existing_file_path):
-        existing_file_checksum = file_util.checksum('sha256', existing_file_path)
+        existing_file_checksum = bf_file_ops.checksum('sha256', existing_file_path)
         new_file_checksum = checksums[f]
         if existing_file_checksum != new_file_checksum:
           conflicts.append(f)

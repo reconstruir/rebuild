@@ -2,7 +2,7 @@
 
 import copy, json, os.path as path
 
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.system.check import check
 from bes.common.json_util import json_util
 
@@ -34,6 +34,6 @@ class storage_db_dict(storage_db_base):
   
   @classmethod
   def from_file(clazz, filename):
-    return clazz.from_json(file_util.read(filename))
+    return clazz.from_json(bf_file_ops.read(filename))
     
 #check.register_class(storage_db_dict)

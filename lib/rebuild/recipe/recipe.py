@@ -8,7 +8,7 @@ from bes.system.check import check
 from bes.common.node import node
 from bes.common.tuple_util import tuple_util
 from bes.compat.StringIO import StringIO
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.key_value.key_value_list import key_value_list
 
 from .recipe_error import recipe_error
@@ -163,7 +163,7 @@ class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties
     buf.write('\n')
     buf.write(str(self))
     buf.write('\n')
-    file_util.save(filename, buf.getvalue())
+    bf_file_ops.save(filename, buf.getvalue())
 
   def clone(self, mutations = None):
     return tuple_util.clone(self, mutations = mutations)

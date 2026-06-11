@@ -2,7 +2,7 @@
 
 import copy, os.path as path
 from .toolchain import toolchain
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.common.object_util import object_util
 from bes.common.variable import variable
 from bes.system.execute import execute
@@ -80,7 +80,7 @@ class compiler(object):
     
   @classmethod
   def _make_object_filename(clazz, source):
-    return file_util.remove_extension(source) + '.o'
+    return bf_file_ops.remove_extension(source) + '.o'
   
   @classmethod
   def _execute_cmd(clazz, cmd):

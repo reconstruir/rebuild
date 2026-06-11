@@ -7,7 +7,7 @@ from bes.system.compat import with_metaclass
 from bes.system.check import check
 from bes.system.log import log
 from bes.debug.debug_timer import debug_timer
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 
 from bes.build.artifact_descriptor import artifact_descriptor
 from bes.build.build_blurb import build_blurb
@@ -27,7 +27,7 @@ class artifact_manager_artifactory(artifact_manager_base):
     check.check_artifact_manager_factory_config(config)
     self._config = config
     self._local_cache_dir = config.local_cache_dir
-    file_util.mkdir(self._local_cache_dir)
+    bf_file_ops.mkdir(self._local_cache_dir)
     self._read_only = True
     self._db = artifact_db(path.join(self._local_cache_dir, 'artifacts.db'))
     self._address = storage_address(self._config.storage_config.location,

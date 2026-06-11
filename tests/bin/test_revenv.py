@@ -8,7 +8,7 @@ from collections import namedtuple
 from bes.testing.program_unit_test import program_unit_test
 from bes.system.os_env import os_env
 from bes.system.execute import execute
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 from rebuild._testing.fake_package_unit_test import fake_package_unit_test as FPUT
 from rebuild._testing.fake_package_recipes import fake_package_recipes as RECIPES
@@ -210,7 +210,7 @@ projects
     rv = execute.execute(cmd, raise_error = False, env = env, stderr_to_stdout = True)
     if rv.exit_code != 0 or self.DEBUG:
       self.spew('update.sh command: %s' % (' '.join(cmd)))
-      self.spew('update.sh script:\n----------\n%s\n----------\n' % (file_util.read(update_dot_sh)))
+      self.spew('update.sh script:\n----------\n%s\n----------\n' % (bf_file_ops.read(update_dot_sh)))
       self.spew(rv.output)
     self.assertEqual( 0, rv.exit_code )
     rv = self.run_program(self._PROGRAM, print_args)
@@ -396,7 +396,7 @@ AFLATOXIN_VERSION: 1.0.11
   def _write_config_file(clazz, filename, config, artifact_manager):
     config_head = clazz._HEAD_TEMPLATE.format(artifacts_dir = artifact_manager._root_dir)
     content = config.format(head = config_head)
-    file_util.save(filename, content = content)
+    bf_file_ops.save(filename, content = content)
 
   @classmethod
   def _make_packages_cmd(clazz, sub_command, root_dir, *args):

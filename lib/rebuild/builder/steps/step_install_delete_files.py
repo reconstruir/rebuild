@@ -4,7 +4,7 @@
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result
 
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 import os.path as path
 
 class step_install_delete_files(step):
@@ -33,5 +33,5 @@ class step_install_delete_files(step):
     missing_files = [ f for f in delete_files_in_staged_files_dir if not path.exists(f) ]
     if missing_files and not ignore_missing:
       return step_result(False, 'File(s) to delete not found: %s' % (' '.join(missing_files)))
-    file_util.remove(delete_files_in_staged_files_dir)
+    bf_file_ops.remove(delete_files_in_staged_files_dir)
     return step_result(True, None)

@@ -4,7 +4,7 @@ import json, os.path as path
 from collections import namedtuple
 from bes.system.check import check
 from bes.fs.file_check import file_check
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 
 class package_file(namedtuple('package_file', 'filename, checksum, has_hardcoded_path')):
 
@@ -23,7 +23,7 @@ class package_file(namedtuple('package_file', 'filename, checksum, has_hardcoded
       checksum = ''
     else:
       file_check.check_file(filepath)
-      checksum = file_util.checksum(function_name or 'sha256', filepath)
+      checksum = bf_file_ops.checksum(function_name or 'sha256', filepath)
     return clazz(filename, checksum, has_hardcoded_path)
 
   def to_list(self):

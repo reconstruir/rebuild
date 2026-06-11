@@ -7,7 +7,7 @@ from bes.system.host import host
 from collections import namedtuple
 from rebuild.toolchain.darwin.lipo import lipo
 from bes.files.bf_dir import bf_dir
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 
 class ar_replacement(object):
@@ -82,7 +82,7 @@ class ar_replacement(object):
       archive,
     ]
     cmd_flat = ' '.join(cmd)
-    file_util.mkdir(dest_dir)
+    bf_file_ops.mkdir(dest_dir)
     execute.execute(cmd_flat, cwd = dest_dir)
 
   @classmethod
@@ -91,7 +91,7 @@ class ar_replacement(object):
     tmp_dir = bf_temp_file.make_temp_dir()
     thin_libs = clazz._fat_to_thin(archive, tmp_dir, tools)
     expected_contents = None
-    file_util.mkdir(dest_dir)
+    bf_file_ops.mkdir(dest_dir)
     for arch, lib in thin_libs:
       objects_dir = lib + '.objdir'
       clazz._extract_with_ar(lib, objects_dir, tools)
@@ -111,7 +111,7 @@ class ar_replacement(object):
       archive,
     ] + objects
     cmd_flat = ' '.join(cmd)
-    file_util.mkdir(path.dirname(archive))
+    bf_file_ops.mkdir(path.dirname(archive))
     execute.execute(cmd_flat)
 
   @classmethod
@@ -129,7 +129,7 @@ class ar_replacement(object):
     cmd_flat = ' '.join(cmd)
     parent_dir = path.dirname(archive)
     if parent_dir:
-      file_util.mkdir(parent_dir)
+      bf_file_ops.mkdir(parent_dir)
     execute.execute(cmd_flat)
         
   FatToThinItem = namedtuple('FatToThinItem', 'arch,filename')
@@ -142,7 +142,7 @@ class ar_replacement(object):
     for arch in archs:
       tmp_basename = arch + '_' + path.basename(archive)
       tmp_filename = path.join(dest_dir, tmp_basename)
-      file_util.mkdir(dest_dir)
+      bf_file_ops.mkdir(dest_dir)
       lipo.fat_to_thin(archive, tmp_filename, arch, lipo_exe = tools.lipo)
       result.append(clazz.FatToThinItem(arch, tmp_filename))
     return result

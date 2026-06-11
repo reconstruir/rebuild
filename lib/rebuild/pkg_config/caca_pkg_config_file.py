@@ -8,7 +8,7 @@ from bes.build.requirement_list import requirement_list
 from bes.system.check import check
 from bes.common.string_util import string_util
 from bes.common.variable import variable
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.key_value.key_value import key_value
 from bes.key_value.key_value_list import key_value_list
 from bes.text.string_lexer_options import string_lexer_options
@@ -51,12 +51,12 @@ class caca_pkg_config_file(namedtuple('caca_pkg_config_file', 'filename,entries,
   def write_file(self, filename, backup = True):
     new_content = str(self)
     if path.exists(filename):
-      old_content = file_util.read(filename, codec = 'utf-8')
+      old_content = bf_file_ops.read(filename, codec = 'utf-8')
       if new_content == old_content:
         return False
     if backup:
-      file_util.backup(filename)
-    file_util.save(filename, new_content)
+      bf_file_ops.backup(filename)
+    bf_file_ops.save(filename, new_content)
     return True
 
   @classmethod
@@ -69,7 +69,7 @@ class caca_pkg_config_file(namedtuple('caca_pkg_config_file', 'filename,entries,
 
   @classmethod
   def parse_file(clazz, filename):
-    text = file_util.read(filename).decode('utf-8')
+    text = bf_file_ops.read(filename).decode('utf-8')
     return clazz.parse_text(filename, text)
 
   @classmethod

@@ -3,7 +3,7 @@
 from os import path
 from bes.system.check import check
 from bes.text.string_list import string_list
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.system.log import log
 
 from rebuild.recipe.recipe_error import recipe_error
@@ -50,7 +50,7 @@ class venv_config(object):
     if not path.isfile(filename):
       raise RuntimeError('venv config file not found: %s' % (filename))
     if venv_project_config.is_venv_config(filename):
-      text = file_util.read(filename, codec = 'utf8')
+      text = bf_file_ops.read(filename, codec = 'utf8')
       parser = venv_project_config_parser(filename, text)
       projects, storage_config = parser.parse(variable_manager)
       return venv_config(projects, storage_config, filename)

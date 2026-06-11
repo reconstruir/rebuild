@@ -4,7 +4,7 @@
 from bes.common.dict_util import dict_util
 from bes.common.tuple_util import tuple_util
 from bes.files.mime.bf_mime import bf_mime
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.key_value.key_value import key_value
 from bes.key_value.key_value_list import key_value_list
 from bes.system.compat import compat
@@ -34,12 +34,12 @@ class test_mock_artifactory_server(unit_test):
     tmp = self.make_temp_file(suffix = '.txt')
     AR.download_url_to_file(tmp, url, self._TEST_CRED)
     self.assertEqual( 'text/plain', bf_mime.mime_type(tmp) )
-    self.assertEqual( 'this is foo.txt\n', file_util.read(tmp, codec = 'utf8') )
+    self.assertEqual( 'this is foo.txt\n', bf_file_ops.read(tmp, codec = 'utf8') )
 
     url = test.make_url('subdir/subberdir/baz.txt')
     AR.download_url_to_file(tmp, url, self._TEST_CRED)
     self.assertEqual( 'text/plain', bf_mime.mime_type(tmp) )
-    self.assertEqual( 'this is baz.txt\n', file_util.read(tmp, codec = 'utf8') )
+    self.assertEqual( 'this is baz.txt\n', bf_file_ops.read(tmp, codec = 'utf8') )
 
     test.stop()
 
@@ -58,7 +58,7 @@ class test_mock_artifactory_server(unit_test):
     AR.upload(address, tmp_upload, self._TEST_CRED)
     tmp_download = self.make_temp_file()
     AR.download_url_to_file(tmp_download, address.url, self._TEST_CRED)
-    self.assertEqual( 'this is foo.txt\n', file_util.read(tmp_download, codec = 'utf-8') )
+    self.assertEqual( 'this is foo.txt\n', bf_file_ops.read(tmp_download, codec = 'utf-8') )
     test.stop()
     
   def xtest_list_files(self):

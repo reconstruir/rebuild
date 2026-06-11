@@ -2,7 +2,7 @@
 
 import os.path as path
 
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 
 from bes.system.check import check
@@ -50,20 +50,20 @@ class storage_db(object):
     db = storage_db_dict()
     for f in sources:
       p = path.join(self._root, f)
-      mtime = file_util.mtime(p)
+      mtime = bf_file_ops.mtime(p)
       checksum = self._read_checksum(f)
       db[f] = storage_db_entry(f, mtime, checksum)
     return db
       
   def _read_checksum(self, filename):
     p = path.join(self._root, filename)
-    mtime = file_util.mtime(p)
+    mtime = bf_file_ops.mtime(p)
     item = self._db.get(filename, None)
     if item:
       if mtime == item[1]:
         assert item[2]
         return item[2]
-    return file_util.checksum('sha1', p)
+    return bf_file_ops.checksum('sha1', p)
 
   def checksum(self, filename):
     return self._db.checksum(filename)
@@ -79,7 +79,7 @@ class storage_db(object):
   def make_temp_db(clazz, db_content, delete = True):
     root = bf_temp_file.make_temp_dir(delete = delete)
     db_filename = path.join(root, clazz.DB_FILENAME)
-    file_util.save(db_filename, content = db_content)
+    bf_file_ops.save(db_filename, content = db_content)
     return clazz(root)
 
 check.register_class(storage_db)

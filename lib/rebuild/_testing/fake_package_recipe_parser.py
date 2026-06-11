@@ -7,7 +7,7 @@ from bes.build.requirement_list import requirement_list
 from bes.system.check import check
 from bes.common.string_util import string_util
 from bes.compat.StringIO import StringIO
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_item
 from bes.key_value.key_value import key_value
 from bes.key_value.key_value_list import key_value_list
@@ -117,7 +117,7 @@ class fake_package_recipe_parser(object):
 
   def _parse_file(self, node):
     filename, content = fake_package_recipe_parser_util.parse_file(node)
-    if file_util.extension(filename) in [ 'sh', 'py' ]:
+    if bf_file_ops.extension(filename) in [ 'sh', 'py' ]:
       mode = 0o755
     else:
       mode = 0o644

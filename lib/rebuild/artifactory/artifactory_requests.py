@@ -8,7 +8,7 @@ from bes.system.log import logger
 from bes.system.os_env import os_env
 from bes.system.check import check
 from bes.fs.file_path import file_path
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 
 from bes.build.requirement_list import requirement_list
@@ -114,13 +114,13 @@ class artifactory_requests(object):
       if checksum:
         checksums = clazz.get_checksums_for_url(url, credentials)
         expected_checksum = checksums.sha256
-        actual_checksum = file_util.checksum('sha256', tmp)
+        actual_checksum = bf_file_ops.checksum('sha256', tmp)
         clazz.log.log_d('download_to_file: expected_checksum={} actual_checksum={}'.format(expected_checksum,
                                                                                            actual_checksum))
         if expected_checksum != actual_checksum:
           msg = 'Checksum for download does not match expected: {}'.format(url)
           raise artifactory_error(msg, None, None)
-      file_util.copy(tmp, target)
+      bf_file_ops.copy(tmp, target)
       return True
 
   _file_item = namedtuple('_file_item', 'uri, filename, sha1')
@@ -142,7 +142,7 @@ class artifactory_requests(object):
       msg = 'failed to list_files for: {} (status_code {})'.format(url, response.status_code)
       raise artifactory_error(msg, response.status_code, response.content)
     data = response.json()
-    #file_util.save('result.json', content = response.content)
+    #bf_file_ops.save('result.json', content = response.content)
     files = data.get('files', None)
     if not files:
       return []
@@ -150,9 +150,9 @@ class artifactory_requests(object):
     for f in files:
       assert 'uri' in f
       assert 'sha1' in f
-      filename = file_util.lstrip_sep(f['uri'])
+      filename = bf_file_ops.lstrip_sep(f['uri'])
       uri = str(address) + '/' + filename
-      sha1 = file_util.lstrip_sep(f['sha1'])
+      sha1 = bf_file_ops.lstrip_sep(f['sha1'])
       result.append(clazz._file_item(uri, filename, sha1))
     result.sort()
     return result
@@ -246,9 +246,9 @@ class artifactory_requests(object):
   @classmethod
   def checksum_headers_for_file(clazz, filename):
     return {
-      clazz._HEADER_CHECKSUM_MD5: file_util.checksum('md5', filename),
-      clazz._HEADER_CHECKSUM_SHA1: file_util.checksum('sha1', filename),
-      clazz._HEADER_CHECKSUM_SHA256: file_util.checksum('sha256', filename),
+      clazz._HEADER_CHECKSUM_MD5: bf_file_ops.checksum('md5', filename),
+      clazz._HEADER_CHECKSUM_SHA1: bf_file_ops.checksum('sha1', filename),
+      clazz._HEADER_CHECKSUM_SHA256: bf_file_ops.checksum('sha256', filename),
     }
     
   @classmethod
@@ -289,7 +289,7 @@ items.find({{
   "path" : {{"$match":"{match_prefix}*"}}
 }}).include("*", "property.*")
 '''
-    match_prefix = file_util.remove_head(address.repo_filename, address.repo)
+    match_prefix = bf_file_ops.remove_head(address.repo_filename, address.repo)
     aql = template.format(repo = address.repo,  match_prefix = match_prefix)
     clazz.log.log_d('list_artifacts: address={}'.format(address))
     clazz.log.log_d('list_artifacts: match_prefix={}'.format(match_prefix))
@@ -312,7 +312,7 @@ items.find({{
       assert 'path' in item
       item_name = item.get('name', None)
       item_path = item.get('path', None)
-      filename = path.join(file_util.remove_head(item_path, match_prefix), item_name)
+      filename = path.join(bf_file_ops.remove_head(item_path, match_prefix), item_name)
       item_properties = item.get('properties', None)
       if item_properties:
         md = clazz._parse_artifact_properties(filename, item_properties)

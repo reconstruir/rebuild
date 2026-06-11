@@ -12,7 +12,7 @@ from bes.common.string_util import string_util
 from bes.common.variable import variable
 from bes.dependency.dependency_resolver import dependency_resolver
 from bes.factory.singleton_class_registry import singleton_class_registry
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.key_value.key_value_list import key_value_list
 from bes.system.os_env import os_env
 from bes.system.execute import execute
@@ -196,7 +196,7 @@ class step(with_metaclass(step_register_meta, object)):
       
     build_blurb.blurb('rebuild', '%s - %s' % (script.descriptor.name, ' '.join(command)))
 
-#    file_util.mkdir(script.build_dir)
+#    bf_file_ops.mkdir(script.build_dir)
     retry_script = clazz._write_retry_script(command, env, script)
 
     #clazz.env_dump(env, script.descriptor.name, clazz.__name__ + ' : ' + 'POST ENVIRONMENT')
@@ -249,7 +249,7 @@ class step(with_metaclass(step_register_meta, object)):
       s.write(' '.join(command))
     content = s.getvalue()
     file_path = path.join(script.build_dir, clazz.RETRY_SCRIPT_FILENAME)
-    file_util.save(file_path, content = content, mode = 0o755)
+    bf_file_ops.save(file_path, content = content, mode = 0o755)
     return file_path
 
   @classmethod
@@ -280,7 +280,7 @@ class step(with_metaclass(step_register_meta, object)):
       src = path.join(env.build_dir, filename)
       dst = path.join(env.logs_dir, path.basename(src))
       if path.isfile(src):
-        file_util.copy(src, dst)
+        bf_file_ops.copy(src, dst)
 
   @classmethod
   def export_compilation_flags_requirements(clazz, script, system):

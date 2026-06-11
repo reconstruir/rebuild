@@ -3,7 +3,7 @@
 import os.path as path
 from bes.system.check import check
 from bes.system.execute import execute
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bat.git.git_address_util import git_address_util
 
 class source_dir_zipball_cache(object):
@@ -15,7 +15,7 @@ class source_dir_zipball_cache(object):
     if not path.isabs(d):
       d = path.abspath(d)
     zip_filename = self.get_tarball_filename(d)
-    file_util.mkdir(path.dirname(zip_filename))
+    bf_file_ops.mkdir(path.dirname(zip_filename))
     cmd = [ 'zip', '-x', '*.git*', '-u', '-r', zip_filename, path.basename(d) ]
     rv = execute.execute(cmd, cwd = path.dirname(d), raise_error = False)
     # 12 if the success exit code for zip when update has no work to do

@@ -4,7 +4,7 @@
 import os.path as path
 
 from bes.files.bf_dir import bf_dir
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from rebuild.toolchain.library import library
 from rebuild.toolchain.darwin.lipo import lipo
 from rebuild.step.step import step

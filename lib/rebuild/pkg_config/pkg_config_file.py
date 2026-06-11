@@ -8,7 +8,7 @@ from bes.common.algorithm import algorithm
 from bes.common.string_util import string_util
 from bes.key_value.key_value import key_value
 from bes.files.bf_dir import bf_dir
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from .entry import entry
 from bes.build.requirement import requirement
 from bes.build.requirement_list import requirement_list
@@ -25,7 +25,7 @@ class pkg_config_file(object):
   def parse_file(self, filename):
     self.__reset()
     try:
-      return self.parse_string(file_util.read(filename).decode('utf-8'))
+      return self.parse_string(bf_file_ops.read(filename).decode('utf-8'))
     except:
       print("failed loading %s" % (filename))
       raise
@@ -33,12 +33,12 @@ class pkg_config_file(object):
   def write_file(self, filename, backup = True):
     new_content = str(self)
     if path.exists(filename):
-      old_content = file_util.read(filename)
+      old_content = bf_file_ops.read(filename)
       if new_content == old_content:
         return False
     if backup:
-      file_util.backup(filename)
-    file_util.save(filename, new_content)
+      bf_file_ops.backup(filename)
+    bf_file_ops.save(filename, new_content)
     return True
 
   def parse_string(self, s):

@@ -8,7 +8,7 @@ from collections import namedtuple
 from bes.testing.unit_test import unit_test
 from bes.system.os_env import os_env
 from bes.system.execute import execute
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 
 from bes.build.build_target import build_target as BT

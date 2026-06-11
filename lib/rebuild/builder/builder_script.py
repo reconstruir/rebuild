@@ -12,7 +12,7 @@ from bes.common.variable import variable
 from bes.debug.debug_timer import debug_timer
 from bes.dependency import dependency_provider
 from bes.fs.file_checksum import file_checksum_list
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.system.log import log
 from bes.text.text_replace import text_replace
 
@@ -109,18 +109,18 @@ class builder_script(object):
     
   def _save_env_checksum(self):
     content = self._env_checksum_content()
-    file_util.save(self._env_checksum_filename, content = content)
+    bf_file_ops.save(self._env_checksum_filename, content = content)
     
   def _save_env_checksum_if_changed(self):
     if not path.isfile(self._env_checksum_filename):
       return
     content = self._env_checksum_content()
-    if file_util.read(self._env_checksum_filename, codec = 'utf8') == content:
+    if bf_file_ops.read(self._env_checksum_filename, codec = 'utf8') == content:
       return
-    file_util.save(self._env_checksum_filename, content = content)
+    bf_file_ops.save(self._env_checksum_filename, content = content)
     
   def _env_checksum_content(self):
-    vv = variable.find_variables(file_util.read(self.recipe.filename, codec = 'utf8'))
+    vv = variable.find_variables(bf_file_ops.read(self.recipe.filename, codec = 'utf8'))
     d = copy.deepcopy(self.substitutions)
     for k, v in self.substitutions.items():
       if k not in vv or self.working_dir in v:

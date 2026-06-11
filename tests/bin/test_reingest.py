@@ -7,7 +7,7 @@ from bes.archive.temp_archive import temp_archive
 from bes.fs.file_find import file_find
 from bes.system.execute import execute
 from bes.archive.archiver import archiver
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 from bes.testing.program_unit_test import program_unit_test
 from bes.web.file_web_server_tester import file_web_server_tester
@@ -54,7 +54,7 @@ fsconfig
     project_file_formatted = project_file_content.format(url_base = tester.make_url(),
                                                          checksum = tester.file_checksum('downloads/foo-1.2.3.tar.gz'))
     tmp_project_dir = bf_temp_file.make_temp_dir(suffix = '.project.dir')
-    tmp_project_filename = file_util.save(path.join(tmp_project_dir, 'test.reingest'),
+    tmp_project_filename = bf_file_ops.save(path.join(tmp_project_dir, 'test.reingest'),
                                           content = project_file_formatted)
     tmp_fs_local_root_dir = self.make_temp_dir(suffix = '.fs.local.root.dir')
     vfs_config_file_content_formatted = vfs_config_file_content.format(tmp_dir = tmp_fs_local_root_dir)
@@ -121,7 +121,7 @@ print('foo')
     project_file_formatted = project_file_content.format(url_base = tester.make_url(),
                                                          checksum = tester.file_checksum(filename))
     tmp_project_dir = bf_temp_file.make_temp_dir(suffix = '.project.dir')
-    tmp_project_filename = file_util.save(path.join(tmp_project_dir, 'test.reingest'),
+    tmp_project_filename = bf_file_ops.save(path.join(tmp_project_dir, 'test.reingest'),
                                           content = project_file_formatted)
     tmp_fs_local_root_dir = self.make_temp_dir(suffix = '.fs.local.root.dir')
     vfs_config_file_content_formatted = vfs_config_file_content.format(tmp_dir = tmp_fs_local_root_dir)

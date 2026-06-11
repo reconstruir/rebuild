@@ -8,7 +8,7 @@ from bes.common.variable import variable
 from bes.debug.debug_timer import debug_timer
 from bes.dependency.dependency_resolver import dependency_resolver
 from bes.fs.file_replace import file_replace
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 from bes.system.env_var import os_env_var
 from bes.system.execute import execute
@@ -96,7 +96,7 @@ class package_tester(object):
   @classmethod
   def _execute_text(clazz, cmd, context):
     cwd = path.join(context.test_dir, 'cwd')
-    file_util.mkdir(cwd)
+    bf_file_ops.mkdir(cwd)
     return execute.execute(cmd,
                            env = context.env,
                            cwd = cwd,

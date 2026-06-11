@@ -4,7 +4,7 @@
 import os.path as path
 from bes.testing.program_unit_test import program_unit_test
 from bes.fs.file_replace import file_replace
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.fs.file_copy import file_copy
 from bes.files.bf_temp_file import bf_temp_file
 from bat.git.git_temp_repo import git_temp_repo
@@ -210,7 +210,7 @@ class test_rebuilder_script(program_unit_test):
     test = self._run_test(self.DEFAULT_CONFIG, tmp_dir, 'tarball_git_address', 'libsomething')
     self.assertEqual( 0, test.result.exit_code )
     self.assertEqual( [ 'libsomething-1.0.0.tar.gz' ], test.artifacts )
-    file_util.remove(tmp_dir)
+    bf_file_ops.remove(tmp_dir)
 
   def broken_test_lib_libpotato_depends_on_libstarch(self):
     test = self._run_test(self.DEFAULT_CONFIG, self.data_dir(), 'basic', 'libpotato')
@@ -318,7 +318,7 @@ print("hook1 hook2")
     fructose_tarball_filename = 'rebuild_stuff/sources/fructose-3.4.5.tar.gz'
     fructose_tarball_src_path = path.normpath(path.join(self.data_dir(), '../sources', fructose_tarball_filename))
     fructose_tarball_web_path = path.join(tmp_web_root, fructose_tarball_filename)
-    file_util.copy(fructose_tarball_src_path, fructose_tarball_web_path)
+    bf_file_ops.copy(fructose_tarball_src_path, fructose_tarball_web_path)
 
     server = web_server_controller(file_web_server)
     server.start(root_dir = tmp_web_root)
@@ -382,7 +382,7 @@ print("hook1 hook2")
                           debug = self.DEBUG)
     rv = rt.run(config, *args)
     if not self.DEBUG:
-      file_util.remove(rv.tmp_dir)
+      bf_file_ops.remove(rv.tmp_dir)
     return rv
 
 if __name__ == '__main__':

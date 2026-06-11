@@ -5,7 +5,7 @@ import os, os.path as path
 
 from bes.common.variable import variable
 from bes.fs.file_replace import file_replace
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.system.execute import execute
 from rebuild.step.compound_step import compound_step
 from rebuild.step.step import step
@@ -37,7 +37,7 @@ class step_python_make_standalone_program(step):
     if not standalone_programs:
       return step_result(True)
 
-    file_util.mkdir(script.staged_files_bin_dir)
+    bf_file_ops.mkdir(script.staged_files_bin_dir)
     for program in standalone_programs:
       src_program = path.join(script.build_dir, program.filename)
       if src_program.lower().endswith('.py'):
@@ -68,7 +68,7 @@ class step_python_make_standalone_program(step):
     if not path.isfile(src_program):
       return step_result(False, 'src program not found: %s' % (src_program))
     tmp_src_program = path.join(script.build_dir, dst_basename + '.py')
-    file_util.copy(src_program, tmp_src_program)
+    bf_file_ops.copy(src_program, tmp_src_program)
     
     dst_program = path.join(script.build_dir, 'dist', dst_basename)
     cmd = [
@@ -88,8 +88,8 @@ class step_python_make_standalone_program(step):
     if not path.isfile(dst_program):
       return step_result(False, 'dst program not found: %s' % (dst_program))
     installed_program = path.join(script.staged_files_dir, program.dst_filename)
-    file_util.mkdir(path.dirname(installed_program))
-    file_util.copy(dst_program, installed_program)
+    bf_file_ops.mkdir(path.dirname(installed_program))
+    bf_file_ops.copy(dst_program, installed_program)
     os.chmod(installed_program, 0o755)
     return step_result(True, None)
   
@@ -104,8 +104,8 @@ class step_python_make_standalone_program(step):
     if not path.isfile(src_program):
       return step_result(False, 'src program not found: %s' % (src_program))
     installed_program = path.join(script.staged_files_dir, program.dst_filename)
-    file_util.mkdir(path.dirname(installed_program))
-    file_util.copy(src_program, installed_program)
+    bf_file_ops.mkdir(path.dirname(installed_program))
+    bf_file_ops.copy(src_program, installed_program)
     os.chmod(installed_program, 0o755)
     return step_result(True, None)
 

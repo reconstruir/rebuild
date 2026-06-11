@@ -2,7 +2,7 @@
 
 from bes.cli.cli_helper import cli_helper
 from bes.fs.file_find import file_find
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 
 from rebuild.builder.builder_recipe_loader import builder_recipe_loader
 from rebuild.recipe.recipe import recipe
@@ -42,7 +42,7 @@ class recipe_cli_command(object):
     if new_requirements != recipe.requirements:
       print('    FIX: {}: name={} old={} new={}'.format(recipe.filename, recipe.name, recipe.requirements, new_requirements))
       new_recipe = recipe.clone(mutations = { 'requirements': new_requirements })
-      file_util.backup(new_recipe.filename)
+      bf_file_ops.backup(new_recipe.filename)
       new_recipe.save_to_file(new_recipe.filename)
       
   @classmethod

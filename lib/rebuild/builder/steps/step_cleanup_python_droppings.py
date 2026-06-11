@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result
 
@@ -25,5 +25,5 @@ class step_cleanup_python_droppings(step):
       'lib/python/site.pyc',
     ]
     droppings = [ path.join(script.staged_files_dir, dropping) for dropping in droppings ]
-    file_util.remove(droppings)
+    bf_file_ops.remove(droppings)
     return step_result(True, None)

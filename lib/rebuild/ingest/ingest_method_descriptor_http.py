@@ -8,7 +8,7 @@ from bes.archive.archiver import archiver
 from bes.common.string_util import string_util
 from bes.files.bf_temp_file import bf_temp_file
 from bes.files.checksum.bf_checksum import bf_checksum
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.key_value.key_value_list import key_value_list
 from bes.system.log import logger
 
@@ -67,7 +67,7 @@ class ingest_method_descriptor_http(ingest_method_descriptor_base):
       ext = archive_extension.extension_for_filename(ingested_filename)
       tmp_dir = bf_temp_file.make_temp_dir()
       tmp_filename = path.join(tmp_dir, arcname)
-      file_util.copy(local_download, tmp_filename)
+      bf_file_ops.copy(local_download, tmp_filename)
       os.chmod(tmp_filename, 0o0755)
       tmp_archive = archiver.create_temp_file(ext, tmp_dir)
       return tmp_archive

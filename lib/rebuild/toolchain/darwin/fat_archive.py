@@ -2,7 +2,7 @@
 
 import os.path as path
 from collections import namedtuple
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 from bes.archive.archiver import archiver
 from .lipo import lipo
@@ -15,7 +15,7 @@ class fat_archive(object):
     def __init__(self, member, dest_dir):
       self.member = member
       self.filename = path.join(dest_dir, member)
-      self.checksum = file_util.checksum('sha256', self.filename)
+      self.checksum = bf_file_ops.checksum('sha256', self.filename)
 
     def __str__(self):
       return str(self.member)
@@ -69,7 +69,7 @@ class fat_archive(object):
     for arcname, thin_objects in files.items():
       fat_object_filename = path.join(tmp_repack_dir, arcname)
       thin_objects_filenames = [ obj.filename for obj in thin_objects ]
-      file_util.mkdir(path.dirname(fat_object_filename))
+      bf_file_ops.mkdir(path.dirname(fat_object_filename))
       lipo.thin_to_fat(thin_objects_filenames, fat_object_filename, lipo_exe = lipo_exe)
 
     # Extract the normal non object files

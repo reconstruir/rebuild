@@ -4,7 +4,7 @@ import os.path as path
 from bes.system.check import check
 from bes.common.object_util import object_util
 from bes.fs.file_checksum import file_checksum_list
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.build.build_blurb import build_blurb
 from bes.build.build_target import build_target
 from bes.build.package_descriptor import package_descriptor
@@ -60,7 +60,7 @@ class checksum_manager(object):
     checksum_dirs = [ self._checksum_dir(pd, level) for pd in packages ]
     for d in checksum_dirs:
       self.blurb('removing checksums: %s' % (path.relpath(d)))
-    file_util.remove(checksum_dirs)
+    bf_file_ops.remove(checksum_dirs)
 
   def _checksum_dir(self, pd, level):
     check.check_package_descriptor(pd)

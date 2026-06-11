@@ -105,7 +105,7 @@ class rebuilder_tester(object):
     checksums_contents = {}
     for checksum in checksums:
       checksum_path = path.join(checksums_dir, checksum)
-      from bes.fs.file_util import file_util
+      from bes.files.bf_file_ops import bf_file_ops
       checksums_contents[checksum] = clazz._fix_checksums(config, file_checksum_list.load_checksums_file(checksum_path), tmp_dir)
     return checksums_contents
   

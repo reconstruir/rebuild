@@ -64,7 +64,7 @@ class storage_git_repo(storage_base):
     
   #@abstractmethod
   def remote_checksum(self, remote_filename):
-    assert False #return file_util.checksum('sha1', self.remote_filename_abs(remote_filename))
+    assert False #return bf_file_ops.checksum('sha1', self.remote_filename_abs(remote_filename))
 
   #@abstractmethod
   def list_all_files(self):

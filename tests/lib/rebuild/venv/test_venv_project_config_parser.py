@@ -9,7 +9,7 @@ from rebuild.recipe.recipe_error import recipe_error as ERR
 from bes.build.build_target import build_target
 from bes.key_value.key_value import key_value as KV
 from bes.key_value.key_value_list import key_value_list as KVL
-from bes.fs.file_util import file_util
+from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 
 class test_venv_parser(unit_test):
