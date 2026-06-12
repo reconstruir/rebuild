@@ -10,5 +10,5 @@ if __name__ == '__main__':
   multiprocessing.freeze_support()
   sys.dont_write_bytecode = True
   sys.path.remove(path.normpath(path.dirname(__file__)))
-  from rebuild.cli.rebuild_cli import rebuild_cli
-  rebuild_cli.run()
+  from rebuild.cli.rebuild_application import rebuild_application
+  raise SystemExit(rebuild_application.main())
