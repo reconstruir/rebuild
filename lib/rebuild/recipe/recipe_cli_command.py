@@ -1,35 +1,31 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.cli.cli_helper import cli_helper
-from bes.fs.file_find import file_find
+from bes.app.bes_file_application import bes_file_application
+from bes.build.requirement_list import requirement_list
 from bes.files.bf_file_ops import bf_file_ops
 
 from rebuild.builder.builder_recipe_loader import builder_recipe_loader
 from rebuild.recipe.recipe import recipe
 from rebuild.recipe.recipe_load_env import testing_recipe_load_env
-from bes.build.requirement_list import requirement_list
 
-class recipe_cli_command(object):
-  
-  @classmethod
-  def find(clazz, where):
-    recipes = clazz._find_recipes(where)
+class recipe_cli_command(bes_file_application):
+
+  def find(self, where):
+    recipes = self._find_recipes(where)
     for r in recipes:
       print(r)
     return 0
 
-  @classmethod
-  def fix_requirements_versions(clazz, where, python_version):
-    recipe_filenames = clazz._find_recipes(where)
-    recipes = clazz._load_recipes(recipe_filenames, python_version)
-    for recipe in recipes.values():
-      clazz._fix_one_requirements_versions(recipe, recipes)
+  def fix_requirements_versions(self, where, python_version):
+    recipe_filenames = self._find_recipes(where)
+    recipes = self._load_recipes(recipe_filenames, python_version)
+    for r in recipes.values():
+      self._fix_one_requirements_versions(r, recipes)
     return 0
 
-  @classmethod
-  def _fix_one_requirements_versions(clazz, recipe, other_recipes):
+  def _fix_one_requirements_versions(self, r, other_recipes):
     new_requirements = requirement_list()
-    for req in recipe.requirements:
+    for req in r.requirements:
       assert req.operator in [ '==', '>=' ]
       req_recipe = other_recipes[req.name]
       old_version = req.version
@@ -39,32 +35,29 @@ class recipe_cli_command(object):
         new_requirements.append(new_req)
       else:
         new_requirements.append(req)
-    if new_requirements != recipe.requirements:
-      print('    FIX: {}: name={} old={} new={}'.format(recipe.filename, recipe.name, recipe.requirements, new_requirements))
-      new_recipe = recipe.clone(mutations = { 'requirements': new_requirements })
+    if new_requirements != r.requirements:
+      print('    FIX: {}: name={} old={} new={}'.format(r.filename, r.name, r.requirements, new_requirements))
+      new_recipe = r.clone(mutations = { 'requirements': new_requirements })
       bf_file_ops.backup(new_recipe.filename)
       new_recipe.save_to_file(new_recipe.filename)
-      
-  @classmethod
-  def _find_recipes(clazz, where):
-    return cli_helper.resolve_files(where, func = clazz._is_recipe)
 
-  @classmethod
-  def _is_recipe(clazz, filename):
+  def _find_recipes(self, where):
+    return self.resolve_files(where, func=self._is_recipe)
+
+  def _is_recipe(self, filename):
     return recipe.is_recipe(filename) and not filename.lower().endswith('.bak')
 
-  @classmethod
-  def _load_recipes(clazz, recipe_filenames, python_version):
+  def _load_recipes(self, recipe_filenames, python_version):
     env = testing_recipe_load_env()
     env.variable_manager.add_variable('REBUILD_PYTHON_VERSION', python_version)
     result = {}
     for filename in recipe_filenames:
       recipes = builder_recipe_loader.load(env, filename)
-      for recipe in recipes:
-        name = recipe.descriptor.name
+      for r in recipes:
+        name = r.descriptor.name
         if name in result:
           raise RuntimeError('duplicate recipe for "{}":\n  {}\n  {}'.format(name,
-                                                                             recipe.filename,
+                                                                             r.filename,
                                                                              result[name].filename))
-        result[name] = recipe
+        result[name] = r
     return result

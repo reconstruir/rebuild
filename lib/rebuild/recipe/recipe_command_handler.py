@@ -10,7 +10,7 @@ class recipe_command_handler(bcli_command_handler):
     return 'recipe'
 
   def _command_find(self, where, options):
-    return recipe_cli_command.find(where)
+    return recipe_cli_command().find(where)
 
   def _command_fix_requirements_versions(self, where, python_version, options):
-    return recipe_cli_command.fix_requirements_versions(where, python_version)
+    return recipe_cli_command().fix_requirements_versions(where, python_version)
