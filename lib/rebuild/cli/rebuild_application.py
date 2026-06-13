@@ -1,6 +1,6 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
-from bes.cli.bes_application import bes_application
+from bes.app.bes_application import bes_application
 
 from rebuild.ingest.ingest_command_factory import ingest_command_factory
 from rebuild.recipe.recipe_command_factory import recipe_command_factory
