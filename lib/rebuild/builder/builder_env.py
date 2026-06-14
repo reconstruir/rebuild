@@ -6,7 +6,7 @@ from bes.fs.file_trash import file_trash
 from bes.system.check import check
 from bat.git.git_util import git_util
 from bat.git.git_archive_cache import git_archive_cache
-from bes.properties_file.properties_file import properties_file
+from bat.properties_file_v2.properties_file import properties_file
 from bnet.http.http_session import http_session
 from bnet.http.http_session_options import http_session_options
 from bnet.http.http_session_type import http_session_type

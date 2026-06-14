@@ -10,7 +10,7 @@ from bes.system.host import host
 from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 from bes.version.version_cli import version_cli
-from bes.properties_file.properties_file import properties_file
+from bat.properties_file_v2.properties_file import properties_file
 
 from bes.build.build_arch import build_arch
 from bes.build.build_blurb import build_blurb
