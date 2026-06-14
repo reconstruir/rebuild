@@ -4,7 +4,7 @@
 from bes.testing.unit_test import unit_test
 
 from rebuild.pcloud.vfs_pcloud import vfs_pcloud
-from bes.credentials.credentials import credentials
+from bat.credentials.credentials import credentials
 
 #####from unittest import mock
 #####

@@ -22,7 +22,7 @@ from bat.vfs.vfs_file_info import vfs_file_info_list
 from bat.vfs.vfs_error import vfs_error
 from bat.vfs.vfs_path import vfs_path
 
-from bes.credentials.credentials import credentials
+from bat.credentials.credentials import credentials
 
 from .pcloud import pcloud
 from .pcloud_error import pcloud_error

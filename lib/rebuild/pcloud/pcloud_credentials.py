@@ -5,7 +5,7 @@ from collections import namedtuple
 from bes.system.check import check
 from bes.files.bf_file_ops import bf_file_ops
 
-from bes.credentials.credentials import credentials
+from bat.credentials.credentials import credentials
 
 class pcloud_credentials(object):
   
