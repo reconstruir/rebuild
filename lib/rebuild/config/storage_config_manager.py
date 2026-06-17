@@ -7,7 +7,7 @@ from bes.common.bool_util import bool_util
 from bes.system.check import check
 from bes.common.dict_util import dict_util
 from bes.common.string_util import string_util
-from bes.config.simple_config import simple_config
+from bat.config_file.bat_config_file.simple_config import simple_config
 from bes.files.bf_file_ops import bf_file_ops
 
 from .storage_config import storage_config
