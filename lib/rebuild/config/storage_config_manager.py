@@ -31,7 +31,7 @@ class storage_config_manager(object):
     for section in sections:
       sc = storage_config.create_from_config(source, section)
       if sc.name in self._configs:
-        raise self.error('storage with name \"%s\" already exists.', section.origin)
+        raise self.error('storage with name "{}" already exists.'.format(sc.name), section.origin)
       self._configs[sc.name] = sc
       
   def get(self, name):
