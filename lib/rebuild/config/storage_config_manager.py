@@ -7,14 +7,14 @@ from bes.common.bool_util import bool_util
 from bes.system.check import check
 from bes.common.dict_util import dict_util
 from bes.common.string_util import string_util
-from bat.config_file.bat_config_file.simple_config import simple_config
+from bat.config_file.bat_config_file.bat_config import bat_config
 from bes.files.bf_file_ops import bf_file_ops
 
 from .storage_config import storage_config
 
 class storage_config_manager(object):
 
-  error = simple_config.error
+  error = bat_config.error
   
   def __init__(self, config, source):
     check.check_string(source)
@@ -22,9 +22,9 @@ class storage_config_manager(object):
     self._configs = {}
 
     if check.is_string(config):
-      c = simple_config.from_text(config, source = source)
+      c = bat_config.from_text(config, source = source)
     elif check.is_node(config):
-      c = simple_config.from_node(config, source = source)
+      c = bat_config.from_node(config, source = source)
     else:
       raise TypeError('Unknown config type: %s\nShould be string or node: %s - %s' % (source, str(config), type(config)))
     sections = c.find_all_sections('storage')
