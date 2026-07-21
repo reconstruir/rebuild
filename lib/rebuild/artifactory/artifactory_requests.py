@@ -7,7 +7,7 @@ from bes.system.execute import execute
 from bes.system.log import logger
 from bes.system.os_env import os_env
 from bes.system.check import check
-from bes.fs.file_path import file_path
+from bes.files.bf_path import bf_path
 from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 

@@ -13,7 +13,7 @@ from bes.system.env_var import os_env_var
 from bes.system.host import host
 from bes.fs.file_find import file_find
 from bes.fs.file_match import file_match
-from bes.fs.file_path import file_path
+from bes.files.bf_path import bf_path
 from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 from bes.python.package import package
@@ -46,7 +46,7 @@ class pkg_config(object):
   @classmethod
   def _find_exe(clazz):
     for possible_exe in clazz._POSSIBLE_EXE:
-      exe = file_path.which(possible_exe, raise_error = False)
+      exe = bf_path.which(possible_exe, raise_error = False)
       if exe:
         return exe
     return None

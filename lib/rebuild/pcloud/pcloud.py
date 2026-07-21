@@ -9,7 +9,7 @@ from bes.system.log import logger
 from bes.system.check import check
 from bes.common.node import node
 from bes.property.cached_property import cached_property
-from bes.fs.file_path import file_path
+from bes.files.bf_path import bf_path
 from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 from bes.text.string_list import string_list
@@ -201,7 +201,7 @@ class pcloud(object):
     'Ensure that the given folder exits.  Create all parents.'
     if not path.isabs(folder_path):
       raise ValueError('folder_path should be absolute: %s' % (folder_path))
-    paths = file_path.decompose(folder_path)
+    paths = bf_path.decompose(folder_path)
     for p in paths:
       if not self.folder_exists(p):
         self.create_folder(folder_path = p)

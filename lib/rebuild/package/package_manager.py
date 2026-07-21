@@ -18,7 +18,7 @@ from bes.common.string_util import string_util
 from bes.common.variable import variable
 from bes.dependency.dependency_resolver import dependency_resolver
 from bes.env.env_dir import env_dir
-from bes.fs.file_path import file_path
+from bes.files.bf_path import bf_path
 from bes.files.bf_file_ops import bf_file_ops
 from bat.shell_framework.shell_framework import shell_framework
 from bes.system.log import log
@@ -102,7 +102,7 @@ class package_manager(object):
 
   def tool_exe(self, tool_name):
     exe = path.join(self.bin_dir, tool_name)
-    if not file_path.is_executable(exe):
+    if not bf_path.is_executable(exe):
       return None
     return exe
   

@@ -3,7 +3,7 @@
 import os.path as path
 from bes.system.check import check
 from bat.shell_framework.shell_framework import shell_framework
-from bes.fs.file_path import file_path
+from bes.files.bf_path import bf_path
 from bes.files.bf_file_ops import bf_file_ops
 from bes.system.log import log
 from bes.system.os_env import os_env
@@ -36,7 +36,7 @@ class venv_manager(object):
   @classmethod
   def _project_subpath(clazz, project_name, build_target):
     # Remove the release/debug part of the path since its useless in this context
-    p = file_path.join(file_path.split(build_target.build_path)[0:-1])
+    p = bf_path.join(bf_path.split(build_target.build_path)[0:-1])
     return path.join(project_name, p)
     
   def _project_root_dir(self, project_name, build_target):

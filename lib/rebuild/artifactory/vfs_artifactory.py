@@ -18,7 +18,7 @@ from bes.fs.file_checksum import file_checksum
 from bes.files.bf_checksum_db import file_checksum_db
 from bes.fs.file_find import file_find
 from bes.fs.file_metadata import file_metadata
-from bes.fs.file_path import file_path
+from bes.files.bf_path import bf_path
 from bes.system.log import logger
 from bes.factory.factory_field import factory_field
 
@@ -380,6 +380,6 @@ class vfs_artifactory(vfs_base):
     remote_filename_no_sep = vfs_path_util.lstrip_sep(remote_filename)
     repo = remote_filename_no_sep.split('/')[0]
     prefix = '/'.join(remote_filename_sep.split('/')[2:])
-    decomposed_path = file_path.decompose(remote_filename_sep)
+    decomposed_path = bf_path.decompose(remote_filename_sep)
     return self._parsed_remote_filename(remote_filename, decomposed_path, remote_filename_sep,
                                         remote_filename_no_sep, repo, prefix, 'foo')

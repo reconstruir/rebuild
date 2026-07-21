@@ -5,7 +5,7 @@ import os, os.path as path, re
 from bes.system import impl_import
 from bes.files.bf_dir import bf_dir
 from bes.files.bf_file_ops import bf_file_ops
-from bes.fs.file_path import file_path
+from bes.files.bf_path import bf_path
 
 from bes.system.host import host
 if host.SYSTEM == 'macos':
@@ -101,9 +101,9 @@ class library(_library_super_class):
     prefix = path.commonprefix([filename, library])
     if prefix == os.sep:
       return None
-    filename_depth = file_path.depth(filename)
-    library_depth = file_path.depth(library)
-    prefix_depth = file_path.depth(prefix)
+    filename_depth = bf_path.depth(filename)
+    library_depth = bf_path.depth(library)
+    prefix_depth = bf_path.depth(prefix)
     filename_rel = bf_file_ops.remove_head(filename, prefix)
     library_rel = bf_file_ops.remove_head(library, prefix)
     if filename_depth == library_depth == prefix_depth:
