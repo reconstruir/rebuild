@@ -2,7 +2,7 @@
 
 from abc import abstractmethod, ABCMeta
 import json
-from bes.system.compat import with_metaclass
+
 from bes.text import text_table
 from bes.system.check import check
 from collections import namedtuple

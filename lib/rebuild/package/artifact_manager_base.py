@@ -3,7 +3,7 @@
 from os import path
 from collections import namedtuple
 from abc import abstractmethod, ABCMeta
-from bes.system.compat import with_metaclass
+
 from bes.system.check import check
 from bes.system.log import log
 from bes.debug.debug_timer import debug_timer
@@ -23,7 +23,7 @@ class artifact_manager_register_meta(ABCMeta):
     artifact_manager_registry.register(clazz)
     return clazz
 
-class artifact_manager_base(with_metaclass(artifact_manager_register_meta, object)):
+class artifact_manager_base(metaclass = artifact_manager_register_meta):
 
   def __init__(self):
     log.add_logging(self, 'am')

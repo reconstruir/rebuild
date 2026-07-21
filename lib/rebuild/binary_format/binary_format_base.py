@@ -5,12 +5,12 @@ import struct
 from collections import namedtuple
 from abc import abstractmethod, ABCMeta
 from bes.common.object_util import object_util
-from bes.system.compat import with_metaclass
+
 
 binary_format_object = namedtuple('binary_format_object', 'magic,cpu_type,file_type')
 binary_format_file = namedtuple('binary_format_file', 'format,magic,is_fat,objects')
 
-class binary_format_base(with_metaclass(ABCMeta, object)):
+class binary_format_base(metaclass = ABCMeta):
   'Base class for binary formats.'
 
   FILE_TYPE_OBJECT = 'object'

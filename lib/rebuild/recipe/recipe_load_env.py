@@ -3,12 +3,12 @@
 from abc import abstractmethod, ABCMeta
 
 from bes.system.check import check
-from bes.system.compat import with_metaclass
+
 from bes.build.build_target import build_target as BT
 
 from .variable_manager import variable_manager
 
-class recipe_load_env_base(with_metaclass(ABCMeta, object)):
+class recipe_load_env_base(metaclass = ABCMeta):
 
   @abstractmethod
   def _get_build_target(self):

@@ -3,10 +3,10 @@
 
 import os.path as path
 from abc import abstractmethod, ABCMeta
-from bes.system.compat import with_metaclass
+
 from bes.python.package import package
 
-class _toolchain_base(with_metaclass(ABCMeta, object)):
+class _toolchain_base(metaclass = ABCMeta):
 
   def __init__(self, build_target):
     self.build_target = build_target

@@ -17,7 +17,7 @@ from bes.key_value.key_value_list import key_value_list
 from bes.system.os_env import os_env
 from bes.system.execute import execute
 from bes.system.log import log
-from bes.system.compat import with_metaclass
+
 
 from bes.build.build_blurb import build_blurb
 from bes.build.build_target import build_target
@@ -35,7 +35,7 @@ class step_register_meta(ABCMeta):
     step_registry.register(clazz)
     return clazz
 
-class step(with_metaclass(step_register_meta, object)):
+class step(metaclass = step_register_meta):
 
   result = step_result
   

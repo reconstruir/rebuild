@@ -10,3 +10,4 @@ function _fix()
 _fix bes.shell_framework bat.shell_framework
 _fix "from bes.files.bf_checksum import file_checksum_list" "from bes.fs.file_checksum import file_checksum_list"
 _fix "from bes.files.bf_checksum import file_checksum" "from bes.fs.file_checksum import file_checksum"
+_fix "from bes.system.compat import with_metaclass" ""

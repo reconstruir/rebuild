@@ -1,7 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from abc import abstractmethod, ABCMeta
-from bes.system.compat import with_metaclass
+
 from collections import namedtuple
 
 from .storage_registry import storage_registry
@@ -13,7 +13,7 @@ class storage_register_meta(ABCMeta):
     storage_registry.register(clazz)
     return clazz
 
-class storage_base(with_metaclass(storage_register_meta, object)):
+class storage_base(metaclass = storage_register_meta):
 
   @abstractmethod
   def reload_available(self):

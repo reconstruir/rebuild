@@ -5,7 +5,7 @@ from collections import namedtuple
 from abc import abstractmethod, ABCMeta
 
 from bes.system.log import log
-from bes.system.compat import with_metaclass
+
 from bes.system.check import check
 from bes.common.variable import variable
 from bes.key_value.key_value_list import key_value_list
@@ -26,7 +26,7 @@ class value_register_meta(ABCMeta):
       log.add_logging(clazz, clazz.__name__)
     return clazz
 
-class value_base(with_metaclass(value_register_meta, object)):
+class value_base(metaclass = value_register_meta):
   
   def __init__(self, origin, properties = None):
     if origin:

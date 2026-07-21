@@ -3,9 +3,9 @@
 
 import os.path as path
 from abc import abstractmethod, ABCMeta
-from bes.system.compat import with_metaclass
 
-class library_base(with_metaclass(ABCMeta, object)):
+
+class library_base(metaclass = ABCMeta):
 
   def __init__(self):
     pass

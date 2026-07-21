@@ -1,12 +1,12 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from abc import abstractmethod, ABCMeta
-from bes.system.compat import with_metaclass
+
 from bes.system.check import check
 
 from collections import namedtuple
 
-class ingest_method_descriptor_base(with_metaclass(ABCMeta, object)):
+class ingest_method_descriptor_base(metaclass = ABCMeta):
   
   @abstractmethod
   def method(self):

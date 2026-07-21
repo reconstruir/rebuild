@@ -2,7 +2,7 @@
 
 import sys
 from abc import abstractmethod, ABCMeta
-from bes.system.compat import with_metaclass
+
 from bes.system.check import check
 
 from .hook_result import hook_result
@@ -15,7 +15,7 @@ class hook_register_meta(ABCMeta):
     hook_registry.register(clazz)
     return clazz
 
-class hook(with_metaclass(hook_register_meta, object)):
+class hook(metaclass = hook_register_meta):
 
   result = hook_result
   
