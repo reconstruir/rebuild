@@ -2,7 +2,7 @@
 
 import os.path as path
 from bes.system.check import check
-from bes.shell_framework.shell_framework import shell_framework
+from bat.shell_framework.shell_framework import shell_framework
 from bes.fs.file_path import file_path
 from bes.files.bf_file_ops import bf_file_ops
 from bes.system.log import log
