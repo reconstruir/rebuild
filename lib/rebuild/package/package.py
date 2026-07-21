@@ -21,7 +21,6 @@ from bes.fs.tar_util import tar_util
 from bes.files.bf_temp_file import bf_temp_file
 from bes.match.matcher_filename import matcher_filename, matcher_multiple_filename
 from bes.property.cached_property import cached_property
-from bes.python.setup_tools import setup_tools
 from bes.system.execute import execute
 from bes.system.log import log
 
@@ -104,7 +103,8 @@ class package(object):
 
   def _update_python_config_files(self, stuff_dir):
     python_lib_dir = path.join(stuff_dir, 'lib/python')
-    setup_tools.update_egg_directory(python_lib_dir)
+    assert False
+    #setup_tools.update_egg_directory(python_lib_dir)
 
   _ENV_FILE_HEAD_TEMPLATE = '''\
 # BEGIN @REBUILD_HEAD@

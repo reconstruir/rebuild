@@ -4,8 +4,6 @@
 import os.path as path
 from abc import abstractmethod, ABCMeta
 
-from bes.python.package import package
-
 class _toolchain_base(metaclass = ABCMeta):
 
   def __init__(self, build_target):
@@ -48,7 +46,8 @@ class _toolchain_base(metaclass = ABCMeta):
 
   def ar_replacement_program_exe(self):
     for p in [ 'programs/rebuild_ar_replacement.pyc', 'programs/rebuild_ar_replacement.py' ]:
-      pexe = package.get_data_program_exe(p, __file__, __name__)
+      assert False
+      #pexe = package.get_data_program_exe(p, __file__, __name__)
       if pexe:
         return pexe
     return None
