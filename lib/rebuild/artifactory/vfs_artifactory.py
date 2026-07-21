@@ -14,7 +14,7 @@ import requests
 from bes.system.check import check
 from bes.common.node import node
 from bes.fs.file_attributes import file_attributes
-from bes.files.bf_checksum import file_checksum
+from bes.fs.file_checksum import file_checksum
 from bes.files.bf_checksum_db import file_checksum_db
 from bes.fs.file_find import file_find
 from bes.fs.file_metadata import file_metadata

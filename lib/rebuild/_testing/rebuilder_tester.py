@@ -6,8 +6,8 @@ from bes.build.build_arch import build_arch
 from bes.build.build_level import build_level
 from bes.build.build_system import build_system
 from bes.build.build_target import build_target
-from bes.files.bf_checksum import file_checksum
-from bes.files.bf_checksum import file_checksum_list
+from bes.fs.file_checksum import file_checksum
+from bes.fs.file_checksum import file_checksum_list
 from bes.fs.file_find import file_find
 from bes.files.bf_temp_file import bf_temp_file
 from bat.git.git_address_util import git_address_util
