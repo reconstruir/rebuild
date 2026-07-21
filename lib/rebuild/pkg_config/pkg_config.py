@@ -16,7 +16,6 @@ from bes.fs.file_match import file_match
 from bes.files.bf_path import bf_path
 from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
-from bes.python.package import package
 from bes.build.build_arch import build_arch
 from bes.build.build_blurb import build_blurb
 from bes.build.build_system import build_system

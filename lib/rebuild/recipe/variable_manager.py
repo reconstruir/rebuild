@@ -1,9 +1,10 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from os import path
+import getpass
+
 from bes.system.check import check
 from bes.common.variable import variable
-from bes.system.user import user
 
 class variable_manager(object):
 
@@ -35,6 +36,6 @@ class variable_manager(object):
 
   def _add_system_variables(self):
     self.variables['HOME'] = path.expanduser('~')
-    self.variables['USER'] = user.USERNAME
+    self.variables['USER'] = getpass.getuser()
   
 check.register_class(variable_manager, include_seq = False)
