@@ -4,7 +4,6 @@ import os.path as path
 from rebuild.step.compound_step import compound_step
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result
-from bes.python.setup_tools import setup_tools
 from bes.common.string_util import string_util
 from bes.common.time_util import time_util
 from bes.version.version_info import version_info

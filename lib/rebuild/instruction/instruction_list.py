@@ -85,7 +85,7 @@ class instruction_list(type_checked_list):
 
   @classmethod
   def load_file(clazz, filename):
-    return clazz.parse(bf_file_ops.read(filename, codec = 'utf-8'))
+    return clazz.parse(bf_file_ops.read(filename, encoding = 'utf-8'))
 
   def dependencies(self, target):
     check.check_string(target)

@@ -5,7 +5,6 @@ import os.path as path
 from rebuild.step.compound_step import compound_step
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result
-from bes.python.setup_tools import setup_tools
 
 class step_python_lib_build(step):
   'A step to do the "build" target of setuptools.'

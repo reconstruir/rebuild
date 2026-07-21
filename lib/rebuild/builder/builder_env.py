@@ -12,7 +12,6 @@ from bnet.http.http_session_options import http_session_options
 from bnet.http.http_session_type import http_session_type
 from bes.system.python import python
 from bes.system.which import which
-from bes.python.python_exe import python_exe
 
 from rebuild.tools_manager.tools_manager import tools_manager
 from rebuild.checksum.checksum_manager import checksum_manager
@@ -137,7 +136,8 @@ class builder_env(object):
       print('%s: %s' % (key, value))
   
   def _make_global_variables(self):
-    py_exe = python_exe.default_exe()
+    assert False
+    #py_exe = python_exe.default_exe()
     if not py_exe:
       raise RuntimeError('No python exe found for python version: "{}"'.format(self.config.python_version))
 

@@ -49,7 +49,7 @@ class builder_recipe_loader(object):
     check.check_recipe_load_env(env)
     check.check_variable_manager(env.variable_manager)
     check.check_string(filename)
-    content = bf_file_ops.read(filename, codec = 'utf8')
+    content = bf_file_ops.read(filename, encoding = 'utf8')
     parser = recipe_parser(filename, content)
     recipes = parser.parse(env.variable_manager)
 

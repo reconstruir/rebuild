@@ -16,14 +16,14 @@ class test_builder_recipe_loader(unit_test):
   TEST_ENV = testing_recipe_load_env()
   
   def test_load_libjpeg(self):
-    filenames = [ self.data_path('build_libjpeg.rebc') ]
+    filenames = [ self.xdata_path('build_libjpeg.rebc') ]
     recipes = builder_recipe_loader.load(self.TEST_ENV, filenames[0])
     self.assertEqual( 1, len(recipes) )
     self.assertEqual( 'libjpeg', recipes[0].descriptor.name )
     self.assertEqual( ( '9a', 1, 0), recipes[0].descriptor.version )
 
   def test_multiple_recipes(self):
-    filenames = [ self.data_path('build_multiple_recipes.rebc') ]
+    filenames = [ self.xdata_path('build_multiple_recipes.rebc') ]
     recipes = builder_recipe_loader.load(self.TEST_ENV, filenames[0])
     self.assertEqual( 4, len(recipes) )
 

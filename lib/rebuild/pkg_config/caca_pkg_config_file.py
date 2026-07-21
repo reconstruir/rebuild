@@ -51,7 +51,7 @@ class caca_pkg_config_file(namedtuple('caca_pkg_config_file', 'filename,entries,
   def write_file(self, filename, backup = True):
     new_content = str(self)
     if path.exists(filename):
-      old_content = bf_file_ops.read(filename, codec = 'utf-8')
+      old_content = bf_file_ops.read(filename, encoding = 'utf-8')
       if new_content == old_content:
         return False
     if backup:

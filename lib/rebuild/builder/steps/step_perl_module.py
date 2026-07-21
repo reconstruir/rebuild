@@ -6,7 +6,6 @@ from rebuild.step.compound_step import compound_step
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result
 from bes.build.build_system import build_system
-from bes.python.setup_tools import setup_tools
 from bes.system.execute import execute
 from bes.system.check import check
 

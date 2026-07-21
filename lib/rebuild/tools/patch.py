@@ -80,7 +80,7 @@ class patch(object):
     'Return the content of a patch.  Patch can be compressed.'
     if clazz.patch_is_compressed(patch):
       return compressed_file.read(patch)
-    return bf_file_ops.read(patch, codec = 'utf-8')
+    return bf_file_ops.read(patch, encoding = 'utf-8')
 
   @classmethod
   def patch_is_compressed(clazz, patch):

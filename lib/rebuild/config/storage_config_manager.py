@@ -42,7 +42,7 @@ class storage_config_manager(object):
   
   @classmethod
   def from_file(clazz, filename):
-    return storage_config_manager(bf_file_ops.read(filename, codec = 'utf8'), source = filename)
+    return storage_config_manager(bf_file_ops.read(filename, encoding = 'utf8'), source = filename)
 
   @classmethod
   def from_text(clazz, text, source = None):

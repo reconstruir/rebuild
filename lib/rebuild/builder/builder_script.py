@@ -115,12 +115,12 @@ class builder_script(object):
     if not path.isfile(self._env_checksum_filename):
       return
     content = self._env_checksum_content()
-    if bf_file_ops.read(self._env_checksum_filename, codec = 'utf8') == content:
+    if bf_file_ops.read(self._env_checksum_filename, encoding = 'utf8') == content:
       return
     bf_file_ops.save(self._env_checksum_filename, content = content)
     
   def _env_checksum_content(self):
-    vv = variable.find_variables(bf_file_ops.read(self.recipe.filename, codec = 'utf8'))
+    vv = variable.find_variables(bf_file_ops.read(self.recipe.filename, encoding = 'utf8'))
     d = copy.deepcopy(self.substitutions)
     for k, v in self.substitutions.items():
       if k not in vv or self.working_dir in v:
