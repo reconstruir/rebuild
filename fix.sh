@@ -13,4 +13,6 @@ _fix "from bes.files.bf_checksum import file_checksum" "from bes.fs.file_checksu
 _fix "from bes.system.compat import with_metaclass" ""
 _fix "bes.fs.file_path import file_path" "bes.files.bf_path import bf_path"
 _fix "file_path." "bf_path."
+_fix "from bes.fs import bf_check" "from bes.files.bf_check import bf_check"
+
 
