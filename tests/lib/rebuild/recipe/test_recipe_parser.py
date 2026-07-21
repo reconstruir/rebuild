@@ -755,8 +755,8 @@ package foo 1.2.3 4
     values = step1.resolve_values({}, self.TEST_ENV)
     files = values['file_list_value']
     self.assertEqual( 2, len(files) )
-    self.assertEqual( self.data_path('test_file1.txt'), files[0].filename )
-    self.assertEqual( self.data_path('test_file2.txt'), files[1].filename )
+    self.assertEqual( self.xdata_path('test_file1.txt'), files[0].filename )
+    self.assertEqual( self.xdata_path('test_file2.txt'), files[1].filename )
 
     text = '''!rebuild.recipe!
 package foo 1.2.3 4
@@ -775,7 +775,7 @@ package foo 1.2.3 4
     values = step1.resolve_values({}, self.TEST_ENV)
     files = values['file_list_value']
     self.assertEqual( 1, len(files) )
-    self.assertMultiLineEqual( self.data_path('test_file2.txt'), files[0].filename )
+    self.assertMultiLineEqual( self.xdata_path('test_file2.txt'), files[0].filename )
 
   def test_step_value_file_list_empty(self):
     text = '''!rebuild.recipe!
@@ -841,7 +841,7 @@ package foo 1.2.3
       
   def _filename_for_parser(self):
     'Return a fake filename for parser.  Some values need it to find files relatively to filename.'
-    return self.data_path('whatever')
+    return self.xdata_path('whatever')
   
 class test_recipe_step_values(unit_test):
   

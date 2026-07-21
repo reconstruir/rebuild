@@ -87,7 +87,7 @@ class test_darwin_package_util(unit_test):
       self.assertTrue( archiver.is_valid(fat_package) )
     
   def __test_file(self, filename):
-    return self.data_path(filename, platform_specific = True)
+    return self.xdata_path(filename, platform_specific = True)
       
   def _make_test_archive(self, target, arch, other_items):
     items = [

@@ -21,7 +21,7 @@ class test_builder_script(unit_test):
     unit_test.raise_skip('broken')
   
   def test_zlib(self):
-    filename = self.data_path('build_zlib.rebc')
+    filename = self.xdata_path('build_zlib.rebc')
     script = self._load_builder_script(filename)
     expected_requirements = []
     expected_properties = {}
@@ -29,7 +29,7 @@ class test_builder_script(unit_test):
     self.assertEqual( [], script.descriptor.requirements )
 
   def test_libjpeg(self):
-    filename = self.data_path('build_libjpeg.rebc')
+    filename = self.xdata_path('build_libjpeg.rebc')
     script = self._load_builder_script(filename)
     expected_requirements = []
     expected_properties = {}
@@ -37,7 +37,7 @@ class test_builder_script(unit_test):
     self.assertEqual( [], script.descriptor.requirements )
 
   def test_libopenjpeg(self):
-    filename = self.data_path('build_libopenjpeg.rebc')
+    filename = self.xdata_path('build_libopenjpeg.rebc')
     script = self._load_builder_script(filename)
 
     expected_requirements = requirement.parse('cmake(all) >= 3.3.1-1')
@@ -49,7 +49,7 @@ class test_builder_script(unit_test):
     self.assertEqual( expected_requirements, script.descriptor.requirements )
 
   def test_libpng(self):
-    filename = self.data_path('rebuild.recipe')
+    filename = self.xdata_path('rebuild.recipe')
     script = self._load_builder_script(filename)
 
     expected_requirements = requirement.parse('zlib(all) >= 1.2.8-1')

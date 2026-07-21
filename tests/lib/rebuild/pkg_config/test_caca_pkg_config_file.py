@@ -156,7 +156,7 @@ Cflags: -I${includedir}
     self.assertEqual( cf, new_cf )
 
   def xtest_write_many_examples(self):
-    examples = glob.glob(path.join(self.data_path(), '*.pc'))
+    examples = glob.glob(path.join(self.xdata_path(), '*.pc'))
     for example in examples:
       cf = caca_pkg_config_file()
       cf.parse_file(example)

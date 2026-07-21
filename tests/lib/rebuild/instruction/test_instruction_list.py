@@ -45,7 +45,7 @@ class test_instruction_list(unit_test):
     self.assertEqual( I('foo', { 'x': '5', 'y': 'hi' }, set([ 'bar' ])), a[0] )
 
   def xtest_load_file(self):
-    a = IL.load_file(self.data_path('fruits/fructose.rci')).values()
+    a = IL.load_file(self.xdata_path('fruits/fructose.rci')).values()
     it = iter(a)
     self.assertEqual( 3, len(a) )
     self.assertEqual( I('fructose', {}, set([ 'libfructose1', 'libfructose2' ])), next(it) )
@@ -57,7 +57,7 @@ class test_instruction_list(unit_test):
                                           'LIBS': '-lfructose2' }, set()), next(it) )
 
   def xtest_load_dir(self):
-    a = IL.load_dir(self.data_path('fruits')).values()
+    a = IL.load_dir(self.xdata_path('fruits')).values()
     self.assertEqual( 9, len(a) )
     it = iter(a)
     self.assertEqual( I('fiber', {}, set([ 'libfiber1', 'libfiber2' ])), next(it) )
@@ -83,7 +83,7 @@ class test_instruction_list(unit_test):
     self.assertEqual( I('orange', {}, set([ 'liborange1', 'liborange2' ])), next(it) )
 
   def xtest_load_file_with_quoted_content(self):
-    a = IL.load_file(self.data_path('quoted.rci')).values()
+    a = IL.load_file(self.xdata_path('quoted.rci')).values()
     self.assertEqual( 1, len(a) )
     self.assertEqual( I('quoted', { 'CFLAGS': '-DNAME="foo bar"'}, set()), a[0] )
     
@@ -94,13 +94,13 @@ class test_instruction_list(unit_test):
       return super(test_instruction_list, self).assertEqual(expected, actual)
 
   def xtest_dependencies(self):
-    a = IL.load_dir(self.data_path('fruits'))
+    a = IL.load_dir(self.xdata_path('fruits'))
     self.assertEqual( ['libfiber1', 'libfructose1', 'liborange1', 'liborange2' ], a.dependencies('orange') )
     
   def xtest_flags(self):
-    a = IL.load_dir(self.data_path('fruits'))
-    a.update(IL.load_file(self.data_path('quoted.rci')))
-    a.update(IL.load_file(self.data_path('quoted2.rci')))
+    a = IL.load_dir(self.xdata_path('fruits'))
+    a.update(IL.load_file(self.xdata_path('quoted.rci')))
+    a.update(IL.load_file(self.xdata_path('quoted2.rci')))
     actual = a.flags(['liborange2', 'libfiber1', 'quoted', 'quoted2' ])
     expected = {
       'CFLAGS': '-I${REBUILD_PACKAGE_PREFIX}/include -I${REBUILD_PACKAGE_PREFIX}/include/caca -DNAME="foo bar" -DNAME2="bar baz"',
@@ -110,7 +110,7 @@ class test_instruction_list(unit_test):
     self.assertEqual( expected, actual )
     
   def xtest_dependencies_flags(self):
-    a = IL.load_dir(self.data_path('fruits'))
+    a = IL.load_dir(self.xdata_path('fruits'))
     deps = a.dependencies('orange')
     self.assertEqual( ['libfiber1', 'libfructose1', 'liborange1', 'liborange2' ], deps )
     actual = a.flags(deps)

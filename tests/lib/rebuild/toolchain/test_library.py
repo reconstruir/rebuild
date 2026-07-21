@@ -159,13 +159,13 @@ class test_library(unit_test):
     self.assertEqual( expected_deps, deps )
     
   def _call_is_library(self, filename):
-    return library.is_library(self.data_path(filename, platform_specific = True))
+    return library.is_library(self.xdata_path(filename, platform_specific = True))
 
   def _call_is_shared_library(self, filename):
-    return library.is_shared_library(self.data_path(filename, platform_specific = True))
+    return library.is_shared_library(self.xdata_path(filename, platform_specific = True))
 
   def _call_is_static_library(self, filename):
-    return library.is_static_library(self.data_path(filename, platform_specific = True))
+    return library.is_static_library(self.xdata_path(filename, platform_specific = True))
 
   def test_is_archive_dir_error(self):
     self.assertFalse( library.is_archive('/usr/bin') )

@@ -126,10 +126,10 @@ class test_binary_format_elf(unit_test):
     self.assertEqual( None, self.__read_magic('linux/notalib.txt') )
 
   def __is_binary(self, filename):
-    return elf().is_binary(self.data_path(filename))
+    return elf().is_binary(self.xdata_path(filename))
   
   def __read_magic(self, filename):
-    return elf().read_magic(self.data_path(filename))
+    return elf().read_magic(self.xdata_path(filename))
   
 if __name__ == '__main__':
   unit_test.main()

@@ -12,9 +12,9 @@ class test_patch(unit_test):
   __unit_test_data_dir__ = '${BES_TEST_DATA_DIR}/tools/patch'
 
   def test_patch(self):
-    p = self.data_path('src_to_dst.patch')
-    src = self.data_path('src.txt')
-    dst = self.data_path('dst.txt')
+    p = self.xdata_path('src_to_dst.patch')
+    src = self.xdata_path('src.txt')
+    dst = self.xdata_path('dst.txt')
 
     tmp_dir = bf_temp_file.make_temp_dir()
     tmp_src = path.join(tmp_dir, 'src.txt')
@@ -29,9 +29,9 @@ class test_patch(unit_test):
     self.assertEqual( bf_file_ops.read(src), bf_file_ops.read(backup_src) )
 
   def test_patch_compressed(self):
-    p = self.data_path('src_to_dst.patch.gz')
-    src = self.data_path('src.txt')
-    dst = self.data_path('dst.txt')
+    p = self.xdata_path('src_to_dst.patch.gz')
+    src = self.xdata_path('src.txt')
+    dst = self.xdata_path('dst.txt')
 
     tmp_dir = bf_temp_file.make_temp_dir()
     tmp_src = path.join(tmp_dir, 'src.txt')
@@ -46,14 +46,14 @@ class test_patch(unit_test):
     self.assertEqual( bf_file_ops.read(src), bf_file_ops.read(backup_src) )
     
   def test_affected_files(self):
-    p = self.data_path('src_to_dst.patch')
+    p = self.xdata_path('src_to_dst.patch')
     actual_affected_files = patch.affected_files(p)
     expected_affected_files = [ 'dst.txt' ]
     self.assertEqual( expected_affected_files, actual_affected_files )
 
   def test_patch_is_compressed(self):
-    self.assertFalse( patch.patch_is_compressed(self.data_path('src_to_dst.patch')) )
-    self.assertTrue( patch.patch_is_compressed(self.data_path('src_to_dst.patch.gz')) )
+    self.assertFalse( patch.patch_is_compressed(self.xdata_path('src_to_dst.patch')) )
+    self.assertTrue( patch.patch_is_compressed(self.xdata_path('src_to_dst.patch.gz')) )
     
 if __name__ == '__main__':
   unit_test.main()

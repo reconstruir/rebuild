@@ -55,7 +55,7 @@ class test_binary_detector(unit_test):
     self.assertFalse( self._is_strippable('macos/fat_64_fruits.so', format_name = 'elf') )
   
   def _is_strippable(self, program_name, format_name = None):
-    return binary_detector.is_strippable(self.data_path(program_name), format_name = format_name)
+    return binary_detector.is_strippable(self.xdata_path(program_name), format_name = format_name)
 
 if __name__ == '__main__':
   unit_test.main()

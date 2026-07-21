@@ -98,10 +98,10 @@ class test_binary_format_macho(unit_test):
     self.assertEqual( None, self.__read_magic('macos/notalib.txt') )
 
   def __is_binary(self, filename):
-    return macho().is_binary(self.data_path(filename))
+    return macho().is_binary(self.xdata_path(filename))
   
   def __read_magic(self, filename):
-    return macho().read_magic(self.data_path(filename))
+    return macho().read_magic(self.xdata_path(filename))
   
 if __name__ == '__main__':
   unit_test.main()

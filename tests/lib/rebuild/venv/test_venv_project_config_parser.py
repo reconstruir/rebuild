@@ -339,7 +339,7 @@ projects
     
   def _filename_for_parser(self):
     'Return a fake filename for parser.  Some values need it to find files relatively to filename.'
-    return self.data_path('whatever')
+    return self.xdata_path('whatever')
   
 if __name__ == '__main__':
   unit_test.main()
