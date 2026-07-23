@@ -4,9 +4,9 @@
 import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.files.bf_temp_file import bf_temp_file
-from bes.build.build_system import build_system
-from bes.build.package_descriptor import package_descriptor as PD
-from bes.build.requirement_list import requirement_list as RL
+from bat.build.core.build_system import build_system
+from bat.build.core.package_descriptor import package_descriptor as PD
+from bat.build.core.requirement_list import requirement_list as RL
 from rebuild.package.package_db import package_db as DB
 from rebuild.package.package_db_entry import package_db_entry as PE
 from rebuild.package.package_manifest import package_manifest

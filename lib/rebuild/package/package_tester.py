@@ -14,8 +14,8 @@ from bes.system.env_var import os_env_var
 from bes.system.execute import execute
 from bes.system.os_env import os_env
 
-from bes.build.build_blurb import build_blurb
-from bes.build.build_target import build_target
+from bat.build.core.build_blurb import build_blurb
+from bat.build.core.build_target import build_target
 from rebuild.step.step_result import step_result
 from rebuild.toolchain.toolchain import toolchain
 

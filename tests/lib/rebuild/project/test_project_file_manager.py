@@ -5,7 +5,7 @@ import os.path as path
 from bes.testing.unit_test import unit_test
 from rebuild.project.project_file import project_file
 from rebuild.project.project_file_manager import project_file_manager as PFM
-from bes.build.build_target import build_target as BT
+from bat.build.core.build_target import build_target as BT
 from bes.system.os_env import os_env_var
 from bes.files.bf_file_ops import bf_file_ops
 from bes.fs.testing.temp_content import temp_content

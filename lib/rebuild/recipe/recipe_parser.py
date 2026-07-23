@@ -13,10 +13,10 @@ from bes.text.tree_text_parser import tree_text_parser
 from bes.text.text_fit import text_fit
 from bes.text.string_lexer_options import string_lexer_options
 
-from bes.build.build_version import build_version
-from bes.build.package_descriptor import package_descriptor
-from bes.build.requirement import requirement
-from bes.build.requirement_list import requirement_list
+from bat.build.core.build_version import build_version
+from bat.build.core.package_descriptor import package_descriptor
+from bat.build.core.requirement import requirement
+from bat.build.core.requirement_list import requirement_list
 from rebuild.step.step_description import step_description
 
 from rebuild.recipe.value.value_type import value_type

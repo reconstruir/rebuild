@@ -11,7 +11,7 @@ from bes.system.check import check
 from bes.text.string_list import string_list
 from bes.compat.url_compat import urljoin
 
-from bes.build.build_blurb import build_blurb
+from bat.build.core.build_blurb import build_blurb
 
 from rebuild.artifactory.artifactory_requests import artifactory_requests
 

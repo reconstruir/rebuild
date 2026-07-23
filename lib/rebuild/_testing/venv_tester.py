@@ -5,7 +5,7 @@ import os.path as path
 from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 
-from bes.build.build_target import build_target
+from bat.build.core.build_target import build_target
 from rebuild.venv.venv_config import venv_config
 from rebuild.venv.venv_manager import venv_manager
 from rebuild.recipe.variable_manager import variable_manager

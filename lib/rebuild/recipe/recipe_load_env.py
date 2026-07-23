@@ -4,7 +4,7 @@ from abc import abstractmethod, ABCMeta
 
 from bes.system.check import check
 
-from bes.build.build_target import build_target as BT
+from bat.build.core.build_target import build_target as BT
 
 from .variable_manager import variable_manager
 

@@ -4,10 +4,10 @@
 import os.path as path, pprint
 from bes.system.check import check
 from bes.common.dict_util import dict_util
-from bes.build.build_blurb import build_blurb
-from bes.build.package_descriptor import package_descriptor
-from bes.build.requirement import requirement
-from bes.build.requirement_manager import requirement_manager
+from bat.build.core.build_blurb import build_blurb
+from bat.build.core.package_descriptor import package_descriptor
+from bat.build.core.requirement import requirement
+from bat.build.core.requirement_manager import requirement_manager
 from bes.dependency.dependency_resolver import dependency_resolver, missing_dependency_error
 from collections import namedtuple
 from .builder_recipe_loader import builder_recipe_loader

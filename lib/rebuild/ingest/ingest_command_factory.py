@@ -1,7 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.bcli.bcli_command_factory_base import bcli_command_factory_base
-from bes.build.build_system import build_system
+from bat.build.core.build_system import build_system
 
 from .ingest_cli_options import ingest_cli_options
 from .ingest_command_handler import ingest_command_handler

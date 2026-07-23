@@ -9,8 +9,8 @@ from bes.text.white_space import white_space
 from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file, bf_temp_item
 
-from bes.build.build_target import build_target
-from bes.build.package_descriptor import package_descriptor
+from bat.build.core.build_target import build_target
+from bat.build.core.package_descriptor import package_descriptor
 from rebuild.package.package import package
 from rebuild.toolchain.compiler import compiler
 

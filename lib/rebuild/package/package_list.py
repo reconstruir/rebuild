@@ -2,7 +2,7 @@
 
 from bes.system.check import check
 from bes.common.type_checked_list import type_checked_list
-from bes.build.package_descriptor_list import package_descriptor_list
+from bat.build.core.package_descriptor_list import package_descriptor_list
 
 from .package import package
 

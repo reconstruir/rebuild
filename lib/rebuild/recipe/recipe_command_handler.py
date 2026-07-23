@@ -1,7 +1,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.bcli.bcli_command_handler import bcli_command_handler
-from bes.build.requirement_list import requirement_list
+from bat.build.core.requirement_list import requirement_list
 from bes.files.bf_file_ops import bf_file_ops
 from bes.files.find.bf_file_finder import bf_file_finder
 

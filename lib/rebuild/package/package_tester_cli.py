@@ -7,10 +7,10 @@ from bes.system.log import log
 from bes.key_value.key_value_parser import key_value_parser
 from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
-from bes.build.build_blurb import build_blurb
-from bes.build.build_level import build_level
-from bes.build.build_target import build_target
-from bes.build.build_target_cli import build_target_cli
+from bat.build.core.build_blurb import build_blurb
+from bat.build.core.build_level import build_level
+from bat.build.core.build_target import build_target
+from bat.build.core.build_target_cli import build_target_cli
 from rebuild.package.artifact_manager_local import artifact_manager_local
 from rebuild.package.package import package
 from rebuild.package.package_tester import package_tester

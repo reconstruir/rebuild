@@ -7,9 +7,9 @@ from bes.files.bf_path import bf_path
 from bes.files.bf_file_ops import bf_file_ops
 from bes.system.log import log
 from bes.system.os_env import os_env
-from bes.build.build_blurb import build_blurb
-from bes.build.build_version import build_version
-from bes.build.package_descriptor_list import package_descriptor_list
+from bat.build.core.build_blurb import build_blurb
+from bat.build.core.build_version import build_version
+from bat.build.core.package_descriptor_list import package_descriptor_list
 from bes.dependency.dependency_resolver import dependency_resolver
 from rebuild.package.package_manager import package_manager
 from collections import namedtuple

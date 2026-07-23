@@ -4,7 +4,7 @@ import json
 from bes.system.check import check
 from bes.common.json_util import json_util
 from bes.common.string_util import string_util
-from bes.build.requirement_list import requirement_list
+from bat.build.core.requirement_list import requirement_list
 
 class sql_encoding(object):
 

@@ -2,8 +2,8 @@
 
 import os.path as path
 
-from bes.build.artifact_descriptor import artifact_descriptor
-from bes.build.requirement_list import requirement_list
+from bat.build.core.artifact_descriptor import artifact_descriptor
+from bat.build.core.requirement_list import requirement_list
 from bes.system.check import check
 from bes.common.string_util import string_util
 from bes.compat.StringIO import StringIO

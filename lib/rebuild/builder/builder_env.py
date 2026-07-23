@@ -15,9 +15,9 @@ from bes.system.python import python
 from rebuild.tools_manager.tools_manager import tools_manager
 from rebuild.checksum.checksum_manager import checksum_manager
 from rebuild.package.artifact_manager_local import artifact_manager_local
-from bes.build.build_blurb import build_blurb
-from bes.build.package_descriptor import package_descriptor
-from bes.build.requirement_manager import requirement_manager
+from bat.build.core.build_blurb import build_blurb
+from bat.build.core.package_descriptor import package_descriptor
+from bat.build.core.requirement_manager import requirement_manager
 from rebuild.storage.storage_factory import storage_factory
 from rebuild.recipe.recipe_load_env import recipe_load_env
 from rebuild.config.storage_config_manager import storage_config_manager

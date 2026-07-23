@@ -6,7 +6,7 @@ from bes.text.comments import comments
 from bes.text.line_break import line_break
 from bes.system.log import logger
 
-from bes.build.requirement_list import requirement_list
+from bat.build.core.requirement_list import requirement_list
 
 from .value.masked_value import masked_value
 from .value.masked_value_list import masked_value_list

@@ -9,7 +9,7 @@ from bes.files.bf_temp_file import bf_temp_file
 from bes.text.text_line_parser import text_line_parser
 
 from rebuild.package.artifact_manager_local import artifact_manager_local
-from bes.build.artifact_descriptor import artifact_descriptor
+from bat.build.core.artifact_descriptor import artifact_descriptor
 
 from .fake_package_recipe_parser import fake_package_recipe_parser
 from .artifact_manager_helper import artifact_manager_helper

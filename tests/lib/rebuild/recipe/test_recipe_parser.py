@@ -12,7 +12,7 @@ from rebuild.recipe.variable_manager import variable_manager
 from rebuild.step.compound_step import compound_step
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result
-from bes.build.build_target import build_target
+from bat.build.core.build_target import build_target
 from bes.key_value.key_value import key_value as KV
 from bes.key_value.key_value_list import key_value_list as KVL
 from bes.files.bf_file_ops import bf_file_ops

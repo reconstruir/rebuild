@@ -7,7 +7,7 @@ from bes.text.string_list import string_list
 from bes.system.log import logger
 from bes.text.text_replace import text_replace
 
-from bes.build.build_system import build_system
+from bat.build.core.build_system import build_system
 
 from .recipe_data_descriptor import recipe_data_descriptor
 from .recipe_parser_util import recipe_parser_util

@@ -3,10 +3,10 @@
 
 import os.path as path
 from bes.testing.unit_test import unit_test
-from bes.build.artifact_descriptor import artifact_descriptor as AD
-from bes.build.build_target import build_target as BT
-from bes.build.package_descriptor import package_descriptor as PD
-from bes.build.requirement_list import requirement_list as RL
+from bat.build.core.artifact_descriptor import artifact_descriptor as AD
+from bat.build.core.build_target import build_target as BT
+from bat.build.core.package_descriptor import package_descriptor as PD
+from bat.build.core.requirement_list import requirement_list as RL
 from rebuild._testing.fake_package_recipes import fake_package_recipes as RECIPES
 from rebuild._testing.artifact_manager_tester import artifact_manager_tester as AMT
 

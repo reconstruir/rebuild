@@ -2,10 +2,10 @@
 
 from ._toolchain_base import _toolchain_base
 from bes.system.host import host
-from bes.build.build_arch import build_arch
-from bes.build.build_blurb import build_blurb
-from bes.build.build_level import build_level
-from bes.build.build_system import build_system
+from bat.build.core.build_arch import build_arch
+from bat.build.core.build_blurb import build_blurb
+from bat.build.core.build_level import build_level
+from bat.build.core.build_system import build_system
 import os, os.path as path
 
 class _toolchain_android_standalone(_toolchain_base):

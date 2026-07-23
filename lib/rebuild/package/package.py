@@ -24,9 +24,9 @@ from bes.property.cached_property import cached_property
 from bes.system.execute import execute
 from bes.system.log import log
 
-from bes.build.build_blurb import build_blurb
-from bes.build.build_target import build_target
-from bes.build.package_descriptor import package_descriptor
+from bat.build.core.build_blurb import build_blurb
+from bat.build.core.build_target import build_target
+from bat.build.core.package_descriptor import package_descriptor
 from rebuild.binary_format.binary_detector import binary_detector
 
 from .package_metadata import package_metadata

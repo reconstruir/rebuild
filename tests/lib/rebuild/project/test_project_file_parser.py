@@ -6,7 +6,7 @@ from bes.testing.unit_test import unit_test
 from rebuild.project.project_file import project_file
 from rebuild.project.project_file_parser import project_file_parser as P
 from rebuild.recipe.recipe_error import recipe_error as ERR
-from bes.build.build_target import build_target
+from bat.build.core.build_target import build_target
 from bes.key_value.key_value import key_value as KV
 from bes.key_value.key_value_list import key_value_list as KVL
 from bes.files.bf_file_ops import bf_file_ops

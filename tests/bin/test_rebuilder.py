@@ -9,7 +9,7 @@ from bes.fs.file_copy import file_copy
 from bes.files.bf_temp_file import bf_temp_file
 from bat.git.git_temp_repo import git_temp_repo
 from bat.git.git_unit_test import git_temp_home_func
-from bes.build.build_target import build_target
+from bat.build.core.build_target import build_target
 from rebuild.toolchain.toolchain_testing import toolchain_testing
 
 from bes.testing.unit_test_function_skip import unit_test_function_skip

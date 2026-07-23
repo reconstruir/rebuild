@@ -5,9 +5,9 @@ from bes.system.check import check
 from bes.common.object_util import object_util
 from bes.fs.file_checksum import file_checksum_list
 from bes.files.bf_file_ops import bf_file_ops
-from bes.build.build_blurb import build_blurb
-from bes.build.build_target import build_target
-from bes.build.package_descriptor import package_descriptor
+from bat.build.core.build_blurb import build_blurb
+from bat.build.core.build_target import build_target
+from bat.build.core.package_descriptor import package_descriptor
 from collections import namedtuple
 
 class checksum_manager(object):

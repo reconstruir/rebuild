@@ -13,7 +13,7 @@ from bes.files.bf_filename import bf_filename
 from bes.files.checksum.bf_checksum import bf_checksum
 from bes.files.bf_temp_file import bf_temp_file
 
-from bes.build.requirement_list import requirement_list
+from bat.build.core.requirement_list import requirement_list
 from rebuild.package.package_manifest import package_manifest
 from rebuild.package.package_metadata import package_metadata
 from rebuild.package.package_metadata_list import package_metadata_list

@@ -11,7 +11,7 @@ from bes.system.execute import execute
 from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 
-from bes.build.build_target import build_target as BT
+from bat.build.core.build_target import build_target as BT
 from rebuild.venv.venv_config import venv_config
 from rebuild.venv.venv_manager import venv_manager
 from rebuild.venv.venv_install_options import venv_install_options

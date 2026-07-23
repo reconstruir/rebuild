@@ -10,8 +10,8 @@ from bes.key_value.key_value import key_value
 from bes.files.bf_dir import bf_dir
 from bes.files.bf_file_ops import bf_file_ops
 from .entry import entry
-from bes.build.requirement import requirement
-from bes.build.requirement_list import requirement_list
+from bat.build.core.requirement import requirement
+from bat.build.core.requirement_list import requirement_list
 
 class pkg_config_file(object):
 

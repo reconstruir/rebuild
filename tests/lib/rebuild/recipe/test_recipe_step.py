@@ -2,7 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from bes.build.build_target import build_target
+from bat.build.core.build_target import build_target
 from rebuild.recipe.recipe_parser import recipe_parser
 from rebuild.recipe.recipe_load_env import testing_recipe_load_env
 from rebuild.recipe.value.value_file import value_file

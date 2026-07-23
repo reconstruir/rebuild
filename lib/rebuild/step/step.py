@@ -19,8 +19,8 @@ from bes.system.execute import execute
 from bes.system.log import log
 
 
-from bes.build.build_blurb import build_blurb
-from bes.build.build_target import build_target
+from bat.build.core.build_blurb import build_blurb
+from bat.build.core.build_target import build_target
 from rebuild.recipe.value.value_definition import value_definition
 from rebuild.recipe.value.value_type import value_type
 from rebuild.toolchain.toolchain import toolchain

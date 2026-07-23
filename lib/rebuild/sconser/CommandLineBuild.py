@@ -5,7 +5,7 @@ import argparse, os, os.path as path, sys
 
 from bes.system.execute import execute
 
-from bes.build.build_blurb import build_blurb
+from bat.build.core.build_blurb import build_blurb
 
 class CommandLineBuild(object):
   

@@ -5,7 +5,7 @@ import os.path as path
 from rebuild.step.compound_step import compound_step
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result
-from bes.build.build_system import build_system
+from bat.build.core.build_system import build_system
 from bes.system.execute import execute
 from bes.system.check import check
 

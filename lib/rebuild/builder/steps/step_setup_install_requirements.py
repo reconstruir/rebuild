@@ -5,7 +5,7 @@ import os, os.path as path
 from bes.common.object_util import object_util
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result
-from bes.build.build_blurb import build_blurb
+from bat.build.core.build_blurb import build_blurb
 
 class step_setup_install_requirements(step):
   'Install package dependencies.'

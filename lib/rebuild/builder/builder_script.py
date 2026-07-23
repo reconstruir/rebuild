@@ -3,7 +3,7 @@
 import copy, os.path as path
 from collections import namedtuple
 
-from bes.build.build_blurb import build_blurb
+from bat.build.core.build_blurb import build_blurb
 from bes.common.algorithm import algorithm
 from bes.system.check import check
 from bes.common.json_util import json_util

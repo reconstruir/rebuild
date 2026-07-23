@@ -6,10 +6,10 @@ from bes.system.check import check
 from bes.common.json_util import json_util
 from bes.common.string_util import string_util
 from bes.property.cached_property import cached_property
-from bes.build.build_version import build_version
-from bes.build.package_descriptor import package_descriptor
-from bes.build.requirement import requirement
-from bes.build.requirement_list import requirement_list
+from bat.build.core.build_version import build_version
+from bat.build.core.package_descriptor import package_descriptor
+from bat.build.core.requirement import requirement
+from bat.build.core.requirement_list import requirement_list
 from .package_manifest import package_manifest
 
 class package_db_entry(namedtuple('package_db_entry', 'format_version,name,version,revision,epoch,requirements,properties,manifest')):

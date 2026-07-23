@@ -9,9 +9,9 @@ from bes.system.log import log
 from bes.debug.debug_timer import debug_timer
 from bes.files.bf_file_ops import bf_file_ops
 
-from bes.build.artifact_descriptor import artifact_descriptor
-from bes.build.build_blurb import build_blurb
-from bes.build.requirement_manager import requirement_manager
+from bat.build.core.artifact_descriptor import artifact_descriptor
+from bat.build.core.build_blurb import build_blurb
+from bat.build.core.requirement_manager import requirement_manager
 from rebuild.artifactory.artifactory_requests import artifactory_requests
 from rebuild.storage.storage_address import storage_address
 

@@ -13,7 +13,7 @@ from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 from rebuild._testing.fake_package_unit_test import fake_package_unit_test as FPUT
 from rebuild._testing.fake_package_recipes import fake_package_recipes as RECIPES
-from bes.build.build_target import build_target as BT
+from bat.build.core.build_target import build_target as BT
 
 class test_revenv(program_unit_test):
 

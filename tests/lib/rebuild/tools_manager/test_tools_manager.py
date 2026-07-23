@@ -9,10 +9,10 @@ from bes.property.cached_property import cached_property
 from bes.fs.file_find import file_find
 from bes.system.execute import execute
 from bes.system.os_env import os_env
-from bes.build.build_system import build_system
-from bes.build.build_target import build_target
-from bes.build.package_descriptor import package_descriptor as PD
-from bes.build.package_descriptor_list import package_descriptor_list as PDL
+from bat.build.core.build_system import build_system
+from bat.build.core.build_target import build_target
+from bat.build.core.package_descriptor import package_descriptor as PD
+from bat.build.core.package_descriptor_list import package_descriptor_list as PDL
 from rebuild.tools_manager.tools_manager import tools_manager as TM
 from rebuild._testing.fake_package_unit_test import fake_package_unit_test as FPUT
 from rebuild._testing.fake_package_recipes import fake_package_recipes as RECIPES

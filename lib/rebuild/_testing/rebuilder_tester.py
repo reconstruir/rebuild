@@ -2,10 +2,10 @@
 
 import codecs, os, os.path as path, subprocess, sys
 from bes.archive.archiver import archiver
-from bes.build.build_arch import build_arch
-from bes.build.build_level import build_level
-from bes.build.build_system import build_system
-from bes.build.build_target import build_target
+from bat.build.core.build_arch import build_arch
+from bat.build.core.build_level import build_level
+from bat.build.core.build_system import build_system
+from bat.build.core.build_target import build_target
 from bes.fs.file_checksum import file_checksum
 from bes.fs.file_checksum import file_checksum_list
 from bes.fs.file_find import file_find

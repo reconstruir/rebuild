@@ -3,7 +3,7 @@
 import os.path as path
 from bes.sqlite.sqlite import sqlite
 from bes.testing.unit_test import unit_test
-from bes.build.requirement_list import requirement_list as RL
+from bat.build.core.requirement_list import requirement_list as RL
 from rebuild.package.package_manifest import package_manifest as PF
 from rebuild.package.package_metadata import package_metadata as PM
 from rebuild.package.package_metadata_list import package_metadata_list as PML

@@ -3,7 +3,7 @@
 from os import path
 
 from bes.system.check import check
-from bes.build.build_system import build_system
+from bat.build.core.build_system import build_system
 
 class ingest_cli_options(object):
 

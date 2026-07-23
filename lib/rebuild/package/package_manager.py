@@ -6,11 +6,11 @@ import copy, os.path as path, platform
 
 from bes.archive.archive import archive
 from bes.archive.archiver import archiver
-from bes.build.build_blurb import build_blurb
-from bes.build.build_system import build_system
-from bes.build.package_descriptor import package_descriptor
-from bes.build.package_descriptor_list import package_descriptor_list
-from bes.build.requirement import requirement
+from bat.build.core.build_blurb import build_blurb
+from bat.build.core.build_system import build_system
+from bat.build.core.package_descriptor import package_descriptor
+from bat.build.core.package_descriptor_list import package_descriptor_list
+from bat.build.core.requirement import requirement
 from bes.system.check import check
 from bes.common.dict_util import dict_util
 from bes.common.object_util import object_util

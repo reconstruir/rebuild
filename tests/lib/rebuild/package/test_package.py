@@ -7,10 +7,10 @@ from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 from bes.archive.archiver import archiver
 
-from bes.build.build_version import build_version
-from bes.build.package_descriptor import package_descriptor
-from bes.build.requirement import requirement
-from bes.build.requirement_list import requirement_list
+from bat.build.core.build_version import build_version
+from bat.build.core.package_descriptor import package_descriptor
+from bat.build.core.requirement import requirement
+from bat.build.core.requirement_list import requirement_list
 from rebuild.package.package import package
 from rebuild.package.package_metadata import package_metadata
 from rebuild._testing.fake_package_unit_test import fake_package_unit_test

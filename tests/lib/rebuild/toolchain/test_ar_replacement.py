@@ -5,7 +5,7 @@ from bes.testing.unit_test import unit_test
 import os.path as path
 from bes.system.host import host
 from rebuild.toolchain.ar_replacement import ar_replacement
-from bes.build.build_system import build_system
+from bat.build.core.build_system import build_system
 from bes.files.bf_dir import bf_dir
 from bes.files.bf_temp_file import bf_temp_file
 from bes.testing.unit_test_function_skip import unit_test_function_skip

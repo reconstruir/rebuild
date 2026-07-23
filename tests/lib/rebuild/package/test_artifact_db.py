@@ -4,12 +4,12 @@
 import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.files.bf_temp_file import bf_temp_file
-from bes.build.artifact_descriptor import artifact_descriptor as AD
-from bes.build.build_level import build_level
-from bes.build.build_system import build_system
-from bes.build.build_target import build_target as BT
-from bes.build.package_descriptor import package_descriptor as PD
-from bes.build.requirement_list import requirement_list as RL
+from bat.build.core.artifact_descriptor import artifact_descriptor as AD
+from bat.build.core.build_level import build_level
+from bat.build.core.build_system import build_system
+from bat.build.core.build_target import build_target as BT
+from bat.build.core.package_descriptor import package_descriptor as PD
+from bat.build.core.requirement_list import requirement_list as RL
 from rebuild.package.artifact_db import artifact_db as DB
 from rebuild.package.db_error import *
 from rebuild.package.package_metadata import package_metadata as PM

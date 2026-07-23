@@ -11,8 +11,8 @@ from bes.system.execute import execute
 from bes.system.console import console
 from bes.text import text_canvas
 
-from bes.build.build_blurb import build_blurb
-from bes.build.build_target import build_target
+from bat.build.core.build_blurb import build_blurb
+from bat.build.core.build_target import build_target
 from .PackageFlags import PackageFlags
 
 class Build(object):
