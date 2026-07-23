@@ -6,6 +6,8 @@ from collections import namedtuple
 from bes.system.check import check
 from bes.compat.StringIO import StringIO
 from bes.files.bf_file_ops import bf_file_ops
+from bes.files.bf_filename import bf_filename
+from bes.files.bf_size import bf_size
 from bes.fs.file_checksum import file_checksum_list
 from bes.text.text_table import text_table
 
@@ -249,7 +251,7 @@ class pcloud_cli(object):
         content_type = item.content_type
       if item.size:
         if human_readable:
-          size = bf_file_ops.sizeof_fmt(item.size)
+          size = bf_size.sizeof_fmt(item.size)
         else:
           size = item.size
       else:
@@ -401,8 +403,8 @@ class pcloud_cli(object):
     result = {}
     for next_path in paths:
       ps = '/'.join([ x.name for x in next_path.path ])
-      ps = bf_file_ops.remove_head(ps, folder)
-      ps = bf_file_ops.remove_head(ps, folder)
+      ps = bf_filename.remove_head(ps, folder)
+      ps = bf_filename.remove_head(ps, folder)
       result[ps] = next_path.node.data.checksum
     return result
   

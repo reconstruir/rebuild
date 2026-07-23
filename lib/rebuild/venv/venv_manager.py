@@ -248,7 +248,7 @@ _@NAME@_setup()
   local _root=${_@NAME@_root}
   local _stuff_dir=${_root}/stuff
   local _env_dir=$_root/env
-  source ${_env_dir}/framework/bes_shell.sh
+  source ${_env_dir}/bes_shell_framework/bes_bash.bash
   bes_env_path_prepend PATH ${_stuff_dir}/bin
   bes_env_path_prepend PYTHONPATH ${_stuff_dir}/lib/python
   bes_env_path_prepend PKG_CONFIG_PATH ${_stuff_dir}/lib/pkgconfig
@@ -262,7 +262,7 @@ _@NAME@_unsetup()
   local _root=${_@NAME@_root}
   local _stuff_dir=${_root}/stuff
   local _env_dir=$_root/env
-  source ${_env_dir}/framework/bes_shell.sh
+  source ${_env_dir}/bes_shell_framework/bes_bash.bash
   bes_env_path_remove PATH ${_stuff_dir}/bin
   bes_env_path_remove PYTHONPATH ${_stuff_dir}/lib/python
   bes_env_path_remove PKG_CONFIG_PATH ${_stuff_dir}/lib/pkgconfig
@@ -284,7 +284,7 @@ unset _root
 @NAME@_setup()
 {
   local _root=${_@NAME@_root}
-  source ${_root}/framework/bes_shell.sh
+  source ${_root}/bes_shell_framework/bes_bash.bash
   local _system_path=$(bes_system_path)
   local _system_root=${_root}/${_system_path}
   local _stuff_dir=${_system_root}/stuff
@@ -300,7 +300,7 @@ unset _root
 @NAME@_unsetup()
 {
   local _root=${_@NAME@_root}
-  source ${_root}/framework/bes_shell.sh
+  source ${_root}/bes_shell_framework/bes_bash.bash
   local _system_path=$(bes_system_path)
   local _root=${_@NAME@_root}
   local _system_root=${_root}/${_system_path}
@@ -333,7 +333,7 @@ exec ${1+"$@"}
     system_setup_script.save(pm.root_dir, variables)
     system_run_script.save(pm.root_dir, variables)
     parent_dir = path.join(self._root_dir, project_name)
-    shell_framework.extract(path.join(parent_dir, 'framework'))
+    shell_framework.ensure(parent_dir, 'latest')
     setup_script.save(parent_dir, variables)
     system_run_script.save(parent_dir, variables)
   

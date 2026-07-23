@@ -2,9 +2,10 @@
 
 import json, os.path as path
 from collections import namedtuple
+from bes.common.tuple_util import tuple_util
 from bes.system.check import check
 from bes.files.bf_check import bf_check
-from bes.files.bf_file_ops import bf_file_ops
+from bes.files.checksum.bf_checksum import bf_checksum
 
 class package_file(namedtuple('package_file', 'filename, checksum, has_hardcoded_path')):
 
@@ -23,7 +24,7 @@ class package_file(namedtuple('package_file', 'filename, checksum, has_hardcoded
       checksum = ''
     else:
       bf_check.check_file(filepath)
-      checksum = bf_file_ops.checksum(function_name or 'sha256', filepath)
+      checksum = bf_checksum.checksum(filepath, function_name or 'sha256')
     return clazz(filename, checksum, has_hardcoded_path)
 
   def to_list(self):
@@ -31,5 +32,9 @@ class package_file(namedtuple('package_file', 'filename, checksum, has_hardcoded
 
   def __str__(self):
     return '%s-%s-%s' % (self.filename, self.checksum, str(self.has_hardcoded_path))
-  
-check.register_class(package_file, include_seq = False)
+
+  @classmethod
+  def _check_cast_func(clazz, obj):
+    return tuple_util.cast_seq_to_namedtuple(clazz, obj)
+
+check.register_class(package_file, include_seq = False, cast_func = package_file._check_cast_func)

@@ -11,7 +11,6 @@ from bnet.http.http_session import http_session
 from bnet.http.http_session_options import http_session_options
 from bnet.http.http_session_type import http_session_type
 from bes.system.python import python
-from bes.system.which import which
 
 from rebuild.tools_manager.tools_manager import tools_manager
 from rebuild.checksum.checksum_manager import checksum_manager
@@ -136,19 +135,13 @@ class builder_env(object):
       print('%s: %s' % (key, value))
   
   def _make_global_variables(self):
-    assert False
-    #py_exe = python_exe.default_exe()
+    py_exe = python.find_python_exe()
     if not py_exe:
       raise RuntimeError('No python exe found for python version: "{}"'.format(self.config.python_version))
 
-    easy_install_exe = 'easy_install-{}'.format(self.config.python_version)
-    easy_install_exe_abs = which.which(easy_install_exe)
-    if not easy_install_exe_abs:
-      raise RuntimeError('No easy_install exe found for python version: "{}"'.format(self.config.python_version))
     return {
       'REBUILD_PYTHON': py_exe,
-      'REBUILD_EASY_INSTALL': easy_install_exe_abs,
-      'REBUILD_PYTHON_VERSION': str(python_exe.version(py_exe)),
+      'REBUILD_PYTHON_VERSION': self.config.python_version,
     }
   
 check.register_class(builder_env, include_seq = False)

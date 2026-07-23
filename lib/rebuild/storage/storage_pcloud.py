@@ -3,6 +3,7 @@
 import os.path as path
 from bes.system.log import log
 from bes.files.bf_file_ops import bf_file_ops
+from bes.files.bf_filename import bf_filename
 from bes.system.check import check
 from bes.text.string_list import string_list
 
@@ -83,7 +84,7 @@ class storage_pcloud(storage_base):
   #@abstractmethod
   def ensure_source(self, filename):
     if filename.startswith(self._local_root_dir):
-      filename = bf_file_ops.remove_head(filename, self._local_root_dir)
+      filename = bf_filename.remove_head(filename, self._local_root_dir)
     downloaded_filename = self._downloaded_filename(filename)
     if path.exists(downloaded_filename):
       return True
@@ -104,7 +105,7 @@ class storage_pcloud(storage_base):
   #@abstractmethod
   def upload(self, local_filename, remote_filename, local_checksum):
     cloud_filename = path.basename(remote_filename)
-    folder_path = bf_file_ops.ensure_lsep(path.dirname(remote_filename))
+    folder_path = bf_filename.ensure_lsep(path.dirname(remote_filename))
     root_dir = self._config.download_credentials.root_dir
     repo = self._config.repo
     self.log_d('upload: root_dir=%s; repo=%s' % (root_dir, repo))

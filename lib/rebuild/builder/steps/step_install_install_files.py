@@ -10,6 +10,7 @@ from bes.common.object_util import object_util
 from bes.common.variable import variable
 from bes.fs.file_find import file_find
 from bes.files.bf_file_ops import bf_file_ops
+from bes.files.bf_entry import bf_entry
 import os, os.path as path, shutil
 
 class step_install_install_files(step):
@@ -57,7 +58,7 @@ class step_install_install_files(step):
     return step_result(True, None)
 
   def _install_one(self, label, src, dst, mode):
-    mode = mode or bf_file_ops.mode(src)
+    mode = mode or bf_entry(src).mode
     self.log_d('%s: src=%s' % (label, src))
     self.log_d('%s: dst=%s' % (label, dst))
     dst_dir = path.dirname(dst)

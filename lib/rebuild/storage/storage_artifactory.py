@@ -6,6 +6,7 @@ from bes.system.execute import execute
 from bes.system.log import log
 from bes.system.os_env import os_env
 from bes.files.bf_file_ops import bf_file_ops
+from bes.files.bf_filename import bf_filename
 from bes.system.check import check
 from bes.text.string_list import string_list
 from bes.compat.url_compat import urljoin
@@ -83,7 +84,7 @@ class storage_artifactory(storage_base):
   def ensure_source(self, filename):
     #assert filename.startswith(self._local_root_dir)
     if filename.startswith(self._local_root_dir):
-      filename = bf_file_ops.remove_head(filename, self._local_root_dir)
+      filename = bf_filename.remove_head(filename, self._local_root_dir)
     downloaded_filename = self._downloaded_filename(filename)
     if path.exists(downloaded_filename):
       return True

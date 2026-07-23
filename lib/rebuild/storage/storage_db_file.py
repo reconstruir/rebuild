@@ -3,6 +3,8 @@
 import os.path as path
 
 from bes.files.bf_file_ops import bf_file_ops
+from bes.files.bf_entry import bf_entry
+from bes.files.checksum.bf_checksum import bf_checksum
 from bes.files.bf_temp_file import bf_temp_file
 
 from bes.system.check import check
@@ -27,7 +29,7 @@ class storage_db_file(storage_db_base):
     # Check for new or modified files
     for filename in current_filenames:
       filepath = path.join(self._root_dir, filename)
-      mtime = bf_file_ops.mtime(filepath)
+      mtime = bf_entry(filepath).mtime
       add_entry = False
       if filename in db:
         # If filename is already in db, then check if the mtime change.  If so, redo the checksum
@@ -36,7 +38,7 @@ class storage_db_file(storage_db_base):
       else:
         add_entry = True
       if add_entry:
-        db[filename] = storage_db_entry(filename, mtime, bf_file_ops.checksum('sha1', filepath))
+        db[filename] = storage_db_entry(filename, mtime, bf_checksum.checksum(filepath, 'sha1'))
     # Check for any files that were removed locally
     for entry in db.entries():
       if entry.filename not in current_filenames:

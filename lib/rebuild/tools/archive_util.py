@@ -10,6 +10,7 @@ from bes.system.execute import execute
 from bes.files.bf_dir import bf_dir
 from bes.fs.file_find import file_find
 from bes.files.bf_file_ops import bf_file_ops
+from bes.files.bf_filename import bf_filename
 from bes.files.bf_temp_file import bf_temp_file
 from bes.archive.archiver import archiver
 
@@ -67,7 +68,7 @@ class archive_util(object):
     if not dirs[1].endswith(clazz.ORIGINAL_DIR_TAIL):
       raise RuntimeError('Dir 2 should end in .orig instead it is %s' % (dir2))
 
-    base_dir = bf_file_ops.remove_tail(dirs[1], clazz.ORIGINAL_DIR_TAIL)
+    base_dir = bf_filename.remove_tail(dirs[1], clazz.ORIGINAL_DIR_TAIL)
     if string_util.remove_tail(dirs[1], clazz.ORIGINAL_DIR_TAIL) != dirs[0]:
       raise RuntimeError('Dir 1 and 2 dont have the same name: %s %s' % (dirs[1], dirs[0]))
     cmd = 'diff -ur %s %s --exclude="*~" --exclude=".#*" --exclude="#*"' % (dirs[1], dirs[0])

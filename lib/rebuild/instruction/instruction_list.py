@@ -65,7 +65,7 @@ class instruction_list(type_checked_list):
       filepath = path.join(where, filename)
       if path.exists(filepath):
         return False, 'Instruction already exists: %s' % (filepath)
-      bf_file_ops.save(filepath, content = str(inst), mode = 0o644)
+      bf_file_ops.save(filepath, content = str(inst), perm = 0o644)
     return True, None
 
   @classmethod

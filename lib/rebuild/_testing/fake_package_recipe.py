@@ -63,7 +63,7 @@ class fake_package_recipe(namedtuple('fake_package_recipe', 'metadata, files, en
   def _temp_item_seq_to_node(clazz, label, items):
     result = node(label)
     for item in items:
-      assert isinstance(item, temp_item)
+      assert isinstance(item, bf_temp_item)
       item_node = result.add_child(item.filename)
       for line in item.content.split('\n'):
         item_node.add_child(line)

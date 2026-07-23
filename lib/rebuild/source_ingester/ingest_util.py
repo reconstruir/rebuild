@@ -145,7 +145,7 @@ class ingest_util(object):
       tmp_files_to_cleanup.append(local_filename)
 
     remote_checksum = storage.remote_checksum(ingested_filename)
-    local_checksum = bf_file_ops.checksum('sha256', local_filename)
+    local_checksum = bf_checksum.checksum(local_filename, 'sha256')
     clazz.log_d('ingest_file: ingested_filename=%s; remote_checksum=%s; local_checksum=%s' % (ingested_filename, remote_checksum, local_checksum))
     if remote_checksum == local_checksum:
       _cleanup_tmp_files()

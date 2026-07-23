@@ -5,7 +5,7 @@ import os
 from bes.common import dict_util
 from bes.testing.unit_test import unit_test
 from bes.testing.unit_test_function_skip import unit_test_function_skip
-from bes.files.bf_file_ops import bf_file_ops
+from bes.files.checksum.bf_checksum import bf_checksum
 from rebuild.artifactory.artifactory_requests import artifactory_requests as AR
 
 class test_artifactory_requests(unit_test):
@@ -46,7 +46,7 @@ class test_artifactory_requests(unit_test):
     url = 'https://withme.jfrog.io/withme/ego-dev-env-tools/dev-env/sources/r/rsa-3.4.2.tar.gz'
     tmp = self.make_temp_file()
     rv = AR.download_to_file(tmp, url, self._download_username, self._download_password)
-    self.assertTrue( '25df4e10c263fb88b5ace923dd84bf9aa7f5019687b5e55382ffcdb8bede9db5', bf_file_ops.checksum('sha256', tmp) )
+    self.assertTrue( '25df4e10c263fb88b5ace923dd84bf9aa7f5019687b5e55382ffcdb8bede9db5', bf_checksum.checksum(tmp, 'sha256') )
 
 if __name__ == '__main__':
   unit_test.main()

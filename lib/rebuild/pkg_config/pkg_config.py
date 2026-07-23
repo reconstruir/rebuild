@@ -13,8 +13,8 @@ from bes.system.env_var import os_env_var
 from bes.system.host import host
 from bes.fs.file_find import file_find
 from bes.fs.file_match import file_match
-from bes.files.bf_path import bf_path
 from bes.files.bf_file_ops import bf_file_ops
+from bes.system.which import which
 from bes.files.bf_temp_file import bf_temp_file
 from bes.build.build_arch import build_arch
 from bes.build.build_blurb import build_blurb
@@ -45,7 +45,7 @@ class pkg_config(object):
   @classmethod
   def _find_exe(clazz):
     for possible_exe in clazz._POSSIBLE_EXE:
-      exe = bf_path.which(possible_exe, raise_error = False)
+      exe = which.which(possible_exe, raise_error = False)
       if exe:
         return exe
     return None
@@ -113,11 +113,14 @@ class pkg_config(object):
     # Filter out symlinks
     return [ f for f in pc_files ]
 
+  _VIRTUAL_PACKAGES = ( 'pkg-config', 'pkgconf' )
+
   @classmethod
   def _parse_list_all_output(clazz, s):
     lines = [ line for line in s.split('\n') if line ]
     items = [ clazz._parse_list_all_entry(line) for line in lines ]
     assert None not in items
+    items = [ item for item in items if item[0] not in clazz._VIRTUAL_PACKAGES ]
     return sorted(items, key = lambda item: item[0].lower())
 
   @classmethod

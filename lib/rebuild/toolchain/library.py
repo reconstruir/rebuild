@@ -4,7 +4,7 @@
 import os, os.path as path, re
 from bes.system import impl_import
 from bes.files.bf_dir import bf_dir
-from bes.files.bf_file_ops import bf_file_ops
+from bes.files.bf_filename import bf_filename
 from bes.files.bf_path import bf_path
 
 from bes.system.host import host
@@ -69,7 +69,7 @@ class library(_library_super_class):
     files = bf_dir.list(d, relative = False)
     libs = [ f for f in files if clazz.is_library(f) ]
     if relative:
-      libs = [ bf_file_ops.remove_head(f, d) for f in libs ]
+      libs = [ bf_filename.remove_head(f, d) for f in libs ]
     return libs
     
   _NAME_PATTERNS = [
@@ -104,8 +104,8 @@ class library(_library_super_class):
     filename_depth = bf_path.depth(filename)
     library_depth = bf_path.depth(library)
     prefix_depth = bf_path.depth(prefix)
-    filename_rel = bf_file_ops.remove_head(filename, prefix)
-    library_rel = bf_file_ops.remove_head(library, prefix)
+    filename_rel = bf_filename.remove_head(filename, prefix)
+    library_rel = bf_filename.remove_head(library, prefix)
     if filename_depth == library_depth == prefix_depth:
       return ''
     delta_depth = filename_depth - prefix_depth

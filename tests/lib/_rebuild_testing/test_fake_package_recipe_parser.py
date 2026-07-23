@@ -14,7 +14,7 @@ class test_fake_package_recipe_parser(unit_test):
 
   def test_parse(self):
     recipe = \
-      R(AD('foo', '1.2.3', 0, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18', ''),
+      R(AD('foo', '1.2.3', 0, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18', 'none'),
         [
           bf_temp_item('bin/tfoo.py', '#!/usr/bin/env python\nprint(\'foo\')\nraise SystemExit(0)\n', 0o755),
           bf_temp_item('bin/tbar.py', '#!/usr/bin/env python\nprint(\'bar\')\nraise SystemExit(0)\n', 0o755),
@@ -65,7 +65,7 @@ fake_package foo 1.2.3 0 0 linux release x86_64 ubuntu 18 none
 
   def test_x(self):
     recipe = \
-      R(AD('foo', '1.2.3', 0, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18', ''),
+      R(AD('foo', '1.2.3', 0, 0, 'linux', 'release', 'x86_64', 'ubuntu', '18', 'none'),
         [
           bf_temp_item('bin/tfoo.py', '#!/usr/bin/env python\nprint(\'foo\')\nraise SystemExit(0)\n', 0o755),
           bf_temp_item('bin/tbar.py', '#!/usr/bin/env python\nprint(\'bar\')\nraise SystemExit(0)\n', 0o755),

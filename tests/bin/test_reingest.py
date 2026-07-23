@@ -39,7 +39,7 @@ entry libfoo 1.2.3
     vfs_config_file_content = '''\
 fsconfig
   vfs_type: local
-  vfs_class_path: bes.vfs.vfs_local
+  vfs_class_path: bat.vfs.vfs_local
   local_root_dir: {tmp_dir}/downloads
 '''
     tmp_dir = self.make_temp_dir()
@@ -103,18 +103,18 @@ entry foo 1.2.3
     vfs_config_file_content = '''\
 fsconfig
   vfs_type: local
-  vfs_class_path: bes.vfs.vfs_local
+  vfs_class_path: bat.vfs.vfs_local
   local_root_dir: {tmp_dir}/stuff
 '''
     file_content = '''\
-#!/usr/bin/env python
+#!/usr/bin/env python3
 print('foo')
 '''
 
     tmp_dir = self.make_temp_dir()
     tester = file_web_server_tester(root_dir = tmp_dir)
     filename = 'something/foo-1.2.3.py'
-    tester.write_file(filename, content = file_content, mode = 0o0755)
+    tester.write_file(filename, content = file_content, perm = 0o0755)
     tester.start()
     url = tester.make_url(filename)
 

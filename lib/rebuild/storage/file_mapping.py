@@ -6,7 +6,7 @@ from bes.system.execute import execute
 from bes.system.log import log
 from bes.system.os_env import os_env
 from bes.system.check import check
-from bes.files.bf_file_ops import bf_file_ops
+from bes.files.bf_filename import bf_filename
 from bes.compat.url_compat import urlparse
 from bes.compat.url_compat import urljoin
 
@@ -27,11 +27,11 @@ class file_mapping(namedtuple('file_mapping', 'local_root, remote_root, url')):
   
   @classmethod
   def _normalize_abs_path(clazz, p):
-    return bf_file_ops.ensure_lsep(bf_file_ops.rstrip_sep(p))
+    return bf_filename.ensure_lsep(bf_filename.rstrip_sep(p))
       
   @classmethod
   def _normalize_rel_path(clazz, p):
-    return bf_file_ops.strip_sep(p)
+    return bf_filename.strip_sep(p)
       
   def remote_path(self, relative_path):
     relative_path = self._normalize_rel_path(relative_path)
@@ -66,7 +66,7 @@ class file_mapping(namedtuple('file_mapping', 'local_root, remote_root, url')):
   def url_for_remote(self, remote_path):
     if not self._host_url:
       return None
-    remote_path_with_base = path.join(self._host_path, bf_file_ops.lstrip_sep(remote_path))
+    remote_path_with_base = path.join(self._host_path, bf_filename.lstrip_sep(remote_path))
     return urljoin(self._host_url, remote_path_with_base)
     
   def url_for_local(self, local_path):
@@ -77,11 +77,11 @@ class file_mapping(namedtuple('file_mapping', 'local_root, remote_root, url')):
   
   def _remote_base(self, remote_path):
     'Return the base of a remote path relative to the remote root.'
-    return bf_file_ops.remove_head(remote_path, self.remote_root)
+    return bf_filename.remove_head(remote_path, self.remote_root)
 
   def _local_base(self, local_path):
     'Return the base of a local path relative to the local root.'
-    return bf_file_ops.remove_head(local_path, self.local_root)
+    return bf_filename.remove_head(local_path, self.local_root)
 
   @classmethod
   def _check_url(clazz, url):

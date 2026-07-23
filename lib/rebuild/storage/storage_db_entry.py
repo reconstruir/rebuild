@@ -2,7 +2,8 @@
 
 from collections import namedtuple
 from bes.system.check import check
-from bes.files.bf_file_ops import bf_file_ops
+from bes.files.bf_entry import bf_entry
+from bes.files.checksum.bf_checksum import bf_checksum
 
 class storage_db_entry(namedtuple('storage_db_entry', 'filename, mtime, checksum')):
   
@@ -15,8 +16,8 @@ class storage_db_entry(namedtuple('storage_db_entry', 'filename, mtime, checksum
       file_path = path.join(directory, filename)
     else:
       file_path = filename
-    mtime = bf_file_ops.mtime(file_path)
-    checksum = bf_file_ops.checksum('sha1', file_path)
+    mtime = bf_entry(file_path).mtime
+    checksum = bf_checksum.checksum(file_path, 'sha1')
     return clazz(filename, mtime, checksum)
 
   @classmethod

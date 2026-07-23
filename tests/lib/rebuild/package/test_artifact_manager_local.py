@@ -20,8 +20,8 @@ class test_artifact_manager_local(unit_test):
   DEBUG = unit_test.DEBUG
   #DEBUG = True
 
-  LINUX_BT = BT('linux', 'ubuntu', '18', '', 'x86_64', 'release')
-  MACOS_BT = BT('macos', '', '10', '14', 'x86_64', 'release')
+  LINUX_BT = BT('linux', 'ubuntu', '18', '', ( 'x86_64', ), 'release')
+  MACOS_BT = BT('macos', '', '10', '14', ( 'x86_64', ), 'release')
 
   def __init__(self, *args, **kargs):
     super(test_artifact_manager_local, self).__init__(*args, **kargs)

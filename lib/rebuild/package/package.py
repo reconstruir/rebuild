@@ -102,9 +102,7 @@ class package(object):
     bf_file_ops.remove(tmp_dir)
 
   def _update_python_config_files(self, stuff_dir):
-    python_lib_dir = path.join(stuff_dir, 'lib/python')
-    assert False
-    #setup_tools.update_egg_directory(python_lib_dir)
+    pass
 
   _ENV_FILE_HEAD_TEMPLATE = '''\
 # BEGIN @REBUILD_HEAD@
@@ -116,7 +114,7 @@ REBUILD_SHELL_FRAMEWORK_DIR=$REBUILD_ENV_DIR/bes_shell_framework
 export _REBUILD_DEV_ROOT=$REBUILD_SHELL_FRAMEWORK_DIR
 
 if [ -d $REBUILD_SHELL_FRAMEWORK_DIR ]; then
-  source $REBUILD_SHELL_FRAMEWORK_DIR/bes_shell.bash
+  source $REBUILD_SHELL_FRAMEWORK_DIR/bes_bash.bash
 fi
 unset _this_file
 unset _unresolved_root

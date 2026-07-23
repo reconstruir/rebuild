@@ -249,7 +249,7 @@ class step(metaclass = step_register_meta):
       s.write(' '.join(command))
     content = s.getvalue()
     file_path = path.join(script.build_dir, clazz.RETRY_SCRIPT_FILENAME)
-    bf_file_ops.save(file_path, content = content, mode = 0o755)
+    bf_file_ops.save(file_path, content = content, perm = 0o755)
     return file_path
 
   @classmethod

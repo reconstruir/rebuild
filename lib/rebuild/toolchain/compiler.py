@@ -2,10 +2,11 @@
 
 import copy, os.path as path
 from .toolchain import toolchain
-from bes.files.bf_file_ops import bf_file_ops
+from bes.files.bf_filename import bf_filename
 from bes.common.object_util import object_util
 from bes.common.variable import variable
 from bes.system.execute import execute
+from bes.system.host import host
 
 from collections import namedtuple
 
@@ -61,7 +62,8 @@ class compiler(object):
     assert objects
     ldflags = ldflags or []
     objects = object_util.listify(objects)
-    cmd = '$CC -shared $LDFLAGS %s %s -o %s' % (' '.join(ldflags), ' '.join(objects), lib)
+    shared_flag = '-dynamiclib' if self.build_target.system == host.MACOS else '-shared'
+    cmd = '$CC %s $LDFLAGS %s %s -o %s' % (shared_flag, ' '.join(ldflags), ' '.join(objects), lib)
     cmd = variable.substitute(cmd, self.variables)
     self._execute_cmd(cmd)
     return lib
@@ -80,7 +82,7 @@ class compiler(object):
     
   @classmethod
   def _make_object_filename(clazz, source):
-    return bf_file_ops.remove_extension(source) + '.o'
+    return bf_filename.without_extension(source) + '.o'
   
   @classmethod
   def _execute_cmd(clazz, cmd):

@@ -15,14 +15,8 @@ class package_file_list(type_checked_list):
   __value_type__ = package_file
   
   def __init__(self, values = None):
-    super(package_file_list, self).__init__(values = values)
+    super().__init__(values = values)
 
-  @classmethod
-  def cast_value(clazz, entry):
-    if isinstance(entry, ( tuple, list )):
-      return package_file(*entry)
-    return entry
-    
   def to_json(self):
     return json_util.to_json(self._values, indent = 2)
     

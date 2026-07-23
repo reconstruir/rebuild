@@ -22,7 +22,7 @@ class venv_shell_script(object):
     if self._content_changed(filename, content):
       if only_if_not_there and path.isfile(filename):
         return False
-      bf_file_ops.save(filename, content = content, mode = self.mode)
+      bf_file_ops.save(filename, content = content, perm = self.mode)
       return True
     return False
 

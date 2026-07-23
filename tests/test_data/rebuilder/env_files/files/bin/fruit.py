@@ -1,14 +1,14 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import subprocess, sys
 
 def main():
 
-  water_rv = subprocess.check_output(['water.py', 'a', 'b', 'c']).strip()
+  water_rv = subprocess.check_output(['water.py', 'a', 'b', 'c']).decode('utf-8').strip()
   sys.stdout.write(water_rv)
   sys.stdout.write(' # ')
-  
-  fiber_rv = subprocess.check_output(['fiber.py', 'a', 'b', 'c']).strip()
+
+  fiber_rv = subprocess.check_output(['fiber.py', 'a', 'b', 'c']).decode('utf-8').strip()
   sys.stdout.write(fiber_rv)
   sys.stdout.write(' # ')
   

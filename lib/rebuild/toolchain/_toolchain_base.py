@@ -4,6 +4,8 @@
 import os.path as path
 from abc import abstractmethod, ABCMeta
 
+from bes.files.bf_entry import bf_entry
+
 class _toolchain_base(metaclass = ABCMeta):
 
   def __init__(self, build_target):
@@ -46,8 +48,7 @@ class _toolchain_base(metaclass = ABCMeta):
 
   def ar_replacement_program_exe(self):
     for p in [ 'programs/rebuild_ar_replacement.pyc', 'programs/rebuild_ar_replacement.py' ]:
-      assert False
-      #pexe = package.get_data_program_exe(p, __file__, __name__)
-      if pexe:
+      pexe = path.normpath(path.join(path.dirname(__file__), p))
+      if bf_entry(pexe).is_executable:
         return pexe
     return None

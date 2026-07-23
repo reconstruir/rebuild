@@ -51,7 +51,7 @@ class _toolchain_darwin(_toolchain_base):
     cflags = sysroot_cflags + arch_flags + opt_flags
     cxxflags = sysroot_cxxflags + arch_flags + opt_flags
 
-    ldflags = []
+    ldflags = [ '-isysroot', self.sysroot() ] + arch_flags
 
     env = {
 #      'CPPFLAGS': sysroot_cflags,
@@ -79,12 +79,14 @@ class _toolchain_darwin(_toolchain_base):
   def sysroot_cflags(self):
     'Return the sysroot CFLAGS.'
     return [
+      '-isysroot', self.sysroot(),
       '-isystem %s' % (path.join(self.sysroot(), 'usr/include')),
     ]
-  
+
   def sysroot_cxxflags(self):
     'Return the sysroot CXXFLAGS.'
     return [
+      '-isysroot', self.sysroot(),
       '-isystem %s' % (path.join(self.sysroot(), 'usr/include/c++')),
     ]
   

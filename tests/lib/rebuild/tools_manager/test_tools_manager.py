@@ -46,9 +46,11 @@ class test_tools_manager(unit_test):
     knife_desc = PD.parse('knife-6.6.6')
     tm.ensure_tools(knife_desc)
     self.assertEqual( [
-      'knife-6.6.6/framework/bes_shell.bash',
+      'knife-6.6.6/bes_shell_framework/bes_bash.bash',
+      'knife-6.6.6/bes_shell_framework_revision.txt',
       'knife-6.6.6/linux-ubuntu-18/x86_64/db/packages.db',
-      'knife-6.6.6/linux-ubuntu-18/x86_64/env/framework/bes_shell.bash',
+      'knife-6.6.6/linux-ubuntu-18/x86_64/env/bes_shell_framework/bes_bash.bash',
+      'knife-6.6.6/linux-ubuntu-18/x86_64/env/bes_shell_framework_revision.txt',
       'knife-6.6.6/linux-ubuntu-18/x86_64/env/knife_env.sh',
       'knife-6.6.6/linux-ubuntu-18/x86_64/run.sh',
       'knife-6.6.6/linux-ubuntu-18/x86_64/setup.sh',
@@ -106,17 +108,27 @@ class test_tools_manager(unit_test):
     cuchillo = PD.parse('cuchillo-1.0.0')
     tm.ensure_tools(cuchillo)
     env = tm.transform_env({}, cuchillo)
-    replacements = { tm.root_dir: '$ROOT_DIR' }
+    # macOS resolves symlinks (e.g. /var -> /private/var) in some code paths but not
+    # others, so both the logical and physical forms of root_dir can appear; collapse
+    # both to $ROOT_DIR.
+    replacements = {
+      tm.root_dir: '$ROOT_DIR',
+      path.realpath(tm.root_dir): '$ROOT_DIR',
+    }
     env2 = copy.deepcopy(env)
     dict_util.replace_values(env2, replacements)
+    # PATH also carries the machine's own system default PATH ahead of the
+    # package-derived entries; that part is machine/toolchain-specific, so only
+    # verify the package-derived suffix here.
+    env2['PATH'] = env2['PATH'][env2['PATH'].index('$ROOT_DIR'):]
     self.assert_dict_as_text_equal( {
       'WOOD_ENV1': 'wood_env1',
       'CUCHILLO_ENV1': 'cuchillo_env1',
       'STEEL_ENV1': 'steel_env1',
       'IRON_ENV1': 'iron_env1',
       'CARBON_ENV1': 'carbon_env1',
-      'PATH': '/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.:$ROOT_DIR/steel-1.0.0/linux-ubuntu-18/x86_64/stuff/bin:/private$ROOT_DIR/steel-1.0.0/linux-ubuntu-18/x86_64/stuff/bin:$ROOT_DIR/wood-1.0.0/linux-ubuntu-18/x86_64/stuff/bin:$ROOT_DIR/cuchillo-1.0.0/linux-ubuntu-18/x86_64/stuff/bin',
-      'PYTHONPATH': '$ROOT_DIR/steel-1.0.0/linux-ubuntu-18/x86_64/stuff/lib/python:/private$ROOT_DIR/steel-1.0.0/linux-ubuntu-18/x86_64/stuff/lib/python:$ROOT_DIR/wood-1.0.0/linux-ubuntu-18/x86_64/stuff/lib/python:$ROOT_DIR/cuchillo-1.0.0/linux-ubuntu-18/x86_64/stuff/lib/python',
+      'PATH': '$ROOT_DIR/steel-1.0.0/linux-ubuntu-18/x86_64/stuff/bin:$ROOT_DIR/steel-1.0.0/linux-ubuntu-18/x86_64/stuff/bin:$ROOT_DIR/wood-1.0.0/linux-ubuntu-18/x86_64/stuff/bin:$ROOT_DIR/cuchillo-1.0.0/linux-ubuntu-18/x86_64/stuff/bin',
+      'PYTHONPATH': '$ROOT_DIR/steel-1.0.0/linux-ubuntu-18/x86_64/stuff/lib/python:$ROOT_DIR/steel-1.0.0/linux-ubuntu-18/x86_64/stuff/lib/python:$ROOT_DIR/wood-1.0.0/linux-ubuntu-18/x86_64/stuff/lib/python:$ROOT_DIR/cuchillo-1.0.0/linux-ubuntu-18/x86_64/stuff/lib/python',
       'PKG_CONFIG_PATH': '$ROOT_DIR/steel-1.0.0/linux-ubuntu-18/x86_64/stuff/lib/pkgconfig:$ROOT_DIR/steel-1.0.0/linux-ubuntu-18/x86_64/stuff/share/pkgconfig:$ROOT_DIR/wood-1.0.0/linux-ubuntu-18/x86_64/stuff/lib/pkgconfig:$ROOT_DIR/wood-1.0.0/linux-ubuntu-18/x86_64/stuff/share/pkgconfig:$ROOT_DIR/cuchillo-1.0.0/linux-ubuntu-18/x86_64/stuff/lib/pkgconfig:$ROOT_DIR/cuchillo-1.0.0/linux-ubuntu-18/x86_64/stuff/share/pkgconfig',
       'DYLD_LIBRARY_PATH': '$ROOT_DIR/steel-1.0.0/linux-ubuntu-18/x86_64/stuff/lib:$ROOT_DIR/wood-1.0.0/linux-ubuntu-18/x86_64/stuff/lib:$ROOT_DIR/cuchillo-1.0.0/linux-ubuntu-18/x86_64/stuff/lib',
     }, env2 )
@@ -128,19 +140,23 @@ class test_tools_manager(unit_test):
     cuchillo = PD.parse('cuchillo-1.0.0')
     tm.ensure_tools(cuchillo)
     self.assertEqual( [
-      'cuchillo-1.0.0/framework/bes_shell.bash',
+      'cuchillo-1.0.0/bes_shell_framework/bes_bash.bash',
+      'cuchillo-1.0.0/bes_shell_framework_revision.txt',
       'cuchillo-1.0.0/linux-ubuntu-18/x86_64/db/packages.db',
+      'cuchillo-1.0.0/linux-ubuntu-18/x86_64/env/bes_shell_framework/bes_bash.bash',
+      'cuchillo-1.0.0/linux-ubuntu-18/x86_64/env/bes_shell_framework_revision.txt',
       'cuchillo-1.0.0/linux-ubuntu-18/x86_64/env/cuchillo_env.sh',
-      'cuchillo-1.0.0/linux-ubuntu-18/x86_64/env/framework/bes_shell.bash',
       'cuchillo-1.0.0/linux-ubuntu-18/x86_64/run.sh',
       'cuchillo-1.0.0/linux-ubuntu-18/x86_64/setup.sh',
       'cuchillo-1.0.0/linux-ubuntu-18/x86_64/stuff/bin/cuchillo.py',
       'cuchillo-1.0.0/run.sh',
       'cuchillo-1.0.0/setup.sh',
-      'steel-1.0.0/framework/bes_shell.bash',
+      'steel-1.0.0/bes_shell_framework/bes_bash.bash',
+      'steel-1.0.0/bes_shell_framework_revision.txt',
       'steel-1.0.0/linux-ubuntu-18/x86_64/db/packages.db',
+      'steel-1.0.0/linux-ubuntu-18/x86_64/env/bes_shell_framework/bes_bash.bash',
+      'steel-1.0.0/linux-ubuntu-18/x86_64/env/bes_shell_framework_revision.txt',
       'steel-1.0.0/linux-ubuntu-18/x86_64/env/carbon_env.sh',
-      'steel-1.0.0/linux-ubuntu-18/x86_64/env/framework/bes_shell.bash',
       'steel-1.0.0/linux-ubuntu-18/x86_64/env/iron_env.sh',
       'steel-1.0.0/linux-ubuntu-18/x86_64/env/steel_env.sh',
       'steel-1.0.0/linux-ubuntu-18/x86_64/run.sh',
@@ -148,14 +164,14 @@ class test_tools_manager(unit_test):
       'steel-1.0.0/linux-ubuntu-18/x86_64/stuff/bin/carbon.py',
       'steel-1.0.0/linux-ubuntu-18/x86_64/stuff/bin/iron.py',
       'steel-1.0.0/linux-ubuntu-18/x86_64/stuff/bin/steel_exe.py',
-      'steel-1.0.0/linux-ubuntu-18/x86_64/stuff/lib/python/easy-install.pth',
-      'steel-1.0.0/linux-ubuntu-18/x86_64/stuff/lib/python/site.py',
       'steel-1.0.0/linux-ubuntu-18/x86_64/stuff/lib/python/steel.py',
       'steel-1.0.0/run.sh',
       'steel-1.0.0/setup.sh',
-      'wood-1.0.0/framework/bes_shell.bash',
+      'wood-1.0.0/bes_shell_framework/bes_bash.bash',
+      'wood-1.0.0/bes_shell_framework_revision.txt',
       'wood-1.0.0/linux-ubuntu-18/x86_64/db/packages.db',
-      'wood-1.0.0/linux-ubuntu-18/x86_64/env/framework/bes_shell.bash',
+      'wood-1.0.0/linux-ubuntu-18/x86_64/env/bes_shell_framework/bes_bash.bash',
+      'wood-1.0.0/linux-ubuntu-18/x86_64/env/bes_shell_framework_revision.txt',
       'wood-1.0.0/linux-ubuntu-18/x86_64/env/wood_env.sh',
       'wood-1.0.0/linux-ubuntu-18/x86_64/run.sh',
       'wood-1.0.0/linux-ubuntu-18/x86_64/setup.sh',
@@ -168,7 +184,7 @@ class test_tools_manager(unit_test):
 fake_package wood 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/wood.py
-      \#!/usr/bin/env python
+      \#!/usr/bin/env python3
       print('ffoo')
       raise SystemExit(0)
 
@@ -179,7 +195,7 @@ fake_package wood 1.0.0 0 0 linux release x86_64 ubuntu 18 none
 fake_package iron 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/iron.py
-      \#!/usr/bin/env python
+      \#!/usr/bin/env python3
       print('fbar')
       raise SystemExit(0)
 
@@ -190,7 +206,7 @@ fake_package iron 1.0.0 0 0 linux release x86_64 ubuntu 18 none
 fake_package carbon 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/carbon.py
-      \#!/usr/bin/env python
+      \#!/usr/bin/env python3
       print('fbar')
       raise SystemExit(0)
 
@@ -201,7 +217,7 @@ fake_package carbon 1.0.0 0 0 linux release x86_64 ubuntu 18 none
 fake_package steel 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/steel_exe.py
-      \#!/usr/bin/env python
+      \#!/usr/bin/env python3
       import sys
       assert len(sys.argv) == 2
       import steel
@@ -226,7 +242,7 @@ fake_package steel 1.0.0 0 0 linux release x86_64 ubuntu 18 none
 fake_package cuchillo 1.0.0 0 0 linux release x86_64 ubuntu 18 none
   files
     bin/cuchillo.py
-      \#!/usr/bin/env python
+      \#!/usr/bin/env python3
       print('fbaz')
       raise SystemExit(0)
 

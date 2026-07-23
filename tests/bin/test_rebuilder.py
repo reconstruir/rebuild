@@ -246,7 +246,7 @@ class test_rebuilder_script(program_unit_test):
       'files/bin/foo.py',
       'metadata/metadata.json',
     ], test.artifacts_members['foo-1.0.0.tar.gz'])
-    expected = '''#!/usr/bin/env python
+    expected = '''#!/usr/bin/env python3
 print("hook1 hook2")
 '''
     self.assertMultiLineEqual( expected, test.artifacts_contents['foo-1.0.0.tar.gz']['files/bin/foo.py'] )
@@ -276,7 +276,7 @@ print("hook1 hook2")
       'metadata/metadata.json',
     ], test.artifacts_members['fruit-1.0.0.tar.gz'])
 
-    expected = '''#!/usr/bin/env python
+    expected = '''#!/usr/bin/env python3
 print("hook1 hook2")
 '''
     

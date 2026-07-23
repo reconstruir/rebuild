@@ -7,6 +7,7 @@ from bes.common.dict_util import dict_util
 from bes.common.object_util import object_util
 from bes.files.bf_dir import bf_dir
 from bes.files.bf_file_ops import bf_file_ops
+from bes.files.bf_filename import bf_filename
 from bes.dependency.dependency_resolver import dependency_resolver
 from collections import namedtuple
 from rebuild.step.step_aborted import step_aborted
@@ -323,7 +324,7 @@ class builder(object):
     failed_packages = []
     for name in  packages_to_build:
       script = scripts[name]
-      filename = bf_file_ops.remove_head(script.filename, os.getcwd())
+      filename = bf_filename.remove_head(script.filename, os.getcwd())
       if not script.enabled and not self._env.config.disabled:
         self.blurb('disabled: %s' % (filename))
         continue

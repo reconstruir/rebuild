@@ -74,21 +74,21 @@ Cflags: -I${includedir} -DFOO
     PKG_CONFIG_PATH = [ self.__write_example_modules() ]
     modules = [ 'foo' ]
     cflags = pkg_config.cflags(modules, PKG_CONFIG_PATH = PKG_CONFIG_PATH)
-    expected = [ '-DFOO', '-I/usr/foo/include' ]
+    expected = [ '-I/usr/foo/include', '-DFOO' ]
     self.assertEqual( expected, cflags )
 
   def test_cflags_multiple(self):
     PKG_CONFIG_PATH = [ self.__write_example_modules() ]
     modules = [ 'foo', 'bar' ]
     cflags = pkg_config.cflags(modules, PKG_CONFIG_PATH = PKG_CONFIG_PATH)
-    expected = [ '-DFOO', '-DBAR', '-I/usr/foo/include', '-I/usr/bar/include' ]
+    expected = [ '-I/usr/foo/include', '-DFOO', '-I/usr/bar/include', '-DBAR' ]
     self.assertEqual( expected, cflags )
 
   def test_cflags_dups(self):
     PKG_CONFIG_PATH = [ self.__write_example_modules() ]
     modules = [ 'foo', 'foo_dup' ]
     cflags = pkg_config.cflags(modules, PKG_CONFIG_PATH = PKG_CONFIG_PATH)
-    expected = [ '-DFOO', '-I/usr/foo/include', '-I/usr/foo_dup/include' ]
+    expected = [ '-I/usr/foo/include', '-I/usr/foo_dup/include', '-DFOO' ]
     self.assertEqual( expected, cflags )
 
   def test_libs_single(self):
@@ -102,7 +102,7 @@ Cflags: -I${includedir} -DFOO
     PKG_CONFIG_PATH = [ self.__write_example_modules() ]
     modules = [ 'foo', 'bar' ]
     libs = pkg_config.libs(modules, PKG_CONFIG_PATH = PKG_CONFIG_PATH)
-    expected = [ '-L/usr/foo/lib', '-L/usr/bar/lib', '-lfoo', '-lbar' ]
+    expected = [ '-L/usr/foo/lib', '-lfoo', '-L/usr/bar/lib', '-lbar' ]
     self.assertEqual( expected, libs )
 
   def test_libs_dups(self):

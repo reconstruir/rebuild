@@ -50,7 +50,7 @@ class venv_config(object):
     if not path.isfile(filename):
       raise RuntimeError('venv config file not found: %s' % (filename))
     if venv_project_config.is_venv_config(filename):
-      text = bf_file_ops.read(filename, codec = 'utf8')
+      text = bf_file_ops.read(filename, encoding = 'utf8')
       parser = venv_project_config_parser(filename, text)
       projects, storage_config = parser.parse(variable_manager)
       return venv_config(projects, storage_config, filename)

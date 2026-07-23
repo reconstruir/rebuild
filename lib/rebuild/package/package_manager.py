@@ -18,11 +18,14 @@ from bes.common.string_util import string_util
 from bes.common.variable import variable
 from bes.dependency.dependency_resolver import dependency_resolver
 from bes.env.env_dir import env_dir
-from bes.files.bf_path import bf_path
+from bes.files.bf_entry import bf_entry
 from bes.files.bf_file_ops import bf_file_ops
+from bes.files.checksum.bf_checksum import bf_checksum
 from bat.shell_framework.shell_framework import shell_framework
+from bat.shell_framework.shell_framework_defaults import shell_framework_defaults
 from bes.system.log import log
 from bes.system.os_env import os_env
+from bes.system.env_var import os_env_var
 
 from rebuild.instruction.instruction_list import instruction_list
 from rebuild.pkg_config.pkg_config import pkg_config
@@ -102,7 +105,7 @@ class package_manager(object):
 
   def tool_exe(self, tool_name):
     exe = path.join(self.bin_dir, tool_name)
-    if not bf_path.is_executable(exe):
+    if not bf_entry(exe).is_executable:
       return None
     return exe
   
@@ -120,7 +123,7 @@ class package_manager(object):
   
   @property
   def shell_framework_dir(self):
-    return self._shell_framework_dir
+    return path.join(self._shell_framework_dir, shell_framework_defaults.FRAMEWORK_BASENAME)
   
   def descriptor_for_name(self, pkg_name):
     entry = self.db.find_package(pkg_name)
@@ -231,7 +234,7 @@ class package_manager(object):
     for f in files:
       existing_file_path = path.join(self._installation_dir, f)
       if path.isfile(existing_file_path):
-        existing_file_checksum = bf_file_ops.checksum('sha256', existing_file_path)
+        existing_file_checksum = bf_checksum.checksum(existing_file_path, 'sha256')
         new_file_checksum = checksums[f]
         if existing_file_checksum != new_file_checksum:
           conflicts.append(f)
@@ -344,10 +347,10 @@ class package_manager(object):
   def transform_env(self, env, package_names):
     check.check_string_seq(package_names)
     
-    env = env or { 'PATH': os_env.DEFAULT_SYSTEM_PATH }
+    env = env or { 'PATH': os_env_var.path_join(os_env.DEFAULT_SYSTEM_PATH) }
     if not 'PATH' in env:
       env = copy.deepcopy(env)
-      env['PATH'] = os_env.DEFAULT_SYSTEM_PATH
+      env['PATH'] = os_env_var.path_join(os_env.DEFAULT_SYSTEM_PATH)
     result = copy.deepcopy(env)
     os_env.update(result, self._shell_env, prepend = False)
     files = self.package_env_files(package_names)
@@ -355,8 +358,6 @@ class package_manager(object):
       return result
     if not path.isdir(self._env_dir):
       return result
-    print('CACA: self._env_dir={}'.format(self._env_dir))
-    print('CACA: files={}'.format(files))
     ed = env_dir(self._env_dir, files = files)
     result = ed.transform_env(result)
     # Remove any item where the key starts with _REBUILD to not leak impl detail vars

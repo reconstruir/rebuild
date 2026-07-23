@@ -5,7 +5,7 @@ from bes.compat.StringIO import StringIO
 from bes.system.check import check
 from bes.common.tuple_util import tuple_util
 from bes.property.cached_property import cached_property
-from bes.files.bf_file_ops import bf_file_ops
+from bes.files.bf_filename import bf_filename
 from bes.compat.url_compat import urlparse
 
 class storage_address(namedtuple('storage_address', 'hostname, repo, root_dir, sub_repo, filename')):
@@ -33,7 +33,7 @@ class storage_address(namedtuple('storage_address', 'hostname, repo, root_dir, s
   
   @classmethod
   def _normalize_path(clazz, filename):
-    return bf_file_ops.strip_sep(filename)
+    return bf_filename.strip_sep(filename)
   
   def __str__(self):
     return self.url

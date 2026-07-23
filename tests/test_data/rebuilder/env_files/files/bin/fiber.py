@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import subprocess, sys
 
 def main():
 
-  carb_rv = subprocess.check_output(['carb.py', 'a', 'b', 'c']).strip()
+  carb_rv = subprocess.check_output(['carb.py', 'a', 'b', 'c']).decode('utf-8').strip()
   sys.stdout.write(carb_rv)
   sys.stdout.write(' # ')
   

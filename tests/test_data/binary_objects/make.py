@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from bes.system.host import host
 from bes.common.string_util import string_util

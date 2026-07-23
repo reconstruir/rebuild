@@ -7,7 +7,7 @@ from bes.build.requirement_list import requirement_list
 from bes.system.check import check
 from bes.common.string_util import string_util
 from bes.compat.StringIO import StringIO
-from bes.files.bf_file_ops import bf_file_ops
+from bes.files.bf_filename import bf_filename
 from bes.files.bf_temp_file import bf_temp_item
 from bes.key_value.key_value import key_value
 from bes.key_value.key_value_list import key_value_list
@@ -54,7 +54,7 @@ class fake_package_recipe_parser(object):
       # Need to hack newlines before and after because the parse will strip them
       text = text_replace.replace(self.text, { '\\n': '@@@NL@@@' }, word_boundary = True)
       tree = tree_text_parser.parse(text, strip_comments = True)
-      tree.replace_text({ '@@@NL@@@': r'\\n' })
+      tree.replace_text({ '@@@NL@@@': '\\n' }, word_boundary = False)
     except Exception as ex:
       self._error('failed to parse: {}\n{}\n'.format(str(ex), self.text))
     return self._parse_tree(tree)
@@ -117,7 +117,7 @@ class fake_package_recipe_parser(object):
 
   def _parse_file(self, node):
     filename, content = fake_package_recipe_parser_util.parse_file(node)
-    if bf_file_ops.extension(filename) in [ 'sh', 'py' ]:
+    if bf_filename.extension(filename) in [ 'sh', 'py' ]:
       mode = 0o755
     else:
       mode = 0o644

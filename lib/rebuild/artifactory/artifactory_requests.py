@@ -9,6 +9,8 @@ from bes.system.os_env import os_env
 from bes.system.check import check
 from bes.files.bf_path import bf_path
 from bes.files.bf_file_ops import bf_file_ops
+from bes.files.bf_filename import bf_filename
+from bes.files.checksum.bf_checksum import bf_checksum
 from bes.files.bf_temp_file import bf_temp_file
 
 from bes.build.requirement_list import requirement_list
@@ -114,7 +116,7 @@ class artifactory_requests(object):
       if checksum:
         checksums = clazz.get_checksums_for_url(url, credentials)
         expected_checksum = checksums.sha256
-        actual_checksum = bf_file_ops.checksum('sha256', tmp)
+        actual_checksum = bf_checksum.checksum(tmp, 'sha256')
         clazz.log.log_d('download_to_file: expected_checksum={} actual_checksum={}'.format(expected_checksum,
                                                                                            actual_checksum))
         if expected_checksum != actual_checksum:
@@ -150,9 +152,9 @@ class artifactory_requests(object):
     for f in files:
       assert 'uri' in f
       assert 'sha1' in f
-      filename = bf_file_ops.lstrip_sep(f['uri'])
+      filename = bf_filename.lstrip_sep(f['uri'])
       uri = str(address) + '/' + filename
-      sha1 = bf_file_ops.lstrip_sep(f['sha1'])
+      sha1 = bf_filename.lstrip_sep(f['sha1'])
       result.append(clazz._file_item(uri, filename, sha1))
     result.sort()
     return result
@@ -246,9 +248,9 @@ class artifactory_requests(object):
   @classmethod
   def checksum_headers_for_file(clazz, filename):
     return {
-      clazz._HEADER_CHECKSUM_MD5: bf_file_ops.checksum('md5', filename),
-      clazz._HEADER_CHECKSUM_SHA1: bf_file_ops.checksum('sha1', filename),
-      clazz._HEADER_CHECKSUM_SHA256: bf_file_ops.checksum('sha256', filename),
+      clazz._HEADER_CHECKSUM_MD5: bf_checksum.checksum(filename, 'md5'),
+      clazz._HEADER_CHECKSUM_SHA1: bf_checksum.checksum(filename, 'sha1'),
+      clazz._HEADER_CHECKSUM_SHA256: bf_checksum.checksum(filename, 'sha256'),
     }
     
   @classmethod
@@ -289,7 +291,7 @@ items.find({{
   "path" : {{"$match":"{match_prefix}*"}}
 }}).include("*", "property.*")
 '''
-    match_prefix = bf_file_ops.remove_head(address.repo_filename, address.repo)
+    match_prefix = bf_filename.remove_head(address.repo_filename, address.repo)
     aql = template.format(repo = address.repo,  match_prefix = match_prefix)
     clazz.log.log_d('list_artifacts: address={}'.format(address))
     clazz.log.log_d('list_artifacts: match_prefix={}'.format(match_prefix))
@@ -312,7 +314,7 @@ items.find({{
       assert 'path' in item
       item_name = item.get('name', None)
       item_path = item.get('path', None)
-      filename = path.join(bf_file_ops.remove_head(item_path, match_prefix), item_name)
+      filename = path.join(bf_filename.remove_head(item_path, match_prefix), item_name)
       item_properties = item.get('properties', None)
       if item_properties:
         md = clazz._parse_artifact_properties(filename, item_properties)

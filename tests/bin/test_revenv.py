@@ -2,6 +2,7 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 import os.path as path
+import sys
 
 from collections import namedtuple
 
@@ -206,12 +207,12 @@ projects
       '--build-target', 'linux-ubuntu-18/x86_64/release',
     ]
     env = os_env.make_clean_env(keep_keys = [ 'PYTHONPATH' ],
-                                update = { 'PATH': path.dirname(self._PROGRAM) })
+                                update = { 'PATH': '%s:%s' % (path.dirname(sys.executable), path.dirname(self._PROGRAM)) })
     rv = execute.execute(cmd, raise_error = False, env = env, stderr_to_stdout = True)
     if rv.exit_code != 0 or self.DEBUG:
       self.spew('update.sh command: %s' % (' '.join(cmd)))
       self.spew('update.sh script:\n----------\n%s\n----------\n' % (bf_file_ops.read(update_dot_sh)))
-      self.spew(rv.output)
+      self.spew(rv.stdout)
     self.assertEqual( 0, rv.exit_code )
     rv = self.run_program(self._PROGRAM, print_args)
     self.assertEqual( 0, rv.exit_code )

@@ -3,6 +3,7 @@
 import os.path as path
 from collections import namedtuple
 from bes.files.bf_file_ops import bf_file_ops
+from bes.files.checksum.bf_checksum import bf_checksum
 from bes.files.bf_temp_file import bf_temp_file
 from bes.archive.archiver import archiver
 from .lipo import lipo
@@ -15,7 +16,7 @@ class fat_archive(object):
     def __init__(self, member, dest_dir):
       self.member = member
       self.filename = path.join(dest_dir, member)
-      self.checksum = bf_file_ops.checksum('sha256', self.filename)
+      self.checksum = bf_checksum.checksum(self.filename, 'sha256')
 
     def __str__(self):
       return str(self.member)

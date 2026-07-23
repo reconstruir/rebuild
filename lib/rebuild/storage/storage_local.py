@@ -6,6 +6,8 @@ from bes.system.log import log
 from bes.fs.file_attributes import file_attributes
 from bes.fs.file_find import file_find
 from bes.files.bf_file_ops import bf_file_ops
+from bes.files.bf_filename import bf_filename
+from bes.files.checksum.bf_checksum import bf_checksum
 from bes.archive.archiver import archiver
 
 from .storage_base import storage_base 
@@ -64,14 +66,14 @@ class storage_local(storage_base):
       return
     #print('CACA: ensure_source(%s)' % (caca_filename))
     if caca_filename.startswith(self._local_root_dir):
-      filename = bf_file_ops.remove_head(caca_filename, self._local_root_dir)
+      filename = bf_filename.remove_head(caca_filename, self._local_root_dir)
       filename_local = caca_filename
     else:
       filename = caca_filename
       filename_local = self._local_path(caca_filename)
       
     #assert local_filename.startswith(self._local_root_dir)
-    #filename = bf_file_ops.remove_head(local_filename, self._local_root_dir)
+    #filename = bf_filename.remove_head(local_filename, self._local_root_dir)
     remote_path = self._remote_path(filename)
     self.log_d('ensure_source: filename_local=%s; remote_path=%s; filename=%s' % (filename_local, remote_path, filename))
     #print('CACA: ensure_source: filename_local=%s; remote_path=%s; filename=%s' % (filename_local, remote_path, filename))
@@ -101,17 +103,17 @@ class storage_local(storage_base):
     for key, value in properties.items():
       check.check_string(key)
       if value is None:
-        file_attributes.clear(remote_path, key)
+        file_attributes.remove(remote_path, key)
       else:
         check.check_string(value)
-        file_attributes.set(remote_path, key, value)
+        file_attributes.set_string(remote_path, key, value)
     return True
     
   #@abstractmethod
   def remote_checksum(self, remote_filename):
     remote_path = self._remote_path(remote_filename)
     if path.isfile(remote_path):
-      return bf_file_ops.checksum('sha256', remote_path)
+      return bf_checksum.checksum(remote_path, 'sha256')
     return None
   
   #@abstractmethod

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ${REBUILD_SHELL_FRAMEWORK_DIR}/bes_shell.bash
+source ${REBUILD_SHELL_FRAMEWORK_DIR}/bes_bash.bash
 
 function test_env_vars()
 {

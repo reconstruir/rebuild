@@ -6,9 +6,10 @@ import os, os.path as path, re, subprocess, sys
 from bes.fs.compressed_file import compressed_file
 from bes.fs.file_find import file_find
 from bes.files.bf_file_ops import bf_file_ops
+from bes.files.bf_filename import bf_filename
 from bes.files.mime.bf_mime import bf_mime
-from bes.files.bf_path import bf_path
 from bes.files.bf_temp_file import bf_temp_file
+from bes.system.which import which
 from bes.common.algorithm import algorithm
 from bes.common.object_util import object_util
 
@@ -53,7 +54,7 @@ class patch(object):
       return None
     if affected == target:
       return 0
-    head = bf_file_ops.remove_tail(affected, target)
+    head = bf_filename.remove_tail(affected, target)
     return head.count(os.sep) + 1
       
   PATCH_FILENAME_EXPRESSION = re.compile(r'^\+\+\+\s+(\S*)\b.*$')
@@ -91,7 +92,7 @@ class patch(object):
   @classmethod
   def _call_patch(clazz, patch, cwd, strip, backup, posix, program):
     program = program or 'patch'
-    program_abs = bf_path.which(program)
+    program_abs = which.which(program)
     if not program_abs:
       raise RuntimeError('patch program not found: %s' % (program))
     cmd = [ program_abs, '--force', '--silent' ]

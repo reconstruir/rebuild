@@ -3,6 +3,8 @@
 import os.path as path
 
 from bes.files.bf_file_ops import bf_file_ops
+from bes.files.bf_entry import bf_entry
+from bes.files.checksum.bf_checksum import bf_checksum
 from bes.files.bf_temp_file import bf_temp_file
 
 from bes.system.check import check
@@ -50,20 +52,20 @@ class storage_db(object):
     db = storage_db_dict()
     for f in sources:
       p = path.join(self._root, f)
-      mtime = bf_file_ops.mtime(p)
+      mtime = bf_entry(p).mtime
       checksum = self._read_checksum(f)
       db[f] = storage_db_entry(f, mtime, checksum)
     return db
       
   def _read_checksum(self, filename):
     p = path.join(self._root, filename)
-    mtime = bf_file_ops.mtime(p)
+    mtime = bf_entry(p).mtime
     item = self._db.get(filename, None)
     if item:
       if mtime == item[1]:
         assert item[2]
         return item[2]
-    return bf_file_ops.checksum('sha1', p)
+    return bf_checksum.checksum(p, 'sha1')
 
   def checksum(self, filename):
     return self._db.checksum(filename)

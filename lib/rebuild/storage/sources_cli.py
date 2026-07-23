@@ -8,7 +8,7 @@ from bes.archive.archiver import archiver
 from bes.system.check import check
 from bes.compat.StringIO import StringIO
 from bes.fs.file_find import file_find
-from bes.files.bf_file_ops import bf_file_ops
+from bes.files.checksum.bf_checksum import bf_checksum
 from bes.files.bf_temp_file import bf_temp_file
 from bes.text.text_table import text_table
 from bes.url.url_util import url_util
@@ -46,7 +46,7 @@ class what_resolver(object):
     self.filename = None
     if path.isfile(what):
       self.blurb = 'local_checksum'
-      self.checksum = bf_file_ops.checksum('sha1', what)
+      self.checksum = bf_checksum.checksum(what, 'sha1')
     if re.match('([a-f0-9A-F]{40})', what):
       self.blurb = 'checksum'
       self.checksum = what
@@ -459,7 +459,7 @@ class sources_cli(object):
         continue
       
       remote_checksum = storage.remote_checksum(remote_filename)
-      local_checksum = bf_file_ops.checksum('sha256', local_filename)
+      local_checksum = bf_checksum.checksum(local_filename, 'sha256')
 
       self.log_d('publish_artifacts: local_checksum=%s; remote_checksum=%s' % (local_checksum, remote_checksum))
       
@@ -514,7 +514,7 @@ class sources_cli(object):
       local_filename = url_util.download_to_temp_file(what)
     else:
       local_filename = what
-    checksum = bf_file_ops.checksum('sha256', local_filename)
+    checksum = bf_checksum.checksum(local_filename, 'sha256')
     print(checksum)
     return 0
 

@@ -4,6 +4,7 @@
 import os.path as path
 from bes.testing.unit_test import unit_test
 from bes.files.bf_file_ops import bf_file_ops
+from bes.files.bf_entry import bf_entry
 from bes.files.bf_temp_file import bf_temp_file
 
 from rebuild.venv.venv_shell_script import venv_shell_script
@@ -25,7 +26,7 @@ class test_venv_shell_script(unit_test):
     content = bf_file_ops.read(tmp_filename, 'utf-8')
     expected_content = '#!/bin/bash\necho foo bar'
     self.assertEqual( expected_content, content )
-    self.assertEqual( bf_file_ops.mode(tmp_filename), 0o755 )
+    self.assertEqual( bf_entry(tmp_filename).mode, 0o755 )
     
   def test_save_not_executable(self):
     template = 'something @FOO@ and @BAR@'
@@ -42,7 +43,7 @@ class test_venv_shell_script(unit_test):
     content = bf_file_ops.read(tmp_filename, 'utf-8')
     expected_content = 'something foo and bar'
     self.assertEqual( expected_content, content )
-    self.assertEqual( bf_file_ops.mode(tmp_filename), 0o644 )
+    self.assertEqual( bf_entry(tmp_filename).mode, 0o644 )
     self.assertEqual( True, save_rv )
     
 if __name__ == '__main__':

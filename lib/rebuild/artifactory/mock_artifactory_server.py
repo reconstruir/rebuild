@@ -5,6 +5,7 @@ from bes.web.web_server import web_server
 from bes.system.log import log
 from bes.fs.file_find import file_find
 from bes.files.bf_file_ops import bf_file_ops
+from bes.files.bf_entry import bf_entry
 from bes.compat import url_compat
 
 from .artifactory_requests import artifactory_requests
@@ -86,7 +87,7 @@ class mock_artifactory_server(web_server):
     mime_type = self.mime_type(path_info.rooted_filename)
     headers = [
       ( 'Content-Type', str(mime_type) ),
-      ( 'Content-Length', str(bf_file_ops.size(path_info.rooted_filename)) ),
+      ( 'Content-Length', str(bf_entry(path_info.rooted_filename).size) ),
       ( 'X-Artifactory-Filename', path.basename(path_info.path_info) ),
       ( 'X-Artifactory-Id', self._artifactory_id ),
     ]

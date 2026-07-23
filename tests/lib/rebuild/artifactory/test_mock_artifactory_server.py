@@ -114,7 +114,7 @@ class test_mock_artifactory_server(unit_test):
     expected = AR._file_info(
       'foo.txt',
       '16',
-      'text/plain; charset=us-ascii',
+      'text/plain',
       'xThu, 04 Apr 2019 01:54:21 GMT',
       None,
       None,

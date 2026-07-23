@@ -18,6 +18,9 @@ class recipe_command_factory(bcli_command_factory_base):
   def description(clazz):
     return 'Recipe operations'
 
+  def error_class(self):
+    raise RuntimeError
+
   def options_class(self):
     return None
 

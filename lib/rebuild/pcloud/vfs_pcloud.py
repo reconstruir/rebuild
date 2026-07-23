@@ -8,7 +8,7 @@ from bes.common.node import node
 from bes.fs.file_attributes import file_attributes
 from bes.fs.file_checksum import file_checksum
 from bes.fs.file_find import file_find
-from bes.files.bf_file_ops import bf_file_ops
+from bes.files.checksum.bf_checksum import bf_checksum
 from bes.fs.file_metadata import file_metadata
 from bes.system.log import logger
 from bes.factory.factory_field import factory_field
@@ -184,7 +184,7 @@ class vfs_pcloud(vfs_base):
     remote_filename = vfs_path_util.normalize(remote_filename)
     sp = vfs_path_util.split_basename(remote_filename)
     self._metadata_db_update_local()
-    checksum = bf_file_ops.checksum('sha256', local_filename)
+    checksum = bf_checksum.checksum(local_filename, 'sha256')
     self._metadata_db.set_value('checksums', remote_filename, 'checksum.sha256', checksum)
     self._pcloud.upload_file(local_filename, sp.basename, folder_path = sp.dirname)
     self._metadata_db_update_remote()
@@ -254,4 +254,4 @@ class vfs_pcloud(vfs_base):
     'Return the sha1 checksum for the local metadata file.'
     if not path.isfile(self._db_metadata_filename):
       return None
-    return bf_file_ops.checksum('sha1', self._db_metadata_filename)
+    return bf_checksum.checksum(self._db_metadata_filename, 'sha1')

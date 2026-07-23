@@ -5,6 +5,7 @@ from bes.build.build_system import build_system
 
 from .ingest_cli_options import ingest_cli_options
 from .ingest_command_handler import ingest_command_handler
+from .ingest_error import ingest_error
 
 class ingest_command_factory(bcli_command_factory_base):
 
@@ -15,6 +16,9 @@ class ingest_command_factory(bcli_command_factory_base):
   @classmethod
   def description(clazz):
     return 'Ingest operations'
+
+  def error_class(self):
+    raise ingest_error
 
   def options_class(self):
     return None

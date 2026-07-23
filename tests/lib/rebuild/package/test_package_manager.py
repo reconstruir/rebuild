@@ -13,6 +13,7 @@ from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 from bes.system.execute import execute
 from bes.system.os_env import os_env
+from bes.system.env_var import os_env_var
 from bes.testing.unit_test import unit_test
 
 from bes.build.build_target import build_target as BT
@@ -496,8 +497,9 @@ fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     expected = [
       'db/packages.db',
       'env/bar.sh',
+      'env/bes_shell_framework/bes_bash.bash',
+      'env/bes_shell_framework_revision.txt',
       'env/foo.sh',
-      'env/framework/bes_shell.bash',
       'stuff/bin/apple.sh',
       'stuff/bin/orange.sh',
     ]
@@ -520,7 +522,8 @@ fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     self.assertEqual( [ 'files-1.0.0' ], pm.list_all_names(include_version = True) )
     expected = [
       'db/packages.db',
-      'env/framework/bes_shell.bash',
+      'env/bes_shell_framework/bes_bash.bash',
+      'env/bes_shell_framework_revision.txt',
       'stuff/bin/apple.sh',
       'stuff/bin/orange.sh',
     ]
@@ -546,8 +549,9 @@ fake_package files 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     expected = [
       'db/packages.db',
       'env/bar.sh',
+      'env/bes_shell_framework/bes_bash.bash',
+      'env/bes_shell_framework_revision.txt',
       'env/foo.sh',
-      'env/framework/bes_shell.bash',
     ]
     self.assertEqual( expected, file_find.find(pm.root_dir, relative = True) )
     
@@ -635,7 +639,7 @@ fake_package unset 1.0.0 0 0 linux release x86_64 ubuntu 18 none
       result['LD_LIBRARY_PATH'] = result['$LD_LIBRARY_PATH']
       del result['$LD_LIBRARY_PATH']
     replacements = {
-      '$DEFAULT_PATH': os_env.DEFAULT_SYSTEM_PATH,
+      '$DEFAULT_PATH': os_env_var.path_join(os_env.DEFAULT_SYSTEM_PATH),
     }
     dict_util.replace_values(result, replacements)
     return result
@@ -649,7 +653,7 @@ fake_package unset 1.0.0 0 0 linux release x86_64 ubuntu 18 none
     replacements = {
       '/private': '',
       pm.root_dir: '$ROOT_DIR',
-      os_env.DEFAULT_SYSTEM_PATH: '$DEFAULT_PATH',
+      os_env_var.path_join(os_env.DEFAULT_SYSTEM_PATH): '$DEFAULT_PATH',
     }
     dict_util.replace_values(result, replacements)
     return result
