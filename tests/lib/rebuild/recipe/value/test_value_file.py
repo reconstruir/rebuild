@@ -3,7 +3,7 @@
 
 from bes.testing.unit_test import unit_test
 from rebuild.recipe.value.value_file import value_file
-from rebuild.recipe.value.value_origin import value_origin
+from bat.build.recipe_file.value.value_origin import value_origin
 from bes.key_value.key_value_list import key_value_list
 
 import pickle

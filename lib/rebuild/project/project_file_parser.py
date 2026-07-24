@@ -12,12 +12,12 @@ from bes.text.tree_text_parser import tree_text_parser
 from bes.text.text_fit import text_fit
 
 from bat.build.core.build_system import build_system
-from rebuild.recipe.recipe_error import recipe_error
-from rebuild.recipe.recipe_parser_util import recipe_parser_util
-from rebuild.recipe.value.masked_value import masked_value
-from rebuild.recipe.value.masked_value_list import masked_value_list
-from rebuild.recipe.value.value_origin import value_origin
-from rebuild.recipe.value.value_string_list import value_string_list
+from bat.build.recipe_file.recipe_error import recipe_error
+from bat.build.recipe_file.recipe_parser_util import recipe_parser_util
+from bat.build.recipe_file.value.masked_value import masked_value
+from bat.build.recipe_file.value.masked_value_list import masked_value_list
+from bat.build.recipe_file.value.value_origin import value_origin
+from bat.build.recipe_file.value.value_string_list import value_string_list
 
 from .project_file import project_file
 from .project_file_list import project_file_list

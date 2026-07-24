@@ -7,7 +7,7 @@ from bes.property.cached_property import cached_property
 from bes.compat.StringIO import StringIO
 from bes.text.text_replace import text_replace
 
-from .value_base import value_base
+from bat.build.recipe_file.value.value_base import value_base
 
 class value_source_tarball(value_base):
 

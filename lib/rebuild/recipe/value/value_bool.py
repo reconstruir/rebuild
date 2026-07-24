@@ -4,8 +4,8 @@ import os.path as path
 from bes.common.bool_util import bool_util
 from bes.system.check import check
 
-from .value_base import value_base
-from .value_type import value_type
+from bat.build.recipe_file.value.value_base import value_base
+from bat.build.recipe_file.value.value_type import value_type
 
 class value_bool(value_base):
 

@@ -3,8 +3,8 @@
 import os.path as path
 from bes.system.check import check
 from bat.build.core.requirement_list import requirement_list
-from .value_base import value_base
-from .value_type import value_type
+from bat.build.recipe_file.value.value_base import value_base
+from bat.build.recipe_file.value.value_type import value_type
 
 class value_requirement_list(value_base):
 

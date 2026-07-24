@@ -10,7 +10,7 @@ from bes.compat.StringIO import StringIO
 from bes.dependency import dependency_provider
 from bes.fs.file_find import file_find
 
-from .value_base import value_base
+from bat.build.recipe_file.value.value_base import value_base
 from .value_list_base import value_list_base
 
 _install_file = namedtuple('_install_file', 'filename, dst_filename')

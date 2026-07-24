@@ -10,7 +10,7 @@ from bes.files.bf_file_ops import bf_file_ops
 from bes.fs.tar_util import tar_util
 from bes.text.text_replace import text_replace
 
-from .value_base import value_base
+from bat.build.recipe_file.value.value_base import value_base
 
 class value_source_dir(value_base):
 

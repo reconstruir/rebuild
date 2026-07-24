@@ -4,7 +4,7 @@ from collections import namedtuple
 from bes.system.check import check
 from bes.compat.StringIO import StringIO
 
-from .value.masked_value_list import masked_value_list
+from bat.build.recipe_file.value.masked_value_list import masked_value_list
 
 class recipe_value(namedtuple('recipe_value', 'key,values')):
 

@@ -9,8 +9,8 @@ from rebuild.recipe.value.value_file import value_file
 from rebuild.recipe.value.value_file import value_file_list
 from rebuild.recipe.value.value_git_address import value_git_address
 from rebuild.recipe.value.value_install_file import value_install_file
-from rebuild.recipe.value.value_origin import value_origin as VO
-from rebuild.recipe.variable_manager import variable_manager
+from bat.build.recipe_file.value.value_origin import value_origin as VO
+from bat.build.recipe_file.variable_manager import variable_manager
 from bes.key_value.key_value import key_value as KV
 from bes.key_value.key_value_list import key_value_list as KVL
 from bes.text.string_list import string_list

@@ -8,8 +8,8 @@ from bes.common.variable import variable
 from bes.key_value.key_value_list import key_value_list
 from bes.text.string_list import string_list
 
-from rebuild.recipe.recipe_error import recipe_error
-from rebuild.recipe.recipe_util import recipe_util
+from bat.build.recipe_file.recipe_error import recipe_error
+from bat.build.recipe_file.recipe_util import recipe_util
 from bat.build.core.requirement_list import requirement_list
 
 class venv_project_config(namedtuple('venv_project_config', 'format_version, filename, name, description, variables, packages, python_code')):

@@ -5,10 +5,10 @@ from bes.testing.unit_test import unit_test
 from bes.text.tree_text_parser import tree_text_parser
 from rebuild.recipe.recipe_parser import recipe_parser as RP
 from bat.build.core.build_system import build_system
-from rebuild.recipe.value.value_origin import value_origin as VO
-from rebuild.recipe.value.value_type import value_type as VT
-from rebuild.recipe.value.masked_value import masked_value as V
-from rebuild.recipe.value.masked_value_list import masked_value_list as VL
+from bat.build.recipe_file.value.value_origin import value_origin as VO
+from bat.build.recipe_file.value.value_type import value_type as VT
+from bat.build.recipe_file.value.masked_value import masked_value as V
+from bat.build.recipe_file.value.masked_value_list import masked_value_list as VL
 from rebuild.recipe.value.value_int import value_int
 
 class test_masked_value_list(unit_test):

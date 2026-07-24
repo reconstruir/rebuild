@@ -21,7 +21,7 @@ from bat.build.core.build_target_cli import build_target_cli
 
 from rebuild.config.storage_config_manager import storage_config_manager
 from rebuild.package.artifact_manager_factory import artifact_manager_factory
-from rebuild.recipe.variable_manager import variable_manager
+from bat.build.recipe_file.variable_manager import variable_manager
 
 from rebuild.package.artifact_manager_local import artifact_manager_local
 

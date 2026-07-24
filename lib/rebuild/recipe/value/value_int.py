@@ -3,9 +3,9 @@
 import os.path as path
 from bes.system.check import check
 
-from .value_base import value_base
-from .value_type import value_type
-from .value_parsing import value_parsing
+from bat.build.recipe_file.value.value_base import value_base
+from bat.build.recipe_file.value.value_type import value_type
+from bat.build.recipe_file.value.value_parsing import value_parsing
 
 class value_int(value_base):
 

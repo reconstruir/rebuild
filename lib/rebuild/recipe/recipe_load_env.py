@@ -6,7 +6,7 @@ from bes.system.check import check
 
 from bat.build.core.build_target import build_target as BT
 
-from .variable_manager import variable_manager
+from bat.build.recipe_file.variable_manager import variable_manager
 
 class recipe_load_env_base(metaclass = ABCMeta):
 

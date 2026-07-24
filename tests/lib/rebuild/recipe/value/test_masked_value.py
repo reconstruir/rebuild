@@ -2,15 +2,15 @@
 #-*- coding:utf-8; mode:python; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-
 
 from bes.testing.unit_test import unit_test
-from rebuild.recipe.value.masked_value import masked_value as MV
+from bat.build.recipe_file.value.masked_value import masked_value as MV
 from bes.key_value.key_value import key_value as KV
 from bes.key_value.key_value_list import key_value_list as KVL
 
 from rebuild.recipe.value.value_int import value_int
 from rebuild.recipe.value.value_bool import value_bool
 from rebuild.recipe.value.value_string import value_string
-from rebuild.recipe.value.value_string_list import value_string_list
-from rebuild.recipe.value.value_key_values import value_key_values
+from bat.build.recipe_file.value.value_string_list import value_string_list
+from bat.build.recipe_file.value.value_key_values import value_key_values
 
 class test_masked_value(unit_test):
 

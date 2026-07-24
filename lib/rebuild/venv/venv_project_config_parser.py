@@ -9,10 +9,10 @@ from bes.system.log import log
 from bes.text.text_line_parser import text_line_parser
 from bes.text.tree_text_parser import tree_text_parser
 
-from rebuild.recipe.recipe_error import recipe_error
-from rebuild.recipe.recipe_parser_util import recipe_parser_util
-from rebuild.recipe.value.masked_value_list import masked_value_list
-from rebuild.recipe.variable_manager import variable_manager
+from bat.build.recipe_file.recipe_error import recipe_error
+from bat.build.recipe_file.recipe_parser_util import recipe_parser_util
+from bat.build.recipe_file.value.masked_value_list import masked_value_list
+from bat.build.recipe_file.variable_manager import variable_manager
 from bat.build.core.requirement_list import requirement_list
 from rebuild.config.storage_config_manager import storage_config_manager
 

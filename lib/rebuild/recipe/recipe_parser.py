@@ -19,25 +19,25 @@ from bat.build.core.requirement import requirement
 from bat.build.core.requirement_list import requirement_list
 from rebuild.step.step_description import step_description
 
-from rebuild.recipe.value.value_type import value_type
+from bat.build.recipe_file.value.value_type import value_type
 from rebuild.instruction.instruction_list import instruction_list
 
 from .recipe import recipe
-from .recipe_error import recipe_error
+from bat.build.recipe_file.recipe_error import recipe_error
 from .recipe_list import recipe_list
-from .recipe_parser_util import recipe_parser_util
+from bat.build.recipe_file.recipe_parser_util import recipe_parser_util
 from .recipe_step import recipe_step
 from .recipe_step_list import recipe_step_list
 from .recipe_value import recipe_value
 from .recipe_enabled import recipe_enabled
-from .recipe_data_manager import recipe_data_manager
+from bat.build.recipe_file.recipe_data_manager import recipe_data_manager
 
-from .value.masked_value import masked_value
-from .value.masked_value_list import masked_value_list
-from .value.value_factory import value_factory
+from bat.build.recipe_file.value.masked_value import masked_value
+from bat.build.recipe_file.value.masked_value_list import masked_value_list
+from bat.build.recipe_file.value.value_factory import value_factory
 from .value.value_file import value_file
-from .value.value_origin import value_origin
-from .value.value_key_values import value_key_values
+from bat.build.recipe_file.value.value_origin import value_origin
+from bat.build.recipe_file.value.value_key_values import value_key_values
 from .value.value_string import value_string
 from .value.value_int import value_int
 from .value.value_bool import value_bool

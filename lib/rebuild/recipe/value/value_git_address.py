@@ -12,7 +12,7 @@ from bes.key_value.key_value import key_value
 from bes.system.log import logger
 from bes.text.text_replace import text_replace
 
-from .value_base import value_base
+from bat.build.recipe_file.value.value_base import value_base
 
 _LOG = logger('value_git_address')
 

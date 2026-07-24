@@ -11,15 +11,15 @@ from bes.key_value.key_value_list import key_value_list
 
 from rebuild.builder.builder_recipe_loader import builder_recipe_loader
 
-from rebuild.ingest.ingest_pypi import ingest_pypi
+from bat.build.ingest.ingest_pypi import ingest_pypi
 
-from rebuild.recipe.recipe_data_entry import recipe_data_entry
-from rebuild.recipe.recipe_data_entry import recipe_data_entry_list
-from rebuild.recipe.recipe_data_manager import recipe_data_manager
+from bat.build.recipe_file.recipe_data_entry import recipe_data_entry
+from bat.build.recipe_file.recipe_data_entry import recipe_data_entry_list
+from bat.build.recipe_file.recipe_data_manager import recipe_data_manager
 from rebuild.recipe.recipe_load_env import testing_recipe_load_env
-from rebuild.recipe.value.masked_value import masked_value
-from rebuild.recipe.value.masked_value_list import masked_value_list
-from rebuild.recipe.value.value_key_values import value_key_values
+from bat.build.recipe_file.value.masked_value import masked_value
+from bat.build.recipe_file.value.masked_value_list import masked_value_list
+from bat.build.recipe_file.value.value_key_values import value_key_values
 
 class update_cli(object):
   

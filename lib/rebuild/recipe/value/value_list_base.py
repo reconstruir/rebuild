@@ -6,7 +6,7 @@ from bes.compat.StringIO import StringIO
 from bes.text.string_list import string_list
 from bes.text.string_lexer_options import string_lexer_options
 
-from .value_base import value_base
+from bat.build.recipe_file.value.value_base import value_base
 
 class value_list_base(type_checked_list, value_base):
 

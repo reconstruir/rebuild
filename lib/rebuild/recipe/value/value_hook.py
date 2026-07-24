@@ -13,12 +13,12 @@ from bes.dependency import dependency_provider
 
 from .hook_result import hook_result
 
-from .masked_value import masked_value
-from .value_base import value_base
+from bat.build.recipe_file.value.masked_value import masked_value
+from bat.build.recipe_file.value.value_base import value_base
 from .value_list_base import value_list_base
-from .value_origin import value_origin
-from .value_parsing import value_parsing
-from .value_type import value_type
+from bat.build.recipe_file.value.value_origin import value_origin
+from bat.build.recipe_file.value.value_parsing import value_parsing
+from bat.build.recipe_file.value.value_type import value_type
 from .hook import hook
 
 class value_hook(value_base):

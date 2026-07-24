@@ -4,11 +4,11 @@
 import inspect, os.path as path
 from bes.testing.unit_test import unit_test
 from rebuild.recipe.recipe import recipe
-from rebuild.recipe.recipe_error import recipe_error as ERR
+from bat.build.recipe_file.recipe_error import recipe_error as ERR
 from rebuild.recipe.recipe_parser import recipe_parser as P
 from rebuild.recipe.recipe_step import recipe_step as RS
 from rebuild.recipe.recipe_load_env import testing_recipe_load_env
-from rebuild.recipe.variable_manager import variable_manager
+from bat.build.recipe_file.variable_manager import variable_manager
 from rebuild.step.compound_step import compound_step
 from rebuild.step.step import step
 from rebuild.step.step_result import step_result

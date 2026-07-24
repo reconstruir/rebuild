@@ -17,7 +17,7 @@ from bes.system.log import log
 from bes.text.text_replace import text_replace
 
 from rebuild.package.package_manager import package_manager
-from rebuild.recipe.recipe_data_manager import recipe_data_manager
+from bat.build.recipe_file.recipe_data_manager import recipe_data_manager
 from rebuild.recipe.value.value_file import value_file
 from rebuild.step.step_description import step_description
 from rebuild.step.step_manager import step_manager

@@ -6,8 +6,8 @@ from bes.text.string_list import string_list
 from bes.files.bf_file_ops import bf_file_ops
 from bes.system.log import log
 
-from rebuild.recipe.recipe_error import recipe_error
-from rebuild.recipe.recipe_util import recipe_util
+from bat.build.recipe_file.recipe_error import recipe_error
+from bat.build.recipe_file.recipe_util import recipe_util
 
 from .venv_project_config import venv_project_config
 from .venv_project_config_parser import venv_project_config_parser

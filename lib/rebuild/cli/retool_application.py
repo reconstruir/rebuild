@@ -2,7 +2,7 @@
 
 from bes.bcli.bcli_application import bcli_application
 
-from rebuild.ingest.ingest_command_factory import ingest_command_factory
+from bat.build.ingest.ingest_command_factory import ingest_command_factory
 from rebuild.recipe.recipe_command_factory import recipe_command_factory
 
 class retool_application(bcli_application):

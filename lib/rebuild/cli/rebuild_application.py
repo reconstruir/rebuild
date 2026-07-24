@@ -2,7 +2,7 @@
 
 from bes.app.bes_application import bes_application
 
-from rebuild.ingest.ingest_command_factory import ingest_command_factory
+from bat.build.ingest.ingest_command_factory import ingest_command_factory
 from rebuild.recipe.recipe_command_factory import recipe_command_factory
 
 from .rebuild_depends_command_factory import rebuild_depends_command_factory

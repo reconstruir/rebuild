@@ -5,8 +5,8 @@ from bes.system.check import check
 from bes.common.string_util import string_util
 from bes.compat.StringIO import StringIO
 
-from .value_base import value_base
-from .value_type import value_type
+from bat.build.recipe_file.value.value_base import value_base
+from bat.build.recipe_file.value.value_type import value_type
 from .value_list_base import value_list_base
 
 class value_file(value_base):

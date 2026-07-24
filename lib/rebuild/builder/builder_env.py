@@ -22,7 +22,7 @@ from rebuild.storage.storage_factory import storage_factory
 from rebuild.recipe.recipe_load_env import recipe_load_env
 from rebuild.config.storage_config_manager import storage_config_manager
 from rebuild.package.artifact_manager_factory import artifact_manager_factory
-from rebuild.recipe.variable_manager import variable_manager
+from bat.build.recipe_file.variable_manager import variable_manager
 from rebuild.storage.storage_artifactory import storage_artifactory
 
 from .builder_script_manager import builder_script_manager

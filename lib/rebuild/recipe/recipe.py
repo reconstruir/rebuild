@@ -11,9 +11,9 @@ from bes.compat.StringIO import StringIO
 from bes.files.bf_file_ops import bf_file_ops
 from bes.key_value.key_value_list import key_value_list
 
-from .recipe_error import recipe_error
-from .recipe_util import recipe_util
-from .recipe_data_manager import recipe_data_manager
+from bat.build.recipe_file.recipe_error import recipe_error
+from bat.build.recipe_file.recipe_util import recipe_util
+from bat.build.recipe_file.recipe_data_manager import recipe_data_manager
 
 class recipe(namedtuple('recipe', 'format_version, filename, enabled, properties, requirements, descriptor, instructions, steps, python_code, variables, data')):
 

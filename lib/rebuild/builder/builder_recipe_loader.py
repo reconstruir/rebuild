@@ -7,7 +7,7 @@ from bes.system.check import check
 from bes.files.bf_file_ops import bf_file_ops
 
 from rebuild.recipe.recipe import recipe
-from rebuild.recipe.recipe_error import recipe_error
+from bat.build.recipe_file.recipe_error import recipe_error
 from rebuild.recipe.recipe_parser import recipe_parser
 
 class builder_recipe_loader(object):

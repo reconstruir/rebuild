@@ -3,7 +3,7 @@
 from collections import namedtuple
 from bes.system.check import check
 
-from .recipe_error import recipe_error
+from bat.build.recipe_file.recipe_error import recipe_error
 
 class recipe_enabled(namedtuple('recipe_enabled', 'origin, expression')):
 

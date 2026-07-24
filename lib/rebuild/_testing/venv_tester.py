@@ -8,7 +8,7 @@ from bes.files.bf_temp_file import bf_temp_file
 from bat.build.core.build_target import build_target
 from rebuild.venv.venv_config import venv_config
 from rebuild.venv.venv_manager import venv_manager
-from rebuild.recipe.variable_manager import variable_manager
+from bat.build.recipe_file.variable_manager import variable_manager
 
 from rebuild._testing.artifact_manager_tester import artifact_manager_tester
 
