@@ -10,7 +10,10 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "appstoreconnect>=0.10.1",
+    "bat",
     "bcrypt>=4.3.0",
+    "bes",
+    "bnet",
     "cloudscraper>=1.2.71",
     "cryptography>=46.0.3",
     "flask-cors>=6.0.1",
@@ -35,6 +38,13 @@ dependencies = [
     "waitress>=3.0.0; sys_platform == 'win32'",
     "xattr>=1.2.0; sys_platform != 'win32'",
 ]
+
+[tool.uv.sources]
+# Sibling checkouts, resolved editable in dev (see
+# ~/proj/bat/claude-docs/uv-dependencies.md §4/§12).
+bat = { path = "../bat", editable = true }
+bes = { path = "../bes", editable = true }
+bnet = { path = "../bnet", editable = true }
 
 [dependency-groups]
 dev = [
