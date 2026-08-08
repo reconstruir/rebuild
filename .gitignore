@@ -23,3 +23,5 @@ venv/
 
 *~
 VE
+
+lib/rebuild/_version.py
