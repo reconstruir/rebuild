@@ -18,7 +18,7 @@ from rebuild.package.package_manifest import package_manifest
 from rebuild.package.package_metadata import package_metadata
 from rebuild.package.package_metadata_list import package_metadata_list
 from rebuild.storage.storage_address import storage_address
-from bat.credentials.credentials import credentials
+from bsecret.credentials.credentials import credentials
 
 from .artifactory_address import artifactory_address
 

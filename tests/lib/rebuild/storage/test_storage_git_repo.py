@@ -4,8 +4,8 @@
 from bes.testing.unit_test import unit_test
 from bes.fs.testing.temp_content import temp_content
 from bes.files.bf_temp_file import bf_temp_file
-from bat.git.git_repo import git_repo
-from bat.git.git_unit_test import git_temp_home_func
+from bgit.git.git_repo import git_repo
+from bgit.git.git_unit_test import git_temp_home_func
 from rebuild.storage.storage_git_repo import storage_git_repo
 import os.path as path
 

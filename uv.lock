@@ -171,17 +171,17 @@ wheels = [
 name = "bat"
 source = { editable = "../bat" }
 dependencies = [
-    { name = "bcrypt" },
     { name = "bdata" },
     { name = "bes" },
+    { name = "bgit" },
     { name = "bnet" },
+    { name = "bsecret" },
     { name = "cloudscraper" },
     { name = "cryptography" },
     { name = "flask" },
     { name = "flask-cors" },
     { name = "gunicorn", marker = "sys_platform != 'win32'" },
     { name = "hvac" },
-    { name = "keyring" },
     { name = "minio" },
     { name = "openssh-wrapper" },
     { name = "opn-api" },
@@ -204,17 +204,17 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "bcrypt", specifier = ">=4.3.0" },
     { name = "bdata", editable = "../bdata" },
     { name = "bes", editable = "../bes" },
+    { name = "bgit", editable = "../bgit" },
     { name = "bnet", editable = "../bnet" },
+    { name = "bsecret", editable = "../bsecret" },
     { name = "cloudscraper", specifier = ">=1.2.71" },
     { name = "cryptography", specifier = ">=46.0.3" },
     { name = "flask", specifier = ">=3.1.2" },
     { name = "flask-cors", specifier = ">=6.0.1" },
     { name = "gunicorn", marker = "sys_platform != 'win32'", specifier = ">=23.0.0" },
     { name = "hvac", specifier = ">=2.3.0" },
-    { name = "keyring", specifier = ">=25.0.0" },
     { name = "minio", specifier = ">=7.2.20" },
     { name = "openssh-wrapper", specifier = ">=0.4" },
     { name = "opn-api", specifier = ">=0.4.0" },
@@ -425,6 +425,32 @@ dev = [
 ]
 
 [[package]]
+name = "bgit"
+source = { editable = "../bgit" }
+dependencies = [
+    { name = "bes" },
+    { name = "bsecret" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "bes", editable = "../bes" },
+    { name = "bsecret", editable = "../bsecret" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pyflakes", specifier = ">=3.4.0" },
+    { name = "pyinstaller", specifier = ">=6.16.0" },
+    { name = "pylint", specifier = ">=4.0.2" },
+    { name = "pytest", specifier = ">=9.0.1" },
+    { name = "pytest-forked", specifier = ">=1.6.0" },
+    { name = "pytest-timeout", specifier = ">=2.4.0" },
+    { name = "pytest-xdist", specifier = ">=3.8.0" },
+    { name = "webdiff", specifier = ">=1.3.0" },
+]
+
+[[package]]
 name = "blinker"
 version = "1.9.0"
 source = { registry = "https://pypi.org/simple" }
@@ -442,6 +468,7 @@ dependencies = [
     { name = "bav" },
     { name = "beautifulsoup4" },
     { name = "bes" },
+    { name = "bsecret" },
     { name = "chardet" },
     { name = "cloudscraper" },
     { name = "filetype" },
@@ -477,6 +504,7 @@ requires-dist = [
     { name = "bav", editable = "../bav" },
     { name = "beautifulsoup4", specifier = ">=4.14.3" },
     { name = "bes", editable = "../bes" },
+    { name = "bsecret", editable = "../bsecret" },
     { name = "chardet", specifier = ">=5.2.0,<6" },
     { name = "cloudscraper", specifier = ">=1.2.71" },
     { name = "filetype", specifier = ">=1.2.0" },
@@ -529,6 +557,44 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/b3/73/3183c9e41ca755713bdf2cc1d0810df742c09484e2e1ddd693bee53877c1/brotli-1.2.0-cp314-cp314-musllinux_1_2_x86_64.whl", hash = "sha256:d2d085ded05278d1c7f65560aae97b3160aeb2ea2c0b3e26204856beccb60888", size = 1488164, upload-time = "2025-11-05T18:38:53.079Z" },
     { url = "https://files.pythonhosted.org/packages/64/6a/0c78d8f3a582859236482fd9fa86a65a60328a00983006bcf6d83b7b2253/brotli-1.2.0-cp314-cp314-win32.whl", hash = "sha256:832c115a020e463c2f67664560449a7bea26b0c1fdd690352addad6d0a08714d", size = 339280, upload-time = "2025-11-05T18:38:54.02Z" },
     { url = "https://files.pythonhosted.org/packages/f5/10/56978295c14794b2c12007b07f3e41ba26acda9257457d7085b0bb3bb90c/brotli-1.2.0-cp314-cp314-win_amd64.whl", hash = "sha256:e7c0af964e0b4e3412a0ebf341ea26ec767fa0b4cf81abb5e897c9338b5ad6a3", size = 375639, upload-time = "2025-11-05T18:38:55.67Z" },
+]
+
+[[package]]
+name = "bsecret"
+source = { editable = "../bsecret" }
+dependencies = [
+    { name = "bav" },
+    { name = "bcrypt" },
+    { name = "bes" },
+    { name = "bnet" },
+    { name = "cryptography" },
+    { name = "keyring" },
+    { name = "requests" },
+    { name = "xattr", marker = "sys_platform != 'win32'" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "bav", editable = "../bav" },
+    { name = "bcrypt", specifier = ">=4.3.0" },
+    { name = "bes", editable = "../bes" },
+    { name = "bnet", editable = "../bnet" },
+    { name = "cryptography", specifier = ">=46.0.3" },
+    { name = "keyring", specifier = ">=25.0.0" },
+    { name = "requests", specifier = ">=2.32.5" },
+    { name = "xattr", marker = "sys_platform != 'win32'", specifier = ">=1.2.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pyflakes", specifier = ">=3.4.0" },
+    { name = "pyinstaller", specifier = ">=6.16.0" },
+    { name = "pylint", specifier = ">=4.0.2" },
+    { name = "pytest", specifier = ">=9.0.1" },
+    { name = "pytest-forked", specifier = ">=1.6.0" },
+    { name = "pytest-timeout", specifier = ">=2.4.0" },
+    { name = "pytest-xdist", specifier = ">=3.8.0" },
+    { name = "webdiff", specifier = ">=1.3.0" },
 ]
 
 [[package]]
@@ -2531,7 +2597,9 @@ dependencies = [
     { name = "bat" },
     { name = "bcrypt" },
     { name = "bes" },
+    { name = "bgit" },
     { name = "bnet" },
+    { name = "bsecret" },
     { name = "cloudscraper" },
     { name = "cryptography" },
     { name = "flask" },
@@ -2570,7 +2638,9 @@ requires-dist = [
     { name = "bat", editable = "../bat" },
     { name = "bcrypt", specifier = ">=4.3.0" },
     { name = "bes", editable = "../bes" },
+    { name = "bgit", editable = "../bgit" },
     { name = "bnet", editable = "../bnet" },
+    { name = "bsecret", editable = "../bsecret" },
     { name = "cloudscraper", specifier = ">=1.2.71" },
     { name = "cryptography", specifier = ">=46.0.3" },
     { name = "flask", specifier = ">=3.1.2" },

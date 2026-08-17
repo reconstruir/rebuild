@@ -4,7 +4,7 @@ import os.path as path
 from bes.system.check import check
 from bes.system.execute import execute
 from bes.files.bf_file_ops import bf_file_ops
-from bat.git.git_address_util import git_address_util
+from bgit.git.git_address_util import git_address_util
 
 class source_dir_zipball_cache(object):
 

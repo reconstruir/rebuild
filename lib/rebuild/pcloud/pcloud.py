@@ -18,7 +18,7 @@ from .pcloud_error import pcloud_error
 from .pcloud_metadata import pcloud_metadata
 from .pcloud_requests import pcloud_requests
 
-from bat.credentials.credentials import credentials
+from bsecret.credentials.credentials import credentials
 
 class pcloud(object):
 

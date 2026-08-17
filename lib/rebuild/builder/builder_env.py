@@ -4,8 +4,8 @@ import os.path as path
 
 from bes.fs.file_trash import file_trash
 from bes.system.check import check
-from bat.git.git_util import git_util
-from bat.git.git_archive_cache import git_archive_cache
+from bgit.git.git_util import git_util
+from bgit.git.git_archive_cache import git_archive_cache
 from bat.properties_file.properties_file import properties_file
 from bnet.http.http_session import http_session
 from bnet.http.http_session_options import http_session_options

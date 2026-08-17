@@ -37,10 +37,10 @@ entry libfoo 1.2.3
 '''
 
     vfs_config_file_content = '''\
-fsconfig
-  vfs_type: local
-  vfs_class_path: bat.vfs.vfs_local
-  local_root_dir: {tmp_dir}/downloads
+[fsconfig]
+vfs_type = "local"
+vfs_class_path = "bat.vfs.vfs_local"
+local_root_dir = "{tmp_dir}/downloads"
 '''
     tmp_dir = self.make_temp_dir()
     tester = file_web_server_tester(root_dir = tmp_dir)
@@ -101,10 +101,10 @@ entry foo 1.2.3
 '''
 
     vfs_config_file_content = '''\
-fsconfig
-  vfs_type: local
-  vfs_class_path: bat.vfs.vfs_local
-  local_root_dir: {tmp_dir}/stuff
+[fsconfig]
+vfs_type = "local"
+vfs_class_path = "bat.vfs.vfs_local"
+local_root_dir = "{tmp_dir}/stuff"
 '''
     file_content = '''\
 #!/usr/bin/env python3

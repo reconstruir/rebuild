@@ -13,7 +13,9 @@ dependencies = [
     "bat",
     "bcrypt>=4.3.0",
     "bes",
+    "bgit",
     "bnet",
+    "bsecret",
     "cloudscraper>=1.2.71",
     "cryptography>=46.0.3",
     "flask-cors>=6.0.1",
@@ -44,7 +46,9 @@ dependencies = [
 # ~/proj/bat/claude-docs/uv-dependencies.md §4/§12).
 bat = { path = "../bat", editable = true }
 bes = { path = "../bes", editable = true }
+bgit = { path = "../bgit", editable = true }
 bnet = { path = "../bnet", editable = true }
+bsecret = { path = "../bsecret", editable = true }
 
 [dependency-groups]
 dev = [
