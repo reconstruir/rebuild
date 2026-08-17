@@ -100,17 +100,17 @@ class test_storage_factory(unit_test):
     self.assertFalse( storage_factory.has_provider('orange') )
   
   def test_create(self):
-    config_text = '''
-storage
-  name: test
-  provider: kiwi
-  location: kiwi://mykiwi.com/mystuff
-  repo: myrepo
-  root_dir: myrootdir
-  download_username: fred
-  download_password: flintpass
-  upload_username: admin
-  upload_password: sekret
+    config_text = '''\
+[[storage]]
+name = "test"
+provider = "kiwi"
+location = "kiwi://mykiwi.com/mystuff"
+repo = "myrepo"
+root_dir = "myrootdir"
+download_username = "fred"
+download_password = "flintpass"
+upload_username = "admin"
+upload_password = "sekret"
 '''
     scm = storage_config_manager(config_text, '<test>')
     config = scm.get('test')

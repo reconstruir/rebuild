@@ -10,6 +10,8 @@ from bes.system.log import logger
 
 from bsecret.credentials.credentials import credentials
 
+from .storage_config_error import storage_config_error
+
 class storage_config(namedtuple('storage_config', 'name, provider, location, repo, root_dir, download, upload')):
 
   log = logger('storage_config')
@@ -59,17 +61,21 @@ class storage_config(namedtuple('storage_config', 'name, provider, location, rep
     return self._upload
   
   @classmethod
-  def create_from_config(clazz, source, section):
-    check.check_bat_config_section(section)
-    name = section.find_by_key('name')
-    provider = section.find_by_key('provider')
-    location = section.find_by_key('location', raise_error = False)
-    repo = section.find_by_key('repo', raise_error = False)
-    root_dir = section.find_by_key('root_dir', raise_error = False)
-    download_username = section.find_by_key('download_username', raise_error = False) or ''
-    download_password = section.find_by_key('download_password', raise_error = False) or ''
-    upload_username = section.find_by_key('upload_username', raise_error = False) or ''
-    upload_password = section.find_by_key('upload_password', raise_error = False) or ''
+  def create_from_config(clazz, source, values):
+    check.check_dict(values)
+    if 'name' not in values:
+      raise storage_config_error('"name" entry not found')
+    if 'provider' not in values:
+      raise storage_config_error('"provider" entry not found')
+    name = values['name']
+    provider = values['provider']
+    location = values.get('location')
+    repo = values.get('repo')
+    root_dir = values.get('root_dir')
+    download_username = values.get('download_username') or ''
+    download_password = values.get('download_password') or ''
+    upload_username = values.get('upload_username') or ''
+    upload_password = values.get('upload_password') or ''
     download = credentials(source)
     download.username = download_username
     download.password = download_password
