@@ -57,6 +57,30 @@ dev = [
     "pytest-testmon>=2.1.3",
 ]
 
+[tool.pytest.ini_options]
+# Without this, a bare "./t" (no path args) has pytest recurse into
+# lib/ too, not just tests/ -- and lib/rebuild/_testing/fake_package_unit_test.py
+# (a plain helper class, not a unittest.TestCase, zero real test_* items)
+# matches pytest's default "*_test.py" collection glob purely by naming
+# coincidence. Since lib/__init__.py exists (an old, otherwise-inert
+# leftover -- lib/ itself is never meant to be an importable package,
+# just a sys.path entry), pytest's package-root walk for that
+# accidentally-collected file resolves its dotted module name as
+# "lib.rebuild._testing.fake_package_unit_test" instead of
+# "rebuild._testing.fake_package_unit_test". Its relative imports cascade
+# that "lib."-prefixed identity into fake_package_source.py too, which
+# does a module-level check.register_class(fake_package_source) --
+# registering it under the wrong module identity once, then colliding
+# with itself when a real test file later imports the same class
+# normally (rebuild._testing.fake_package_source, no "lib." prefix),
+# re-running that same registration under a second, different module
+# identity: "check already has a method named ... for
+# lib.rebuild._testing.fake_package_source". Root-caused via tracing
+# every check.register_class("fake_package_source") call's full
+# import-time stack. Nothing of value lives outside tests/, so scoping
+# collection there is a real fix, not a workaround for a symptom.
+testpaths = ["tests"]
+
 [tool.hatch.version]
 source = "vcs"
 

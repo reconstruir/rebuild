@@ -6,8 +6,8 @@ import re
 from bes.system.check import check
 from bes.files.bf_temp_file import bf_temp_file
 
-from bes.bconfig.bconfig import bconfig
-from bes.bconfig.bconfig_error import bconfig_error
+from bes.config_file.toml_config_file.toml_config_file import toml_config_file
+from bes.config_file.toml_config_file.toml_config_file_error import toml_config_file_error
 
 from .storage_config import storage_config
 from .storage_config_error import storage_config_error
@@ -20,7 +20,7 @@ class storage_config_manager(object):
 
   Two input shapes, same as before this moved off bat_config_file:
   - text/file: real, standalone TOML, a "[[storage]]" array of tables,
-    read via bes.bconfig.
+    read via bes.config_file.toml_config_file.
   - node: a bes.common.node subtree whose children are "storage"
     sections in the old indented "key: value" shape -- this is what
     rebuild.venv.venv_project_config_parser hands in, since its own
@@ -94,8 +94,8 @@ root_dir = {root_dir}
   def _parse_text(clazz, text, source):
     tmp = bf_temp_file.make_temp_file(content = text, suffix = '.storage.toml')
     try:
-      cfg = bconfig(tmp)
-    except bconfig_error as ex:
+      cfg = toml_config_file(tmp)
+    except toml_config_file_error as ex:
       raise storage_config_error(f'{source}: {ex}') from ex
     return cfg.to_dict().get('storage', [])
 

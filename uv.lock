@@ -196,6 +196,7 @@ dependencies = [
     { name = "requests" },
     { name = "requests-cache" },
     { name = "ruamel-yaml" },
+    { name = "sshconf" },
     { name = "tomli-w" },
     { name = "twine" },
     { name = "waitress", marker = "sys_platform == 'win32'" },
@@ -229,6 +230,7 @@ requires-dist = [
     { name = "requests", specifier = ">=2.32.5" },
     { name = "requests-cache", specifier = ">=1.3.3" },
     { name = "ruamel-yaml", specifier = ">=0.17.10" },
+    { name = "sshconf", specifier = ">=0.2.5" },
     { name = "tomli-w", specifier = ">=1.2.0" },
     { name = "twine", specifier = ">=6.2.0" },
     { name = "waitress", marker = "sys_platform == 'win32'", specifier = ">=3.0.0" },
@@ -2942,6 +2944,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/68/ee/22a0559283c3cf6048678e787ed5d4959dcd00dedd8ba4567eeae684eeb1/sqlmodel-0.0.39.tar.gz", hash = "sha256:23d8e50a8d8ee936032ed79c55023a5d618dd6bc3c510bbf4909d1a7a605a570", size = 91057, upload-time = "2026-06-25T13:01:38.475Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/cf/7d/b9813a582d4eb310be35e1fc7dfaae71207d7b62e9e53be314ebd251b53b/sqlmodel-0.0.39-py3-none-any.whl", hash = "sha256:90ebe92ce5cc11d7fff8dc7cb594790a102333c8fe7c14865254f6fc5c939795", size = 29680, upload-time = "2026-06-25T13:01:37.494Z" },
+]
+
+[[package]]
+name = "sshconf"
+version = "0.2.7"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/b7/8d/6fbc3764da5e883484bf71ae7bb5d07a03f62f4c1d60f5951708584623e0/sshconf-0.2.7.tar.gz", hash = "sha256:b8bb3d74ba096696a96d8743b8a9188150462e8188386c995f69af3c104c0fa0", size = 11708, upload-time = "2024-06-29T15:05:22.101Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/29/0d/1b6203af0c2c6fe2b161bdca63e751e2324255f4edb3da2f684bffe2b583/sshconf-0.2.7-py3-none-any.whl", hash = "sha256:17fb88c26bdb8e81eb9c1450ff4c0ae1679ea4ee93d2cc1f731034d8c44622f6", size = 6974, upload-time = "2024-06-29T15:05:20.607Z" },
 ]
 
 [[package]]
