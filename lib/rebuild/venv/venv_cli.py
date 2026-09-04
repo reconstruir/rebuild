@@ -10,7 +10,9 @@ from bes.system.host import host
 from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_temp_file import bf_temp_file
 from bes.version.version_cli import version_cli
-from bat.properties_file.properties_file import properties_file
+from bes.common.string_util import string_util
+
+from beditor.properties.beditor_properties_editor import beditor_properties_editor
 
 from bat.build.core.build_arch import build_arch
 from bat.build.core.build_blurb import build_blurb
@@ -169,7 +171,10 @@ class venv_cli(build_target_cli):
     if not path.isfile(args.config):
       raise IOError('%s: config file not found: %s' % (command, args.config))
     
-    properties = properties_file.read(args.properties_file)
+    # No properties file means no properties, as it always has.
+    properties = {}
+    if args.properties_file:
+      properties = { key: string_util.unquote(value) for key, value in beditor_properties_editor(args.properties_file).items() }
 
     vm = variable_manager()
     vm.add_variables(properties)

@@ -57,6 +57,15 @@ wheels = [
 ]
 
 [[package]]
+name = "antlr4-python3-runtime"
+version = "4.13.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/33/5f/2cdf6f7aca3b20d3f316e9f505292e1f256a32089bd702034c29ebde6242/antlr4_python3_runtime-4.13.2.tar.gz", hash = "sha256:909b647e1d2fc2b70180ac586df3933e38919c85f98ccc656a96cd3f25ef3916", size = 117467, upload-time = "2024-08-03T19:00:12.757Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/89/03/a851e84fcbb85214dc637b6378121ef9a0dd61b4c65264675d8a5c9b1ae7/antlr4_python3_runtime-4.13.2-py3-none-any.whl", hash = "sha256:fe3835eb8d33daece0e799090eda89719dbccee7aa39ef94eed3818cafa5a7e8", size = 144462, upload-time = "2024-08-03T19:00:11.134Z" },
+]
+
+[[package]]
 name = "appstoreconnect"
 version = "0.10.1"
 source = { registry = "https://pypi.org/simple" }
@@ -172,6 +181,7 @@ name = "bat"
 source = { editable = "../bat" }
 dependencies = [
     { name = "bdata" },
+    { name = "beditor" },
     { name = "bes" },
     { name = "bgit" },
     { name = "bnet" },
@@ -183,9 +193,11 @@ dependencies = [
     { name = "gunicorn", marker = "sys_platform != 'win32'" },
     { name = "hvac" },
     { name = "minio" },
+    { name = "nexus-api-client" },
     { name = "openssh-wrapper" },
     { name = "opn-api" },
     { name = "paramiko" },
+    { name = "pgpy" },
     { name = "playwright" },
     { name = "prompt-toolkit" },
     { name = "proxmoxer" },
@@ -195,6 +207,7 @@ dependencies = [
     { name = "python-gitlab" },
     { name = "requests" },
     { name = "requests-cache" },
+    { name = "rpmfile" },
     { name = "ruamel-yaml" },
     { name = "sshconf" },
     { name = "tomli-w" },
@@ -206,6 +219,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "bdata", editable = "../bdata" },
+    { name = "beditor", editable = "../beditor" },
     { name = "bes", editable = "../bes" },
     { name = "bgit", editable = "../bgit" },
     { name = "bnet", editable = "../bnet" },
@@ -217,9 +231,11 @@ requires-dist = [
     { name = "gunicorn", marker = "sys_platform != 'win32'", specifier = ">=23.0.0" },
     { name = "hvac", specifier = ">=2.3.0" },
     { name = "minio", specifier = ">=7.2.20" },
+    { name = "nexus-api-client", specifier = ">=3.95.2" },
     { name = "openssh-wrapper", specifier = ">=0.4" },
     { name = "opn-api", specifier = ">=0.4.0" },
     { name = "paramiko", specifier = ">=4.0.0" },
+    { name = "pgpy", specifier = ">=0.6.0" },
     { name = "playwright", specifier = ">=1.57.0" },
     { name = "prompt-toolkit", specifier = ">=3.0" },
     { name = "proxmoxer", specifier = ">=2.2.0" },
@@ -229,6 +245,7 @@ requires-dist = [
     { name = "python-gitlab", specifier = ">=6.5.0" },
     { name = "requests", specifier = ">=2.32.5" },
     { name = "requests-cache", specifier = ">=1.3.3" },
+    { name = "rpmfile", specifier = ">=2.2.1" },
     { name = "ruamel-yaml", specifier = ">=0.17.10" },
     { name = "sshconf", specifier = ">=0.2.5" },
     { name = "tomli-w", specifier = ">=1.2.0" },
@@ -397,6 +414,44 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/43/65/318323f98dbee45d42dff61d8f047181bc6f2268a9068cfad035a46be5af/beautifulsoup4-4.15.0.tar.gz", hash = "sha256:288e3ca7d54b06f2ac191970bc275c1939cb46d450b255bf6718b04aa37ab4f7", size = 632571, upload-time = "2026-06-07T16:44:20.453Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/88/c6/92fcd42f1ba33e1184263f25bfabf3d27c383410470f169e4b8163bf9c17/beautifulsoup4-4.15.0-py3-none-any.whl", hash = "sha256:d6f88de62e1d4e38ecb1077eb9724cd0eff29d2a08ca16a401e9b9e93f117cf9", size = 109924, upload-time = "2026-06-07T16:44:21.566Z" },
+]
+
+[[package]]
+name = "beditor"
+source = { editable = "../beditor" }
+dependencies = [
+    { name = "antlr4-python3-runtime" },
+    { name = "bav" },
+    { name = "bes" },
+    { name = "bnet" },
+    { name = "requests" },
+    { name = "ruamel-yaml" },
+    { name = "tomlkit" },
+    { name = "xattr", marker = "sys_platform != 'win32'" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "antlr4-python3-runtime", specifier = "==4.13.2" },
+    { name = "bav", editable = "../bav" },
+    { name = "bes", editable = "../bes" },
+    { name = "bnet", editable = "../bnet" },
+    { name = "requests", specifier = ">=2.32.5" },
+    { name = "ruamel-yaml", specifier = ">=0.18.0" },
+    { name = "tomlkit", specifier = ">=0.13.2" },
+    { name = "xattr", marker = "sys_platform != 'win32'", specifier = ">=1.2.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pyflakes", specifier = ">=3.4.0" },
+    { name = "pyinstaller", specifier = ">=6.16.0" },
+    { name = "pylint", specifier = ">=4.0.2" },
+    { name = "pytest", specifier = ">=9.0.1" },
+    { name = "pytest-forked", specifier = ">=1.6.0" },
+    { name = "pytest-timeout", specifier = ">=2.4.0" },
+    { name = "pytest-xdist", specifier = ">=3.8.0" },
+    { name = "webdiff", specifier = ">=1.3.0" },
 ]
 
 [[package]]
@@ -1739,6 +1794,21 @@ wheels = [
 ]
 
 [[package]]
+name = "nexus-api-client"
+version = "3.95.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pydantic" },
+    { name = "python-dateutil" },
+    { name = "typing-extensions" },
+    { name = "urllib3" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/4a/c2/54c234558726ab1b3118ca58b17182b13cddc03d56ffa19abf814df68871/nexus_api_client-3.95.3.tar.gz", hash = "sha256:5b761e1b23a5b252bd573dcdfa52f392f3a8f46af7273ea9daf525402b8f61d3", size = 395897, upload-time = "2026-08-20T14:22:50.086Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7e/df/7655621a3a14a43dc3de0a5eb4e7ce111ac52d18afcb05c66548ae85572c/nexus_api_client-3.95.3-py3-none-any.whl", hash = "sha256:1cef90d9994209c351db6701d064b89c76a43ee44a24231a6779cbf348f0c752", size = 844486, upload-time = "2026-08-20T14:22:48.445Z" },
+]
+
+[[package]]
 name = "nh3"
 version = "0.3.6"
 source = { registry = "https://pypi.org/simple" }
@@ -1975,6 +2045,16 @@ sdist = { url = "https://files.pythonhosted.org/packages/03/4f/2750f7f6f025a1507
 wheels = [
     { url = "https://files.pythonhosted.org/packages/54/16/12b82f791c7f50ddec566873d5bdd245baa1491bac11d15ffb98aecc8f8b/pefile-2024.8.26-py3-none-any.whl", hash = "sha256:76f8b485dcd3b1bb8166f1128d395fa3d87af26360c2358fb75b80019b957c6f", size = 74766, upload-time = "2024-08-26T21:01:02.632Z" },
 ]
+
+[[package]]
+name = "pgpy"
+version = "0.6.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "cryptography" },
+    { name = "pyasn1" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/f8/68/5e285ba9465550a48e837b08b27fa99ef238618f6085a1464afaa4dc8426/PGPy-0.6.0.tar.gz", hash = "sha256:279c2e353f4c3a319f00bd9bd582456e420f8a3ac6de2b4e9731444746828383", size = 603002, upload-time = "2022-11-24T02:35:22.133Z" }
 
 [[package]]
 name = "pillow"
@@ -2598,6 +2678,7 @@ dependencies = [
     { name = "appstoreconnect" },
     { name = "bat" },
     { name = "bcrypt" },
+    { name = "beditor" },
     { name = "bes" },
     { name = "bgit" },
     { name = "bnet" },
@@ -2639,6 +2720,7 @@ requires-dist = [
     { name = "appstoreconnect", specifier = ">=0.10.1" },
     { name = "bat", editable = "../bat" },
     { name = "bcrypt", specifier = ">=4.3.0" },
+    { name = "beditor", editable = "../beditor" },
     { name = "bes", editable = "../bes" },
     { name = "bgit", editable = "../bgit" },
     { name = "bnet", editable = "../bnet" },
@@ -2751,6 +2833,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/74/3a/85e60d154f26ecdc1d47a63ac58bd9f32a5a9f3f771f6672197f02a00ade/rope-1.14.0.tar.gz", hash = "sha256:8803e3b667315044f6270b0c69a10c0679f9f322ed8efe6245a93ceb7658da69", size = 296801, upload-time = "2025-07-12T17:46:07.786Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/75/35/130469d1901da2b3a5a377539b4ffcd8a5c983f1c9e3ba5ffdd8d71ae314/rope-1.14.0-py3-none-any.whl", hash = "sha256:00a7ea8c0c376fc0b053b2f2f8ef3bfb8b50fecf1ebf3eb80e4f8bd7f1941918", size = 207143, upload-time = "2025-07-12T17:46:05.928Z" },
+]
+
+[[package]]
+name = "rpmfile"
+version = "2.2.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/5f/e9/a9befd2823e8a52630fc35af5167c806c1d65899eeeda0833e7b8c21765e/rpmfile-2.2.1.tar.gz", hash = "sha256:8ffc44d15f8d2b6cad1ea885b09e1ca5f1744532c24710554f3fe4873506e9da", size = 15322, upload-time = "2026-05-06T16:56:03.262Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b8/d4/2500c7778e14d7b98209fc5da575bea8c4c9c24edd7fb8be509e02de53d7/rpmfile-2.2.1-py3-none-any.whl", hash = "sha256:bf2a4c488702638a95b85c4852891390bb8e54d174569c217fb21f591ead19c3", size = 18002, upload-time = "2026-05-06T16:56:01.558Z" },
 ]
 
 [[package]]
@@ -2974,6 +3065,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/19/75/241269d1da26b624c0d5e110e8149093c759b7a286138f4efd61a60e75fe/tomli_w-1.2.0.tar.gz", hash = "sha256:2dd14fac5a47c27be9cd4c976af5a12d87fb1f0b4512f81d69cce3b35ae25021", size = 7184, upload-time = "2025-01-15T12:07:24.262Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c7/18/c86eb8e0202e32dd3df50d43d7ff9854f8e0603945ff398974c1d91ac1ef/tomli_w-1.2.0-py3-none-any.whl", hash = "sha256:188306098d013b691fcadc011abd66727d3c414c571bb01b1a174ba8c983cf90", size = 6675, upload-time = "2025-01-15T12:07:22.074Z" },
+]
+
+[[package]]
+name = "tomlkit"
+version = "0.15.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/94/96/e07752635b98536177fa1f37671c8f3cdde2e724c6bcf6034b2cfb571565/tomlkit-0.15.1.tar.gz", hash = "sha256:e25bbf38843005246210a12982776f27f99cb9be67160e14434d0c0d21ee1e97", size = 180129, upload-time = "2026-07-17T01:48:04.562Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/13/bc/8c13eb66537dce1d2bd3a57132902f38d0e7f5bb46fa9f4daed9fe9d76ee/tomlkit-0.15.1-py3-none-any.whl", hash = "sha256:177a05aece5a8ca5266fd3c448abb47b8d352f09d477d3ca8332db4d89b24304", size = 49449, upload-time = "2026-07-17T01:48:05.728Z" },
 ]
 
 [[package]]

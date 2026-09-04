@@ -6,7 +6,9 @@ from bes.fs.file_trash import file_trash
 from bes.system.check import check
 from bgit.git.git_util import git_util
 from bgit.git.git_archive_cache import git_archive_cache
-from bat.properties_file.properties_file import properties_file
+from bes.common.string_util import string_util
+
+from beditor.properties.beditor_properties_editor import beditor_properties_editor
 from bnet.http.http_session import http_session
 from bnet.http.http_session_options import http_session_options
 from bnet.http.http_session_type import http_session_type
@@ -62,7 +64,9 @@ class builder_env(object):
     self.tools_manager = tools_manager(path.join(config.build_root, 'tools'),
                                        self.config.host_build_target,
                                        self.requirements_artifact_manager)
-    self.properties = properties_file.read(config.properties_file)
+    self.properties = {}
+    if config.properties_file:
+      self.properties = { key: string_util.unquote(value) for key, value in beditor_properties_editor(config.properties_file).items() }
     self.global_variables = self._make_global_variables()
     self.variable_manager = variable_manager()
     self.variable_manager.add_variables(config.project_file_variables)

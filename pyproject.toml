@@ -11,6 +11,7 @@ requires-python = ">=3.14"
 dependencies = [
     "appstoreconnect>=0.10.1",
     "bat",
+    "beditor",
     "bcrypt>=4.3.0",
     "bes",
     "bgit",
@@ -45,6 +46,7 @@ dependencies = [
 # Sibling checkouts, resolved editable in dev (see
 # ~/proj/bat/claude-docs/uv-dependencies.md §4/§12).
 bat = { path = "../bat", editable = true }
+beditor = { path = "../beditor", editable = true }
 bes = { path = "../bes", editable = true }
 bgit = { path = "../bgit", editable = true }
 bnet = { path = "../bnet", editable = true }
