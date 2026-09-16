@@ -421,9 +421,7 @@ name = "beditor"
 source = { editable = "../beditor" }
 dependencies = [
     { name = "antlr4-python3-runtime" },
-    { name = "bav" },
     { name = "bes" },
-    { name = "bnet" },
     { name = "requests" },
     { name = "ruamel-yaml" },
     { name = "tomlkit" },
@@ -433,9 +431,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "antlr4-python3-runtime", specifier = "==4.13.2" },
-    { name = "bav", editable = "../bav" },
     { name = "bes", editable = "../bes" },
-    { name = "bnet", editable = "../bnet" },
     { name = "requests", specifier = ">=2.32.5" },
     { name = "ruamel-yaml", specifier = ">=0.18.0" },
     { name = "tomlkit", specifier = ">=0.13.2" },
