@@ -4,6 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "rebuild"
+license = { text = "Apache-2.0" }
 dynamic = ["version"]
 description = "rebuild is good"
 readme = "README.md"
