@@ -450,6 +450,7 @@ dependencies = [
     { name = "bsecret" },
     { name = "chardet" },
     { name = "cloudscraper" },
+    { name = "cryptography" },
     { name = "fastapi" },
     { name = "filetype" },
     { name = "flask" },
@@ -479,6 +480,7 @@ requires-dist = [
     { name = "bsecret", editable = "../bsecret" },
     { name = "chardet", specifier = ">=5.2.0,<6" },
     { name = "cloudscraper", specifier = ">=1.2.71" },
+    { name = "cryptography", specifier = ">=46.0.3" },
     { name = "fastapi", specifier = ">=0.115.0" },
     { name = "filetype", specifier = ">=1.2.0" },
     { name = "flask", specifier = ">=3.1.2" },
@@ -503,7 +505,6 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "bat", editable = "../bat" },
     { name = "httpx2", specifier = ">=2.13.0" },
     { name = "pyinstaller", specifier = ">=6.16.0" },
     { name = "pytest", specifier = ">=9.0.1" },
@@ -535,7 +536,6 @@ source = { editable = "../bsecret" }
 dependencies = [
     { name = "bcrypt" },
     { name = "bes" },
-    { name = "bnet" },
     { name = "cryptography" },
     { name = "keyring" },
     { name = "paramiko" },
@@ -547,7 +547,6 @@ dependencies = [
 requires-dist = [
     { name = "bcrypt", specifier = ">=4.3.0" },
     { name = "bes", editable = "../bes" },
-    { name = "bnet", editable = "../bnet" },
     { name = "cryptography", specifier = ">=46.0.3" },
     { name = "keyring", specifier = ">=25.0.0" },
     { name = "paramiko", specifier = ">=4.0.0" },
