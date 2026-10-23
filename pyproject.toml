@@ -3,7 +3,7 @@ requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
-name = "rebuild"
+name = "fateware-rebuild"
 license = { text = "Apache-2.0" }
 dynamic = ["version"]
 description = "rebuild is good"
@@ -11,13 +11,13 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "appstoreconnect>=0.10.1",
-    "bat",
-    "beditor",
+    "fateware-bat",
+    "fateware-beditor",
     "bcrypt>=4.3.0",
-    "bes",
-    "bgit",
-    "bnet",
-    "bsecret",
+    "fateware-bes",
+    "fateware-bgit",
+    "fateware-bnet",
+    "fateware-bsecret",
     "cloudscraper>=1.2.71",
     "cryptography>=46.0.3",
     "flask-cors>=6.0.1",
@@ -46,12 +46,12 @@ dependencies = [
 [tool.uv.sources]
 # Sibling checkouts, resolved editable in dev (see
 # ~/proj/bat/claude-docs/uv-dependencies.md §4/§12).
-bat = { path = "../bat", editable = true }
-beditor = { path = "../beditor", editable = true }
-bes = { path = "../bes", editable = true }
-bgit = { path = "../bgit", editable = true }
-bnet = { path = "../bnet", editable = true }
-bsecret = { path = "../bsecret", editable = true }
+fateware-bat = { path = "../bat", editable = true }
+fateware-beditor = { path = "../beditor", editable = true }
+fateware-bes = { path = "../bes", editable = true }
+fateware-bgit = { path = "../bgit", editable = true }
+fateware-bnet = { path = "../bnet", editable = true }
+fateware-bsecret = { path = "../bsecret", editable = true }
 
 [dependency-groups]
 dev = [

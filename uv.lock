@@ -163,95 +163,6 @@ wheels = [
 ]
 
 [[package]]
-name = "bat"
-source = { editable = "../bat" }
-dependencies = [
-    { name = "bdata" },
-    { name = "beditor" },
-    { name = "bes" },
-    { name = "bgit" },
-    { name = "bnet" },
-    { name = "bsecret" },
-    { name = "cloudscraper" },
-    { name = "cryptography" },
-    { name = "flask" },
-    { name = "flask-cors" },
-    { name = "gunicorn", marker = "sys_platform != 'win32'" },
-    { name = "hvac" },
-    { name = "minio" },
-    { name = "nexus-api-client" },
-    { name = "openssh-wrapper" },
-    { name = "opn-api" },
-    { name = "paramiko" },
-    { name = "pgpy" },
-    { name = "playwright" },
-    { name = "prompt-toolkit" },
-    { name = "proxmoxer" },
-    { name = "pydantic" },
-    { name = "pygithub" },
-    { name = "pyinfra" },
-    { name = "python-gitlab" },
-    { name = "pywin32", marker = "sys_platform == 'win32'" },
-    { name = "requests" },
-    { name = "requests-cache" },
-    { name = "rpmfile" },
-    { name = "ruamel-yaml" },
-    { name = "sshconf" },
-    { name = "tomli-w" },
-    { name = "twine" },
-    { name = "waitress", marker = "sys_platform == 'win32'" },
-    { name = "xattr", marker = "sys_platform != 'win32'" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "bdata", editable = "../bdata" },
-    { name = "beditor", editable = "../beditor" },
-    { name = "bes", editable = "../bes" },
-    { name = "bgit", editable = "../bgit" },
-    { name = "bnet", editable = "../bnet" },
-    { name = "bsecret", editable = "../bsecret" },
-    { name = "cloudscraper", specifier = ">=1.2.71" },
-    { name = "cryptography", specifier = ">=46.0.3" },
-    { name = "flask", specifier = ">=3.1.2" },
-    { name = "flask-cors", specifier = ">=6.0.1" },
-    { name = "gunicorn", marker = "sys_platform != 'win32'", specifier = ">=23.0.0" },
-    { name = "hvac", specifier = ">=2.3.0" },
-    { name = "minio", specifier = ">=7.2.20" },
-    { name = "nexus-api-client", specifier = ">=3.95.2" },
-    { name = "openssh-wrapper", specifier = ">=0.4" },
-    { name = "opn-api", specifier = ">=0.4.0" },
-    { name = "paramiko", specifier = ">=4.0.0" },
-    { name = "pgpy", specifier = ">=0.6.0" },
-    { name = "playwright", specifier = ">=1.57.0" },
-    { name = "prompt-toolkit", specifier = ">=3.0" },
-    { name = "proxmoxer", specifier = ">=2.2.0" },
-    { name = "pydantic", specifier = ">=2.0" },
-    { name = "pygithub", specifier = ">=1.54.1" },
-    { name = "pyinfra", specifier = ">=3.9.2" },
-    { name = "python-gitlab", specifier = ">=6.5.0" },
-    { name = "pywin32", marker = "sys_platform == 'win32'", specifier = ">=312" },
-    { name = "requests", specifier = ">=2.32.5" },
-    { name = "requests-cache", specifier = ">=1.3.3" },
-    { name = "rpmfile", specifier = ">=2.2.1" },
-    { name = "ruamel-yaml", specifier = ">=0.17.10" },
-    { name = "sshconf", specifier = ">=0.2.5" },
-    { name = "tomli-w", specifier = ">=1.2.0" },
-    { name = "twine", specifier = ">=6.2.0" },
-    { name = "waitress", marker = "sys_platform == 'win32'", specifier = ">=3.0.0" },
-    { name = "xattr", marker = "sys_platform != 'win32'", specifier = ">=1.2.0" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "httpx2", specifier = ">=2.13.0" },
-    { name = "pyinstaller", specifier = ">=6.16.0" },
-    { name = "pytest", specifier = ">=8.4.2" },
-    { name = "pytest-testmon", specifier = ">=2.1.3" },
-    { name = "pytest-xdist", specifier = ">=3.8.0" },
-]
-
-[[package]]
 name = "bcrypt"
 version = "5.0.0"
 source = { registry = "https://pypi.org/simple" }
@@ -303,36 +214,6 @@ wheels = [
 ]
 
 [[package]]
-name = "bdata"
-source = { editable = "../bdata" }
-dependencies = [
-    { name = "bes" },
-    { name = "pydantic" },
-    { name = "requests" },
-    { name = "sqlmodel" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "bes", editable = "../bes" },
-    { name = "pydantic", specifier = ">=2.0" },
-    { name = "requests", specifier = ">=2.32.5" },
-    { name = "sqlmodel", specifier = ">=0.0.21" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "pyflakes", specifier = ">=3.4.0" },
-    { name = "pyinstaller", specifier = ">=6.16.0" },
-    { name = "pylint", specifier = ">=4.0.2" },
-    { name = "pytest", specifier = ">=9.0.1" },
-    { name = "pytest-forked", specifier = ">=1.6.0" },
-    { name = "pytest-timeout", specifier = ">=2.4.0" },
-    { name = "pytest-xdist", specifier = ">=3.8.0" },
-    { name = "webdiff", specifier = ">=1.3.0" },
-]
-
-[[package]]
 name = "beautifulsoup4"
 version = "4.15.0"
 source = { registry = "https://pypi.org/simple" }
@@ -346,171 +227,12 @@ wheels = [
 ]
 
 [[package]]
-name = "beditor"
-source = { editable = "../beditor" }
-dependencies = [
-    { name = "antlr4-python3-runtime" },
-    { name = "bes" },
-    { name = "requests" },
-    { name = "ruamel-yaml" },
-    { name = "tomlkit" },
-    { name = "xattr", marker = "sys_platform != 'win32'" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "antlr4-python3-runtime", specifier = "==4.13.2" },
-    { name = "bes", editable = "../bes" },
-    { name = "requests", specifier = ">=2.32.5" },
-    { name = "ruamel-yaml", specifier = ">=0.18.0" },
-    { name = "tomlkit", specifier = ">=0.13.2" },
-    { name = "xattr", marker = "sys_platform != 'win32'", specifier = ">=1.2.0" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "pyflakes", specifier = ">=3.4.0" },
-    { name = "pyinstaller", specifier = ">=6.16.0" },
-    { name = "pylint", specifier = ">=4.0.2" },
-    { name = "pytest", specifier = ">=9.0.1" },
-    { name = "pytest-forked", specifier = ">=1.6.0" },
-    { name = "pytest-timeout", specifier = ">=2.4.0" },
-    { name = "pytest-xdist", specifier = ">=3.8.0" },
-    { name = "webdiff", specifier = ">=1.3.0" },
-]
-
-[[package]]
-name = "bes"
-source = { editable = "../bes" }
-dependencies = [
-    { name = "filetype" },
-    { name = "keyring" },
-    { name = "puremagic" },
-    { name = "requests" },
-    { name = "xattr", marker = "sys_platform != 'win32'" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "filetype", specifier = ">=1.2.0" },
-    { name = "keyring", specifier = ">=25.7.0" },
-    { name = "puremagic", specifier = ">=2.2.0" },
-    { name = "requests", specifier = ">=2.32.5" },
-    { name = "xattr", marker = "sys_platform != 'win32'", specifier = ">=1.2.0" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "pyinstaller", specifier = ">=6.16.0" },
-    { name = "pytest", specifier = ">=8.4.2" },
-    { name = "pytest-xdist", specifier = ">=3.8.0" },
-]
-
-[[package]]
-name = "bgit"
-source = { editable = "../bgit" }
-dependencies = [
-    { name = "bes" },
-    { name = "bsecret" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "bes", editable = "../bes" },
-    { name = "bsecret", editable = "../bsecret" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "pyflakes", specifier = ">=3.4.0" },
-    { name = "pyinstaller", specifier = ">=6.16.0" },
-    { name = "pylint", specifier = ">=4.0.2" },
-    { name = "pytest", specifier = ">=9.0.1" },
-    { name = "pytest-forked", specifier = ">=1.6.0" },
-    { name = "pytest-repeat", specifier = ">=0.9.4" },
-    { name = "pytest-timeout", specifier = ">=2.4.0" },
-    { name = "pytest-xdist", specifier = ">=3.8.0" },
-    { name = "webdiff", specifier = ">=1.3.0" },
-]
-
-[[package]]
 name = "blinker"
 version = "1.9.0"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/21/28/9b3f50ce0e048515135495f198351908d99540d69bfdc8c1d15b73dc55ce/blinker-1.9.0.tar.gz", hash = "sha256:b4ce2265a7abece45e7cc896e98dbebe6cead56bcf805a3d23136d145f5445bf", size = 22460, upload-time = "2024-11-08T17:25:47.436Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/10/cb/f2ad4230dc2eb1a74edf38f1a38b9b52277f75bef262d8908e60d957e13c/blinker-1.9.0-py3-none-any.whl", hash = "sha256:ba0efaa9080b619ff2f3459d1d500c57bddea4a6b424b60a91141db6fd2f08bc", size = 8458, upload-time = "2024-11-08T17:25:46.184Z" },
-]
-
-[[package]]
-name = "bnet"
-source = { editable = "../bnet" }
-dependencies = [
-    { name = "beautifulsoup4" },
-    { name = "bes" },
-    { name = "bsecret" },
-    { name = "chardet" },
-    { name = "cloudscraper" },
-    { name = "cryptography" },
-    { name = "fastapi" },
-    { name = "filetype" },
-    { name = "flask" },
-    { name = "flask-cors" },
-    { name = "gunicorn", marker = "sys_platform != 'win32'" },
-    { name = "isodate" },
-    { name = "mitmproxy" },
-    { name = "pi-heif" },
-    { name = "pillow" },
-    { name = "pillow-avif-plugin" },
-    { name = "playwright" },
-    { name = "puremagic" },
-    { name = "pydantic" },
-    { name = "pysocks" },
-    { name = "python-dateutil" },
-    { name = "requests" },
-    { name = "requests-cache" },
-    { name = "uvicorn", extra = ["standard"] },
-    { name = "waitress", marker = "sys_platform == 'win32'" },
-    { name = "xattr", marker = "sys_platform != 'win32'" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "beautifulsoup4", specifier = ">=4.14.3" },
-    { name = "bes", editable = "../bes" },
-    { name = "bsecret", editable = "../bsecret" },
-    { name = "chardet", specifier = ">=5.2.0,<6" },
-    { name = "cloudscraper", specifier = ">=1.2.71" },
-    { name = "cryptography", specifier = ">=46.0.3" },
-    { name = "fastapi", specifier = ">=0.115.0" },
-    { name = "filetype", specifier = ">=1.2.0" },
-    { name = "flask", specifier = ">=3.1.2" },
-    { name = "flask-cors", specifier = ">=6.0.1" },
-    { name = "gunicorn", marker = "sys_platform != 'win32'", specifier = ">=23.0.0" },
-    { name = "isodate", specifier = ">=0.7.2" },
-    { name = "mitmproxy", specifier = ">=12.2.1" },
-    { name = "pi-heif", specifier = ">=1.1.1" },
-    { name = "pillow", specifier = ">=12.0.0" },
-    { name = "pillow-avif-plugin", specifier = ">=1.5.2" },
-    { name = "playwright", specifier = ">=1.57.0" },
-    { name = "puremagic", specifier = ">=1.30" },
-    { name = "pydantic", specifier = ">=2.13.4" },
-    { name = "pysocks", specifier = ">=1.7.1" },
-    { name = "python-dateutil", specifier = ">=2.9.0.post0" },
-    { name = "requests", specifier = ">=2.32.5" },
-    { name = "requests-cache", specifier = ">=1.2.1" },
-    { name = "uvicorn", extras = ["standard"], specifier = ">=0.30.0" },
-    { name = "waitress", marker = "sys_platform == 'win32'", specifier = ">=3.0.0" },
-    { name = "xattr", marker = "sys_platform != 'win32'", specifier = ">=1.2.0" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "httpx2", specifier = ">=2.13.0" },
-    { name = "pyinstaller", specifier = ">=6.16.0" },
-    { name = "pytest", specifier = ">=9.0.1" },
-    { name = "pytest-timeout", specifier = ">=2.4.0" },
-    { name = "pytest-xdist", specifier = ">=3.8.0" },
 ]
 
 [[package]]
@@ -529,42 +251,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/b3/73/3183c9e41ca755713bdf2cc1d0810df742c09484e2e1ddd693bee53877c1/brotli-1.2.0-cp314-cp314-musllinux_1_2_x86_64.whl", hash = "sha256:d2d085ded05278d1c7f65560aae97b3160aeb2ea2c0b3e26204856beccb60888", size = 1488164, upload-time = "2025-11-05T18:38:53.079Z" },
     { url = "https://files.pythonhosted.org/packages/64/6a/0c78d8f3a582859236482fd9fa86a65a60328a00983006bcf6d83b7b2253/brotli-1.2.0-cp314-cp314-win32.whl", hash = "sha256:832c115a020e463c2f67664560449a7bea26b0c1fdd690352addad6d0a08714d", size = 339280, upload-time = "2025-11-05T18:38:54.02Z" },
     { url = "https://files.pythonhosted.org/packages/f5/10/56978295c14794b2c12007b07f3e41ba26acda9257457d7085b0bb3bb90c/brotli-1.2.0-cp314-cp314-win_amd64.whl", hash = "sha256:e7c0af964e0b4e3412a0ebf341ea26ec767fa0b4cf81abb5e897c9338b5ad6a3", size = 375639, upload-time = "2025-11-05T18:38:55.67Z" },
-]
-
-[[package]]
-name = "bsecret"
-source = { editable = "../bsecret" }
-dependencies = [
-    { name = "bcrypt" },
-    { name = "bes" },
-    { name = "cryptography" },
-    { name = "keyring" },
-    { name = "paramiko" },
-    { name = "requests" },
-    { name = "xattr", marker = "sys_platform != 'win32'" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "bcrypt", specifier = ">=4.3.0" },
-    { name = "bes", editable = "../bes" },
-    { name = "cryptography", specifier = ">=46.0.3" },
-    { name = "keyring", specifier = ">=25.0.0" },
-    { name = "paramiko", specifier = ">=4.0.0" },
-    { name = "requests", specifier = ">=2.32.5" },
-    { name = "xattr", marker = "sys_platform != 'win32'", specifier = ">=1.2.0" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "pyflakes", specifier = ">=3.4.0" },
-    { name = "pyinstaller", specifier = ">=6.16.0" },
-    { name = "pylint", specifier = ">=4.0.2" },
-    { name = "pytest", specifier = ">=9.0.1" },
-    { name = "pytest-forked", specifier = ">=1.6.0" },
-    { name = "pytest-timeout", specifier = ">=2.4.0" },
-    { name = "pytest-xdist", specifier = ">=3.8.0" },
-    { name = "webdiff", specifier = ">=1.3.0" },
 ]
 
 [[package]]
@@ -852,6 +538,410 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/8a/02/91e3416a8fdd715abb903a952a6bec7cdd8d14eed55d415fc8595524c319/fastapi-0.141.1.tar.gz", hash = "sha256:e8822fc40db1e1858054d7a949a888695bc9bdce70139178e33bd2871a453ca1", size = 425799, upload-time = "2026-07-29T17:18:05.568Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/cb/03/10388a42375ee7e4ac9b94eb2c5c569c8b5795e377e701c9ac3ad63de890/fastapi-0.141.1-py3-none-any.whl", hash = "sha256:bfb91aa2d334c61cb35ba9a116fc123b3d3df31640b801cf57a7a78ec3f603b3", size = 131954, upload-time = "2026-07-29T17:18:04.364Z" },
+]
+
+[[package]]
+name = "fateware-bat"
+source = { editable = "../bat" }
+dependencies = [
+    { name = "cloudscraper" },
+    { name = "cryptography" },
+    { name = "fateware-bdata" },
+    { name = "fateware-beditor" },
+    { name = "fateware-bes" },
+    { name = "fateware-bgit" },
+    { name = "fateware-bnet" },
+    { name = "fateware-bsecret" },
+    { name = "flask" },
+    { name = "flask-cors" },
+    { name = "gunicorn", marker = "sys_platform != 'win32'" },
+    { name = "hvac" },
+    { name = "minio" },
+    { name = "nexus-api-client" },
+    { name = "openssh-wrapper" },
+    { name = "opn-api" },
+    { name = "paramiko" },
+    { name = "pgpy" },
+    { name = "playwright" },
+    { name = "prompt-toolkit" },
+    { name = "proxmoxer" },
+    { name = "pydantic" },
+    { name = "pygithub" },
+    { name = "pyinfra" },
+    { name = "python-gitlab" },
+    { name = "pywin32", marker = "sys_platform == 'win32'" },
+    { name = "requests" },
+    { name = "requests-cache" },
+    { name = "rpmfile" },
+    { name = "ruamel-yaml" },
+    { name = "sshconf" },
+    { name = "tomli-w" },
+    { name = "twine" },
+    { name = "waitress", marker = "sys_platform == 'win32'" },
+    { name = "xattr", marker = "sys_platform != 'win32'" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "cloudscraper", specifier = ">=1.2.71" },
+    { name = "cryptography", specifier = ">=46.0.3" },
+    { name = "fateware-bdata", editable = "../bdata" },
+    { name = "fateware-beditor", editable = "../beditor" },
+    { name = "fateware-bes", editable = "../bes" },
+    { name = "fateware-bgit", editable = "../bgit" },
+    { name = "fateware-bnet", editable = "../bnet" },
+    { name = "fateware-bsecret", editable = "../bsecret" },
+    { name = "flask", specifier = ">=3.1.2" },
+    { name = "flask-cors", specifier = ">=6.0.1" },
+    { name = "gunicorn", marker = "sys_platform != 'win32'", specifier = ">=23.0.0" },
+    { name = "hvac", specifier = ">=2.3.0" },
+    { name = "minio", specifier = ">=7.2.20" },
+    { name = "nexus-api-client", specifier = ">=3.95.2" },
+    { name = "openssh-wrapper", specifier = ">=0.4" },
+    { name = "opn-api", specifier = ">=0.4.0" },
+    { name = "paramiko", specifier = ">=4.0.0" },
+    { name = "pgpy", specifier = ">=0.6.0" },
+    { name = "playwright", specifier = ">=1.57.0" },
+    { name = "prompt-toolkit", specifier = ">=3.0" },
+    { name = "proxmoxer", specifier = ">=2.2.0" },
+    { name = "pydantic", specifier = ">=2.0" },
+    { name = "pygithub", specifier = ">=1.54.1" },
+    { name = "pyinfra", specifier = ">=3.9.2" },
+    { name = "python-gitlab", specifier = ">=6.5.0" },
+    { name = "pywin32", marker = "sys_platform == 'win32'", specifier = ">=312" },
+    { name = "requests", specifier = ">=2.32.5" },
+    { name = "requests-cache", specifier = ">=1.3.3" },
+    { name = "rpmfile", specifier = ">=2.2.1" },
+    { name = "ruamel-yaml", specifier = ">=0.17.10" },
+    { name = "sshconf", specifier = ">=0.2.5" },
+    { name = "tomli-w", specifier = ">=1.2.0" },
+    { name = "twine", specifier = ">=6.2.0" },
+    { name = "waitress", marker = "sys_platform == 'win32'", specifier = ">=3.0.0" },
+    { name = "xattr", marker = "sys_platform != 'win32'", specifier = ">=1.2.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "httpx2", specifier = ">=2.13.0" },
+    { name = "pyinstaller", specifier = ">=6.16.0" },
+    { name = "pytest", specifier = ">=8.4.2" },
+    { name = "pytest-testmon", specifier = ">=2.1.3" },
+    { name = "pytest-timeout", specifier = ">=2.4.0" },
+    { name = "pytest-xdist", specifier = ">=3.8.0" },
+]
+
+[[package]]
+name = "fateware-bdata"
+source = { editable = "../bdata" }
+dependencies = [
+    { name = "fateware-bes" },
+    { name = "pydantic" },
+    { name = "requests" },
+    { name = "sqlmodel" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "fateware-bes", editable = "../bes" },
+    { name = "pydantic", specifier = ">=2.0" },
+    { name = "requests", specifier = ">=2.32.5" },
+    { name = "sqlmodel", specifier = ">=0.0.21" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pyflakes", specifier = ">=3.4.0" },
+    { name = "pyinstaller", specifier = ">=6.16.0" },
+    { name = "pylint", specifier = ">=4.0.2" },
+    { name = "pytest", specifier = ">=9.0.1" },
+    { name = "pytest-forked", specifier = ">=1.6.0" },
+    { name = "pytest-timeout", specifier = ">=2.4.0" },
+    { name = "pytest-xdist", specifier = ">=3.8.0" },
+    { name = "webdiff", specifier = ">=1.3.0" },
+]
+
+[[package]]
+name = "fateware-beditor"
+source = { editable = "../beditor" }
+dependencies = [
+    { name = "antlr4-python3-runtime" },
+    { name = "fateware-bes" },
+    { name = "requests" },
+    { name = "ruamel-yaml" },
+    { name = "tomlkit" },
+    { name = "xattr", marker = "sys_platform != 'win32'" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "antlr4-python3-runtime", specifier = "==4.13.2" },
+    { name = "fateware-bes", editable = "../bes" },
+    { name = "requests", specifier = ">=2.32.5" },
+    { name = "ruamel-yaml", specifier = ">=0.18.0" },
+    { name = "tomlkit", specifier = ">=0.13.2" },
+    { name = "xattr", marker = "sys_platform != 'win32'", specifier = ">=1.2.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pyflakes", specifier = ">=3.4.0" },
+    { name = "pyinstaller", specifier = ">=6.16.0" },
+    { name = "pylint", specifier = ">=4.0.2" },
+    { name = "pytest", specifier = ">=9.0.1" },
+    { name = "pytest-forked", specifier = ">=1.6.0" },
+    { name = "pytest-timeout", specifier = ">=2.4.0" },
+    { name = "pytest-xdist", specifier = ">=3.8.0" },
+    { name = "webdiff", specifier = ">=1.3.0" },
+]
+
+[[package]]
+name = "fateware-bes"
+source = { editable = "../bes" }
+dependencies = [
+    { name = "filetype" },
+    { name = "keyring" },
+    { name = "puremagic" },
+    { name = "requests" },
+    { name = "xattr", marker = "sys_platform != 'win32'" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "filetype", specifier = ">=1.2.0" },
+    { name = "keyring", specifier = ">=25.7.0" },
+    { name = "puremagic", specifier = ">=2.2.0" },
+    { name = "requests", specifier = ">=2.32.5" },
+    { name = "xattr", marker = "sys_platform != 'win32'", specifier = ">=1.2.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pyinstaller", specifier = ">=6.16.0" },
+    { name = "pytest", specifier = ">=8.4.2" },
+    { name = "pytest-timeout", specifier = ">=2.4.0" },
+    { name = "pytest-xdist", specifier = ">=3.8.0" },
+]
+
+[[package]]
+name = "fateware-bgit"
+source = { editable = "../bgit" }
+dependencies = [
+    { name = "fateware-bes" },
+    { name = "fateware-bsecret" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "fateware-bes", editable = "../bes" },
+    { name = "fateware-bsecret", editable = "../bsecret" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pyflakes", specifier = ">=3.4.0" },
+    { name = "pyinstaller", specifier = ">=6.16.0" },
+    { name = "pylint", specifier = ">=4.0.2" },
+    { name = "pytest", specifier = ">=9.0.1" },
+    { name = "pytest-forked", specifier = ">=1.6.0" },
+    { name = "pytest-repeat", specifier = ">=0.9.4" },
+    { name = "pytest-timeout", specifier = ">=2.4.0" },
+    { name = "pytest-xdist", specifier = ">=3.8.0" },
+    { name = "webdiff", specifier = ">=1.3.0" },
+]
+
+[[package]]
+name = "fateware-bnet"
+source = { editable = "../bnet" }
+dependencies = [
+    { name = "beautifulsoup4" },
+    { name = "chardet" },
+    { name = "cloudscraper" },
+    { name = "cryptography" },
+    { name = "fastapi" },
+    { name = "fateware-bes" },
+    { name = "fateware-bsecret" },
+    { name = "filetype" },
+    { name = "flask" },
+    { name = "flask-cors" },
+    { name = "gunicorn", marker = "sys_platform != 'win32'" },
+    { name = "isodate" },
+    { name = "mitmproxy" },
+    { name = "pi-heif" },
+    { name = "pillow" },
+    { name = "pillow-avif-plugin" },
+    { name = "playwright" },
+    { name = "puremagic" },
+    { name = "pydantic" },
+    { name = "pysocks" },
+    { name = "python-dateutil" },
+    { name = "requests" },
+    { name = "requests-cache" },
+    { name = "uvicorn", extra = ["standard"] },
+    { name = "waitress", marker = "sys_platform == 'win32'" },
+    { name = "xattr", marker = "sys_platform != 'win32'" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "beautifulsoup4", specifier = ">=4.14.3" },
+    { name = "chardet", specifier = ">=5.2.0,<6" },
+    { name = "cloudscraper", specifier = ">=1.2.71" },
+    { name = "cryptography", specifier = ">=46.0.3" },
+    { name = "fastapi", specifier = ">=0.115.0" },
+    { name = "fateware-bes", editable = "../bes" },
+    { name = "fateware-bsecret", editable = "../bsecret" },
+    { name = "filetype", specifier = ">=1.2.0" },
+    { name = "flask", specifier = ">=3.1.2" },
+    { name = "flask-cors", specifier = ">=6.0.1" },
+    { name = "gunicorn", marker = "sys_platform != 'win32'", specifier = ">=23.0.0" },
+    { name = "isodate", specifier = ">=0.7.2" },
+    { name = "mitmproxy", specifier = ">=12.2.1" },
+    { name = "pi-heif", specifier = ">=1.1.1" },
+    { name = "pillow", specifier = ">=12.0.0" },
+    { name = "pillow-avif-plugin", specifier = ">=1.5.2" },
+    { name = "playwright", specifier = ">=1.57.0" },
+    { name = "puremagic", specifier = ">=1.30" },
+    { name = "pydantic", specifier = ">=2.13.4" },
+    { name = "pysocks", specifier = ">=1.7.1" },
+    { name = "python-dateutil", specifier = ">=2.9.0.post0" },
+    { name = "requests", specifier = ">=2.32.5" },
+    { name = "requests-cache", specifier = ">=1.2.1" },
+    { name = "uvicorn", extras = ["standard"], specifier = ">=0.30.0" },
+    { name = "waitress", marker = "sys_platform == 'win32'", specifier = ">=3.0.0" },
+    { name = "xattr", marker = "sys_platform != 'win32'", specifier = ">=1.2.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "httpx2", specifier = ">=2.13.0" },
+    { name = "pyinstaller", specifier = ">=6.16.0" },
+    { name = "pytest", specifier = ">=9.0.1" },
+    { name = "pytest-timeout", specifier = ">=2.4.0" },
+    { name = "pytest-xdist", specifier = ">=3.8.0" },
+]
+
+[[package]]
+name = "fateware-bsecret"
+source = { editable = "../bsecret" }
+dependencies = [
+    { name = "bcrypt" },
+    { name = "cryptography" },
+    { name = "fateware-bes" },
+    { name = "keyring" },
+    { name = "paramiko" },
+    { name = "requests" },
+    { name = "xattr", marker = "sys_platform != 'win32'" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "bcrypt", specifier = ">=4.3.0" },
+    { name = "cryptography", specifier = ">=46.0.3" },
+    { name = "fateware-bes", editable = "../bes" },
+    { name = "keyring", specifier = ">=25.0.0" },
+    { name = "paramiko", specifier = ">=4.0.0" },
+    { name = "requests", specifier = ">=2.32.5" },
+    { name = "xattr", marker = "sys_platform != 'win32'", specifier = ">=1.2.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pyflakes", specifier = ">=3.4.0" },
+    { name = "pyinstaller", specifier = ">=6.16.0" },
+    { name = "pylint", specifier = ">=4.0.2" },
+    { name = "pytest", specifier = ">=9.0.1" },
+    { name = "pytest-forked", specifier = ">=1.6.0" },
+    { name = "pytest-timeout", specifier = ">=2.4.0" },
+    { name = "pytest-xdist", specifier = ">=3.8.0" },
+    { name = "webdiff", specifier = ">=1.3.0" },
+]
+
+[[package]]
+name = "fateware-rebuild"
+source = { editable = "." }
+dependencies = [
+    { name = "appstoreconnect" },
+    { name = "bcrypt" },
+    { name = "cloudscraper" },
+    { name = "cryptography" },
+    { name = "fateware-bat" },
+    { name = "fateware-beditor" },
+    { name = "fateware-bes" },
+    { name = "fateware-bgit" },
+    { name = "fateware-bnet" },
+    { name = "fateware-bsecret" },
+    { name = "flask" },
+    { name = "flask-cors" },
+    { name = "gunicorn", marker = "sys_platform != 'win32'" },
+    { name = "hvac" },
+    { name = "keyring" },
+    { name = "minio" },
+    { name = "openssh-wrapper" },
+    { name = "opn-api" },
+    { name = "paramiko" },
+    { name = "prompt-toolkit" },
+    { name = "proxmoxer" },
+    { name = "pygithub" },
+    { name = "pyinfra" },
+    { name = "python-gitlab" },
+    { name = "requests" },
+    { name = "requests-cache" },
+    { name = "rope" },
+    { name = "ruamel-yaml" },
+    { name = "tomli-w" },
+    { name = "waitress", marker = "sys_platform == 'win32'" },
+    { name = "xattr", marker = "sys_platform != 'win32'" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pyinstaller" },
+    { name = "pytest" },
+    { name = "pytest-testmon" },
+    { name = "pytest-xdist" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "appstoreconnect", specifier = ">=0.10.1" },
+    { name = "bcrypt", specifier = ">=4.3.0" },
+    { name = "cloudscraper", specifier = ">=1.2.71" },
+    { name = "cryptography", specifier = ">=46.0.3" },
+    { name = "fateware-bat", editable = "../bat" },
+    { name = "fateware-beditor", editable = "../beditor" },
+    { name = "fateware-bes", editable = "../bes" },
+    { name = "fateware-bgit", editable = "../bgit" },
+    { name = "fateware-bnet", editable = "../bnet" },
+    { name = "fateware-bsecret", editable = "../bsecret" },
+    { name = "flask", specifier = ">=3.1.2" },
+    { name = "flask-cors", specifier = ">=6.0.1" },
+    { name = "gunicorn", marker = "sys_platform != 'win32'", specifier = ">=23.0.0" },
+    { name = "hvac", specifier = ">=2.3.0" },
+    { name = "keyring", specifier = ">=25.0.0" },
+    { name = "minio", specifier = ">=7.2.20" },
+    { name = "openssh-wrapper", specifier = ">=0.4" },
+    { name = "opn-api", specifier = ">=0.4.0" },
+    { name = "paramiko", specifier = ">=4.0.0" },
+    { name = "prompt-toolkit", specifier = ">=3.0" },
+    { name = "proxmoxer", specifier = ">=2.2.0" },
+    { name = "pygithub", specifier = ">=1.54.1" },
+    { name = "pyinfra", specifier = ">=3.9.2" },
+    { name = "python-gitlab", specifier = ">=6.5.0" },
+    { name = "requests", specifier = ">=2.32.5" },
+    { name = "requests-cache", specifier = ">=1.3.3" },
+    { name = "rope", specifier = ">=1.14.0" },
+    { name = "ruamel-yaml", specifier = ">=0.17.10" },
+    { name = "tomli-w", specifier = ">=1.2.0" },
+    { name = "waitress", marker = "sys_platform == 'win32'", specifier = ">=3.0.0" },
+    { name = "xattr", marker = "sys_platform != 'win32'", specifier = ">=1.2.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pyinstaller", specifier = ">=6.16.0" },
+    { name = "pytest", specifier = ">=8.4.2" },
+    { name = "pytest-testmon", specifier = ">=2.1.3" },
+    { name = "pytest-xdist", specifier = ">=3.8.0" },
 ]
 
 [[package]]
@@ -2142,94 +2232,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/02/51/d3a6ea424652c60f05600d8c2e01a55c913755e7cdad64afabbd1aa16f44/readme_renderer-45.0.tar.gz", hash = "sha256:030a8fac74904f8fba11ad1bb6964e3f76e896dc7e5e71f16af190c9056696d1", size = 36172, upload-time = "2026-06-09T21:05:17.37Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/97/1b/295bf2fa3e740131778065e5ffa2c481f0e7210182d408e9a2c244ff5b0c/readme_renderer-45.0-py3-none-any.whl", hash = "sha256:3385ed220117104a2bceb4a9dac8c5fdf6d1f96890d7ea2a9c7174fd5c84091f", size = 14134, upload-time = "2026-06-09T21:05:15.85Z" },
-]
-
-[[package]]
-name = "rebuild"
-source = { editable = "." }
-dependencies = [
-    { name = "appstoreconnect" },
-    { name = "bat" },
-    { name = "bcrypt" },
-    { name = "beditor" },
-    { name = "bes" },
-    { name = "bgit" },
-    { name = "bnet" },
-    { name = "bsecret" },
-    { name = "cloudscraper" },
-    { name = "cryptography" },
-    { name = "flask" },
-    { name = "flask-cors" },
-    { name = "gunicorn", marker = "sys_platform != 'win32'" },
-    { name = "hvac" },
-    { name = "keyring" },
-    { name = "minio" },
-    { name = "openssh-wrapper" },
-    { name = "opn-api" },
-    { name = "paramiko" },
-    { name = "prompt-toolkit" },
-    { name = "proxmoxer" },
-    { name = "pygithub" },
-    { name = "pyinfra" },
-    { name = "python-gitlab" },
-    { name = "requests" },
-    { name = "requests-cache" },
-    { name = "rope" },
-    { name = "ruamel-yaml" },
-    { name = "tomli-w" },
-    { name = "waitress", marker = "sys_platform == 'win32'" },
-    { name = "xattr", marker = "sys_platform != 'win32'" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "pyinstaller" },
-    { name = "pytest" },
-    { name = "pytest-testmon" },
-    { name = "pytest-xdist" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "appstoreconnect", specifier = ">=0.10.1" },
-    { name = "bat", editable = "../bat" },
-    { name = "bcrypt", specifier = ">=4.3.0" },
-    { name = "beditor", editable = "../beditor" },
-    { name = "bes", editable = "../bes" },
-    { name = "bgit", editable = "../bgit" },
-    { name = "bnet", editable = "../bnet" },
-    { name = "bsecret", editable = "../bsecret" },
-    { name = "cloudscraper", specifier = ">=1.2.71" },
-    { name = "cryptography", specifier = ">=46.0.3" },
-    { name = "flask", specifier = ">=3.1.2" },
-    { name = "flask-cors", specifier = ">=6.0.1" },
-    { name = "gunicorn", marker = "sys_platform != 'win32'", specifier = ">=23.0.0" },
-    { name = "hvac", specifier = ">=2.3.0" },
-    { name = "keyring", specifier = ">=25.0.0" },
-    { name = "minio", specifier = ">=7.2.20" },
-    { name = "openssh-wrapper", specifier = ">=0.4" },
-    { name = "opn-api", specifier = ">=0.4.0" },
-    { name = "paramiko", specifier = ">=4.0.0" },
-    { name = "prompt-toolkit", specifier = ">=3.0" },
-    { name = "proxmoxer", specifier = ">=2.2.0" },
-    { name = "pygithub", specifier = ">=1.54.1" },
-    { name = "pyinfra", specifier = ">=3.9.2" },
-    { name = "python-gitlab", specifier = ">=6.5.0" },
-    { name = "requests", specifier = ">=2.32.5" },
-    { name = "requests-cache", specifier = ">=1.3.3" },
-    { name = "rope", specifier = ">=1.14.0" },
-    { name = "ruamel-yaml", specifier = ">=0.17.10" },
-    { name = "tomli-w", specifier = ">=1.2.0" },
-    { name = "waitress", marker = "sys_platform == 'win32'", specifier = ">=3.0.0" },
-    { name = "xattr", marker = "sys_platform != 'win32'", specifier = ">=1.2.0" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "pyinstaller", specifier = ">=6.16.0" },
-    { name = "pytest", specifier = ">=8.4.2" },
-    { name = "pytest-testmon", specifier = ">=2.1.3" },
-    { name = "pytest-xdist", specifier = ">=3.8.0" },
 ]
 
 [[package]]
