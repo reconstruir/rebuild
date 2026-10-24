@@ -3,7 +3,6 @@
 import os.path as path
 from bes.system.check import check
 from bes.system.log import log
-from bes.fs.file_attributes import file_attributes
 from bes.fs.file_find import file_find
 from bes.files.bf_file_ops import bf_file_ops
 from bes.files.bf_filename import bf_filename
@@ -12,6 +11,7 @@ from bes.archive.archiver import archiver
 
 from .storage_base import storage_base 
 from .storage_address import storage_address
+from .storage_local_properties import storage_local_properties
 
 class storage_local(storage_base):
 
@@ -31,6 +31,7 @@ class storage_local(storage_base):
     self._local_root_dir = config.local_cache_dir
     bf_file_ops.mkdir(self._where)
     bf_file_ops.mkdir(self._local_root_dir)
+    self._properties = storage_local_properties(self._where)
     self.log_d('__init__: _where=%s; _local_root_dir%s' % (self._where, self._local_root_dir))
 
   def make_address(self, filename = None):
@@ -98,16 +99,14 @@ class storage_local(storage_base):
 
   #@abstractmethod
   def set_properties(self, filename, properties):
+    'Set properties on filename, kept in the storage\'s properties database; a value of None removes that key.'
     check.check_dict(properties)
-    remote_path = self._remote_path(filename)
-    for key, value in properties.items():
-      check.check_string(key)
-      if value is None:
-        file_attributes.remove(remote_path, key)
-      else:
-        check.check_string(value)
-        file_attributes.set_string(remote_path, key, value)
+    self._properties.set_properties(filename, properties)
     return True
+
+  def get_properties(self, filename):
+    'The properties set_properties() set on filename, as a dict.'
+    return self._properties.get_properties(filename)
     
   #@abstractmethod
   def remote_checksum(self, remote_filename):
