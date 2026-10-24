@@ -3,7 +3,6 @@
 
 from os import path
 
-from bes.files.bf_xattr_names import bf_xattr_names
 from bes.testing.unit_test import unit_test
 
 from rebuild.storage.storage_local_properties import storage_local_properties
@@ -33,7 +32,7 @@ class test_storage_local_properties(unit_test):
     with open(filename, 'wb') as fout:
       fout.write(b'kiwi')
     storage_local_properties(root).set_properties('kiwi.tar.gz', { 'a': '1' })
-    self.assertEqual( [], bf_xattr_names.names(filename) )
+    self.assert_no_xattrs(root)
 
   def test_a_bad_value_writes_nothing(self):
     props = storage_local_properties(self.make_temp_dir())
